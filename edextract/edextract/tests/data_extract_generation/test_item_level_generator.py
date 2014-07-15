@@ -15,7 +15,8 @@ from edcore.security.tenant import set_tenant_map
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import (get_unittest_tenant_name, Unittest_with_edcore_sqlite,
                                                             UnittestEdcoreDBConnection)
-from edextract.data_extract_generation.item_level_generator import generate_items_csv, _get_path_to_item_csv
+from edextract.data_extract_generation.item_level_generator import generate_items_csv, _get_path_to_item_csv, \
+    _append_csv_files
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 
@@ -101,21 +102,53 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         self.assertIn('student_guid', csv_data[0])
         self.assertIn('score', csv_data[0])
 
-    def test_get_path_to_item_csv_summative(self):
-        items_root_dir = '/opt/edware/item_level'
-        record = {'state_code': 'NC',
-                  'asmt_year': 2015,
-                  'asmt_type': 'SUMMATIVE',
-                  'effective_date': 20150402,
-                  'asmt_subject': 'Math',
-                  'asmt_grade': 3,
-                  'district_guid': '3ab54de78a',
-                  'student_guid': 'a78dbf34'}
+    def test_get_path_to_item_csv(self):
+        items_root_dir = os.path.dirname(os.path.abspath(__file__))
+        record = {}
         path = _get_path_to_item_csv(items_root_dir, **record)
-        self.assertEqual(path, '/opt/edware/item_level/NC/2015/SUMMATIVE/20150402/MATH/3/3ab54de78a/a78dbf34.csv')
+        self.assertEqual(path, items_root_dir)
 
-    def test_get_path_to_item_csv_interim(self):
-        items_root_dir = '/opt/edware/item_level'
+        record = {'state_code': 'NC'}
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(items_root_dir, 'NC')
+        self.assertEqual(path, expect_path)
+
+        record['asmt_year'] = 2015
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, '2015')
+        self.assertEqual(path, expect_path)
+
+        record['asmt_type'] = 'SUMMATIVE'
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, 'SUMMATIVE')
+        self.assertEqual(path, expect_path)
+
+        record['effective_date'] = 20150402
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, '20150402')
+        self.assertEqual(path, expect_path)
+
+        record['asmt_subject'] = 'Math'
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, 'MATH')
+        self.assertEqual(path, expect_path)
+
+        record['asmt_grade'] = 3
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, '3')
+        self.assertEqual(path, expect_path)
+
+        record['district_guid'] = '3ab54de78a'
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, '3ab54de78a')
+        self.assertEqual(path, expect_path)
+
+        record['student_guid'] = 'a78dbf34'
+        path = _get_path_to_item_csv(items_root_dir, **record)
+        expect_path = os.path.join(expect_path, 'a78dbf34.csv')
+        self.assertEqual(path, expect_path)
+
+    def test_append_csv_files(self):
         record = {'state_code': 'NC',
                   'asmt_year': 2015,
                   'asmt_type': 'INTERIM COMPREHENSIVE',
@@ -124,9 +157,107 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'asmt_grade': 3,
                   'district_guid': '3ab54de78a',
                   'student_guid': 'a78dbf34'}
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        self.assertEqual(path,
-                         '/opt/edware/item_level/NC/2015/INTERIM_COMPREHENSIVE/20150106/ELA/3/3ab54de78a/a78dbf34.csv')
+        tempdir = tempfile.TemporaryDirectory()
+        record1 = copy.deepcopy(record)
+        record1['student_guid'] = '1'
+        file1 = _get_path_to_item_csv(tempdir.name, **record1)
+        record2 = copy.deepcopy(record)
+        record2['student_guid'] = '2'
+        file2 = _get_path_to_item_csv(tempdir.name, **record2)
+        record3 = copy.deepcopy(record)
+        record3['student_guid'] = '3'
+        file3 = _get_path_to_item_csv(tempdir.name, **record3)
+        os.makedirs(os.path.dirname(file1))
+        with open(file1, 'w') as csv1:
+            csvwriter1 = csv.writer(csv1, delimiter=',')
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome1'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome2'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome3'])
+        with open(file2, 'w') as csv1:
+            csvwriter1 = csv.writer(csv1, delimiter=',')
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome1'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome2'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome3'])
+        with open(file3, 'w') as csv1:
+            csvwriter1 = csv.writer(csv1, delimiter=',')
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome1'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome2'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome3'])
+        results = [record1, record2, record3]
+        outputfile = os.path.join(tempdir.name, 'output')
+        csv_header = ['abc', 'efg', 'xes']
+        _append_csv_files(tempdir.name, None, results, outputfile, csv_header)
+        self.assertTrue(os.path.isfile(outputfile))
+        with open(outputfile, 'r') as file:
+            csvfile = csv.reader(file, delimiter=',')
+            header = next(csvfile)
+            self.assertEqual(header, csv_header)
+            count_row = 0
+            for _ in csvfile:
+                count_row += 1
+            self.assertEqual(9, count_row)
+        tempdir.cleanup()
+
+    def test_append_csv_files_multiple_output(self):
+        record = {'state_code': 'NC',
+                  'asmt_year': 2015,
+                  'asmt_type': 'INTERIM COMPREHENSIVE',
+                  'effective_date': 20150106,
+                  'asmt_subject': 'ELA',
+                  'asmt_grade': 3,
+                  'district_guid': '3ab54de78a',
+                  'student_guid': 'a78dbf34'}
+        tempdir = tempfile.TemporaryDirectory()
+        record1 = copy.deepcopy(record)
+        record1['student_guid'] = '1'
+        file1 = _get_path_to_item_csv(tempdir.name, **record1)
+        record2 = copy.deepcopy(record)
+        record2['student_guid'] = '2'
+        file2 = _get_path_to_item_csv(tempdir.name, **record2)
+        record3 = copy.deepcopy(record)
+        record3['student_guid'] = '3'
+        file3 = _get_path_to_item_csv(tempdir.name, **record3)
+        os.makedirs(os.path.dirname(file1))
+        with open(file1, 'w') as csv1:
+            csvwriter1 = csv.writer(csv1, delimiter=',')
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome1'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome2'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome3'])
+        with open(file2, 'w') as csv1:
+            csvwriter1 = csv.writer(csv1, delimiter=',')
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome1'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome2'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome3'])
+        with open(file3, 'w') as csv1:
+            csvwriter1 = csv.writer(csv1, delimiter=',')
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome1'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome2'])
+            csvwriter1.writerow(['hello', 'world', 'you', 'are', 'awesome3'])
+        results = [record1, record2, record3]
+        outputfile1 = os.path.join(tempdir.name, 'output1')
+        outputfile2 = os.path.join(tempdir.name, 'output2')
+        outputfiles = [outputfile1, outputfile2]
+        csv_header = ['abc', 'efg', 'xes']
+        _append_csv_files(tempdir.name, None, results, outputfiles, csv_header)
+        self.assertTrue(os.path.isfile(outputfile1))
+        self.assertTrue(os.path.isfile(outputfile2))
+        with open(outputfile1, 'r') as file:
+            csvfile = csv.reader(file, delimiter=',')
+            header = next(csvfile)
+            self.assertEqual(header, csv_header)
+            count_row = 0
+            for _ in csvfile:
+                count_row += 1
+            self.assertEqual(3, count_row)
+        with open(outputfile2, 'r') as file:
+            csvfile = csv.reader(file, delimiter=',')
+            header = next(csvfile)
+            self.assertEqual(header, csv_header)
+            count_row = 0
+            for _ in csvfile:
+                count_row += 1
+            self.assertEqual(6, count_row)
+        tempdir.cleanup()
 
     def __create_query(self, params):
         with UnittestEdcoreDBConnection() as connection:
@@ -196,3 +327,4 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                         csv_writer.writerow([item['key'], result['student_guid'], item['segment'], 0, item['client'],
                                              1, 1, item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
                                              'MA-Undesignated', 1, 1, 1, 0])
+import copy

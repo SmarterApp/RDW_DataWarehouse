@@ -51,7 +51,7 @@ def prepare_path(request_id, paths):
         for path in paths:
             file_utils.prepare_path(path)
 
-    except FileNotFoundError as e:
+    except Exception as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.
         log.error(e)

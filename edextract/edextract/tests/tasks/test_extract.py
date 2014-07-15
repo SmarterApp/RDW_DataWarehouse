@@ -14,8 +14,6 @@ import shutil
 import json
 import csv
 from zipfile import ZipFile
-from collections import OrderedDict
-
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore_sqlite, UnittestEdcoreDBConnection,
                                                             get_unittest_tenant_name)
@@ -23,12 +21,11 @@ from edextract.celery import setup_celery
 from edextract.status.constants import Constants
 from sqlalchemy.sql.expression import and_, select
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
-from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file, archive, archive_with_stream,
-                                     remote_copy, prepare_path, generate_item_or_raw_extract_file)
+                                     remote_copy, prepare_path, generate_item_or_raw_extract_file, extract_group_separator)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -368,6 +365,12 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
         self.assertRaises(ExtractionError, results.get)
 
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    @patch('edextract.tasks.extract.http_file_upload')
+    def test_remote_copy_exception(self, mock_http_file_upload, mock_insert_extract_stats):
+        mock_http_file_upload.side_effect = Exception()
+        self.assertRaises(ExtractionError, remote_copy, 'request_id', 'src_file_name', 'registration_id')
+
     @patch('edextract.tasks.extract.archive_files')
     @patch('edextract.tasks.extract.insert_extract_stats')
     def test_archive_task(self, insert_stats_patch, archive_patch):
@@ -390,6 +393,72 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         prepare_path.apply(args=["id", [tmp_dir]]).get()
 
         self.assertTrue(os.path.exists(tmp_dir))
+
+    @patch('edextract.tasks.extract.archive_files')
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    def test_archive_exception(self, mock_insert_extract_stats, mock_archive_files):
+        mock_archive_files.side_effect = Exception()
+        self.assertRaises(ExtractionError, archive, 'request_id', 'archive_file_name', 'directory')
+
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    @patch('edextract.tasks.extract.file_utils.prepare_path')
+    def test_prepare_path_failed(self, mock_prepare_path, mock_insert_extract_stats):
+        mock_prepare_path.side_effect = OSError()
+        self.assertRaises(ExtractionError, prepare_path, None, ['hello'])
+
+    def test_extract_group_separator(self):
+        extract_group_separator()
+        self.assertTrue(True)
+
+    @patch('edextract.tasks.extract.get_extract_func')
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    def test_generate_extract_file(self, mock_insert_extract_stats, mock_get_extract_func):
+        f = tempfile.TemporaryDirectory()
+        mock_get_extract_func.return_value.side_effect = FileNotFoundError()
+        output = os.path.join(f.name, 'hello.out')
+        open(output, 'w').close()
+        task = {TaskConstants.TASK_FILE_NAME: output, TaskConstants.TASK_TASK_ID: 'a', TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_CSV}
+        self.assertRaises(ExtractionError, generate_extract_file, 'tenant', 'request_id', task)
+        self.assertFalse(os.path.exists(output))
+
+        mock_get_extract_func.return_value.side_effect = Exception()
+        output = os.path.join(f.name, 'hello.out')
+        open(output, 'w').close()
+        task = {TaskConstants.TASK_FILE_NAME: output, TaskConstants.TASK_TASK_ID: 'a', TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_CSV}
+        self.assertRaises(ExtractionError, generate_extract_file, 'tenant', 'request_id', task)
+        self.assertFalse(os.path.exists(output))
+        f.cleanup()
+
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    def test_generate_item_or_raw_extract_file_tenant_is_None(self, mock_insert_extract_stats):
+        f = tempfile.TemporaryDirectory()
+        output_dir = f.name
+        task = {
+            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_ITEMS_CSV,
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.TASK_FILE_NAME: os.path.join(output_dir, 'hello'),
+            TaskConstants.TASK_QUERIES: {QueryType.QUERY: 'query'}
+        }
+
+        generate_item_or_raw_extract_file(None, 'request_id', task)
+        self.assertEqual(2, mock_insert_extract_stats.call_count)
+        f.cleanup()
+
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    def test_generate_item_or_raw_extract_file_no_outputfile(self, mock_insert_extract_stats):
+        f = tempfile.TemporaryDirectory()
+        output_dir = f.name
+        task = {
+            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_ITEMS_CSV,
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.TASK_FILE_NAME: os.path.join(output_dir, 'hello', 'world'),
+            TaskConstants.TASK_QUERIES: {QueryType.QUERY: 'query'}
+        }
+
+        self.assertRaises(ExtractionError, generate_item_or_raw_extract_file, 'hello', 'request_id', task)
+        f.cleanup()
 
     def __create_item_raw_extract_query(self, params):
         with UnittestEdcoreDBConnection() as connection:

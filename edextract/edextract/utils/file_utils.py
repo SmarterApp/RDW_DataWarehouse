@@ -24,7 +24,7 @@ class File():
             self.__path = path
             self.__size = os.stat(path).st_size
         else:
-            raise NotFileException(path + 'is not file')
+            raise NotFileException(path + ' is not file')
 
     @property
     def name(self):

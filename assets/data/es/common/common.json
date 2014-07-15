@@ -592,50 +592,104 @@
     ,
     "CSVOptions": {
         "extractType": {
-            "name": "Tipo de reporte",
+            "name": "Report / export type",
             "key": "extractType",
             "options": [
                 {
-                    "display": "Resultados de la evaluación del estudiante",
-                    "value": "studentAssessment"
+                    "display": "Student Registration Statistics",
+                    "value": "registrationStatistics"
+                },
+                {
+                    "display": "Assessment Completion Statistics",
+                    "value": "completionStatistics"
+                },
+                {
+                    "display": "Audit XML",
+                    "value": "rawXML"
+                },
+                {
+                    "display": "Individual Item Response Data",
+                    "value": "itemLevel"
                 }
             ]
         },
         "academicYear": {
-            "name": "Año Académico",
+            "name": "Academic year",
             "key": "academicYear"
         },
-        "studentRegAcademicYear": {
-            "name": "Año Académico",
+        "registrationAcademicYear": {
+            "name": "Academic year",
             "key": "academicYear"
-        },
-        "asmtYear": {
-            "name": "Año de evaluación",
-            "key": "asmtYear"
         },
         "asmtType": {
-            "name": "Tipo de evaluación",
+            "name": "Assessment Type",
             "key": "asmtType",
             "options": [
                 {
-                    "display": "Acumulativa",
+                    "display": "Summative",
                     "value": "SUMMATIVE"
                 }, {
-                    "display": "Provisional integral",
+                    "display": "Interim Comprehensive",
                     "value": "INTERIM COMPREHENSIVE"
                 }
             ]
         },
         "asmtSubject": {
-            "name": "Materia",
+            "name": "Subject",
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Matemáticas",
+                    "display": "Mathematics",
                     "value": "Math"
                 }, {
-                    "display": "ELA",
+                    "display": "ELA/Literacy",
                     "value": "ELA"
+                }
+            ]
+        },
+        "grade": {
+            "name": "Grade",
+            "key": "grade",
+            "options": [
+                {
+                    "display": "Select",
+                    "value": ""
+                },
+                {
+                    "display": "Grade 3",
+                    "value": "3"
+                },
+                {
+                    "display": "Grade 4",
+                    "value": "4"
+                },
+                {
+                    "display": "Grade 5",
+                    "value": "5"
+                },
+                {
+                    "display": "Grade 6",
+                    "value": "6"
+                },
+                {
+                    "display": "Grade 7",
+                    "value": "7"
+                },
+                {
+                    "display": "Grade 8",
+                    "value": "8"
+                },
+                {
+                    "display": "Grade 9",
+                    "value": "9"
+                },
+                {
+                    "display": "Grade 10",
+                    "value": "10"
+                },
+                {
+                    "display": "Grade 11",
+                    "value": "11"
                 }
             ]
         }
@@ -693,7 +747,7 @@
             "header": "No students.",
             "message": "There are no students in the batch. Please disable active filters and try again."
         },
-        "export_request_files": "Request Files",
+        "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",
         "generate_reports": "Generating Requested Reports"
     }

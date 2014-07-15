@@ -179,7 +179,7 @@ define [
         labels: @labels
         CSVOptions: @configData.CSVOptions
         # subjects on ISR
-        subjects: @data.current
+        subjects: @data.current, null
 
     renderReportActionBar: () ->
       @configData.subject = @createSampleInterval this.data.current[0], this.legendInfo.sample_intervals

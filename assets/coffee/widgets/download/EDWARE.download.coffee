@@ -269,7 +269,7 @@ define [
 
   class DownloadMenu
 
-    constructor: (@container, @config) ->
+    constructor: (@container, @config, @contextSecurity) ->
       @reportType = @config.reportType
       this.initialize(@container)
       this.bindEvents()
@@ -279,8 +279,9 @@ define [
 
     initialize: (@container) ->
       # Based on the report type, explicitly set the description for enabled and no permission
-      this.config.ExportOptions.export_download_raw_view.desc.enabled = this.config.ExportOptions.export_download_raw_view.desc.enabled[@reportType]
-      this.config.ExportOptions.export_download_raw_view.desc.no_permission = this.config.ExportOptions.export_download_raw_view.desc.no_permission[@reportType]
+      if @reportType
+        this.config.ExportOptions.export_download_raw_view.desc.enabled = this.config.ExportOptions.export_download_raw_view.desc.enabled[@reportType]
+        this.config.ExportOptions.export_download_raw_view.desc.no_permission = this.config.ExportOptions.export_download_raw_view.desc.no_permission[@reportType]
       output = Mustache.to_html DownloadMenuTemplate, {
         reportType: @reportType
         labels: this.config['labels']
@@ -289,7 +290,7 @@ define [
       $(@container).html output
       this.eventHandler =
         file: this.downloadAsFile
-        csv: this.sendCSVRequest
+        stateExtract: this.sendStateExtract
         extract: this.sendExtractRequest
         pdf: this.printPDF
 
@@ -379,14 +380,14 @@ define [
       url = window.location.protocol + "//" + window.location.host + "/services/extract?sync=true&" + $.param(params, true)
       window.location = url
 
-    sendCSVRequest: () ->
+    sendStateExtract: () ->
       @hide()
       CSVOptions = @config.CSVOptions
       CSVOptions.labels = @config.labels
       CSVOptions.ExportOptions = @config.ExportOptions
       reportType = @config.reportType
       reportParamsCallback = @config.getReportParams
-
+      self = this
       # construct CSVDownload modal
       loadingData = fetchData @config.param
       loadingData.done (data)->
@@ -397,6 +398,7 @@ define [
         CSVOptions.registrationAcademicYear.options = studentRegYears if studentRegYears
         # display file download options
         CSVDownload = new StateDownloadModal $('.CSVDownloadContainer'), CSVOptions, reportParamsCallback
+        self.contextSecurity?.apply()
         CSVDownload.show()
 
     printPDF: () ->

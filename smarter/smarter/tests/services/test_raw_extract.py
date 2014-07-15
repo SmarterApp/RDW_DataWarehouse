@@ -11,7 +11,7 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from pyramid.security import Allow
 
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
@@ -76,27 +76,24 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtYear': '2018',
                                     'asmtType': 'SUMMATIVE',
                                     'asmtSubject': 'Math',
-                                    'asmtGrade': '3',
-                                    'extractType': 'rawData',
-                                    'async': 'true'}
+                                    'asmtGrade': '3'}
         results = post_raw_data_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
         self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
 
-    @patch('smarter.services.raw_extract.process_sync_item_or_raw_extract_request')
+    @patch('smarter.services.raw_extract.process_async_item_or_raw_extraction_request')
     @patch('smarter.extracts.student_asmt_processor.start_extract')
-    def test_get_valid_response_raw_extract(self, mock_start_extract, mock_process_sync_item_or_raw_extract_request):
-        mock_process_sync_item_or_raw_extract_request.return_value = b'hello'
+    def test_get_valid_response_raw_extract(self, mock_start_extract, mock_process_async_item_or_raw_extraction_request):
+        mock_process_async_item_or_raw_extraction_request.return_value = {'hello': 'world'}
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
         response = get_raw_data_service(None, self.__request)
         self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
+        self.assertEqual(response.content_type, 'application/json')
 
     def test_get_missing_param_raw_extract(self):
         """Missing asmtYear"""
@@ -104,8 +101,6 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
-        self.__request.GET['async'] = 'true'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_raw_data_service)
 
     def test_get_invalid_param_raw_extract(self):
@@ -115,8 +110,6 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
-        self.__request.GET['async'] = 'true'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_raw_data_service)
 
     def test_generate_zip_file_name(self):
@@ -152,8 +145,6 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
-        self.__request.GET['async'] = 'true'
         results = get_raw_data_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
@@ -169,9 +160,7 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtYear': '2015',
                                     'asmtType': 'SUMMATIVE',
                                     'asmtSubject': 'Math',
-                                    'asmtGrade': '3',
-                                    'extractType': 'rawData',
-                                    'async': 'true'}
+                                    'asmtGrade': '3'}
         response = post_raw_data_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/json')
@@ -180,31 +169,29 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['files'][0]['download_url'])
 
-    @patch('smarter.services.raw_extract.process_sync_item_or_raw_extract_request')
-    def test_with_no_sync_or_async_set(self, mock_process_sync_item_or_raw_extract_request):
-        mock_process_sync_item_or_raw_extract_request.return_value = b'hello'
+    @patch('smarter.services.raw_extract.process_async_item_or_raw_extraction_request')
+    def test_with_no_sync_or_async_set(self, mock_process_async_item_or_raw_extraction_request):
+        mock_process_async_item_or_raw_extraction_request.return_value = {'hello': 'world'}
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
         response = get_raw_data_service(None, self.__request)
         self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
+        self.assertEqual(response.content_type, 'application/json')
 
-    @patch('smarter.services.raw_extract.process_sync_item_or_raw_extract_request')
-    def test_send_extraction_request_sync(self, mock_process_sync_item_or_raw_extract_request):
-        mock_process_sync_item_or_raw_extract_request.return_value = b'hello'
+    @patch('smarter.services.raw_extract.process_async_item_or_raw_extraction_request')
+    def test_send_extraction_request_sync(self, mock_process_async_item_or_raw_extraction_request):
+        mock_process_async_item_or_raw_extraction_request.return_value = {'hello': 'world'}
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
         response = send_extraction_request(self.__request.GET)
         content_type = response._headerlist[0]
-        self.assertEqual(content_type[1], "application/octet-stream")
+        self.assertEqual(content_type[1], "application/json; charset=UTF-8")
         body = response.body
         self.assertIsNotNone(body)
 
@@ -216,8 +203,6 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'rawData'
-        self.__request.GET['async'] = 'true'
         response = send_extraction_request(self.__request.GET)
         content_type = response._headerlist[0]
         self.assertEqual(content_type[1], "application/json; charset=UTF-8")

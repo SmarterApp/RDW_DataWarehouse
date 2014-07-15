@@ -3,7 +3,6 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from edapi.decorators import validate_params
 from edapi.logging import audit_event
-from edapi.utils import convert_query_string_to_dict_arrays
 from smarter.extracts.student_reg_processor import process_extraction_request
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
@@ -13,39 +12,19 @@ STUDENT_REGISTRATION_PARAMS = {
     "additionalProperties": False,
     "properties": {
         Extract.EXTRACTTYPE: {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^(" + ExtractType.studentRegistrationStatistics + "|" + ExtractType.studentAssessmentCompletion + ")$"
-            },
-            "minItems": 1,
-            "uniqueItems": True,
+            "type": "string",
+            "pattern": "^(" + ExtractType.studentRegistrationStatistics + "|" + ExtractType.studentAssessmentCompletion + ")$",
             "required": True
         },
         Constants.ACADEMIC_YEAR: {
-            "type": "array",
-            "items": {
-                "type": "integer",
-                "pattern": "^\d{4}$"
-            },
-            "minItems": 1,
-            "uniqueItems": True,
+            "type": "integer",
+            "pattern": "^\d{4}$",
             "required": True
         },
         Constants.STATECODE: {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^[a-zA-Z]{2}$"
-            },
-            "minItems": 1,
-            "uniqueItems": True,
-            "required": True,
-        },
-        Extract.ASYNC: {
             "type": "string",
-            "required": False,
-            "pattern": "^(true|TRUE)$",
+            "pattern": "^[a-zA-Z]{2}$",
+            "required": True,
         }
     }
 }
@@ -78,6 +57,8 @@ def post_sa_comp_extract_service(context, request):
 
 
 def process_extract(request):
-    params = convert_query_string_to_dict_arrays(request.json_body)
+    params = {}
+    for k, v in request.json_body.items():
+        params[k] = v
     results = process_extraction_request(params)
     return Response(body=json.dumps(results), content_type='application/json')

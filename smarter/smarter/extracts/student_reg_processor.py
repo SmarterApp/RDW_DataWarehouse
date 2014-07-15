@@ -34,10 +34,10 @@ def process_extraction_request(params):
 
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     response = {}
-    state_code = params[EndpointConstants.STATECODE][0]
+    state_code = params[EndpointConstants.STATECODE]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
-    extract_type = params[Extract.EXTRACTTYPE][0]
+    extract_type = params[Extract.EXTRACTTYPE]
     extraction_data_type = ''
     if extract_type == ExtractType.studentRegistrationStatistics:
         extraction_data_type = ExtractionDataType.SR_STATISTICS
@@ -45,7 +45,7 @@ def process_extraction_request(params):
         extraction_data_type = ExtractionDataType.SR_COMPLETION
 
     extract_params = {TaskConstants.STATE_CODE: state_code,
-                      TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR][0],
+                      TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR],
                       Extract.REPORT_TYPE: extract_type,
                       TaskConstants.EXTRACTION_DATA_TYPE: extraction_data_type}
 

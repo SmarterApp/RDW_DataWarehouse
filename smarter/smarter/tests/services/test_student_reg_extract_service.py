@@ -63,13 +63,13 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
 
     def test_post_sr_stat_extraction_request_invalid_params(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'academic_year': [2015]}
+        self.__request.json_body = {'academic_year': 2015}
 
         self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_stat_extract_service, self.__request)
 
     def test_post_sr_invalid_type(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'extractType': ['studentAssessmentComp'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.__request.json_body = {'extractType': 'studentAssessmentComp', 'academicYear': 2015, "stateCode": "NC"}
         self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sa_comp_extract_service, self.__request)
 
     @patch('smarter.services.student_reg_extract_service.process_extraction_request')
@@ -78,7 +78,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
-        self.__request.json_body = {'extractType': ['studentAssessmentCompletion'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.__request.json_body = {'extractType': 'studentAssessmentCompletion', 'academicYear': 2015, "stateCode": "NC"}
         response = post_sa_comp_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
@@ -95,7 +95,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
-        self.__request.json_body = {'extractType': ['studentRegistrationStatistics'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.__request.json_body = {'extractType': 'studentRegistrationStatistics', 'academicYear': 2015, "stateCode": "NC"}
         response = post_sr_stat_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)

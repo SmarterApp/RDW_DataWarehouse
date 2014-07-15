@@ -23,8 +23,8 @@ define [
     "registrationStatistics": "/services/extract/student_registration_statistics",
     "studentAssessment": "/services/extract",
     "completionStatistics": "/services/extract/student_assessment_completion"
-    "rawXML": "/some/dummy/url"
-    "itemLevel": "/some/dummy/url"
+    "rawXML": "/services/extract/raw_data"
+    "itemLevel": "/services/extract/assessment_item_level"
   }
 
   showFailureMessage = (response) ->
@@ -52,6 +52,8 @@ define [
     constructor: (@container, @config, @reportParamCallback) ->
       @initialize()
       @bindEvents()
+      # Bind to Events first, so we get the clicks on default values for free
+      @selectDefault()
 
     initialize: ()->
       output = Mustache.to_html CSVOptionsTemplate, {
@@ -70,12 +72,11 @@ define [
       this.checkboxMenu = $('ul.checkbox-menu', this.container)
       this.submitBtn = $('.edware-btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
-      this.selectDefault()
       this.fetchParams =
         completionStatistics: this.getSACParams
         registrationStatistics: this.getSRSParams
-        rawXML: this.getRawExtractParams
-        itemLevel: this.getRawExtractParams
+        rawXML: this.getAuditXMLItemLevelParams
+        itemLevel: this.getAuditXMLItemLevelParams
 
     bindEvents: ()->
       self = this
@@ -122,29 +123,29 @@ define [
     getSACParams: () ->
       academicYear = $('#academicYear').data('value')
       return {
-        "extractType": ["studentAssessmentCompletion"]
-        "academicYear": [ academicYear]
+        "extractType": "studentAssessmentCompletion"
+        "academicYear":  academicYear
       }
 
     getSRSParams: () ->
       academicYear = $('#registrationAcademicYear').data('value')
       return {
-        "extractType": ["studentRegistrationStatistics"]
-        "academicYear": [ academicYear ]
+        "extractType": "studentRegistrationStatistics"
+        "academicYear":  academicYear 
       }
 
-    getRawExtractParams: () ->
-      academicYear = $('#academicYear').data('value')
-      grade = $('#grade').data('value')
+    getAuditXMLItemLevelParams: () ->
+      academicYear = String($('#academicYear').data('value'))
+      grade = String($('#grade').data('value'))
       asmtSubject = $('input[name="asmtSubject"]:checked').val()
       asmtType = $('input[name="asmtType"]:checked').val()
       return {
-        "extractType": ["studentRegistrationStatistics"]
-        "academicYear": [ academicYear ]
-        "asmtSubject": [ asmtSubject ]
-        "asmtType": [ asmtType ]
+        "asmtYear":  academicYear 
+        "asmtSubject":  asmtSubject 
+        "asmtType":  asmtType 
+        "asmtGrade": grade
       }
-
+  
     getSelectedOptions: ($dropdown)->
       # get selected option text
       checked = []
@@ -246,11 +247,10 @@ define [
       this.message.append validationMsg
 
     getParams: ()->
-      params = {'async': 'true'}
-
+      params = {}
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
-        params['stateCode'] = [storageParams['stateCode']]
+        params['stateCode'] = storageParams['stateCode']
 
       params
 

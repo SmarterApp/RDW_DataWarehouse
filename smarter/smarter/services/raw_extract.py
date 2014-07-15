@@ -11,13 +11,11 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPInternalServerError
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
-from smarter.extracts.student_asmt_processor import process_async_item_or_raw_extraction_request,\
-    process_sync_item_or_raw_extract_request
-from smarter.extracts.constants import ExtractType, Constants as Extract
+from smarter.extracts.student_asmt_processor import process_async_item_or_raw_extraction_request
+from smarter.extracts.constants import ExtractType
 from smarter.reports.helpers.filters import FILTERS_CONFIG
 from datetime import datetime
 import logging
-import copy
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +23,6 @@ RAW_EXTRACT_PARAMS = {
     "type": "object",
     "additionalProperties": False,
     "properties": merge_dict({
-        Extract.EXTRACTTYPE: {
-            "type": "string",
-            "pattern": "^" + ExtractType.rawData + "$",
-            "required": True
-        },
         Constants.STATECODE: {
             "type": "string",
             "pattern": "^[a-zA-Z]{2}$",
@@ -55,16 +48,6 @@ RAW_EXTRACT_PARAMS = {
             "pattern": "^[K0-9]+$",
             "maxLength": 2,
             "required": True,
-        },
-        Extract.ASYNC: {
-            "type": "string",
-            "required": False,
-            "pattern": "^(true|TRUE)$",
-        },
-        Extract.SYNC: {
-            "type": "string",
-            "required": False,
-            "pattern": "^(true|TRUE)$",
         }
     }, FILTERS_CONFIG)
 }
@@ -121,17 +104,8 @@ def send_extraction_request(params):
     '''
     response = None
     try:
-        # By default, it is a sync call
-        is_async = params.get(Extract.ASYNC, False)
-        if is_async:
-            results = process_async_item_or_raw_extraction_request(params, extract_type=ExtractType.rawData)
-            response = Response(body=json.dumps(results), content_type='application/json')
-        else:
-            extract_params = copy.deepcopy(params)
-            zip_file_name = generate_zip_file_name(extract_params)
-            content = process_sync_item_or_raw_extract_request(extract_params, extract_type=ExtractType.rawData)
-            response = Response(body=content, content_type='application/octet-stream')
-            response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
+        results = process_async_item_or_raw_extraction_request(params, extract_type=ExtractType.rawData)
+        response = Response(body=json.dumps(results), content_type='application/json')
     except ExtractionError as e:
         raise EdApiHTTPInternalServerError(e.msg)
     except TimeoutError as e:

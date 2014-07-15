@@ -15,7 +15,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extracts.student_asmt_processor import process_extraction_request, \
     process_async_item_or_raw_extraction_request, get_items_extract_file_path, \
-    get_extract_file_path, process_sync_item_or_raw_extract_request, \
+    get_extract_file_path, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
     _create_tasks_with_responses, estimate_extract_total_file_size
@@ -232,27 +232,6 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
-
-    def test_process_sync_items_extraction_request_NotFoundException(self):
-        params = {'stateCode': 'NC',
-                  'asmtYear': '2018',
-                  'asmtType': 'SUMMATIVE',
-                  'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
-        for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
-            self.assertRaises(NotFoundException, process_sync_item_or_raw_extract_request, params, extract_type)
-
-    @skip('removing soon')
-    def test_process_sync_items_extraction_request_with_subject(self):
-        params = {'stateCode': 'NC',
-                  'asmtYear': '2016',
-                  'asmtType': 'SUMMATIVE',
-                  'asmtSubject': 'ELA',
-                  'asmtGrade': '3'}
-
-        for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
-            zip_data = process_sync_item_or_raw_extract_request(params, extract_type)
-            self.assertIsNotNone(zip_data)
 
     @patch('smarter.extracts.student_asmt_processor.start_extract')
     @patch('smarter.extracts.student_asmt_processor.register_file')

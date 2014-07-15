@@ -83,6 +83,7 @@
         "report_info": "Información del reporte",
         "report_name": "Nombre del reporte",
         "required": "required",
+        "required_field": "This field is required.",
         "scaled_score_range": "Rango de la escala de puntuación",
         "school": "Escuela",
         "schools": "Escuelas",

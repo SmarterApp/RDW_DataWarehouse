@@ -90,6 +90,7 @@
         "report_info": "Report Info",
         "report_name": "Report Name",
         "required": "required",
+        "required_field": "This field is required.",
         "scaled_score_range": "Scaled Score Range",
         "school": "School",
         "schools": "Schools",

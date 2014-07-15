@@ -1478,7 +1478,6 @@ th.ui-th-column div {
 
   .section {
     display: none;
-    margin-bottom: 15px;
 
     //always display extract type
     &.extractType {display: block;}
@@ -1655,9 +1654,6 @@ th.ui-th-column div {
       color: @color-black;
     }
 
-    .warning {
-      color: @color-red;
-    }
   }
 
   .reminderMessage {
@@ -1668,6 +1664,13 @@ th.ui-th-column div {
     font-size: 13px;
   }
 
+  .warning { color: @color-red; }
+  .section {
+    margin-bottom: 15px;
+
+    .error { display: none; }
+    &.error { .error {display: inline;} }
+  }
 }
 
 #actionBar {

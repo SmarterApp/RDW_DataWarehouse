@@ -1,14 +1,34 @@
 {
     "CSVOptions": {
         "extractType": {
-            "name": "Report Type",
+            "name": "Report / export type",
             "key": "extractType",
             "options": [
                 {
-                    "display": "Student Assessment Results",
-                    "value": "studentAssessment"
+                    "display": "Student Registration Statistics",
+                    "value": "registrationStatistics"
+                },
+                {
+                    "display": "Assessment Completion Statistics",
+                    "value": "completionStatistics"
+                },
+                {
+                    "display": "Audit XML",
+                    "value": "rawXML"
+                },
+                {
+                    "display": "Individual Item Response Data",
+                    "value": "itemLevel"
                 }
             ]
+        },
+        "academicYear": {
+            "name": "Academic year",
+            "key": "academicYear"
+        },
+        "registrationAcademicYear": {
+            "name": "Academic year",
+            "key": "academicYear"
         },
         "asmtType": {
             "name": "Assessment Type",
@@ -16,10 +36,10 @@
             "options": [
                 {
                     "display": "Summative",
-                    "value": "summative"
+                    "value": "SUMMATIVE"
                 }, {
                     "display": "Interim Comprehensive",
-                    "value": "interim"
+                    "value": "INTERIM COMPREHENSIVE"
                 }
             ]
         },
@@ -28,11 +48,57 @@
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Math",
+                    "display": "Mathematics",
                     "value": "Math"
                 }, {
-                    "display": "ELA",
+                    "display": "ELA/Literacy",
                     "value": "ELA"
+                }
+            ]
+        },
+        "grade": {
+            "name": "Grade",
+            "key": "grade",
+            "options": [
+                {
+                    "display": "Select",
+                    "value": ""
+                },
+                {
+                    "display": "Grade 3",
+                    "value": "3"
+                },
+                {
+                    "display": "Grade 4",
+                    "value": "4"
+                },
+                {
+                    "display": "Grade 5",
+                    "value": "5"
+                },
+                {
+                    "display": "Grade 6",
+                    "value": "6"
+                },
+                {
+                    "display": "Grade 7",
+                    "value": "7"
+                },
+                {
+                    "display": "Grade 8",
+                    "value": "8"
+                },
+                {
+                    "display": "Grade 9",
+                    "value": "9"
+                },
+                {
+                    "display": "Grade 10",
+                    "value": "10"
+                },
+                {
+                    "display": "Grade 11",
+                    "value": "11"
                 }
             ]
         }

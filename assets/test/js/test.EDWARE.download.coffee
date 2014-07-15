@@ -1,6 +1,6 @@
 define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", "edwareDataProxy"], ($, edwareDownload, edwarePreferences, edwareClientStorage, edwareDataProxy) ->
 
-  CSVDownloadModal = edwareDownload.CSVDownloadModal
+  StateDownloadModal = edwareDownload.StateDownloadModal
 
   DownloadMenu = edwareDownload.DownloadMenu
   # mock downloadAsFile function
@@ -21,7 +21,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     CSVOptions: config.CSVOptions
     labels: {}
     ExportOptions: config.ExportOptions
- 
+
   dummyCallback = () ->
     # Dummy function acting as a callback
     {}
@@ -48,12 +48,12 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
 
   test "Test download widget", ->
     ok edwareDownload, "Should define download widget"
-    ok CSVDownloadModal, "CSV download modal should be defined"
+    ok StateDownloadModal, "CSV download modal should be defined"
     ok DownloadMenu, "DownloadMenu class should be defined"
     ok edwareDownload.create, "download widget should provide create function"
 
   test "Test display widget", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
+    model = new StateDownloadModal($('#CSVDownloadContainer'), config.CSVOptions, dummyCallback)
     model.show()
     ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
 
@@ -61,14 +61,13 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     CSVDownload = edwareDownload.create '#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback
     ok CSVDownload, "create function should create a CSVDownload object"
 
-  test "Test CSVDownloadModal", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
+  test "Test StateDownloadModal", ->
+    model = new StateDownloadModal($('#CSVDownloadContainer'), 'state', config.CSVOptions, dummyCallback)
     notEqual $('#CSVDownloadContainer').html(), '', "CSV modal container should be populated with template"
-    equal $('#CSVModal').size(), 1, "CSV template should contain modal trigger"
-    equal $('ul').size(), 3, "CSV template should contain 3 dropdown menus"
+    equal $('#StateDownloadModal').size(), 1, "CSV template should contain modal trigger"
 
   test "Test click events", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
+    model = new StateDownloadModal($('#CSVDownloadContainer'), 'state', config.CSVOptions, dummyCallback)
     secondOption = $('.dropdown-menu input')
     secondOption.trigger 'click' # select second element
     dropdown = secondOption.closest('.btn-group').children('span.dropdown-display')
@@ -77,64 +76,11 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
 
   test "Test send request", ->
     edwareClientStorage.filterStorage.save({"stateCode": "NC"})
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
+    model = new StateDownloadModal($('#CSVDownloadContainer'), 'state', config.CSVOptions, dummyCallback)
     $('ul input').attr('checked','')
     params = model.getParams()
     expectParams = {
-      "asmtType": ["summative","interim"],
-      "extractType": ["studentAssessment"],
-      "asmtSubject": ["Math","ELA"],
-      "stateCode": ["NC"]
+      "stateCode": "NC"
     }
     deepEqual params, expectParams, "Should be able to get all user selected parameters"
     edwareClientStorage.clearAll()
-
-  test "Test failed request", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
-    model.sendRequest '/data/dummy'
-    ok $('#message').find('.error')[0], "Should display error message"
-
-  test "Test success request", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
-    model.sendRequest '/services/extract'
-    ok $('#message').find('.success')[0], "Should display success message"
-
-  test "Test request button click event", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
-    $('.edware-btn-primary').trigger 'click'
-    ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
-
-  test "Test validating parameters", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
-    $('.dropdown-menu input').removeAttr 'checked'
-    $('.edware-btn-primary').trigger 'click'
-    ok $('#message').find('.error')[0], "Should display invalid message"
-
-  test "Test invalid selection", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
-    $('.dropdown-menu input').removeAttr 'checked'
-    # uncheck all selection of report type
-    $('input[value="summative"]').trigger('click').trigger('click')
-    ok $('#message').find('.error')[0], "Should display invalid message"
-
-  test "Test download menu class", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig)
-    ok downloadMenu, "DownloadMenu should be able to initiate an object"
-
-  test "Test toggle download menu", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig)
-    downloadMenu.show()
-    ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
-    modal = downloadMenu.hide()
-    ok modal, "Modal should hide away backdrop from body element"
-
-  test "Test send CSV request", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig)
-    downloadMenu.sendCSVRequest()
-    ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
-
-  test "Test click export button", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig)
-    downloadMenu.show()
-    $('.btn-primary', '#DownloadMenuModal').trigger 'click'
-    ok true, "Test"

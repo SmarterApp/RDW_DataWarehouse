@@ -137,7 +137,7 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
         raise NotFoundException("There are no results")
 
 
-def estimate_extract_total_file_size(params, avg_file_size):
+def estimate_extract_total_file_size(params, avg_file_size, extract_type):
     """
     returns an estimate of the number of extract files based on query params and extract type
 
@@ -146,7 +146,7 @@ def estimate_extract_total_file_size(params, avg_file_size):
     return_number = 0
     state_code = params.get(Constants.STATECODE)
     with EdCoreDBConnection(state_code=state_code) as connector:
-        query = get_extract_assessment_item_and_raw_query(params)
+        query = get_extract_assessment_item_and_raw_query(params, extract_type)
         return_number = connector.execute(query).rowcount
     return return_number * avg_file_size
 
@@ -176,7 +176,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     # temp hack till estimator is fixed. Needs to be removed and substituted with above line
     estimated_total_files = 1
     if soft_limit > 0:
-        estimated_total_size = estimate_extract_total_file_size(params, average_size)
+        estimated_total_size = estimate_extract_total_file_size(params, average_size, extract_type)
         estimated_total_files = int(estimated_total_size / soft_limit)
         if estimated_total_size % soft_limit > 0:
             estimated_total_files += 1

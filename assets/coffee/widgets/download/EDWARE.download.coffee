@@ -88,6 +88,8 @@ define [
       # set up academic years
       $('ul.edware-dropdown-menu li', @container).click (e)->
         $this = $(this)
+        # hide error message
+        $this.closest('.section').removeClass('error')
         display = $this.data('label')
         value = $this.data('value')
         $dropdown = $this.closest('.btn-group')
@@ -98,27 +100,22 @@ define [
       .keypress (e) ->
         $(this).click() if e.keyCode is 13
 
-      $('input:checkbox', this.container).click (e)->
-        $this = $(this)
-        $dropdown = $this.closest('.btn-group')
-        # remove earlier error messages
-        $('div.error', self.messages).remove()
-        if not self.validate($dropdown)
-          $dropdown.addClass('invalid')
-          self.showNoneEmptyMessage $dropdown.data('option-name')
-        else
-          $dropdown.removeClass('invalid')
-
       # collapse dropdown menu when focus out
       $('.btn-group', this.container).focuslost ()->
         $(this).removeClass('open')
 
       this.submitBtn.click ()->
-        # disable button and all the input checkboxes
-        self.disableInput()
         # get parameters
         params = self.fetchParams[self.extractType].call(self)
+        if not params
+          self.displayWarningMessage()
+          return
+        # disable button and all the input checkboxes
+        self.disableInput()
         self.sendRequest REQUEST_ENDPOINT[self.extractType], params
+
+    displayWarningMessage: () ->
+      $('#grade').closest('div.section').addClass('error')
 
     getSACParams: () ->
       academicYear = $('#academicYear').data('value')
@@ -131,21 +128,28 @@ define [
       academicYear = $('#registrationAcademicYear').data('value')
       return {
         "extractType": "studentRegistrationStatistics"
-        "academicYear":  academicYear 
+        "academicYear":  academicYear
       }
 
     getAuditXMLItemLevelParams: () ->
       academicYear = String($('#academicYear').data('value'))
       grade = String($('#grade').data('value'))
+
+    getRawExtractParams: () ->
+      # jQuery.data('attr') function doesn't work for some reason
+      grade = $('#grade').attr('data-value')
+      if not grade
+        return false
+      academicYear = $('#academicYear').data('value')
       asmtSubject = $('input[name="asmtSubject"]:checked').val()
       asmtType = $('input[name="asmtType"]:checked').val()
       return {
-        "asmtYear":  academicYear 
-        "asmtSubject":  asmtSubject 
-        "asmtType":  asmtType 
+        "asmtYear":  academicYear
+        "asmtSubject":  asmtSubject
+        "asmtType":  asmtType
         "asmtGrade": grade
       }
-  
+
     getSelectedOptions: ($dropdown)->
       # get selected option text
       checked = []
@@ -178,11 +182,6 @@ define [
       request.done showSuccessMessage.bind(this)
       request.fail showFailureMessage.bind(this)
 
-    showCloseButton: () ->
-      this.submitBtn.text 'Close'
-      this.submitBtn.removeAttr 'disabled'
-      this.submitBtn.attr 'data-dismiss', 'modal'
-
     hide: () ->
       $('#StateDownloadModal').edwareModal('hide')
       this.submitBtn.removeAttr 'disabled'
@@ -195,56 +194,6 @@ define [
       $('input:checkbox', this.container).attr('disabled', 'disabled')
       $('.btn-extract-academic-year').attr('disabled', true)
       $('button.report_type', self.container).attr('disabled', 'disabled')
-
-    showSuccessMessage: (response)->
-      taskResponse = response['tasks'].map this.toDisplay.bind(this)
-      fileName = response['fileName']
-
-      downloadUrl = response['download_url']
-      success = taskResponse.filter (item)->
-        item['status'] is 'ok'
-      failure = taskResponse.filter (item)->
-        item['status'] is 'fail'
-      if success.length > 0
-        this.showCloseButton()
-      else
-        this.enableInput()
-
-      this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
-        requestTime: this.requestTime
-        requestDate: this.requestDate
-        fileName: fileName
-        downloadUrl: downloadUrl
-        testName: TEST_NAME[this.reportType]
-        # success messages
-        success: success
-        singleSuccess: success.length == 1
-        multipleSuccess: success.length > 1
-        # failure messages
-        failure: failure
-        singleFailure: failure.length == 1
-        multipleFailure: failure.length > 1
-      }
-
-    showFailureMessage: (response)->
-      this.enableInput()
-      errorMessage = Mustache.to_html ERROR_TEMPLATE, {
-        response: response
-      }
-      this.message.append errorMessage
-      this.asmtTypeBox.addClass('invalid')
-
-    showNoneEmptyMessage: (optionName)->
-      validationMsg = Mustache.to_html INDIVIDUAL_VALID_TEMPLATE, {
-        optionName: optionName.toLowerCase()
-      }
-      this.message.append validationMsg
-
-    showCombinedErrorMessage: (optionNames)->
-      validationMsg = Mustache.to_html COMBINED_VALID_TEMPLATE, {
-        optionNames: optionNames
-      }
-      this.message.append validationMsg
 
     getParams: ()->
       params = {}

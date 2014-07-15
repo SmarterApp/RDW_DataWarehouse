@@ -2,7 +2,8 @@ define [
   'jquery'
   'bootstrap'
   'edwarePopover'
-], ($, bootstrap, edwarePopover) ->
+  'edwareConstants'
+], ($, bootstrap, edwarePopover, Constants) ->
 
   DEFAULT_PERMISSIONS = {
     pii: {
@@ -32,11 +33,19 @@ define [
       @isDistrict = @reportType is 'district'
 
     apply: () ->
-      @apply_pii_security()
-      @apply_raw_extract_security()
-      @apply_bulk_extract_security()
+      @apply_pii_security_on_grid()
+      @apply_sar_security()
+      @apply_pdf_security()
+      @apply_state_download_security()
 
-    apply_pii_security: () ->
+    apply_pdf_security: () ->
+      if (@reportType is Constants.REPORT_TYPE.GRADE or @reportType is Constants.REPORT_TYPE.SCHOOL)
+        if not @permissions.pii.all
+          set_no_permission_option_by_class('li.pdf')
+      else
+        set_disabled_option_by_class('li.pdf')
+
+    apply_pii_security_on_grid: () ->
       return if @permissions.pii.all
       warningIcon = '<i class="edware-icon-warning"></i>'
       # bind tooltips popover
@@ -47,33 +56,17 @@ define [
         trigger: 'click'
         content: warningIcon + @no_pii_msg
 
-      # remove bulk PDF print
-      $('li.pdf').hide()
-
-    apply_raw_extract_security: () ->
+    apply_sar_security: () ->
       return if @permissions.sar_extracts.all
-      $('li.extract').hide()
+      set_no_permission_option_by_class('li.extract')
 
-    apply_bulk_extract_security: () ->
-      assessment_access = @permissions.sar_extracts.all
-      registration_access = @permissions.srs_extracts.all and not @isDistrict
-      completion_access = @permissions.src_extracts.all and not @isDistrict
+    apply_state_download_security: () ->
+      #TODO: update state-level extract permission
+      registration_access = @permissions.srs_extracts.all
+      completion_access = @permissions.src_extracts.all
       # hide csv extract option if user doesn't have any permission
-      if not assessment_access and not registration_access and not completion_access
-        $('li.csv').hide()
-
-      if not assessment_access
-        @remove_extractType('studentAssessment')
-      if not registration_access
-        @remove_extractType('studentRegistrationStatistics')
-      if not completion_access
-        @remove_extractType('studentAssessmentCompletion')
-
-    remove_extractType: (key) ->
-      options = []
-      for option in @extractType.options
-        options.push option if option.value isnt key
-      @extractType.options = options
+      return if registration_access or completion_access
+      $('li.csv').hide()
 
     hasPIIAccess: (row_id) ->
       @permissions.pii.all or (row_id in @permissions.pii.guid)
@@ -89,6 +82,15 @@ define [
 
   apply = () ->
     @security.apply()
+
+  set_disabled_option_by_class = (classSelector) ->
+    add_option_by_class(classSelector, 'disabled')
+
+  set_no_permission_option_by_class = (classSelector) ->
+    add_option_by_class(classSelector, 'noPermission')
+      
+  add_option_by_class = (classSelector, className) -> 
+    $(classSelector).addClass(className).find('input').attr('disabled', 'disabled')
 
   init: init
   apply: apply

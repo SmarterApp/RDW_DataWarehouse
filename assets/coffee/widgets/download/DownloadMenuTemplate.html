@@ -19,18 +19,14 @@
                     <input id="extract" type="radio" name="download" value="extract"/>
                     <h4 class="marginLeft8">{{options.export_download_raw_view.text}}</h4>
                 </label>
-                <div class="desc_block">
-                    <p>{{options.export_download_raw_view.desc}}</p>
+                <div class="desc_block enabled">
+                    <p>{{options.export_download_raw_view.desc.enabled}}</p>
                 </div>
-
-            </li>
-            <li class="csv">
-                <label for="csv">
-                    <input id="csv" type="radio" name="download" value="csv"/>
-                    <h4 class="marginLeft8">{{export_extract_text}}</h4>
-                </label>
-                <div class="desc_block">
-                    <p>{{options.export_request_extract.desc}}</p>
+                <div class="desc_block disabled">
+                    <p>{{options.export_download_raw_view.desc.disabled}}</p>
+                </div>
+                <div class="desc_block noPermission">
+                    <p>{{options.export_download_raw_view.desc.no_permission}}</p>
                 </div>
             </li>
             <li class="pdf">
@@ -38,8 +34,28 @@
                     <input id="pdf" type="radio" name="download" value="pdf"/>
                     <h4 class="marginLeft8">{{options.export_bulk_pdf.text}}</h4>
                 </label>
+                <div class="desc_block enabled">
+                    <p>{{options.export_bulk_pdf.desc.enabled}}</p>
+                </div>
+                <div class="desc_block disabled">
+                    <p>{{options.export_bulk_pdf.desc.disabled}}</p>
+                </div>
+                <div class="desc_block noPermission">
+                    <p>{{options.export_bulk_pdf.desc.no_permission}}</p>
+                </div>
+            </li>
+            <li class="note">
+                <div>
+                    <p><b>Note:</b> Your download will reflect any selections you have made, including academic year, assessment and filters.</p>
+                </div>
+            </li>
+            <li class="csv">
+                <label for="csv">
+                    <input id="csv" type="radio" name="download" value="csv"/>
+                    <h4 class="marginLeft8">{{options.export_request_extract.text}}</h4>
+                </label>
                 <div class="desc_block">
-                    <p>{{options.export_bulk_pdf.desc}}</p>
+                    <p>{{options.export_request_extract.desc}}</p>
                 </div>
             </li>
         </ul>

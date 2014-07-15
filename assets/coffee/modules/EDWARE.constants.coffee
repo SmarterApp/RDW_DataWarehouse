@@ -6,6 +6,13 @@ define [], () ->
     ISR:  'individual_student_report'
   }
 
+  REPORT_TYPE: {
+    STATE: 'state'
+    DISTRICT: 'district'
+    SCHOOL: 'school'
+    GRADE: 'grade'
+  }
+
   REPORT_JSON_NAME: {
     CPOP: 'comparingPopulationsReport'
     LOS: 'studentList'
@@ -39,3 +46,7 @@ define [], () ->
     Math: "Mathematics"
     ELA: "ELA/Literacy"
   }
+
+  SUBJECTS: ['Math', 'ELA']
+
+  ASMT_TYPES: ["SUMMATIVE", "INTERIM COMPREHENSIVE"]

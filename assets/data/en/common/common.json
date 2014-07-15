@@ -519,34 +519,34 @@
     ,
     "CSVOptions": {
         "extractType": {
-            "name": "Report Type",
+            "name": "Report / export type",
             "key": "extractType",
             "options": [
                 {
-                    "display": "Student Assessment Results",
-                    "value": "studentAssessment"
-                },
-                {
                     "display": "Student Registration Statistics",
-                    "value": "studentRegistrationStatistics"
+                    "value": "registrationStatistics"
                 },
                 {
-                    "display": "Student Assessment Completion",
-                    "value": "studentAssessmentCompletion"
+                    "display": "Assessment Completion Statistics",
+                    "value": "completionStatistics"
+                },
+                {
+                    "display": "Audit XML",
+                    "value": "rawXML"
+                },
+                {
+                    "display": "Individual Item Response Data",
+                    "value": "itemLevel"
                 }
             ]
         },
         "academicYear": {
-            "name": "Academic Year",
+            "name": "Academic year",
             "key": "academicYear"
         },
-        "studentRegAcademicYear": {
-            "name": "Academic Year",
+        "registrationAcademicYear": {
+            "name": "Academic year",
             "key": "academicYear"
-        },
-        "asmtYear": {
-            "name": "Assessment Year",
-            "key": "asmtYear"
         },
         "asmtType": {
             "name": "Assessment Type",
@@ -566,11 +566,57 @@
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Math",
+                    "display": "Mathematics",
                     "value": "Math"
                 }, {
-                    "display": "ELA",
+                    "display": "ELA/Literacy",
                     "value": "ELA"
+                }
+            ]
+        },
+        "grade": {
+            "name": "Grade",
+            "key": "grade",
+            "options": [
+                {
+                    "display": "Select",
+                    "value": ""
+                },
+                {
+                    "display": "Grade 3",
+                    "value": "3"
+                },
+                {
+                    "display": "Grade 4",
+                    "value": "4"
+                },
+                {
+                    "display": "Grade 5",
+                    "value": "5"
+                },
+                {
+                    "display": "Grade 6",
+                    "value": "6"
+                },
+                {
+                    "display": "Grade 7",
+                    "value": "7"
+                },
+                {
+                    "display": "Grade 8",
+                    "value": "8"
+                },
+                {
+                    "display": "Grade 9",
+                    "value": "9"
+                },
+                {
+                    "display": "Grade 10",
+                    "value": "10"
+                },
+                {
+                    "display": "Grade 11",
+                    "value": "11"
                 }
             ]
         }
@@ -581,39 +627,55 @@
     },
     "ExportOptions" : {
         "export_bulk_pdf": {
-            "text": "Printable student reports (PDF)",
-            "desc": "Download individual reports for students in this school. The download will reflect active filters and selections."
+            "text": "Printable student reports",
+            "desc": {
+                "enabled": "Download individual reports for students in this school.",
+                "disabled": "Unavailable at this level. Click into a school to download individual student reports.",
+                "no_permission": "Requires PII permission for all students in this school."
+            }
         },
         "export_download_curr_view": {
-            "text": "Current view (CSV)",
-            "desc": "Download the current view as a CSV. The download will reflect active filters and selections."
+            "text": "Current view",
+            "desc": "Download the current view as a CSV."
         },
         "export_download_raw_view": {
-            "text": "Student assessment results (CSV)",
-            "desc": "Download summative results for all students in this school."
+            "text": "Student assessment results",
+            "desc": {
+                "enabled": {
+                    "state": "Download summative results for all students in this state.",
+                    "district": "Download summative results for all students in this district.",
+                    "school": "Download summative results for all students in this school.",
+                    "grade": "Download summative results for all students in this grade."
+                },
+                "disabled": "Unavailable at this level.",
+                "no_permission": {
+                    "state": "Requires PII permission for all students in this state.",
+                    "district": "Requires PII permission for all students in this district.",
+                    "school": "Requires PII permission for all students in this school.",
+                    "grade": "Requires PII permission for all students in this grade."
+                }
+            }
         },
         "export_request_extract": {
-            "text": {
-                "state": "State-level reports & extracts",
-                "district": "District-level reports & extracts"
-            },
+            "text": "State Downloads",
             "desc": "Download registration reports and XML extracts."
         },
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
-        "export_csv_options": "CSV File Download Options",
         "export_pdf_options": {
             "title": "Student Report Options",
             "grayscale": "Grayscale (for black & white printing)",
             "color": "Color"
         },
-        "export_pdf_success": "Your requested reports will be available within 24 hours.",
+        "export_success": "Your requested reports will be available within 24 hours.",
+        "export_failure": "Something went wrong.",
+        "export_retry": "Please retry again or contact the administrator at",
         "export_pdf_no_data": {
             "title": "Printable Student Reports",
             "header": "No students.",
             "message": "There are no students in the batch. Please disable active filters and try again."
         },
-        "export_request_files": "Request Files",
+        "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",
-        "generate_pdf_reports": "Generating Requested Reports"
+        "generate_reports": "Generating Requested Reports"
     }
 }

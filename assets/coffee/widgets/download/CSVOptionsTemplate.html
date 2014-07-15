@@ -1,183 +1,96 @@
-<div id="CSVModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h2 id="myModalLabel">{{options.export_csv_options}}</h2>
+<div id="StateDownloadModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h2 id="myModalLabel">{{options.export_request_extract.text}}</h2>
     </div>
-    <div class="modal-body">
-        <div id="message">
-            <p>{{options.export_availability_msg}}</p>
+    <div class="modal-body registrationStatistics">
+        {{#extractType}}
+        <div class="section extractType">
+            <label><h4>{{name}}</h4></label>
+            <ul>
+                {{#options}}
+                <li><label><input type="radio" name="{{key}}" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
+                {{/options}}
+            </ul>
         </div>
-        <table class='csv_options_table'>
-            {{#extractType}}
-            <tr style="display: table-row;">
-                <td>{{name}}</td>
-                <td>
-                    <div class="btn-group" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small report_type" data-toggle="dropdown">
-                            <span class='dropdown-display'>{{options.0.display}}</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu report_type edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
-                            {{#options}}
-                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}"><label>{{display}}</label></li>
-                            {{/options}}
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            {{/extractType}}
-            {{#asmtYear}}
-            <tr class="assm_rpt">
-                <td>{{name}}</td>
-                <td>
-                    <div class="btn-group" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
-                            <span class='dropdown-display'>{{options.0.display}}</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
-                            {{#options}}
-                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
-                                <label>{{display}}</label>
-                            </li>
-                            {{/options}}
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            {{/asmtYear}}
-            {{#academicYear}}
-            <tr class="srcomp_rpt">
-                <td>{{name}}</td>
-                <td>
-                    <div class="btn-group" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
-                            <span class='dropdown-display'>{{options.0.display}}</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu academicYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
-                            {{#options}}
-                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
-                                <label>{{display}}</label>
-                            {{/options}}
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            {{/academicYear}}
-            {{#asmtType}}
-            <tr class="assm_rpt">
-                <td>{{name}}</td>
-                <td>
-                    <div id="asmtType" class="btn-group" data-option-name="{{name}}">
-                        <ul class="checkbox-menu" data-key="{{key}}">
-                            {{#options}}
-                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
-                            {{/options}}
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            {{/asmtType}}
-            {{#subject}}
-            <tr class="assm_rpt">
-                <td>{{name}}</td>
-                <td>
-                    <div class="btn-group" data-option-name="{{name}}">
-                        <ul class="checkbox-menu" data-key="{{key}}">
-                            {{#options}}
-                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
-                            {{/options}}
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            {{/subject}}
-            {{#studentRegAcademicYear}}
-            <tr class="sr_rpt">
-                <td>{{name}}</td>
-                <td>
-                    <div class="btn-group" data-option-name="{{name}}">
-                        <button id="studentRegAcademicYear" class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
-                            <span class='dropdown-display'>{{options.0.display}}</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}"  data-value="{{options.0.value}}">
-                            {{#options}}
-                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
-                                <label>{{display}}</label>
-                            </li>
-                            {{/options}}
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            {{/studentRegAcademicYear}}
-        </table>
+        {{/extractType}}
+        {{#academicYear}}
+        <div class="section SAC">
+            <label><h4>{{name}}</h4></label>
+            <div class="btn-group" data-option-name="{{name}}">
+                <button class="btn dropdown-toggle btn-extract-academic-year edware-btn-flat" data-toggle="dropdown">
+                    <span class='dropdown-display'>{{options.0.display}}</span>
+                    <i class="edware-icon-globalheader-downarrow" style="margin-left: 43px;"></i>
+                </button>
+                <ul id="academicYear" class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
+                    {{#options}}
+                    <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                        <span>{{display}}</span>
+                    </li>
+                    {{/options}}
+                </ul>
+            </div>
+        </div>
+        {{/academicYear}}
+        {{#registrationAcademicYear}}
+        <div class="section SRS">
+            <label><h4>{{name}}</h4></label>
+            <div class="btn-group" data-option-name="{{name}}">
+                <button class="btn dropdown-toggle btn-extract-academic-year edware-btn-flat" data-toggle="dropdown">
+                    <span class='dropdown-display'>{{options.0.display}}</span>
+                    <i class="edware-icon-globalheader-downarrow" style="margin-left: 43px;"></i>
+                </button>
+                <ul id="registrationAcademicYear" class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}"  data-value="{{options.0.value}}">
+                    {{#options}}
+                    <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                        <span>{{display}}</span>
+                    </li>
+                    {{/options}}
+                </ul>
+            </div>
+        </div>
+        {{/registrationAcademicYear}}
+        {{#grade}}
+        <div class="section rawXML itemLevel">
+            <label><h4>{{name}}</h4><span class="warning"> ({{labels.required}})</span></label>
+            <div class="btn-group" data-option-name="{{name}}">
+                <button class="btn dropdown-toggle btn-extract-academic-year edware-btn-flat" data-toggle="dropdown">
+                    <span class='dropdown-display'>{{options.0.display}}</span>
+                    <i class="edware-icon-globalheader-downarrow" style="margin-left: 43px;"></i>
+                </button>
+                <ul id="grade" class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}"  data-value="{{options.0.value}}">
+                    {{#options}}
+                    <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                        <span>{{display}}</span>
+                    </li>
+                    {{/options}}
+                </ul>
+            </div>
+        </div>
+        {{/grade}}
+        {{#subject}}
+        <div class="section rawXML itemLevel">
+            <label><h4>{{name}}</h4></label>
+            <ul>
+                {{#options}}
+                <li><label><input type="radio" name="{{key}}" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
+                {{/options}}
+            </ul>
+        </div>
+        {{/subject}}
+
+        {{#asmtType}}
+        <div class="section rawXML itemLevel">
+            <label><h4>{{name}}</h4></label>
+            <ul>
+                {{#options}}
+                <li><label><input type="radio" name="{{key}}" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
+                {{/options}}
+            </ul>
+        </div>
+        {{/asmtType}}
     </div>
     <div class="modal-footer">
         <button class="btn edware-btn-primary">{{options.export_request_files}}</button>
     </div>
-
-    <script type="text/template" id="ErrorMessageTemplate">
-     <div class='error'>
-       Looks like something went wrong! We are working to on it! Please try again at a later time or contact the administrator at <a href="mailto:sbac-help@sbac.com">sbac-help@sbac.com</a>
-     </div>
-    </script>
-
-    <script type="text/template" id="SuccessMessageTemplate">
-     {{#singleSuccess}}
-     <div class="success">
-       {{#success.0}}
-       Your request for <b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}} {{academicYear}}</b> {{testName}} made on {{requestDate}} at {{requestTime}} was successful!
-       Please contact your site administrator in 24 hours to download the requested report.  The name of your file is {{fileName}}. You can retrieve your file from the following link <a href={{downloadUrl}} target="_blank">{{downloadUrl}}</a>
-       {{/success.0}}
-     </div>
-     {{/singleSuccess}}
-     {{#multipleSuccess}}
-     <div class="success">
-         Your request made on {{requestDate}} at {{requestTime}} was successful! <br/><br/>
-         Please contact your site administrator in 24 hours to download the requested reports.  The name of your file is {{fileName}}. You can retrieve your file from the following link <a href={{downloadUrl}} target="_blank">{{downloadUrl}}</a>
-         <ul>
-           {{#success}}
-           <li><b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b></li>
-           {{/success}}
-         </ul>
-     </div>
-     {{/multipleSuccess}}
-     {{#singleFailure}}
-     <div class="error">
-         {{#failure.0}}
-         Your request could not go through. <strong>{{asmtType}}</strong> results are not available for <strong>{{asmtState}} {{asmtYear}} {{asmtSubject}}</strong>.
-         Please select other options or try again at a later date, when data become available.
-         {{/failure.0}}
-     </div>
-     {{/singleFailure}}
-     {{#multipleFailure}}
-     <div class="error">
-         Your request could not go through. Data are not available for the following reports:
-         <ul>
-             {{#failure}}
-             <li><strong>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</strong></li>
-             {{/failure}}
-         </ul>
-         Please select other options or try again at a later date, when data become available.
-     </div>
-     {{/multipleFailure}}
-    </script>
-
-    <script type="text/template" id="IndividualValidationTemplate">
-       <div class="error">Please select at least one {{optionName}} to continue.</div>
-    </script>
-
-    <script type="text/template" id="CombinedValidationTemplate">
-       <div class="error">
-          Please select values for the following fields to continue.
-          <ul>
-             {{#optionNames}}
-             <li>{{.}}</li>
-             {{/optionNames}}
-          </ul>
-       </div>
-    </script>
 </div>

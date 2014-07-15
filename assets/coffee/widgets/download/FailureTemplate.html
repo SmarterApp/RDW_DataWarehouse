@@ -1,0 +1,15 @@
+<div id="DownloadFailureModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h2 id="DownloadModalTitle">{{options.generate_reports}}</h2>
+    </div>
+    <div class="modal-body">
+        <p><b>{{options.export_failure}}</b></p>
+        <p>
+            {{options.export_retry}} <a target="_blank" href="mailto:sbac-help@sbac.com">sbac-help@sbac.com</a>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn edware-btn-primary edware-btn-ok" data-dismiss="modal">{{labels.ok}}</button>
+    </div>
+</div>

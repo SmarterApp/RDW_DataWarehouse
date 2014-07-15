@@ -108,33 +108,6 @@ def process_extraction_request(params, is_async=True):
             raise NotFoundException("There are no results")
 
 
-# TODO: we don't need to support sync for item level or raw extracts.  Remove it when we have time to clean up
-def process_sync_item_or_raw_extract_request(params, extract_type):
-    '''
-    TODO add doc string
-    '''
-    settings = get_current_registry().settings
-    queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
-    archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
-    data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
-    root_dir = settings.get(data_path_config_key)
-    request_id, user, tenant = processor.get_extract_request_user_info()
-    extract_params = copy.deepcopy(params)
-    directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
-    out_file_name = get_items_extract_file_path(extract_params, tenant, request_id) if extract_type is ExtractType.itemLevel else None
-    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params,
-                                                                     root_dir, out_file_name, directory_to_archive,
-                                                                     extract_type)
-    if tasks:
-        celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
-        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-        result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
-        return result.get(timeout=celery_timeout)
-    else:
-        raise NotFoundException("There are no results")
-
-
 def process_async_item_or_raw_extraction_request(params, extract_type):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list

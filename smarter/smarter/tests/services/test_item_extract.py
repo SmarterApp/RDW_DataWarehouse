@@ -78,9 +78,7 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtYear': '2018',
                                     'asmtType': 'SUMMATIVE',
                                     'asmtSubject': 'Math',
-                                    'asmtGrade': '3',
-                                    'extractType': 'itemLevel',
-                                    'async': 'true'}
+                                    'asmtGrade': '3'}
         results = post_item_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
@@ -92,8 +90,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        self.__request.GET['async'] = 'true'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_item_extract_service)
 
     def test_get_invalid_param_tenant_extract(self):
@@ -103,8 +99,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        self.__request.GET['async'] = 'true'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_item_extract_service)
 
     def test_post_valid_response_failed_task_tenant_extract(self):
@@ -114,8 +108,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        self.__request.GET['async'] = 'true'
         results = get_item_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
@@ -147,29 +139,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtGrade'] = '3b'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_item_extract_service)
 
-    def test_get_extract_service(self):
-        self.__request.GET['stateCode'] = 'NC'
-        self.__request.GET['asmtYear'] = '2016'
-        self.__request.GET['asmtType'] = 'SUMMATIVE'
-        self.__request.GET['asmtSubject'] = 'Math'
-        self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        response = get_item_extract_service(None, self.__request)
-        self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
-
-    def test_post_extract_service(self):
-        self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': 'NC',
-                                    'asmtYear': '2015',
-                                    'asmtType': 'SUMMATIVE',
-                                    'asmtSubject': 'Math',
-                                    'asmtGrade': '3',
-                                    'extractType': 'itemLevel'}
-        response = post_item_extract_service(None, self.__request)
-        self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
-
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_get_valid_tenant_extract(self, register_file_patch):
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
@@ -178,8 +147,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        self.__request.GET['async'] = 'true'
         results = get_item_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
@@ -195,9 +162,7 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtYear': '2015',
                                     'asmtType': 'SUMMATIVE',
                                     'asmtSubject': 'Math',
-                                    'asmtGrade': '3',
-                                    'extractType': 'itemLevel',
-                                    'async': 'true'}
+                                    'asmtGrade': '3'}
         response = post_item_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/json')
@@ -205,38 +170,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
-
-    def test_with_no_sync_or_async_set(self):
-        self.__request.GET['stateCode'] = 'NC'
-        self.__request.GET['asmtYear'] = '2016'
-        self.__request.GET['asmtType'] = 'SUMMATIVE'
-        self.__request.GET['asmtSubject'] = 'Math'
-        self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        response = get_item_extract_service(None, self.__request)
-        self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
-
-    def test_send_extraction_requesttest_get_extract_service(self):
-        self.__request.GET['stateCode'] = 'NC'
-        self.__request.GET['asmtYear'] = '2016'
-        self.__request.GET['asmtType'] = 'SUMMATIVE'
-        self.__request.GET['asmtSubject'] = 'Math'
-        self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        response = send_extraction_request(self.__request.GET)
-        content_type = response._headerlist[0]
-        self.assertEqual(content_type[1], "application/octet-stream")
-        body = response.body
-        tested = False
-        with tempfile.TemporaryFile() as tmpfile:
-            tmpfile.write(body)
-            tmpfile.seek(0)
-            myzipfile = zipfile.ZipFile(tmpfile)
-            filelist = myzipfile.namelist()
-            self.assertEqual(1, len(filelist))
-            tested = True
-        self.assertTrue(tested)
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_send_extraction_requesttest_get_extract_service_async(self, register_file_patch):
@@ -246,7 +179,6 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
         self.__request.GET['async'] = 'true'
         response = send_extraction_request(self.__request.GET)
         content_type = response._headerlist[0]

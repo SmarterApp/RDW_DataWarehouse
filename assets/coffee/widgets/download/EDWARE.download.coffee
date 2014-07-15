@@ -132,15 +132,11 @@ define [
       }
 
     getAuditXMLItemLevelParams: () ->
-      academicYear = String($('#academicYear').data('value'))
-      grade = String($('#grade').data('value'))
-
-    getRawExtractParams: () ->
       # jQuery.data('attr') function doesn't work for some reason
-      grade = $('#grade').attr('data-value')
+      grade = String($('#grade').attr('data-value'))
       if not grade
         return false
-      academicYear = $('#academicYear').data('value')
+      academicYear = String($('#academicYear').data('value'))
       asmtSubject = $('input[name="asmtSubject"]:checked').val()
       asmtType = $('input[name="asmtType"]:checked').val()
       return {

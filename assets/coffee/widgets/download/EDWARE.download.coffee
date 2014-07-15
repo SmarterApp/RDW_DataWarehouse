@@ -289,7 +289,7 @@ define [
       $(@container).html output
       this.eventHandler =
         file: this.downloadAsFile
-        csv: this.sendCSVRequest
+        stateExtract: this.sendStateExtract
         extract: this.sendExtractRequest
         pdf: this.printPDF
 
@@ -379,7 +379,7 @@ define [
       url = window.location.protocol + "//" + window.location.host + "/services/extract?sync=true&" + $.param(params, true)
       window.location = url
 
-    sendCSVRequest: () ->
+    sendStateExtract: () ->
       @hide()
       CSVOptions = @config.CSVOptions
       CSVOptions.labels = @config.labels

@@ -66,7 +66,7 @@ define [
       completion_access = @permissions.src_extracts.all
       # hide csv extract option if user doesn't have any permission
       return if registration_access or completion_access
-      $('li.csv').hide()
+      $('li.stateExtract').hide()
 
     hasPIIAccess: (row_id) ->
       @permissions.pii.all or (row_id in @permissions.pii.guid)
@@ -88,8 +88,8 @@ define [
 
   set_no_permission_option_by_class = (classSelector) ->
     add_option_by_class(classSelector, 'noPermission')
-      
-  add_option_by_class = (classSelector, className) -> 
+
+  add_option_by_class = (classSelector, className) ->
     $(classSelector).addClass(className).find('input').attr('disabled', 'disabled')
 
   init: init

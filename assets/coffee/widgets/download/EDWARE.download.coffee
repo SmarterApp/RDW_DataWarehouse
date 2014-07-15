@@ -38,11 +38,11 @@ define [
 
   showSuccessMessage = (response) ->
     @hide()
-    download_url = response["download_url"]
+    files = response["files"]
     $('#DownloadResponseContainer').html Mustache.to_html SuccessTemplate, {
       labels: @config.labels
       options: @config.ExportOptions
-      download_url: download_url
+      download_urls: files
     }
     $('#DownloadSuccessModal').edwareModal
       keepLastFocus: true

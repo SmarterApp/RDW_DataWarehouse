@@ -116,11 +116,15 @@ def estimate_extract_total_file_size(params, avg_file_size, extract_type):
 
     @param params: Extract query params
     """
+    return_number = -1
     state_code = params.get(Constants.STATECODE)
     with EdCoreDBConnection(state_code=state_code) as connector:
         query = get_extract_assessment_item_and_raw_query(params, extract_type)
         return_number = connector.execute(query).rowcount
-    return 0 if return_number < 0 else return_number * avg_file_size
+    if return_number > 0:
+        if avg_file_size > 0:
+            return return_number * avg_file_size
+    return 0
 
 
 def process_async_item_or_raw_extraction_request(params, extract_type):
@@ -147,8 +151,13 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
 
     # temp hack till estimator is fixed. Needs to be removed and substituted with above line
     estimated_total_files = 1
+    estimated_total_size = estimate_extract_total_file_size(params, average_size, extract_type)
+
+    # No data available
+    if estimated_total_size is 0:
+        raise NotFoundException("There are no results")
+
     if soft_limit > 0:
-        estimated_total_size = estimate_extract_total_file_size(params, average_size, extract_type)
         estimated_total_files = int(estimated_total_size / soft_limit)
         if estimated_total_size % soft_limit > 0:
             estimated_total_files += 1

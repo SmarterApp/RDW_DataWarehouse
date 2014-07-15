@@ -1606,12 +1606,26 @@ th.ui-th-column div {
       .desc_block {
         padding-left: 25px;
         &.disabled {display: none;}
+        &.noPermission {display: none;}
         &.enabled {display: block;}
       }
 
       &.disabled {
         .desc_block {
           &.disabled {display: block;}
+          &.noPermission {display: none;}
+          &.enabled {display: none;}
+        }
+
+        h4 {
+          color: @color-B2;
+        }
+      }
+      
+      &.noPermission {
+        .desc_block {
+          &.disabled {display: none;}
+          &.noPermission {display: block;}
           &.enabled {display: none;}
         }
 

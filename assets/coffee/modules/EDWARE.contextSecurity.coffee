@@ -39,8 +39,11 @@ define [
       @apply_state_download_security()
 
     apply_pdf_security: () ->
-      return if @permissions.pii.all and (@reportType is Constants.REPORT_TYPE.GRADE or @reportType is Constants.REPORT_TYPE.SCHOOL)
-      disable_option_by_class('li.pdf')
+      if (@reportType is Constants.REPORT_TYPE.GRADE or @reportType is Constants.REPORT_TYPE.SCHOOL)
+        if not @permissions.pii.all
+          set_no_permission_option_by_class('li.pdf')
+      else
+        set_disabled_option_by_class('li.pdf')
 
     apply_pii_security_on_grid: () ->
       return if @permissions.pii.all
@@ -54,8 +57,8 @@ define [
         content: warningIcon + @no_pii_msg
 
     apply_sar_security: () ->
-      return if @permissions.sar_extracts.all and @permissions.pii.all
-      disable_option_by_class('li.extract')
+      return if @permissions.sar_extracts.all
+      set_no_permission_option_by_class('li.extract')
 
     apply_state_download_security: () ->
       #TODO: update state-level extract permission
@@ -80,8 +83,14 @@ define [
   apply = () ->
     @security.apply()
 
-  disable_option_by_class = (classSelector) ->
-    $(classSelector).addClass('disabled').find('input').attr('disabled', 'disabled')
+  set_disabled_option_by_class = (classSelector) ->
+    add_option_by_class(classSelector, 'disabled')
+
+  set_no_permission_option_by_class = (classSelector) ->
+    add_option_by_class(classSelector, 'noPermission')
+      
+  add_option_by_class = (classSelector, className) -> 
+    $(classSelector).addClass(className).find('input').attr('disabled', 'disabled')
 
   init: init
   apply: apply

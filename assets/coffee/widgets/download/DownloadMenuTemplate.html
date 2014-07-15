@@ -20,10 +20,13 @@
                     <h4 class="marginLeft8">{{options.export_download_raw_view.text}}</h4>
                 </label>
                 <div class="desc_block enabled">
-                    <p>{{options.export_download_raw_view.desc.enabled}} {{reportType}}.</p>
+                    <p>{{options.export_download_raw_view.desc.enabled}}</p>
                 </div>
                 <div class="desc_block disabled">
-                    <p>{{options.export_download_raw_view.desc.disabled}} {{reportType}}.</p>
+                    <p>{{options.export_download_raw_view.desc.disabled}}</p>
+                </div>
+                <div class="desc_block noPermission">
+                    <p>{{options.export_download_raw_view.desc.no_permission}}</p>
                 </div>
             </li>
             <li class="pdf">
@@ -36,6 +39,9 @@
                 </div>
                 <div class="desc_block disabled">
                     <p>{{options.export_bulk_pdf.desc.disabled}}</p>
+                </div>
+                <div class="desc_block noPermission">
+                    <p>{{options.export_bulk_pdf.desc.no_permission}}</p>
                 </div>
             </li>
             <li class="note">

@@ -649,7 +649,8 @@
             "text": "Printable student reports",
             "desc": {
                 "enabled": "Download individual reports for students in this school.",
-                "disabled": "Unavailable at this level. Click into a school to download individual student reports."
+                "disabled": "Unavailable at this level. Click into a school to download individual student reports.",
+                "no_permission": "Requires PII permission for all students in this school."
             }
         },
         "export_download_curr_view": {
@@ -659,8 +660,19 @@
         "export_download_raw_view": {
             "text": "Student assessment results",
             "desc": {
-                "enabled": "Download summative results for all students in this",
-                "disabled": "Unavailable at this level. Requires PII permission for all students in this"
+                "enabled": {
+                    "state": "Download summative results for all students in this state.",
+                    "district": "Download summative results for all students in this district.",
+                    "school": "Download summative results for all students in this school.",
+                    "grade": "Download summative results for all students in this grade."
+                },
+                "disabled": "Unavailable at this level.",
+                "no_permission": {
+                    "state": "Requires PII permission for all students in this state.",
+                    "district": "Requires PII permission for all students in this district.",
+                    "school": "Requires PII permission for all students in this school.",
+                    "grade": "Requires PII permission for all students in this grade."
+                }
             }
         },
         "export_request_extract": {

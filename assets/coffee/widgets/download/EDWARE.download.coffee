@@ -333,6 +333,9 @@ define [
       $('input[type="radio"]:not(:visible)', @container).attr('disabled', 'disabled')
 
     initialize: (@container) ->
+      # Based on the report type, explicitly set the description for enabled and no permission
+      this.config.ExportOptions.export_download_raw_view.desc.enabled = this.config.ExportOptions.export_download_raw_view.desc.enabled[@reportType]
+      this.config.ExportOptions.export_download_raw_view.desc.no_permission = this.config.ExportOptions.export_download_raw_view.desc.no_permission[@reportType]
       output = Mustache.to_html DownloadMenuTemplate, {
         reportType: @reportType
         labels: this.config['labels']

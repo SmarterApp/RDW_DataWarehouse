@@ -41,6 +41,7 @@ class Constants():
     ASMT_REC_ID = 'asmt_rec_id'
     ASMTGRADE = 'asmtGrade'
     ASSESSMENTGUID = 'assessmentGuid'
+    STATE_NAME = 'state_name'
     STATE_CODE = 'state_code'
     DISTRICT_NAME = 'district_name'
     DISTRICT_GUID = 'district_guid'

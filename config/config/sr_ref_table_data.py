@@ -13,6 +13,7 @@ ref_table_conf = {
         ('1', 'lz_json', 'Source.TestRegSysID', 'int_sbac_stu_reg_meta', 'test_reg_id', 'clean', None),
         ('1', 'lz_json', 'Source.TestRegCallbackURL', 'int_sbac_stu_reg_meta', 'callback_url', 'clean', None),
         # CSV to Staging
+        ('1', 'lz_csv', 'statename', 'stg_sbac_stu_reg', 'name_state', 'clean', None),
         ('1', 'lz_csv', 'stateabbreviation', 'stg_sbac_stu_reg', 'code_state', 'cleanUpper', None),
         ('1', 'lz_csv', 'responsibledistrictidentifier', 'stg_sbac_stu_reg', 'guid_district', 'clean', None),
         ('1', 'lz_csv', 'organizationname', 'stg_sbac_stu_reg', 'name_district', 'clean', None),
@@ -48,6 +49,7 @@ ref_table_conf = {
         ('1', 'lz_csv', 'primarydisabilitytype', 'stg_sbac_stu_reg', 'prim_disability_type', 'clean', None),
         # Staging to Integration
         ('3', 'stg_sbac_stu_reg', 'guid_batch', 'int_sbac_stu_reg', 'guid_batch', None, None),
+        ('3', 'stg_sbac_stu_reg', 'name_state', 'int_sbac_stu_reg', 'name_state', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_stu_reg', 'code_state', 'int_sbac_stu_reg', 'code_state', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_stu_reg', 'guid_district', 'int_sbac_stu_reg', 'guid_district', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_stu_reg', 'name_district', 'int_sbac_stu_reg', 'name_district', None, 'substr({src_column}, 1, {length})'),
@@ -86,6 +88,7 @@ ref_table_conf = {
         ('4', 'int_sbac_stu_reg', 'record_sid', 'student_reg', 'student_reg_rec_id', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_batch', 'student_reg', 'batch_guid', None, None),
         ('4', 'int_sbac_stu_reg', 'code_state', 'student_reg', 'state_code', None, None),
+        ('4', 'int_sbac_stu_reg', 'name_state', 'student_reg', 'state_name', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_district', 'student_reg', 'district_guid', None, None),
         ('4', 'int_sbac_stu_reg', 'name_district', 'student_reg', 'district_name', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_school', 'student_reg', 'school_guid', None, None),

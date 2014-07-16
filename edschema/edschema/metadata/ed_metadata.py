@@ -298,6 +298,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     student_registration = Table('student_reg', metadata,
                                  Column('student_reg_rec_id', BigInteger, primary_key=True),
                                  Column('state_code', String(2), nullable=False),
+                                 Column('state_name', String(50), nullable=False),
                                  Column('district_guid', String(40), nullable=False),
                                  Column('district_name', String(60), nullable=False),
                                  Column('school_guid', String(40), nullable=False),

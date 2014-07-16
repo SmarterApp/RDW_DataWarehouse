@@ -58,7 +58,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             fact_student_reg = connector.get_table("student_reg")
 
             # Check number of fields in the table
-            self.assertEqual(39, len(fact_student_reg.c), "Number of fields in student_registration")
+            self.assertEqual(40, len(fact_student_reg.c), "Number of fields in student_registration")
 
     def test_meta_column_col_type_attr(self):
         meta_column = MetaColumn('test_meta_column', String(50))

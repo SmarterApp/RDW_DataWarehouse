@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 
 
-EdOrgNameKey = namedtuple('EdOrgNameKey', ['state_code', 'district_name', 'school_name'])
+EdOrgNameKey = namedtuple('EdOrgNameKey', ['state_name', 'district_name', 'school_name'])
 
 
 class EdOrgDataProcessor(metaclass=ABCMeta):
@@ -13,8 +13,8 @@ class EdOrgDataProcessor(metaclass=ABCMeta):
         self.category_trackers = category_trackers
         self.ed_org_hierarchy = ed_org_hierarchy
 
-    def _add_to_edorg_hierarchy(self, guid, state_code, district_name='', school_name=''):
-        self.ed_org_hierarchy[EdOrgNameKey(state_code=state_code, district_name=district_name, school_name=school_name)] = guid
+    def _add_to_edorg_hierarchy(self, guid, state_name, district_name='', school_name=''):
+        self.ed_org_hierarchy[EdOrgNameKey(state_name=state_name, district_name=district_name, school_name=school_name)] = guid
 
     def _call_academic_year_trackers(self, guid, data_row):
         for tracker in self.category_trackers:

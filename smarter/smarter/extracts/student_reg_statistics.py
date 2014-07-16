@@ -13,7 +13,7 @@ def get_academic_year_query(academic_year, state_code):
 
     with EdCoreDBConnection(state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)
-        academic_year_query = select_with_context([student_reg.c.state_code, student_reg.c.district_guid, student_reg.c.district_name,
+        academic_year_query = select_with_context([student_reg.c.state_code, student_reg.c.state_name, student_reg.c.district_guid, student_reg.c.district_name,
                                                    student_reg.c.school_guid, student_reg.c.school_name, student_reg.c.sex, student_reg.c.enrl_grade,
                                                    student_reg.c.dmg_eth_hsp, student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn, student_reg.c.dmg_eth_blk,
                                                    student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep, student_reg.c.dmg_prg_lep,
@@ -30,7 +30,7 @@ def get_match_id_query(academic_year, state_code):
         current_sr = student_reg.alias()
         prev_sr = student_reg.alias()
 
-        match_id_query = select_with_context([current_sr.c.state_code, prev_sr.c.state_code.label('prev_state_code'), current_sr.c.district_guid,
+        match_id_query = select_with_context([current_sr.c.state_code, prev_sr.c.state_code.label('prev_state_code'), current_sr.c.state_name, current_sr.c.district_guid,
                                               prev_sr.c.district_guid.label('prev_district_guid'), current_sr.c.district_name, current_sr.c.school_guid,
                                               prev_sr.c.school_guid.label('prev_school_guid'), current_sr.c.school_name, current_sr.c.sex, prev_sr.c.sex.label('prev_sex'),
                                               current_sr.c.enrl_grade, prev_sr.c.enrl_grade.label('prev_enrl_grade'), current_sr.c.dmg_eth_hsp, prev_sr.c.dmg_eth_hsp.label('prev_dmg_eth_hsp'),

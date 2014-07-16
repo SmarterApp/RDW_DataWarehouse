@@ -274,14 +274,14 @@ def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, gui
 
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_code,district_guid,district_name,'\
+    return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_name,state_code,district_guid,district_name,'\
            'school_guid,school_name,student_guid,external_student_ssid,first_name,middle_name,last_name,'\
            'sex,birthdate,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
            'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"global_rec_seq"\'\'), * '\
-           'FROM (SELECT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.code_state,'\
+           'FROM (SELECT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
            'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
@@ -297,7 +297,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'FROM "udl2"."INT_SBAC_STU_REG" int_sbac_stu_reg INNER JOIN "udl2"."INT_SBAC_STU_REG_META" int_sbac_stu_reg_meta '\
            'ON int_sbac_stu_reg_meta.guid_batch = int_sbac_stu_reg.guid_batch '\
            'WHERE int_sbac_stu_reg.guid_batch=\'\'{guid_batch}\'\') AS y\') AS t(student_reg_rec_id bigint,'\
-           'batch_guid character varying(36),state_code character varying(2),'\
+           'batch_guid character varying(36),state_name character varying(50),state_code character varying(2),'\
            'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\
            'school_name character varying(60),student_guid character varying(30),external_student_ssid character varying(50),'\
            'student_first_name character varying(35),student_middle_name character varying(35),'\
@@ -359,6 +359,7 @@ def get_expected_column_mapping(target_table):
                                                                  ]),
 
                                         'dim_inst_hier': OrderedDict([('inst_hier_rec_id', 'nextval(\'"global_rec_seq"\')'),
+                                                                      ('state_name', 'name_state'),
                                                                       ('state_code', 'code_state'),
                                                                       ('district_guid', 'guid_district'),
                                                                       ('district_name', 'name_district'),
@@ -433,6 +434,7 @@ def get_expected_sr_column_and_type_mapping():
 
     mapping = OrderedDict([('INT_SBAC_STU_REG', OrderedDict([('student_reg_rec_id', Column(src_col='nextval(\'"global_rec_seq"\')', type='bigint')),
                                                              ('batch_guid', Column(src_col='guid_batch', type='character varying(36)')),
+                                                             ('state_name', Column(src_col='name_state', type='character varying(50)')),
                                                              ('state_code', Column(src_col='code_state', type='character varying(2)')),
                                                              ('district_guid', Column(src_col='guid_district', type='character varying(30)')),
                                                              ('district_name', Column(src_col='name_district', type='character varying(60)')),

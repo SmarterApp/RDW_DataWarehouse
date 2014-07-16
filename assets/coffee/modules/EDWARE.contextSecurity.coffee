@@ -36,8 +36,7 @@ define [
       @apply_pii_security_on_grid()
       @apply_sar_security()
       @apply_pdf_security()
-      @apply_state_download_security()
-      @apply_state_selection_security()
+      @apply_state_security()
 
     apply_pdf_security: () ->
       if (@reportType is Constants.REPORT_TYPE.GRADE or @reportType is Constants.REPORT_TYPE.SCHOOL)
@@ -61,28 +60,24 @@ define [
       return if @permissions.sar_extracts.all
       set_no_permission_option_by_class('li.extract')
 
-    apply_state_download_security: () ->
+    apply_state_security: () ->
       registration_access = @permissions.srs_extracts.all
       completion_access = @permissions.src_extracts.all
       audit_xml_access = @permissions.audit_xml_extracts.all
       item_lvl_access = @permissions.item_extracts.all
-      # hide csv extract option if user doesn't have any permission
-      return if registration_access or completion_access or audit_xml_access or item_lvl_access
-      $('li.stateExtract').hide()
-   
-    apply_state_selection_security: () ->
-      registration_access = @permissions.srs_extracts.all
-      completion_access = @permissions.src_extracts.all
-      audit_xml_access = @permissions.audit_xml_extracts.all
-      item_lvl_access = @permissions.item_extracts.all
-      if not registration_access
-        $('.extractType #registrationStatistics').attr('disabled', 'disabled')
-      if not completion_access
-        $('.extractType #completionStatistics').attr('disabled', 'disabled')
-      if not audit_xml_access
-        $('.extractType #rawXML').attr('disabled', 'disabled')
-      if not item_lvl_access
-        $('.extractType #itemLevel').attr('disabled', 'disabled')
+      if not (registration_access or completion_access or audit_xml_access or item_lvl_access)
+        # hide State extract option if user doesn't have any permission
+        $('li.stateExtract').hide()
+      else
+        # disable individual radio buttons
+        if not registration_access
+          $('.extractType #registrationStatistics').attr('disabled', 'disabled')
+        if not completion_access
+          $('.extractType #completionStatistics').attr('disabled', 'disabled')
+        if not audit_xml_access
+          $('.extractType #rawXML').attr('disabled', 'disabled')
+        if not item_lvl_access
+          $('.extractType #itemLevel').attr('disabled', 'disabled')
       
     hasPIIAccess: (row_id) ->
       @permissions.pii.all or (row_id in @permissions.pii.guid)

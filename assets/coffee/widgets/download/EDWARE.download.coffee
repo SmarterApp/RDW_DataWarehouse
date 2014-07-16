@@ -2,7 +2,6 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
-  "moment"
   "text!CSVOptionsTemplate"
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
@@ -17,7 +16,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   REQUEST_ENDPOINT = {
     "registrationStatistics": "/services/extract/student_registration_statistics",
@@ -161,11 +160,6 @@ define [
 
     sendRequest: (url, params)->
       params = $.extend(true, params, this.getParams())
-
-      # Get request time
-      currentTime = moment()
-      this.requestDate = currentTime.format 'MMM Do'
-      this.requestTime = currentTime.format 'h:mma'
 
       options =
         params: params
@@ -339,10 +333,6 @@ define [
     sendAsyncExtractRequest: () ->
       # extract Math and ELA summative assessment data
       params = $.extend(true, {'async': 'true'}, this.getParams())
-      # Get request time
-      currentTime = moment()
-      this.requestDate = currentTime.format 'MMM Do'
-      this.requestTime = currentTime.format 'h:mma'
 
       options =
         params: params

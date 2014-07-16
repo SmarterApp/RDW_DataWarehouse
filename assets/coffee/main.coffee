@@ -9,7 +9,6 @@ require {
     bootstrap: '../3p/bootstrap.min',
     text: '../3p/text',
     mustache: '../3p/mustache',
-    moment: '../3p/moment.min',
     templates: '../templates',
     usmap: '../3p/usmap/jquery.usmap',
     raphael: '../3p/usmap/raphael',

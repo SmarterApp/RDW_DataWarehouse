@@ -952,6 +952,7 @@ jenkins_dev:
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       item_level_base_dir: /opt/edware/item_level
+      raw_data_base_dir: /opt/edware/raw_data
       partial_file:
         size:
           soft_limit: 300000

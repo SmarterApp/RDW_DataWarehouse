@@ -52,8 +52,6 @@ define [
     constructor: (@container, @config, @reportParamCallback) ->
       @initialize()
       @bindEvents()
-      # Bind to Events first, so we get the clicks on default values for free
-      @selectDefault()
 
     initialize: ()->
       output = Mustache.to_html CSVOptionsTemplate, {
@@ -200,6 +198,8 @@ define [
       params
 
     show: () ->
+      # Bind to Events first, so we get the clicks on default values for free
+      @selectDefault()
       $('#StateDownloadModal').edwareModal
         keepLastFocus: true
 

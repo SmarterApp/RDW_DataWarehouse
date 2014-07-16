@@ -7,7 +7,7 @@ from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query,\
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query, \
     get_required_permission
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
@@ -155,49 +155,52 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
 
     # No data available
     if estimated_total_size is 0:
-        raise NotFoundException("There are no results")
+        task_response = {}
+        task_response[Extract.STATUS] = Extract.FAIL
+        task_response[Extract.MESSAGE] = "Data is not available"
+        response['tasks'] = [task_response]
+    else:
+        if soft_limit > 0:
+            estimated_total_files = int(estimated_total_size / soft_limit)
+            if estimated_total_size % soft_limit > 0:
+                estimated_total_files += 1
 
-    if soft_limit > 0:
-        estimated_total_files = int(estimated_total_size / soft_limit)
-        if estimated_total_size % soft_limit > 0:
-            estimated_total_files += 1
+        out_file_names = []
+        directories_to_archive = []
+        extract_files = []
+        archive_files = []
+        registration_ids = []
 
-    out_file_names = []
-    directories_to_archive = []
-    extract_files = []
-    archive_files = []
-    registration_ids = []
-
-    if estimated_total_files > 1:
-        for estimated_total_file in range(estimated_total_files):
+        if estimated_total_files > 1:
+            for estimated_total_file in range(estimated_total_files):
+                extract_file = {}
+                if extract_type is ExtractType.itemLevel:
+                    out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
+                directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
+                archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
+                archive_files.append(archive_file_name)
+                registration_id, download_url = register_file(user.get_uid())
+                registration_ids.append(registration_id)
+                extract_file['fileName'] = os.path.basename(archive_file_name)
+                extract_file['download_url'] = download_url
+                extract_files.append(extract_file)
+        else:
             extract_file = {}
             if extract_type is ExtractType.itemLevel:
-                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
-            directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
-            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
+                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id))
+            directories_to_archive.append(base_directory_to_archive)
+            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
             archive_files.append(archive_file_name)
             registration_id, download_url = register_file(user.get_uid())
             registration_ids.append(registration_id)
             extract_file['fileName'] = os.path.basename(archive_file_name)
             extract_file['download_url'] = download_url
             extract_files.append(extract_file)
-    else:
-        extract_file = {}
-        if extract_type is ExtractType.itemLevel:
-            out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id))
-        directories_to_archive.append(base_directory_to_archive)
-        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-        archive_files.append(archive_file_name)
-        registration_id, download_url = register_file(user.get_uid())
-        registration_ids.append(registration_id)
-        extract_file['fileName'] = os.path.basename(archive_file_name)
-        extract_file['download_url'] = download_url
-        extract_files.append(extract_file)
 
-    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
-    response['tasks'] = task_responses
-    response['files'] = extract_files
-    start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
+        tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
+        response['tasks'] = task_responses
+        response['files'] = extract_files
+        start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
     return response
 
 

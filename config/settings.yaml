@@ -132,6 +132,7 @@ common:
         size:
           soft_limit: 30000000
           average.csv: 30000
+          average.xml: 300000
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: kswimberly@amplify.com

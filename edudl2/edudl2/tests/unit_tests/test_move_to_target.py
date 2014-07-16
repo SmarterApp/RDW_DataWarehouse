@@ -359,7 +359,6 @@ def get_expected_column_mapping(target_table):
                                                                  ]),
 
                                         'dim_inst_hier': OrderedDict([('inst_hier_rec_id', 'nextval(\'"global_rec_seq"\')'),
-                                                                      ('state_name', 'name_state'),
                                                                       ('state_code', 'code_state'),
                                                                       ('district_guid', 'guid_district'),
                                                                       ('district_name', 'name_district'),

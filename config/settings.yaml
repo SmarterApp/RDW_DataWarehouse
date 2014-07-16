@@ -132,6 +132,7 @@ common:
         size:
           soft_limit: 30000000
           average.csv: 30000
+          average.xml: 300000
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: kswimberly@amplify.com
@@ -950,6 +951,12 @@ jenkins_dev:
         CELERYD_CONCURRENCY: 4
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+      item_level_base_dir: /opt/edware/item_level
+      partial_file:
+        size:
+          soft_limit: 300000
+          average.csv: 30000
+          average.xml: 300000
     edware:
       db:
         cat:

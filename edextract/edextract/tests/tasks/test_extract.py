@@ -299,21 +299,94 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '3'}
         query = self.__create_item_raw_extract_query(params)
         root_dir = tempfile.mkdtemp()
-        output_dir = tempfile.mkdtemp(dir=root_dir)
+        archive_dir = os.path.join(root_dir, 'archive')
         task = {
             TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_RAW_XML,
             TaskConstants.TASK_TASK_ID: 'task_id',
-            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.DIRECTORY_TO_ARCHIVE: archive_dir,
             TaskConstants.TASK_FILE_NAME: '',
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
             TaskConstants.ROOT_DIRECTORY: root_dir
         }
+        xml_path1 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '0513ba44-e8ec-4186-9a0e-8481e9c16206')
+        xml_path2 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '228')
+        xml_path3 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '229')
+        xml_path4 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '2ce72d77-1de2-4137-a083-77935831b817')
+
+        def create_files(path, filenames):
+            archive_files = []
+            for file in filenames:
+                f = os.path.join(path, file)
+                a = os.path.join(archive_dir, os.path.basename(file))
+                open(f, 'w').close()
+                archive_files.append(a)
+            return archive_files
+
+        files1 = []
+        files2 = []
+        files3 = []
+        files4 = []
+        files1.append('f22a52ef-ed1a-4207-9bc8-8d41dd6f8577.xml')
+        files1.append('de502030-032c-45b4-af8a-373dafb94400.xml')
+        files1.append('aa3e4230-c919-406a-8c33-dfddab59c259.xml')
+        files1.append('5791a3ea-e5c8-494f-8798-b4945a40f214.xml')
+        files1.append('25f2e010-f8b8-4494-8e60-7ca1c9e3d049.xml')
+        files1.append('6f902cb4-e029-4bf4-84ac-4ba3e9e394f1.xml')
+        files1.append('6520a1ba-3700-4b6f-b516-6a2caea39e0d.xml')
+        files1.append('58162fc8-d10c-476b-95ef-144d231a7ea4.xml')
+        files1.append('4f0c7e67-3cf6-42c8-8fac-dbec4401b632.xml')
+        files2.append('72d8248d-0e8f-404b-8763-a5b7bcdaf535.xml')
+        files2.append('34140997-8949-497e-bbbb-5d72aa7dc9cb.xml')
+        files2.append('a84a514b-ee02-4e76-a047-c55b4390087e.xml')
+        files2.append('8b890349-1421-439e-99e4-235e13fe28dc.xml')
+        files2.append('cad811ad-9b08-4dd1-aa10-52360b80ff7f.xml')
+        files2.append('aeed1057-82ad-46c8-bf24-b0dffc171669.xml')
+        files2.append('a016a4c1-5aca-4146-a85b-ed1172a01a4d.xml')
+        files2.append('b2307755-1752-4f54-a3a1-e2dcd3912d9e.xml')
+        files2.append('389c8fd6-228a-4204-bad7-c6a2a3e759cf.xml')
+        files2.append('61ec47de-e8b5-4e78-9beb-677c44dd9b50.xml')
+        files2.append('a3fcc2a7-16ba-4783-ae58-f225377e8e20.xml')
+        files2.append('af68c5f9-b5aa-41e8-b583-e82b7d8ff48b.xml')
+        files2.append('3181376a-f3a8-40d3-bbde-e65fdd9f4494.xml')
+        files2.append('c72e98d5-ddb6-4cde-90d2-cdb215e67e84.xml')
+        files3.append('3efe8485-9c16-4381-ab78-692353104cce.xml')
+        files3.append('34b99412-fd5b-48f0-8ce8-f8ca3788634a.xml')
+        files4.append('fe3d166a-14b8-4871-b947-b82b6974d15a.xml')
+        files4.append('11ddf594-55ab-4e77-b09e-73aa27fb1f04.xml')
+        files4.append('c1b43997-f999-4116-94e0-9d76a763e767.xml')
+        files4.append('ebf98f09-3522-4a77-87bd-20078883c500.xml')
+        files4.append('40d2883d-c7f5-499b-ac75-78047f78af56.xml')
+        files4.append('84f57040-e40f-4ace-ba1a-16beeb9d9799.xml')
+        files4.append('0d73956c-e7ef-40bd-88b5-57f75e2547d4.xml')
+        files4.append('3551ce11-5ee3-4d1a-b65b-cbe92979697b.xml')
+        files4.append('8667760a-4f8a-40b1-a53f-08cc7c50d230.xml')
+        files4.append('3c5cabec-2425-4266-85e4-dd7271b41071.xml')
+        files4.append('8140131b-3e72-418e-a4aa-a2f4c9197543.xml')
+        files4.append('f3fbb21c-c602-4bbe-b550-a2be351d3c68.xml')
+        files4.append('7a4c0b46-bc9c-4337-af58-dc028e7169d3.xml')
+        files4.append('d94160df-2efb-456a-b4b0-f5e98b65c5ac.xml')
+        files4.append('a5e1a73d-8866-41e2-8635-9f7cf2b4afb6.xml')
+        files4.append('92d59b24-83df-4c29-9e35-46e648bb4578.xml')
+        files4.append('f54b5a4a-a677-4f9c-bf46-597848943554.xml')
+        os.makedirs(xml_path1)
+        os.makedirs(xml_path2)
+        os.makedirs(xml_path3)
+        os.makedirs(xml_path4)
+        os.makedirs(archive_dir)
+        a1 = create_files(xml_path1, files1)
+        a2 = create_files(xml_path2, files2)
+        a3 = create_files(xml_path3, files3)
+        a4 = create_files(xml_path4, files4)
 
         generate_item_or_raw_extract_file(self._tenant, 'request_id', task)
 
-        self.assertTrue(os.path.exists(output_dir))
-        all_extracted_files = glob.glob(os.path.join(output_dir, '*.xml'))
-        self.assertEqual(len(all_extracted_files), 0)
+        def assertArchive(archives):
+            for archive in archives:
+                self.assertTrue(os.path.isfile(archive))
+        assertArchive(a1)
+        assertArchive(a2)
+        assertArchive(a3)
+        assertArchive(a4)
 
     def test_generate_item_extract_with_missing_output_file(self):
         output_dir = '/tmp/xyz'

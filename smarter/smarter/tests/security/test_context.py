@@ -36,13 +36,16 @@ class TestContext(Unittest_with_edcore_sqlite):
         set_tenant_map({self.__tenant_name: "NC"})
         defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout')),
                          (Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout')),
-                         (Allow, RolesConstants.SRC_EXTRACTS, ('view', 'logout'))]
+                         (Allow, RolesConstants.SRC_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.AUDIT_XML_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.ITEM_LEVEL_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         dummy_session = create_test_session([RolesConstants.PII])
         dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), "NC", "228", "242"),
                                         RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), "NC", "228", "245"),
                                         RoleRelation(RolesConstants.SRS_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None),
-                                        RoleRelation(RolesConstants.SRC_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None)])
+                                        RoleRelation(RolesConstants.SRC_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None),
+                                        RoleRelation(RolesConstants.AUDIT_XML_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None)])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
@@ -104,6 +107,8 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
 
     def test_get_current_context_at_state_level_with_invalid_state(self):
         context = get_current_context({'stateCode': 'AA'})
@@ -111,6 +116,8 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['sar_extracts']['all'])
         self.assertFalse(context['srs_extracts']['all'])
         self.assertFalse(context['src_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
+        self.assertFalse(context['audit_xml_extracts']['all'])
 
     def test_get_current_context_at_district_level(self):
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '228'})
@@ -118,6 +125,8 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
 
     def test_get_current_context_at_district_level_with_invalid_district(self):
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '229'})
@@ -125,6 +134,8 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
 
     def test_get_current_context_at_school_level(self):
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242'})
@@ -132,6 +143,8 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
 
     def test_get_current_context_at_school_level_with_invalid_school(self):
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': 'bad'})
@@ -139,30 +152,37 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
 
     def test_consortium_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
         dummy_session.set_user_context([RoleRelation(RolesConstants.PII, None, None, None, None),
                                         RoleRelation(RolesConstants.SRS_EXTRACTS, None, None, None, None),
-                                        RoleRelation(RolesConstants.SRC_EXTRACTS, None, None, None, None)])
+                                        RoleRelation(RolesConstants.SRC_EXTRACTS, None, None, None, None),
+                                        RoleRelation(RolesConstants.AUDIT_XML_EXTRACTS, None, None, None, None)])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': '242'})
         self.assertTrue(context['pii']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertFalse(context['item_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
 
     def test_state_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
         dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), 'NC', None, None),
                                         RoleRelation(RolesConstants.SRS_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None),
-                                        RoleRelation(RolesConstants.SRC_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None)])
+                                        RoleRelation(RolesConstants.SRC_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None),
+                                        RoleRelation(RolesConstants.AUDIT_XML_EXTRACTS, None, None, None, None)])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': '242'})
         self.assertTrue(context['pii']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
+        self.assertTrue(context['audit_xml_extracts']['all'])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

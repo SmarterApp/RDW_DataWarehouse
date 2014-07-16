@@ -158,8 +158,8 @@ define [
 
     selectDefault: ()->
       # check first option of each dropdown
-      $('ul li:nth-child(1) input',this.container).each ()->
-        $(this).trigger 'click'
+      $('ul', this.container).each ()->
+        $('input[type="radio"]:enabled:first', this).trigger 'click'
 
     sendRequest: (url, params)->
       params = $.extend(true, params, this.getParams())

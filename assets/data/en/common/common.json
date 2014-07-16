@@ -676,6 +676,7 @@
         },
         "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",
-        "generate_reports": "Generating Requested Reports"
+        "generate_reports": "Generating Requested Reports",
+        "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
     }
 }

@@ -52,8 +52,6 @@ define [
     constructor: (@container, @config, @reportParamCallback) ->
       @initialize()
       @bindEvents()
-      # Bind to Events first, so we get the clicks on default values for free
-      @selectDefault()
 
     initialize: ()->
       output = Mustache.to_html CSVOptionsTemplate, {
@@ -200,6 +198,8 @@ define [
       params
 
     show: () ->
+      # Bind to Events first, so we get the clicks on default values for free
+      @selectDefault()
       $('#StateDownloadModal').edwareModal
         keepLastFocus: true
 
@@ -280,8 +280,8 @@ define [
     initialize: (@container) ->
       # Based on the report type, explicitly set the description for enabled and no permission
       if @reportType
-        this.config.ExportOptions.export_download_raw_view.desc.enabled = this.config.ExportOptions.export_download_raw_view.desc.enabled[@reportType]
-        this.config.ExportOptions.export_download_raw_view.desc.no_permission = this.config.ExportOptions.export_download_raw_view.desc.no_permission[@reportType]
+        this.config.ExportOptions.export_download_raw_view.desc.enabled.display_msg = this.config.ExportOptions.export_download_raw_view.desc.enabled[@reportType]
+        this.config.ExportOptions.export_download_raw_view.desc.no_permission.display_msg = this.config.ExportOptions.export_download_raw_view.desc.no_permission[@reportType]
       output = Mustache.to_html DownloadMenuTemplate, {
         reportType: @reportType
         labels: this.config['labels']

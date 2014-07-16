@@ -20,13 +20,13 @@
                     <h4 class="marginLeft8">{{options.export_download_raw_view.text}}</h4>
                 </label>
                 <div class="desc_block enabled">
-                    <p>{{options.export_download_raw_view.desc.enabled}}</p>
+                    <p>{{options.export_download_raw_view.desc.enabled.display_msg}}</p>
                 </div>
                 <div class="desc_block disabled">
                     <p>{{options.export_download_raw_view.desc.disabled}}</p>
                 </div>
                 <div class="desc_block noPermission">
-                    <p>{{options.export_download_raw_view.desc.no_permission}}</p>
+                    <p>{{options.export_download_raw_view.desc.no_permission.display_msg}}</p>
                 </div>
             </li>
             <li class="pdf">
@@ -46,7 +46,7 @@
             </li>
             <li class="note">
                 <div>
-                    <p><b>Note:</b> Your download will reflect any selections you have made, including academic year, assessment and filters.</p>
+                    <p>{{{options.note}}}</p>
                 </div>
             </li>
             <li class="stateExtract">

@@ -588,7 +588,7 @@
 			}
 		}
 	},
-	"interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require hand scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
+	"interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {
@@ -680,14 +680,6 @@
                     "value": "8"
                 },
                 {
-                    "display": "Grade 9",
-                    "value": "9"
-                },
-                {
-                    "display": "Grade 10",
-                    "value": "10"
-                },
-                {
                     "display": "Grade 11",
                     "value": "11"
                 }
@@ -749,6 +741,7 @@
         },
         "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",
-        "generate_reports": "Generating Requested Reports"
+        "generate_reports": "Generating Requested Reports",
+        "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
     }
 }

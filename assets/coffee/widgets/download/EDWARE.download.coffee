@@ -2,8 +2,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
-  "moment"
-  "text!CSVOptionsTemplate"
+  "text!StateDownloadTemplate"
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
   "text!SuccessTemplate"
@@ -17,7 +16,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, StateDownloadTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   REQUEST_ENDPOINT = {
     "registrationStatistics": "/services/extract/student_registration_statistics",
@@ -46,7 +45,7 @@ define [
     }
     $('#DownloadSuccessModal').edwareModal
       keepLastFocus: true
-
+  
   class StateDownloadModal
 
     constructor: (@container, @config, @reportParamCallback) ->
@@ -54,7 +53,7 @@ define [
       @bindEvents()
 
     initialize: ()->
-      output = Mustache.to_html CSVOptionsTemplate, {
+      output = Mustache.to_html StateDownloadTemplate, {
         extractType: this.config.extractType
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
@@ -161,11 +160,6 @@ define [
 
     sendRequest: (url, params)->
       params = $.extend(true, params, this.getParams())
-
-      # Get request time
-      currentTime = moment()
-      this.requestDate = currentTime.format 'MMM Do'
-      this.requestTime = currentTime.format 'h:mma'
 
       options =
         params: params
@@ -339,10 +333,6 @@ define [
     sendAsyncExtractRequest: () ->
       # extract Math and ELA summative assessment data
       params = $.extend(true, {'async': 'true'}, this.getParams())
-      # Get request time
-      currentTime = moment()
-      this.requestDate = currentTime.format 'MMM Do'
-      this.requestTime = currentTime.format 'h:mma'
 
       options =
         params: params
@@ -354,13 +344,17 @@ define [
       request.fail showFailureMessage.bind(this)
 
     sendExtractRequest: () ->
-      # perform asynchronous extract on state and distrct level
-      if @reportType is Constants.REPORT_TYPE.STATE or @reportType is Constants.REPORT_TYPE.DISTRICT
-        this.sendAsyncExtractRequest()
+      if not hasData()
+        @hide()
+        @displayWarningMessage()
       else
-        # perform synchronous extract on school and grade level
-        this.sendSyncExtractRequest()
-        this.hide()
+        # perform asynchronous extract on state and distrct level
+        if @reportType is Constants.REPORT_TYPE.STATE or @reportType is Constants.REPORT_TYPE.DISTRICT
+          this.sendAsyncExtractRequest()
+        else
+          # perform synchronous extract on school and grade level
+          this.sendSyncExtractRequest()
+          this.hide()
 
     sendSyncExtractRequest: () ->
       values = JSON.parse edwareClientStorage.filterStorage.load()
@@ -401,10 +395,12 @@ define [
         self.contextSecurity?.apply()
         CSVDownload.show()
 
+    hasData = () ->
+      $('#gridTable').text() isnt ''
+    
     printPDF: () ->
       @hide()
-      hasData = $('#gridTable').text() isnt ''
-      if not hasData
+      if not hasData()
         # display warning message and stop
         @displayWarningMessage()
       else
@@ -416,7 +412,7 @@ define [
         labels: @config.labels
         options: @config.ExportOptions
       $('#DownloadResponseContainer').html output
-      $('#DownloadFailureModal').edwareModal
+      $('#NoDataModal').edwareModal
         keepLastFocus: true
 
     fetchData = (params)->

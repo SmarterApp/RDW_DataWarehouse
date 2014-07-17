@@ -71,13 +71,13 @@ define [
       else
         # disable individual radio buttons
         if not registration_access
-          $('.extractType #registrationStatistics').attr('disabled', 'disabled')
+          set_disabled_option_by_class('.extractType li#registrationStatistics')
         if not completion_access
-          $('.extractType #completionStatistics').attr('disabled', 'disabled')
+          set_disabled_option_by_class('.extractType li#completionStatistics')
         if not audit_xml_access
-          $('.extractType #rawXML').attr('disabled', 'disabled')
+          set_disabled_option_by_class('.extractType li#rawXML')
         if not item_lvl_access
-          $('.extractType #itemLevel').attr('disabled', 'disabled')
+          set_disabled_option_by_class('.extractType li#itemLevel')
       
     hasPIIAccess: (row_id) ->
       @permissions.pii.all or (row_id in @permissions.pii.guid)

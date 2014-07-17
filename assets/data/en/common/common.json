@@ -622,8 +622,8 @@
             "text": "Printable student reports",
             "desc": {
                 "enabled": "Download individual reports for students in this school.",
-                "disabled": "Unavailable at this level. Click into a school to download individual student reports.",
-                "no_permission": "Requires PII permission for all students in this school."
+                "disabled": "Not available. Click into a school to download individual student reports.",
+                "no_permission": "You do not have PII permission for all students in this school."
             }
         },
         "export_download_curr_view": {
@@ -634,17 +634,17 @@
             "text": "Student assessment results",
             "desc": {
                 "enabled": {
-                    "state": "Download summative results for all students in this state.",
-                    "district": "Download summative results for all students in this district.",
-                    "school": "Download summative results for all students in this school.",
-                    "grade": "Download summative results for all students in this grade."
+                    "state": "Download assessment results for all students in this state.",
+                    "district": "Download assessment results for all students in this district.",
+                    "school": "Download assessment results for all students in this school.",
+                    "grade": "Download assessment results for all students in this grade."
                 },
-                "disabled": "Unavailable at this level.",
+                "disabled": "Not available.",
                 "no_permission": {
-                    "state": "Requires PII permission for all students in this state.",
-                    "district": "Requires PII permission for all students in this district.",
-                    "school": "Requires PII permission for all students in this school.",
-                    "grade": "Requires PII permission for all students in this grade."
+                    "state": "You do not have PII permission for all students in this state.",
+                    "district": "You do not have PII permission for all students in this district.",
+                    "school": "You do not have PII permission for all students in this school.",
+                    "grade": "You do not have PII permission for all students in this grade."
                 }
             }
         },

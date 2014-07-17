@@ -615,7 +615,7 @@
     },
     "SearchResultText": {
         "hasMatch": "<b id='cursor'>{{cursor}}</b> of <b>{{total}}</b> matching \"<b>{{keyword}}</b>\"",
-        "notFound": "No match \"<b>{{keyword}}</b>\" in this district. Please check spelling and try again."
+        "notFound": "No matches for \"<b>{{keyword}}</b>\". Please check spelling and try again."
     },
     "ExportOptions" : {
         "export_bulk_pdf": {

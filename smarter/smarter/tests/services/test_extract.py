@@ -83,7 +83,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
-        self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
+        self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.NO_DATA)
 
     def test_get_invalid_param_tenant_extract(self):
         self.__request.GET['stateCode'] = 'NC'
@@ -104,7 +104,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
-        self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
+        self.assertEqual(tasks[0][Constants.STATUS], Constants.NO_DATA)
 
     def test_multi_tasks_tenant_extract(self):
         self.__request.method = 'POST'
@@ -118,8 +118,8 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 2)
-        self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
-        self.assertEqual(tasks[1][Constants.STATUS], Constants.FAIL)
+        self.assertEqual(tasks[0][Constants.STATUS], Constants.NO_DATA)
+        self.assertEqual(tasks[1][Constants.STATUS], Constants.NO_DATA)
 
     def test_generate_zip_file_name_for_grades(self):
         name = generate_zip_file_name('2016', ['6'], 'SUMMATIVE', ['MATH'])

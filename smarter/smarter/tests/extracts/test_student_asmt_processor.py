@@ -94,8 +94,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         results = process_extraction_request(params)
         tasks = results['tasks']
         self.assertEqual(len(tasks), 4)
-        self.assertEqual(tasks[0]['status'], 'fail')
-        self.assertEqual(tasks[3]['status'], 'fail')
+        self.assertEqual(tasks[0]['status'], Extract.NO_DATA)
+        self.assertEqual(tasks[3]['status'], Extract.NO_DATA)
 
     @patch('smarter.extracts.student_asmt_processor.start_extract')
     @patch('smarter.extracts.student_asmt_processor.register_file')
@@ -108,7 +108,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
         for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
-            self.assertRaises(NotFoundException, process_async_item_or_raw_extraction_request, params, extract_type)
+            response = process_async_item_or_raw_extraction_request(params, extract_type)
+            self.assertEqual(response['tasks'][0]['status'], Extract.NO_DATA)
 
     def test_get_file_name_tenant_level(self):
         params = {'stateCode': 'CA',
@@ -448,7 +449,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
         self.assertEqual(len(results[0]), 0)
         self.assertEqual(len(results[1]), 1)
-        self.assertEqual(results[1][0][Extract.STATUS], Extract.FAIL)
+        self.assertEqual(results[1][0][Extract.STATUS], Extract.NO_DATA)
 
     def test__create_tasks_with_responses_tenant_level(self):
         params = {'stateCode': 'NC',

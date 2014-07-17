@@ -37,15 +37,37 @@ define [
 
   showSuccessMessage = (response) ->
     @hide()
-    files = response["files"]
-    $('#DownloadResponseContainer').html Mustache.to_html SuccessTemplate, {
-      labels: @config.labels
-      options: @config.ExportOptions
-      download_urls: files
-    }
-    $('#DownloadSuccessModal').edwareModal
-      keepLastFocus: true
-  
+    response_ok = checkExtractResponseTaskStatus response
+    if response_ok is "ok"
+      files = response["files"]
+      $('#DownloadResponseContainer').html Mustache.to_html SuccessTemplate, {
+        labels: @config.labels
+        options: @config.ExportOptions
+        download_urls: files
+      }
+      $('#DownloadSuccessModal').edwareModal
+        keepLastFocus: true
+    else if response_ok is "no_data"
+      $('#DownloadResponseContainer').html Mustache.to_html NoDataTemplate, {
+        labels: @config.labels
+        options: @config.ExportOptions
+      }
+      $('#NoDataModal').edwareModal
+        keepLastFocus: true
+
+  checkExtractResponseTaskStatus = (response) ->
+    tasks = response['tasks']
+    return "ok" if tasks is `undefined`
+    i = 0
+    ok = false
+    while i < tasks.length
+      task = tasks[i]
+      status = task['status']
+      ok = true if status is "ok"
+      i++
+    return "ok" if ok
+    return tasks[0]['status']
+
   class StateDownloadModal
 
     constructor: (@container, @config, @reportParamCallback) ->

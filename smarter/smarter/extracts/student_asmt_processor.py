@@ -156,7 +156,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     # No data available
     if estimated_total_size is 0:
         task_response = {}
-        task_response[Extract.STATUS] = Extract.FAIL
+        task_response[Extract.STATUS] = Extract.NO_DATA
         task_response[Extract.MESSAGE] = "Data is not available"
         response['tasks'] = [task_response]
     else:
@@ -290,7 +290,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
-        copied_task_response[Extract.STATUS] = Extract.FAIL
+        copied_task_response[Extract.STATUS] = Extract.NO_DATA
         copied_task_response[Extract.MESSAGE] = "Data is not available"
         task_responses.append(copied_task_response)
     return tasks, task_responses
@@ -322,7 +322,7 @@ def _create_item_or_raw_tasks_with_responses(request_id, user, param, root_dir, 
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
-        copied_task_response[Extract.STATUS] = Extract.FAIL
+        copied_task_response[Extract.STATUS] = Extract.NO_DATA
         copied_task_response[Extract.MESSAGE] = "Data is not available"
         task_responses.append(copied_task_response)
     return tasks, task_responses

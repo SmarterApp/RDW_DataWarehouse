@@ -2,7 +2,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
-  "text!CSVOptionsTemplate"
+  "text!StateDownloadTemplate"
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
   "text!SuccessTemplate"
@@ -16,7 +16,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, StateDownloadTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   REQUEST_ENDPOINT = {
     "registrationStatistics": "/services/extract/student_registration_statistics",
@@ -53,7 +53,7 @@ define [
       @bindEvents()
 
     initialize: ()->
-      output = Mustache.to_html CSVOptionsTemplate, {
+      output = Mustache.to_html StateDownloadTemplate, {
         extractType: this.config.extractType
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']

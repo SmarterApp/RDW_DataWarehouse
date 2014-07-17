@@ -91,7 +91,7 @@ require {
     edwareFormatterTextTemplate: 'widgets/grid/TextTemplate.html',
     edwareFormatterTooltipTemplate: 'widgets/grid/TooltipTemplate.html',
     edwareFormatterTotalPopulationTemplate: 'widgets/grid/TotalPopulationTemplate.html',
-    CSVOptionsTemplate: 'widgets/download/CSVOptionsTemplate.html',
+    StateDownloadTemplate: 'widgets/download/StateDownloadTemplate.html',
     PDFOptionsTemplate: 'widgets/download/PDFOptionsTemplate.html',
     SuccessTemplate: 'widgets/download/SuccessTemplate.html',
     FailureTemplate: 'widgets/download/FailureTemplate.html',

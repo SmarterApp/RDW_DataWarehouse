@@ -661,10 +661,10 @@
         "export_success": "Your requested reports will be available within 24 hours.",
         "export_failure": "Something went wrong.",
         "export_retry": "Please retry again or contact the administrator at",
-        "export_pdf_no_data": {
-            "title": "Printable Student Reports",
-            "header": "No students.",
-            "message": "There are no students in the batch. Please disable active filters and try again."
+        "no_data": {
+            "title": "Error",
+            "header": "No data.",
+            "message": "Your request contains no data.  Please adjust your selections and try again"
         },
         "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",

@@ -45,7 +45,7 @@ define [
     }
     $('#DownloadSuccessModal').edwareModal
       keepLastFocus: true
-
+  
   class StateDownloadModal
 
     constructor: (@container, @config, @reportParamCallback) ->
@@ -344,13 +344,17 @@ define [
       request.fail showFailureMessage.bind(this)
 
     sendExtractRequest: () ->
-      # perform asynchronous extract on state and distrct level
-      if @reportType is Constants.REPORT_TYPE.STATE or @reportType is Constants.REPORT_TYPE.DISTRICT
-        this.sendAsyncExtractRequest()
+      if not hasData()
+        @hide()
+        @displayWarningMessage()
       else
-        # perform synchronous extract on school and grade level
-        this.sendSyncExtractRequest()
-        this.hide()
+        # perform asynchronous extract on state and distrct level
+        if @reportType is Constants.REPORT_TYPE.STATE or @reportType is Constants.REPORT_TYPE.DISTRICT
+          this.sendAsyncExtractRequest()
+        else
+          # perform synchronous extract on school and grade level
+          this.sendSyncExtractRequest()
+          this.hide()
 
     sendSyncExtractRequest: () ->
       values = JSON.parse edwareClientStorage.filterStorage.load()
@@ -391,10 +395,12 @@ define [
         self.contextSecurity?.apply()
         CSVDownload.show()
 
+    hasData = () ->
+      $('#gridTable').text() isnt ''
+    
     printPDF: () ->
       @hide()
-      hasData = $('#gridTable').text() isnt ''
-      if not hasData
+      if not hasData()
         # display warning message and stop
         @displayWarningMessage()
       else
@@ -406,7 +412,7 @@ define [
         labels: @config.labels
         options: @config.ExportOptions
       $('#DownloadResponseContainer').html output
-      $('#DownloadFailureModal').edwareModal
+      $('#NoDataModal').edwareModal
         keepLastFocus: true
 
     fetchData = (params)->

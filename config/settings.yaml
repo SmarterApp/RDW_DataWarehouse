@@ -744,7 +744,7 @@ development:
         size:
           soft_limit: 300000
           average.csv: 30000
-          average.xml: 300000
+          average.xml: 30000
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'
@@ -964,7 +964,7 @@ jenkins_dev:
         size:
           soft_limit: 300000
           average.csv: 30000
-          average.xml: 300000
+          average.xml: 30000
     edware:
       db:
         cat:

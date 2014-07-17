@@ -40,7 +40,6 @@ require {
     edwareLOSConfidenceLevelBar: 'widgets/losConfidenceLevelBar/EDWARE.losConfidenceBar',
     edwareClaimsBar: 'widgets/claimsBar/EDWARE.claimsBar',
     edwarePopulationBar: 'widgets/populationBar/EDWARE.populationBar',
-    edwareFeedback: 'modules/EDWARE.feedback',
     edwareLegend: 'widgets/legend/EDWARE.legend',
     edwareLoadingMask: 'widgets/loadingMask/EDWARE.loadingMask',
     edwareFilter: 'widgets/filter/EDWARE.filter',

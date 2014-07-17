@@ -1,7 +1,6 @@
 '''
 Clean up temporary schemas
 '''
-import os
 import re
 from edudl2.database.udl2_connector import initialize_db_target, get_target_connection
 from edudl2.udl2_util.config_reader import read_ini_file
@@ -16,7 +15,7 @@ def main():
 
 
 def clean_up_unused_schemas():
-    with get_target_connection() as conn:
+    with get_target_connection("cat") as conn:
         schemas = conn.execute("select schema_name from information_schema.schemata")
         for schema in schemas:
             schema_name = schema[0]

@@ -46,7 +46,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
 
     def verify_get_context_state_level(self, role):
         dummy_session = create_test_session([role])
-        dummy_session.set_user_context([RoleRelation(role, self.tenant, 'ES', None, None)])
+        dummy_session.set_user_context([RoleRelation(role, self.tenant, 'NC', None, None)])
         self.user = dummy_session.get_user()
         self.__request = DummyRequest()
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
@@ -64,7 +64,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
 
     def verify_get_context_multi_level(self, role):
         dummy_session = create_test_session([role])
-        dummy_session.set_user_context([RoleRelation(role, self.tenant, 'ES', None, None),
+        dummy_session.set_user_context([RoleRelation(role, self.tenant, 'NC', None, None),
                                         RoleRelation(role, self.tenant, None, None, None)])
         self.user = dummy_session.get_user()
         self.__request = DummyRequest()

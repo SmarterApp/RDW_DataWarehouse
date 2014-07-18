@@ -563,8 +563,8 @@ class TestServices(Unittest_with_edcore_sqlite):
         component.provideUtility(SessionBackend(settings), ISessionBackend)
         response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
         body = json.loads(response.body.decode('utf-8'))
-        self.assertEqual(body[Constants.FILENAME], 'archive_file.pdf')
-        self.assertEqual(body[Constants.DOWNLOAD_URL], 'http://foo.com/abc/hello')
+        self.assertEqual(body[Constants.FILES][0][Constants.FILENAME], 'archive_file.pdf')
+        self.assertEqual(body[Constants.FILES][0][Constants.DOWNLOAD_URL], 'http://foo.com/abc/hello')
 
     @patch('smarter.services.pdf.get_bulk_pdf_content')
     def test_get_pdf_content_for_bulk(self, mock_get_bulk_pdf_content):

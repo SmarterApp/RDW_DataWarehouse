@@ -3,7 +3,7 @@ Created on May 17, 2013
 
 @author: dip
 '''
-from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup,\
+from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup, \
     group_separator, bulk_pdf_cover_sheet
 from urllib.parse import urljoin
 from pyramid.view import view_config
@@ -288,7 +288,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     archive_file_path = os.path.join(directory_for_zip, archive_file_name)
 
     # Create JSON response
-    response = {Constants.FILENAME: archive_file_name, Constants.DOWNLOAD_URL: download_url}
+    response = {Constants.FILES: [{Constants.FILENAME: archive_file_name, Constants.DOWNLOAD_URL: download_url}]}
 
     # Generate cookie
     pdfGenerator = PDFGenerator(settings)

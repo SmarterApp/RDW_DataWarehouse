@@ -113,6 +113,7 @@ class Constants():
     COVER = 'cover'
     ZIP = 'zip'
     FILENAME = 'fileName'
+    FILES = 'files'
     URL = 'url'
     DOWNLOAD_URL = 'download_url'
     APPLICATION_JSON = 'application/json'

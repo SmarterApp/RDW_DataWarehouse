@@ -22,7 +22,7 @@ class DefaultRole(BaseRole):
         '''
         pass
 
-    def check_context(self, tenant, user, student_guids):
+    def check_context(self, tenant, user, student_ids):
         '''
         Has Context to resource
         '''

@@ -266,9 +266,9 @@ class Test(unittest.TestCase):
                 self.assertIn(student.section_guids['ELA'], section_guids)
                 self.assertIn(student.section_rec_ids['ELA'], section_rec_ids)
 
-            self.assertIsNotNone(student.school_guid)
+            self.assertIsNotNone(student.school_id)
             self.assertIsNotNone(student.state_code)
-            self.assertIsNotNone(student.district_guid)
+            self.assertIsNotNone(student.district_id)
             self.assertIsNotNone(student.from_date)
             self.assertIsNotNone(student.most_recent)
 
@@ -276,7 +276,7 @@ class Test(unittest.TestCase):
         self.assertEqual(ela_count, 99, 'Check that 99% took this subject')
 
     def test_generate_teachers_for_sections(self):
-        school = DummyClass(school_guid='s1', district_guid='d1', school_name='school1')
+        school = DummyClass(school_id='s1', district_id='d1', school_name='school1')
         sections = [DummyClass(section_guid='sec1'), DummyClass(section_guid='sec2')]
         from_date = date.today()
         most_recent = True
@@ -296,7 +296,7 @@ class Test(unittest.TestCase):
     def test_set_student_institution_information(self):
         students = [DummyClass(first_name='fname{0}'.format(i), last_name='lname{0}'.format(i))
                     for i in range(20)]
-        school = DummyClass(school_guid='s1', district_guid='d1', school_name='school1')
+        school = DummyClass(school_id='s1', district_id='d1', school_name='school1')
         from_date = date.today()
         most_recent = True
         street_names = ['snames{0}'.format(i) for i in range(25)]
@@ -311,11 +311,11 @@ class Test(unittest.TestCase):
                                                          street_names, state_code, teacher_map)
 
         for student in result:
-            self.assertIsNotNone(student.school_guid)
-            self.assertIsNotNone(student.district_guid)
+            self.assertIsNotNone(student.school_id)
+            self.assertIsNotNone(student.district_id)
             self.assertIsNotNone(student.state_code)
-            self.assertIsNotNone(student.school_guid)
-            self.assertIsNotNone(student.district_guid)
+            self.assertIsNotNone(student.school_id)
+            self.assertIsNotNone(student.district_id)
             self.assertIsNotNone(student.state_code)
             self.assertIsNotNone(student.from_date)
             self.assertIsNotNone(student.most_recent)
@@ -694,10 +694,10 @@ class Test(unittest.TestCase):
     def test_generate_non_teaching_staff(self):
         state_code = 'GA'
         num_of_staff = 20
-        district_guid = 'distguid'
-        school_guid = 'schoolguid'
+        district_id = 'distguid'
+        school_id = 'schoolguid'
         res = gd2.generate_non_teaching_staff(num_of_staff, self.from_date, self.most_recent, self.to_date,
-                                              state_code, district_guid, school_guid)
+                                              state_code, district_id, school_id)
         self.assertEqual(len(res), num_of_staff)
         for staff in res:
             self.assertIsInstance(staff, Staff)
@@ -706,19 +706,19 @@ class Test(unittest.TestCase):
             self.assertEqual(staff.from_date, self.from_date)
             self.assertEqual(staff.most_recent, self.most_recent)
             self.assertEqual(staff.state_code, state_code)
-            self.assertEqual(staff.district_guid, district_guid)
-            self.assertEqual(staff.school_guid, school_guid)
+            self.assertEqual(staff.district_id, district_id)
+            self.assertEqual(staff.school_id, school_id)
 
     def test_generate_institution_hierarchy_from_helper_entities(self):
         state_population = DummyClass()
         state_population.state_name = 'Georgia'
         state_population.state_code = 'GA'
         district = DummyClass()
-        district.district_guid = 'dguid1'
+        district.district_id = 'dguid1'
         district.district_name = 'District1'
         school = DummyClass()
         school.school_name = 'School1'
-        school.school_guid = 'sguid1'
+        school.school_id = 'sguid1'
         school.school_category = 'Middle'
 
         res = gd2.generate_institution_hierarchy_from_helper_entities(state_population, district, school, self.from_date,

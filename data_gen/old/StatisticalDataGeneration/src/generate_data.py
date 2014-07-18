@@ -167,7 +167,7 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
 
             # create district dim_staff
             num_of_district_staff = len(inst_hier_list) * random.choice(range(2, 4))
-            district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_guid)for _i in range(num_of_district_staff)]
+            district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for _i in range(num_of_district_staff)]
             create_csv(district_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
             total_count['school_count'] += len(inst_hier_list)
@@ -298,7 +298,7 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
 
             # create district object
             params = {
-                'district_guid': IdGen().get_id(),
+                'district_id': IdGen().get_id(),
                 'district_name': (names[i] + " " + random.choice(constants.DIST_SUFFIX)).title(),
                 'state_code': state_code,
                 'state_name': state_name,
@@ -361,9 +361,9 @@ def create_institution_hierarchies(student_counts, student_teacher_ratios, distr
             # columns of dim_inst_hier
             'state_name': district.state_name,
             'state_code': district.state_code,
-            'district_guid': district.district_guid,
+            'district_id': district.district_id,
             'district_name': district.district_name,
-            'school_guid': IdGen().get_id(),
+            'school_id': IdGen().get_id(),
             'school_name': school_name,
             'school_category': school_categories_type,
             'from_date': '20120901',
@@ -462,7 +462,7 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
     # generate teachers in a school
-    teachers_in_school = generate_teachers(school.number_of_students, school.student_teacher_ratio, state_code, district.district_guid, school.school_guid, is_small_data_mode)
+    teachers_in_school = generate_teachers(school.number_of_students, school.student_teacher_ratio, state_code, district.district_id, school.school_id, is_small_data_mode)
     # TODO: break this function into 2 separate functions if possible
     number_of_students_in_grades, number_of_teachers_in_grades = calculate_number_of_students_teachers_per_grade(school.high_grade, school.low_grade, school.number_of_students, len(teachers_in_school))
 
@@ -470,7 +470,7 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
     index = 0
     for grade in range(school.low_grade, school.high_grade + 1):
         # generate student list for a grade
-        students_in_grade = generate_student_bio_info(number_of_students_in_grades[index], state_code, district.city_zip_map, district.district_guid, school.school_guid, school.school_name, grade, name_list)
+        students_in_grade = generate_student_bio_info(number_of_students_in_grades[index], state_code, district.city_zip_map, district.district_id, school.school_id, school.school_name, grade, name_list)
         teachers_in_grade = random.sample(teachers_in_school, number_of_teachers_in_grades[index])
 
         # randomly pick one where_taken in current district for this grade
@@ -480,7 +480,7 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
         index += 1
 
 
-def generate_teachers(number_of_students, student_teacher_ratio, state_code, district_guid, school_guid, is_small_data_mode):
+def generate_teachers(number_of_students, student_teacher_ratio, state_code, district_id, school_id, is_small_data_mode):
     '''
     Function to generate teachers in a school
     First, it create a list of 'Teacher' objects
@@ -495,17 +495,17 @@ def generate_teachers(number_of_students, student_teacher_ratio, state_code, dis
     # generate teaching-dim_staff for a school
     school_teacher_list = []
     for _loop_variable_not_used in range(number_of_teachers):
-        teacher = generate_teacher(state_code, district_guid)
+        teacher = generate_teacher(state_code, district_id)
         school_teacher_list.append(teacher)
 
     # generate school non-teaching dim_staff
-    generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_guid, school_guid)
+    generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_id, school_id)
 
     # return a list of teachers
     return school_teacher_list
 
 
-def generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_guid, school_guid):
+def generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_id, school_id):
     '''
     Method to generate non teaching dim_staff in a school
     '''
@@ -516,7 +516,7 @@ def generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, s
         staff_percentage = random.uniform(.1, .3)
         # calculate number of non teaching dim_staff as: percentage * number of teachers(teachers) in school
         num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
-    school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], state_code, district_guid, school_guid)for _i in range(num_of_school_staff)]
+    school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], state_code, district_id, school_id)for _i in range(num_of_school_staff)]
     create_csv(school_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
 
@@ -654,15 +654,15 @@ def create_sections_in_one_class(subject_name, class_index, students_in_current_
     Main function to create one class in a grade of a subject.
     '''
     # create subject section
-    section_subject_list = create_sections(students_in_current_class, school.student_teacher_ratio, class_index, subject_name, school.state_code, school.district_guid, school.school_guid, grade)
+    section_subject_list = create_sections(students_in_current_class, school.student_teacher_ratio, class_index, subject_name, school.state_code, school.district_id, school.school_id, grade)
 
     # create students, and teachers to place in section_subject
-    student_section_list = create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, school.state_code, school.district_guid, school.school_guid, grade)
+    student_section_list = create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, school.state_code, school.district_id, school.school_id, grade)
 
     return student_section_list
 
 
-def create_sections(students_in_current_class, student_teacher_ratio, class_index, subject_name, state_code, district_guid, school_guid, grade):
+def create_sections(students_in_current_class, student_teacher_ratio, class_index, subject_name, state_code, district_id, school_id, grade):
     '''
     Function to create list of SectionSubject object
     '''
@@ -675,14 +675,14 @@ def create_sections(students_in_current_class, student_teacher_ratio, class_inde
     for i in range(number_of_sections):
         section_name = 'section ' + str(i + 1)
         # create a section_subject
-        section_subject = create_single_section_subject(section_name, class_name, subject_name, state_code, district_guid, school_guid, grade)
+        section_subject = create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade)
         section_subject_list.append(section_subject)
     create_csv(section_subject_list, ENTITY_TO_PATH_DICT[Section])
 
     return section_subject_list
 
 
-def create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_list, state_code, district_guid, school_guid, grade):
+def create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_list, state_code, district_id, school_id, grade):
     '''
     Function to create list of 'Student' objects, and list of teaching 'Staff' objects
     Generated student objects are written into dim_student.csv
@@ -701,7 +701,7 @@ def create_students_and_staff_in_sections(students_in_current_class, teachers_in
     for section in section_list:
         # create a teaching-dim_staff object
         teacher_in_current_section = teachers_in_current_class[index % len(teachers_in_current_class)]
-        dim_staff = generate_staff(constants.HIER_USER_TYPE[0], state_code, district_guid, school_guid, section.section_guid,
+        dim_staff = generate_staff(constants.HIER_USER_TYPE[0], state_code, district_id, school_id, section.section_guid,
                                teacher_in_current_section.first_name, teacher_in_current_section.middle_name, teacher_in_current_section.last_name, teacher_in_current_section.teacher_guid)
         staff_list.append(dim_staff)
 
@@ -729,7 +729,7 @@ def calculate_number_of_sections(number_of_students_in_class, student_teacher_ra
     return number_of_sections
 
 
-def create_single_section_subject(section_name, class_name, subject_name, state_code, district_guid, school_guid, grade):
+def create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade):
     '''
     Function to create a single 'SectionSubject' object
     '''
@@ -746,8 +746,8 @@ def create_single_section_subject(section_name, class_name, subject_name, state_
         'class_name': class_name,
         'subject_name': subject_name,
         'state_code': state_code,
-        'district_guid': district_guid,
-        'school_guid': school_guid,
+        'district_id': district_id,
+        'school_id': school_id,
         # TODO: better way to set from_date, most_recent
         'from_date': '20120901',
         'most_recent': True,

@@ -76,8 +76,8 @@ class TestRawDataGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqli
                             dim_asmt.c.effective_date,
                             fact_asmt_outcome_vw.c.asmt_subject,
                             fact_asmt_outcome_vw.c.asmt_grade,
-                            fact_asmt_outcome_vw.c.district_guid,
-                            fact_asmt_outcome_vw.c.student_guid],
+                            fact_asmt_outcome_vw.c.district_id,
+                            fact_asmt_outcome_vw.c.student_id],
                            from_obj=[fact_asmt_outcome_vw
                                      .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))])
 
@@ -89,7 +89,7 @@ class TestRawDataGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqli
             return query
 
     def __get_path_to_raw_xml_for_student(self, root_dir, relative_file_path, record):
-        return os.path.join(root_dir, relative_file_path, (str(record['student_guid']) + '.xml'))
+        return os.path.join(root_dir, relative_file_path, (str(record['student_id']) + '.xml'))
 
     def __build_raw_data_files(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -97,17 +97,17 @@ class TestRawDataGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqli
             dim_asmt = connection.get_table('dim_asmt')
             query = select([fact_asmt.c.state_code, fact_asmt.c.asmt_year, fact_asmt.c.asmt_type,
                             dim_asmt.c.effective_date, fact_asmt.c.asmt_subject, fact_asmt.c.asmt_grade,
-                            fact_asmt.c.district_guid, fact_asmt.c.student_guid, fact_asmt.c.asmt_guid],
+                            fact_asmt.c.district_id, fact_asmt.c.student_id, fact_asmt.c.asmt_guid],
                            from_obj=[fact_asmt
                                      .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt.c.asmt_rec_id))])
             query = query.where(fact_asmt.c.rec_status == 'C')
-            query = query.order_by(fact_asmt.c.asmt_guid, fact_asmt.c.student_guid)
+            query = query.order_by(fact_asmt.c.asmt_guid, fact_asmt.c.student_id)
             results = connection.get_result(query)
             for result in results:
                 raw_file_relative_path = os.path.join(str(result['state_code']).upper(),
                                                       str(result['asmt_year']), str(result['asmt_type']).upper().replace(' ', '_'),
                                                       str(result['effective_date']), str(result['asmt_subject']).upper(),
-                                                      str(result['asmt_grade']), str(result['district_guid']))
+                                                      str(result['asmt_grade']), str(result['district_id']))
 
                 raw_file_final_output_path = os.path.join(TestRawDataGenerator.__tmp_raw_dir, raw_file_relative_path)
                 if not os.path.exists(raw_file_final_output_path):
@@ -117,6 +117,6 @@ class TestRawDataGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqli
                                                                           raw_file_relative_path, result)
                 root = ET.Element("root")
                 student_node = ET.SubElement(root, "student")
-                student_node.set("guid", str(result['student_guid']))
+                student_node.set("guid", str(result['student_id']))
                 tree = ET.ElementTree(root)
                 tree.write(path_to_xml_file)

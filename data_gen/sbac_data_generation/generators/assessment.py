@@ -159,7 +159,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         for pos in od:
             item_format = random.choice(sbac_config.ASMT_ITEM_BANK_FORMAT)
             item_level_data = SBACAssessmentOutcomeItemData()
-            item_level_data.student_guid = student.guid_sr
+            item_level_data.student_id = student.guid_sr
             item_level_data.key = od[pos]
             item_level_data.segment_id = segment_id
             item_level_data.position = pos

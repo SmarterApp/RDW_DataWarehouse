@@ -15,11 +15,11 @@ class TestDistrictDataProcessor(unittest.TestCase):
 
     def setUp(self):
         self.results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
-                        AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County'}
+                        AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County'}
 
         self.matched_ids_results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
-                                    AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County',
-                                    'prev_district_guid': 'GUILFORD_GUID'}
+                                    AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County',
+                                    'prev_district_id': 'GUILFORD_GUID'}
 
         self.category_trackers = []
 
@@ -45,12 +45,12 @@ class TestDistrictDataProcessor(unittest.TestCase):
         self.district_data_processor._call_matched_ids_trackers.assert_called_with('GUILFORD_GUID', self.matched_ids_results)
 
     def test__should_call_trackers(self):
-        same_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'GUILFORD_GUID'}
+        same_districts = {AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', 'prev_district_id': 'GUILFORD_GUID'}
         result = self.district_data_processor._is_matched_district(same_districts)
         self.assertTrue(result)
 
     def test__should_not_call_trackers(self):
-        different_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'NOTGUILFORDGUID'}
+        different_districts = {AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', 'prev_district_id': 'NOTGUILFORDGUID'}
         result = self.district_data_processor._is_matched_district(different_districts)
         self.assertFalse(result)
 

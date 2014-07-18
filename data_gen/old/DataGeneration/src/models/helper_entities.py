@@ -29,11 +29,11 @@ class District:
     Intended for record keeping when creating InstitutionHierarchy objects
     '''
 
-    def __init__(self, district_guid, district_name, district_type=None, school_populations=None):
+    def __init__(self, district_id, district_name, district_type=None, school_populations=None):
         '''
         Constructor
         '''
-        self.district_guid = district_guid
+        self.district_id = district_id
         self.district_name = district_name
         self.district_type = district_type
         self.school_populations = school_populations
@@ -47,13 +47,13 @@ class School:
     Intended for record keeping when creating InstitutionHierarchy objects
     '''
 
-    def __init__(self, school_guid, school_name, school_category, grade_performance_level_counts, district_name, district_guid):
-        self.school_guid = school_guid
+    def __init__(self, school_id, school_name, school_category, grade_performance_level_counts, district_name, district_id):
+        self.school_id = school_id
         self.school_name = school_name
         self.school_category = school_category
         self.grade_performance_level_counts = grade_performance_level_counts
         self.district_name = district_name
-        self.district_guid = district_guid
+        self.district_id = district_id
         self.student_info = None
         self.teachers = None
         self.sections = None
@@ -112,10 +112,10 @@ class StudentInfo(object):
 
     def __init__(self, grade, gender, asmt_scores, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
                  dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
-                 dmg_prg_504=False, dmg_prg_tt1=False, dmg_eth_2mr=False, dmg_eth_nst=False, student_guid=None,
+                 dmg_prg_504=False, dmg_prg_tt1=False, dmg_eth_2mr=False, dmg_eth_nst=False, student_id=None,
                  first_name=None, middle_name=None, last_name=None, zip_code=None, dob=None, student_rec_ids=None,
-                 email=None, address_1=None, address_2=None, city=None, state_code=None, district_guid=None,
-                 school_guid=None, from_date=None, to_date=None, most_recent=None, asmt_rec_ids=None, asmt_guids=None,
+                 email=None, address_1=None, address_2=None, city=None, state_code=None, district_id=None,
+                 school_id=None, from_date=None, to_date=None, most_recent=None, asmt_rec_ids=None, asmt_guids=None,
                  section_guids=None, section_rec_ids=None, teacher_guids=None, teachers=None, asmt_dates_taken=None,
                  asmt_types=None, asmt_subjects=None, asmt_years=None):
         '''
@@ -127,7 +127,7 @@ class StudentInfo(object):
 
         self.grade = grade
         self.gender = gender
-        self.student_guid = student_guid if student_guid else uuid4()
+        self.student_id = student_id if student_id else uuid4()
         self.first_name = first_name if first_name else generate_first_or_middle_name(gender)
         self.middle_name = middle_name if middle_name else possibly_generate_middle_name(gender)
         self.last_name = last_name if last_name else generate_last_name()
@@ -143,8 +143,8 @@ class StudentInfo(object):
         self.address_2 = address_2
         self.city = city
         self.state_code = state_code
-        self.district_guid = district_guid
-        self.school_guid = school_guid
+        self.district_id = district_id
+        self.school_id = school_id
         self.from_date = from_date
         self.to_date = to_date
         self.most_recent = most_recent

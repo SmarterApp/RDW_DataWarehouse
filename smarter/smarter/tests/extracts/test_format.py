@@ -31,7 +31,7 @@ class TestFormat(unittest.TestCase):
     def test_dim_student_mapping(self):
         dim_student = get_column_mapping(Constants.DIM_STUDENT)
         self.assertIsNotNone(dim_student)
-        self.assertEqual(dim_student['student_guid'], 'StudentIdentifier')
+        self.assertEqual(dim_student['student_id'], 'StudentIdentifier')
         self.assertEqual(dim_student['first_name'], 'FirstName')
         self.assertEqual(dim_student['sex'], 'Sex')
         self.assertEqual(dim_student['birthdate'], 'Birthdate')
@@ -40,13 +40,13 @@ class TestFormat(unittest.TestCase):
         dim_inst = get_column_mapping(Constants.DIM_INST_HIER)
         self.assertIsNotNone(dim_inst)
         self.assertEqual(dim_inst['state_code'], 'StateAbbreviation')
-        self.assertEqual(dim_inst['district_guid'], 'ResponsibleDistrictIdentifier')
+        self.assertEqual(dim_inst['district_id'], 'ResponsibleDistrictIdentifier')
         self.assertEqual(dim_inst['district_name'], 'OrganizationName')
 
     def test_fact_asmt_outcome_vw(self):
         fact = get_column_mapping(Constants.FACT_ASMT_OUTCOME_VW)
         self.assertIsNotNone(fact)
-        self.assertEqual(fact['student_guid'], 'StudentIdentifier')
+        self.assertEqual(fact['student_id'], 'StudentIdentifier')
         self.assertEqual(fact['where_taken_id'], 'AssessmentSessionLocationId')
         self.assertEqual(fact['where_taken_name'], 'AssessmentSessionLocation')
         self.assertEqual(fact['enrl_grade'], 'GradeLevelWhenAssessed')

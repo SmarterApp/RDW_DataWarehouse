@@ -53,12 +53,12 @@ def run_asmt_outcome_query(connection, schema):
       fact_asmt_outcome.asmt_grade AS grade_asmt,
       dim_inst_hier.state_name AS name_state,
       dim_inst_hier.state_code AS code_state,
-      dim_inst_hier.district_guid AS guid_district,
+      dim_inst_hier.district_id AS guid_district,
       dim_inst_hier.district_name AS name_district,
-      dim_inst_hier.school_guid AS guid_school,
+      dim_inst_hier.school_id AS guid_school,
       dim_inst_hier.school_name AS name_school,
       dim_inst_hier.school_category AS type_school,
-      dim_student.student_guid AS guid_student,
+      dim_student.student_id AS guid_student,
       dim_student.first_name AS name_student_first,
       dim_student.middle_name AS name_student_middle,
       dim_student.last_name AS name_student_last,
@@ -115,7 +115,7 @@ def run_asmt_outcome_query(connection, schema):
       fact_asmt_outcome.inst_hier_rec_id = dim_inst_hier.inst_hier_rec_id AND
       fact_asmt_outcome.asmt_rec_id = dim_asmt.asmt_rec_id AND
       fact_asmt_outcome.teacher_guid = dim_staff.staff_guid AND
-      fact_asmt_outcome.student_guid = dim_student.student_guid
+      fact_asmt_outcome.student_id = dim_student.student_id
     ORDER BY guid_asmt
     '''.format(schema=schema)
     results = connection.execute(query)

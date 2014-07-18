@@ -73,7 +73,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 211)
         self.assertIn('key', csv_data[0])
-        self.assertIn('student_guid', csv_data[0])
+        self.assertIn('student_id', csv_data[0])
         self.assertIn('score', csv_data[0])
 
     def test_generate_item_csv_success_item_ids(self):
@@ -99,7 +99,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 66)
         self.assertIn('key', csv_data[0])
-        self.assertIn('student_guid', csv_data[0])
+        self.assertIn('student_id', csv_data[0])
         self.assertIn('score', csv_data[0])
 
     def test_get_path_to_item_csv(self):
@@ -138,12 +138,12 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         expect_path = os.path.join(expect_path, '3')
         self.assertEqual(path, expect_path)
 
-        record['district_guid'] = '3ab54de78a'
+        record['district_id'] = '3ab54de78a'
         path = _get_path_to_item_csv(items_root_dir, **record)
         expect_path = os.path.join(expect_path, '3ab54de78a')
         self.assertEqual(path, expect_path)
 
-        record['student_guid'] = 'a78dbf34'
+        record['student_id'] = 'a78dbf34'
         path = _get_path_to_item_csv(items_root_dir, **record)
         expect_path = os.path.join(expect_path, 'a78dbf34.csv')
         self.assertEqual(path, expect_path)
@@ -155,17 +155,17 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'effective_date': 20150106,
                   'asmt_subject': 'ELA',
                   'asmt_grade': 3,
-                  'district_guid': '3ab54de78a',
-                  'student_guid': 'a78dbf34'}
+                  'district_id': '3ab54de78a',
+                  'student_id': 'a78dbf34'}
         tempdir = tempfile.TemporaryDirectory()
         record1 = copy.deepcopy(record)
-        record1['student_guid'] = '1'
+        record1['student_id'] = '1'
         file1 = _get_path_to_item_csv(tempdir.name, **record1)
         record2 = copy.deepcopy(record)
-        record2['student_guid'] = '2'
+        record2['student_id'] = '2'
         file2 = _get_path_to_item_csv(tempdir.name, **record2)
         record3 = copy.deepcopy(record)
-        record3['student_guid'] = '3'
+        record3['student_id'] = '3'
         file3 = _get_path_to_item_csv(tempdir.name, **record3)
         os.makedirs(os.path.dirname(file1))
         with open(file1, 'w') as csv1:
@@ -205,17 +205,17 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'effective_date': 20150106,
                   'asmt_subject': 'ELA',
                   'asmt_grade': 3,
-                  'district_guid': '3ab54de78a',
-                  'student_guid': 'a78dbf34'}
+                  'district_id': '3ab54de78a',
+                  'student_id': 'a78dbf34'}
         tempdir = tempfile.TemporaryDirectory()
         record1 = copy.deepcopy(record)
-        record1['student_guid'] = '1'
+        record1['student_id'] = '1'
         file1 = _get_path_to_item_csv(tempdir.name, **record1)
         record2 = copy.deepcopy(record)
-        record2['student_guid'] = '2'
+        record2['student_id'] = '2'
         file2 = _get_path_to_item_csv(tempdir.name, **record2)
         record3 = copy.deepcopy(record)
-        record3['student_guid'] = '3'
+        record3['student_id'] = '3'
         file3 = _get_path_to_item_csv(tempdir.name, **record3)
         os.makedirs(os.path.dirname(file1))
         with open(file1, 'w') as csv1:
@@ -269,8 +269,8 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                             dim_asmt.c.effective_date,
                             fact_asmt_outcome_vw.c.asmt_subject,
                             fact_asmt_outcome_vw.c.asmt_grade,
-                            fact_asmt_outcome_vw.c.district_guid,
-                            fact_asmt_outcome_vw.c.student_guid],
+                            fact_asmt_outcome_vw.c.district_id,
+                            fact_asmt_outcome_vw.c.student_id],
                            from_obj=[fact_asmt_outcome_vw
                                      .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))])
 
@@ -295,11 +295,11 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
             dim_asmt = connection.get_table('dim_asmt')
             query = select([fact_asmt.c.state_code, fact_asmt.c.asmt_year, fact_asmt.c.asmt_type,
                             dim_asmt.c.effective_date, fact_asmt.c.asmt_subject, fact_asmt.c.asmt_grade,
-                            fact_asmt.c.district_guid, fact_asmt.c.student_guid, fact_asmt.c.asmt_guid],
+                            fact_asmt.c.district_id, fact_asmt.c.student_id, fact_asmt.c.asmt_guid],
                            from_obj=[fact_asmt
                                      .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt.c.asmt_rec_id))])
             query = query.where(fact_asmt.c.rec_status == 'C')
-            query = query.order_by(fact_asmt.c.asmt_guid, fact_asmt.c.student_guid)
+            query = query.order_by(fact_asmt.c.asmt_guid, fact_asmt.c.student_id)
             results = connection.get_result(query)
             for result in results:
                 asmt_guid = result['asmt_guid']
@@ -317,14 +317,14 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 dir_path = os.path.join(TestItemLevelGenerator.__tmp_item_dir, str(result['state_code']).upper(),
                                         str(result['asmt_year']), str(result['asmt_type']).upper().replace(' ', '_'),
                                         str(result['effective_date']), str(result['asmt_subject']).upper(),
-                                        str(result['asmt_grade']), str(result['district_guid']))
+                                        str(result['asmt_grade']), str(result['district_id']))
                 if not os.path.exists(dir_path):
                     os.makedirs(dir_path)
 
                 with open(_get_path_to_item_csv(TestItemLevelGenerator.__tmp_item_dir, **dict(result)), 'w') as csv_file:
                     csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
                     for item in student_pool:
-                        csv_writer.writerow([item['key'], result['student_guid'], item['segment'], 0, item['client'],
+                        csv_writer.writerow([item['key'], result['student_id'], item['segment'], 0, item['client'],
                                              1, 1, item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
                                              'MA-Undesignated', 1, 1, 1, 0])
 import copy

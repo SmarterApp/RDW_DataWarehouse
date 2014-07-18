@@ -85,14 +85,14 @@ def get_students_for_assessment(tenant, asmt_guid):
     """Get all students who have records for a given assessment"""
     with DBConnection(tenant) as connection:
         fact_asmt = connection.get_table("fact_asmt_outcome_vw")
-        query = select([fact_asmt.c.student_guid, fact_asmt.c.asmt_grade, fact_asmt.c.district_guid],
+        query = select([fact_asmt.c.student_id, fact_asmt.c.asmt_grade, fact_asmt.c.district_id],
                        from_obj=fact_asmt).where(and_(fact_asmt.c.asmt_guid == asmt_guid))
         query = query.where(and_(fact_asmt.c.rec_status == 'C'))
         results = connection.get_result(query)
 
         students = []
         for result in results:
-            students.append({'guid': result['student_guid'], 'district_guid': result['district_guid'],
+            students.append({'guid': result['student_id'], 'district_id': result['district_id'],
                              'grade': result['asmt_grade']})
 
     return students
@@ -104,7 +104,7 @@ def generate_data_files(root_dir, state_code, asmt, students, verbose, raw, item
         # Build directory path and file name
         dir_path = os.path.join(root_dir, str(state_code).upper(), str(asmt['year']),
                                 str(asmt['type']).upper().replace(' ', '_'), str(asmt['effective_date']),
-                                str(asmt['subject']).upper(), str(student['grade']), str(student['district_guid']))
+                                str(asmt['subject']).upper(), str(student['grade']), str(student['district_id']))
 
         # Make sure directory exists
         if not os.path.exists(dir_path):

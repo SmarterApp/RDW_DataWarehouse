@@ -44,13 +44,13 @@ def test_generate_assessment():
 
 def test_generate_item_data():
     item_data = item_lvl_data.SBACAssessmentOutcomeItemData()
-    item_data.student_guid = '0b43854416674ec8961b9db797bca2'
+    item_data.student_id = '0b43854416674ec8961b9db797bca2'
     item_data.key = 1938
     item_data.segment_id = '(SBAC)SBAC-MG110PT-S2-ELA-7-Spring-2014-2015'
     item_data.position = 19
     item_data.format = 'MC'
 
-    assert item_data.student_guid == '0b43854416674ec8961b9db797bca2'
+    assert item_data.student_id == '0b43854416674ec8961b9db797bca2'
     assert item_data.key == 1938
     assert item_data.segment_id == '(SBAC)SBAC-MG110PT-S2-ELA-7-Spring-2014-2015'
     assert item_data.position == 19

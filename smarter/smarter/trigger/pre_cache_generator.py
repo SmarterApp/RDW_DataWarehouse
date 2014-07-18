@@ -50,7 +50,7 @@ def prepare_pre_cache(tenant, state_code, batch_guid):
     '''
     with EdCoreDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-        query = select([distinct(fact_asmt_outcome_vw.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome_vw])
+        query = select([distinct(fact_asmt_outcome_vw.c.district_id).label(Constants.DISTRICT_ID)], from_obj=[fact_asmt_outcome_vw])
         query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome_vw.c.batch_guid == batch_guid))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
@@ -82,12 +82,12 @@ def trigger_precache(tenant, state_code, results, filter_config):
             logger.error('Error occurs when recache state view: %s', e)
         for result in results:
             try:
-                district_guid = result.get(Constants.DISTRICT_GUID)
-                logger.debug('pre-caching state[%s], district[%s]', state_code, district_guid)
-                cache_trigger.recache_district_view_report(district_guid)
+                district_id = result.get(Constants.DISTRICT_ID)
+                logger.debug('pre-caching state[%s], district[%s]', state_code, district_id)
+                cache_trigger.recache_district_view_report(district_id)
             except Exception as e:
                 triggered = False
-                logger.warning('Recache of district view threw exception for state_code %s district_guid %s', state_code, district_guid)
+                logger.warning('Recache of district view threw exception for state_code %s district_id %s', state_code, district_id)
                 logger.error('Error occurs when recache district view: %s', e)
     return triggered
 

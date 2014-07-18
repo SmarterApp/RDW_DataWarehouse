@@ -40,21 +40,21 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], permission=
     return query
 
 
-def check_context(permission, state_code, student_guids):
+def check_context(permission, state_code, student_ids):
     '''
     Given a list of student guids, return true if user has access to see their data, false otherwise
 
-    :param student_guids: guids of students that we want to check whether the user has context to
-    :type student_guids: list
+    :param student_ids: guids of students that we want to check whether the user has context to
+    :type student_ids: list
     '''
-    if len(student_guids) is 0:
+    if len(student_ids) is 0:
         return False
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get user role and guid
         user = __get_user_info()
         context = __get_context_instance(permission, connector)
-        return context.check_context(get_tenant_by_state_code(state_code), user, student_guids)
+        return context.check_context(get_tenant_by_state_code(state_code), user, student_ids)
 
 
 def get_current_context(params):

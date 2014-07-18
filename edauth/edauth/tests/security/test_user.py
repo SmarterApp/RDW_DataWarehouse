@@ -121,12 +121,12 @@ class TestUser(unittest.TestCase):
         uc = UserContext(rel_chain)
         all_context = uc.get_all_context('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_2')
         self.assertEqual(all_context['state_code'], {'CA'})
-        self.assertEqual(all_context['district_guid'], set())
-        self.assertEqual(all_context['school_guid'], set())
+        self.assertEqual(all_context['district_id'], set())
+        self.assertEqual(all_context['school_id'], set())
         all_context = uc.get_all_context('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1')
         self.assertEqual(all_context['state_code'], set())
-        self.assertEqual(all_context['district_guid'], {'1'})
-        self.assertEqual(all_context['school_guid'], {'3'})
+        self.assertEqual(all_context['district_id'], {'1'})
+        self.assertEqual(all_context['school_id'], {'3'})
 
     def test_get_chain_valid_context(self):
         role_rel = [RoleRelation('Role', 'tenant', 'NY', 'District', 'School_1')]

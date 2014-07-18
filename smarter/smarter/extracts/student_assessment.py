@@ -35,8 +35,8 @@ def get_extract_assessment_query(params):
     :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit
     """
     state_code = params.get(Constants.STATECODE)
-    district_guid = params.get(Constants.DISTRICTGUID)
-    school_guid = params.get(Constants.SCHOOLGUID)
+    district_id = params.get(Constants.DISTRICTGUID)
+    school_id = params.get(Constants.SCHOOLGUID)
     asmt_grade = params.get(Constants.ASMTGRADE)
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_year = params.get(Constants.ASMTYEAR)
@@ -59,11 +59,11 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome_vw.c.where_taken_name.label(fact_asmt_outcome_vw_label.get('where_taken_name', 'name_asmt_location')),
                                     fact_asmt_outcome_vw.c.asmt_grade.label(fact_asmt_outcome_vw_label.get(Constants.ASMT_GRADE, Constants.ASMT_GRADE)),
                                     dim_inst_hier.c.state_code.label(dim_inst_hier_label.get(Constants.STATE_CODE, 'code_state')),
-                                    dim_inst_hier.c.district_guid.label(dim_inst_hier_label.get(Constants.DISTRICT_GUID, 'name_distrct')),
+                                    dim_inst_hier.c.district_id.label(dim_inst_hier_label.get(Constants.DISTRICT_ID, 'name_distrct')),
                                     dim_inst_hier.c.district_name.label(dim_inst_hier_label.get(Constants.DISTRICT_NAME, 'name_distrct')),
-                                    dim_inst_hier.c.school_guid.label(dim_inst_hier_label.get(Constants.SCHOOL_GUID, 'guid_school')),
+                                    dim_inst_hier.c.school_id.label(dim_inst_hier_label.get(Constants.SCHOOL_ID, 'guid_school')),
                                     dim_inst_hier.c.school_name.label(dim_inst_hier_label.get(Constants.SCHOOL_NAME, 'name_school')),
-                                    dim_student.c.student_guid.label(dim_student_label.get(Constants.STUDENT_GUID, 'guid_student')),
+                                    dim_student.c.student_id.label(dim_student_label.get(Constants.STUDENT_ID, 'guid_student')),
                                     dim_student.c.first_name.label(dim_student_label.get('first_name', 'first_name')),
                                     dim_student.c.middle_name.label(dim_student_label.get('middle_name', 'middle_name')),
                                     dim_student.c.last_name.label(dim_student_label.get('last_name', 'last_name')),
@@ -134,10 +134,10 @@ def get_extract_assessment_query(params):
         query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-        if school_guid is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
-        if district_guid is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
+        if school_id is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_id == school_id))
+        if district_id is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.district_id == district_id))
         if asmt_year is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
         if asmt_subject is not None:
@@ -145,7 +145,7 @@ def get_extract_assessment_query(params):
         if asmt_grade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
         if student:
-            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student)))
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student)))
 
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
@@ -174,8 +174,8 @@ def get_extract_assessment_item_and_raw_query(params, extract_type):
                                      dim_asmt.c.effective_date,
                                      fact_asmt_outcome_vw.c.asmt_subject,
                                      fact_asmt_outcome_vw.c.asmt_grade,
-                                     fact_asmt_outcome_vw.c.district_guid,
-                                     fact_asmt_outcome_vw.c.student_guid],
+                                     fact_asmt_outcome_vw.c.district_id,
+                                     fact_asmt_outcome_vw.c.student_id],
                                     from_obj=[fact_asmt_outcome_vw
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
                                     permission=get_required_permission(extract_type),

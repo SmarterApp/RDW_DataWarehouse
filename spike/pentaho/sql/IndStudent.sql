@@ -1,4 +1,4 @@
-SELECT fact_asmt_outcome.student_guid,
+SELECT fact_asmt_outcome.student_id,
        dim_student.first_name                         AS
        student_first_name,
        dim_student.middle_name                        AS
@@ -7,9 +7,9 @@ SELECT fact_asmt_outcome.student_guid,
        student_last_name,
        dim_student.grade                              AS
        grade,
-       dim_student.district_guid                        AS
+       dim_student.district_id                        AS
        district_id,
-       dim_student.school_guid                          AS
+       dim_student.school_id                          AS
        school_id,
        dim_student.state_code                         AS
        state_code,
@@ -113,8 +113,8 @@ SELECT fact_asmt_outcome.student_guid,
        teacher_last_name
 FROM   fact_asmt_outcome
        JOIN dim_student
-         ON fact_asmt_outcome.student_guid =
-                 dim_student.student_guid
+         ON fact_asmt_outcome.student_id =
+                 dim_student.student_id
             AND fact_asmt_outcome.section_guid =
                 dim_student.section_guid
        JOIN dim_staff
@@ -130,5 +130,5 @@ FROM   fact_asmt_outcome
             AND dim_asmt.asmt_type = 'SUMMATIVE'
 WHERE  fact_asmt_outcome.most_recent
        AND fact_asmt_outcome.status = 'C'
-       AND fact_asmt_outcome.student_guid = 'aeed1057-82ad-46c8-bf24-b0dffc171669'
+       AND fact_asmt_outcome.student_id = 'aeed1057-82ad-46c8-bf24-b0dffc171669'
 ORDER  BY dim_asmt.asmt_subject DESC

@@ -52,11 +52,11 @@ class PII(BaseRole):
                 expr.append(*[table.c[k].in_(v) for table in self.get_context_tables(query)])
         return query.where(and_(or_(*expr)))
 
-    def check_context(self, tenant, user, student_guids):
+    def check_context(self, tenant, user, student_ids):
         '''
         Given a list of student guids, return true if user guid has access to those students
         '''
-        query = super().get_students(tenant, student_guids)
+        query = super().get_students(tenant, student_ids)
         query = query.where(or_(*self.get_context(tenant, user)))
         results = self.connector.get_result(query)
-        return len(student_guids) == len(results)
+        return len(student_ids) == len(results)

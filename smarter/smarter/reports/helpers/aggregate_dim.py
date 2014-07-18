@@ -34,7 +34,7 @@ def get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtTy
 
 def get_aggregate_dim_cache_route(stateCode, districtGuid, schoolGuid, asmtType, asmtYear, tenant, subject_key, subject):
     '''
-    If school_guid is present, return none - do not cache
+    If school_id is present, return none - do not cache
     '''
     if schoolGuid is not None:
         return None  # do not cache school level
@@ -105,19 +105,19 @@ def _get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtT
 
 
 def get_select_for_state_view(dim_inst_hier, state_code):
-    return select([distinct(dim_inst_hier.c.district_guid).label(Constants.ID), dim_inst_hier.c.district_name.label(Constants.NAME)], from_obj=[dim_inst_hier]).where(dim_inst_hier.c.state_code == state_code)
+    return select([distinct(dim_inst_hier.c.district_id).label(Constants.ID), dim_inst_hier.c.district_name.label(Constants.NAME)], from_obj=[dim_inst_hier]).where(dim_inst_hier.c.state_code == state_code)
 
 
-def get_select_for_district_view(dim_inst_hier, state_code, district_guid):
-    return select([distinct(dim_inst_hier.c.school_guid).label(Constants.ID), dim_inst_hier.c.school_name.label(Constants.NAME)], from_obj=[dim_inst_hier])\
-        .where(and_(dim_inst_hier.c.state_code == state_code, dim_inst_hier.c.district_guid == district_guid))
+def get_select_for_district_view(dim_inst_hier, state_code, district_id):
+    return select([distinct(dim_inst_hier.c.school_id).label(Constants.ID), dim_inst_hier.c.school_name.label(Constants.NAME)], from_obj=[dim_inst_hier])\
+        .where(and_(dim_inst_hier.c.state_code == state_code, dim_inst_hier.c.district_id == district_id))
 
 
-def get_select_for_school_view(fact_asmt_outcome, state_code, district_guid, school_guid, asmtYear, asmtType, subject):
+def get_select_for_school_view(fact_asmt_outcome, state_code, district_id, school_id, asmtYear, asmtType, subject):
     return select([distinct(fact_asmt_outcome.c.asmt_grade).label(Constants.ID), fact_asmt_outcome.c.asmt_grade.label(Constants.NAME)], from_obj=[fact_asmt_outcome])\
         .where(and_(fact_asmt_outcome.c.state_code == state_code,
-                    fact_asmt_outcome.c.district_guid == district_guid,
-                    fact_asmt_outcome.c.school_guid == school_guid,
+                    fact_asmt_outcome.c.district_id == district_id,
+                    fact_asmt_outcome.c.school_id == school_id,
                     fact_asmt_outcome.c.asmt_year == asmtYear,
                     fact_asmt_outcome.c.rec_status == 'C',
                     fact_asmt_outcome.c.asmt_type == asmtType,

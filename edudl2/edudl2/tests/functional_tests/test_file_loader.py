@@ -193,8 +193,8 @@ class FileLoaderFTest(UDLTestHelper):
             result_list = results.fetchall()
             expected_rows = self.get_clean_rows_from_file(csv_file)
             # sort rows
-            student_guid_index = results.keys().index(result_key)  # Determine index of guid_student in results
-            result_list = sorted(result_list, key=lambda i: i[student_guid_index])  # sort results using this index
+            student_id_index = results.keys().index(result_key)  # Determine index of guid_student in results
+            result_list = sorted(result_list, key=lambda i: i[student_id_index])  # sort results using this index
             expected_rows = sorted(expected_rows, key=lambda k: k[key_column])  # sort expected based on the key
             # Loop through rows
             for i in range(len(result_list)):

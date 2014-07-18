@@ -27,11 +27,11 @@ class District:
     District object
     '''
 
-    def __init__(self, district_guid, district_name, state_code, state_name, number_of_schools, city_zip_map, wheretaken_list=None):
+    def __init__(self, district_id, district_name, state_code, state_name, number_of_schools, city_zip_map, wheretaken_list=None):
         '''
         Constructor
         '''
-        self.district_guid = district_guid
+        self.district_id = district_id
         self.district_name = district_name
         self.state_code = state_code
         self.state_name = state_name
@@ -44,7 +44,7 @@ class District:
         '''
         String method
         '''
-        return ("District:[district_id: %s, district_name: %s]" % (self.district_guid, self.district_name))
+        return ("District:[district_id: %s, district_name: %s]" % (self.district_id, self.district_name))
 
 
 class Claim:
@@ -123,7 +123,7 @@ class Teacher(Person):
     Corresponds to teacher table
     '''
 
-    def __init__(self, first_name, last_name, district_guid, state_code, teacher_guid=None, teacher_external_id=None, middle_name=None):
+    def __init__(self, first_name, last_name, district_id, state_code, teacher_guid=None, teacher_external_id=None, middle_name=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
@@ -139,7 +139,7 @@ class Teacher(Person):
         else:
             self.teacher_external_id = teacher_external_id
 
-        self.district_guid = district_guid
+        self.district_id = district_id
         self.state_code = state_code
 
     def __str__(self):
@@ -153,17 +153,17 @@ class StudentBioInfo(Person):
     Used to hold student information until it can be passed to Student Object
     '''
 
-    def __init__(self, student_rec_id, student_guid, first_name, last_name, address_1, dob, district_guid, state_code, gender, email, school_guid, zip_code, city, middle_name=None, address_2=None):
+    def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district_id, state_code, gender, email, school_id, zip_code, city, middle_name=None, address_2=None):
 
         super().__init__(first_name, last_name, middle_name=middle_name)
 
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
         id_generator = IdGen()
-        if student_guid is None:
-            self.student_guid = id_generator.get_id()
+        if student_id is None:
+            self.student_id = id_generator.get_id()
         else:
-            self.student_guid = student_guid
+            self.student_id = student_id
         if student_rec_id is None:
             self.student_rec_id = id_generator.get_id()
         else:
@@ -172,13 +172,13 @@ class StudentBioInfo(Person):
         self.address_1 = address_1
         self.address_2 = address_2
         self.dob = dob
-        self.district_guid = district_guid
+        self.district_id = district_id
         self.city = city
         self.state_code = state_code
         self.zip_code = zip_code
         self.gender = gender
         self.email = email
-        self.school_guid = school_guid
+        self.school_id = school_id
 
     def __str__(self):
         return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))

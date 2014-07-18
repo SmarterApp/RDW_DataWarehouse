@@ -543,8 +543,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                             dim_asmt.c.effective_date,
                             fact_asmt_outcome_vw.c.asmt_subject,
                             fact_asmt_outcome_vw.c.asmt_grade,
-                            fact_asmt_outcome_vw.c.district_guid,
-                            fact_asmt_outcome_vw.c.student_guid],
+                            fact_asmt_outcome_vw.c.district_id,
+                            fact_asmt_outcome_vw.c.student_id],
                            from_obj=[fact_asmt_outcome_vw
                                      .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))])
 

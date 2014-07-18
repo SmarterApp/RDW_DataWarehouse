@@ -144,7 +144,7 @@ class DataGenerationValidation(unittest.TestCase):
         print('TC2: Passed: Validate min/Max assessment score, cut score and assessment performance level names')
 
     # TC3: Validate School Categoty
-    # dim_inst_hier--> school category/ school_guid
+    # dim_inst_hier--> school category/ school_id
     def test_grade(self):
         expected_school_category = ['High School', 'Middle School', 'Elementary School']
         with open(DataGenerationValidation.dim_inst_hier_csv, 'r') as csvfile:
@@ -156,7 +156,7 @@ class DataGenerationValidation(unittest.TestCase):
                 # check the value is available in the List ot not if not add value in the list so we can compare with expected_school_categoty
                 if all_school not in actual_school_category:
                     actual_school_category.append(all_school)
-                school_id = school['school_guid']
+                school_id = school['school_id']
                 # Get all the IDs for each school_categoty (High, Middle & Elementery) - without repeating school category
                 if dict.get(all_school):
                     dict[all_school].append(school_id)
@@ -164,7 +164,7 @@ class DataGenerationValidation(unittest.TestCase):
                     dict[all_school] = [school_id]
             # Comparing school category
             assert sorted(expected_school_category) == sorted(actual_school_category), 'School Category does not match'
-        # get school_guid from dim_section and check the grades
+        # get school_id from dim_section and check the grades
         csv_files = [DataGenerationValidation.fact_asmt_outcome_csv, DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_student_csv]
         for each_file in csv_files:
             with open(each_file, 'r') as csvfile:
@@ -176,15 +176,15 @@ class DataGenerationValidation(unittest.TestCase):
                 for values in col_val:
                     if os.path.basename(each_file)[:-4] == 'dim_section'or os.path.basename(each_file)[:-4] == 'dim_student':
                         section_grade = values['grade']
-                        school_guid = values['school_guid']
+                        school_id = values['school_id']
                     else:
                         section_grade = values['asmt_grade']
-                        school_guid = values['school_guid']
+                        school_id = values['school_id']
                     if section_grade in grade_dict:
-                        if school_guid not in grade_dict[section_grade]:
-                            grade_dict[section_grade].append(school_guid)
+                        if school_id not in grade_dict[section_grade]:
+                            grade_dict[section_grade].append(school_id)
                     else:
-                        grade_dict[section_grade] = [school_guid]
+                        grade_dict[section_grade] = [school_id]
                     if section_grade not in actual_grade:
                         actual_grade.append(section_grade)
                 assert sorted(expexted_grade) == sorted(actual_grade), ('Expected Grades:', sorted(expexted_grade), 'but found:', sorted(actual_grade), 'in', os.path.basename(each_file)[:-4])
@@ -274,9 +274,9 @@ class DataGenerationValidation(unittest.TestCase):
             with open(each_csv, 'r') as csvfile:
                 col_val = csv.DictReader(csvfile, delimiter=',')
                 for values in col_val:
-                    district_guid = values['district_guid']
-                    if district_guid != 'NA':
-                        district_set.add(district_guid)
+                    district_id = values['district_id']
+                    if district_id != 'NA':
+                        district_set.add(district_id)
 
             assert DISTRICT_COUNT == len(district_set), 'District count in config file is ' + str(DISTRICT_COUNT) + ' but District count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(district_set))
         print('TC7: Passed: Count overall number of discticts from CSVs and compare with Config file')
@@ -323,9 +323,9 @@ class DataGenerationValidation(unittest.TestCase):
             with open(each_csv, 'r') as csvfile:
                 col_val = csv.DictReader(csvfile, delimiter=',')
                 for values in col_val:
-                    school_guid = values['school_guid']
-                    if school_guid != 'NA':
-                        school_set.add(school_guid)
+                    school_id = values['school_id']
+                    if school_id != 'NA':
+                        school_set.add(school_id)
 #            assert min_schools <= len(school_set) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
             assert min_final_total <= len(school_set), 'Min School count in config file is ' + str(min_final_total) + ' Max School count in config file is ' + 'but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
         print('TC8: Passed: Count overall number of schools from CSVs and compare with Config file ')
@@ -361,8 +361,8 @@ class DataGenerationValidation(unittest.TestCase):
         with open(DataGenerationValidation.dim_student_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
-                student_guid = values['student_guid']
-                student_list.append(student_guid)
+                student_id = values['student_id']
+                student_list.append(student_id)
         student_list = list(set(student_list))
         assert final_min_total_num <= len(student_list), 'Min Student count in config file is ' + str(final_min_total_num) + ' but Student count in is ' + str(len(student_list))
         print('TC9: Passed: Count overall number of students from CSVs and compare with Config file ')
@@ -394,12 +394,12 @@ class DataGenerationValidation(unittest.TestCase):
         with open(DataGenerationValidation.fact_asmt_outcome_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
-                student_guid = values['student_guid']
+                student_id = values['student_id']
                 section_guid = values['section_guid']
-                if student_guid in student_id_dict:
-                        student_id_dict[student_guid].append(section_guid)
+                if student_id in student_id_dict:
+                        student_id_dict[student_id].append(section_guid)
                 else:
-                    student_id_dict[student_guid] = [section_guid]
+                    student_id_dict[student_id] = [section_guid]
         for key, value in student_id_dict.items():
             if len(value) == 2:
                 if (value[0] in math_guid and value[1] in ela_guid) or (value[1] in math_guid and value[0] in ela_guid):

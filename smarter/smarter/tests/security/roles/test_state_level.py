@@ -53,7 +53,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             student_reg = connection.get_table(Constants.STUDENT_REG)
-            query = select([student_reg.c.school_guid],
+            query = select([student_reg.c.school_id],
                            from_obj=([student_reg]))
             state_level = StateLevel(connection, role)
             clause = state_level.get_context(self.tenant, self.user)
@@ -72,7 +72,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             student_reg = connection.get_table(Constants.STUDENT_REG)
-            query = select([student_reg.c.school_guid],
+            query = select([student_reg.c.school_id],
                            from_obj=([student_reg]))
             state_level = StateLevel(connection, role)
             clause = state_level.get_context(self.tenant, self.user)
@@ -134,7 +134,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
 
         with UnittestEdcoreDBConnection() as connection:
             dim_student = connection.get_table(Constants.DIM_STUDENT)
-            query = select([dim_student.c.student_guid], from_obj=[dim_student])
+            query = select([dim_student.c.student_id], from_obj=[dim_student])
             state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
             query = state_level.add_context(self.tenant, self.user, query)
             self.assertIsNone(query._whereclause)
@@ -150,7 +150,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
 
         with UnittestEdcoreDBConnection() as connection:
             dim_student = connection.get_table(Constants.DIM_STUDENT)
-            query = select([dim_student.c.student_guid], from_obj=[dim_student])
+            query = select([dim_student.c.student_id], from_obj=[dim_student])
             state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
             query = state_level.add_context(get_unittest_tenant_name(), self.user, query)
             self.assertIsNone(query._whereclause)
@@ -166,7 +166,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
         # Checks that the query has applied where clause
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
             state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
             query = state_level.add_context(get_unittest_tenant_name(), self.user, query)
             self.assertIsNotNone(query._whereclause)

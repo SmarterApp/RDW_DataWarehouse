@@ -22,16 +22,16 @@ class TestMetadataUtil(unittest.TestCase):
                                Column('inst_hier_rec_id', BigInteger, primary_key=True),
                                MetaColumn('batch_guid', String(50), nullable=True),
                                Column('state_code', String(2), nullable=False, info={'natural_key': True}),
-                               Column('district_guid', String(50), nullable=False, info={'natural_key': True}),
+                               Column('district_id', String(50), nullable=False, info={'natural_key': True}),
                                Column('district_name', String(256), nullable=False),
-                               Column('school_guid', String(50), nullable=False, info={'natural_key': True}),
+                               Column('school_id', String(50), nullable=False, info={'natural_key': True}),
                                Column('school_name', String(256), nullable=False),
                                MetaColumn('from_date', String(8), nullable=False),
                                MetaColumn('to_date', String(8), nullable=True),
                                MetaColumn('rec_status', String(1), nullable=False))
         Index('dim_inst_hier_idx', test_dim_table.c.inst_hier_rec_id, unique=True)
-        Index('dim_inst_hier_codex', test_dim_table.c.state_code, test_dim_table.c.district_guid,
-              test_dim_table.c.school_guid, unique=False)
+        Index('dim_inst_hier_codex', test_dim_table.c.state_code, test_dim_table.c.district_id,
+              test_dim_table.c.school_id, unique=False)
 
         test_fact_table = Table('fact_asmt_outcome_vw', self.__metadata,
                                 Column('fact_asmt_outcome_vw_rec_id', BigInteger, primary_key=True),
@@ -47,7 +47,7 @@ class TestMetadataUtil(unittest.TestCase):
 
         self.__test_dim_table = test_dim_table
         self.__test_fact_table = test_fact_table
-        self.__nkcol = [test_dim_table.c.state_code, test_dim_table.c.district_guid, test_dim_table.c.school_guid]
+        self.__nkcol = [test_dim_table.c.state_code, test_dim_table.c.district_id, test_dim_table.c.school_id]
         self.__mkcol = [test_dim_table.c.batch_guid, test_dim_table.c.from_date, test_dim_table.c.to_date, test_dim_table.c.rec_status]
         self.__pkcol = [test_dim_table.c.inst_hier_rec_id]
         self.__test_fact_table_pkcol = [test_fact_table.c.fact_asmt_outcome_vw_rec_id]

@@ -40,8 +40,8 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     0. Get two foreign keys: asmt_rec_id and student_rec_id
     1. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome_vw. But for columns inst_hier_rec_id and student_rec_id ,
        put the temporary value as -1
-    2. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
-    3. Update foreign key student_rec_id by comparing student_guid, batch_guid
+    2. Update foreign key inst_hier_rec_id by comparing district_id, school_id and state_code
+    3. Update foreign key student_rec_id by comparing student_id, batch_guid
     '''
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as conn:
         # Drops FK

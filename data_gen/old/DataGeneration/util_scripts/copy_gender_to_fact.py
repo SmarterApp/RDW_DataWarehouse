@@ -22,7 +22,7 @@ def read_student_file(filename):
         creader = csv.DictReader(csv_file)
         student_dict = {}
         for row in creader:
-            student_dict[row['student_guid']] = row['gender']
+            student_dict[row['student_id']] = row['gender']
 
     return student_dict
 
@@ -39,12 +39,12 @@ def read_write_fact(fact_file, output_file, student_dict):
 
             header = next(fact_reader)
             out_writer.writerow(header)
-            student_guid_index = header.index('student_guid')
+            student_id_index = header.index('student_id')
             gender_index = header.index('gender')
 
             for row in fact_reader:
-                student_guid = row[student_guid_index]
-                student_gender = student_dict[student_guid]
+                student_id = row[student_id_index]
+                student_gender = student_dict[student_id]
                 out_row = row[:]
                 out_row[gender_index] = student_gender
                 out_writer.writerow(out_row)

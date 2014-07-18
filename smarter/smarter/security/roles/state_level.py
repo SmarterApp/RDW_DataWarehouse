@@ -45,11 +45,11 @@ class StateLevel(BaseRole):
             query = query.where(or_(*[table.columns.state_code.in_(context) for table in self.get_context_tables(query)]))
         return query
 
-    def check_context(self, tenant, user, student_guids):
+    def check_context(self, tenant, user, student_ids):
         '''
         Returns true if it has context to the list of student guids
         '''
-        query = super().get_students(tenant, student_guids)
+        query = super().get_students(tenant, student_ids)
         query = query.where(or_(*self.get_context(tenant, user)))
         results = self.connector.get_result(query)
-        return len(student_guids) == len(results)
+        return len(student_ids) == len(results)

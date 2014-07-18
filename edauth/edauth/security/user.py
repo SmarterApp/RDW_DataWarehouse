@@ -27,12 +27,12 @@ class RoleRelation(object):
     '''
     Role/Relationship information
     '''
-    def __init__(self, role, tenant, state_code, district_guid, school_guid):
+    def __init__(self, role, tenant, state_code, district_id, school_id):
         self.role = role
         self.tenant = tenant
         self.state_code = state_code
-        self.district_guid = district_guid
-        self.school_guid = school_guid
+        self.district_id = district_id
+        self.school_id = school_id
 
 
 class UserContext(object):
@@ -49,11 +49,11 @@ class UserContext(object):
             self.build_hierarchy(row)
             tenant = self.__tenant_context_map.get(row.tenant)
             role = tenant.get(row.role)
-            role = {'state_code': set(), 'district_guid': set(), 'school_guid': set()} if role is None else role
-            if row.school_guid:
-                role.get('school_guid').add(row.school_guid)
-            elif row.district_guid:
-                role.get('district_guid').add(row.district_guid)
+            role = {'state_code': set(), 'district_id': set(), 'school_id': set()} if role is None else role
+            if row.school_id:
+                role.get('school_id').add(row.school_id)
+            elif row.district_id:
+                role.get('district_id').add(row.district_id)
             elif row.state_code:
                 role.get('state_code').add(row.state_code)
             tenant[row.role] = role
@@ -63,10 +63,10 @@ class UserContext(object):
         return self.get_all_context(tenant, role).get('state_code')
 
     def get_districts(self, tenant, role):
-        return self.get_all_context(tenant, role).get('district_guid')
+        return self.get_all_context(tenant, role).get('district_id')
 
     def get_schools(self, tenant, role):
-        return self.get_all_context(tenant, role).get('school_guid')
+        return self.get_all_context(tenant, role).get('school_id')
 
     def get_all_context(self, tenant, role):
         return self.__tenant_context_map[tenant][role] if tenant in self.__tenant_context_map and role in self.__tenant_context_map[tenant] else {}
@@ -102,7 +102,7 @@ class UserContext(object):
         With a role relation object, traverse to append to the existing current hierarchy
         '''
         head = current
-        for guid in [role_rel.state_code, role_rel.district_guid, role_rel.school_guid, None]:
+        for guid in [role_rel.state_code, role_rel.district_id, role_rel.school_id, None]:
             if guid:
                 if current['guid'].get(guid) is None:
                     current['guid'][guid] = self._get_default_permission()
@@ -225,7 +225,7 @@ class User(object):
             if Roles.has_undefined_roles([rel_chain.role]):
                 rel_chain.role = default_permission
             elif rel_chain.role != default_permission:
-                appended_role_rel = RoleRelation(default_permission, rel_chain.tenant, rel_chain.state_code, rel_chain.district_guid, rel_chain.school_guid)
+                appended_role_rel = RoleRelation(default_permission, rel_chain.tenant, rel_chain.state_code, rel_chain.district_id, rel_chain.school_id)
                 role_inst_rel_list += self._populate_role_relation(appended_role_rel)
             role_inst_rel_list += self._populate_role_relation(rel_chain)
         # If there is no roles, set it to an invalid one so user can logout
@@ -239,7 +239,7 @@ class User(object):
         known_tenants = get_all_tenants()
         new_rel_list = []
         self._add_role(rel_chain.role)
-        if rel_chain.tenant is None and rel_chain.state_code is None and rel_chain.district_guid is None and rel_chain.school_guid is None:
+        if rel_chain.tenant is None and rel_chain.state_code is None and rel_chain.district_id is None and rel_chain.school_id is None:
             # We need to create the rolerelation for consortium level for every tenant that we know of
             for tenant in known_tenants:
                 new_rel_list.append(RoleRelation(rel_chain.role, tenant, None, None, None))

@@ -25,7 +25,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: custom_metadata; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: custom_metadata; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE custom_metadata (
@@ -38,7 +38,7 @@ CREATE TABLE custom_metadata (
 ALTER TABLE edware_sds_1_0.custom_metadata OWNER TO edware;
 
 --
--- Name: dim_asmt; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_asmt; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE dim_asmt (
@@ -106,16 +106,16 @@ ALTER SEQUENCE dim_asmt_asmt_rec_id_seq OWNED BY dim_asmt.asmt_rec_id;
 
 
 --
--- Name: dim_inst_hier; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_inst_hier; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE dim_inst_hier (
     inst_hier_rec_id bigint NOT NULL,
     state_name character varying(32) NOT NULL,
     state_code character varying(2) NOT NULL,
-    district_guid character varying(50) NOT NULL,
+    district_id character varying(50) NOT NULL,
     district_name character varying(256) NOT NULL,
-    school_guid character varying(50) NOT NULL,
+    school_id character varying(50) NOT NULL,
     school_name character varying(256) NOT NULL,
     school_category character varying(20) NOT NULL,
     from_date character varying(8) NOT NULL,
@@ -148,7 +148,7 @@ ALTER SEQUENCE dim_inst_hier_inst_hier_rec_id_seq OWNED BY dim_inst_hier.inst_hi
 
 
 --
--- Name: dim_section; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_section; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE dim_section (
@@ -159,8 +159,8 @@ CREATE TABLE dim_section (
     class_name character varying(256) NOT NULL,
     subject_name character varying(256) NOT NULL,
     state_code character varying(2) NOT NULL,
-    district_guid character varying(50) NOT NULL,
-    school_guid character varying(50) NOT NULL,
+    district_id character varying(50) NOT NULL,
+    school_id character varying(50) NOT NULL,
     from_date character varying(8) NOT NULL,
     to_date character varying(8),
     most_recent boolean
@@ -191,7 +191,7 @@ ALTER SEQUENCE dim_section_section_rec_id_seq OWNED BY dim_section.section_rec_i
 
 
 --
--- Name: dim_staff; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_staff; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE dim_staff (
@@ -203,8 +203,8 @@ CREATE TABLE dim_staff (
     section_guid character varying(50) NOT NULL,
     hier_user_type character varying(10) NOT NULL,
     state_code character varying(2) NOT NULL,
-    district_guid character varying(50) NOT NULL,
-    school_guid character varying(50) NOT NULL,
+    district_id character varying(50) NOT NULL,
+    school_id character varying(50) NOT NULL,
     from_date character varying(8) NOT NULL,
     to_date character varying(8),
     most_recent boolean
@@ -235,12 +235,12 @@ ALTER SEQUENCE dim_staff_staff_rec_id_seq OWNED BY dim_staff.staff_rec_id;
 
 
 --
--- Name: dim_student; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_student; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE dim_student (
     student_rec_id bigint NOT NULL,
-    student_guid character varying(50) NOT NULL,
+    student_id character varying(50) NOT NULL,
     first_name character varying(256) NOT NULL,
     middle_name character varying(256),
     last_name character varying(256) NOT NULL,
@@ -254,8 +254,8 @@ CREATE TABLE dim_student (
     section_guid character varying(50) NOT NULL,
     grade character varying(10) NOT NULL,
     state_code character varying(2) NOT NULL,
-    district_guid character varying(50) NOT NULL,
-    school_guid character varying(50) NOT NULL,
+    district_id character varying(50) NOT NULL,
+    school_id character varying(50) NOT NULL,
     from_date character varying(8) NOT NULL,
     to_date character varying(8),
     most_recent boolean
@@ -286,13 +286,13 @@ ALTER SEQUENCE dim_student_student_rec_id_seq OWNED BY dim_student.student_rec_i
 
 
 --
--- Name: external_user_student_rel; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: external_user_student_rel; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE external_user_student_rel (
-    external_user_student_guid character varying(50) NOT NULL,
+    external_user_student_id character varying(50) NOT NULL,
     external_user_guid character varying(256) NOT NULL,
-    student_guid character varying(50) NOT NULL,
+    student_id character varying(50) NOT NULL,
     from_date character varying(8) NOT NULL,
     to_date character varying(8)
 );
@@ -301,17 +301,17 @@ CREATE TABLE external_user_student_rel (
 ALTER TABLE edware_sds_1_0.external_user_student_rel OWNER TO edware;
 
 --
--- Name: fact_asmt_outcome; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE fact_asmt_outcome (
     asmt_outcome_rec_id bigint NOT NULL,
     asmt_rec_id bigint NOT NULL,
-    student_guid character varying(50) NOT NULL,
+    student_id character varying(50) NOT NULL,
     teacher_guid character varying(50) NOT NULL,
     state_code character varying(2) NOT NULL,
-    district_guid character varying(50) NOT NULL,
-    school_guid character varying(50) NOT NULL,
+    district_id character varying(50) NOT NULL,
+    school_id character varying(50) NOT NULL,
     section_guid character varying(50) NOT NULL,
     inst_hier_rec_id bigint NOT NULL,
     section_rec_id bigint NOT NULL,
@@ -384,7 +384,7 @@ ALTER SEQUENCE fact_asmt_outcome_asmt_outcome_rec_id_seq OWNED BY fact_asmt_outc
 
 
 --
--- Name: user_mapping; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: user_mapping; Type: TABLE; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE TABLE user_mapping (
@@ -496,7 +496,7 @@ SELECT pg_catalog.setval('dim_asmt_asmt_rec_id_seq', 1, false);
 -- Data for Name: dim_inst_hier; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY dim_inst_hier (inst_hier_rec_id, state_name, state_code, district_guid, district_name, school_guid, school_name, school_category, from_date, to_date, most_recent) FROM stdin;
+COPY dim_inst_hier (inst_hier_rec_id, state_name, state_code, district_id, district_name, school_id, school_name, school_category, from_date, to_date, most_recent) FROM stdin;
 243	New York	NY	228	Sunset School District	242	Sunset - Eastern Elementary	Elementary School	20000101	99991231	t
 246	New York	NY	228	Sunset School District	245	Sunset - Western Middle	Middle School	20000101	99991231	t
 249	New York	NY	228	Sunset School District	248	Sunset Central High	High School	20000101	99991231	t
@@ -528,7 +528,7 @@ SELECT pg_catalog.setval('dim_inst_hier_inst_hier_rec_id_seq', 1, false);
 -- Data for Name: dim_section; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY dim_section (section_rec_id, section_guid, section_name, grade, class_name, subject_name, state_code, district_guid, school_guid, from_date, to_date, most_recent) FROM stdin;
+COPY dim_section (section_rec_id, section_guid, section_name, grade, class_name, subject_name, state_code, district_id, school_id, from_date, to_date, most_recent) FROM stdin;
 346	345	section 1	3	Math 112	Math	NY	228	242	20120101	99991231	t
 533	345	section 1	3	ELA 102	ELA	NY	228	242	20120101	99991231	t
 733	732	section 1	7	Math 112	Math	NY	228	245	20120101	99991231	t
@@ -613,7 +613,7 @@ SELECT pg_catalog.setval('dim_section_section_rec_id_seq', 1, false);
 -- Data for Name: dim_staff; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY dim_staff (staff_rec_id, staff_guid, first_name, middle_name, last_name, section_guid, hier_user_type, state_code, district_guid, school_guid, from_date, to_date, most_recent) FROM stdin;
+COPY dim_staff (staff_rec_id, staff_guid, first_name, middle_name, last_name, section_guid, hier_user_type, state_code, district_id, school_id, from_date, to_date, most_recent) FROM stdin;
 952	951	Alleen	Jeanne	Fagan	None	Staff	NY	229	None	20100101	99991231	t
 999	963	Almar	Gerald	Smith	974	Teacher	NY	229	936	20100101	99991231	t
 546	270	Annies	Pamela	Lage	345	Teacher	NY	228	242	20100101	99991231	t
@@ -818,7 +818,7 @@ SELECT pg_catalog.setval('dim_staff_staff_rec_id_seq', 1, false);
 -- Data for Name: dim_student; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY dim_student (student_rec_id, student_guid, first_name, middle_name, last_name, address_1, address_2, city, zip_code, gender, email, dob, section_guid, grade, state_code, district_guid, school_guid, from_date, to_date, most_recent) FROM stdin;
+COPY dim_student (student_rec_id, student_id, first_name, middle_name, last_name, address_1, address_2, city, zip_code, gender, email, dob, section_guid, grade, state_code, district_id, school_id, from_date, to_date, most_recent) FROM stdin;
 348	a016a4c1-5aca-4146-a85b-ed1172a01a4d	Richard	\N	Mccarty	493 Longfin South Ave	\N	Common tern Gurnard	11363	male	richard.mccarty@gangessharkbrownhyaenaprimary.edu	20040312	345	3	NY	228	242	20110123	99991231	t
 350	c72e98d5-ddb6-4cde-90d2-cdb215e67e84	Carey	\N	Odell	592 Pencilsmelt Way	\N	Common tern Gurnard	10461	female	carey.odell@gangessharkbrownhyaenaprimary.edu	20040805	345	3	NY	228	242	20110113	99991231	t
 353	72d8248d-0e8f-404b-8763-a5b7bcdaf535	Thomas	Roccos	Lavalleys	20 Earthworm Eel Way	\N	Common tern Gurnard	11005	male	thomas.lavalley@gangessharkbrownhyaenaprimary.edu	20040519	345	3	NY	228	242	20110130	99991231	t
@@ -1727,7 +1727,7 @@ SELECT pg_catalog.setval('dim_student_student_rec_id_seq', 1, false);
 -- Data for Name: external_user_student_rel; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY external_user_student_rel (external_user_student_guid, external_user_guid, student_guid, from_date, to_date) FROM stdin;
+COPY external_user_student_rel (external_user_student_id, external_user_guid, student_id, from_date, to_date) FROM stdin;
 \.
 
 
@@ -1735,7 +1735,7 @@ COPY external_user_student_rel (external_user_student_guid, external_user_guid, 
 -- Data for Name: fact_asmt_outcome; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY fact_asmt_outcome (asmt_outcome_rec_id, asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl, asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max, asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max, status, most_recent, batch_guid, asmt_type, asmt_year, asmt_subject, gender, dmg_eth_hsp, dmg_eth_ami, dmg_eth_asn, dmg_eth_blk, dmg_eth_pcf, dmg_eth_wht, dmg_prg_iep, dmg_prg_lep, dmg_prg_504, dmg_prg_tt1, dmg_eth_derived) FROM stdin;
+COPY fact_asmt_outcome (asmt_outcome_rec_id, asmt_rec_id, student_id, teacher_guid, state_code, district_id, school_id, section_guid, inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl, asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max, asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max, status, most_recent, batch_guid, asmt_type, asmt_year, asmt_subject, gender, dmg_eth_hsp, dmg_eth_ami, dmg_eth_asn, dmg_eth_blk, dmg_eth_pcf, dmg_eth_wht, dmg_prg_iep, dmg_prg_lep, dmg_prg_504, dmg_prg_tt1, dmg_eth_derived) FROM stdin;
 1011691	100021	19489898-d469-41e2-babc-265ecbab2337	788	NY	228	248	814	249	885	247	Ganges Shark Rorqual Bleu Junior High	11	11	20150428	28	4	2015	2023	1951	2095	3	2013	1945	2081	2135	2044	2226	1911	1836	1986	2029	1925	2133	C	t	90901b70-ddaa-11e2-a95d-68a86d3c2f82	INTERIM COMPREHENSIVE	2015	ELA	male	f	f	f	f	f	f	f	f	f	t	0
 1011681	100021	1d8cf4f3-6bea-4f39-9b52-cb04fa98d360	720	NY	228	245	732	246	761	247	Ganges Shark Rorqual Bleu Junior High	7	7	20150326	26	3	2015	1976	1898	2054	3	1966	1879	2053	1864	1804	1924	2084	1985	2183	1986	1911	2061	C	t	90901b70-ddaa-11e2-a95d-68a86d3c2f82	INTERIM COMPREHENSIVE	2015	ELA	male	t	f	f	f	t	f	f	f	f	f	3
 1011671	100020	e2f3c6a5-e28b-43e8-817b-fc7afed02b9b	272	NY	228	242	345	243	346	247	Ganges Shark Rorqual Bleu Junior High	3	3	20150317	17	3	2015	1790	1754	1826	2	1825	1777	1873	1825	1765	1885	1590	1514	1666	\N	\N	\N	C	t	90901b70-ddaa-11e2-a95d-68a86d3c2f82	INTERIM COMPREHENSIVE	2015	Math	male	t	f	f	f	f	f	t	t	t	f	3
@@ -2968,7 +2968,7 @@ tlazaro	964
 
 
 --
--- Name: dim_asmt_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_asmt_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY dim_asmt
@@ -2976,7 +2976,7 @@ ALTER TABLE ONLY dim_asmt
 
 
 --
--- Name: dim_inst_hier_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_inst_hier_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY dim_inst_hier
@@ -2984,7 +2984,7 @@ ALTER TABLE ONLY dim_inst_hier
 
 
 --
--- Name: dim_section_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_section_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY dim_section
@@ -2992,7 +2992,7 @@ ALTER TABLE ONLY dim_section
 
 
 --
--- Name: dim_staff_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_staff_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY dim_staff
@@ -3000,7 +3000,7 @@ ALTER TABLE ONLY dim_staff
 
 
 --
--- Name: dim_student_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_student_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY dim_student
@@ -3008,15 +3008,15 @@ ALTER TABLE ONLY dim_student
 
 
 --
--- Name: external_user_student_rel_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: external_user_student_rel_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY external_user_student_rel
-    ADD CONSTRAINT external_user_student_rel_pkey PRIMARY KEY (external_user_student_guid);
+    ADD CONSTRAINT external_user_student_rel_pkey PRIMARY KEY (external_user_student_id);
 
 
 --
--- Name: fact_asmt_outcome_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY fact_asmt_outcome
@@ -3024,7 +3024,7 @@ ALTER TABLE ONLY fact_asmt_outcome
 
 
 --
--- Name: user_mapping_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: user_mapping_pkey; Type: CONSTRAINT; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 ALTER TABLE ONLY user_mapping
@@ -3032,182 +3032,182 @@ ALTER TABLE ONLY user_mapping
 
 
 --
--- Name: custom_metadata_id_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: custom_metadata_id_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX custom_metadata_id_idx ON custom_metadata USING btree (state_code, asmt_subject);
 
 
 --
--- Name: dim_asmt_id_typex; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_asmt_id_typex; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX dim_asmt_id_typex ON dim_asmt USING btree (asmt_rec_id, asmt_type, most_recent);
 
 
 --
--- Name: dim_asmt_rec_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_asmt_rec_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX dim_asmt_rec_idx ON dim_asmt USING btree (asmt_rec_id);
 
 
 --
--- Name: dim_external_user_student_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_external_user_student_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE UNIQUE INDEX dim_external_user_student_idx ON external_user_student_rel USING btree (external_user_student_guid);
-
-
---
--- Name: dim_external_user_student_student_x; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
---
-
-CREATE UNIQUE INDEX dim_external_user_student_student_x ON external_user_student_rel USING btree (external_user_guid, student_guid);
+CREATE UNIQUE INDEX dim_external_user_student_idx ON external_user_student_rel USING btree (external_user_student_id);
 
 
 --
--- Name: dim_inst_hier_codex; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_external_user_student_student_x; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX dim_inst_hier_codex ON dim_inst_hier USING btree (state_code, district_guid, school_guid);
+CREATE UNIQUE INDEX dim_external_user_student_student_x ON external_user_student_rel USING btree (external_user_guid, student_id);
 
 
 --
--- Name: dim_inst_hier_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_inst_hier_codex; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
+--
+
+CREATE INDEX dim_inst_hier_codex ON dim_inst_hier USING btree (state_code, district_id, school_id);
+
+
+--
+-- Name: dim_inst_hier_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX dim_inst_hier_idx ON dim_inst_hier USING btree (inst_hier_rec_id);
 
 
 --
--- Name: dim_section_current_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_section_current_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX dim_section_current_idx ON dim_section USING btree (section_guid, subject_name, grade, most_recent);
 
 
 --
--- Name: dim_section_dim_inst_hier_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_section_dim_inst_hier_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX dim_section_dim_inst_hier_idx ON dim_section USING btree (state_code, district_guid, school_guid, from_date, to_date);
+CREATE INDEX dim_section_dim_inst_hier_idx ON dim_section USING btree (state_code, district_id, school_id, from_date, to_date);
 
 
 --
--- Name: dim_section_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_section_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX dim_section_idx ON dim_section USING btree (section_rec_id);
 
 
 --
--- Name: dim_staff_dim_inst_hier_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_staff_dim_inst_hier_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX dim_staff_dim_inst_hier_idx ON dim_staff USING btree (state_code, district_guid, school_guid, from_date, to_date);
+CREATE INDEX dim_staff_dim_inst_hier_idx ON dim_staff USING btree (state_code, district_id, school_id, from_date, to_date);
 
 
 --
--- Name: dim_staff_id_currentx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_staff_id_currentx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX dim_staff_id_currentx ON dim_staff USING btree (staff_guid, most_recent);
 
 
 --
--- Name: dim_staff_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_staff_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX dim_staff_idx ON dim_staff USING btree (staff_rec_id);
 
 
 --
--- Name: dim_student_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: dim_student_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX dim_student_idx ON dim_student USING btree (student_guid, most_recent);
+CREATE INDEX dim_student_idx ON dim_student USING btree (student_id, most_recent);
 
 
 --
--- Name: fact_asmt_outcome_504; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_504; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX fact_asmt_outcome_504 ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, dmg_prg_504);
 
 
 --
--- Name: fact_asmt_outcome_district_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_district_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX fact_asmt_outcome_district_idx ON fact_asmt_outcome USING btree (district_guid, most_recent);
+CREATE INDEX fact_asmt_outcome_district_idx ON fact_asmt_outcome USING btree (district_id, most_recent);
 
 
 --
--- Name: fact_asmt_outcome_gender; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_gender; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX fact_asmt_outcome_gender ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, gender);
 
 
 --
--- Name: fact_asmt_outcome_grade; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_grade; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX fact_asmt_outcome_grade ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, asmt_grade);
 
 
 --
--- Name: fact_asmt_outcome_hier_keyx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_hier_keyx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX fact_asmt_outcome_hier_keyx ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, district_guid, school_guid);
+CREATE INDEX fact_asmt_outcome_hier_keyx ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, district_id, school_id);
 
 
 --
--- Name: fact_asmt_outcome_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX fact_asmt_outcome_idx ON fact_asmt_outcome USING btree (asmt_outcome_rec_id);
 
 
 --
--- Name: fact_asmt_outcome_iep; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_iep; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX fact_asmt_outcome_iep ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, dmg_prg_iep);
 
 
 --
--- Name: fact_asmt_outcome_lep; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_lep; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX fact_asmt_outcome_lep ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, dmg_prg_lep);
 
 
 --
--- Name: fact_asmt_outcome_school_grade_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_school_grade_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
-CREATE INDEX fact_asmt_outcome_school_grade_idx ON fact_asmt_outcome USING btree (school_guid, district_guid, asmt_grade, most_recent);
-
-
---
--- Name: fact_asmt_outcome_student_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
---
-
-CREATE INDEX fact_asmt_outcome_student_idx ON fact_asmt_outcome USING btree (student_guid, most_recent);
+CREATE INDEX fact_asmt_outcome_school_grade_idx ON fact_asmt_outcome USING btree (school_id, district_id, asmt_grade, most_recent);
 
 
 --
--- Name: fact_asmt_outcome_tt1; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: fact_asmt_outcome_student_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
+--
+
+CREATE INDEX fact_asmt_outcome_student_idx ON fact_asmt_outcome USING btree (student_id, most_recent);
+
+
+--
+-- Name: fact_asmt_outcome_tt1; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE INDEX fact_asmt_outcome_tt1 ON fact_asmt_outcome USING btree (state_code, most_recent, asmt_type, dmg_prg_tt1);
 
 
 --
--- Name: user_mapping_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
+-- Name: user_mapping_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace:
 --
 
 CREATE UNIQUE INDEX user_mapping_idx ON user_mapping USING btree (user_id);
@@ -3240,4 +3240,3 @@ ALTER TABLE ONLY fact_asmt_outcome
 --
 -- PostgreSQL database dump complete
 --
-

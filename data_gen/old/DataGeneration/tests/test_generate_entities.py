@@ -12,46 +12,46 @@ from DataGeneration.src.models.entities import Student, Section, Assessment, Sta
 class TestGenerateEntities(unittest.TestCase):
 
     def test_generate_students_from_student_info(self):
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    asmt_scores={'Math': None, 'ELA': None})
-        student_info2 = DummyClass(student_rec_ids=[3, 4], student_guid='g456', section_guids={'Math': 'm123', 'ELA': 'e568'},
+        student_info2 = DummyClass(student_rec_ids=[3, 4], student_id='g456', section_guids={'Math': 'm123', 'ELA': 'e568'},
                                    first_name='Lili', last_name='Chen', address_1='add89', city='Seattle', zip_code=12345, gender='female',
-                                   email='lili.chen@email.com', dob=date(2005, 12, 5), grade=2, state_code='WA', district_guid='d568',
-                                   school_guid='s5872', from_date=date.today(), most_recent=True, middle_name=None, to_date=None,
+                                   email='lili.chen@email.com', dob=date(2005, 12, 5), grade=2, state_code='WA', district_id='d568',
+                                   school_id='s5872', from_date=date.today(), most_recent=True, middle_name=None, to_date=None,
                                    asmt_scores={'Math': None, 'ELA': None})
         students = generate_students_from_student_info([student_info1, student_info2])
         self.assertEqual(len(students), 4)
 
     def test_generate_students_from_student_info_2(self):
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    asmt_scores={'Math': None, 'ELA': None})
-        student_info2 = DummyClass(student_rec_ids=[3], student_guid='g456', section_guids={'ELA': 'e568'},
+        student_info2 = DummyClass(student_rec_ids=[3], student_id='g456', section_guids={'ELA': 'e568'},
                                    first_name='Bobbi', last_name='Brown', address_1='add89', city='Seattle', zip_code=12345, gender='female',
-                                   email='bobbi.brown@email.com', dob=date(2005, 12, 5), grade=2, state_code='WA', district_guid='d568',
-                                   school_guid='s5872', from_date=date.today(), most_recent=True, middle_name=None, to_date=None,
+                                   email='bobbi.brown@email.com', dob=date(2005, 12, 5), grade=2, state_code='WA', district_id='d568',
+                                   school_id='s5872', from_date=date.today(), most_recent=True, middle_name=None, to_date=None,
                                    asmt_scores={'ELA': None})
 
         students = generate_students_from_student_info([student_info1, student_info2])
         self.assertEqual(len(students), 3)
 
     def test_generate_students_from_student_info_check_values(self):
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    asmt_scores={'Math': None, 'ELA': None})
 
         students = generate_students_from_student_info([student_info1])
 
         for student in students:
             self.assertIn(student.student_rec_id, [1, 2])
-            self.assertEqual(student.student_guid, 'g123')
+            self.assertEqual(student.student_id, 'g123')
             self.assertEqual(student.first_name, 'Bob')
             self.assertEqual(student.address_1, 'add1')
             self.assertEqual(student.city, 'city1')
@@ -62,8 +62,8 @@ class TestGenerateEntities(unittest.TestCase):
             self.assertIn(student.section_guid, ['m123', 'e123'])
             self.assertEqual(student.grade, 2)
             self.assertEqual(student.state_code, 'GA')
-            self.assertEqual(student.district_guid, 'd123')
-            self.assertEqual(student.school_guid, 's123')
+            self.assertEqual(student.district_id, 'd123')
+            self.assertEqual(student.school_id, 's123')
             self.assertEqual(student.from_date, date.today())
             self.assertIsNone(student.to_date)
             self.assertTrue(student.most_recent)
@@ -74,10 +74,10 @@ class TestGenerateEntities(unittest.TestCase):
         claim_scores2 = [DummyClass(claim_score=1500 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1800, perf_lvl=1) for i in range(4)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1),
                         'ELA': DummyClass(overall_score=1500, interval_min=1400, interval_max=1600, perf_lvl=2, claim_scores=claim_scores2)}
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    #other
                                    asmt_rec_ids={'Math': 'Masmt1', 'ELA': 'Easmt1'}, teacher_guids={'Math': 'Mteach1', 'ELA': 'Eteach1'},
                                    section_rec_ids={'Math': 'MRsec1', 'ELA': 'ERsec1'}, asmt_scores=asmt_scores1,
@@ -97,10 +97,10 @@ class TestGenerateEntities(unittest.TestCase):
         claim_scores2 = [DummyClass(claim_score=1500 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1800, perf_lvl=1) for i in range(4)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1),
                         'ELA': DummyClass(overall_score=1500, interval_min=1400, interval_max=1600, perf_lvl=2, claim_scores=claim_scores2)}
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    #other
                                    asmt_rec_ids={'Math': 'Masmt1', 'ELA': 'Easmt1'}, teacher_guids={'Math': 'Mteach1', 'ELA': 'Eteach1'},
                                    section_rec_ids={'Math': 'MRsec1', 'ELA': 'ERsec1'}, asmt_scores=asmt_scores1,
@@ -108,10 +108,10 @@ class TestGenerateEntities(unittest.TestCase):
                                    asmt_types={'Math': "SUMMATIVE", 'ELA': "SUMMATIVE"}, asmt_years={'ELA': '2099', 'Math': "2099"},
                                    asmt_subjects={'ELA': 'ELA', 'Math': "Math"}, dmg_eth_hsp=True, dmg_eth_ami=False, dmg_eth_asn=False, dmg_eth_blk=False,
                                    dmg_eth_pcf=True, dmg_eth_wht=False, dmg_prg_iep=True, dmg_prg_lep=True, dmg_prg_504=True, dmg_prg_tt1=True)
-        student_info2 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info2 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    #other
                                    asmt_rec_ids={'Math': 'Masmt1', 'ELA': 'Easmt1'}, teacher_guids={'Math': 'Mteach1', 'ELA': 'Eteach1'},
                                    section_rec_ids={'Math': 'MRsec1', 'ELA': 'ERsec1'}, asmt_scores=asmt_scores1,
@@ -131,10 +131,10 @@ class TestGenerateEntities(unittest.TestCase):
         claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400, perf_lvl=1) for i in range(3)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1)}
 
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    #other
                                    asmt_rec_ids={'Math': 'Masmt1', 'ELA': 'Easmt1'}, teacher_guids={'Math': 'Mteach1', 'ELA': 'Eteach1'},
                                    section_rec_ids={'Math': 'MRsec1', 'ELA': 'ERsec1'}, asmt_scores=asmt_scores1,
@@ -151,11 +151,11 @@ class TestGenerateEntities(unittest.TestCase):
 
         asmt_outcome = asmt_outcomes[0]
         self.assertIsNotNone(asmt_outcome.asmt_rec_id)
-        self.assertEqual(asmt_outcome.student_guid, 'g123')
+        self.assertEqual(asmt_outcome.student_id, 'g123')
         self.assertEqual(asmt_outcome.teacher_guid, 'Mteach1')
         self.assertEqual(asmt_outcome.state_code, 'GA')
-        self.assertEqual(asmt_outcome.district_guid, 'd123')
-        self.assertEqual(asmt_outcome.school_guid, 's123')
+        self.assertEqual(asmt_outcome.district_id, 'd123')
+        self.assertEqual(asmt_outcome.school_id, 's123')
         self.assertEqual(asmt_outcome.section_guid, 'm123')
         self.assertEqual(asmt_outcome.inst_hier_rec_id, 'i5678')
         self.assertEqual(asmt_outcome.section_rec_id, 'MRsec1')
@@ -206,10 +206,10 @@ class TestGenerateEntities(unittest.TestCase):
         claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400, perf_lvl=1) for i in range(4)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1)}
 
-        student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
+        student_info1 = DummyClass(student_rec_ids=[1, 2], student_id='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
                                    first_name='Bob', last_name='Smith', address_1='add1', city='city1', zip_code=12345, gender='male',
-                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_guid='d123',
-                                   school_guid='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
+                                   email='bob.smith@email.com', dob=date(2005, 12, 5), grade=2, state_code='GA', district_id='d123',
+                                   school_id='s123', from_date=date.today(), most_recent=True, middle_name='James', to_date=None,
                                    #other
                                    asmt_rec_ids={'Math': 'Masmt1', 'ELA': 'Easmt1'}, teacher_guids={'Math': 'Mteach1', 'ELA': 'Eteach1'},
                                    section_rec_ids={'Math': 'MRsec1', 'ELA': 'ERsec1'}, asmt_scores=asmt_scores1,
@@ -241,9 +241,9 @@ class TestGenerateEntities(unittest.TestCase):
         params = {
             'state_name': 'North Carolina',
             'state_code': 'NC',
-            'district_guid': 1,
+            'district_id': 1,
             'district_name': 'district_1',
-            'school_guid': 2,
+            'school_id': 2,
             'school_name': 'school_2',
             'school_category': 'High School',
             'from_date': date(2013, 4, 15),
@@ -252,9 +252,9 @@ class TestGenerateEntities(unittest.TestCase):
         institution_hierarchy = generate_institution_hierarchy(**params)
         self.assertEquals(institution_hierarchy.state_name, params['state_name'])
         self.assertEquals(institution_hierarchy.state_code, params['state_code'])
-        self.assertEquals(institution_hierarchy.district_guid, params['district_guid'])
+        self.assertEquals(institution_hierarchy.district_id, params['district_id'])
         self.assertEquals(institution_hierarchy.district_name, params['district_name'])
-        self.assertEquals(institution_hierarchy.school_guid, params['school_guid'])
+        self.assertEquals(institution_hierarchy.school_id, params['school_id'])
         self.assertEquals(institution_hierarchy.school_name, params['school_name'])
         self.assertEquals(institution_hierarchy.school_category, params['school_category'])
         self.assertEquals(institution_hierarchy.from_date, params['from_date'])
@@ -266,8 +266,8 @@ class TestGenerateEntities(unittest.TestCase):
             'section_guid': 1,
             'grade': 9,
             'state_code': 'NC',
-            'district_guid': 2,
-            'school_guid': 3,
+            'district_id': 2,
+            'school_id': 3,
             'school_name': 'school_2',
             'street_names': ['Suffolk', 'President', 'Allen'],
             'from_date': date(2013, 4, 15),
@@ -275,7 +275,7 @@ class TestGenerateEntities(unittest.TestCase):
         }
         student = generate_student(**params)
         self.assertIsInstance(student.student_rec_id, int)
-        self.assertIsInstance(student.student_guid, UUID)
+        self.assertIsInstance(student.student_id, UUID)
         self.assertIsInstance(student.first_name, str)
         self.assertIsInstance(student.last_name, str)
         address_component_words = student.address_1.split()
@@ -297,8 +297,8 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEquals(student.section_guid, params['section_guid'])
         self.assertEquals(student.grade, params['grade'])
         self.assertEquals(student.state_code, params['state_code'])
-        self.assertEquals(student.district_guid, params['district_guid'])
-        self.assertEquals(student.school_guid, params['school_guid'])
+        self.assertEquals(student.district_id, params['district_id'])
+        self.assertEquals(student.school_id, params['school_id'])
         self.assertIsInstance(student.from_date, date)
         self.assertIsInstance(student.most_recent, bool)
 
@@ -308,8 +308,8 @@ class TestGenerateEntities(unittest.TestCase):
             'section_guid': uuid4(),
             'grade': 5,
             'state_code': 'NC',
-            'district_guid': uuid4(),
-            'school_guid': uuid4(),
+            'district_id': uuid4(),
+            'school_id': uuid4(),
             'school_name': 'P.S. 118',
             'street_names': ['Vine, Main, Park'],
             'from_date': date(2013, 4, 23),
@@ -325,8 +325,8 @@ class TestGenerateEntities(unittest.TestCase):
             'subject_name': 'ELA',
             'grade': 9,
             'state_code': 'NC',
-            'district_guid': 1,
-            'school_guid': 2,
+            'district_id': 1,
+            'school_id': 2,
             'section_number': 1,
             'class_number': 2,
             'from_date': date(2013, 4, 15),
@@ -353,8 +353,8 @@ class TestGenerateEntities(unittest.TestCase):
             'subject_name': 'ELA',
             'grade': 9,
             'state_code': 'NC',
-            'district_guid': uuid4(),
-            'school_guid': uuid4(),
+            'district_id': uuid4(),
+            'school_id': uuid4(),
             'from_date': date(2013, 4, 15),
             'most_recent': True
         }
@@ -400,8 +400,8 @@ class TestGenerateEntities(unittest.TestCase):
         params = {
             'hier_user_type': 'Staff',
             'state_code': 'NC',
-            'district_guid': 1,
-            'school_guid': 2,
+            'district_id': 1,
+            'school_id': 2,
             'section_guid': 3,
             'from_date': date(2013, 4, 15),
             'most_recent': True
@@ -415,8 +415,8 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEquals(staff.section_guid, params['section_guid'])
         self.assertEquals(staff.hier_user_type, params['hier_user_type'])
         self.assertEquals(staff.state_code, params['state_code'])
-        self.assertEquals(staff.district_guid, params['district_guid'])
-        self.assertEquals(staff.school_guid, params['school_guid'])
+        self.assertEquals(staff.district_id, params['district_id'])
+        self.assertEquals(staff.school_id, params['school_id'])
         self.assertIsInstance(staff.from_date, date)
         self.assertIsInstance(staff.most_recent, bool)
 
@@ -425,8 +425,8 @@ class TestGenerateEntities(unittest.TestCase):
             'number_of_staff': 8,
             'hier_user_type': 'Teacher',
             'state_code': 'NC',
-            'district_guid': uuid4(),
-            'school_guid': uuid4(),
+            'district_id': uuid4(),
+            'school_id': uuid4(),
             'section_guid': uuid4(),
             'from_date': date(2013, 4, 15),
             'most_recent': True
@@ -445,11 +445,11 @@ class DummyClass:
 #     def test_generate_fact_assessment_outcome(self):
 #         params = {
 #             'asmt_rec_id': 10,
-#             'student_guid': uuid4(),
+#             'student_id': uuid4(),
 #             'teacher_guid': uuid4(),
 #             'state_code': 'NC',
-#             'district_guid': uuid4(),
-#             'school_guid': uuid4(),
+#             'district_id': uuid4(),
+#             'school_id': uuid4(),
 #             'section_guid': uuid4(),
 #             'inst_hier_rec_id': 9,
 #             'section_rec_id': 13,
@@ -492,16 +492,16 @@ class DummyClass:
 #         section_guid = uuid4()
 #         grade = 10
 #         state_code = 'NC'
-#         district_guid = uuid4()
-#         school_guid = uuid4()
+#         district_id = uuid4()
+#         school_id = uuid4()
 #         from_date = date(2013, 4, 23)
 #         most_recent = True
 #         student_1 = Student(100, uuid4(), 'Seth', 'Wimberly', '55 Washington St', 'Brooklyn', 11215,
 #                             'Male', 'swimbery@swimberly.com', date(1988, 1, 1),
-#                             section_guid, grade, state_code, district_guid, school_guid, from_date, most_recent)
+#                             section_guid, grade, state_code, district_id, school_id, from_date, most_recent)
 #         student_2 = Student(100, uuid4(), 'Scott', 'MacGibbon', '65 Washington St', 'Brooklyn', 11215,
 #                             'Male', 'smacgibbon@smacgibbon.com', date(1988, 3, 3),
-#                             section_guid, grade, state_code, district_guid, school_guid, from_date, most_recent)
+#                             section_guid, grade, state_code, district_id, school_id, from_date, most_recent)
 #         students = [student_1, student_2]
 #
 #         claim_score_1_a = ClaimScore(1800, 1700, 1900)
@@ -524,12 +524,12 @@ class DummyClass:
 #             'asmt_rec_id': 111,
 #             'teacher_guid': teacher_guid,
 #             'state_code': state_code,
-#             'district_guid': district_guid,
-#             'school_guid': school_guid,
+#             'district_id': district_id,
+#             'school_id': school_id,
 #             'section_guid': section_guid,
 #             'inst_hier_rec_id': 200,
 #             'section_rec_id': 300,
-#             'where_taken_id': school_guid,
+#             'where_taken_id': school_id,
 #             'where_taken_name': 'P.S. 118',
 #             'asmt_grade': 10,
 #             'enrl_grade': 10,

@@ -13,10 +13,10 @@ class TestSchoolDataProcessor(unittest.TestCase):
 
     def setUp(self):
         self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
-                     AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
-        self.matched_ids_results = {'prev_school_guid': '5f706ksg80hhxs', AttributeFieldConstants.STATE_NAME: 'North Carolina',
+                     AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_ID: '5f706ksg80hhxs'}
+        self.matched_ids_results = {'prev_school_id': '5f706ksg80hhxs', AttributeFieldConstants.STATE_NAME: 'North Carolina',
                                     AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
-                                    AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
+                                    AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_ID: '5f706ksg80hhxs'}
         self.category_trackers = []
 
         self.school_data_processor = SchoolDataProcessor(self.category_trackers)
@@ -42,12 +42,12 @@ class TestSchoolDataProcessor(unittest.TestCase):
         self.school_data_processor._call_matched_ids_trackers.assert_called_with('5f706ksg80hhxs', self.matched_ids_results)
 
     def test__should_call_trackers(self):
-        same_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '5f706ksg80hhxs'}
+        same_school = {AttributeFieldConstants.SCHOOL_ID: '5f706ksg80hhxs', 'prev_school_id': '5f706ksg80hhxs'}
         result = self.school_data_processor._is_matched_school(same_school)
         self.assertTrue(result)
 
     def test__should_not_call_trackers(self):
-        different_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '6g817lsg80hhxs'}
+        different_school = {AttributeFieldConstants.SCHOOL_ID: '5f706ksg80hhxs', 'prev_school_id': '6g817lsg80hhxs'}
         result = self.school_data_processor._is_matched_school(different_school)
         self.assertFalse(result)
 

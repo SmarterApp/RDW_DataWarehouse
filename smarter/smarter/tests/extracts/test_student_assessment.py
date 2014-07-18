@@ -182,8 +182,8 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(results)
         self.assertGreater(len(results), 0)
         # Check for columns are in results
-        self.assertIn('district_guid', results[0])
-        self.assertIn('student_guid', results[0])
+        self.assertIn('district_id', results[0])
+        self.assertIn('student_id', results[0])
 
 
 if __name__ == "__main__":

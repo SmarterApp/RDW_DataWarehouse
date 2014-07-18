@@ -21,15 +21,15 @@
         <Level name="Claim4 Weight" column="asmt_claim_4_score_weight" type="String" uniqueMembers="false"/>
       </Hierarchy>
     </Dimension>
-    <Dimension name="DimStudent" type="StandardDimension" foreignKey="student_guid">
-      <Hierarchy name="Student Hierarchy" primaryKey="student_guid" hasAll="true" allMemberName="All Students">
+    <Dimension name="DimStudent" type="StandardDimension" foreignKey="student_id">
+      <Hierarchy name="Student Hierarchy" primaryKey="student_id" hasAll="true" allMemberName="All Students">
         <Table name="dim_student" schema="edware_sds_1_0"/>
-        <Level name="GUID" column="student_guid" type="String" uniqueMembers="true"/>
+        <Level name="GUID" column="student_id" type="String" uniqueMembers="true"/>
         <Level name="Gender" column="gender" type="String" uniqueMembers="false"/>
         <Level name="Grade" column="grade" type="String" uniqueMembers="false"/>
         <Level name="State Code" column="state_code" type="String" uniqueMembers="false"/>
         <Level name="Zip Code" column="zip_code" type="String" uniqueMembers="false"/>
-        <Level name="Student" column="student_guid" type="Numeric" uniqueMembers="false">
+        <Level name="Student" column="student_id" type="Numeric" uniqueMembers="false">
           <NameExpression>
             <SQL dialect="generic">
 "dim_student"."first_name" || ' ' || "dim_student"."last_name"
@@ -68,11 +68,11 @@
 "dim_staff"."first_name" || ' ' || "dim_staff"."last_name"
             </SQL>
           </NameExpression>
-        </Level>  
+        </Level>
       </Hierarchy>
     </Dimension>
     <Measure name="MeasureCountAsmt" column="asmt_rec_id" datatype="Integer" formatString="####" aggregator="distinct-count" />
-    <Measure name="MeasureCountStudent" column="student_guid" datatype="String" formatString="####" aggregator="distinct-count" />
+    <Measure name="MeasureCountStudent" column="student_id" datatype="String" formatString="####" aggregator="distinct-count" />
     <Measure name="MeasureSumStudent" column="student_rec_id" datatype="Integer" formatString="####" aggregator="sum" />
     <Measure name="MeasureCountSection" column="section_guid" datatype="String" formatString="####" aggregator="distinct-count" />
     <Measure name="MeasureCountInstitution" column="inst_hier_rec_id" datatype="Integer" formatString="####" aggregator="distinct-count" />

@@ -10,7 +10,7 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 DEFAULT_YEAR_BACK = 1
 
 
-def get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade=None, student_guids=None, asmt_year=None):
+def get_student_list_asmt_administration(state_code, district_id, school_id, asmt_grade=None, student_ids=None, asmt_year=None):
     '''
     Get asmt administration for a list of students. There is no PII in the results and it can be stored in shortlived cache
     '''
@@ -21,23 +21,23 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
                        from_obj=[fact_asmt_outcome_vw, dim_asmt])
         query = query.where(fact_asmt_outcome_vw.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome_vw.c.state_code == state_code).\
-            where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid)).\
-            where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid)).\
+            where(and_(fact_asmt_outcome_vw.c.school_id == school_id)).\
+            where(and_(fact_asmt_outcome_vw.c.district_id == district_id)).\
             where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)).\
             where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]))).\
             group_by(dim_asmt.c.effective_date, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
             order_by(fact_asmt_outcome_vw.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
         if asmt_grade:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
-        if student_guids:
-            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student_guids)))
+        if student_ids:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_ids)))
         if asmt_year:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
         results = connection.get_result(query)
     return results
 
 
-def get_student_report_asmt_administration(state_code, student_guid):
+def get_student_report_asmt_administration(state_code, student_id):
     '''
     Get asmt administration for an individual student report. There is no PII in the results and it can be stored in
     shortlived cache
@@ -49,7 +49,7 @@ def get_student_report_asmt_administration(state_code, student_guid):
                        from_obj=[fact_asmt_outcome_vw, dim_asmt])
         query = query.where(fact_asmt_outcome_vw.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome_vw.c.state_code == state_code).\
-            where(and_(fact_asmt_outcome_vw.c.student_guid == student_guid)).\
+            where(and_(fact_asmt_outcome_vw.c.student_id == student_id)).\
             where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)).\
             group_by(dim_asmt.c.effective_date, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
             order_by(fact_asmt_outcome_vw.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())

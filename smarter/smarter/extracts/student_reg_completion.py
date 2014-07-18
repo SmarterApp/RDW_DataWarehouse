@@ -12,9 +12,9 @@ def get_academic_year_query(academic_year, state_code):
         student_reg = connection.get_table(Constants.STUDENT_REG)
         academic_year_query = select_with_context([student_reg.c.state_code,
                                                    student_reg.c.state_name,
-                                                   student_reg.c.district_guid,
+                                                   student_reg.c.district_id,
                                                    student_reg.c.district_name,
-                                                   student_reg.c.school_guid,
+                                                   student_reg.c.school_id,
                                                    student_reg.c.school_name,
                                                    student_reg.c.sex,
                                                    student_reg.c.enrl_grade,
@@ -43,22 +43,22 @@ def get_assessment_query(academic_year, state_code):
         student_reg = connection.get_table(Constants.STUDENT_REG)
         asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
-        assmt_query = select_with_context([asmt_outcome.c.student_guid,
+        assmt_query = select_with_context([asmt_outcome.c.student_id,
                                            asmt_outcome.c.asmt_subject,
                                            asmt_outcome.c.asmt_type,
                                            asmt_outcome.c.asmt_year],
                                           from_obj=[asmt_outcome],
                                           permission=RolesConstants.SRC_EXTRACTS,
                                           state_code=state_code)\
-            .distinct(asmt_outcome.c.student_guid, asmt_outcome.c.asmt_subject, asmt_outcome.c.asmt_type)\
+            .distinct(asmt_outcome.c.student_id, asmt_outcome.c.asmt_subject, asmt_outcome.c.asmt_type)\
             .where(and_(asmt_outcome.c.rec_status == Constants.CURRENT, asmt_outcome.c.asmt_year == academic_year))\
             .alias(name=Constants.FACT_ASMT_OUTCOME_VW)
 
         academic_year_query = select_with_context([student_reg.c.state_code,
                                                    student_reg.c.state_name,
-                                                   student_reg.c.district_guid,
+                                                   student_reg.c.district_id,
                                                    student_reg.c.district_name,
-                                                   student_reg.c.school_guid,
+                                                   student_reg.c.school_id,
                                                    student_reg.c.school_name,
                                                    student_reg.c.sex,
                                                    student_reg.c.enrl_grade,
@@ -77,7 +77,7 @@ def get_assessment_query(academic_year, state_code):
                                                    student_reg.c.academic_year,
                                                    assmt_query.c.asmt_subject,
                                                    assmt_query.c.asmt_type],
-                                                  from_obj=[student_reg.join(assmt_query, student_reg.c.student_guid == assmt_query.c.student_guid)],
+                                                  from_obj=[student_reg.join(assmt_query, student_reg.c.student_id == assmt_query.c.student_id)],
                                                   permission=RolesConstants.SRC_EXTRACTS,
                                                   state_code=state_code)\
             .where(student_reg.c.academic_year == academic_year)

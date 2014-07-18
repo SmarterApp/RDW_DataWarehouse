@@ -18,11 +18,11 @@ def generate_assessment_outcomes_from_student_object_list(assessment_list, stude
     # from a list of student objects and from the rows returned from get_list_of_students.py
     fao_student_info_list = []
     for student in student_list:
-        fao_student_info = {'student_guid': student.student_guid,
+        fao_student_info = {'student_id': student.student_id,
                             'teacher_guid': student.teacher_guid,
                             'state_code': student.state_code,
-                            'district_guid': student.district_guid,
-                            'school_guid': student.school_guid,
+                            'district_id': student.district_id,
+                            'school_id': student.school_id,
                             'section_guid': student.section_guid,
                             'inst_hier_rec_id': inst_hier_rec_id,
                             'section_rec_id': student.section_rec_id,
@@ -62,11 +62,11 @@ def generate_single_assessment_outcome_from_student_info(assessment, student_inf
     params = {
         'asmnt_outcome_rec_id': uuid.uuid4(),
         'asmt_rec_id': assessment.asmt_rec_id,
-        'student_guid': student_info['student_guid'],
+        'student_id': student_info['student_id'],
         'teacher_guid': student_info['teacher_guid'],
         'state_code': student_info['state_code'],
-        'district_guid': student_info['district_guid'],
-        'school_guid': student_info['school_guid'],
+        'district_id': student_info['district_id'],
+        'school_id': student_info['school_id'],
         'section_guid': student_info['section_guid'],
         'inst_hier_rec_id': student_info['inst_hier_rec_id'],
         'section_rec_id': student_info['section_rec_id'],

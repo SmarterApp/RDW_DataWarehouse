@@ -5,7 +5,7 @@ Created on Aug 23, 2013
 '''
 
 
-def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
+def generate_fact_assessment_outcome(asmt_rec_id, student_id, teacher_guid, state_code, district_id, school_id, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                      date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min,
                                      asmt_score_range_max, asmt_perf_lvl,
@@ -20,8 +20,8 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
     status = 'C'
     most_recent = True
 
-    asmt_outcome = AssessmentOutcome(asmnt_outcome_rec_id, asmt_rec_id, student_guid,
-                                     teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id,
+    asmt_outcome = AssessmentOutcome(asmnt_outcome_rec_id, asmt_rec_id, student_id,
+                                     teacher_guid, state_code, district_id, school_id, section_guid, inst_hier_rec_id, section_rec_id,
                                      where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day,
                                      date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
                                      asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
@@ -34,7 +34,7 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 
 
 # TODO: Move this function somewhere else (generate_data?) since it uses helper_entities (students, scores)
-def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
+def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_id, school_id, section_guid,
                                       inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                       date_taken, date_taken_day, date_taken_month, date_taken_year, batch_guid):
     '''
@@ -50,7 +50,7 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
         # TODO: Create a function that unpacks score information, or break this function down into some other functions.
         claim_scores = score.claim_scores
 
-        student_guid = student.student_guid
+        student_id = student.student_id
         asmt_score = score.overall_score
         asmt_score_range_min = score.interval_min
         asmt_score_range_max = score.interval_max
@@ -68,7 +68,7 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
         asmt_claim_3_score_range_max = claim_scores[2].claim_score_interval_maximum
         asmt_claim_4_score_range_max = claim_scores[3].claim_score_interval_maximum if len(claim_scores) > 3 else None
 
-        asmt_outcome = generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
+        asmt_outcome = generate_fact_assessment_outcome(asmt_rec_id, student_id, teacher_guid, state_code, district_id, school_id, section_guid,
                                                         inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                                         date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
                                                         asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,

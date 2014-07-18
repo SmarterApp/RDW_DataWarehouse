@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 ITEM_KEY_POS = 0
 # Write the header to the file
 # TODO: Should not be hard coded
-CSV_HEADER = ['key', 'student_guid', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
+CSV_HEADER = ['key', 'student_id', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
               'format', 'score', 'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel',
               'pageNumber', 'pageVisits', 'pageTime', 'dropped']
 
@@ -48,7 +48,7 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_guid=None, student_guid=None, **kwargs):
+def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_id=None, student_id=None, **kwargs):
     if type(asmt_year) is int:
         asmt_year = str(asmt_year)
     if type(effective_date) is int:
@@ -79,12 +79,12 @@ def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_
         path = os.path.join(path, asmt_grade)
     else:
         return path
-    if district_guid is not None:
-        path = os.path.join(path, district_guid)
+    if district_id is not None:
+        path = os.path.join(path, district_id)
     else:
         return path
-    if student_guid is not None:
-        path = os.path.join(path, student_guid + '.csv')
+    if student_id is not None:
+        path = os.path.join(path, student_id + '.csv')
     return path
 
 

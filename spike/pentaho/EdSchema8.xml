@@ -10,11 +10,11 @@
         </Level>
       </Hierarchy>
     </Dimension>
-    <Dimension type="StandardDimension" visible="true" foreignKey="student_guid" highCardinality="false" name="DimStudent">
+    <Dimension type="StandardDimension" visible="true" foreignKey="student_id" highCardinality="false" name="DimStudent">
       <Hierarchy name="StudentHierarchy" visible="true" hasAll="true">
         <Table name="dim_student" schema="edware_sds_1_0" alias="Student">
         </Table>
-        <Level name="StudentLevel" visible="true" column="student_guid" type="Integer" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Level name="StudentLevel" visible="true" column="student_id" type="Integer" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
         </Level>
       </Hierarchy>
     </Dimension>
@@ -44,7 +44,7 @@
     </Dimension>
     <Measure name="MeasureAsmt" column="asmt_rec_id" datatype="Integer" formatString="####" aggregator="distinct-count" visible="true">
     </Measure>
-    <Measure name="MeasureStudent" column="student_guid" datatype="Integer" formatString="####" aggregator="distinct-count" visible="true">
+    <Measure name="MeasureStudent" column="student_id" datatype="Integer" formatString="####" aggregator="distinct-count" visible="true">
     </Measure>
     <Measure name="MeasureSection" column="section_guid" datatype="Integer" formatString="####" aggregator="distinct-count" visible="true">
     </Measure>

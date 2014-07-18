@@ -11,7 +11,7 @@ class SBACAssessmentOutcomeItemData:
     The SBAC-specific assessment outcome Item Data class.
     """
     def __init__(self):
-        self.student_guid = None
+        self.student_id = None
         self.key = None
         self.segment_id = None
         self.position = None

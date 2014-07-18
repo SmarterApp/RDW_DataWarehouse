@@ -18,15 +18,15 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     get_unittest_tenant_name
 import services
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
-    get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_guids, _get_archive_name, \
-    _get_merged_pdf_name, _create_student_guids, get_single_pdf_content, \
+    get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_ids, _get_archive_name, \
+    _get_merged_pdf_name, _create_student_ids, get_single_pdf_content, \
     _create_student_pdf_url, _create_pdf_merge_tasks, \
-    _create_urls_by_student_guid, get_bulk_pdf_content,\
+    _create_urls_by_student_id, get_bulk_pdf_content,\
     _create_pdf_generate_tasks, _create_cover_sheet_generate_tasks, _create_pdf_cover_merge_tasks,\
     _get_cover_sheet_name
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
-from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_id
 from services.tasks.pdf import prepare_path
 import shutil
 from services.tests.tasks.test_pdf import get_cmd
@@ -107,8 +107,8 @@ class TestServices(Unittest_with_edcore_sqlite):
     #     # Override the wkhtmltopdf command
     #     services.tasks.pdf.pdf_procs = ['echo', 'dummy']
     #     # prepare empty file
-    #     pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir,
-    #                                                         student_guids=studentGuid,
+    #     pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir,
+    #                                                         student_ids=studentGuid,
     #                                                         asmt_type=AssessmentType.SUMMATIVE)
     #     prepare_path(pdf_file[studentGuid])
     #     with open(pdf_file[studentGuid], 'w') as file:
@@ -142,7 +142,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
         prepare_path(pdf_file[studentGuid])
         with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
@@ -164,7 +164,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
         prepare_path(pdf_file[studentGuid])
         with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
@@ -185,7 +185,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         services.tasks.pdf.pdf_procs = get_cmd()
         self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
 
-    def test_get_pdf_content_with_missing_student_guid(self):
+    def test_get_pdf_content_with_missing_student_id(self):
         params = {}
         self.assertRaises(InvalidParameterError, get_pdf_content, params)
 
@@ -200,13 +200,13 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(ForbiddenError, get_pdf_content, params)
 
     def test_has_context_for_pdf_request(self):
-        student_guid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
-        has_context = _has_context_for_pdf_request('NC', student_guid)
+        student_id = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        has_context = _has_context_for_pdf_request('NC', student_id)
         self.assertTrue(has_context)
 
     def test_has_context_for_pdf_request_with_no_context(self):
-        student_guid = 'invalid'
-        has_context = _has_context_for_pdf_request('NC', student_guid)
+        student_id = 'invalid'
+        has_context = _has_context_for_pdf_request('NC', student_id)
         self.assertFalse(has_context)
 
     def test_send_pdf_request_with_always_generate_flag(self):
@@ -221,7 +221,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
         # prepare empty file to mimic a pdf was generated
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
         prepare_path(pdf_file[studentGuid])
         with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
@@ -252,24 +252,24 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_school_name_invalid(self):
         self.assertRaises(InvalidParameterError, _get_school_name, 'NC', 'Bad', 'Bad')
 
-    def test_get_student_guids(self):
-        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
+    def test_get_student_ids(self):
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 8)
 
-    def test_get_student_guids_males(self):
-        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {'sex': ['male']}, '2016', '20160404', '7')
+    def test_get_student_ids_males(self):
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'sex': ['male']}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 4)
 
-    def test_get_student_guids_group1(self):
-        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
+    def test_get_student_ids_group1(self):
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 5)
 
-    def test_get_student_guids_group2(self):
-        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
+    def test_get_student_ids_group2(self):
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 6)
 
-    def test_get_student_guids_alphabetical(self):
-        recs = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
+    def test_get_student_ids_alphabetical(self):
+        recs = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
         name = None
         for record in recs:
             if name is not None:
@@ -348,16 +348,16 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(grade_not_in, True)
         self.assertEqual(end_in, True)
 
-    def test_create_student_guids_by_guids(self):
-        all_guids, guids_by_grade = _create_student_guids(['c799b218-0bfb-413d-9ec1-684cde99851d',
+    def test_create_student_ids_by_guids(self):
+        all_guids, guids_by_grade = _create_student_ids(['c799b218-0bfb-413d-9ec1-684cde99851d',
                                                            '115f7b10-9e18-11e2-9e96-0800200c9a66'], ['8'], 'NC', '229',
                                                           '939', AssessmentType.SUMMATIVE, '2016', '20160404', {})
         self.assertEqual(len(all_guids), 2)
         self.assertIn('8', guids_by_grade)
         self.assertEqual(len(guids_by_grade['8']), 2)
 
-    def test_create_student_guids_by_grade(self):
-        all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
+    def test_create_student_ids_by_grade(self):
+        all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                                                           '2016', '20160404', {})
         self.assertEqual(len(all_guids), 10)
         self.assertIn('7', guids_by_grade)
@@ -365,8 +365,8 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(len(guids_by_grade['7']), 8)
         self.assertEqual(len(guids_by_grade['8']), 2)
 
-    def test_create_student_guids_by_grade_group(self):
-        all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
+    def test_create_student_ids_by_grade_group(self):
+        all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                                                           '2016', '20160404',
                                                           {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(all_guids), 5)
@@ -374,12 +374,12 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertNotIn('8', guids_by_grade)
         self.assertEqual(len(guids_by_grade['7']), 5)
 
-    def test_create_student_guids_by_guids_no_students(self):
-        self.assertRaises(InvalidParameterError, _create_student_guids, [], None, 'NC', '229', '939', AssessmentType.SUMMATIVE,
+    def test_create_student_ids_by_guids_no_students(self):
+        self.assertRaises(InvalidParameterError, _create_student_ids, [], None, 'NC', '229', '939', AssessmentType.SUMMATIVE,
                           '2016', '20160404', {})
 
-    def test_create_student_guids_by_grade_no_students(self):
-        self.assertRaises(InvalidParameterError, _create_student_guids, None, ['7'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
+    def test_create_student_ids_by_grade_no_students(self):
+        self.assertRaises(InvalidParameterError, _create_student_ids, None, ['7'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                           '2016', '20160404', {'sex': ['not_stated']})
 
     @patch('smarter.services.pdf.get.apply_async')
@@ -397,20 +397,20 @@ class TestServices(Unittest_with_edcore_sqlite):
                           False, False, 30, {}, 'single_pdf')
 
     @patch('smarter.services.pdf.get')
-    def test_get_single_pdf_content_bad_student_guid(self, mock_get):
+    def test_get_single_pdf_content_bad_student_id(self, mock_get):
         mock_get.return_value = None
         self.assertRaises(APIForbiddenError, get_single_pdf_content, '/tmp', 'localhost/', '123', 'edware', 30, 'NC',
                           '2016', '20160404', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb', 'en', False, False,
                           30, {}, 'single_pdf')
 
     def test_create_student_pdf_url(self):
-        student_guid = '1-2-3-4-5'
+        student_id = '1-2-3-4-5'
         base_url = 'http://foo.com/foo'
         params = {}
-        result = _create_student_pdf_url(student_guid, base_url, params)
+        result = _create_student_pdf_url(student_id, base_url, params)
         self.assertIn(result, ['http://foo.com/foo?pdf=true&studentGuid=1-2-3-4-5', 'http://foo.com/foo?studentGuid=1-2-3-4-5&pdf=true'])
         params = {'abc': 'ef'}
-        result = _create_student_pdf_url(student_guid, base_url, params)
+        result = _create_student_pdf_url(student_id, base_url, params)
         self.assertTrue('abc=ef' in result)
 
     def test_create_pdf_merge_tasks_no_guid(self):
@@ -497,10 +497,10 @@ class TestServices(Unittest_with_edcore_sqlite):
                                               pdf_base_dir)
         self.assertEqual(0, len(tasks))
 
-    def test_create_urls_by_student_guid(self):
+    def test_create_urls_by_student_id(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         baseURL = 'http://foo.com/abc'
-        url = _create_urls_by_student_guid(studentGuid, 'NC', baseURL, {})
+        url = _create_urls_by_student_id(studentGuid, 'NC', baseURL, {})
         self.assertIn(url['a5ddfe12-740d-4487-9179-de70f6ac33be'], ['http://foo.com/abc?pdf=true&studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be',
                                                                     'http://foo.com/abc?studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be&pdf=true'])
 
@@ -516,18 +516,18 @@ class TestServices(Unittest_with_edcore_sqlite):
     @patch('smarter.services.pdf._create_pdf_generate_tasks')
     @patch('smarter.services.pdf._get_school_name')
     @patch('smarter.services.pdf.register_file')
-    @patch('smarter.services.pdf._create_urls_by_student_guid')
-    @patch('smarter.services.pdf.generate_isr_report_path_by_student_guid')
-    @patch('smarter.services.pdf._create_student_guids')
+    @patch('smarter.services.pdf._create_urls_by_student_id')
+    @patch('smarter.services.pdf.generate_isr_report_path_by_student_id')
+    @patch('smarter.services.pdf._create_student_ids')
     @patch('smarter.services.pdf.authenticated_userid')
-    def test_get_bulk_pdf_content(self, mock_authenticated_userid, mock_create_student_guids, mock_generate_isr_report_path_by_student_guid,
-                                  mock_create_urls_by_student_guid, mock_register_file, mock_get_school_name, mock_create_pdf_generate_tasks,
+    def test_get_bulk_pdf_content(self, mock_authenticated_userid, mock_create_student_ids, mock_generate_isr_report_path_by_student_id,
+                                  mock_create_urls_by_student_id, mock_register_file, mock_get_school_name, mock_create_pdf_generate_tasks,
                                   mock_create_pdf_merge_tasks, mock_create_cover_sheet_generate_tasks, mock_start_bulk,
                                   mock_get_cover_sheet_name, mock_get_archive_name):
         mock_authenticated_userid.get_uid.return_value = ''
-        mock_create_student_guids.return_value = '', ''
-        mock_generate_isr_report_path_by_student_guid.return_value = ''
-        mock_create_urls_by_student_guid.return_value = ''
+        mock_create_student_ids.return_value = '', ''
+        mock_generate_isr_report_path_by_student_id.return_value = ''
+        mock_create_urls_by_student_id.return_value = ''
         mock_register_file.return_value = '', 'http://foo.com/abc/hello'
         mock_get_school_name.return_value = ''
         mock_create_pdf_generate_tasks.return_value = ''
@@ -539,11 +539,11 @@ class TestServices(Unittest_with_edcore_sqlite):
         pdf_base_dir = '/foo1'
         base_url = 'http://foo.com/abc'
         subprocess_timeout = 10
-        student_guids = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        student_ids = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         grades = 3
         state_code = 'NC'
-        district_guid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
-        school_guid = 'a-b-c'
+        district_id = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        school_id = 'a-b-c'
         asmt_type = AssessmentType.SUMMATIVE
         asmt_year = None
         effective_date = '20150401'
@@ -561,7 +561,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         settings['batch.user.session.timeout'] = 10777700
         CacheManager(**parse_cache_config_options(settings))
         component.provideUtility(SessionBackend(settings), ISessionBackend)
-        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
         body = json.loads(response.body.decode('utf-8'))
         self.assertEqual(body[Constants.FILES][0][Constants.FILENAME], 'archive_file.pdf')
         self.assertEqual(body[Constants.FILES][0][Constants.DOWNLOAD_URL], 'http://foo.com/abc/hello')
@@ -575,9 +575,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual('return from get_bulk_pdf_content', response)
 
     @patch('smarter.services.pdf._has_context_for_pdf_request')
-    def test__create_urls_by_student_guid_Access_Denied(self, mock_has_context_for_pdf_request):
+    def test__create_urls_by_student_id_Access_Denied(self, mock_has_context_for_pdf_request):
         mock_has_context_for_pdf_request.return_value = False
-        self.assertRaises(ForbiddenError, _create_urls_by_student_guid, [], None, None, {})
+        self.assertRaises(ForbiddenError, _create_urls_by_student_id, [], None, None, {})
 
     def test_create_pdf_generate_tasks(self):
         cookie_value = 'a'

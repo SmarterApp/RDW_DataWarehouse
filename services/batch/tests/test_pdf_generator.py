@@ -67,30 +67,30 @@ class TestPdfGenerator(unittest.TestCase):
         self.assertEqual(results.status, 'SUCCESS')
 
     def test_build_url(self):
-        student_guid = '2343'
+        student_id = '2343'
         report = 'ISR.html'
         effective_date = '20120201'
-        results = self.pdf_generator.build_url(student_guid, 'ny', effective_date, report)
+        results = self.pdf_generator.build_url(student_id, 'ny', effective_date, report)
         url = urlparse(results)
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + '/' + report)
         query_param = parse_qs(url.query)
         self.assertEqual(len(query_param.keys()), 4)
-        self.assertEqual(query_param['studentGuid'][0], student_guid)
+        self.assertEqual(query_param['studentGuid'][0], student_id)
         self.assertEqual(query_param['pdf'][0], 'true')
 
     def test_build_url_with_trailing_slash(self):
         self.settings['pdf.base.url'] = 'http://dummy:8234/reports/'
 
         self.pdf_generator = PDFGenerator(self.settings, 'myTenant')
-        student_guid = '2343'
+        student_id = '2343'
         report = 'ISR.html'
         effective_date = '20120201'
-        results = self.pdf_generator.build_url(student_guid, 'ny', effective_date, report)
+        results = self.pdf_generator.build_url(student_id, 'ny', effective_date, report)
         url = urlparse(results)
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + report)
         query_param = parse_qs(url.query)
         self.assertEqual(len(query_param.keys()), 4)
-        self.assertEqual(query_param['studentGuid'][0], student_guid)
+        self.assertEqual(query_param['studentGuid'][0], student_id)
         self.assertEqual(query_param['pdf'][0], 'true')
         self.assertEqual(query_param['stateCode'][0], 'ny')
 

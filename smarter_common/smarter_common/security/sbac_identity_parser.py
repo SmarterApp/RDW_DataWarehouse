@@ -12,8 +12,8 @@ class SbacIdentityParser(IdentityParser):
     ROLE_INDEX = 1
     TENANT_INDEX = 7
     STATE_CODE_INDEX = 8
-    DISTRICT_GUID_INDEX = 11
-    SCHOOL_GUID_INDEX = 15
+    DISTRICT_ID_INDEX = 11
+    SCHOOL_ID_INDEX = 15
     '''
     format of string in memberOf
      0      1    2     3        4      5              6             7       8     9                  10               11         12       13                    14                  15            16
@@ -34,5 +34,5 @@ class SbacIdentityParser(IdentityParser):
             # TODO: error handling of last element of tenancy chain
             role = tenancy_chain[SbacIdentityParser.ROLE_INDEX]
             relations.append(RoleRelation(role, tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
-                             tenancy_chain[SbacIdentityParser.DISTRICT_GUID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_GUID_INDEX]))
+                             tenancy_chain[SbacIdentityParser.DISTRICT_ID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_ID_INDEX]))
         return relations

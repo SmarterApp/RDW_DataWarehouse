@@ -13,7 +13,7 @@ from pyramid.security import Allow
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
-from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid, \
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_id, \
     generate_isr_absolute_file_path_name
 from edauth.tests.test_helper.create_session import create_test_session
 import edauth
@@ -39,28 +39,28 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         dummy_session = create_test_session([RolesConstants.PII])
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
-    def test_generate_isr_report_path_by_student_guid(self):
-        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guids='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
+    def test_generate_isr_report_path_by_student_id(self):
+        file_name = generate_isr_report_path_by_student_id('NC', '20160404', pdf_report_base_dir='/', student_ids='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
         self.assertEqual(len(file_name), 1)
         self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.g.pdf'))
 
-    def test_generate_isr_report_path_by_student_guid_studentguid_not_exist(self):
-        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120101', pdf_report_base_dir='/', student_guids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
+    def test_generate_isr_report_path_by_student_id_studentguid_not_exist(self):
+        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_id, 'NC', '20120101', pdf_report_base_dir='/', student_ids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
 
     def test_generate_isr_absolute_file_path_name(self):
-        file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_guid='123', school_guid='456', asmt_grade='1', student_guid='1bc-def-ad', asmt_type='SUMMATIVE', effective_date='20120201')
+        file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_id='123', school_id='456', asmt_grade='1', student_id='1bc-def-ad', asmt_type='SUMMATIVE', effective_date='20120201')
         self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.pdf'))
 
-    def test_generate_isr_report_path_by_student_guid_for_color(self):
-        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guids='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=False, lang='jp')
+    def test_generate_isr_report_path_by_student_id_for_color(self):
+        file_name = generate_isr_report_path_by_student_id('NC', '20160404', pdf_report_base_dir='/', student_ids='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=False, lang='jp')
         self.assertEqual(len(file_name), 1)
         self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.jp.pdf'))
 
-    def test_generate_isr_report_path_by_student_guid_studentguid_not_existd_for_color(self):
-        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120201', pdf_report_base_dir='/', student_guids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4', grayScale=False)
+    def test_generate_isr_report_path_by_student_id_studentguid_not_existd_for_color(self):
+        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_id, 'NC', '20120201', pdf_report_base_dir='/', student_ids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4', grayScale=False)
 
     def test_generate_isr_absolute_file_path_named_for_color(self):
-        file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_guid='123', school_guid='456', asmt_grade='1', student_guid='1bc-def-ad', asmt_type='SUMMATIVE', grayScale=False, effective_date='20120201')
+        file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_id='123', school_id='456', asmt_grade='1', student_id='1bc-def-ad', asmt_type='SUMMATIVE', grayScale=False, effective_date='20120201')
         self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.pdf'))
 
 

@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 # A map of map that contains star schema table name, column to udl input name
-# ex. {'dim_student': {'student_guid': 'guid_student'}}
+# ex. {'dim_student': {'student_id': 'guid_student'}}
 json_column_mapping = {}
 csv_column_mapping = {}
 

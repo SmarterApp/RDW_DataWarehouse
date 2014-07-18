@@ -52,7 +52,7 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
         self.assertEqual(columns[0].element.name, dim_inst_hier.c.district_name.name)
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, dim_inst_hier.name)
-        self.assertEqual(columns[1].element.name, dim_inst_hier.c.district_guid.name)
+        self.assertEqual(columns[1].element.name, dim_inst_hier.c.district_id.name)
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def test_build_columns_district_view(self):
@@ -71,7 +71,7 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
         self.assertEqual(columns[0].element.name, dim_inst_hier.c.school_name.name)
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, dim_inst_hier.name)
-        self.assertEqual(columns[1].element.name, dim_inst_hier.c.school_guid.name)
+        self.assertEqual(columns[1].element.name, dim_inst_hier.c.school_id.name)
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def test_build_columns_school_view(self):

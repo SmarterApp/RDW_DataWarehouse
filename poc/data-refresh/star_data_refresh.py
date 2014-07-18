@@ -23,7 +23,7 @@ STG_STAR_FACT_TABLE = 'tmp_fact_asmt_outcome'
 LIVE_STAR_FACT_TABLE = 'fact_asmt_outcome'
 
 
-RAW_FACT_MIGRATE_SQL = "Insert INTO {schema_name}.{live_Star_fact_table} (batch_guid, asmt_outcome_rec_id,asmt_rec_id,student_guid,state_code,district_guid,school_guid," \
+RAW_FACT_MIGRATE_SQL = "Insert INTO {schema_name}.{live_Star_fact_table} (batch_guid, asmt_outcome_rec_id,asmt_rec_id,student_id,state_code,district_id,school_id," \
           "section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade," \
           "enrl_grade,date_taken,date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min," \
           "asmt_score_range_max,asmt_perf_lvl,asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max," \
@@ -33,7 +33,7 @@ RAW_FACT_MIGRATE_SQL = "Insert INTO {schema_name}.{live_Star_fact_table} (batch_
           "dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,dmg_prg_lep,dmg_prg_504," \
           "dmg_prg_tt1,dmg_eth_derived) " \
           "select \'{fake_batch_guid}\' as batch_guid,{random_start_cnt}+fao.asmt_outcome_rec_id as asmt_outcome_rec_id,fao.asmt_rec_id," \
-          "fao.student_guid,fao.state_code,fao.district_guid,fao.school_guid,fao.section_guid," \
+          "fao.student_id,fao.state_code,fao.district_id,fao.school_id,fao.section_guid," \
           "fao.inst_hier_rec_id,fao.section_rec_id,fao.where_taken_id,fao.where_taken_name," \
           "fao.asmt_grade,fao.enrl_grade,fao.date_taken,fao.date_taken_day,fao.date_taken_month,fao.date_taken_year," \
           "fao.asmt_score,fao.asmt_score_range_min,fao.asmt_score_range_max," \

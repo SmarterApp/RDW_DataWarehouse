@@ -282,7 +282,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_tasks_for_non_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
@@ -301,7 +301,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_tasks_for_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
@@ -335,7 +335,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_new_task_non_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
@@ -355,7 +355,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
@@ -374,7 +374,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
@@ -394,7 +394,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
@@ -413,7 +413,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test__create_new_task_item_level(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome_vw')
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'asmtYear': '2015',
                   'asmtType': 'abc',

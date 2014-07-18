@@ -27,8 +27,8 @@ class UDLExceptionTest(UDLTestHelper):
             'SET asmt_outcome_vw_rec_id = %(asmt_outcome_vw_rec_id)s, ' +\
             'status = %(new_status)s WHERE batch_guid = %(batch_guid)s ' +\
             'AND asmt_guid = %(asmt_guid_1)s AND ' +\
-            "status = %(status)s AND student_guid = %(student_guid_1)s' " +\
-            "{'status': 'W', 'student_guid_1': '60ca47b5-527e-4cb0-898d-f754fd7099a0', " +\
+            "status = %(status)s AND student_id = %(student_id_1)s' " +\
+            "{'status': 'W', 'student_id_1': '60ca47b5-527e-4cb0-898d-f754fd7099a0', " +\
             "'asmt_outcome_vw_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', " +\
             "'new_status': 'D', 'asmt_guid_1': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}"
         self.error_source_delete_twice = ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE
@@ -38,7 +38,7 @@ class UDLExceptionTest(UDLTestHelper):
         self.working_schema = "edware"
         self.mismatched_rows = [{'asmt_outcome_vw_rec_id': 1000,
                                  'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5',
-                                 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0'}]
+                                 'student_id': '60ca47b5-527e-4cb0-898d-f754fd7099a0'}]
 
     def tearDown(self):
         super(UDLExceptionTest, self).truncate_udl_tables()
@@ -70,7 +70,7 @@ class UDLExceptionTest(UDLTestHelper):
         self.assertEqual(errors[0]['err_code_text'], 'DATA_INTEGRITY_ERROR')
         self.assertEqual(errors[0]['err_source_text'], 'DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE')
         self.assertEqual(errors[0]['created_date'], datetime.datetime(2014, 3, 3, 0, 0))
-        self.assertEqual(errors[0]['err_input'], 'student_guid:60ca47b5-527e-4cb0-898d-f754fd7099a0, asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')
+        self.assertEqual(errors[0]['err_input'], 'student_id:60ca47b5-527e-4cb0-898d-f754fd7099a0, asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')
 
     def test_insert_err_list__delete_record_not_found(self):
         exc = DeleteRecordNotFound(self.guid_batch, self.mismatched_rows, self.schema_table,
@@ -86,4 +86,4 @@ class UDLExceptionTest(UDLTestHelper):
         self.assertEqual(errors[0]['err_code_text'], 'DELETE_RECORD_NOT_FOUND')
         self.assertEqual(errors[0]['err_source_text'], 'MISMATCHED_FACT_ASMT_OUTCOME_RECORD')
         self.assertEqual(errors[0]['created_date'], datetime.datetime(2014, 3, 3, 0, 0))
-        self.assertEqual(errors[0]['err_input'], 'student_guid:60ca47b5-527e-4cb0-898d-f754fd7099a0, asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')
+        self.assertEqual(errors[0]['err_input'], 'student_id:60ca47b5-527e-4cb0-898d-f754fd7099a0, asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')

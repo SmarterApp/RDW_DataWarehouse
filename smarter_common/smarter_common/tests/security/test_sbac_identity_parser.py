@@ -26,8 +26,8 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(chain[0].tenant, '1326608')
         self.assertEqual(chain[0].state_code, 'CA')
         self.assertEqual(chain[0].role, 'Test Administrator')
-        self.assertEqual(chain[0].district_guid, '7062025')
-        self.assertEqual(chain[0].school_guid, '4368641')
+        self.assertEqual(chain[0].district_id, '7062025')
+        self.assertEqual(chain[0].school_id, '4368641')
 
     def test_get_role_relationship_chain_multi_role(self):
         attributes = {'memberOf': ['|23_848887|Test Administrator|INSTITUTION|9968288|Smarter Balance|8820315|Cascadia|1326608|CA|2037212|Central Region Association|7062025| Glendale Unified|2171081|Main Street Schools|4368641|Glendale Middle School|',
@@ -37,13 +37,13 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(chain[0].tenant, '1326608')
         self.assertEqual(chain[0].state_code, 'CA')
         self.assertEqual(chain[0].role, 'Test Administrator')
-        self.assertEqual(chain[0].district_guid, '7062025')
-        self.assertEqual(chain[0].school_guid, '4368641')
+        self.assertEqual(chain[0].district_id, '7062025')
+        self.assertEqual(chain[0].school_id, '4368641')
         self.assertEqual(chain[1].tenant, 'cat')
         self.assertEqual(chain[1].state_code, 'NC')
         self.assertEqual(chain[1].role, 'SPECIALUSER')
-        self.assertEqual(chain[1].district_guid, '229')
-        self.assertEqual(chain[1].school_guid, '942')
+        self.assertEqual(chain[1].district_id, '229')
+        self.assertEqual(chain[1].school_id, '942')
 
     def test_valid_role(self):
         attributes = {'memberOf': ['|23_848887|TEACHER|INSTITUTION|9968288|Smarter Balance|8820315|Cascadia|1326608|CA|2037212|Central Region Association|7062025| Glendale Unified|2171081|Main Street Schools|4368641|Glendale Middle School|']}
@@ -52,8 +52,8 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(chain[0].tenant, '1326608')
         self.assertEqual(chain[0].state_code, 'CA')
         self.assertEqual(chain[0].role, 'TEACHER')
-        self.assertEqual(chain[0].district_guid, '7062025')
-        self.assertEqual(chain[0].school_guid, '4368641')
+        self.assertEqual(chain[0].district_id, '7062025')
+        self.assertEqual(chain[0].school_id, '4368641')
 
 if __name__ == "__main__":
     unittest.main()

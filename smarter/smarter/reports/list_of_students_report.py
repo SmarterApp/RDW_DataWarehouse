@@ -105,7 +105,7 @@ def get_list_of_students_report(params):
     # color metadata
     custom_metadata_map = get_custom_metadata(stateCode, None)
     los_results[Constants.METADATA] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
-    los_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
+    los_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=stateCode, district_id=districtGuid, school_id=schoolGuid, asmt_grade=asmtGrade)
     los_results[Constants.SUBJECTS] = __reverse_map(subjects_map)
 
     # Additional queries for LOS report
@@ -128,17 +128,17 @@ def format_assessments(results, subjects_map):
         asmtDict = assessments.get(effectiveDate, {})
         asmtType = capwords(result['asmt_type'], ' ')  # Summative, Interim
         asmtList = asmtDict.get(asmtType, {})
-        studentGuid = result['student_guid']  # e.g. student_1
+        studentGuid = result['student_id']  # e.g. student_1
 
         student = asmtList.get(studentGuid, {})
-        student['student_guid'] = studentGuid
+        student['student_id'] = studentGuid
         student['student_first_name'] = result['first_name']
         student['student_middle_name'] = result['middle_name']
         student['student_last_name'] = result['last_name']
         student['enrollment_grade'] = result['enrollment_grade']
         student['state_code'] = result['state_code']
         student['demographic'] = get_student_demographic(result)
-        student[Constants.ROWID] = result['student_guid']
+        student[Constants.ROWID] = result['student_id']
 
         subject = subjects_map[result['asmt_subject']]
         assessment = student.get(subject, {})
@@ -195,7 +195,7 @@ def get_list_of_students(params):
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-        query = select_with_context([dim_student.c.student_guid.label('student_guid'),
+        query = select_with_context([dim_student.c.student_id.label('student_id'),
                                     dim_student.c.first_name.label('first_name'),
                                     dim_student.c.middle_name.label('middle_name'),
                                     dim_student.c.last_name.label('last_name'),
@@ -251,8 +251,8 @@ def get_list_of_students(params):
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
-        query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == schoolGuid))
-        query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == districtGuid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.school_id == schoolGuid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.district_id == districtGuid))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmtYear))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))

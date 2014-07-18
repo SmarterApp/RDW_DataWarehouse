@@ -52,7 +52,7 @@ define [
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
       # This is for links in drill down
       row['params'] = {
-        "studentGuid": row['student_guid'],
+        "studentGuid": row['student_id'],
         "stateCode": row['state_code'],
         "asmtYear": edwarePreferences.getAsmtYearPreference()
       }

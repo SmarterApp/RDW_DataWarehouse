@@ -660,11 +660,11 @@
         },
         "export_success": "Your requested reports will be available within 24 hours.",
         "export_failure": "Something went wrong.",
-        "export_retry": "Please retry again or contact the administrator at",
+        "export_retry": "Please retry again or contact the administrator at <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>",
         "no_data": {
             "title": "Error",
             "header": "No data.",
-            "message": "Your request contains no data.  Please adjust your selections and try again"
+            "message": "Your request contains no data.<p/>Please adjust your selections and try again or contact the administrator at <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>"
         },
         "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",

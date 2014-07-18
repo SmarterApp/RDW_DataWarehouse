@@ -130,14 +130,14 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
         task_info.return_value = dummy_task_info
-        params = {Constants.STATECODE: ['NC'],
-                  Constants.ACADEMIC_YEAR: [2015],
-                  Extract.EXTRACTTYPE: ['studentRegistrationStatistics']}
+        params = {Constants.STATECODE: 'NC',
+                  Constants.ACADEMIC_YEAR: 2015,
+                  Extract.EXTRACTTYPE: 'studentRegistrationStatistics'}
 
         response = process_extraction_request(params)
 
-        self.assertIn('.zip', response['fileName'])
+        self.assertIn('.zip', response['files'][0]['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
         self.assertEqual(response['tasks'][0][Constants.ACADEMIC_YEAR], 2015)
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['files'][0]['download_url'])
         self.assertTrue(mock_start_extract.called)

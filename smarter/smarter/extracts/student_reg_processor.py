@@ -34,10 +34,11 @@ def process_extraction_request(params):
 
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     response = {}
-    state_code = params[EndpointConstants.STATECODE][0]
+    extract_file = {}
+    state_code = params[EndpointConstants.STATECODE]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
-    extract_type = params[Extract.EXTRACTTYPE][0]
+    extract_type = params[Extract.EXTRACTTYPE]
     extraction_data_type = ''
     if extract_type == ExtractType.studentRegistrationStatistics:
         extraction_data_type = ExtractionDataType.SR_STATISTICS
@@ -45,7 +46,7 @@ def process_extraction_request(params):
         extraction_data_type = ExtractionDataType.SR_COMPLETION
 
     extract_params = {TaskConstants.STATE_CODE: state_code,
-                      TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR][0],
+                      TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR],
                       Extract.REPORT_TYPE: extract_type,
                       TaskConstants.EXTRACTION_DATA_TYPE: extraction_data_type}
 
@@ -60,13 +61,14 @@ def process_extraction_request(params):
     response['tasks'] = [task_response]
 
     archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-    response['fileName'] = os.path.basename(archived_file_path)
+    extract_file['fileName'] = os.path.basename(archived_file_path)
 
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
     # Register extract file with HPZ.
     registration_id, download_url = register_file(user.get_uid())
-    response['download_url'] = download_url
+    extract_file['download_url'] = download_url
+    response['files'] = [extract_file]
 
     start_extract(tenant, request_id, [archived_file_path], [data_directory_to_archive], [registration_id], [task_info], queue=queue)
 

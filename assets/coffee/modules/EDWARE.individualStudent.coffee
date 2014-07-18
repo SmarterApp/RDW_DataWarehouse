@@ -91,8 +91,6 @@ define [
         if grade
           if assessment.grade is "11"
             assessment.policy_content = grade[assessment.asmt_subject]
-          else if assessment.grade is "8"
-            assessment.policy_content = grade[assessment.asmt_subject][assessment.asmt_perf_lvl]
 
         for claim in assessment.claims
           claim.subject = assessment.asmt_subject.toUpperCase()
@@ -179,7 +177,7 @@ define [
         labels: @labels
         CSVOptions: @configData.CSVOptions
         # subjects on ISR
-        subjects: @data.current
+        subjects: @data.current, null
 
     renderReportActionBar: () ->
       @configData.subject = @createSampleInterval this.data.current[0], this.legendInfo.sample_intervals

@@ -67,79 +67,6 @@
 			"text_color": "#000"
 		}
 	],
-
-    "feedback": {
-	    "PARENT": {
-	        "individual_student_report": "GjmM_2fSzJnjlt3A_2bGMxRZ_2fw_3d_3d",
-	        "list_of_students": "G36s4TWKfrELsjXZ7jq1Zg_3d_3d",
-	        "comparing_populations_state": "XnbKuR5vwCZAL1GyHeJgSQ_3d_3d",
-	        "comparing_populations_district": "xILjemwP1hZXE9T3mf278g_3d_3d",
-	        "comparing_populations_school": "z6jXFrx1xI0KJFqiq1WH1Q_3d_3d"
-	    },
-	    "STUDENT": {
-	        "individual_student_report": "TgykGLaGiMu3XZIwwiwhKw_3d_3d",
-	        "list_of_students": "Y6JAH3Is_2b9aFJUCj5uRZ2A_3d_3d",
-	        "comparing_populations_state": "B9Hzlr6ksG5nqOOoaDJgIw_3d_3d",
-	        "comparing_populations_district": "4z4MOLKf6dQhLaBqBb0Xxg_3d_3d",
-	        "comparing_populations_school": "yvjbuVuDhevpws94gWCYQA_3d_3d"
-	    },
-	    "TEACHER": {
-	        "individual_student_report": "kSet9N4jx4AE2EKqOeJn2w_3d_3d",
-	        "list_of_students": "VLvFLuVFlTJmr19_2by0QeSA_3d_3d",
-	        "comparing_populations_state": "lHRt_2b3848QW3EnYHFaUqdg_3d_3d",
-	        "comparing_populations_district": "GVYKrPRyWqbwNMAphmXlCQ_3d_3d",
-	        "comparing_populations_school": "1Ap0xBboGETtpVw4QDkz6A_3d_3d"
-	    },
-	    "STATE_EDUCATION_ADMINISTRATOR_1": {
-	        "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-	        "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-	        "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-	        "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-	        "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-	    },
-	    "STATE_EDUCATION_ADMINISTRATOR_2": {
-	        "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-	        "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-	        "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-	        "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-	        "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-	    },
-	    "DISTRICT_EDUCATION_ADMINISTRATOR_1": {
-	        "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-	        "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-	        "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-	        "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-	        "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-	    },
-	    "DISTRICT_EDUCATION_ADMINISTRATOR_2": {
-	        "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-	        "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-	        "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-	        "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-	        "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-	    },
-	    "SCHOOL_EDUCATION_ADMINISTRATOR_1": {
-	        "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-	        "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-	        "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-	        "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-	        "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-	    },
-	    "SCHOOL_EDUCATION_ADMINISTRATOR_2": {
-	        "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-	        "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-	        "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-	        "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-	        "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-	    },
-	    "HIGHER_EDUCATION_ADMISSIONS_OFFICER": {
-	        "individual_student_report": "iRRX0K6lwdrTWj5ZBsKNvg_3d_3d",
-	        "list_of_students": "xHHhMnZTC23JsGG_2bkqJfqQ_3d_3d",
-	        "comparing_populations_state": "0_2bCFlTqRnJOeC4ryoGhUlQ_3d_3d",
-	        "comparing_populations_district": "umQqUXtFpf1Sr867HwmHNg_3d_3d",
-	        "comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
-	    }
-    },
     "legendInfo": {
 	    "sample_intervals": {
 	        "asmt_score": 1789,
@@ -588,97 +515,160 @@
 			}
 		}
 	},
-	"interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require hand scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
+	"interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {
-            "name": "Tipo de reporte",
+            "name": "Report / export type",
             "key": "extractType",
             "options": [
                 {
-                    "display": "Resultados de la evaluación del estudiante",
-                    "value": "studentAssessment"
+                    "display": "Student Registration Statistics",
+                    "value": "registrationStatistics"
+                },
+                {
+                    "display": "Assessment Completion Statistics",
+                    "value": "completionStatistics"
+                },
+                {
+                    "display": "Audit XML",
+                    "value": "rawXML"
+                },
+                {
+                    "display": "Individual Item Response Data",
+                    "value": "itemLevel"
                 }
             ]
         },
         "academicYear": {
-            "name": "Año Académico",
+            "name": "Academic year",
             "key": "academicYear"
         },
-        "studentRegAcademicYear": {
-            "name": "Año Académico",
+        "registrationAcademicYear": {
+            "name": "Academic year",
             "key": "academicYear"
-        },
-        "asmtYear": {
-            "name": "Año de evaluación",
-            "key": "asmtYear"
         },
         "asmtType": {
-            "name": "Tipo de evaluación",
+            "name": "Assessment Type",
             "key": "asmtType",
             "options": [
                 {
-                    "display": "Acumulativa",
+                    "display": "Summative",
                     "value": "SUMMATIVE"
                 }, {
-                    "display": "Provisional integral",
+                    "display": "Interim Comprehensive",
                     "value": "INTERIM COMPREHENSIVE"
                 }
             ]
         },
         "asmtSubject": {
-            "name": "Materia",
+            "name": "Subject",
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Matemáticas",
+                    "display": "Mathematics",
                     "value": "Math"
                 }, {
-                    "display": "ELA",
+                    "display": "ELA/Literacy",
                     "value": "ELA"
+                }
+            ]
+        },
+        "grade": {
+            "name": "Grade",
+            "key": "grade",
+            "options": [
+                {
+                    "display": "Select",
+                    "value": ""
+                },
+                {
+                    "display": "Grade 3",
+                    "value": "3"
+                },
+                {
+                    "display": "Grade 4",
+                    "value": "4"
+                },
+                {
+                    "display": "Grade 5",
+                    "value": "5"
+                },
+                {
+                    "display": "Grade 6",
+                    "value": "6"
+                },
+                {
+                    "display": "Grade 7",
+                    "value": "7"
+                },
+                {
+                    "display": "Grade 8",
+                    "value": "8"
+                },
+                {
+                    "display": "Grade 11",
+                    "value": "11"
                 }
             ]
         }
     },
     "SearchResultText": {
         "hasMatch": "<b id='cursor'>{{cursor}}</b> of <b>{{total}}</b> matching \"<b>{{keyword}}</b>\"",
-        "notFound": "No match \"<b>{{keyword}}</b>\" in this district. Please check spelling and try again."
+        "notFound": "No matches for \"<b>{{keyword}}</b>\". Please check spelling and try again."
     },
     "ExportOptions" : {
         "export_bulk_pdf": {
-            "text": "Printable student reports (PDF)",
-            "desc": "Download individual reports for students in this school. The download will reflect active filters and selections."
+            "text": "Printable student reports",
+            "desc": {
+                "enabled": "Download individual reports for students in this school.",
+                "disabled": "Not available. Click into a school to download individual student reports.",
+                "no_permission": "You do not have PII permission for all students in this school."
+            }
         },
         "export_download_curr_view": {
-            "text": "Current view (CSV)",
-            "desc": "Download the current view as a CSV. The download will reflect active filters and selections."
+            "text": "Current view",
+            "desc": "Download the current view as a CSV."
         },
         "export_download_raw_view": {
-            "text": "Student assessment results (CSV)",
-            "desc": "Download summative results for all students in this school."
+            "text": "Student assessment results",
+            "desc": {
+                "enabled": {
+                    "state": "Download assessment results for all students in this state.",
+                    "district": "Download assessment results for all students in this district.",
+                    "school": "Download assessment results for all students in this school.",
+                    "grade": "Download assessment results for all students in this grade."
+                },
+                "disabled": "Not available.",
+                "no_permission": {
+                    "state": "You do not have PII permission for all students in this state.",
+                    "district": "You do not have PII permission for all students in this district.",
+                    "school": "You do not have PII permission for all students in this school.",
+                    "grade": "You do not have PII permission for all students in this grade."
+                }
+            }
         },
         "export_request_extract": {
-            "text": {
-                "state": "State-level reports & extracts",
-                "district": "District-level reports & extracts"
-            },
+            "text": "State Downloads",
             "desc": "Download registration reports and XML extracts."
         },
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
-        "export_csv_options": "CSV File Download Options",
         "export_pdf_options": {
             "title": "Student Report Options",
             "grayscale": "Grayscale (for black & white printing)",
             "color": "Color"
         },
-        "export_pdf_success": "Your requested reports will be available within 24 hours.",
-        "export_pdf_no_data": {
-            "title": "Printable Student Reports",
-            "header": "No students.",
-            "message": "There are no students in the batch. Please disable active filters and try again."
+        "export_success": "Your requested reports will be available within 24 hours.",
+        "export_failure": "Something went wrong.",
+        "export_retry": "Please retry again or contact the administrator at <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>",
+        "no_data": {
+            "title": "Error",
+            "header": "No data.",
+            "message": "Your request contains no data.<p/>Please adjust your selections and try again or contact the administrator at <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>"
         },
-        "export_request_files": "Request Files",
+        "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",
-        "generate_pdf_reports": "Generating Requested Reports"
+        "generate_reports": "Generating Requested Reports",
+        "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
     }
 }

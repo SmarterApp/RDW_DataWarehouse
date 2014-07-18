@@ -175,7 +175,7 @@ define [
 
     applyContextSecurity: ()->
       # init context security
-      contextSecurity.init @data.context.permissions, @config
+      contextSecurity.init @data.context.permissions, @config, Constants.REPORT_TYPE.GRADE
       contextSecurity.apply()
 
     createCutPoints: () ->
@@ -226,15 +226,17 @@ define [
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
         reportTitle: "Students in #{@contextData.items[4].name}"
+        reportType: Constants.REPORT_TYPE.GRADE
         reportName: Constants.REPORT_NAME.LOS
         reportInfoText: @config.reportInfo
         labels: @labels
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions
+        param: @params
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
-        getReportParams: @getReportParams.bind(this)
+        getReportParams: @getReportParams.bind(this), contextSecurity
 
     getReportParams: () ->
       params = {}

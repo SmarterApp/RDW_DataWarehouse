@@ -7,7 +7,7 @@ from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query,\
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query, \
     get_required_permission
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
@@ -79,13 +79,17 @@ def process_extraction_request(params, is_async=True):
     if is_async:
         response['tasks'] = task_responses
         if tasks:
+            response[Constants.FILES] = []
+            files = {}
             archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-            response['fileName'] = os.path.basename(archive_file_name)
+            files[Constants.FILENAME] = os.path.basename(archive_file_name)
             directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
             # Register extract file with HPZ.
             registration_id, download_url = register_file(user.get_uid())
-            response['download_url'] = download_url
+            files[Constants.DOWNLOAD_URL] = download_url
+
+            response[Constants.FILES].append(files)
 
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
             start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, queue=queue)
@@ -110,44 +114,21 @@ def process_extraction_request(params, is_async=True):
             raise NotFoundException("There are no results")
 
 
-# TODO: we don't need to support sync for item level or raw extracts.  Remove it when we have time to clean up
-def process_sync_item_or_raw_extract_request(params, extract_type):
-    '''
-    TODO add doc string
-    '''
-    settings = get_current_registry().settings
-    queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
-    archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
-    data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
-    root_dir = settings.get(data_path_config_key)
-    request_id, user, tenant = processor.get_extract_request_user_info()
-    extract_params = copy.deepcopy(params)
-    directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
-    out_file_name = get_items_extract_file_path(extract_params, tenant, request_id) if extract_type is ExtractType.itemLevel else None
-    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params,
-                                                                     root_dir, out_file_name, directory_to_archive,
-                                                                     extract_type)
-    if tasks:
-        celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)
-        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-        result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
-        return result.get(timeout=celery_timeout)
-    else:
-        raise NotFoundException("There are no results")
-
-
 def estimate_extract_total_file_size(params, avg_file_size, extract_type):
     """
     returns an estimate of the number of extract files based on query params and extract type
 
     @param params: Extract query params
     """
+    return_number = -1
     state_code = params.get(Constants.STATECODE)
     with EdCoreDBConnection(state_code=state_code) as connector:
         query = get_extract_assessment_item_and_raw_query(params, extract_type)
         return_number = connector.execute(query).rowcount
-    return 0 if return_number < 0 else return_number * avg_file_size
+    if return_number > 0:
+        if avg_file_size > 0:
+            return return_number * avg_file_size
+    return 0
 
 
 def process_async_item_or_raw_extraction_request(params, extract_type):
@@ -174,48 +155,56 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
 
     # temp hack till estimator is fixed. Needs to be removed and substituted with above line
     estimated_total_files = 1
-    if soft_limit > 0:
-        estimated_total_size = estimate_extract_total_file_size(params, average_size, extract_type)
-        estimated_total_files = int(estimated_total_size / soft_limit)
-        if estimated_total_size % soft_limit > 0:
-            estimated_total_files += 1
+    estimated_total_size = estimate_extract_total_file_size(params, average_size, extract_type)
 
-    out_file_names = []
-    directories_to_archive = []
-    extract_files = []
-    archive_files = []
-    registration_ids = []
+    # No data available
+    if estimated_total_size is 0:
+        task_response = {}
+        task_response[Extract.STATUS] = Extract.NO_DATA
+        task_response[Extract.MESSAGE] = "Data is not available"
+        response['tasks'] = [task_response]
+    else:
+        if soft_limit > 0:
+            estimated_total_files = int(estimated_total_size / soft_limit)
+            if estimated_total_size % soft_limit > 0:
+                estimated_total_files += 1
 
-    if estimated_total_files > 1:
-        for estimated_total_file in range(estimated_total_files):
+        out_file_names = []
+        directories_to_archive = []
+        extract_files = []
+        archive_files = []
+        registration_ids = []
+
+        if estimated_total_files > 1:
+            for estimated_total_file in range(estimated_total_files):
+                extract_file = {}
+                if extract_type is ExtractType.itemLevel:
+                    out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
+                directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
+                archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
+                archive_files.append(archive_file_name)
+                registration_id, download_url = register_file(user.get_uid())
+                registration_ids.append(registration_id)
+                extract_file['fileName'] = os.path.basename(archive_file_name)
+                extract_file['download_url'] = download_url
+                extract_files.append(extract_file)
+        else:
             extract_file = {}
             if extract_type is ExtractType.itemLevel:
-                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
-            directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
-            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
+                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id))
+            directories_to_archive.append(base_directory_to_archive)
+            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
             archive_files.append(archive_file_name)
             registration_id, download_url = register_file(user.get_uid())
             registration_ids.append(registration_id)
             extract_file['fileName'] = os.path.basename(archive_file_name)
             extract_file['download_url'] = download_url
             extract_files.append(extract_file)
-    else:
-        extract_file = {}
-        if extract_type is ExtractType.itemLevel:
-            out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id))
-        directories_to_archive.append(base_directory_to_archive)
-        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-        archive_files.append(archive_file_name)
-        registration_id, download_url = register_file(user.get_uid())
-        registration_ids.append(registration_id)
-        extract_file['fileName'] = os.path.basename(archive_file_name)
-        extract_file['download_url'] = download_url
-        extract_files.append(extract_file)
 
-    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
-    response['tasks'] = task_responses
-    response['files'] = extract_files
-    start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
+        tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
+        response['tasks'] = task_responses
+        response['files'] = extract_files
+        start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
     return response
 
 
@@ -305,7 +294,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
-        copied_task_response[Extract.STATUS] = Extract.FAIL
+        copied_task_response[Extract.STATUS] = Extract.NO_DATA
         copied_task_response[Extract.MESSAGE] = "Data is not available"
         task_responses.append(copied_task_response)
     return tasks, task_responses
@@ -337,7 +326,7 @@ def _create_item_or_raw_tasks_with_responses(request_id, user, param, root_dir, 
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
-        copied_task_response[Extract.STATUS] = Extract.FAIL
+        copied_task_response[Extract.STATUS] = Extract.NO_DATA
         copied_task_response[Extract.MESSAGE] = "Data is not available"
         task_responses.append(copied_task_response)
     return tasks, task_responses

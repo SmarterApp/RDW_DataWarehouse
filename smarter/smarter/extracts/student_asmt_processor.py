@@ -79,13 +79,17 @@ def process_extraction_request(params, is_async=True):
     if is_async:
         response['tasks'] = task_responses
         if tasks:
+            response[Constants.FILES] = []
+            files = {}
             archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-            response['fileName'] = os.path.basename(archive_file_name)
+            files[Constants.FILENAME] = os.path.basename(archive_file_name)
             directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
             # Register extract file with HPZ.
             registration_id, download_url = register_file(user.get_uid())
-            response['download_url'] = download_url
+            files[Constants.DOWNLOAD_URL] = download_url
+
+            response[Constants.FILES].append(files)
 
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
             start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, queue=queue)

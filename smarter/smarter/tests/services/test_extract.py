@@ -31,6 +31,7 @@ import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.reports.helpers.constants import Constants as ReportConstants
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -196,7 +197,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', results.json_body['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', results.json_body[ReportConstants.FILES][0][ReportConstants.DOWNLOAD_URL])
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_post_valid_tenant_extract(self, register_file_patch):
@@ -214,7 +215,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tasks = response.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body[ReportConstants.FILES][0][ReportConstants.DOWNLOAD_URL])
 
     def test_with_no_sync_or_async_set(self):
         self.__request.GET['stateCode'] = 'NC'
@@ -261,7 +262,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         response = send_extraction_request(params)
         content_type = response._headerlist[0]
         self.assertEqual(content_type[1], "application/json; charset=UTF-8")
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body[ReportConstants.FILES][0][ReportConstants.DOWNLOAD_URL])
 
 
 if __name__ == "__main__":

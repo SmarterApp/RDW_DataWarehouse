@@ -37,6 +37,7 @@ from smarter.extracts.student_assessment import get_required_permission
 from smarter.extracts.processor import _get_extract_work_zone_base_dir
 import os
 from unittest.case import skip
+from smarter.reports.helpers.constants import Constants
 
 
 __author__ = 'ablum'
@@ -226,10 +227,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': ['2016'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         response = process_extraction_request(params)
-        self.assertIn('.zip', response['fileName'])
-        self.assertNotIn('.gpg', response['fileName'])
+        self.assertIn('.zip', response[Constants.FILES][0][Constants.FILENAME])
+        self.assertNotIn('.gpg', response[Constants.FILES][0][Constants.FILENAME])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response[Constants.FILES][0][Constants.DOWNLOAD_URL])
 
     @skip('ignore test for now due to sqlite is not returning data')
     @patch('smarter.extracts.student_asmt_processor.start_extract')

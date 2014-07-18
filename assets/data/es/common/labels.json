@@ -16,6 +16,7 @@
         "claims": "Aseveraciones",
         "claim_score_details": "Detalles de la puntuación de la aserveración",
         "clear_all": "Borrar todo",
+        "clear": "Clear",
         "color": "Color",
         "compare": "Comparar",
         "count": "Contar",
@@ -118,6 +119,7 @@
         "total_count": "Conteo total",
         "unfiltered_total_assessed": "Total evaluado sin filtrar",
         "viewing": "Vista",
+        "viewing_previous_year": "You are viewing a previous academic year. <a href='#'>Return to <span class='latestYear'>{{latestYear}}</span></a>.",
         "asmt": {
             "Communicating Reasoning": "Razonamiento para comunicarse",
             "Concepts & Procedures": "Conceptos y procedimientos",

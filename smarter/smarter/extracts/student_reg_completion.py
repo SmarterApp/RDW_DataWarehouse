@@ -11,6 +11,7 @@ def get_academic_year_query(academic_year, state_code):
     with EdCoreDBConnection(state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)
         academic_year_query = select_with_context([student_reg.c.state_code,
+                                                   student_reg.c.state_name,
                                                    student_reg.c.district_guid,
                                                    student_reg.c.district_name,
                                                    student_reg.c.school_guid,
@@ -54,6 +55,7 @@ def get_assessment_query(academic_year, state_code):
             .alias(name=Constants.FACT_ASMT_OUTCOME_VW)
 
         academic_year_query = select_with_context([student_reg.c.state_code,
+                                                   student_reg.c.state_name,
                                                    student_reg.c.district_guid,
                                                    student_reg.c.district_name,
                                                    student_reg.c.school_guid,

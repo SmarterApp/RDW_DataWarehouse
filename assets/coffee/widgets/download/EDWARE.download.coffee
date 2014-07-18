@@ -28,33 +28,45 @@ define [
 
   showFailureMessage = (response) ->
     @hide()
-    $('#DownloadResponseContainer').html Mustache.to_html FailureTemplate, {
-      labels: @config.labels
-      options: @config.ExportOptions
-    }
-    $('#DownloadFailureModal').edwareModal
-      keepLastFocus: true
+    renderFailModal this
+    keepLastFocus: true
 
   showSuccessMessage = (response) ->
     @hide()
     response_ok = checkExtractResponseTaskStatus response
     if response_ok is "ok"
       files = response["files"]
-      $('#DownloadResponseContainer').html Mustache.to_html SuccessTemplate, {
-        labels: @config.labels
-        options: @config.ExportOptions
-        download_urls: files
-      }
-      $('#DownloadSuccessModal').edwareModal
-        keepLastFocus: true
+      renderSucessModal this, files
     else if response_ok is "no_data"
-      $('#DownloadResponseContainer').html Mustache.to_html NoDataTemplate, {
-        labels: @config.labels
-        options: @config.ExportOptions
-      }
-      $('#NoDataModal').edwareModal
-        keepLastFocus: true
+      renderNoDataModal this
+    else if response_ok is "fail"
+      renderFailModal this
 
+  renderSucessModal = (self, files) ->
+    $('#DownloadResponseContainer').html Mustache.to_html SuccessTemplate, {
+      labels: self.config.labels
+      options: self.config.ExportOptions
+      download_urls: files
+    }
+    $('#DownloadSuccessModal').edwareModal
+      keepLastFocus: true
+
+  renderNoDataModal = (self) ->
+    $('#DownloadResponseContainer').html Mustache.to_html NoDataTemplate, {
+      labels: self.config.labels
+      options: self.config.ExportOptions
+    }
+    $('#NoDataModal').edwareModal
+      keepLastFocus: true
+
+  renderFailModal = (self) ->
+    $('#DownloadResponseContainer').html Mustache.to_html FailureTemplate, {
+      labels: self.config.labels
+      options: self.config.ExportOptions
+    }
+    $('#DownloadFailureModal').edwareModal
+      keepLastFocus: true
+    
   checkExtractResponseTaskStatus = (response) ->
     tasks = response['tasks']
     return "ok" if tasks is `undefined`

@@ -5,7 +5,7 @@ Created on May 8, 2014
 """
 import unittest
 from unittest.mock import patch
-
+from unittest import skip
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from pyramid.registry import Registry
@@ -28,7 +28,6 @@ import smarter.extracts.format
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 from smarter.security.roles.state_level import StateLevel  # @UnusedImport
-from unittest.case import skip
 
 
 class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

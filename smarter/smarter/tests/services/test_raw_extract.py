@@ -1,9 +1,8 @@
-from unittest.case import skip
 __author__ = 'sravi'
 
 import unittest
 from unittest.mock import patch
-
+from unittest import skip
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from pyramid.registry import Registry
@@ -11,7 +10,6 @@ from pyramid.response import Response
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from pyramid.security import Allow
-
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name
 from edextract.celery import setup_celery

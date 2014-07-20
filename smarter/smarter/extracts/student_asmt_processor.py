@@ -8,7 +8,7 @@ from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query, \
-    get_required_permission
+    get_required_permission, get_extract_assessment_item_and_raw_count_query
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
@@ -123,8 +123,9 @@ def estimate_extract_total_file_size(params, avg_file_size, extract_type):
     return_number = -1
     state_code = params.get(Constants.STATECODE)
     with EdCoreDBConnection(state_code=state_code) as connector:
-        query = get_extract_assessment_item_and_raw_query(params, extract_type)
-        return_number = connector.execute(query).rowcount
+        query = get_extract_assessment_item_and_raw_count_query(params, extract_type)
+        results = connector.get_result(query)
+        return_number = results[0][Constants.COUNT]
     if return_number > 0:
         if avg_file_size > 0:
             return return_number * avg_file_size

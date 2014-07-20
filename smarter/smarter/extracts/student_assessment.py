@@ -3,7 +3,7 @@ Created on Nov 1, 2013
 
 @author: ejen
 '''
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, func
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
@@ -152,6 +152,25 @@ def get_extract_assessment_query(params):
     return query
 
 
+def get_extract_assessment_item_and_raw_count_query(params, extract_type):
+    """
+    private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
+
+    :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
+    """
+    state_code = params.get(Constants.STATECODE)
+
+    with EdCoreDBConnection(state_code=state_code) as connector:
+        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        query = select_with_context([func.count().label(Constants.COUNT)],
+                                    from_obj=[fact_asmt_outcome_vw],
+                                    permission=get_required_permission(extract_type),
+                                    state_code=state_code)
+
+        query = _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, params)
+    return query
+
+
 def get_extract_assessment_item_and_raw_query(params, extract_type):
     """
     private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
@@ -159,10 +178,6 @@ def get_extract_assessment_item_and_raw_query(params, extract_type):
     :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
     """
     state_code = params.get(Constants.STATECODE)
-    asmt_year = params.get(Constants.ASMTYEAR)
-    asmt_type = params.get(Constants.ASMTTYPE)
-    asmt_subject = params.get(Constants.ASMTSUBJECT)
-    asmt_grade = params.get(Constants.ASMTGRADE)
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -180,12 +195,18 @@ def get_extract_assessment_item_and_raw_query(params, extract_type):
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
                                     permission=get_required_permission(extract_type),
                                     state_code=state_code)
+        query = _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, params)
+    return query
 
-        query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
-        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)  # Filters demographics
+
+def _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, params):
+    state_code = params.get(Constants.STATECODE)
+    asmt_year = params.get(Constants.ASMTYEAR)
+    asmt_type = params.get(Constants.ASMTTYPE)
+    asmt_subject = params.get(Constants.ASMTSUBJECT)
+    asmt_grade = params.get(Constants.ASMTGRADE)
+    query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code, fact_asmt_outcome_vw.c.asmt_year == asmt_year,
+                             fact_asmt_outcome_vw.c.asmt_type == asmt_type, fact_asmt_outcome_vw.c.asmt_subject == asmt_subject,
+                             fact_asmt_outcome_vw.c.asmt_grade == asmt_grade, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+    query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)  # Filters demographics
     return query

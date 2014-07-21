@@ -242,11 +242,11 @@ define [
       data
 
     getKey: () ->
-      if this.params['schoolGuid'] and this.params['asmtGrade']
+      if this.params['schoolId'] and this.params['asmtGrade']
         # cache key for los is a combination of schoolguid and asmtGrade
-        id = this.params['schoolGuid'] + "_" + this.params['asmtGrade']
-      else if this.params['districtGuid']
-        id  = this.params['districtGuid']
+        id = this.params['schoolId'] + "_" + this.params['asmtGrade']
+      else if this.params['districtId']
+        id  = this.params['districtId']
       else if this.params['stateCode']
         id  = this.params['stateCode']
       id

@@ -75,7 +75,7 @@ class TestPdfGenerator(unittest.TestCase):
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + '/' + report)
         query_param = parse_qs(url.query)
         self.assertEqual(len(query_param.keys()), 4)
-        self.assertEqual(query_param['studentGuid'][0], student_id)
+        self.assertEqual(query_param['studentId'][0], student_id)
         self.assertEqual(query_param['pdf'][0], 'true')
 
     def test_build_url_with_trailing_slash(self):
@@ -90,7 +90,7 @@ class TestPdfGenerator(unittest.TestCase):
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + report)
         query_param = parse_qs(url.query)
         self.assertEqual(len(query_param.keys()), 4)
-        self.assertEqual(query_param['studentGuid'][0], student_id)
+        self.assertEqual(query_param['studentId'][0], student_id)
         self.assertEqual(query_param['pdf'][0], 'true')
         self.assertEqual(query_param['stateCode'][0], 'ny')
 

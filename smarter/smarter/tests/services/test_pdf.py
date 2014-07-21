@@ -98,9 +98,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
     # def test_post_pdf_service_post_valid_payload(self):
-    #     studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+    #     studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
     #     self.__request.method = 'POST'
-    #     self.__request.json_body = {Constants.STUDENTGUID: [studentGuid], Constants.STATECODE: 'NC',
+    #     self.__request.json_body = {Constants.STUDENTGUID: [studentId], Constants.STATECODE: 'NC',
     #                                 Constants.ASMTTYPE: AssessmentType.SUMMATIVE, Constants.EFFECTIVEDATE: 20160404,
     #                                 Constants.DISTRICTGUID: '229', Constants.SCHOOLGUID: '939'}
     #     self.__request.cookies = {'edware': '123'}
@@ -108,10 +108,10 @@ class TestServices(Unittest_with_edcore_sqlite):
     #     services.tasks.pdf.pdf_procs = ['echo', 'dummy']
     #     # prepare empty file
     #     pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir,
-    #                                                         student_ids=studentGuid,
+    #                                                         student_ids=studentId,
     #                                                         asmt_type=AssessmentType.SUMMATIVE)
-    #     prepare_path(pdf_file[studentGuid])
-    #     with open(pdf_file[studentGuid], 'w') as file:
+    #     prepare_path(pdf_file[studentId])
+    #     with open(pdf_file[studentId], 'w') as file:
     #         file.write('%PDF-1.4')
     #     response = post_pdf_service(None, self.__request)
     #     self.assertIsInstance(response, Response)
@@ -135,16 +135,16 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, None, self.__request)
 
     def test_get_pdf_valid_params(self):
-        studentGuid = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
-        self.__request.GET[Constants.STUDENTGUID] = studentGuid
+        studentId = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
+        self.__request.GET[Constants.STUDENTGUID] = studentId
         self.__request.GET[Constants.STATECODE] = 'NC'
         self.__request.GET[Constants.EFFECTIVEDATE] = 20160404
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
-        prepare_path(pdf_file[studentGuid])
-        with open(pdf_file[studentGuid], 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentId, asmt_type=AssessmentType.SUMMATIVE)
+        prepare_path(pdf_file[studentId])
+        with open(pdf_file[studentId], 'w') as file:
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
@@ -154,9 +154,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
 
     def test_send_pdf_request(self):
-        studentGuid = "a016a4c1-5aca-4146-a85b-ed1172a01a4d"
+        studentId = "a016a4c1-5aca-4146-a85b-ed1172a01a4d"
         params = {}
-        params[Constants.STUDENTGUID] = studentGuid
+        params[Constants.STUDENTGUID] = studentId
         params[Constants.STATECODE] = 'NC'
         params[Constants.EFFECTIVEDATE] = 20160404
         params['dummy'] = 'dummy'
@@ -164,9 +164,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
-        prepare_path(pdf_file[studentGuid])
-        with open(pdf_file[studentGuid], 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentId, asmt_type=AssessmentType.SUMMATIVE)
+        prepare_path(pdf_file[studentId])
+        with open(pdf_file[studentId], 'w') as file:
             file.write('%PDF-1.4')
         response = send_pdf_request(params)
         self.assertIsInstance(response, Response)
@@ -211,9 +211,9 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_send_pdf_request_with_always_generate_flag(self):
         self.__config.registry.settings['pdf.always_generate'] = 'True'
-        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         params = {}
-        params[Constants.STUDENTGUID] = studentGuid
+        params[Constants.STUDENTGUID] = studentId
         params[Constants.STATECODE] = 'NC'
         params['dummy'] = 'dummy'
         params[Constants.EFFECTIVEDATE] = 20160404
@@ -221,9 +221,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
         # prepare empty file to mimic a pdf was generated
-        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentGuid, asmt_type=AssessmentType.SUMMATIVE)
-        prepare_path(pdf_file[studentGuid])
-        with open(pdf_file[studentGuid], 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentId, asmt_type=AssessmentType.SUMMATIVE)
+        prepare_path(pdf_file[studentId])
+        with open(pdf_file[studentId], 'w') as file:
             file.write('%PDF-1.4')
         self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
 
@@ -408,7 +408,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         base_url = 'http://foo.com/foo'
         params = {}
         result = _create_student_pdf_url(student_id, base_url, params)
-        self.assertIn(result, ['http://foo.com/foo?pdf=true&studentGuid=1-2-3-4-5', 'http://foo.com/foo?studentGuid=1-2-3-4-5&pdf=true'])
+        self.assertIn(result, ['http://foo.com/foo?pdf=true&studentId=1-2-3-4-5', 'http://foo.com/foo?studentId=1-2-3-4-5&pdf=true'])
         params = {'abc': 'ef'}
         result = _create_student_pdf_url(student_id, base_url, params)
         self.assertTrue('abc=ef' in result)
@@ -498,11 +498,11 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(0, len(tasks))
 
     def test_create_urls_by_student_id(self):
-        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         baseURL = 'http://foo.com/abc'
-        url = _create_urls_by_student_id(studentGuid, 'NC', baseURL, {})
-        self.assertIn(url['a5ddfe12-740d-4487-9179-de70f6ac33be'], ['http://foo.com/abc?pdf=true&studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be',
-                                                                    'http://foo.com/abc?studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be&pdf=true'])
+        url = _create_urls_by_student_id(studentId, 'NC', baseURL, {})
+        self.assertIn(url['a5ddfe12-740d-4487-9179-de70f6ac33be'], ['http://foo.com/abc?pdf=true&studentId=a5ddfe12-740d-4487-9179-de70f6ac33be',
+                                                                    'http://foo.com/abc?studentId=a5ddfe12-740d-4487-9179-de70f6ac33be&pdf=true'])
 
     def test_get_cover_sheet_name(self):
         name = _get_cover_sheet_name('7')

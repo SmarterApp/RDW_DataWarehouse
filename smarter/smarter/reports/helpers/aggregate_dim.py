@@ -12,11 +12,11 @@ from edapi.cache import cache_region
 from copy import deepcopy
 
 
-def get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, subjects={}):
+def get_aggregate_dim(stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, subjects={}):
     records = {}
     for subject_key in subjects.keys():
         subject = subjects[subject_key]
-        rows = _get_aggregate_dim(stateCode, districtGuid, schoolGuid, asmtType, asmtYear, tenant, subject_key, subject)
+        rows = _get_aggregate_dim(stateCode, districtId, schoolId, asmtType, asmtYear, tenant, subject_key, subject)
         for key in rows.keys():
             record = records.get(key)
             if record is None:
@@ -32,16 +32,16 @@ def get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtTy
     return {Constants.RECORDS: sorted_records}
 
 
-def get_aggregate_dim_cache_route(stateCode, districtGuid, schoolGuid, asmtType, asmtYear, tenant, subject_key, subject):
+def get_aggregate_dim_cache_route(stateCode, districtId, schoolId, asmtType, asmtYear, tenant, subject_key, subject):
     '''
     If school_id is present, return none - do not cache
     '''
-    if schoolGuid is not None:
+    if schoolId is not None:
         return None  # do not cache school level
     return 'public.shortlived'
 
 
-def get_aggregate_dim_cache_route_cache_key(stateCode, districtGuid, schoolGuid, asmtType, asmtYear, tenant, subject_key, subject):
+def get_aggregate_dim_cache_route_cache_key(stateCode, districtId, schoolId, asmtType, asmtYear, tenant, subject_key, subject):
     '''
     Returns cache key for get_aggregate_dim
 
@@ -51,8 +51,8 @@ def get_aggregate_dim_cache_route_cache_key(stateCode, districtGuid, schoolGuid,
     cache_args = []
     if stateCode is not None:
         cache_args.append(stateCode)
-    if districtGuid is not None:
-        cache_args.append(districtGuid)
+    if districtId is not None:
+        cache_args.append(districtId)
     cache_args.append(asmtType)
     cache_args.append(asmtYear)
     cache_args.append(subject)
@@ -60,12 +60,12 @@ def get_aggregate_dim_cache_route_cache_key(stateCode, districtGuid, schoolGuid,
 
 
 @cache_region(['public.shortlived'], router=get_aggregate_dim_cache_route, key_generator=get_aggregate_dim_cache_route_cache_key)
-def _get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, subject_key=None, subject=None):
+def _get_aggregate_dim(stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, subject_key=None, subject=None):
     '''
     Query for institution or grades that have asmts for the year provided
     :param string stateCode
-    :param string districtGuid
-    :param string schoolGuid
+    :param string districtId
+    :param string schoolId
     :param string asmtType
     :param string asmtYear
     :param string tenant: tenant info for database connection
@@ -80,19 +80,19 @@ def _get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtT
         s = exists(['*'], from_obj=[dim_inst_hier]).where(and_(fact_asmt_outcome.c.asmt_year == asmtYear, fact_asmt_outcome.c.state_code == stateCode, fact_asmt_outcome.c.rec_status == 'C',
                                                                fact_asmt_outcome.c.asmt_type == asmtType, fact_asmt_outcome.c.inst_hier_rec_id == dim_inst_hier.c.inst_hier_rec_id,
                                                                fact_asmt_outcome.c.asmt_subject == subject))
-        if districtGuid is None and schoolGuid is None:
+        if districtId is None and schoolId is None:
             query = get_select_for_state_view(dim_inst_hier, stateCode).where(s)
-        elif districtGuid is not None and schoolGuid is not None:
-            query = get_select_for_school_view(fact_asmt_outcome, stateCode, districtGuid, schoolGuid, asmtYear, asmtType, subject)
+        elif districtId is not None and schoolId is not None:
+            query = get_select_for_school_view(fact_asmt_outcome, stateCode, districtId, schoolId, asmtYear, asmtType, subject)
         else:
-            query = get_select_for_district_view(dim_inst_hier, stateCode, districtGuid).where(s)
+            query = get_select_for_district_view(dim_inst_hier, stateCode, districtId).where(s)
         results = connector.get_result(query)
         for result in results:
             params = {Constants.ID: result.get(Constants.ID), Constants.STATECODE: stateCode}
-            if districtGuid is not None:
-                params[Constants.DISTRICTGUID] = districtGuid
-            if schoolGuid is not None:
-                params[Constants.SCHOOLGUID] = schoolGuid
+            if districtId is not None:
+                params[Constants.DISTRICTGUID] = districtId
+            if schoolId is not None:
+                params[Constants.SCHOOLGUID] = schoolId
             data = {Constants.ID: result.get(Constants.ID),
                     Constants.ROWID: result.get(Constants.ID),
                     Constants.NAME: result.get(Constants.NAME),

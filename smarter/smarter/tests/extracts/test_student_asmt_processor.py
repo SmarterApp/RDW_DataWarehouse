@@ -126,8 +126,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_get_file_name_school(self):
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
@@ -141,8 +141,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_get_file_name_grade(self):
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -177,8 +177,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_process_sync_extraction_request_NotFoundException(self):
         params = {'stateCode': ['CA'],
-                  'districtGuid': ['228'],
-                  'schoolGuid': ['242'],
+                  'districtId': ['228'],
+                  'schoolId': ['242'],
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': [],
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
@@ -186,8 +186,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_process_sync_extraction_request_NotFoundException_with_subject(self):
         params = {'stateCode': ['NC'],
-                  'districtGuid': ['228'],
-                  'schoolGuid': ['242'],
+                  'districtId': ['228'],
+                  'schoolId': ['242'],
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
                   'asmtYear': ['2018'],
@@ -196,8 +196,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_process_sync_extraction_request_with_subject(self):
         params = {'stateCode': ['NC'],
-                  'districtGuid': ['c912df4b-acdf-40ac-9a91-f66aefac7851'],
-                  'schoolGuid': ['429804d2-50db-4e0e-aa94-96ed8a36d7d5'],
+                  'districtId': ['c912df4b-acdf-40ac-9a91-f66aefac7851'],
+                  'schoolId': ['429804d2-50db-4e0e-aa94-96ed8a36d7d5'],
                   'asmtType': ['INTERIM COMPREHENSIVE'],
                   'asmtSubject': ['ELA'],
                   'asmtYear': ['2016']}
@@ -206,8 +206,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_process_sync_extraction_request_with_filters(self):
         params = {'stateCode': ['NC'],
-                  'districtGuid': ['c912df4b-acdf-40ac-9a91-f66aefac7851'],
-                  'schoolGuid': ['429804d2-50db-4e0e-aa94-96ed8a36d7d5'],
+                  'districtId': ['c912df4b-acdf-40ac-9a91-f66aefac7851'],
+                  'schoolId': ['429804d2-50db-4e0e-aa94-96ed8a36d7d5'],
                   'asmtType': ['INTERIM COMPREHENSIVE'],
                   'asmtSubject': ['ELA'],
                   'asmtYear': ['2016'],
@@ -220,7 +220,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],
-                  'districtGuid': [None],
+                  'districtId': [None],
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
                   'asmtGrade': ['3'],
@@ -251,8 +251,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test___prepare_data(self):
         params = {'stateCode': 'NC',
-                  'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
-                  'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
+                  'districtId': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
+                  'schoolId': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': 'INTERIM COMPREHENSIVE',
                   'asmtSubject': 'ELA',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
@@ -267,8 +267,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test_get_asmt_metadata_file_path(self):
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -284,8 +284,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -303,8 +303,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -321,8 +321,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_asmt_metadata_task(self):
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -337,8 +337,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -357,8 +357,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -376,8 +376,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -396,8 +396,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_id], from_obj=[fact])
         params = {'stateCode': 'CA',
-                  'districtGuid': '341',
-                  'schoolGuid': 'asf',
+                  'districtId': '341',
+                  'schoolId': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
@@ -426,8 +426,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_tasks_with_responses_non_tenant_level(self):
         params = {'stateCode': 'NC',
-                  'districtGuid': '228',
-                  'schoolGuid': '242',
+                  'districtId': '228',
+                  'schoolId': '242',
                   'asmtGrade': '3',
                   'asmtSubject': 'Math',
                   'asmtYear': '2016',
@@ -440,8 +440,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_tasks_with_responses_non_tenant_level_no_data(self):
         params = {'stateCode': 'NC',
-                  'districtGuid': '228',
-                  'schoolGuid': '242',
+                  'districtId': '228',
+                  'schoolId': '242',
                   'asmtGrade': '3',
                   'asmtSubject': 'NoSubject',
                   'asmtYear': '2015',
@@ -454,8 +454,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_tasks_with_responses_tenant_level(self):
         params = {'stateCode': 'NC',
-                  'districtGuid': '228',
-                  'schoolGuid': '242',
+                  'districtId': '228',
+                  'schoolId': '242',
                   'asmtSubject': 'Math',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE'}

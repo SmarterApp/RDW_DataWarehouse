@@ -150,9 +150,9 @@ define [
 
     # Based on query parameters, return the type of report that the user is requesting for
     getReportType: (params) ->
-      if params['schoolGuid']
+      if params['schoolId']
         reportType = 'school'
-      else if params['districtGuid']
+      else if params['districtId']
         reportType = 'district'
       else if params['stateCode']
         reportType = 'state'
@@ -262,7 +262,7 @@ define [
         # For state and district, get stickies for extracts
         selected = @stickyCompare.getRows()
         if selected.length > 0
-          if @reportType == 'state' then params['districtGuid'] = selected else params['schoolGuid'] = selected
+          if @reportType == 'state' then params['districtId'] = selected else params['schoolId'] = selected
       params
 
 

@@ -49,27 +49,27 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         testing.tearDown()
 
     def test_invalid_params(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": '3b10d26b-b013-4cdd-a916-5d577e895ed4', 'stateCode': 'AA'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": '3b10d26b-b013-4cdd-a916-5d577e895ed4', 'stateCode': 'AA'}
         results = get_student_report(params)
         self.assertIsInstance(results, HTTPForbidden)
 
     def test_student_report(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": '3b10d26b-b013-4cdd-a916-5d577e895ed4', 'stateCode': 'NC'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": '3b10d26b-b013-4cdd-a916-5d577e895ed4', 'stateCode': 'NC'}
         result = get_student_report(params)['all_results']
-        self.assertEqual(1, len(result), "studentGuid should have 1 report")
+        self.assertEqual(1, len(result), "studentId should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
         self.assertEqual('2200', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
         self.assertEqual('Research & Inquiry', result[0]['claims'][3]['name'], 'asmt_claim_4_name Spelling')
 
     def test_assessment_header_info(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
         result = get_student_report(params)
         student_report = result['all_results'][0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
 
     def test_custom_metadata(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "stateCode": 'NC'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "stateCode": 'NC'}
         result = get_student_report(params)['all_results']
         student_report = result[0]
 
@@ -91,7 +91,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
             self.assertIn("bg_color", keys, "should contain the bg_color of the cut point")
 
     def test_score_interval(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
         result = get_student_report(params)['all_results']
         student_report = result[0]
 
@@ -99,7 +99,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_max'] - student_report['asmt_score_interval'])
 
     def test_context(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
         result = get_student_report(params)['context']['items']
         self.assertEqual('North Carolina', result[1]['name'])
         self.assertEqual('Sunset School District', result[2]['name'])
@@ -108,7 +108,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual("Lettie L. Hose", result[5]['name'])
 
     def test_claims(self):
-        params = {"studentGuid": 'eac5d0d6-0bba-43cd-81cd-8b1956b9177e', 'stateCode': 'NC'}
+        params = {"studentId": 'eac5d0d6-0bba-43cd-81cd-8b1956b9177e', 'stateCode': 'NC'}
         items = get_student_report(params)['all_results']
         result = items[0]
         self.assertEqual(3, len(result['claims']))
@@ -130,7 +130,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual(2, len(result['accommodations'][10]))
 
     def test_invalid_student_id(self):
-        params = {'studentGuid': 'invalid', 'stateCode': 'NC'}
+        params = {'studentId': 'invalid', 'stateCode': 'NC'}
         self.assertRaises(NotFoundException, get_student_report, params)
 
 if __name__ == '__main__':

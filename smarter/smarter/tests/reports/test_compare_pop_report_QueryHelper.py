@@ -101,7 +101,7 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
         self.assertEqual(column.key, alias_name)
 
     def test_invalid_parameters(self):
-        param = {'stateCode': 'DE', 'schoolGuid': 'BAC'}
+        param = {'stateCode': 'DE', 'schoolId': 'BAC'}
         self.assertRaises(InvalidParameterException, QueryHelper, None, **param)
 
 

@@ -59,16 +59,16 @@ class ComparingPopStatReport:
     Statistic data for Comparing Population Report. Only contains not stated students count for now.
     '''
 
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None):
+    def __init__(self, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None):
         '''
         :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district, could be None
-        :param string schoolGuid:  Guid of the school, could be None
+        :param string districtId:  Guid of the district, could be None
+        :param string schoolId:  Guid of the school, could be None
         :param string tenant:  tenant name of the user.  Specify if report is not going through a web request
         '''
         self.state_code = stateCode
-        self.district_id = districtGuid
-        self.school_id = schoolGuid
+        self.district_id = districtId
+        self.school_id = schoolId
         self.asmt_type = asmtType
         self.asmt_year = asmtYear
         self.tenant = tenant

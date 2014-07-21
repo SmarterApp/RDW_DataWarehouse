@@ -189,17 +189,17 @@ class ComparingPopReport(object):
     '''
     Comparing populations report
     '''
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, **filters):
+    def __init__(self, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, **filters):
         '''
         :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district, could be None
-        :param string schoolGuid:  Guid of the school, could be None
+        :param string districtId:  Guid of the district, could be None
+        :param string schoolId:  Guid of the school, could be None
         :param string tenant:  tenant name of the user.  Specify if report is not going through a web request
         :param dict filter: dict of filters to apply to query
         '''
         self.state_code = stateCode
-        self.district_id = districtGuid
-        self.school_id = schoolGuid
+        self.district_id = districtId
+        self.school_id = schoolId
         self.asmt_type = asmtType
         self.asmt_year = asmtYear
         self.tenant = tenant
@@ -287,10 +287,10 @@ class ComparingPopReport(object):
 
 
 class RecordManager():
-    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtId=None, schoolId=None, **kwargs):
         self._stateCode = stateCode
-        self._districtGuid = districtGuid
-        self._schoolGuid = schoolGuid
+        self._districtId = districtId
+        self._schoolId = schoolId
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
         self._summary = {}
@@ -378,10 +378,10 @@ class RecordManager():
             __record = {Constants.ROWID: record.id, Constants.ID: record.id, Constants.NAME: record.name,
                         Constants.RESULTS: self.format_results(record.subjects),
                         Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
-            if self._districtGuid is not None:
-                __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
-            if self._schoolGuid is not None:
-                __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
+            if self._districtId is not None:
+                __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtId
+            if self._schoolId is not None:
+                __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolId
             records.append(__record)
         return records
 
@@ -437,10 +437,10 @@ class QueryHelper():
     '''
     Helper class to build a sqlalchemy query based on the view type (state, district, or school)
     '''
-    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, filters=None):
+    def __init__(self, connector, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, filters=None):
         self._state_code = stateCode
-        self._district_id = districtGuid
-        self._school_id = schoolGuid
+        self._district_id = districtId
+        self._school_id = schoolId
         self._asmt_type = asmtType
         self._asmt_year = asmtYear
         self._filters = filters

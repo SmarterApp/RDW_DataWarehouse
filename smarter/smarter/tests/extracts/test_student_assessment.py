@@ -120,13 +120,13 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
 
     def test_get_extract_assessment_query_with_selections(self):
         params = {'stateCode': 'NC',
-                  'districtGuid': '229',
-                  'schoolGuid': '939',
+                  'districtId': '229',
+                  'schoolId': '939',
                   'asmtGrade': '7',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'studentGuid': ['a629ca88-afe6-468c-9dbb-92322a284602'],
+                  'studentId': ['a629ca88-afe6-468c-9dbb-92322a284602'],
                   'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}
         query = get_extract_assessment_query(params)
         self.assertIsNotNone(query)

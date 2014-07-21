@@ -82,7 +82,7 @@ class UserContext(object):
         :param dict params:  request parameter of report
         '''
         if tenant in self.__hierarchy_context_map and permission in self.__hierarchy_context_map[tenant]:
-            for guid in ['schoolGuid', 'districtGuid', 'stateCode']:
+            for guid in ['schoolId', 'districtId', 'stateCode']:
                 if params.get(guid):
                     return self.validate_hierarchy(tenant, permission, params, guid)
         return self._get_default_permission()
@@ -125,7 +125,7 @@ class UserContext(object):
         the user has context to the next level down
         '''
         current = self.__hierarchy_context_map[tenant][permission]
-        hierarchy = ['stateCode', 'districtGuid', 'schoolGuid']
+        hierarchy = ['stateCode', 'districtId', 'schoolId']
         idx = hierarchy.index(identifier)
         for i in hierarchy[0:idx + 1]:
             if not current or current.get('all'):

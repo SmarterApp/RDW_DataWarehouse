@@ -66,7 +66,7 @@ define [
     }
     $('#DownloadFailureModal').edwareModal
       keepLastFocus: true
-    
+
   checkExtractResponseTaskStatus = (response) ->
     tasks = response['tasks']
     return "ok" if tasks is `undefined`
@@ -359,8 +359,8 @@ define [
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
 
-      if storageParams and storageParams['districtGuid']
-        params['districtGuid'] = [storageParams['districtGuid']]
+      if storageParams and storageParams['districtId']
+        params['districtId'] = [storageParams['districtId']]
 
       params
 
@@ -399,8 +399,8 @@ define [
       # Get sticky compared rows if any
       params = $.extend(@config.getReportParams(), params)
       params['stateCode'] = values['stateCode']
-      params['districtGuid'] = values['districtGuid']
-      params['schoolGuid'] = values['schoolGuid']
+      params['districtId'] = values['districtId']
+      params['schoolId'] = values['schoolId']
       params['asmtGrade'] = values['asmtGrade'] if values['asmtGrade']
       params['asmtType'] = asmtType.toUpperCase()
       params['asmtSubject'] = edwarePreferences.getSubjectPreference()
@@ -431,7 +431,7 @@ define [
 
     hasData = () ->
       $('#gridTable').text() isnt ''
-    
+
     printPDF: () ->
       @hide()
       if not hasData()

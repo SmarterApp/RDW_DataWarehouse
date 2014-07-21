@@ -43,9 +43,9 @@ class PDFGenerator(BatchBase):
         '''
         Build and return the full url for ISR report
 
-        :param string student_id:  studentGuid of the student
+        :param string student_id:  student id of the student
         :param string report:  the name of the report
         '''
         # Encode the query parameters and append it to url
-        encoded_params = urllib.parse.urlencode({'studentGuid': student_id, 'pdf': 'true', 'stateCode': state_code, 'effectiveDate': effective_date})
+        encoded_params = urllib.parse.urlencode({'studentId': student_id, 'pdf': 'true', 'stateCode': state_code, 'effectiveDate': effective_date})
         return urljoin(self.__base_url, report) + "?%s" % encoded_params

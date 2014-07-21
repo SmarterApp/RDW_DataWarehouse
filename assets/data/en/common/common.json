@@ -11,11 +11,11 @@
                 "link": "/assets/html/comparingPopulations.html"
             }, {
                 "type": "district",
-                "queryParam": "districtGuid",
+                "queryParam": "districtId",
                 "link": "/assets/html/comparingPopulations.html"
             }, {
                 "type": "school",
-                "queryParam": "schoolGuid",
+                "queryParam": "schoolId",
                 "link": "/assets/html/comparingPopulations.html"
             }, {
                 "type": "grade",
@@ -505,13 +505,13 @@
                 "name": "School Name",
                 "displayTpl": "<a href='#' class='inherit'>School Name</a>",
                 "link": "comparingPopulations.html",
-                "id_name": "schoolGuid"
+                "id_name": "schoolId"
             },
             "state": {
                 "name": "District Name",
                 "displayTpl": "<a href='#' class='inherit'>District Name</a>",
                 "link": "comparingPopulations.html",
-                "id_name": "districtGuid"
+                "id_name": "districtId"
             }
         }
     },

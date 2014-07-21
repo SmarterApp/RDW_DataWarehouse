@@ -473,4 +473,4 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     def test_estimate_extract_total_file_size(self):
         params = {'asmtType': 'SUMMATIVE', 'asmtYear': '2016', 'extractType': 'itemLevel', 'stateCode': 'NC', 'asmtGrade': '5', 'asmtSubject': 'Math', 'async': 'true'}
         total = estimate_extract_total_file_size(params, 1000, ExtractType.itemLevel)
-        self.assertEqual(0, total)
+        self.assertEqual(26000, total)

@@ -61,7 +61,7 @@ def run_udl_pipeline(self, guid_batch_id):
 
 
 #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-def check_job_completion(self, max_wait=30):
+def check_job_completion(self, max_wait=60):
         with get_udl_connection() as connector:
             print("UDL Pipeline is running...")
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)

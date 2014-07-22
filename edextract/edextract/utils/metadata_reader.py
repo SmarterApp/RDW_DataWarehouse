@@ -27,6 +27,6 @@ class MetadataReader():
                 directory = os.path.dirname(metadata_file)
                 for l in f:
                     metadata = l.strip().split(self.__delimiter)
-                    self.__metadata[os.path.join(directory, metadata[1])] = metadata[2]
+                    self.__metadata[os.path.join(directory, metadata[1])] = int(metadata[2])
         else:
             self.__metadata[filepath] = os.stat(filepath).st_size

@@ -97,12 +97,12 @@
         "sort_by": "Ordenar por",
         "state": "Estado",
         "sticky_inst_text": {
-            "school": "selected school to",
-            "schools": "selected schools to",
-            "district": "selected district to",
-            "districts": "selected districts to",
-            "student": "selected student to",
-            "students": "selected students to"
+            "school": "Filter {{filterNumber}} selected school to <b>compare</b> or <b>download</b>",
+            "schools": "Filter {{filterNumber}} selected schools to <b>compare</b> or <b>download</b>",
+            "district": "Filter {{filterNumber}} selected district to <b>compare</b> or <b>download</b>",
+            "districts": "Filter {{filterNumber}} selected districts to <b>compare</b> or <b>download</b>",
+            "student": "Filter {{filterNumber}} selected student to <b>compare</b> or <b>download</b>",
+            "students": "Filter {{filterNumber}} selected students to <b>compare</b> or <b>download</b>"
         },
         "student": "Estudiante",
         "students": "Estudiantes",

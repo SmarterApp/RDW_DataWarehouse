@@ -272,7 +272,8 @@ define [
         .attr('tabindex', '0').text(text)
       # To display ex. "districts_selected" label
       instText = this.labels["sticky_inst_text"]
-      this.stickyInstTextPrefix.text("#{this.labels.filter} #{count} #{instText[labelNameKey]}")
+      output = Mustache.to_html instText[labelNameKey], {'filterNumber': count}
+      this.stickyInstTextPrefix.html(output)
       this.stickyChainText.text("#{count} #{this.labels[labelNameKey + "_selected"]}")
 
     createButtonBar: () ->

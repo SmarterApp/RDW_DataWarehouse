@@ -19,7 +19,8 @@ from edextract.exceptions import ExtractionError
 from edcore.exceptions import RemoteCopyError
 from edcore.utils.utils import archive_files
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
-from edextract.data_extract_generation.item_level_generator import generate_items_csv
+from edextract.data_extract_generation.item_level_generator import generate_items_csv,\
+    _get_path_to_item_csv
 from edextract.data_extract_generation.raw_data_generator import generate_raw_data_xml
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
@@ -273,6 +274,16 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
         else:
             raise ExtractionError()
 
+
+@celery.task(name="tasks.extract.get_item_or_raw_extract_file_size")
+def get_item_or_raw_extract_file_size(tenant, request_id, task):
+    # 1 execute query
+    # 2 build file path for csv
+    # 3 get filesize from metadata reader
+    #   metadataReader = MetadataReader()
+    #   for file in files:
+    #      size = metadataReader.get_size(file)
+    pass
 
 def get_extract_func(extract_type):
     extract_funcs = {

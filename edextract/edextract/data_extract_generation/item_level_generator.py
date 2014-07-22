@@ -14,6 +14,7 @@ from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.file_utils import File
 import copy
+from edextract.utils.metadata_reader import MetadataReader
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
     item_ids = extract_args[TaskConstants.ITEM_IDS]
 
     # Read file size from metadata reader
-    metadata_reader = MetadataReader(items_root_dir)
+    metadata_reader = MetadataReader()
 
     with EdCoreDBConnection(tenant=tenant) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)
@@ -142,7 +143,7 @@ def _prepare_file_list(items_root_dir, metadata_reader, results):
     for result in results:
         path = _get_path_to_item_csv(items_root_dir, **result)
         # Get the file size of the file from metadata file
-        size = metadata_reader.get_size(os.path.basename(path))
+        size = metadata_reader.get_size(path)
         file = File(path, size)
         files.append(file)
     return files

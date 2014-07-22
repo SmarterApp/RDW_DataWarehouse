@@ -21,7 +21,7 @@ class MetadataReader():
         return filesize
 
     def _load_metadata(self, filepath):
-        metadata_file = os.path.join(os.path.dirname(filepath, self.__metadata_filename))
+        metadata_file = os.path.join(os.path.dirname(filepath), self.__metadata_filename)
         if os.path.exists(metadata_file):
             with open(metadata_file, 'r') as f:
                 directory = os.path.dirname(metadata_file)
@@ -29,4 +29,4 @@ class MetadataReader():
                     metadata = l.strip().split(self.__delimiter)
                     self.__metadata[os.path.join(directory, metadata[1])] = metadata[2]
         else:
-            self.__metadata[filepath]=os.stat(filepath).st_size
+            self.__metadata[filepath] = os.stat(filepath).st_size

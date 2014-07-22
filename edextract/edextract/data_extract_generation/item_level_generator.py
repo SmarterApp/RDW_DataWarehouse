@@ -16,7 +16,7 @@ from edextract.utils.file_utils import File
 import copy
 from edextract.utils.metadata_reader import MetadataReader
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('edextract')
 
 ITEM_KEY_POS = 0
 # Write the header to the file
@@ -100,6 +100,7 @@ def _check_file_for_items(file_descriptor, item_ids):
 def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_header):
 
     def open_outfile(output_file):
+        logging.info('creating output_file[' + output_file + ']')
         _file = open(output_file, 'w')
         csvwriter = csv.writer(_file, quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(csv_header)
@@ -108,6 +109,7 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
     _output_files = copy.deepcopy(output_files)
     if type(_output_files) is not list:
         _output_files = [_output_files]
+    logging.info('preparing file list')
     files = _prepare_file_list(items_root_dir, results)
     number_of_files = len(_output_files)
     threshold_size = -1

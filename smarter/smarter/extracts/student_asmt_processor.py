@@ -21,7 +21,6 @@ from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG, \
     apply_filter_to_query
 from smarter.extracts.utils import start_extract, generate_extract_file_tasks
 from edextract.tasks.extract import archive_with_stream, prepare_path
-import random
 
 
 __author__ = 'ablum'

@@ -179,7 +179,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
         for estimated_total_file in range(estimated_total_files):
             extract_file = {}
             if extract_type is ExtractType.itemLevel:
-                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
+                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file if estimated_total_files > 1 else None))
             if estimated_total_files > 1:
                 directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
                 archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)

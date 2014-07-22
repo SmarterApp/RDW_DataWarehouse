@@ -40,14 +40,11 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
     items_root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
     item_ids = extract_args[TaskConstants.ITEM_IDS]
 
-    # Read file size from metadata reader
-    metadata_reader = MetadataReader()
-
     with EdCoreDBConnection(tenant=tenant) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)
         results = connection.get_streaming_result(query)
 
-        _append_csv_files(items_root_dir, metadata_reader, item_ids, results, output_files, CSV_HEADER)
+        _append_csv_files(items_root_dir, item_ids, results, output_files, CSV_HEADER)
         # Done
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
@@ -100,7 +97,7 @@ def _check_file_for_items(file_descriptor, item_ids):
     return False
 
 
-def _append_csv_files(items_root_dir, metadata_reader, item_ids, results, output_files, csv_header):
+def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_header):
 
     def open_outfile(output_file):
         _file = open(output_file, 'w')
@@ -111,7 +108,7 @@ def _append_csv_files(items_root_dir, metadata_reader, item_ids, results, output
     _output_files = copy.deepcopy(output_files)
     if type(_output_files) is not list:
         _output_files = [_output_files]
-    files = _prepare_file_list(items_root_dir, metadata_reader, results)
+    files = _prepare_file_list(items_root_dir, results)
     number_of_files = len(_output_files)
     threshold_size = -1
     if number_of_files > 1:
@@ -138,7 +135,9 @@ def _append_csv_files(items_root_dir, metadata_reader, item_ids, results, output
         out_file.close()
 
 
-def _prepare_file_list(items_root_dir, metadata_reader, results):
+def _prepare_file_list(items_root_dir, results):
+    # Read file size from metadata reader
+    metadata_reader = MetadataReader()
     files = []
     for result in results:
         path = _get_path_to_item_csv(items_root_dir, **result)

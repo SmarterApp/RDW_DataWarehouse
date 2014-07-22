@@ -5,7 +5,6 @@ Created on Nov 9, 2013
 '''
 import os
 from edextract.exceptions import NotFileException
-from edextract.utils.metadata_reader import MetadataReader
 
 
 def prepare_path(path):
@@ -19,10 +18,10 @@ def prepare_path(path):
 
 
 class File():
-    def __init__(self, path):
-        self.__metadataReader = MetadataReader()
+    def __init__(self, path, size):
         if os.path.isfile(path):
             self.__path = path
+            self.__size = size
         else:
             raise NotFileException(path + ' is not file')
 
@@ -32,4 +31,4 @@ class File():
 
     @property
     def size(self):
-        return self.__metadataReader.get_size(self.name)
+        return self.__size

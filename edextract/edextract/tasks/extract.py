@@ -275,16 +275,6 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
             raise ExtractionError()
 
 
-@celery.task(name="tasks.extract.get_item_or_raw_extract_file_size")
-def get_item_or_raw_extract_file_size(tenant, request_id, task):
-    # 1 execute query
-    # 2 build file path for csv
-    # 3 get filesize from metadata reader
-    #   metadataReader = MetadataReader()
-    #   for file in files:
-    #      size = metadataReader.get_size(file)
-    pass
-
 def get_extract_func(extract_type):
     extract_funcs = {
         ExtractionDataType.QUERY_CSV: generate_csv,

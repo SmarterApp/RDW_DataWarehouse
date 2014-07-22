@@ -48,9 +48,9 @@ class FileMetadata():
         for file in files:
             basename = os.path.basename(file)
             if os.path.isfile(file):
-                if not basename.startwith('.') and basename != self.__metadata_filename:
+                if not basename.startswith('.') and basename != self.__metadata_filename:
                     self.__files.append(FileMetadata.FileInfo(file))
-            elif os.path.isdir(file) and not basename.startwith('.'):
+            elif os.path.isdir(file) and not basename.startswith('.'):
                 self.__dirs.append(FileMetadata.DirInfo(file))
 
     @property

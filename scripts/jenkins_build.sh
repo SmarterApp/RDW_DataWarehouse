@@ -230,7 +230,7 @@ function run_functional_tests {
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
 	   cd frontend_tests
-       nosetests test_extracts_student_registration_reports.py -vs
+       nosetests test_extracts_raw_data.py test_extracts_student_registration_reports.py -vs
        #nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi

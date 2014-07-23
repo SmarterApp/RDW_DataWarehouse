@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger('edextract')
 
+
 class MetadataReader():
     '''
     Metadata raeader

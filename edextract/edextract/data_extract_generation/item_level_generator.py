@@ -15,6 +15,7 @@ from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.file_utils import File
 import copy
 from edextract.utils.metadata_reader import MetadataReader
+from edextract.exceptions import NotFileException
 
 logger = logging.getLogger('edextract')
 
@@ -42,7 +43,7 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
 
     with EdCoreDBConnection(tenant=tenant) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)
-        results = connection.get_streaming_result(query)
+        results = connection.get_streaming_result(query, fetch_size=10240)
 
         _append_csv_files(items_root_dir, item_ids, results, output_files, CSV_HEADER)
         # Done
@@ -110,11 +111,10 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
     if type(_output_files) is not list:
         _output_files = [_output_files]
     logging.info('preparing file list')
-    files = _prepare_file_list(items_root_dir, results)
+    files, total_file_size = _prepare_file_list(items_root_dir, results)
     number_of_files = len(_output_files)
     threshold_size = -1
     if number_of_files > 1:
-        total_file_size = sum(file.size for file in files)
         threshold_size = int(total_file_size / len(_output_files))
 
     out_file = None
@@ -135,16 +135,21 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
 
     if out_file is not None:
         out_file.close()
+    logging.info('all archived csv files are generated')
 
 
 def _prepare_file_list(items_root_dir, results):
     # Read file size from metadata reader
     metadata_reader = MetadataReader()
     files = []
+    total_size = 0
     for result in results:
         path = _get_path_to_item_csv(items_root_dir, **result)
         # Get the file size of the file from metadata file
         size = metadata_reader.get_size(path)
+        if size is -1:
+            raise NotFileException(path + ' does not exist')
         file = File(path, size)
+        total_size += size
         files.append(file)
-    return files
+    return files, total_size

@@ -125,6 +125,15 @@ PDF_PARAMS = {
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
 @validate_params(schema=PDF_PARAMS)
+def post_pdf_service_bc(context, request):
+    '''
+    This is for backward compitibility and batch PDFs.
+    '''
+    return post_pdf_service(context, request)
+
+
+@view_config(route_name='pdf', request_method='POST', content_type='application/pdf')
+@validate_params(schema=PDF_PARAMS)
 def post_pdf_service(context, request):
     '''
     Handles POST request to /services/pdf

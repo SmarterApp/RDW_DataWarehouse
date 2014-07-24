@@ -4,7 +4,6 @@ Created on Nov 9, 2013
 @author: dip
 '''
 import os
-from edextract.exceptions import NotFileException
 
 
 def prepare_path(path):
@@ -19,11 +18,8 @@ def prepare_path(path):
 
 class File():
     def __init__(self, path, size):
-        if os.path.isfile(path):
-            self.__path = path
-            self.__size = size
-        else:
-            raise NotFileException(path + ' is not file')
+        self.__path = path
+        self.__size = size
 
     @property
     def name(self):

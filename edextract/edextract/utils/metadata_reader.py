@@ -26,7 +26,7 @@ class MetadataReader():
         if filesize is None:
             self._load_metadata(filepath)
             filesize = self.__metadata.get(filepath)
-        return filesize
+        return filesize if filesize is not None else -1
 
     def _load_metadata(self, filepath):
         metadata_file = os.path.join(os.path.dirname(filepath), self.__metadata_filename)

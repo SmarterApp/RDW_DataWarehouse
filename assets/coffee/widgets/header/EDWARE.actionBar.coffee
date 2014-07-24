@@ -11,27 +11,31 @@ define [
   "edwarePrint"
   "edwarePopover"
   "edwareConstants"
-  "edwareSearch"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareSearch) ->
+  "edwareUtil"
+  "edwareYearDropdown"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareUtil, edwareYearDropdown) ->
 
   class ReportActionBar
 
-    constructor: (@container, @config, createSearch, @reloadCallback) ->
-      @initialize(createSearch)
+    constructor: (@container, @config, @reloadCallback) ->
+      @initialize()
       @bindEvents()
 
-    initialize: (createSearch) ->
+    initialize: () ->
       @container = $(@container)
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
       @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
-      # Create search box if true, else remove it
-      @searchBox ?= @createSearchBox() if createSearch 
+      years = edwareUtil.getAcademicYears @config.academicYears?.options
+      @createAcademicYear(years)
+      @render()
 
-    createSearchBox: () ->
-      $('#search').edwareSearchBox @config.labels
+    createAcademicYear: (years) ->
+      return if not years
+      callback = @config.academicYears.callback
+      @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
     createPrint: () ->
       @printer = edwarePrint.create '.printModal', @config.labels
@@ -62,14 +66,18 @@ define [
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
       @updateDisclaimer()
+    
+    render: () ->
+      # bind academic year info popover
+      $('.academicYearInfoIcon').edwarePopover
+        class: 'academicYearInfoPopover'
+        labelledby: 'academicYearInfoPopover'
+        content: 'placeholder'
+        tabindex: 0
 
     updateDisclaimer: (asmtType) ->
       currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()
       @disclaimer.update currentAsmtType
-
-    update: () ->
-      # Callback to search box to highlight if necessary
-      @searchBox.addHighlight() if @searchBox
 
     prepareSubjects: () ->
       # use customized subject interval
@@ -107,8 +115,11 @@ define [
       $('a.printLabel').click ->
         self.printer.show()
 
-  create = (container, config, createSearch, reloadCallback) ->
-    new ReportActionBar(container, config, createSearch, reloadCallback)
+      $('.academicYearInfoIcon').click ->
+        $(this).popover('show')
+
+  create = (container, config, reloadCallback) ->
+    new ReportActionBar(container, config, reloadCallback)
 
   ReportActionBar: ReportActionBar
   create: create

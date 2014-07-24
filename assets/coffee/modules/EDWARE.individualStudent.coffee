@@ -177,14 +177,14 @@ define [
         labels: @labels
         CSVOptions: @configData.CSVOptions
         # subjects on ISR
-        subjects: @data.current, null
+        subjects: @data.current, false, null
 
     renderReportActionBar: () ->
       @configData.subject = @createSampleInterval this.data.current[0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
       @configData.asmtTypes = @getAsmtTypes()
       self = this
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, false, (asmt) ->
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtForISR(asmt)
         self.render()

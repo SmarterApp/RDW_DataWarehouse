@@ -3,12 +3,6 @@ body.isr {
   body {border: solid 1px @color-A8;}
 
   #infoBar {
-    li {
-      &.download, &.academicYearArea {
-	    display: none;
-      }
-    }
-
     .nav {
       margin: 8px 0 12px 0;
     }
@@ -20,6 +14,11 @@ body.isr {
 	.sortItem, .alignmentItem, .filterItem, .searchItem {
 	  display: none;
 	}
+    li {
+      &.download, &.academicYearArea {
+      display: none;
+      }
+    }
 
   }
 

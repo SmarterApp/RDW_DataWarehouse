@@ -25,6 +25,7 @@ define [
       @container = $(@container)
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
+        detailsSelection: @config.detailsSelection
       @legend ?= @createLegend()
       @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
@@ -57,16 +58,19 @@ define [
         preference = edwarePreferences.getAsmtForISR
       else
         preference = edwarePreferences.getAsmtPreference
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.labels, @config.asmtTypes, preference, (asmt) ->
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config, preference, (asmt) ->
+        # save assessment type
+        edwarePreferences.saveAsmtPreference asmt
+        edwarePreferences.saveAsmtForISR asmt
         self.updateDisclaimer asmt
-        self.reloadCallback asmt
+        self.reloadCallback()
       @createDisclaimer()
       asmtDropdown
 
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
       @updateDisclaimer()
-    
+
     render: () ->
       # bind academic year info popover
       $('.academicYearInfoIcon').edwarePopover
@@ -117,6 +121,16 @@ define [
 
       $('.academicYearInfoIcon').click ->
         $(this).popover('show')
+
+      # bind subject details selecting events
+      $("li.detailsItem button").click ()->
+        $this = $(this)
+        $this.siblings("button").removeClass('selected')
+        $this.addClass('selected')
+        asmtView = $this.data('view')
+        edwarePreferences.saveAsmtView(asmtView)
+        self.reloadCallback()
+
 
   create = (container, config, reloadCallback) ->
     new ReportActionBar(container, config, reloadCallback)

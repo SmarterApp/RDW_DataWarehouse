@@ -111,10 +111,6 @@ define [
     getAsmtData: (viewName)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
-      #TODO asmtGuid = @asmtGuid
-      # if not @cache[asmtGuid]
-        #reload from server
-        # window.location.reload()
       effectiveDate = asmt.effectiveDate
       asmtType = asmt.asmtType
       data = @cache[effectiveDate]?[asmtType]?[viewName]
@@ -253,15 +249,14 @@ define [
       self = this
       @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
-      @config.asmtTypes = asmtTypeDropdown
+      @config.asmtTypes = @getAsmtTypes()
+      @config.academicYears =
+        options: @academicYears
+        callback: @onAcademicYearSelected.bind(this)
       # placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder
       @config.labels.SearchResultText = @config.SearchResultText
-      edwareReportActionBar.create '#actionBar', @config, (asmt) ->
-        # save assessment type
-        edwarePreferences.saveAsmtPreference asmt
-        edwarePreferences.saveAsmtForISR asmt
+      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
         self.updateView()
 
     createGrid: (filters) ->
@@ -275,7 +270,7 @@ define [
       edwarePreferences.saveSubjectPreference subjects
 
     updateView: () ->
-      viewName = edwarePreferences.getAsmtPreference().asmtView
+      viewName = edwarePreferences.getAsmtView()
       viewName = viewName || @studentsDataSet.allSubjects
       # Add dark border color between Math and ELA section
       $('#gridWrapper').removeClass().addClass(viewName)
@@ -364,5 +359,16 @@ define [
         selectors.push selector
       selectors
 
+    getAsmtTypes: () ->
+      asmtTypes = []
+      for idx, asmt of @data.asmt_administration
+        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
+        asmt.display = "{{effectiveDateText}} · {{asmtType}}"
+        asmt.effective_date = asmt.effective_date
+        asmt.asmt_grade = "Grade #{asmt.asmt_grade}"
+        asmt.hasAsmtSubject = false
+        asmtTypes.push asmt
+      asmtTypes
 
   StudentGrid: StudentGrid

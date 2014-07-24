@@ -18,5 +18,19 @@
     "searchPlaceholder": {
         "text": "Enter student",
         "aria": "Find students in this grade. Enter search text and hit enter"
-    }
+    },
+    "detailsSelection": [
+        {
+            "display": "Overview",
+            "key": "Math_ELA"
+        },
+        {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
+    ]
 }

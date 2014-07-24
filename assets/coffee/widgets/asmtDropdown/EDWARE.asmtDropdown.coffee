@@ -8,7 +8,9 @@ define [
 
   class EdwareAsmtDropdown
 
-    constructor: (@container, @labels, @dropdownValues, @getAsmtPreference, @callback) ->
+    constructor: (@container, @config, @getAsmtPreference, @callback) ->
+      @dropdownValues = @config.asmtTypes
+      @labels = @config.labels
       @initialize()
       @setDefaultOption()
       @bindEvents()
@@ -22,6 +24,7 @@ define [
       @optionTemplate = @dropdownValues[0]?.display
       output = Mustache.to_html AsmtDropdownTemplate,
         dropdownValues: @dropdownValues
+        academicYears: @config.academicYears.options
       @container.html(output)
 
     setDefaultOption: () ->
@@ -40,9 +43,6 @@ define [
       self = this
       $(@container).onClickAndEnterKey '.asmtSelection', ->
         asmt = self.parseAsmtInfo $(this)
-        subject = asmt.asmtView.split("_")
-        # save subject value
-        edwarePreferences.saveSubjectPreference subject
         displayText = self.getAsmtDisplayText(asmt)
         self.setSelectedValue displayText
         # additional parameters
@@ -57,7 +57,6 @@ define [
       display: $option.data('display')
       asmtType: $option.data('asmttype')
       asmtGuid: $option.data('asmtguid')?.toString()
-      asmtView: $option.data('value')
       effectiveDate: $option.data('effectivedate')
       effectiveDateText: $option.data('effectivedate-text')
       asmtGrade: $option.data('grade')
@@ -79,10 +78,10 @@ define [
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->
-    $.fn.edwareAsmtDropdown = (labels, dropdownValues, getAsmtPreference, callback) ->
-      for asmt in dropdownValues
+    $.fn.edwareAsmtDropdown = (config, getAsmtPreference, callback) ->
+      for asmt in config.asmtTypes
         asmt.effective_date_text = _format_effective_date(asmt.effective_date)
-      new EdwareAsmtDropdown($(this), labels, dropdownValues, getAsmtPreference, callback)
+      new EdwareAsmtDropdown($(this), config, getAsmtPreference, callback)
   ) jQuery
 
   EdwareAsmtDropdown: EdwareAsmtDropdown

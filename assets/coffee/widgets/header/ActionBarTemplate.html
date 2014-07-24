@@ -17,6 +17,11 @@
             <li><div id="academicYearAnchor" class="pull-left"></div></li>
         </ul>
     </li>
+    <li class="detailsItem">
+        {{#detailsSelection}}
+        <button class="btn btn-small subjectSelection" type="button" data-view="{{key}}">{{display}}</button>
+        {{/detailsSelection}}
+    </li>
 </ul>
 <ul role="menubar">
     <li class="legendItem" aria-live="polite">

@@ -1047,7 +1047,7 @@ th.ui-th-column div {
   position: absolute;
   margin-top: -9px;
   width: 22px;
-  right: 343px;
+  right: 61px;
 }
 
 .filter {
@@ -1528,7 +1528,7 @@ th.ui-th-column div {
     border-right: solid 1px @color-B16;
   }
 
-  .reportInfoIcon, .downloadIcon, .academicYearInfoIcon{
+  .reportInfoIcon, .downloadIcon{
     font-size: 10px;
     font-weight: bold;
 
@@ -1536,14 +1536,6 @@ th.ui-th-column div {
                background-color: @color-A7;
                color: @color-A4;
              }
-  }
-
-  #academicYearAnchor ul {
-    min-width: 127px;
-  }
-
-  .academicYearText {
-    line-height: 30px;
   }
 
   #downloadMenuPopup {
@@ -1685,6 +1677,28 @@ th.ui-th-column div {
 
   background-color: @color-C11;
   border-top: solid 1px @color-B17;
+  
+  #academicYearAnchor {
+    margin-top: 2px;
+    ul {
+      min-width: 127px;
+    }
+  }
+
+  .academicYearText {
+    line-height: 32px;
+    cursor: default;
+  }
+  
+  .academicYearInfoIcon{
+    font-size: 10px;
+    font-weight: bold;
+
+    &:hover, &:focus {
+      background-color: @color-C11;
+      color: @color-A4;
+    }
+  }
 
   &>ul {
     cursor: pointer;
@@ -1736,10 +1750,6 @@ th.ui-th-column div {
 
     .filterItem .divider {
       border-right: solid 1px @color-B5;
-    }
-
-    .searchItem .divider {
-      padding-right: 0px;
     }
 
     .align_button_area {
@@ -1993,6 +2003,7 @@ th.ui-th-column div {
     line-height: 12px;
     width: 44px;
   }
+  margin-top: 8px;
 }
 
 .searchResult {

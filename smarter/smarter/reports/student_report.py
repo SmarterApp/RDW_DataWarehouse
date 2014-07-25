@@ -20,7 +20,7 @@ from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.reports.student_administration import get_student_report_asmt_administration, get_asmt_academic_years
+from smarter.reports.student_administration import get_student_report_asmt_administration
 from smarter.security.tenant import validate_user_tenant
 from smarter_common.security.constants import RolesConstants
 
@@ -236,5 +236,4 @@ def get_student_report(params):
         result['context'] = context
         result[Constants.SUBJECTS] = {v: k for k, v in subjects_map.items()}
         result['asmt_administration'] = student_report_asmt_administration
-        result[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(state_code)
     return result

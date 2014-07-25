@@ -17,10 +17,18 @@ define [
       @bindEvents()
 
     initialize: () ->
-      currentYear = @config.years[0].value.toString()
+      currentYear = @dropdownValues[0].asmt_year
+      latestYear = []
+      otherYears = []
+      for v in @dropdownValues
+        if v.asmt_year is currentYear
+          latestYear.push v
+        else
+          otherYears.push v
       output = Mustache.to_html AsmtDropdownTemplate,
-        latestYear: v for v in @dropdownValues when v.asmt_year is currentYear
-        otherYears: v for v in @dropdownValues when v.asmt_year isnt currentYear
+        latestYear: latestYear
+        otherYears: otherYears
+        hasOtherYears: otherYears.length > 0
         academicYears: @config.years
       @container.html(output)
 

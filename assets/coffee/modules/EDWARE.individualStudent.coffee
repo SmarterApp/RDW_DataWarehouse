@@ -184,9 +184,6 @@ define [
       @configData.subject = @createSampleInterval this.data.current[0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
       @configData.asmtTypes = @data.asmt_administration
-      @configData.academicYears =
-        options: @academicYears
-        callback: () -> #no callback on ISR
 
       self = this
       @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->

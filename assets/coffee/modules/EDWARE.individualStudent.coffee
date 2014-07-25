@@ -126,6 +126,7 @@ define [
       @data = new DataProcessor(data, @configData, @isGrayscale).process()
       @data.labels = @configData.labels
       @grade = @data.context.items[4]
+      @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
       @render()
       @createBreadcrumb(@data.labels)
@@ -182,7 +183,11 @@ define [
     renderReportActionBar: () ->
       @configData.subject = @createSampleInterval this.data.current[0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
-      @configData.asmtTypes = @getAsmtTypes()
+      @configData.asmtTypes = @data.asmt_administration
+      @configData.academicYears =
+        options: @academicYears
+        callback: () -> #no callback on ISR
+
       self = this
       @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->
         # save assessment type
@@ -201,7 +206,7 @@ define [
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt
-          return asmt['effectiveDate'] + asmt['asmtType']
+          return asmt['effective_date'] + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
@@ -273,18 +278,5 @@ define [
       # merge sample and subject information
       # the return value will be used to generate legend html page
       subject = $.extend(true, {}, subject, sample_interval)
-
-    getAsmtTypes: () ->
-      asmtTypes = []
-      for idx, asmt of @data.asmt_administration
-        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
-        asmt.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}}"
-        asmt.effective_date = asmt.effective_date
-        asmt.asmt_grade = "Grade #{asmt.asmt_grade}"
-        asmt.hasAsmtSubject = false
-        asmtTypes.push asmt
-      asmtTypes
-
 
   EdwareISR: EdwareISR

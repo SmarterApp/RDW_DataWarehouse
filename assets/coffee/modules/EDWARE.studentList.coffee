@@ -111,8 +111,8 @@ define [
     getAsmtData: (viewName)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
-      effectiveDate = asmt.effectiveDate
-      asmtType = asmt.asmtType
+      effectiveDate = asmt.effective_date
+      asmtType = asmt.asmt_type
       data = @cache[effectiveDate]?[asmtType]?[viewName]
       if data
         for item in data
@@ -249,7 +249,7 @@ define [
       self = this
       @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      @config.asmtTypes = @getAsmtTypes()
+      @config.asmtTypes = @data.asmt_administration
       @config.academicYears =
         options: @academicYears
         callback: @onAcademicYearSelected.bind(this)
@@ -332,43 +332,5 @@ define [
         rainbowAnchor = $("#"+key+"_perfBar")
         rainbowAnchor.html(output)
         rainbowAnchor.closest('th').append(rainbowAnchor)
-
-
-    convertAsmtTypes: (asmtAdministration) ->
-      selectors = []
-      for asmt in asmtAdministration
-        selector = {}
-        # mapping asmt type to capitalized case
-        selector.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        selector.effective_date = asmt.effective_date
-        selector.asmt_grade = this.grade.name
-        selector.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
-        selector.hasAsmtSubject = true
-
-        # add subjects combination, i.e. Math & ELA
-        defaultSubject = "#{this.subjectsData.subject1}_#{this.subjectsData.subject2}"
-        defaultSubjectText = "#{this.subjectsData.subject1} & #{this.subjectsData.subject2}"
-        selector.defaultSubjectText = defaultSubjectText
-
-        asmts = [{ asmt_subject: defaultSubject, asmt_subject_text: defaultSubjectText }]
-        for subject, subject_text of @subjectsData
-          asmts.push
-            asmt_subject: subject_text
-            asmt_subject_text: "#{subject_text} Details"
-        selector.asmts = asmts
-        selectors.push selector
-      selectors
-
-    getAsmtTypes: () ->
-      asmtTypes = []
-      for idx, asmt of @data.asmt_administration
-        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
-        asmt.display = "{{effectiveDateText}} · {{asmtType}}"
-        asmt.effective_date = asmt.effective_date
-        asmt.asmt_grade = "Grade #{asmt.asmt_grade}"
-        asmt.hasAsmtSubject = false
-        asmtTypes.push asmt
-      asmtTypes
 
   StudentGrid: StudentGrid

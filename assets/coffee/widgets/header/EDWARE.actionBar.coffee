@@ -27,10 +27,10 @@ define [
         labels: @config.labels
         detailsSelection: @config.detailsSelection
       @legend ?= @createLegend()
-      @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
       years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
+      @asmtDropdown = @createAsmtDropdown(years)
       @render()
 
     createAcademicYear: (years) ->
@@ -49,7 +49,7 @@ define [
         labels: @config.labels
 
     # Create assessment type dropdown
-    createAsmtDropdown: () ->
+    createAsmtDropdown: (years) ->
       if not @config.asmtTypes || @config.asmtTypes.length is 0
         $('.asmtTypeItem').remove()
         return
@@ -58,12 +58,17 @@ define [
         preference = edwarePreferences.getAsmtForISR
       else
         preference = edwarePreferences.getAsmtPreference
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config, preference, (asmt) ->
-        # save assessment type
-        edwarePreferences.saveAsmtPreference asmt
-        edwarePreferences.saveAsmtForISR asmt
-        self.updateDisclaimer asmt
-        self.reloadCallback()
+      # render academic years
+      @config.years= years
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config, preference,
+        onAcademicYearSelected: (academicYear) ->
+          self.config.academicYears.callback academicYear
+        onAsmtYearSelected: (asmt) ->
+          # save assessment type
+          edwarePreferences.saveAsmtPreference asmt
+          edwarePreferences.saveAsmtForISR asmt
+          self.updateDisclaimer asmt
+          self.reloadCallback()
       @createDisclaimer()
       asmtDropdown
 

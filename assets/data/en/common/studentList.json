@@ -32,5 +32,6 @@
             "display": "ELA/Literacy",
             "key": "ELA"
         }
-    ]
+    ],
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}"
 }

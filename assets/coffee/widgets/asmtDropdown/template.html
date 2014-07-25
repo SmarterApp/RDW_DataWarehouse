@@ -4,18 +4,28 @@
         <span id="selectedAsmtType">{{defaultValue}}</span>
     </button>
     <ul class="dropdown-menu asmtDropdownMenu" role="menu">
-        {{#dropdownValues}}
-        <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
-            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}'
-            data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}' tabindex="0">
-            <span class="asmtTypeText" role="button"
-                  aria-label="click to select assessment">{{effective_date_text}} · {{asmt_type}}</span>
+        {{#latestYear}}
+        <li class="asmtSelection" data-display='{{displayTemplate}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
+            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-grade='{{asmt_grade}}' tabindex="0">
+            <span class="asmtTypeText" role="button" aria-label="click to select assessment">{{display}}</span>
         </li>
-        {{/dropdownValues}}
+        {{/latestYear}}
+        <li class="otherAcadmicYears divider1">
+            <span><b>OTHER ACADEMIC YEARS</b></span>
+        </li>
+        {{#otherYears}}
+        <li class="asmtSelection" data-display='{{displayTemplate}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
+            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-grade='{{asmt_grade}}' tabindex="0">
+            <span class="asmtTypeText" role="button" aria-label="click to select assessment">{{display}}</span>
+        </li>
+        {{/otherYears}}
+        <li class="otherAcadmicYears divider2">
+            <span><b>OTHER ACADEMIC YEARS</b></span>
+        </li>
         {{#academicYears}}
         <li class="asmtYearButton asmtYearButton{{value}}" data-display='{{display}}' data-value='{{value}}'
             tabindex="0" role="button" aria-label="Select academic year {{display}}">
-            <span>{{display}}</span>
+            <span class="asmtTypeText" role="button" aria-label="click to view previous academic years">{{display}}</span>
         </li>
         {{/academicYears}}
 </div>

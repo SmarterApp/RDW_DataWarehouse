@@ -4,28 +4,34 @@ define [
   "text!AsmtDropdownTemplate"
   "edwarePreferences"
   "edwareEvents"
-], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents) ->
+  "edwareConstants"
+], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents, Constants) ->
 
   class EdwareAsmtDropdown
 
-    constructor: (@container, @config, @getAsmtPreference, @callback) ->
-      @dropdownValues = @config.asmtTypes
-      @labels = @config.labels
+    constructor: (@container, @config, @getAsmtPreference, @callbacks) ->
+      @optionTemplate = @config.asmtSelectorTemplate
+      @dropdownValues = @getAsmtTypes()
       @initialize()
       @setDefaultOption()
       @bindEvents()
 
     initialize: () ->
-      for ddval in @dropdownValues
-        ddval.asmt_grade = ddval.asmt_grade.replace('Grade', @labels.grade)
-        if ddval.asmts isnt undefined
-          for asmt in ddval.asmts
-            asmt.asmt_subject_text = asmt.asmt_subject_text.replace('Details', @labels.details)
-      @optionTemplate = @dropdownValues[0]?.display
+      currentYear = @config.years[0].value.toString()
       output = Mustache.to_html AsmtDropdownTemplate,
-        dropdownValues: @dropdownValues
-        academicYears: @config.academicYears.options
+        latestYear: v for v in @dropdownValues when v.asmt_year is currentYear
+        otherYears: v for v in @dropdownValues when v.asmt_year isnt currentYear
+        academicYears: @config.years
       @container.html(output)
+
+    getAsmtTypes: () ->
+      asmtTypes = []
+      for idx, asmt of @config.asmtTypes
+        asmt.asmt_year = asmt.effective_date.substr(0, 4)
+        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.display = @getAsmtDisplayText(asmt)
+        asmtTypes.push asmt
+      asmtTypes
 
     setDefaultOption: () ->
       # set default option, comment out for now
@@ -35,8 +41,6 @@ define [
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
         edwarePreferences.saveAsmtForISR asmt
-      if not asmt.subjectText
-        asmt.subjectText = @dropdownValues[0]?.defaultSubjectText
       @setSelectedValue @getAsmtDisplayText(asmt)
 
     bindEvents: () ->
@@ -46,7 +50,12 @@ define [
         displayText = self.getAsmtDisplayText(asmt)
         self.setSelectedValue displayText
         # additional parameters
-        self.callback(asmt)
+        self.callbacks.onAsmtYearSelected(asmt)
+
+      $(@container).onClickAndEnterKey '.asmtYearButton', ->
+        value = $(this).data('value')
+        edwarePreferences.saveAsmtYearPreference(value)
+        self.callbacks.onAcademicYearSelected value
 
       # collapse dropdown menu when focus out
       $('.btn-group', @container).focuslost ->
@@ -55,33 +64,25 @@ define [
 
     parseAsmtInfo: ($option) ->
       display: $option.data('display')
-      asmtType: $option.data('asmttype')
-      asmtGuid: $option.data('asmtguid')?.toString()
-      effectiveDate: $option.data('effectivedate')
-      effectiveDateText: $option.data('effectivedate-text')
-      asmtGrade: $option.data('grade')
-      subjectText: $option.data('subjecttext')
+      asmt_type: $option.data('asmttype')
+      asmt_guid: $option.data('asmtguid')?.toString()
+      effective_date: $option.data('effectivedate')
+      asmt_grade: $option.data('grade')
 
     setSelectedValue: (value) ->
       $('#selectedAsmtType').html value
 
     getAsmtDisplayText: (asmt)->
+      effective_date = asmt.effective_date.toString()
+      asmt.asmt_year = effective_date.substr(0, 4)
+      asmt.asmt_month = effective_date.substr(4, 2)
+      asmt.asmt_day = effective_date.substr(6, 2)
       Mustache.to_html @optionTemplate, asmt
-
-  _format_effective_date = (effectiveDate) ->
-    return "" if not effectiveDate
-    effectiveDate = effectiveDate.toString()
-    year = effectiveDate.substr(0, 4)
-    month = effectiveDate.substr(4, 2)
-    day = effectiveDate.substr(6, 2)
-    "#{year}.#{month}.#{day}"
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->
-    $.fn.edwareAsmtDropdown = (config, getAsmtPreference, callback) ->
-      for asmt in config.asmtTypes
-        asmt.effective_date_text = _format_effective_date(asmt.effective_date)
-      new EdwareAsmtDropdown($(this), config, getAsmtPreference, callback)
+    $.fn.edwareAsmtDropdown = (config, getAsmtPreference, callbacks) ->
+      new EdwareAsmtDropdown($(this), config, getAsmtPreference, callbacks)
   ) jQuery
 
   EdwareAsmtDropdown: EdwareAsmtDropdown

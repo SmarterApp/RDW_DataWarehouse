@@ -40,7 +40,7 @@
 	    <h3>{{title}}</h3>
 	    <ul>
 	    {{#sections}}
-		<li>
+		<li class="{{helpMenu}}">
 	    	<a href="{{link}}">
 	        <div class="{{class}} asset"></div>
 	        <h2>{{subtitle}}</h2>
@@ -56,20 +56,6 @@
 	    <div class="copyright">
 	        <div class="logo"></div>
 	        <p>{{copyright}}</p>
-	    </div>
-	    <div class="help">
-	        <h4>{{labels.help}}</h4>
-	        <ul class="helpMenu">
-	        <li><a href="#userGuide">{{userGuide}}</a></li>
-	        <li><a href="#faq">{{faq}}</a></li>
-	        <li><a href="#glossary">{{tutorials}}</a></li>
-	        </ul>
-	    </div>
-	    <div class="contact">
-	        <h4>{{contact}}</h4>
-	        <ul>
-	        <li><a href="mailto:{{email}}" aria-label="Email {{email}}">{{email}}</a></li>
-	        </ul>
 	    </div>
 	    </div>
 	</div>

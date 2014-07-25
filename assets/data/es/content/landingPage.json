@@ -17,16 +17,12 @@
                 "link": "#"
             }, {
                 "subtitle": "FAQ",
+                "helpMenu": "helpMenu",
                 "class": "faq",
                 "desc": "Frequently asked questions about the Smarter Balanced Reporting System",
                 "link": "#faq"
             }
         ]
     },
-    "copyright": "Smarter Balanced Consortium @ Copyright 2015",
-    "userGuide": "Guía del usuario",
-    "faq": "Preguntas frecuentes",
-    "tutorials": "Tutorías para los reportes",
-    "contact": "Contáctenos",
-    "email": "reporting@smarterbalanced.org"
+    "copyright": "Smarter Balanced Consortium @ Copyright 2015"
 }

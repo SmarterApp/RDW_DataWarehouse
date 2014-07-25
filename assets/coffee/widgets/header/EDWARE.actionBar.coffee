@@ -30,7 +30,6 @@ define [
       @printer ?= @createPrint()
       years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
-      @render()
 
     createAcademicYear: (years) ->
       return if not years
@@ -67,14 +66,6 @@ define [
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
       @updateDisclaimer()
     
-    render: () ->
-      # bind academic year info popover
-      $('.academicYearInfoIcon').edwarePopover
-        class: 'academicYearInfoPopover'
-        labelledby: 'academicYearInfoPopover'
-        content: 'placeholder'
-        tabindex: 0
-
     updateDisclaimer: (asmtType) ->
       currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()
       @disclaimer.update currentAsmtType
@@ -114,9 +105,6 @@ define [
       # bind print popover
       $('a.printLabel').click ->
         self.printer.show()
-
-      $('.academicYearInfoIcon').click ->
-        $(this).popover('show')
 
   create = (container, config, reloadCallback) ->
     new ReportActionBar(container, config, reloadCallback)

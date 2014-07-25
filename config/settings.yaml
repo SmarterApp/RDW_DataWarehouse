@@ -797,19 +797,19 @@ test:
       db:
         cat:
           state_code: NC
-          schema_name: edware_sds_1_24
+          schema_name: edware_sds_1_25
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           state_code: CA
-          schema_name: edware_sds_1_24_dog
+          schema_name: edware_sds_1_25_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
           state_code: VT
-          schema_name: edware_sds_1_24_fish
+          schema_name: edware_sds_1_25_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_24
+        schema_name: edware_sds_1_25
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     extract:
       gpg.homedir: ../../edware/config/gpg

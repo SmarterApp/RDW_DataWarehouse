@@ -230,7 +230,7 @@ function run_functional_tests {
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
 	   #cd frontend_tests
-       #nosetests test_filter_with_extract.py -vs
+       #nosetests test_extracts_student_registration_reports.py -vs
        nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi
@@ -328,6 +328,8 @@ function import_data_from_csv {
 
     echo "Generate Item Level Data"
     python create_source_data_files.py --item --config ${WORKSPACE}/config/data_copy.ini
+    echo "Generate Metadata for Item Level"
+    python test_utils/metadata/metadata_generator.py -d /opt/edware/item_level -f -v
  
  	echo "Generate Raw Data"
  	python create_source_data_files.py --raw --config ${WORKSPACE}/config/data_copy.ini

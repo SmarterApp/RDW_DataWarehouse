@@ -183,7 +183,9 @@ def archive_files(dir_name, archive_file):
     '''
     create archive file under given directory and return zip data
     '''
-    with zipfile.ZipFile(archive_file, mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+    with zipfile.ZipFile(archive_file, mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False) as zf:
         files = [os.path.join(dir_name, f) for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))]
         for file in files:
+            if os.path.islink(file):
+                file = os.readlink(file)
             zf.write(file, arcname=os.path.basename(file))

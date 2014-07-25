@@ -23,7 +23,7 @@ from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_req
     _create_student_pdf_url, _create_pdf_merge_tasks, \
     _create_urls_by_student_id, get_bulk_pdf_content,\
     _create_pdf_generate_tasks, _create_cover_sheet_generate_tasks, _create_pdf_cover_merge_tasks,\
-    _get_cover_sheet_name
+    _get_cover_sheet_name, post_pdf_service_bc
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_id
@@ -96,6 +96,27 @@ class TestServices(Unittest_with_edcore_sqlite):
                                     Constants.EFFECTIVEDATE: 20160404}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
+
+    def test_post_pdf_service_bc(self):
+        self.__request.method = 'POST'
+        studentId = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
+        self.__request.json_body = {Constants.STUDENTGUID: [studentId],
+                                    Constants.STATECODE: 'NC',
+                                    Constants.ALLOWSINGLE: 'false',
+                                    Constants.ASMTTYPE: AssessmentType.SUMMATIVE,
+                                    Constants.EFFECTIVEDATE: 20160404,
+                                    Constants.ALLOWSINGLE: 'true'}
+        self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
+        self.__request.cookies = {'edware': '123'}
+        # prepare empty file
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentId, asmt_type=AssessmentType.SUMMATIVE)
+        prepare_path(pdf_file[studentId])
+        with open(pdf_file[studentId], 'w') as file:
+            file.write('%PDF-1.4')
+        # Override the wkhtmltopdf command
+        services.tasks.pdf.pdf_procs = ['echo', 'dummy']
+        response = post_pdf_service_bc(None, self.__request)
+        self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
 
     # def test_post_pdf_service_post_valid_payload(self):
     #     studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'

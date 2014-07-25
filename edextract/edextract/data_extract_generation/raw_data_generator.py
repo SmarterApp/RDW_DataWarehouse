@@ -12,6 +12,7 @@ from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.file_utils import File
+from edextract.utils.metadata_reader import MetadataReader
 import copy
 
 logger = logging.getLogger(__name__)
@@ -47,10 +48,12 @@ def _get_path_to_raw_xml(root_dir, record):
 
 
 def _prepare_file_list(raw_root_dir, results):
+    metadata_reader = MetadataReader()
     files = []
     for result in results:
         path = _get_path_to_raw_xml(raw_root_dir, result)
-        file = File(path)
+        size = metadata_reader.get_size(path)
+        file = File(path, size)
         files.append(file)
     return files
 
@@ -71,5 +74,5 @@ def _copy_files(raw_root_dir, results, output_dirs):
         if threshold_size > 0 and current_total_size + file.size > threshold_size and _output_dirs:
             out_dir = _output_dirs.pop(0)
             current_total_size = 0
-        shutil.copy2(file.name, out_dir)
+        os.symlink(file.name, os.path.join(out_dir, os.path.basename(file.name)))
         current_total_size += file.size

@@ -21,7 +21,6 @@ from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG, \
     apply_filter_to_query
 from smarter.extracts.utils import start_extract, generate_extract_file_tasks
 from edextract.tasks.extract import archive_with_stream, prepare_path
-import random
 
 
 __author__ = 'ablum'
@@ -176,25 +175,16 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
         archive_files = []
         registration_ids = []
 
-        if estimated_total_files > 1:
-            for estimated_total_file in range(estimated_total_files):
-                extract_file = {}
-                if extract_type is ExtractType.itemLevel:
-                    out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
-                directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
-                archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
-                archive_files.append(archive_file_name)
-                registration_id, download_url = register_file(user.get_uid())
-                registration_ids.append(registration_id)
-                extract_file['fileName'] = os.path.basename(archive_file_name)
-                extract_file['download_url'] = download_url
-                extract_files.append(extract_file)
-        else:
+        for estimated_total_file in range(estimated_total_files):
             extract_file = {}
             if extract_type is ExtractType.itemLevel:
-                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id))
-            directories_to_archive.append(base_directory_to_archive)
-            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
+                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file if estimated_total_files > 1 else None))
+            if estimated_total_files > 1:
+                directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
+                archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
+            else:
+                directories_to_archive.append(base_directory_to_archive)
+                archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
             archive_files.append(archive_file_name)
             registration_id, download_url = register_file(user.get_uid())
             registration_ids.append(registration_id)

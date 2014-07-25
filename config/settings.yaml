@@ -783,8 +783,8 @@ development:
         remote:
             landing_zone_hostname: localhost
     hpz:
-        file_registration_url: http://localhost/registration
-        file_upload_base_url: http://localhost/files
+        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
+        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
 
 test:
   '[app:main]':

@@ -74,5 +74,5 @@ def _copy_files(raw_root_dir, results, output_dirs):
         if threshold_size > 0 and current_total_size + file.size > threshold_size and _output_dirs:
             out_dir = _output_dirs.pop(0)
             current_total_size = 0
-        shutil.copy2(file.name, out_dir)
+        os.symlink(file.name, os.path.join(out_dir, os.path.basename(file.name)))
         current_total_size += file.size

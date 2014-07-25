@@ -33,11 +33,11 @@ define [
 
   getEffectiveDate = () ->
     pref = getPreferences() || {}
-    pref["ISRAsmt"]?.effectiveDate
+    pref["ISRAsmt"]?.effective_date
 
   getAsmtType = () ->
     pref = getPreferences() || {}
-    pref["ISRAsmt"]?.asmtType
+    pref["ISRAsmt"]?.asmt_type
 
   saveAsmtPreference = (asmt) ->
     savePreferences {"asmt" : asmt}

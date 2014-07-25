@@ -31,7 +31,6 @@ define [
       years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
       @asmtDropdown = @createAsmtDropdown(years)
-      @render()
 
     createAcademicYear: (years) ->
       return if not years
@@ -75,14 +74,6 @@ define [
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
       @updateDisclaimer()
-
-    render: () ->
-      # bind academic year info popover
-      $('.academicYearInfoIcon').edwarePopover
-        class: 'academicYearInfoPopover'
-        labelledby: 'academicYearInfoPopover'
-        content: 'placeholder'
-        tabindex: 0
 
     updateDisclaimer: (asmtType) ->
       currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()

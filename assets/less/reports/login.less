@@ -86,27 +86,28 @@ body.login {
 
     #content {
 	min-height: 490px;
-	background-color: #474c55;
+	background-color: #ecf2f5;
 	background-image: url('../images/homepage_bg.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	border-top: solid 1px @color-B14;
 
 	.intro {
-	    position: relative;
-	    top: 40px;
-	    left: 70px;
-	    width: 320px;
-	    color: @color-white;
+	    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      display: block;
+	    width: 350px;
+	    color: @color-black;
+	    margin: 50px 0px 0px 175px;
 
 	    h1 {
 		font-size: 40px;
-		font-weight: normal;
+		font-weight: bold;
+		margin-bottom: 20px;
 	    }
 
 	    p {
-		font-size: 16px;
-		padding: 20px 0px 30px 0px;
+		font-size: 14px;
+		line-height: 20px;
 	    }
 
 	    .btn-login {
@@ -115,7 +116,14 @@ body.login {
 		font-weight: bold;
 		font-size: 18px;
 		display: block;
-		margin: auto;
+		margin: 30px auto 0 auto;
+	    }
+	    
+	    .preTitle {
+	  font-size: 22px;
+    line-height: 22px;
+    margin-bottom: 5px;
+    font-weight: normal;
 	    }
 	}
     }
@@ -136,7 +144,7 @@ body.login {
 		display: inline-block;
 		vertical-align: middle;
 		height: 50px;
-		width: 244px;
+		width: 326px;
 		height: 174px;
 		border-right: solid 1px @color-B18;
 
@@ -190,17 +198,17 @@ body.login {
 	    }
 	}
 
-	.assessments {
+	.annotatedReports {
 	    background-image: url("../images/landing_page.png");
 	    background-position: -180px 0px;
 	}
 
-	.reports {
+	.reportingHelp {
 	    background-image: url("../images/landing_page.png");
 	    background-position: -195px -70px;
 	}
 
-	.security {
+	.faq {
 	    background-image: url("../images/landing_page.png");
 	    background-position: -172px -140px;
 	}

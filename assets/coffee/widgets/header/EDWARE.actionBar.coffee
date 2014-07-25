@@ -64,10 +64,8 @@ define [
           self.config.academicYears.callback academicYear
         onAsmtYearSelected: (asmt) ->
           # save assessment type
-          edwarePreferences.saveAsmtPreference asmt
-          edwarePreferences.saveAsmtForISR asmt
           self.updateDisclaimer asmt
-          self.reloadCallback()
+          self.reloadCallback(asmt)
       @createDisclaimer()
       asmtDropdown
 

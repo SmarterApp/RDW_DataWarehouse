@@ -257,6 +257,8 @@ define [
       @config.labels.searchPlaceholder = @config.searchPlaceholder
       @config.labels.SearchResultText = @config.SearchResultText
       @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
+        edwarePreferences.saveAsmtForISR(asmt)
+        edwarePreferences.saveAsmtPreference asmt
         self.updateView()
 
     createGrid: (filters) ->

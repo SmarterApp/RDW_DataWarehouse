@@ -274,6 +274,7 @@ define [
       viewName = viewName || @studentsDataSet.allSubjects
       # Add dark border color between Math and ELA section
       $('#gridWrapper').removeClass().addClass(viewName)
+      $("#subjectSelection#{viewName}").addClass('selected')
       this.renderGrid viewName
 
     fetchData: (params) ->

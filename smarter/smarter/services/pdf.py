@@ -246,8 +246,8 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
         raise ForbiddenError('Access Denied')
     url = _create_student_pdf_url(student_id, base_url, params)
     files_by_guid = generate_isr_report_path_by_student_id(state_code, effective_date, asmt_year,
-                                                             pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
-                                                             asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+                                                           pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
+                                                           asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
     file_name = files_by_guid[student_id]
     args = (cookie_value, url, file_name)
     options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
@@ -271,13 +271,13 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # If we do not have a list of student GUIDs, we need to get it
     all_guids, guids_by_grade = _create_student_ids(student_ids, grades, state_code, district_id, school_id,
-                                                      asmt_type, asmt_year, effective_date, params)
+                                                    asmt_type, asmt_year, effective_date, params)
 
     # Get all file names
     files_by_student_id = generate_isr_report_path_by_student_id(state_code, effective_date, asmt_year,
-                                                                     pdf_report_base_dir=pdf_base_dir,
-                                                                     student_ids=all_guids, asmt_type=asmt_type,
-                                                                     grayScale=is_grayscale, lang=lang)
+                                                                 pdf_report_base_dir=pdf_base_dir,
+                                                                 student_ids=all_guids, asmt_type=asmt_type,
+                                                                 grayScale=is_grayscale, lang=lang)
 
     # Set up a few additional variables
     urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params)
@@ -335,7 +335,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
 
 def _create_student_ids(student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year,
-                          effective_date, params):
+                        effective_date, params):
     '''
     create list of student guids by grades
     '''
@@ -345,7 +345,7 @@ def _create_student_ids(student_ids, grades, state_code, district_id, school_id,
     if student_ids is None:
         for grade in grades:
             guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year,
-                                       effective_date=effective_date, grade=grade)
+                                     effective_date=effective_date, grade=grade)
             if len(guids) > 0:
                 guids_by_grade[grade] = []
                 for result in guids:
@@ -356,7 +356,7 @@ def _create_student_ids(student_ids, grades, state_code, district_id, school_id,
         if grades is not None and len(grades) == 1:
             grade = grades[0]
         guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year,
-                                   effective_date=effective_date, grade=grade, student_ids=student_ids)
+                                 effective_date=effective_date, grade=grade, student_ids=student_ids)
         grade = 'all' if grade is None else grade
         if len(guids) > 0:
             guids_by_grade[grade] = []
@@ -548,7 +548,7 @@ def _get_archive_name(school_name, lang_code, grayscale):
 
 
 def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
-                       asmt_year=None, effective_date=None, grade=None, student_ids=None):
+                     asmt_year=None, effective_date=None, grade=None, student_ids=None):
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)

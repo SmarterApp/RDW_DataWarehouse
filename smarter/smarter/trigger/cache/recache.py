@@ -25,11 +25,11 @@ class CacheTrigger(object):
         # cache all academic years without filters
         for year in self.academic_years:
             self._cache_with_district_id(district_id=None,
-                                           filters={}, year=year)
+                                         filters={}, year=year)
         # cache state view reports with filters, only for latest year
         for _filter in self.__state_filters:
             self._cache_with_district_id(district_id=None,
-                                           filters=_filter, year=self.latest_year)
+                                         filters=_filter, year=self.latest_year)
 
     def _cache_with_district_id(self, district_id, filters, year):
         '''
@@ -55,10 +55,10 @@ class CacheTrigger(object):
         # cache all academic years without filters
         for year in self.academic_years:
             self._cache_with_district_id(district_id=district_id,
-                                           filters={}, year=year)
+                                         filters={}, year=year)
         for _filter in self.__district_filters:
             self._cache_with_district_id(district_id=district_id,
-                                           filters=_filter, year=self.latest_year)
+                                         filters=_filter, year=self.latest_year)
 
     def init_filters(self, tenant, settings):
         '''

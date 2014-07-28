@@ -371,15 +371,15 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_student_ids_by_guids(self):
         all_guids, guids_by_grade = _create_student_ids(['c799b218-0bfb-413d-9ec1-684cde99851d',
-                                                           '115f7b10-9e18-11e2-9e96-0800200c9a66'], ['8'], 'NC', '229',
-                                                          '939', AssessmentType.SUMMATIVE, '2016', '20160404', {})
+                                                        '115f7b10-9e18-11e2-9e96-0800200c9a66'], ['8'], 'NC', '229',
+                                                        '939', AssessmentType.SUMMATIVE, '2016', '20160404', {})
         self.assertEqual(len(all_guids), 2)
         self.assertIn('8', guids_by_grade)
         self.assertEqual(len(guids_by_grade['8']), 2)
 
     def test_create_student_ids_by_grade(self):
         all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
-                                                          '2016', '20160404', {})
+                                                        '2016', '20160404', {})
         self.assertEqual(len(all_guids), 10)
         self.assertIn('7', guids_by_grade)
         self.assertIn('8', guids_by_grade)
@@ -388,8 +388,8 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_student_ids_by_grade_group(self):
         all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
-                                                          '2016', '20160404',
-                                                          {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
+                                                        '2016', '20160404',
+                                                        {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(all_guids), 5)
         self.assertIn('7', guids_by_grade)
         self.assertNotIn('8', guids_by_grade)

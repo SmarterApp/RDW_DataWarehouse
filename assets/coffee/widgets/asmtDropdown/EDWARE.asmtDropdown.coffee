@@ -30,6 +30,7 @@ define [
         otherYears: otherYears
         hasOtherYears: otherYears.length > 0
         academicYears: @config.years
+        hasOtherAcademicYears: @config.years.length > 1
       @container.html(output)
 
     getAsmtTypes: () ->

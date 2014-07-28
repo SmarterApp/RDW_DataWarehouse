@@ -8,11 +8,6 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = [
     'edapi',
-    'edschema',
-    'edauth',
-    'edcore',
-    'edextract',
-    'config',
     'smarter_common']
 
 

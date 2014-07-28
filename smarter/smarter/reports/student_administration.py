@@ -17,7 +17,7 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     with EdCoreDBConnection(state_code=state_code) as connection:
         fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        query = select([dim_asmt.c.effective_date, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw .c.asmt_grade],
+        query = select([dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw .c.asmt_grade],
                        from_obj=[fact_asmt_outcome_vw, dim_asmt])
         query = query.where(fact_asmt_outcome_vw.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome_vw.c.state_code == state_code).\
@@ -25,7 +25,7 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid)).\
             where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)).\
             where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]))).\
-            group_by(dim_asmt.c.effective_date, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
+            group_by(dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
             order_by(fact_asmt_outcome_vw.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
         if asmt_grade:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
@@ -45,13 +45,13 @@ def get_student_report_asmt_administration(state_code, student_guid):
     with EdCoreDBConnection(state_code=state_code) as connection:
         fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        query = select([dim_asmt.c.effective_date, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw .c.asmt_grade],
+        query = select([dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw .c.asmt_grade],
                        from_obj=[fact_asmt_outcome_vw, dim_asmt])
         query = query.where(fact_asmt_outcome_vw.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome_vw.c.state_code == state_code).\
             where(and_(fact_asmt_outcome_vw.c.student_guid == student_guid)).\
             where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)).\
-            group_by(dim_asmt.c.effective_date, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
+            group_by(dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
             order_by(fact_asmt_outcome_vw.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
         results = connection.get_result(query)
     return results

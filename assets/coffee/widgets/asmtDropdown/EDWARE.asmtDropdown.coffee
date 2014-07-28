@@ -17,11 +17,11 @@ define [
       @bindEvents()
 
     initialize: () ->
-      currentYear = @dropdownValues[0].asmt_year
+      currentYear = edwarePreferences.getAsmtYearPreference()
       latestYear = []
       otherYears = []
       for v in @dropdownValues
-        if v.asmt_year is currentYear
+        if v.asmt_period_year is currentYear
           latestYear.push v
         else
           otherYears.push v

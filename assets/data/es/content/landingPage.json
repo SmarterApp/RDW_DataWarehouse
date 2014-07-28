@@ -9,7 +9,8 @@
                 "subtitle": "Annotated Reports",
                 "class": "annotatedReports",
                 "desc": "How to use and interpret the Smarter Balanced Reports",
-                "link": "http://www.smarterbalanced.org/wordpress/wp-content/uploads/2014/06/Reporting-System-OverviewV2.pdf"
+                "link": "http://www.smarterbalanced.org/wordpress/wp-content/uploads/2014/06/Reporting-System-OverviewV2.pdf",
+                "linkTarget": "_blank"
             }, {
                 "subtitle": "Reporting Help",
                 "class": "reportingHelp",

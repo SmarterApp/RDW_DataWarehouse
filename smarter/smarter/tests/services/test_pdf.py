@@ -109,7 +109,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentId, asmt_type=AssessmentType.SUMMATIVE)
+        pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_ids=studentId, asmt_type=AssessmentType.SUMMATIVE)
         prepare_path(pdf_file[studentId])
         with open(pdf_file[studentId], 'w') as file:
             file.write('%PDF-1.4')

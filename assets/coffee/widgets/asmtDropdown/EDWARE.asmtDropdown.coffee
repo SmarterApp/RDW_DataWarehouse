@@ -27,7 +27,7 @@ define [
           otherYears.push v
 
       years = []
-      for year in @config.years
+      for year in @config.years?
         if year.value isnt currentYear
           years.push year
 

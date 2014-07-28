@@ -25,12 +25,18 @@ define [
           latestYear.push v
         else
           otherYears.push v
+
+      years = []
+      for year in @config.years
+        if year.value isnt currentYear
+          years.push year
+
       output = Mustache.to_html AsmtDropdownTemplate,
         latestYear: latestYear
         otherYears: otherYears
         hasOtherYears: otherYears.length > 0
-        academicYears: @config.years
-        hasOtherAcademicYears: @config.years.length > 1
+        academicYears: years
+        hasOtherAcademicYears: years.length > 0
       @container.html(output)
 
     getAsmtTypes: () ->

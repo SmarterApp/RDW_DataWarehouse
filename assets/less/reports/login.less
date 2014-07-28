@@ -86,27 +86,28 @@ body.login {
 
     #content {
 	min-height: 490px;
-	background-color: #474c55;
+	background-color: #ecf2f5;
 	background-image: url('../images/homepage_bg.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	border-top: solid 1px @color-B14;
 
 	.intro {
-	    position: relative;
-	    top: 40px;
-	    left: 70px;
-	    width: 320px;
-	    color: @color-white;
+	    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      display: block;
+	    width: 350px;
+	    color: @color-black;
+	    margin: 50px 0px 0px 175px;
 
 	    h1 {
 		font-size: 40px;
-		font-weight: normal;
+		font-weight: bold;
+		margin-bottom: 20px;
 	    }
 
 	    p {
-		font-size: 16px;
-		padding: 20px 0px 30px 0px;
+		font-size: 14px;
+		line-height: 20px;
 	    }
 
 	    .btn-login {
@@ -115,7 +116,14 @@ body.login {
 		font-weight: bold;
 		font-size: 18px;
 		display: block;
-		margin: auto;
+		margin: 30px auto 0 auto;
+	    }
+	    
+	    .preTitle {
+	  font-size: 22px;
+    line-height: 22px;
+    margin-bottom: 5px;
+    font-weight: normal;
 	    }
 	}
     }
@@ -136,7 +144,7 @@ body.login {
 		display: inline-block;
 		vertical-align: middle;
 		height: 50px;
-		width: 244px;
+		width: 326px;
 		height: 174px;
 		border-right: solid 1px @color-B18;
 
@@ -190,24 +198,19 @@ body.login {
 	    }
 	}
 
-	.assessments {
+	.annotatedReports {
 	    background-image: url("../images/landing_page.png");
 	    background-position: -180px 0px;
 	}
 
-	.reports {
+	.reportingHelp {
 	    background-image: url("../images/landing_page.png");
 	    background-position: -195px -70px;
 	}
 
-	.security {
+	.faq {
 	    background-image: url("../images/landing_page.png");
 	    background-position: -172px -140px;
-	}
-
-	.consortium {
-	    background-image: url("../images/landing_page.png");
-	    background-position: -220px -210px;
 	}
 
     }
@@ -218,7 +221,7 @@ body.login {
 	border-top: solid 1px @color-B19;
 	padding-top: 20px;
 
-	.copyright, .help, .contact {
+	.copyright {
 	    height: 80px;
 	    display: inline-block;
 	    vertical-align: top;
@@ -235,29 +238,22 @@ body.login {
 
 	.copyright {
 	    vertical-align: bottom;
-	    width: 275px;
 	    padding: 0px 25px;
 
 	    .logo {
-		width: 160px;
-		height: 80px;
-		background-image: url("../images/landing_page.png");
-		background-repeat: no-repeat;
-		background-position: 0px -60px;
+		display: block;
+    width: 150px;
+    height: 52px;
+    background-image: url("../images/landing_page.png");
+    background-repeat: no-repeat;
+    background-position-y: 8px;
+    float: left;
 	    }
 
 	    p {
-		font-size: 10px;
-	    }
-	}
-
-	.help, .contact  {
-	    width: 275px;
-	    padding: 0px 24px;
-
-	    h4 {
-		padding-bottom: 5px;
-		margin-bottom: 5px;
+		display: inline-block;
+    font-size: 12px;
+    line-height: 52px;
 	    }
 	}
     }

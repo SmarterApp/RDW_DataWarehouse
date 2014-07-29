@@ -49,11 +49,11 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
     with EdCoreDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        query = select([distinct(fact_asmt_outcome_vw.c.student_guid).label(Constants.STUDENT_GUID),
+        query = select([distinct(fact_asmt_outcome_vw.c.student_id).label(Constants.STUDENT_ID),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
                         dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
-                        fact_asmt_outcome_vw.c.district_guid.label(Constants.DISTRICT_GUID),
-                        fact_asmt_outcome_vw.c.school_guid.label(Constants.SCHOOL_GUID),
+                        fact_asmt_outcome_vw.c.district_id.label(Constants.DISTRICT_ID),
+                        fact_asmt_outcome_vw.c.school_id.label(Constants.SCHOOL_ID),
                         fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
                        from_obj=[fact_asmt_outcome_vw
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id,
@@ -84,19 +84,19 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
         pdf_trigger = PDFGenerator(settings, tenant)
         for result in results:
             try:
-                student_guid = result.get(Constants.STUDENT_GUID)
+                student_id = result.get(Constants.STUDENT_ID)
                 asmt_period_year = str(result.get(Constants.ASMT_PERIOD_YEAR))
-                district_guid = result.get(Constants.DISTRICT_GUID)
-                school_guid = result.get(Constants.SCHOOL_GUID)
+                district_id = result.get(Constants.DISTRICT_ID)
+                school_id = result.get(Constants.SCHOOL_ID)
                 asmt_grade = result.get(Constants.ASMT_GRADE)
-                student_guid = result.get(Constants.STUDENT_GUID)
+                student_id = result.get(Constants.STUDENT_ID)
                 effective_date = result.get(Constants.EFFECTIVE_DATE)
-                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid, effective_date=effective_date)
+                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, effective_date=effective_date)
                 logger.debug('pre-pdf for [%s]', file_name)
-                pdf_trigger.send_pdf_request(student_guid, state_code, effective_date, file_name)
+                pdf_trigger.send_pdf_request(student_id, state_code, effective_date, file_name)
             except Exception as e:
                 triggered = False
-                logger.warning('Pdf generation failed for %s', student_guid)
+                logger.warning('Pdf generation failed for %s', student_id)
     return triggered
 
 

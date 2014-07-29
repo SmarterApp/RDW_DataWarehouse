@@ -19,7 +19,7 @@ from smarter.reports.helpers.filters import apply_filter_to_query
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from services.exceptions import PdfGenerationError
-from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_id
 from smarter.reports.helpers.constants import AssessmentType, Constants
 from smarter.reports.helpers.filters import FILTERS_CONFIG
 import services.celery
@@ -183,10 +183,10 @@ def send_pdf_request(params):
 
 def get_pdf_content(params):
     # Collect the parameters
-    student_guids = params.get(Constants.STUDENTGUID)
+    student_ids = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
-    district_guid = params.get(Constants.DISTRICTGUID)
-    school_guid = params.get(Constants.SCHOOLGUID)
+    district_id = params.get(Constants.DISTRICTGUID)
+    school_id = params.get(Constants.SCHOOLGUID)
     grades = params.get(Constants.ASMTGRADE, [])
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     asmt_year = params.get(Constants.ASMTYEAR)
@@ -203,7 +203,7 @@ def get_pdf_content(params):
         raise EdApiHTTPNotFound("Not Found")
 
     # Check that we have either a list of student GUIDs or a district/school/grade combination in the params
-    if student_guids is None and (district_guid is None or school_guid is None or grades is None):
+    if student_ids is None and (district_id is None or school_id is None or grades is None):
         raise InvalidParameterError('Required parameter is missing')
 
     # Validate the assessment type
@@ -225,30 +225,30 @@ def get_pdf_content(params):
     base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
     pdf_base_dir = settings.get('pdf.report_base_dir', "/tmp")
 
-    if student_guids is not None and (type(student_guids) is not list or (len(student_guids) == 1 and allow_single)):
+    if student_ids is not None and (type(student_ids) is not list or (len(student_ids) == 1 and allow_single)):
         # Get cookies and other config items
         (cookie_name, cookie_value) = get_session_cookie()
         single_generate_queue = settings.get('pdf.single_generate.queue')
-        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
+        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_ids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
     else:
-        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
     return response
 
 
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
-                           effective_date, asmt_type, student_guid, lang, is_grayscale, always_generate, celery_timeout,
+                           effective_date, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
                            params, single_generate_queue):
-    if type(student_guid) is list:
-        student_guid = student_guid[0]
+    if type(student_id) is list:
+        student_id = student_id[0]
 
     # Get all file names
-    if not _has_context_for_pdf_request(state_code, student_guid):
+    if not _has_context_for_pdf_request(state_code, student_id):
         raise ForbiddenError('Access Denied')
-    url = _create_student_pdf_url(student_guid, base_url, params)
-    files_by_guid = generate_isr_report_path_by_student_guid(state_code, effective_date, asmt_year,
-                                                             pdf_report_base_dir=pdf_base_dir, student_guids=[student_guid],
-                                                             asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
-    file_name = files_by_guid[student_guid]
+    url = _create_student_pdf_url(student_id, base_url, params)
+    files_by_guid = generate_isr_report_path_by_student_id(state_code, effective_date, asmt_year,
+                                                           pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
+                                                           asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+    file_name = files_by_guid[student_id]
     args = (cookie_value, url, file_name)
     options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
 
@@ -258,8 +258,8 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
     return Response(body=pdf_stream, content_type=Constants.APPLICATION_PDF)
 
 
-def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades,
-                         state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang,
+def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades,
+                         state_code, district_id, school_id, asmt_type, asmt_year, effective_date, lang,
                          is_grayscale, always_generate, celery_timeout, params):
     '''
     Read pdf content from file system if it exists, else generate it
@@ -270,23 +270,23 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     user = authenticated_userid(get_current_request())
 
     # If we do not have a list of student GUIDs, we need to get it
-    all_guids, guids_by_grade = _create_student_guids(student_guids, grades, state_code, district_guid, school_guid,
-                                                      asmt_type, asmt_year, effective_date, params)
+    all_guids, guids_by_grade = _create_student_ids(student_ids, grades, state_code, district_id, school_id,
+                                                    asmt_type, asmt_year, effective_date, params)
 
     # Get all file names
-    files_by_student_guid = generate_isr_report_path_by_student_guid(state_code, effective_date, asmt_year,
-                                                                     pdf_report_base_dir=pdf_base_dir,
-                                                                     student_guids=all_guids, asmt_type=asmt_type,
-                                                                     grayScale=is_grayscale, lang=lang)
+    files_by_student_id = generate_isr_report_path_by_student_id(state_code, effective_date, asmt_year,
+                                                                 pdf_report_base_dir=pdf_base_dir,
+                                                                 student_ids=all_guids, asmt_type=asmt_type,
+                                                                 grayScale=is_grayscale, lang=lang)
 
     # Set up a few additional variables
-    urls_by_student_guid = _create_urls_by_student_guid(all_guids, state_code, base_url, params)
+    urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params)
 
     # Register expected file with HPZ
     registration_id, download_url = register_file(user.get_uid())
 
     # Get the name of the school
-    school_name = _get_school_name(state_code, district_guid, school_guid)
+    school_name = _get_school_name(state_code, district_id, school_id)
 
     # Set up directory and file names
     directory_to_archive = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.DATA)
@@ -303,14 +303,14 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     pdfGenerator = PDFGenerator(settings)
 
     # Create the tasks for each individual student PDF file we want to merge
-    generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name, is_grayscale, always_generate, files_by_student_guid,
-                                                urls_by_student_guid)
+    generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name, is_grayscale, always_generate, files_by_student_id,
+                                                urls_by_student_id)
 
     # Create the tasks to merge each PDF by grade
     merge_tasks, merged_pdfs_by_grade, student_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
                                                                                       directory_for_merged_pdfs,
                                                                                       guids_by_grade,
-                                                                                      files_by_student_guid,
+                                                                                      files_by_student_id,
                                                                                       school_name, lang, is_grayscale)
 
     # Create tasks for cover sheets
@@ -334,41 +334,41 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     return Response(body=json.dumps(response), content_type=Constants.APPLICATION_JSON)
 
 
-def _create_student_guids(student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year,
-                          effective_date, params):
+def _create_student_ids(student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year,
+                        effective_date, params):
     '''
     create list of student guids by grades
     '''
     # If we do not have a list of student GUIDs, we need to get it
     all_guids = []
     guids_by_grade = {}
-    if student_guids is None:
+    if student_ids is None:
         for grade in grades:
-            guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
-                                       effective_date=effective_date, grade=grade)
+            guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year,
+                                     effective_date=effective_date, grade=grade)
             if len(guids) > 0:
                 guids_by_grade[grade] = []
                 for result in guids:
-                    all_guids.append(result[Constants.STUDENT_GUID])
-                    guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
+                    all_guids.append(result[Constants.STUDENT_ID])
+                    guids_by_grade[grade].append(result[Constants.STUDENT_ID])
     else:
         grade = None
         if grades is not None and len(grades) == 1:
             grade = grades[0]
-        guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
-                                   effective_date=effective_date, grade=grade, student_guids=student_guids)
+        guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year,
+                                 effective_date=effective_date, grade=grade, student_ids=student_ids)
         grade = 'all' if grade is None else grade
         if len(guids) > 0:
             guids_by_grade[grade] = []
             for result in guids:
-                all_guids.append(result[Constants.STUDENT_GUID])
-                guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
+                all_guids.append(result[Constants.STUDENT_ID])
+                guids_by_grade[grade].append(result[Constants.STUDENT_ID])
     if len(all_guids) == 0:
         raise InvalidParameterError('No students match filters')
     return all_guids, guids_by_grade
 
 
-def _create_urls_by_student_guid(all_guids, state_code, base_url, params):
+def _create_urls_by_student_id(all_guids, state_code, base_url, params):
     '''
     create ISR URL link for each students
     '''
@@ -381,8 +381,8 @@ def _create_urls_by_student_guid(all_guids, state_code, base_url, params):
     if not _has_context_for_pdf_request(state_code, all_guids):
         raise ForbiddenError('Access Denied')
     # Create URLs
-    for student_guid in all_guids:
-        urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
+    for student_id in all_guids:
+        urls_by_guid[student_id] = _create_student_pdf_url(student_id, base_url, params)
     return urls_by_guid
 
 
@@ -393,9 +393,9 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
     generate_tasks = []
     args = {Constants.COOKIE: cookie_value, Constants.TIMEOUT: services.celery.TIMEOUT, Constants.COOKIE_NAME: cookie_name,
             Constants.GRAYSCALE: is_grayscale, Constants.ALWAYS_GENERATE: always_generate}
-    for student_guid, file_name in files_by_guid.items():
+    for student_id, file_name in files_by_guid.items():
         copied_args = copy.deepcopy(args)
-        copied_args[Constants.URL] = urls_by_guid[student_guid]
+        copied_args[Constants.URL] = urls_by_guid[student_id]
         copied_args[Constants.OUTPUTFILE] = file_name
         generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
     return generate_tasks
@@ -410,17 +410,17 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, 
     bulk_paths = {}
     counts_by_grade = {}
     if guids_by_grade:
-        for grade, student_guids in guids_by_grade.items():
-            if type(student_guids) is not list:
-                student_guids = [student_guids]
+        for grade, student_ids in guids_by_grade.items():
+            if type(student_ids) is not list:
+                student_ids = [student_ids]
             # Create bulk output name and path
             bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
             bulk_path = os.path.join(directory_for_merged, bulk_name)
 
             # Get the files for this grade
             file_names = []
-            for student_guid in student_guids:
-                file_names.append(files_by_guid[student_guid])
+            for student_id in student_ids:
+                file_names.append(files_by_guid[student_id])
 
             # Create the merge task
             merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir), immutable=True))  # @UndefinedVariable
@@ -483,19 +483,19 @@ def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, d
     return merge_tasks
 
 
-def _has_context_for_pdf_request(state_code, student_guid):
+def _has_context_for_pdf_request(state_code, student_id):
     '''
-    Validates that user has context to student_guid
+    Validates that user has context to student_id
 
-    :param student_guid:  guid(s) of the student(s)
+    :param student_id:  guid(s) of the student(s)
     '''
-    if type(student_guid) is not list:
-        student_guid = [student_guid]
-    return check_context(RolesConstants.PII, state_code, student_guid)
+    if type(student_id) is not list:
+        student_id = [student_id]
+    return check_context(RolesConstants.PII, state_code, student_id)
 
 
-def _create_student_pdf_url(student_guid, base_url, params):
-    params[Constants.STUDENTGUID] = student_guid
+def _create_student_pdf_url(student_id, base_url, params):
+    params[Constants.STUDENTGUID] = student_id
     params[Constants.PDF] = "true"
     encoded_params = urllib.parse.urlencode(params)
     return base_url + "?%s" % encoded_params
@@ -547,8 +547,8 @@ def _get_archive_name(school_name, lang_code, grayscale):
     return name + ('.g.zip' if grayscale else '.zip')
 
 
-def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params,
-                       asmt_year=None, effective_date=None, grade=None, student_guids=None):
+def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
+                     asmt_year=None, effective_date=None, grade=None, student_ids=None):
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -556,7 +556,7 @@ def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
         # Build select
-        query = select_with_context([fact_asmt_outcome_vw.c.student_guid.label(Constants.STUDENT_GUID),
+        query = select_with_context([fact_asmt_outcome_vw.c.student_id.label(Constants.STUDENT_ID),
                                      dim_student.c.first_name,
                                      dim_student.c.last_name],
                                     from_obj=[fact_asmt_outcome_vw
@@ -566,14 +566,14 @@ def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params
 
         # Add where clauses
         query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
-        query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
-        query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.school_id == school_id))
+        query = query.where(and_(fact_asmt_outcome_vw.c.district_id == district_id))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
         if grade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
-        if student_guids is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student_guids)))
+        if student_ids is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_ids)))
         if effective_date is not None:
             query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         elif asmt_year is not None:
@@ -589,7 +589,7 @@ def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params
         return connector.get_result(query)
 
 
-def _get_school_name(state_code, district_guid, school_guid):
+def _get_school_name(state_code, district_id, school_id):
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get handle to tables
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
@@ -600,8 +600,8 @@ def _get_school_name(state_code, district_guid, school_guid):
 
         # Add where clauses
         query = query.where(dim_inst_hier.c.state_code == state_code)
-        query = query.where(and_(dim_inst_hier.c.district_guid == district_guid))
-        query = query.where(and_(dim_inst_hier.c.school_guid == school_guid))
+        query = query.where(and_(dim_inst_hier.c.district_id == district_id))
+        query = query.where(and_(dim_inst_hier.c.school_id == school_id))
 
         # Return the result
         results = connector.get_result(query)

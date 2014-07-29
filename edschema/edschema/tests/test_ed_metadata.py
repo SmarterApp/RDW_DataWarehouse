@@ -22,9 +22,9 @@ class TestEdMetadata(Unittest_with_sqlite):
             # check number of field in the table
             self.assertEqual(10, len(dim_inst_hier.c), "Number of fields in dim_district")
 
-            query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
+            query = dim_inst_hier.select(dim_inst_hier.c.district_id == '228')
             result = connector.get_result(query)
-            self.assertEqual('228', result[0]['district_guid'])
+            self.assertEqual('228', result[0]['district_id'])
 
     # Test get_stream_result with dim_district_data
     def test_get_streaming_result(self):
@@ -35,11 +35,11 @@ class TestEdMetadata(Unittest_with_sqlite):
             # check number of field in the table
             self.assertEqual(10, len(dim_inst_hier.c), "Number of fields in dim_district")
 
-            query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
+            query = dim_inst_hier.select(dim_inst_hier.c.district_id == '228')
             results = connector.get_streaming_result(query, fetch_size=1)
             self.assertEqual(type(results), types.GeneratorType)
             for result in results:
-                self.assertEqual('228', result['district_guid'])
+                self.assertEqual('228', result['district_id'])
                 break
             # test for larger file out of fetch_size
             fact_asmt_outcome_vw = connector.get_table('fact_asmt_outcome_vw')
@@ -58,7 +58,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             fact_student_reg = connector.get_table("student_reg")
 
             # Check number of fields in the table
-            self.assertEqual(39, len(fact_student_reg.c), "Number of fields in student_registration")
+            self.assertEqual(40, len(fact_student_reg.c), "Number of fields in student_registration")
 
     def test_meta_column_col_type_attr(self):
         meta_column = MetaColumn('test_meta_column', String(50))

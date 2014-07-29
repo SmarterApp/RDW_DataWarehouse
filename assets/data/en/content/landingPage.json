@@ -1,36 +1,29 @@
 {
-    "title": "Smarter Balanced Reporting",
-    "summary": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "welcome": "Welcome to the",
+    "title": "Smarter Balanced Reporting System",
+    "summary": "The Smarter Balanced Reporting System is an interactive, online reporting platform that provides a range of reports on the Smarter Balanced summative and interim assessments. It provides clear, easy-to-understand data on student achievement and delivers intuitive and timely reports for teachers, parents and administrators to track student progress towards college content- and career-readiness.",
     "about": {
-        "title": "Learn More About Smarter Balanced:",
+        "title": "Learn More About Smarter Balanced Reporting:",
         "sections": [
             {
-                "subtitle": "Assessments",
-                "class": "assessments",
-                "desc": "Learn More about Smarter Balanced assessments",
-                "link": "http://www.smarterbalanced.org/smarter-balanced-assessments"
+                "subtitle": "Annotated Reports",
+                "class": "annotatedReports",
+                "desc": "How to use and interpret the Smarter Balanced Reports",
+                "link": "http://www.smarterbalanced.org/wordpress/wp-content/uploads/2014/06/Reporting-System-OverviewV2.pdf",
+                "linkTarget": "_blank"
             }, {
-                "subtitle": "Reports",
-                "class": "reports",
-                "desc": "Gain deeper understanding of student performance",
+                "subtitle": "Reporting Help",
+                "class": "reportingHelp",
+                "desc": "Videos that illustrate how to use the reports",
                 "link": "#"
             }, {
-                "subtitle": "Data Security",
-                "class": "security",
-                "desc": "Learn how Smarter Balanced protects students data",
-                "link": "#"
-            }, {
-                "subtitle": "The Consortium",
-                "class": "consortium",
-                "desc": "We develop assessments aligned to the Common Core State Standards",
-                "link": "http://www.smarterbalanced.org"
+                "subtitle": "FAQ",
+                "helpMenu": "helpMenu",
+                "class": "faq",
+                "desc": "Frequently asked questions about the Smarter Balanced Reporting System",
+                "link": "#faq"
             }
         ]
     },
-    "copyright": "Smarter Balanced Assessment Consortium @ Copyright 2015",
-    "userGuide": "User Guide",
-    "faq": "FAQ",
-    "tutorials": "Reporting Tutorials",
-    "contact": "Contact Us",
-    "email": "reporting@smarterbalanced.org"
+    "copyright": "Smarter Balanced Assessment Consortium @ Copyright 2015"
 }

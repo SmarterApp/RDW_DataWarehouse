@@ -6,17 +6,17 @@ lz:
     csv:
         REALDATA_RECORDS:
             guid_asmt: student_info.asmt_guids
-            guid_asmt_location: school.school_guid
+            guid_asmt_location: school.school_id
             name_asmt_location: school.school_name
             grade_asmt: student_info.grade
             name_state: state_population.state_name
             code_state: state_population.state_code
-            guid_district: school.district_guid
+            guid_district: school.district_id
             name_district: school.district_name
-            guid_school: school.school_guid
+            guid_school: school.school_id
             name_school: school.school_name
             type_school: school.school_category
-            guid_student: student_info.student_guid
+            guid_student: student_info.student_id
             name_student_first: student_info.first_name
             name_student_middle: student_info.middle_name
             name_student_last: student_info.last_name

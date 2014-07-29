@@ -164,6 +164,8 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
                         "employeeType: ||SAREXTRACTS||||||es|ES|||||||||\n" + \
                         "employeeType: ||SRSEXTRACTS||||||es|ES|||||||||\n" + \
                         "employeeType: ||SRCEXTRACTS||||||es|ES|||||||||\n" + \
+                        "employeeType: ||AUDITXML||||||es|ES|||||||||\n" + \
+                        "employeeType: ||IIRDEXTRACTS||||||es|ES|||||||||\n" + \
                         "uid: " + _email + "\n" + \
                         "mail: " + _email + "\n" + \
                         "userPassword: " + ssha_password(_passwd) + "\n"

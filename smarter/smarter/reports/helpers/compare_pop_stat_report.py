@@ -27,12 +27,12 @@ def get_not_stated_count(params):
 def get_comparing_populations_not_stated_cache_route(comparing_pop):
     '''
     Returns cache region based on whether filters exist
-    If school_guid is present, return none - do not cache
+    If school_id is present, return none - do not cache
 
     :param comparing_pop:  instance of ComparingPopReport
     '''
     # do not cache school level
-    return 'public.data' if comparing_pop.school_guid is None else None
+    return 'public.data' if comparing_pop.school_id is None else None
 
 
 def get_comparing_populations_not_stated_cache_key(comparing_pop):
@@ -47,8 +47,8 @@ def get_comparing_populations_not_stated_cache_key(comparing_pop):
         cache_args.append(comparing_pop.asmt_type)
     if comparing_pop.state_code is not None:
         cache_args.append(comparing_pop.state_code)
-    if comparing_pop.district_guid is not None:
-        cache_args.append(comparing_pop.district_guid)
+    if comparing_pop.district_id is not None:
+        cache_args.append(comparing_pop.district_id)
     if comparing_pop.asmt_year is not None:
         cache_args.append(comparing_pop.asmt_year)
     return tuple(cache_args)
@@ -59,16 +59,16 @@ class ComparingPopStatReport:
     Statistic data for Comparing Population Report. Only contains not stated students count for now.
     '''
 
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None):
+    def __init__(self, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None):
         '''
         :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district, could be None
-        :param string schoolGuid:  Guid of the school, could be None
+        :param string districtId:  Guid of the district, could be None
+        :param string schoolId:  Guid of the school, could be None
         :param string tenant:  tenant name of the user.  Specify if report is not going through a web request
         '''
         self.state_code = stateCode
-        self.district_guid = districtGuid
-        self.school_guid = schoolGuid
+        self.district_id = districtId
+        self.school_id = schoolId
         self.asmt_type = asmtType
         self.asmt_year = asmtYear
         self.tenant = tenant
@@ -119,9 +119,9 @@ class ComparingPopStatReport:
             .where(and_(_fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT, _fact_asmt_outcome_vw.c.asmt_type == self.asmt_type, _fact_asmt_outcome_vw.c.asmt_year == self.asmt_year))
         if self.state_code is not None:
             query = query.where(and_(_fact_asmt_outcome_vw.c.state_code == self.state_code))
-        if self.district_guid is not None:
-            query = query.where(and_(_fact_asmt_outcome_vw.c.district_guid == self.district_guid))
-        if self.school_guid is not None:
-            query = query.where(and_(_fact_asmt_outcome_vw.c.school_guid == self.school_guid))
+        if self.district_id is not None:
+            query = query.where(and_(_fact_asmt_outcome_vw.c.district_id == self.district_id))
+        if self.school_id is not None:
+            query = query.where(and_(_fact_asmt_outcome_vw.c.school_id == self.school_id))
         query = apply_filter_to_query(query, _fact_asmt_outcome_vw, filters)
         return query

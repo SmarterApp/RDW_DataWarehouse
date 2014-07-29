@@ -43,8 +43,8 @@ def generate_raw_data_xml(tenant, output_paths, task_info, extract_args):
 def _get_path_to_raw_xml(root_dir, record):
     return os.path.join(root_dir, str(record['state_code']).upper(), str(record['asmt_year']),
                         str(record['asmt_type']).upper().replace(' ', '_'), str(record['effective_date']),
-                        str(record['asmt_subject']).upper(), str(record['asmt_grade']), str(record['district_guid']),
-                        (str(record['student_guid']) + '.xml'))
+                        str(record['asmt_subject']).upper(), str(record['asmt_grade']), str(record['district_id']),
+                        (str(record['student_id']) + '.xml'))
 
 
 def _prepare_file_list(raw_root_dir, results):

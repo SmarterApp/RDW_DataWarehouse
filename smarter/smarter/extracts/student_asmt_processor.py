@@ -206,11 +206,11 @@ def _get_asmt_records(param, extract_type):
     asmt_type = param.get(Constants.ASMTTYPE)
     asmt_subject = param.get(Constants.ASMTSUBJECT)
     state_code = param.get(Constants.STATECODE)
-    district_guid = param.get(Constants.DISTRICTGUID)
-    school_guid = param.get(Constants.SCHOOLGUID)
+    district_id = param.get(Constants.DISTRICTGUID)
+    school_id = param.get(Constants.SCHOOLGUID)
     asmt_grade = param.get(Constants.ASMTGRADE)
     asmt_year = param.get(Constants.ASMTYEAR)
-    student_guid = param.get(Constants.STUDENTGUID)
+    student_id = param.get(Constants.STUDENTGUID)
     # TODO: remove dim_asmt
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -225,16 +225,16 @@ def _get_asmt_records(param, extract_type):
             .where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))\
             .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome_vw.c.asmt_grade)
 
-        if district_guid is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
-        if school_guid is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
+        if district_id is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.district_id == district_id))
+        if school_id is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_id == school_id))
         if asmt_grade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
         if asmt_year is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
-        if student_guid:
-            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student_guid)))
+        if student_id:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_id)))
 
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, param)
         results = connector.get_result(query)

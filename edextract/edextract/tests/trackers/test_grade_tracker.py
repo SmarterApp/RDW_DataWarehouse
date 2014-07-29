@@ -25,21 +25,21 @@ class TestGradeTrackers(unittest.TestCase):
         self.grade_trackers = [self.gradek, self.grade1, self.grade2, self.grade3, self.grade4, self.grade5, self.grade6,
                                self.grade7, self.grade8, self.grade9, self.grade10, self.grade11, self.grade12]
 
-        self.grade_db_rows = [{'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'KG'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '01'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '03'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '04'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '05'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '06'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '07'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '08'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '09'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '10'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '11'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '03'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '07'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '09'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '12'}]
+        self.grade_db_rows = [{'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': 'KG'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '01'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '03'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '04'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '05'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '06'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '07'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '08'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '09'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '10'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': '11'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014, 'enrl_grade': '03'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014, 'enrl_grade': '07'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014, 'enrl_grade': '09'},
+                              {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014, 'enrl_grade': '12'}]
 
     def test_grade_trackers(self):
         for tracker in self.grade_trackers:
@@ -69,9 +69,9 @@ class TestGradeTrackers(unittest.TestCase):
         self.assertEquals(1, self.grade5.get_map_entry('NJ')[2013])
 
     def test_grade_case(self):
-        row1 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kg'}
-        row2 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'Kg'}
-        row3 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kG'}
+        row1 = {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': 'kg'}
+        row2 = {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': 'Kg'}
+        row3 = {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'enrl_grade': 'kG'}
         self.gradek.track_academic_year('school1', row1)
         self.gradek.track_academic_year('school1', row2)
         self.gradek.track_academic_year('school1', row3)

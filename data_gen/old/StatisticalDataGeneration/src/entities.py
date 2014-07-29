@@ -10,7 +10,7 @@ class InstitutionHierarchy:
     '''
 
     def __init__(self, number_of_students, student_teacher_ratio, low_grade, high_grade,
-                 state_name, state_code, district_guid, district_name, school_guid, school_name, school_category, from_date, most_recent, inst_hier_rec_id=None, to_date=None):
+                 state_name, state_code, district_id, district_name, school_id, school_name, school_category, from_date, most_recent, inst_hier_rec_id=None, to_date=None):
         '''
         Constructor
         '''
@@ -29,9 +29,9 @@ class InstitutionHierarchy:
 
         self.state_name = state_name
         self.state_code = state_code
-        self.district_guid = district_guid
+        self.district_id = district_id
         self.district_name = district_name
-        self.school_guid = school_guid
+        self.school_id = school_id
         self.school_name = school_name
         self.school_category = school_category
         self.from_date = from_date
@@ -39,20 +39,20 @@ class InstitutionHierarchy:
         self.most_recent = most_recent
 
     def getRow(self):
-        return [self.inst_hier_rec_id, self.state_name, self.state_code, self.district_guid, self.district_name, self.school_guid, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
+        return [self.inst_hier_rec_id, self.state_name, self.state_code, self.district_id, self.district_name, self.school_id, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
 
     # TODO: For all these getHeader methods, there must be a better way to return a list of the fields (in a defined order)
     # hard coding probably is not the best approach
     @classmethod
     def getHeader(cls):
-        return ['inst_hier_rec_id', 'state_name', 'state_code', 'district_guid', 'district_name', 'school_guid', 'school_name', 'school_category', 'from_date', 'to_date', 'most_recent']
+        return ['inst_hier_rec_id', 'state_name', 'state_code', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', 'from_date', 'to_date', 'most_recent']
 
 
 class Section:
     '''
     Section Object
     '''
-    def __init__(self, section_guid, section_name, grade, class_name, subject_name, state_code, district_guid, school_guid, from_date, most_recent, to_date=None, section_rec_id=None):
+    def __init__(self, section_guid, section_name, grade, class_name, subject_name, state_code, district_id, school_id, from_date, most_recent, to_date=None, section_rec_id=None):
 
         # Ids can either be given to the constructor or provided by constructor
         # Either way, the section_rec_id field must have a value
@@ -68,18 +68,18 @@ class Section:
         self.class_name = class_name
         self.subject_name = subject_name
         self.state_code = state_code
-        self.district_guid = district_guid
-        self.school_guid = school_guid
+        self.district_id = district_id
+        self.school_id = school_id
         self.from_date = from_date
         self.most_recent = most_recent
         self.to_date = to_date
 
     def getRow(self):
-        return [self.section_rec_id, self.section_guid, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_guid, self.school_guid, self.from_date, self.to_date, self.most_recent]
+        return [self.section_rec_id, self.section_guid, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
 
     @classmethod
     def getHeader(cls):
-        return ['section_rec_id', 'section_guid', 'section_name', 'grade', 'class_name', 'subject_name', 'state_code', 'district_guid', 'school_guid', 'from_date', 'to_date', 'most_recent']
+        return ['section_rec_id', 'section_guid', 'section_name', 'grade', 'class_name', 'subject_name', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
 
 
 class Assessment:
@@ -183,8 +183,8 @@ class Assessment:
 
 class AssessmentOutcome(object):
 
-    def __init__(self, asmnt_outcome_rec_id, asmt_rec_id, student_guid,
-                 teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id,
+    def __init__(self, asmnt_outcome_rec_id, asmt_rec_id, student_id,
+                 teacher_guid, state_code, district_id, school_id, section_guid, inst_hier_rec_id, section_rec_id,
                  where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day,
                  date_taken_month, date_taken_year,
                  asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
@@ -196,11 +196,11 @@ class AssessmentOutcome(object):
 
         self.asmnt_outcome_rec_id = asmnt_outcome_rec_id
         self.asmt_rec_id = asmt_rec_id
-        self.student_guid = student_guid
+        self.student_id = student_id
         self.teacher_guid = teacher_guid
         self.state_code = state_code
-        self.district_guid = district_guid
-        self.school_guid = school_guid
+        self.district_id = district_id
+        self.school_id = school_id
         self.section_guid = section_guid
         self.inst_hier_rec_id = inst_hier_rec_id
         self.section_rec_id = section_rec_id
@@ -241,8 +241,8 @@ class AssessmentOutcome(object):
 
     def getRow(self):
         return [self.asmnt_outcome_rec_id, self.asmt_rec_id,
-                self.student_guid, self.teacher_guid, self.state_code,
-                self.district_guid, self.school_guid, self.section_guid,
+                self.student_id, self.teacher_guid, self.state_code,
+                self.district_id, self.school_id, self.section_guid,
                 self.inst_hier_rec_id, self.section_rec_id,
                 self.where_taken_id, self.where_taken_name, self.asmt_grade, self.enrl_grade,
                 self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
@@ -257,8 +257,8 @@ class AssessmentOutcome(object):
     @classmethod
     def getHeader(cls):
         return ['asmnt_outcome_rec_id', 'asmt_rec_id',
-                'student_guid', 'teacher_guid', 'state_code',
-                'district_guid', 'school_guid', 'section_guid',
+                'student_id', 'teacher_guid', 'state_code',
+                'district_id', 'school_id', 'section_guid',
                 'inst_hier_rec_id', 'section_rec_id',
                 'where_taken_id', 'where_taken_name', 'asmt_grade', 'enrl_grade',
                 'date_taken', 'date_taken_day', 'date_taken_month', 'date_taken_year',
@@ -288,7 +288,7 @@ class Person(object):
 
 class Staff(Person):
 
-    def __init__(self, first_name, last_name, section_guid, hier_user_type, state_code, district_guid, school_guid, from_date, to_date=None, most_recent=None, middle_name=None, staff_guid=None):
+    def __init__(self, first_name, last_name, section_guid, hier_user_type, state_code, district_id, school_id, from_date, to_date=None, most_recent=None, middle_name=None, staff_guid=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
         idgen = IdGen()
         self.staff_rec_id = idgen.get_id()
@@ -299,18 +299,18 @@ class Staff(Person):
         self.section_guid = section_guid
         self.hier_user_type = hier_user_type
         self.state_code = state_code
-        self.district_guid = district_guid
-        self.school_guid = school_guid
+        self.district_id = district_id
+        self.school_id = school_id
         self.from_date = from_date
         self.to_date = to_date
         self.most_recent = most_recent
 
     def getRow(self):
-        return [self.staff_rec_id, self.staff_guid, self.first_name, self.middle_name, self.last_name, self.section_guid, self.hier_user_type, self.state_code, self.district_guid, self.school_guid, self.from_date, self.to_date, self.most_recent]
+        return [self.staff_rec_id, self.staff_guid, self.first_name, self.middle_name, self.last_name, self.section_guid, self.hier_user_type, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
 
     @classmethod
     def getHeader(cls):
-        return ['staff_rec_id', 'staff_guid', 'first_name', 'middle_name', 'last_name', 'section_guid', 'hier_user_type', 'state_code', 'district_guid', 'school_guid', 'from_date', 'to_date', 'most_recent']
+        return ['staff_rec_id', 'staff_guid', 'first_name', 'middle_name', 'last_name', 'section_guid', 'hier_user_type', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
 
 
 class ExternalUserStudent():
@@ -319,30 +319,30 @@ class ExternalUserStudent():
     Corresponds to dim_external_user_student table
     '''
 
-    def __init__(self, external_user_student_guid, external_user_guid, student_guid, rel_start_date, rel_end_date=None):
+    def __init__(self, external_user_student_id, external_user_guid, student_id, rel_start_date, rel_end_date=None):
 
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
         id_generator = IdGen()
-        if external_user_student_guid is None:
-            self.external_user_student_guid = id_generator.get_id()
+        if external_user_student_id is None:
+            self.external_user_student_id = id_generator.get_id()
         else:
-            self.external_user_student_guid = external_user_student_guid
+            self.external_user_student_id = external_user_student_id
         if external_user_guid is None:
             self.external_user_guid = uuid4()
         else:
             self.external_user_guid = external_user_guid
 
-        self.student_guid = student_guid
+        self.student_id = student_id
         self.rel_start_date = rel_start_date
         self.rel_end_date = rel_end_date
 
     def getRow(self):
-        return [self.external_user_student_guid, self.external_user_guid, self.student_guid, self.rel_start_date, self.rel_end_date]
+        return [self.external_user_student_id, self.external_user_guid, self.student_id, self.rel_start_date, self.rel_end_date]
 
     @classmethod
     def getHeader(cls):
-        return ['external_user_student_guid', 'external_user_guid', 'student_guid', 'from_date', 'to_date']
+        return ['external_user_student_id', 'external_user_guid', 'student_id', 'from_date', 'to_date']
 
 
 class Student():
@@ -360,7 +360,7 @@ class Student():
         idgen = IdGen()
         self.student_rec_id = idgen.get_id()
 
-        self.student_guid = student_bio_info.student_guid
+        self.student_id = student_bio_info.student_id
         self.first_name = student_bio_info.first_name
         self.middle_name = student_bio_info.middle_name
         self.last_name = student_bio_info.last_name
@@ -374,8 +374,8 @@ class Student():
         self.section_guid = section_guid
         self.grade = grade
         self.state_code = student_bio_info.state_code
-        self.district_guid = student_bio_info.district_guid
-        self.school_guid = student_bio_info.school_guid
+        self.district_id = student_bio_info.district_id
+        self.school_id = student_bio_info.school_id
         self.from_date = from_date
         self.to_date = to_date
         self.most_recent = most_recent
@@ -385,12 +385,12 @@ class Student():
         self.section_rec_id = section_rec_id
 
     def getRow(self):
-        return [self.student_rec_id, self.student_guid, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,
+        return [self.student_rec_id, self.student_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,
                 self.city, self.zip_code, self.gender, self.email, self.dob, self.section_guid, self.grade,
-                self.state_code, self.district_guid, self.school_guid, self.from_date, self.to_date, self.most_recent]
+                self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
 
     @classmethod
     def getHeader(cls):
-        return ['student_rec_id', 'student_guid', 'first_name', 'middle_name', 'last_name', 'address_1', 'address_2',
+        return ['student_rec_id', 'student_id', 'first_name', 'middle_name', 'last_name', 'address_1', 'address_2',
                 'city', 'zip_code', 'gender', 'email', 'dob', 'section_guid', 'grade',
-                'state_code', 'district_guid', 'school_guid', 'from_date', 'to_date', 'most_recent']
+                'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']

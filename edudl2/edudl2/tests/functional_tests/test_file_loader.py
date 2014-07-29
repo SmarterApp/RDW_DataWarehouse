@@ -37,7 +37,7 @@ STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec
                                  'accommodationcalculator', 'accommodationmultiplicationtable', 'accommodationprintondemand',
                                  'accommodationreadaloud', 'accommodationscribe', 'accommodationspeechtotext', 'accommodationstreamlinemode']
 
-STG_SBAC_STU_REG_COLUMNS = ['record_sid', 'guid_batch', 'src_file_rec_num', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'guid_student',
+STG_SBAC_STU_REG_COLUMNS = ['record_sid', 'guid_batch', 'src_file_rec_num', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'guid_student',
                             'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last', 'sex_student', 'birthdate_student', 'grade_enrolled', 'dmg_eth_hsp',
                             'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig', 'dmg_multi_race',
                             'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date', 'lep_exit_date', 't3_program_type', 'prim_disability_type']
@@ -193,8 +193,8 @@ class FileLoaderFTest(UDLTestHelper):
             result_list = results.fetchall()
             expected_rows = self.get_clean_rows_from_file(csv_file)
             # sort rows
-            student_guid_index = results.keys().index(result_key)  # Determine index of guid_student in results
-            result_list = sorted(result_list, key=lambda i: i[student_guid_index])  # sort results using this index
+            student_id_index = results.keys().index(result_key)  # Determine index of guid_student in results
+            result_list = sorted(result_list, key=lambda i: i[student_id_index])  # sort results using this index
             expected_rows = sorted(expected_rows, key=lambda k: k[key_column])  # sort expected based on the key
             # Loop through rows
             for i in range(len(result_list)):

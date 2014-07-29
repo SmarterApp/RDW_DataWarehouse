@@ -38,12 +38,12 @@ class TestPreCacheGenerator(Unittest_with_edcore_sqlite):
         self.assertTrue(triggered)
 
     def testTrigger_precache_with_bad_district(self):
-        results = [{'district_guid': 'I_dont_exist'}]
+        results = [{'district_id': 'I_dont_exist'}]
         triggered = trigger_precache(self.tenant, 'NC', results, {})
         self.assertTrue(triggered)
 
     def testTrigger_precache_with_invalid_state(self):
-        results = [{'district_guid': '123'}]
+        results = [{'district_id': '123'}]
         triggered = trigger_precache(self.tenant, 'DU', results, {})
         self.assertTrue(triggered)
 

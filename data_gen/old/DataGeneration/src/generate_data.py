@@ -343,8 +343,8 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         #for subject in constants.SUBJECTS:
             subject = constants.SUBJECTS[i]
             # create sections
-            sections = generate_sections(constants.NUMBER_OF_SECTIONS, subject, grade, state_code, school.district_guid,
-                                         school.school_guid, from_date, most_recent, to_date=to_date)
+            sections = generate_sections(constants.NUMBER_OF_SECTIONS, subject, grade, state_code, school.district_id,
+                                         school.school_id, from_date, most_recent, to_date=to_date)
             subject_sections_map[subject] = sections
 
             # create teachers
@@ -487,8 +487,8 @@ def generate_teachers_for_sections(staff_per_section, sections, from_date, most_
     all_staff = []
     for section in sections:
         staff = generate_multiple_staff(staff_per_section, 'Teacher', from_date, most_recent,
-                                        state_code=state_code, district_guid=school.district_guid,
-                                        school_guid=school.school_guid, section_guid=section.section_guid,
+                                        state_code=state_code, district_id=school.district_id,
+                                        school_id=school.school_id, section_guid=section.section_guid,
                                         to_date=to_date)
 
         all_staff += staff
@@ -504,8 +504,8 @@ def set_student_institution_information(students, school, from_date, most_recent
         city_name_1 = random.choice(street_names)
         city_name_2 = random.choice(street_names)
 
-        student.school_guid = school.school_guid
-        student.district_guid = school.district_guid
+        student.school_id = school.school_id
+        student.district_id = school.district_id
         student.state_code = state_code
         student.from_date = from_date
         student.most_recent = most_recent
@@ -623,7 +623,7 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
             grade_perf_lvl_counts[grade] = [round(x) for x in grade_counts]
 
         school = generate_school(sch_pop.school_type_name, school_names_1, school_names_2,
-                                 grade_perf_lvl_counts, district.district_name, district.district_guid)
+                                 grade_perf_lvl_counts, district.district_name, district.district_id)
 
         population_data = get_school_population(school, student_info_dict, subject_percentages, demographics_info,
                                                 demographics_id, assessments, error_band_dict, state_name, state_code,
@@ -657,7 +657,7 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
 
         # generate district staff
         district.staff = generate_non_teaching_staff(constants.NUMBER_OF_DISTRICT_LEVEL_STAFF, from_date, most_recent, to_date,
-                                                     state_code=state_code, district_guid=district.district_guid)
+                                                     state_code=state_code, district_id=district.district_id)
         districts.append(district)
 
     return districts
@@ -848,18 +848,18 @@ def get_flat_grades_list(school_config, grade_key):
     return grades
 
 
-def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date, state_code='NA', district_guid='NA', school_guid='NA'):
+def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date, state_code='NA', district_id='NA', school_id='NA'):
     """
     Generate staff that are not teachers
     @param number_of_staff: The number of staff memebers to generate
     @keyword state_code: The state code to use for the staff memeber. If applicable.
-    @keyword district_guid: The guid to the district the staff member is in. If applicable.
-    @keyword school_guid: The guid to the school the staff member is in. If applicable.
+    @keyword district_id: The guid to the district the staff member is in. If applicable.
+    @keyword school_id: The guid to the school the staff member is in. If applicable.
     @return: a list of Staff objects
     """
     hier_user_type = 'Staff'
     staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code,
-                                         district_guid=district_guid, school_guid=school_guid, to_date=to_date)
+                                         district_id=district_id, school_id=school_id, to_date=to_date)
     return staff_list
 
 
@@ -872,15 +872,15 @@ def generate_institution_hierarchy_from_helper_entities(state_population, distri
     """
     state_name = state_population.state_name
     state_code = state_population.state_code
-    district_guid = district.district_guid
+    district_id = district.district_id
     district_name = district.district_name
-    school_guid = school.school_guid
+    school_id = school.school_id
     school_name = school.school_name
     school_category = school.school_category
 
     institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
-                                                           district_guid, district_name,
-                                                           school_guid, school_name, school_category,
+                                                           district_id, district_name,
+                                                           school_id, school_name, school_category,
                                                            from_date, most_recent, to_date)
     return institution_hierarchy
 

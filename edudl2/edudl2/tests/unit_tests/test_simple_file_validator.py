@@ -50,7 +50,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.assertEqual(results[0][0], ErrorCode.SRC_FILE_TYPE_NOT_SUPPORTED)
 
     def test_for_source_file_with_less_number_of_columns(self):
-        test_csv_fields = {'guid_batch', 'student_guid'}
+        test_csv_fields = {'guid_batch', 'student_id'}
         validator = csv_validator.DoesSourceFileInExpectedFormat('assessment', csv_fields=test_csv_fields)
         error_code_expected = ErrorCode.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
         results = [validator.execute(self.data_dir,
@@ -59,7 +59,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.assertEqual(results[0][0], error_code_expected)
 
     def test_for_source_file_with_mismatched_format(self):
-        test_csv_fields = {'guid_batch', 'student_guid'}
+        test_csv_fields = {'guid_batch', 'student_id'}
         validator = csv_validator.DoesSourceFileInExpectedFormat('studentregistration', csv_fields=test_csv_fields)
         error_code_expected = ErrorCode.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
         results = [validator.execute(self.data_dir,

@@ -56,18 +56,18 @@ class TestContext(Unittest_with_edcore_sqlite):
     def test_select_with_context_as_pii(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select_with_context([fact_asmt_outcome_vw.c.school_guid],
+            query = select_with_context([fact_asmt_outcome_vw.c.school_id],
                                         from_obj=([fact_asmt_outcome_vw]), limit=1, permission=RolesConstants.PII, state_code='NC')
             results = connection.get_result(query)
             self.assertEqual(len(results), 1)
-            self.assertIn(results[0][Constants.SCHOOL_GUID], ['242', '245'])
+            self.assertIn(results[0][Constants.SCHOOL_ID], ['242', '245'])
 
     def test_select_with_context_as_srs(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select_with_context([fact_asmt_outcome_vw.c.state_code],
                                         from_obj=([fact_asmt_outcome_vw]), limit=1, permission=RolesConstants.SRS_EXTRACTS, state_code='NC')
-            results = connection.get_result(query.where(fact_asmt_outcome_vw.c.district_guid == '228'))
+            results = connection.get_result(query.where(fact_asmt_outcome_vw.c.district_id == '228'))
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0][Constants.STATE_CODE], 'NC')
 
@@ -76,7 +76,7 @@ class TestContext(Unittest_with_edcore_sqlite):
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select_with_context([fact_asmt_outcome_vw.c.state_code],
                                         from_obj=([fact_asmt_outcome_vw]), limit=1, permission=RolesConstants.SRC_EXTRACTS, state_code='NC')
-            results = connection.get_result(query.where(fact_asmt_outcome_vw.c.district_guid == '228'))
+            results = connection.get_result(query.where(fact_asmt_outcome_vw.c.district_id == '228'))
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0][Constants.STATE_CODE], 'NC')
 
@@ -85,7 +85,7 @@ class TestContext(Unittest_with_edcore_sqlite):
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select_with_context([fact_asmt_outcome_vw.c.state_code],
                                         from_obj=([fact_asmt_outcome_vw]), permission=RolesConstants.PII, state_code='NC')
-            query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == '242'))
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_id == '242'))
             results = connection.get_result(query)
             self.assertEqual(len(results), 234)
 
@@ -120,7 +120,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['audit_xml_extracts']['all'])
 
     def test_get_current_context_at_district_level(self):
-        context = get_current_context({'stateCode': 'NC', 'districtGuid': '228'})
+        context = get_current_context({'stateCode': 'NC', 'districtId': '228'})
         self.assertTrue(context['pii']['all'])
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
@@ -129,7 +129,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context['item_extracts']['all'])
 
     def test_get_current_context_at_district_level_with_invalid_district(self):
-        context = get_current_context({'stateCode': 'NC', 'districtGuid': '229'})
+        context = get_current_context({'stateCode': 'NC', 'districtId': '229'})
         self.assertTrue(context['pii']['all'])
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
@@ -138,7 +138,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertTrue(context['audit_xml_extracts']['all'])
 
     def test_get_current_context_at_school_level(self):
-        context = get_current_context({'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242'})
+        context = get_current_context({'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'})
         self.assertTrue(context['pii']['all'])
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
@@ -147,7 +147,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertTrue(context['audit_xml_extracts']['all'])
 
     def test_get_current_context_at_school_level_with_invalid_school(self):
-        context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': 'bad'})
+        context = get_current_context({'stateCode': 'NC', 'districtId': '229', 'schoolId': 'bad'})
         self.assertFalse(context['pii']['all'])
         self.assertFalse(context['sar_extracts']['all'])
         self.assertTrue(context['srs_extracts']['all'])
@@ -163,7 +163,7 @@ class TestContext(Unittest_with_edcore_sqlite):
                                         RoleRelation(RolesConstants.AUDIT_XML_EXTRACTS, None, None, None, None)])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
-        context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': '242'})
+        context = get_current_context({'stateCode': 'NC', 'districtId': '229', 'schoolId': '242'})
         self.assertTrue(context['pii']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])
@@ -178,7 +178,7 @@ class TestContext(Unittest_with_edcore_sqlite):
                                         RoleRelation(RolesConstants.AUDIT_XML_EXTRACTS, None, None, None, None)])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
-        context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': '242'})
+        context = get_current_context({'stateCode': 'NC', 'districtId': '229', 'schoolId': '242'})
         self.assertTrue(context['pii']['all'])
         self.assertTrue(context['srs_extracts']['all'])
         self.assertTrue(context['src_extracts']['all'])

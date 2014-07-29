@@ -215,17 +215,17 @@ def create_realdata_objs_from_helper_entities(state_population, school, student_
         #teacher = student_info.teachers[subject]
         params = {
             'guid_asmt': student_info.asmt_guids[subject],
-            'guid_asmt_location': school.school_guid,
+            'guid_asmt_location': school.school_id,
             'name_asmt_location': school.school_name,
             'grade_asmt': student_info.grade,
             'name_state': state_population.state_name,
             'code_state': state_population.state_code,
-            'guid_district': school.district_guid,
+            'guid_district': school.district_id,
             'name_district': school.district_name,
-            'guid_school': school.school_guid,
+            'guid_school': school.school_id,
             'name_school': school.school_name,
             'type_school': school.school_category,
-            'guid_student': student_info.student_guid,
+            'guid_student': student_info.student_id,
             'name_student_first': student_info.first_name,
             'name_student_middle': student_info.middle_name,
             'name_student_last': student_info.last_name,
@@ -294,9 +294,9 @@ def create_helper_entities_from_lz_dict(lz_dict):
     }
     state = State(**state_params)
     school_params = {
-        'school_guid': lz_dict['guid_school'],
+        'school_id': lz_dict['guid_school'],
         'school_name': lz_dict['name_school'],
-        'district_guid': lz_dict['guid_district'],
+        'district_id': lz_dict['guid_district'],
         'district_name': lz_dict['name_district'],
         'school_category': lz_dict['type_school'],
         'grade_performance_level_counts': None,
@@ -310,8 +310,8 @@ def create_helper_entities_from_lz_dict(lz_dict):
         'section_guid': None,
         'hier_user_type': None,
         'state_code': None,
-        'district_guid': None,
-        'school_guid': None,
+        'district_id': None,
+        'school_id': None,
         'from_date': None,
         'most_recent': None,
         'staff_rec_id': None,
@@ -361,7 +361,7 @@ def create_helper_entities_from_lz_dict(lz_dict):
     student_info_params = {
         'grade': lz_dict['grade_asmt'],
         'asmt_guids': {subject: lz_dict['guid_asmt']},
-        'student_guid': lz_dict['guid_student'],
+        'student_id': lz_dict['guid_student'],
         'first_name': lz_dict['name_student_first'],
         'last_name': lz_dict['name_student_last'],
         'middle_name': lz_dict['name_student_middle'],

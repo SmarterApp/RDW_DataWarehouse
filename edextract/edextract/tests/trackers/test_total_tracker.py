@@ -16,21 +16,21 @@ class TestTotalTracker(unittest.TestCase):
 
     def test_track(self):
         db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school3', 'academic_year': 2013},
-            {'state_code': 'NJ', 'district_guid': 'district2', 'school_guid': 'school4', 'academic_year': 2013},
-            {'state_code': 'NJ', 'district_guid': 'district2', 'school_guid': 'school4', 'academic_year': 2014},
-            {'state_code': 'NJ', 'district_guid': 'district2', 'school_guid': 'school5', 'academic_year': 2014},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2014},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school3', 'academic_year': 2013},
+            {'state_code': 'NJ', 'district_id': 'district2', 'school_id': 'school4', 'academic_year': 2013},
+            {'state_code': 'NJ', 'district_id': 'district2', 'school_id': 'school4', 'academic_year': 2014},
+            {'state_code': 'NJ', 'district_id': 'district2', 'school_id': 'school5', 'academic_year': 2014},
         ]
         for row in db_rows:
             state_guid = row['state_code']
-            district_guid = row['district_guid']
-            school_guid = row['school_guid']
+            district_id = row['district_id']
+            school_id = row['school_id']
             self.total_tracker.track_academic_year(state_guid, row)
-            self.total_tracker.track_academic_year(district_guid, row)
-            self.total_tracker.track_academic_year(school_guid, row)
+            self.total_tracker.track_academic_year(district_id, row)
+            self.total_tracker.track_academic_year(school_id, row)
 
         sorted_keys = sorted(self.total_tracker._data_counter.map.keys())
         self.assertEquals(['NJ', 'district1', 'district2', 'school1', 'school2', 'school3', 'school4', 'school5'], sorted_keys)

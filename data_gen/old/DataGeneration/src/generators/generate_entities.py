@@ -21,7 +21,7 @@ def generate_students_from_student_info(student_info_list):
         for subject in student_info.asmt_scores:
             params = {
                 'student_rec_id': student_info.student_rec_ids.pop(),
-                'student_guid': student_info.student_guid,
+                'student_id': student_info.student_id,
                 'section_guid': student_info.section_guids[subject],
                 'first_name': student_info.first_name,
                 'last_name': student_info.last_name,
@@ -33,8 +33,8 @@ def generate_students_from_student_info(student_info_list):
                 'dob': student_info.dob,
                 'grade': student_info.grade,
                 'state_code': student_info.state_code,
-                'district_guid': student_info.district_guid,
-                'school_guid': student_info.school_guid,
+                'district_id': student_info.district_id,
+                'school_id': student_info.school_id,
                 'from_date': student_info.from_date,
                 'most_recent': student_info.most_recent,
                 'middle_name': student_info.middle_name,
@@ -63,15 +63,15 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
             params = {
                 'asmnt_outcome_rec_id': idgen.get_id(),
                 'asmt_rec_id': student_info.asmt_rec_ids[subject],
-                'student_guid': student_info.student_guid,
+                'student_id': student_info.student_id,
                 'teacher_guid': student_info.teacher_guids[subject],
                 'state_code': student_info.state_code,
-                'district_guid': student_info.district_guid,
-                'school_guid': student_info.school_guid,
+                'district_id': student_info.district_id,
+                'school_id': student_info.school_id,
                 'section_guid': student_info.section_guids[subject],
                 'inst_hier_rec_id': inst_hierarchy.inst_hier_rec_id,
                 'section_rec_id': student_info.section_rec_ids[subject],
-                'where_taken_id': student_info.school_guid,
+                'where_taken_id': student_info.school_id,
                 'where_taken_name': inst_hierarchy.school_name,
                 'asmt_grade': student_info.grade,
                 'enrl_grade': student_info.grade,
@@ -124,8 +124,8 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
 
 
 def generate_institution_hierarchy(state_name, state_code,
-                                   district_guid, district_name,
-                                   school_guid, school_name, school_category,
+                                   district_id, district_name,
+                                   school_id, school_name, school_category,
                                    from_date, most_recent, to_date=None):
     '''
     Generate an InstitutionHierarchy entity
@@ -134,12 +134,12 @@ def generate_institution_hierarchy(state_name, state_code,
     @param state_name: The name of the state of the InstitutionHierarchy
     @type state_code: L{str}
     @param state_code: The 2 letter abbreviation of the state
-    @type district_guid: L{UUID}
-    @param district_guid: Globally Unique Identifier for the InstitutionHierarchy's district
+    @type district_id: L{UUID}
+    @param district_id: Globally Unique Identifier for the InstitutionHierarchy's district
     @type district_name: L{str}
     @param district_name: The name of the InstitutionHierarchy's district
-    @type school_guid: L{UUID}
-    @param school_guid: Globally Unique Identifier for the InstitutionHierarchy's school
+    @type school_id: L{UUID}
+    @param school_id: Globally Unique Identifier for the InstitutionHierarchy's school
     @type school_name: L{str}
     @param school_name: The name of the InstituionHierarchy's school
     @type school_category: L{str}
@@ -157,12 +157,12 @@ def generate_institution_hierarchy(state_name, state_code,
     inst_hier_rec_id = id_generator.get_id()
 
     return InstitutionHierarchy(inst_hier_rec_id, state_name, state_code,
-                                district_guid, district_name,
-                                school_guid, school_name, school_category,
+                                district_id, district_name,
+                                school_id, school_name, school_category,
                                 from_date, most_recent, to_date)
 
 
-def generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name, street_names,
+def generate_student(section_guid, grade, state_code, district_id, school_id, school_name, street_names,
                      from_date, most_recent, to_date=None):
     '''
     Creates a student using necessary parameters and fills in remaining parameters.
@@ -172,7 +172,7 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     '''
     id_generator = IdGen()
     student_rec_id = id_generator.get_id()
-    student_guid = uuid4()
+    student_id = uuid4()
     gender = random.choice(constants.GENDERS)
     first_name = generate_first_or_middle_name(gender)
     middle_name = possibly_generate_middle_name(gender)
@@ -187,13 +187,13 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     email = util.generate_email_address(first_name, last_name, school_name)
     dob = util.generate_dob(grade)
 
-    student = Student(student_rec_id, student_guid, first_name, last_name, address_1, city, zip_code,
-                      gender, email, dob, section_guid, grade, state_code, district_guid, school_guid,
+    student = Student(student_rec_id, student_id, first_name, last_name, address_1, city, zip_code,
+                      gender, email, dob, section_guid, grade, state_code, district_id, school_id,
                       from_date, most_recent, middle_name=middle_name, to_date=to_date)
     return student
 
 
-def generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names, from_date, most_recent, to_date=None):
+def generate_students(number_of_students, section_guid, grade, state_code, district_id, school_id, school_name, street_names, from_date, most_recent, to_date=None):
     '''
     Generates 'number_of_students' amount of students within the same section
 
@@ -201,13 +201,13 @@ def generate_students(number_of_students, section_guid, grade, state_code, distr
     '''
     students = []
     for _i in range(number_of_students):
-        student = generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name, street_names,
+        student = generate_student(section_guid, grade, state_code, district_id, school_id, school_name, street_names,
                                    from_date, most_recent, to_date)
         students.append(student)
     return students
 
 
-def generate_section(subject_name, grade, state_code, district_guid, school_guid, section_number, class_number,
+def generate_section(subject_name, grade, state_code, district_id, school_id, section_number, class_number,
                      from_date, most_recent, to_date=True):
     '''
     Creates a Section object from necessary fields passed through parameters and fills in remaining fields
@@ -220,11 +220,11 @@ def generate_section(subject_name, grade, state_code, district_guid, school_guid
     class_name = subject_name + '_' + str(class_number)
 
     section = Section(section_rec_id, section_guid, section_name, grade, class_name, subject_name, state_code,
-                      district_guid, school_guid, from_date, most_recent, to_date=to_date)
+                      district_id, school_id, from_date, most_recent, to_date=to_date)
     return section
 
 
-def generate_sections(number_of_sections, subject_name, grade, state_code, district_guid, school_guid,
+def generate_sections(number_of_sections, subject_name, grade, state_code, district_id, school_id,
                       from_date, most_recent, to_date=None):
     '''
     Creates 'number_of_sections' amount of section objects for a given subject-grade combo
@@ -234,7 +234,7 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
     # TODO: figure out class and section names
     sections = []
     for i in range(number_of_sections):
-        section = generate_section(subject_name, grade, state_code, district_guid, school_guid, i, i,
+        section = generate_section(subject_name, grade, state_code, district_id, school_id, i, i,
                                    from_date, most_recent, to_date=to_date)
         sections.append(section)
     return sections
@@ -354,7 +354,7 @@ def generate_assessments(grades, cut_points, claim_cut_points, from_date, most_r
     return assessments
 
 
-def generate_staff(hier_user_type, from_date, most_recent, state_code='NA', district_guid='NA', school_guid='NA', section_guid='NA', to_date=None):
+def generate_staff(hier_user_type, from_date, most_recent, state_code='NA', district_id='NA', school_id='NA', section_guid='NA', to_date=None):
     '''
     Given necessary staff information, fills in remaining staff fields, and creates a staff object
     Fills in staff ids, gender, names
@@ -370,23 +370,23 @@ def generate_staff(hier_user_type, from_date, most_recent, state_code='NA', dist
     middle_name = possibly_generate_middle_name(gender)
     last_name = generate_last_name()
     staff = Staff(staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code,
-                  district_guid, school_guid, from_date, most_recent, middle_name=middle_name, to_date=to_date)
+                  district_id, school_id, from_date, most_recent, middle_name=middle_name, to_date=to_date)
 
     return staff
 
 
-def generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code='NA', district_guid='NA',
-                            school_guid='NA', section_guid='NA', to_date=None):
+def generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code='NA', district_id='NA',
+                            school_id='NA', section_guid='NA', to_date=None):
     '''
     Given basic staff information, fills in remaining staff fields and creates 'number_of_staff' amount of staff objects.
     Staff can exist at any hierarchy level (State, District, School, Section), so hierarchy fields are given the default
-    'NA'. For example, School Level staff will have a valid state_code, district_guid, and school_guid, but section_guid
+    'NA'. For example, School Level staff will have a valid state_code, district_id, and school_id, but section_guid
     will be 'NA' for not applicable.
     '''
     staff_list = []
     for _i in range(number_of_staff):
         staff_member = generate_staff(hier_user_type, from_date, most_recent, state_code=state_code,
-                                      district_guid=district_guid, school_guid=school_guid,
+                                      district_id=district_id, school_id=school_id,
                                       section_guid=section_guid, to_date=to_date)
         staff_list.append(staff_member)
     return staff_list

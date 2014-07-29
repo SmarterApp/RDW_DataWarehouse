@@ -5,15 +5,15 @@ star:
         fact_asmt_outcome:
             asmnt_outcome_rec_id: UNIQUE_ID
             asmt_rec_id: student_info.asmt_rec_ids
-            student_guid: student_info.student_guid
+            student_id: student_info.student_id
             student_rec_id: student_info.student_rec_ids
             state_code: student_info.state_code
-            district_guid: student_info.district_guid
-            school_guid: student_info.school_guid
+            district_id: student_info.district_id
+            school_id: student_info.school_id
             section_guid: student_info.section_guids
             inst_hier_rec_id: inst_hierarchy.inst_hier_rec_id
             section_rec_id: student_info.section_rec_ids
-            where_taken_id: student_info.school_guid
+            where_taken_id: student_info.school_id
             where_taken_name: inst_hierarchy.school_name
             asmt_grade: student_info.grade
             enrl_grade: student_info.grade
@@ -61,7 +61,7 @@ star:
             dmg_eth_derived: student_info.derived_demographic
         dim_student:
             student_rec_id: student_info.student_rec_ids  # Need to update how this is being stored
-            student_guid: student_info.student_guid
+            student_id: student_info.student_id
             section_guid: student_info.section_guids
             first_name: student_info.first_name
             last_name: student_info.last_name
@@ -74,8 +74,8 @@ star:
             dob: student_info.dob
             grade: student_info.grade
             state_code: student_info.state_code
-            district_guid: student_info.district_guid
-            school_guid: student_info.school_guid
+            district_id: student_info.district_id
+            school_id: student_info.school_id
             from_date: student_info.from_date
             most_recent: student_info.most_recent
             middle_name: student_info.middle_name
@@ -84,9 +84,9 @@ star:
             inst_hier_rec_id: inst_hierarchy.inst_hier_rec_id
             state_name: inst_hierarchy.state_name
             state_code: inst_hierarchy.state_code
-            district_guid: inst_hierarchy.district_guid
+            district_id: inst_hierarchy.district_id
             district_name: inst_hierarchy.district_name
-            school_guid: inst_hierarchy.school_guid
+            school_id: inst_hierarchy.school_id
             school_name: inst_hierarchy.school_name
             school_category: inst_hierarchy.school_category
             from_date: inst_hierarchy.from_date
@@ -100,8 +100,8 @@ star:
             class_name: section.class_name
             subject_name: section.subject_name
             state_code: section.state_code
-            district_guid: section.district_guid
-            school_guid: section.school_guid
+            district_id: section.district_id
+            school_id: section.school_id
             from_date: section.from_date
             to_date: section.to_date
             most_recent: section.most_recent

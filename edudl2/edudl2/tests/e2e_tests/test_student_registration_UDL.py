@@ -33,10 +33,10 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 'num_records_in_data_file': 10,
                 'num_records_in_json_file': 1,
                 'test_student': {
-                    'student_guid': '3333-AAAA-AAAA-AAAA',
-                    'state_code_col': 'DS',
+                    'student_id': '3333-AAAA-AAAA-AAAA',
+                    'state_name_col': 'Dummy State',
                     'district_name_col': 'West Podunk School District',
-                    'school_guid_col': '3333-3333-3333-3333',
+                    'school_id_col': '3333-3333-3333-3333',
                     'sex_col': 'female',
                     'dob_col': '1999-12-22',
                     'eth_hsp_col': True,
@@ -50,10 +50,10 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 'num_records_in_data_file': 3,
                 'num_records_in_json_file': 1,
                 'test_student': {
-                    'student_guid': '3333-CCCC-CCCC-CCCC',
-                    'state_code_col': 'DS',
+                    'student_id': '3333-CCCC-CCCC-CCCC',
+                    'state_name_col': 'Dummy State',
                     'district_name_col': 'West Podunk School District',
-                    'school_guid_col': '3333-3333-3333-3333',
+                    'school_id_col': '3333-3333-3333-3333',
                     'sex_col': 'male',
                     'dob_col': '1998-01-23',
                     'eth_hsp_col': False,
@@ -136,15 +136,15 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         with get_target_connection('cat', self.batch_id) as conn:
             student = self.student_reg_files[file_to_load]['test_student']
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
-            query = select([target_table.c.state_code, target_table.c.district_name, target_table.c.school_guid,
+            query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_id,
                             target_table.c.sex, target_table.c.birthdate, target_table.c.dmg_eth_hsp,
                             target_table.c.dmg_prg_504, target_table.c.academic_year, target_table.c.reg_system_id],
-                           and_(target_table.c.student_guid == student['student_guid'], target_table.c.batch_guid == self.batch_id))
+                           and_(target_table.c.student_id == student['student_id'], target_table.c.batch_guid == self.batch_id))
             result = conn.execute(query).fetchall()
             student_data_tuple = result[0]
-            self.assertEquals(student_data_tuple[0], student['state_code_col'], 'State Code did not match')
+            self.assertEquals(student_data_tuple[0], student['state_name_col'], 'State Name did not match')
             self.assertEquals(student_data_tuple[1], student['district_name_col'], 'District Name did not match')
-            self.assertEquals(student_data_tuple[2], student['school_guid_col'], 'School Id did not match')
+            self.assertEquals(student_data_tuple[2], student['school_id_col'], 'School Id did not match')
             self.assertEquals(student_data_tuple[3], student['sex_col'], 'Sex did not match')
             self.assertEquals(student_data_tuple[4], student['dob_col'], 'Date of Birth did not match')
             self.assertEquals(student_data_tuple[5], student['eth_hsp_col'], 'Hispanic Ethnicity should be true')

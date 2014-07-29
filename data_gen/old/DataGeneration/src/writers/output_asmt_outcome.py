@@ -252,17 +252,17 @@ if __name__ == '__main__':
             'csv': {
                 'REALDATA': {
                     'guid_asmt': 'student_info.asmt_guids',
-                    'guid_asmt_location': 'school.school_guid',
+                    'guid_asmt_location': 'school.school_id',
                     'name_asmt_location': 'school.school_name',
                     'grade_asmt': 'student_info.grade',
                     'name_state': 'state_population.state_name',
                     'code_state': 'state_population.state_code',
-                    'guid_district': 'school.district_guid',
+                    'guid_district': 'school.district_id',
                     'name_district': 'school.district_name',
-                    'guid_school': 'school.school_guid',
+                    'guid_school': 'school.school_id',
                     'name_school': 'school.school_name',
                     'type_school': 'school.school_category',
-                    'guid_student': 'student_info.student_guid',
+                    'guid_student': 'student_info.student_id',
                     'name_student_first': 'student_info.first_name',
                     'name_student_middle': 'student_info.middle_name',
                     'name_student_last': 'student_info.last_name',
@@ -287,7 +287,7 @@ if __name__ == '__main__':
     out_path = os.getcwd()
     out_files = initialize_csv_file(conf_dict, out_keys, out_path)
     print(out_files)
-    student_info1 = MakeTemp(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
+    student_info1 = MakeTemp(asmt_guids=1, student_id=2, first_name='bill', last_name='nye', middle_name='tom',
                              address_1='1 bob st.', address_2='', city='North Carolina', zip_code=12345, gender='m',
                              email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
                              asmt_scores={'math': MakeTemp(claim_scores=[MakeTemp(claim_score=1200), MakeTemp(claim_score=1200),
@@ -295,6 +295,6 @@ if __name__ == '__main__':
                                           'ela': MakeTemp(claim_scores=[MakeTemp(claim_score=1300), MakeTemp(claim_score=1300),
                                                                         MakeTemp(claim_score=1300)])})
     state1 = MakeTemp(state_name='North Carolina', state_code="NC")
-    school1 = MakeTemp(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
+    school1 = MakeTemp(school_id=123, school_name='school123', district_name='district1', district_id='d123',
                        school_category='elementary')
     output_data(conf_dict, out_keys, out_files, school1, student_info1, state1)

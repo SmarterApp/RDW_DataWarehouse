@@ -26,7 +26,7 @@ class TestGenerateHelperEntities(unittest.TestCase):
         second_word = component_words[1]
         self.assertIn(first_word, name_list_1)
         self.assertIn(second_word, name_list_2)
-        self.assertIsInstance(food_district.district_guid, UUID)
+        self.assertIsInstance(food_district.district_id, UUID)
 
     def test_generate_school(self):
         school_type = 'High School'
@@ -38,7 +38,7 @@ class TestGenerateHelperEntities(unittest.TestCase):
         second_word = component_words[1]
         self.assertIn(first_word, name_list_1)
         self.assertIn(second_word, name_list_2)
-        self.assertIsInstance(car_school.school_guid, UUID)
+        self.assertIsInstance(car_school.school_id, UUID)
 
     def test_generate_claim(self):
         claim_name = 'claim_1'

@@ -21,7 +21,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                 'csv': {
                     'REALDATA': {
                         'guid_asmt': 'student_info.asmt_guids',
-                        'guid_asmt_location': 'school.school_guid',
+                        'guid_asmt_location': 'school.school_id',
                         'name_asmt_location': 'school.school_name',
                         'grade_asmt': 'student_info.grade',
                         'name_state': 'state_population.state_name',
@@ -39,9 +39,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'test2': {
                 'csv': {
                     'NON_REALDATA': {
-                        'guid_district': 'school.district_guid',
+                        'guid_district': 'school.district_id',
                         'name_district': 'school.district_name',
-                        'guid_school': 'school.school_guid',
+                        'guid_school': 'school.school_id',
                         'name_school': 'school.school_name',
                         'type_school': 'school.school_category',
                     }
@@ -50,7 +50,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'test3': {
                 'csv': {
                     'NON_REALDATA': {
-                        'guid_district': 'school.district_guid',
+                        'guid_district': 'school.district_id',
                         'name_district': 'school.district_name',
                         'claim_1_score': 'claim_scores.1.claim_score',
                         'claim_4_score': 'claim_scores.4.claim_score',
@@ -61,7 +61,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'test_date': {
                 'csv': {
                     'NON_REALDATA': {
-                        'guid_district': 'school.district_guid',
+                        'guid_district': 'school.district_id',
                         'name_district': 'school.district_name',
                         'date_taken_day': 'date_taken.day',
                         'date_taken': 'student_info.asmt_dates_taken',
@@ -110,9 +110,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         }
         self.idgen = IdGen()
         self.state_population = MakeTemp(state_name='North Carolina', state_code="NC")
-        self.school1 = MakeTemp(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
+        self.school1 = MakeTemp(school_id=123, school_name='school123', district_name='district1', district_id='d123',
                                 school_category='elementary')
-        self.student_info1 = MakeTemp(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
+        self.student_info1 = MakeTemp(asmt_guids=1, student_id=2, first_name='bill', last_name='nye', middle_name='tom',
                                       address_1='1 bob st.', address_2='', city='North Carolina', zip_code=12345, gender='m',
                                       email='b.n@email.com', dob='11111999', grade=4,
                                       asmt_dates_taken={'math': date.today(), 'ela': date(2011, 2, 5)},

@@ -102,7 +102,7 @@ def test_registration_system_get_object_set():
 def test_item_data_get_object_set():
     # Create necessary objects
     item_data = item_lvl_data.SBACAssessmentOutcomeItemData()
-    item_data.student_guid = '0b43854416674ec8961b9db797bca2'
+    item_data.student_id = '0b43854416674ec8961b9db797bca2'
     item_data.key = '1938'
     item_data.segment_id = '(SBAC)SBAC-MG110PT-S2-ELA-7-Spring-2014-2015'
     item_data.position = '19'
@@ -112,7 +112,7 @@ def test_item_data_get_object_set():
     objs = item_data.get_object_set()
     assert len(objs) == 1
     assert 'assessment_outcome_item_data' in objs
-    assert objs['assessment_outcome_item_data'].student_guid == '0b43854416674ec8961b9db797bca2'
+    assert objs['assessment_outcome_item_data'].student_id == '0b43854416674ec8961b9db797bca2'
 
 
 def test_student_get_object_set():

@@ -20,26 +20,26 @@ class TestRaceTracker(unittest.TestCase):
                               self.wht_tracker, self.mul_tracker]
 
         self.hsp_db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013,
              'dmg_eth_hsp': True},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014,
              'dmg_eth_hsp': True},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2013,
              'dmg_eth_hsp': False},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2014,
              'dmg_eth_hsp': True},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013,
              'dmg_eth_hsp': False},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014,
              'dmg_eth_hsp': False},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2013,
              'dmg_eth_hsp': False},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2014,
              'dmg_eth_hsp': True}
         ]
 
         self.race_db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013,
              'dmg_eth_hsp': True,
              'dmg_eth_ami': True,
              'dmg_eth_asn': True,
@@ -47,7 +47,7 @@ class TestRaceTracker(unittest.TestCase):
              'dmg_eth_pcf': True,
              'dmg_eth_wht': True,
              'dmg_multi_race': True},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014,
              'dmg_eth_hsp': False,
              'dmg_eth_ami': True,
              'dmg_eth_asn': False,
@@ -60,8 +60,8 @@ class TestRaceTracker(unittest.TestCase):
     def test_tracker_map_counts(self):
         for row in self.hsp_db_rows:
             self.hispanic_tracker.track_academic_year(row['state_code'], row)
-            self.hispanic_tracker.track_academic_year(row['district_guid'], row)
-            self.hispanic_tracker.track_academic_year(row['school_guid'], row)
+            self.hispanic_tracker.track_academic_year(row['district_id'], row)
+            self.hispanic_tracker.track_academic_year(row['school_id'], row)
 
         self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('NJ')))
         self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('district1')))
@@ -83,8 +83,8 @@ class TestRaceTracker(unittest.TestCase):
         for tracker in self.race_trackers:
             for row in self.race_db_rows:
                 tracker.track_academic_year(row['state_code'], row)
-                tracker.track_academic_year(row['district_guid'], row)
-                tracker.track_academic_year(row['school_guid'], row)
+                tracker.track_academic_year(row['district_id'], row)
+                tracker.track_academic_year(row['school_id'], row)
 
         self.validate_two_years_data([self.ami_tracker, self.afm_tracker, self.pac_tracker])
         self.validate_single_year_data([self.hispanic_tracker, self.asn_tracker, self.wht_tracker, self.mul_tracker])

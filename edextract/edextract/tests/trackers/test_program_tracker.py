@@ -22,22 +22,22 @@ class TestProgramTrackers(unittest.TestCase):
 
     def test_track(self):
         db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013,
              'dmg_prg_iep': True, 'dmg_prg_lep': True, 'dmg_prg_504': True, 'dmg_sts_ecd': False, 'dmg_sts_mig': True},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2013,
              'dmg_prg_iep': True, 'dmg_prg_lep': False, 'dmg_prg_504': True, 'dmg_sts_ecd': False, 'dmg_sts_mig': False},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014,
              'dmg_prg_iep': True, 'dmg_prg_lep': False, 'dmg_prg_504': False, 'dmg_sts_ecd': False, 'dmg_sts_mig': True},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014,
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2014,
              'dmg_prg_iep': True, 'dmg_prg_lep': True, 'dmg_prg_504': False, 'dmg_sts_ecd': False, 'dmg_sts_mig': False},
         ]
         for row in db_rows:
-            school_guid = row['school_guid']
-            self.idea_tracker.track_academic_year(school_guid, row)
-            self.lep_tracker.track_academic_year(school_guid, row)
-            self.s504_tracker.track_academic_year(school_guid, row)
-            self.econ_tracker.track_academic_year(school_guid, row)
-            self.migr_tracker.track_academic_year(school_guid, row)
+            school_id = row['school_id']
+            self.idea_tracker.track_academic_year(school_id, row)
+            self.lep_tracker.track_academic_year(school_id, row)
+            self.s504_tracker.track_academic_year(school_id, row)
+            self.econ_tracker.track_academic_year(school_id, row)
+            self.migr_tracker.track_academic_year(school_id, row)
 
         self.assertEquals(2, len(self.idea_tracker.get_map_entry('school1')))
         self.assertEquals(2, len(self.idea_tracker.get_map_entry('school2')))
@@ -66,7 +66,7 @@ class TestProgramTrackers(unittest.TestCase):
         self.assertEquals(1, self.migr_tracker.get_map_entry('school1')[2014])
 
     def test_track_blanks(self):
-        db_row = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
+        db_row = {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013,
                   'dmg_prg_504': None, 'dmg_sts_mig': None}
         self.s504_tracker.track_academic_year('NJ', db_row)
         self.migr_tracker.track_academic_year('NJ', db_row)

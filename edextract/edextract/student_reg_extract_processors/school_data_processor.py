@@ -17,16 +17,16 @@ class SchoolDataProcessor(EdOrgDataProcessor):
         super().__init__(category_trackers, ed_org_hierarchy)
 
     def process_yearly_data(self, data_row):
-        self._call_academic_year_trackers(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row)
-        self._add_to_edorg_hierarchy(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row[AttributeFieldConstants.STATE_CODE],
+        self._call_academic_year_trackers(data_row[AttributeFieldConstants.SCHOOL_ID], data_row)
+        self._add_to_edorg_hierarchy(data_row[AttributeFieldConstants.SCHOOL_ID], data_row[AttributeFieldConstants.STATE_NAME],
                                      data_row[AttributeFieldConstants.DISTRICT_NAME], data_row[AttributeFieldConstants.SCHOOL_NAME])
 
     def process_matched_ids_data(self, data_row):
         if self._is_matched_school(data_row):
-            self._call_matched_ids_trackers(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row)
+            self._call_matched_ids_trackers(data_row[AttributeFieldConstants.SCHOOL_ID], data_row)
 
     def process_asmt_outcome_data(self, data_row):
-        self._call_asmt_trackers(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row)
+        self._call_asmt_trackers(data_row[AttributeFieldConstants.SCHOOL_ID], data_row)
 
     def _is_matched_school(self, data_row):
-        return data_row[AttributeFieldConstants.SCHOOL_GUID] == data_row[AttributeFieldConstants.PREV_SCHOOL_GUID]
+        return data_row[AttributeFieldConstants.SCHOOL_ID] == data_row[AttributeFieldConstants.PREV_SCHOOL_ID]

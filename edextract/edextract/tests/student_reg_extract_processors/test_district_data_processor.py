@@ -14,12 +14,12 @@ from unittest.mock import MagicMock
 class TestDistrictDataProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.results = {AttributeFieldConstants.STATE_CODE: 'NC',
-                        AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County'}
+        self.results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
+                        AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County'}
 
-        self.matched_ids_results = {AttributeFieldConstants.STATE_CODE: 'NC',
-                                    AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County',
-                                    'prev_district_guid': 'GUILFORD_GUID'}
+        self.matched_ids_results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
+                                    AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County',
+                                    'prev_district_id': 'GUILFORD_GUID'}
 
         self.category_trackers = []
 
@@ -28,7 +28,7 @@ class TestDistrictDataProcessor(unittest.TestCase):
     def test_ed_org_map_updates(self):
         self.district_data_processor.process_yearly_data(self.results)
         self.assertEquals(len(self.district_data_processor.get_ed_org_hierarchy()), 1)
-        self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('NC', 'Guilford County', ''): 'GUILFORD_GUID'})
+        self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Guilford County', ''): 'GUILFORD_GUID'})
 
     def test_call_to_tracker(self):
         self.district_data_processor._call_academic_year_trackers = MagicMock(return_value=None)
@@ -45,12 +45,12 @@ class TestDistrictDataProcessor(unittest.TestCase):
         self.district_data_processor._call_matched_ids_trackers.assert_called_with('GUILFORD_GUID', self.matched_ids_results)
 
     def test__should_call_trackers(self):
-        same_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'GUILFORD_GUID'}
+        same_districts = {AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', 'prev_district_id': 'GUILFORD_GUID'}
         result = self.district_data_processor._is_matched_district(same_districts)
         self.assertTrue(result)
 
     def test__should_not_call_trackers(self):
-        different_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'NOTGUILFORDGUID'}
+        different_districts = {AttributeFieldConstants.DISTRICT_ID: 'GUILFORD_GUID', 'prev_district_id': 'NOTGUILFORDGUID'}
         result = self.district_data_processor._is_matched_district(different_districts)
         self.assertFalse(result)
 

@@ -58,7 +58,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_no_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {})
             self.assertIsNone(query._whereclause)
@@ -66,7 +66,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_grade_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_GRADE: ['3', '4']})
             self.assertIsNotNone(query._whereclause)
@@ -75,7 +75,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_iep_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_IEP: [YES]})
             self.assertIsNotNone(query._whereclause)
@@ -84,7 +84,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_lep_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_LEP: [NO]})
             self.assertIsNotNone(query._whereclause)
@@ -93,7 +93,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_504_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_504: [NOT_STATED]})
             self.assertIsNotNone(query._whereclause)
@@ -102,7 +102,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_ecd_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_ECD: [NO]})
             self.assertIsNotNone(query._whereclause)
@@ -111,7 +111,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_migrant_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_MIG: [NOT_STATED]})
             self.assertIsNotNone(query._whereclause)
@@ -120,7 +120,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_ethnic_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_ETHNICITY: [FILTERS_ETHNICITY_AMERICAN]})
             self.assertIsNotNone(query._whereclause)
@@ -129,7 +129,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_gender_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_SEX: [FILTERS_SEX_FEMALE, FILTERS_SEX_MALE]})
             self.assertIsNotNone(query._whereclause)
@@ -138,7 +138,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
     def test_apply_filter_to_query_with_multi_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome.c.school_guid],
+            query = select([fact_asmt_outcome.c.school_id],
                            from_obj=([fact_asmt_outcome]))
             filters = {FILTERS_SEX: [FILTERS_SEX_FEMALE],
                        FILTERS_PROGRAM_IEP: [NOT_STATED],

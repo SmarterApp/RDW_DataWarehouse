@@ -341,7 +341,7 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hi
                                          retake_rate, delete_rate, update_rate, generate_item_level)
 
 
-def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state_code, district_guid):
+def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state_code, district_id):
     """
     Write student and assessment data for a school to one or more output formats.
 
@@ -391,8 +391,8 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                         if asmt.asmt_type == 'SUMMATIVE':
                             it_dir_path = os.path.join(state_code, str(asmt.period_year), asmt.asmt_type,
                                                        DG_FILTERS['date_Ymd'](asmt.effective_date), asmt.subject,
-                                                       str(sao.student.grade), district_guid)
-                            it_file_path = os.path.join(it_dir_path, it_lz_out_name.replace('<STUDENT_GUID>',
+                                                       str(sao.student.grade), district_id)
+                            it_file_path = os.path.join(it_dir_path, it_lz_out_name.replace('<STUDENT_ID>',
                                                                                             sao.student.guid_sr))
 
                             if not os.path.exists(os.path.join(OUT_PATH_ROOT, it_dir_path)):

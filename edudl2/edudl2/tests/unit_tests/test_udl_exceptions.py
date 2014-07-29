@@ -9,7 +9,7 @@ class TestUdlExceptions(unittest.TestCase):
 
     def setUp(self):
         self.rows = [{'asmt_outcome_vw_rec_id': 1,
-                      'student_guid': 'student_guid_1',
+                      'student_id': 'student_id_1',
                       'asmt_guid': 'asmt_guid_1'}]
         self.batch_guid = 'test_batch_guid_1'
         self.schema_and_table = "schema.table"
@@ -17,7 +17,7 @@ class TestUdlExceptions(unittest.TestCase):
         self.dupe_error_source = ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE
         self.dupe_error_message = self.insert_error_message = """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_vw_pkey"
 DETAIL:  Key (asmt_outcome_vw_rec_id)=(11339) already exists.
- 'UPDATE "edware"."fact_asmt_outcome_vw" SET asmt_outcome_vw_rec_id = %(asmt_outcome_vw_rec_id)s, status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s AND status = %(status)s AND student_guid = %(student_guid)s' {'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', 'asmt_outcome_vw_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', 'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}"""
+ 'UPDATE "edware"."fact_asmt_outcome_vw" SET asmt_outcome_vw_rec_id = %(asmt_outcome_vw_rec_id)s, status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s AND status = %(status)s AND student_id = %(student_id)s' {'status': 'W', 'student_id': '60ca47b5-527e-4cb0-898d-f754fd7099a0', 'asmt_outcome_vw_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', 'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}"""
 
     def tearDown(self):
         pass
@@ -53,8 +53,8 @@ DETAIL:  Key (asmt_outcome_vw_rec_id)=(11339) already exists.
                          'SET asmt_outcome_vw_rec_id = %(asmt_outcome_vw_rec_id)s, '
                          'status = %(new_status)s WHERE batch_guid = %(batch_guid)s '
                          'AND asmt_guid = %(asmt_guid)s AND '
-                         "status = %(status)s AND student_guid = %(student_guid)s' "
-                         "{'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', "
+                         "status = %(status)s AND student_id = %(student_id)s' "
+                         "{'status': 'W', 'student_id': '60ca47b5-527e-4cb0-898d-f754fd7099a0', "
                          "'asmt_outcome_vw_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', "
                          "'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}")
 

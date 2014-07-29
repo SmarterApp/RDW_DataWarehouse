@@ -13,9 +13,9 @@ ASMT_SUB = 'asmt_subject'
 ASMT_OUT_REC_ID = 'asmnt_outcome_rec_id'
 ASMT_REC_ID = 'asmt_rec_id'
 ASMT_SCORE = 'asmt_score'
-STUD_GUID = 'student_guid'
-DIST_GUID = 'district_guid'
-SCH_GUID = 'school_guid'
+STUD_GUID = 'student_id'
+DIST_GUID = 'district_id'
+SCH_GUID = 'school_id'
 ASMT_GRADE = 'asmt_grade'
 F_NAME = 'first_name'
 L_NAME = 'last_name'
@@ -102,23 +102,23 @@ def get_additional_info(top_asmt_outcome_res, schema, connection, print_times=Tr
 
     # loop outcomes to get additional info
     for outcome in top_asmt_outcome_res:
-        student_guid = outcome[STUD_GUID]
-        school_guid = outcome[SCH_GUID]
+        student_id = outcome[STUD_GUID]
+        school_id = outcome[SCH_GUID]
         # get student info
         stud_start_time = time.time()
-        student_name = get_student_name(student_guid, schema, connection)
+        student_name = get_student_name(student_id, schema, connection)
         student_time += (time.time() - stud_start_time)
 
         outcome[F_NAME] = student_name[0]
         outcome[L_NAME] = student_name[1]
         # Check if inst_info already has the info before running query to get information
-        inst_names = inst_info.get(school_guid)
+        inst_names = inst_info.get(school_id)
         if not inst_names:
             inst_start = time.time()
-            inst_names = get_institution_info(school_guid, schema, connection)
+            inst_names = get_institution_info(school_id, schema, connection)
             inst_time += (time.time() - inst_start)
 
-            inst_info[school_guid] = inst_names
+            inst_info[school_id] = inst_names
         outcome[DIST_NAME] = inst_names[0]
         outcome[SCH_NAME] = inst_names[1]
         outcome[STATE_NAME] = inst_names[2]
@@ -128,10 +128,10 @@ def get_additional_info(top_asmt_outcome_res, schema, connection, print_times=Tr
         print('Took %.2fs to get student information for %d students and %.2fs to get related institution information' % (student_time, len(top_asmt_outcome_res), inst_time))
 
 
-def get_student_name(student_guid, schema, connection):
+def get_student_name(student_id, schema, connection):
     '''
     Get the name of the student with the student guid
-    @param student_guid: the guid of the student
+    @param student_id: the guid of the student
     @param schema: schema name
     @param connection: sqlalchemy connection
     @return: The students first and last name as 2 elements in a tuple
@@ -140,8 +140,8 @@ def get_student_name(student_guid, schema, connection):
     query = '''
     SELECT {first_name}, {last_name}
     FROM {schema}.dim_student
-    where {student_guid} = '{guid}'
-    '''.format(schema=schema, guid=student_guid, first_name=F_NAME, last_name=L_NAME, student_guid=STUD_GUID)
+    where {student_id} = '{guid}'
+    '''.format(schema=schema, guid=student_id, first_name=F_NAME, last_name=L_NAME, student_id=STUD_GUID)
 
     resultset = connection.execute(query)
     name = resultset.fetchall()[0]
@@ -162,7 +162,7 @@ def get_institution_info(inst_guid, schema, connection, is_school=True):
     sch_query = '''
     SELECT {district_name}, {school_name}, {state_name}
     FROM {schema}.dim_inst_hier
-    WHERE school_guid = '{sch_guid}'
+    WHERE school_id = '{sch_guid}'
     '''.format(schema=schema, sch_guid=inst_guid, district_name=DIST_NAME, state_name=STATE_NAME, school_name=SCH_NAME)
 
     dist_query = '''
@@ -203,14 +203,14 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
 
     # avg query
     avg_query_school = '''
-    SELECT AVG({asmt_score}) as av, {school_guid}, {dist_guid}
+    SELECT AVG({asmt_score}) as av, {school_id}, {dist_guid}
     FROM {schema}.fact_asmt_outcome fact, {schema}.dim_asmt asmt
     WHERE fact.asmt_rec_id = asmt.asmt_rec_id
         and asmt.asmt_subject = '{subject}'
-    GROUP BY {school_guid}, {dist_guid}
+    GROUP BY {school_id}, {dist_guid}
     ORDER BY av {order}
     LIMIT {limit}
-    '''.format(asmt_score=ASMT_SCORE, school_guid=SCH_GUID, dist_guid=DIST_GUID, schema=schema, subject=subject, order=order, limit=limit, state_name=STATE_NAME)
+    '''.format(asmt_score=ASMT_SCORE, school_id=SCH_GUID, dist_guid=DIST_GUID, schema=schema, subject=subject, order=order, limit=limit, state_name=STATE_NAME)
 
     avg_query_dist = '''
     SELECT AVG({asmt_score}) as av, {dist_guid}
@@ -256,7 +256,7 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
 def get_inst_avg_score(inst_guid, subject, schema, connection, get_district=True):
     '''
     Get the avg score for a given institution
-    @param inst_guid: the guid for the given institution. Either a school_guid or district_guid. NOT 'inst_hier_guid'
+    @param inst_guid: the guid for the given institution. Either a school_id or district_id. NOT 'inst_hier_guid'
     @param subject: The subject to get the avg for
     @param connection: the sqlalchemy connection object
     @keyword get_district: Whether or not to get a district. True by default. Specify False if for a schools

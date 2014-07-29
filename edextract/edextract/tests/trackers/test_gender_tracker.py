@@ -10,31 +10,31 @@ class TestGenderTracker(unittest.TestCase):
         self.male_tracker = MaleTracker()
         self.female_tracker = FemaleTracker()
         self.valid_db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'sex': 'male'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'sex': 'male'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013, 'sex': 'male'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014, 'sex': 'male'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'sex': 'female'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'sex': 'female'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013, 'sex': 'female'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014, 'sex': 'female'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'sex': 'male'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014, 'sex': 'male'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2013, 'sex': 'male'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2014, 'sex': 'male'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2013, 'sex': 'female'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school1', 'academic_year': 2014, 'sex': 'female'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2013, 'sex': 'female'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'school2', 'academic_year': 2014, 'sex': 'female'},
 
         ]
 
         self.invalid_db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'male_only_dis', 'school_guid': 'male_only_school', 'academic_year': 2014, 'sex': 'male'},
-            {'state_code': 'NJ', 'district_guid': 'female_only_dis', 'school_guid': 'female_only_school', 'academic_year': 2014, 'sex': 'female'},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'BAD_VALUE_SCHOOL', 'academic_year': 2014, 'sex': 'BAD_VALUE'},
+            {'state_code': 'NJ', 'district_id': 'male_only_dis', 'school_id': 'male_only_school', 'academic_year': 2014, 'sex': 'male'},
+            {'state_code': 'NJ', 'district_id': 'female_only_dis', 'school_id': 'female_only_school', 'academic_year': 2014, 'sex': 'female'},
+            {'state_code': 'NJ', 'district_id': 'district1', 'school_id': 'BAD_VALUE_SCHOOL', 'academic_year': 2014, 'sex': 'BAD_VALUE'},
         ]
 
     def track_rows(self, track_function, rows):
         for row in rows:
             state_guid = row['state_code']
-            district_guid = row['district_guid']
-            school_guid = row['school_guid']
+            district_id = row['district_id']
+            school_id = row['school_id']
             track_function(state_guid, row)
-            track_function(district_guid, row)
-            track_function(school_guid, row)
+            track_function(district_id, row)
+            track_function(school_id, row)
 
     def validate_state_rows(self, tracker):
         self.assertEquals(2, len(tracker.get_map_entry('NJ')))

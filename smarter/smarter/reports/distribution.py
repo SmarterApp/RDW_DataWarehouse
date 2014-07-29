@@ -12,7 +12,7 @@ BUCKET_SIZE = 20
 
 
 @cache_region('public.data')
-def get_summary_distribution(state_code, district_guid=None, school_guid=None, asmt_type=AssessmentType.SUMMATIVE):
+def get_summary_distribution(state_code, district_id=None, school_id=None, asmt_type=AssessmentType.SUMMATIVE):
     '''
     Get a bucketed distribution of scores
     '''
@@ -26,10 +26,10 @@ def get_summary_distribution(state_code, district_guid=None, school_guid=None, a
         query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
         query = query.where(fact_asmt_outcome_vw.c.asmt_type == asmt_type)
         query = query.where(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)
-        if (district_guid is not None):
-            query = query.where(fact_asmt_outcome_vw.c.district_guid == district_guid)
-        if (school_guid is not None):
-            query = query.where(fact_asmt_outcome_vw.c.school_guid == school_guid)
+        if (district_id is not None):
+            query = query.where(fact_asmt_outcome_vw.c.district_id == district_id)
+        if (school_id is not None):
+            query = query.where(fact_asmt_outcome_vw.c.school_id == school_id)
         query = query.group_by(Constants.SCORE_BUCKET).order_by(Constants.SCORE_BUCKET)
         return connection.get_result(query)
 

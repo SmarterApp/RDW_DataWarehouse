@@ -79,12 +79,12 @@
          },
          {
             "type":"district",
-            "queryParam":"districtGuid",
+            "queryParam":"districtId",
             "link":"/assets/html/comparingPopulations.html"
          },
          {
             "type":"school",
-            "queryParam":"schoolGuid",
+            "queryParam":"schoolId",
             "link":"/assets/html/comparingPopulations.html"
          },
          {
@@ -646,12 +646,12 @@
          "district":{
             "name":"School Name",
             "link":"comparingPopulations.html",
-            "id_name":"schoolGuid"
+            "id_name":"schoolId"
          },
          "state":{
             "name":"District Name",
             "link":"comparingPopulations.html",
-            "id_name":"districtGuid"
+            "id_name":"districtId"
          }
       },
       "customALDDropdown":{

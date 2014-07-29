@@ -73,37 +73,37 @@ class Test_Update_Delete(unittest.TestCase):
     def validate_edware_database(self, schema_name):
         with get_target_connection('cat', schema_name) as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome_vw')
-            delete_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '3efe8485-9c16-4381-ab78-692353104cce')
+            delete_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_id == '3efe8485-9c16-4381-ab78-692353104cce')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
             expected_status_val_D = [('D',)]
             #verify delete record
             self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
             #Verify Update record
-            update_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '34b99412-fd5b-48f0-8ce8-f8ca3788634a')
+            update_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_id == '34b99412-fd5b-48f0-8ce8-f8ca3788634a')
             update_output_table = ed_connector.execute(update_output_data).fetchall()
             self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
             self.assertIn(('C',), update_output_table, "Insert status C is not found in the Update record")
 
-            # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '34b99412-fd5b-48f0-8ce8-f8ca3788634a', fact_table.c.rec_status == 'C'))
+            # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_id =779e658d-de44-4c9e-ac97-ea366722a94c
+            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_id == '34b99412-fd5b-48f0-8ce8-f8ca3788634a', fact_table.c.rec_status == 'C'))
             new_asmt_score = ed_connector.execute(update_asmt_score).fetchall()
             expected_asmt_score = [(1500,)]
             self.assertEquals(new_asmt_score, expected_asmt_score)
 
             # Validate that delete and update also works for fact_asmt_outcome
             fact_asmt = ed_connector.get_table('fact_asmt_outcome')
-            output_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_guid == '3efe8485-9c16-4381-ab78-692353104cce')
+            output_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_id == '3efe8485-9c16-4381-ab78-692353104cce')
             output_table = ed_connector.execute(output_data).fetchall()
             #verify delete record
             self.assertEquals(output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
             #Verify Update record
-            update_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_guid == '34b99412-fd5b-48f0-8ce8-f8ca3788634a')
+            update_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_id == '34b99412-fd5b-48f0-8ce8-f8ca3788634a')
             update_table = ed_connector.execute(update_data).fetchall()
             self.assertIn(('D',), update_table, "Delete status D is not found in the Update record")
             self.assertIn(('C',), update_table, "Insert status C is not found in the Update record")
 
-            # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
-            update_score = select([fact_asmt.c.asmt_score], and_(fact_asmt.c.student_guid == '34b99412-fd5b-48f0-8ce8-f8ca3788634a', fact_asmt.c.rec_status == 'C'))
+            # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_id =779e658d-de44-4c9e-ac97-ea366722a94c
+            update_score = select([fact_asmt.c.asmt_score], and_(fact_asmt.c.student_id == '34b99412-fd5b-48f0-8ce8-f8ca3788634a', fact_asmt.c.rec_status == 'C'))
             new_score = ed_connector.execute(update_score).fetchall()
             self.assertEquals(new_score, expected_asmt_score)
 

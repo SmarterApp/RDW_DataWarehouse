@@ -28,20 +28,20 @@ from smarter_common.security.constants import RolesConstants
 REPORT_NAME = 'individual_student_report'
 
 
-def __prepare_query(connector, state_code, student_guid, assessment_guid):
+def __prepare_query(connector, state_code, student_id, assessment_guid):
     '''
     Returns query for individual student report
     '''
     fact_asmt_outcome_vw = connector.get_table('fact_asmt_outcome_vw')
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
-    query = select_with_context([fact_asmt_outcome_vw.c.student_guid,
+    query = select_with_context([fact_asmt_outcome_vw.c.student_id,
                                 dim_student.c.first_name.label('first_name'),
                                 dim_student.c.middle_name.label('middle_name'),
                                 dim_student.c.last_name.label('last_name'),
                                 fact_asmt_outcome_vw.c.enrl_grade.label('grade'),
-                                fact_asmt_outcome_vw.c.district_guid.label('district_guid'),
-                                fact_asmt_outcome_vw.c.school_guid.label('school_guid'),
+                                fact_asmt_outcome_vw.c.district_id.label('district_id'),
+                                fact_asmt_outcome_vw.c.school_id.label('school_id'),
                                 fact_asmt_outcome_vw.c.state_code.label('state_code'),
                                 dim_asmt.c.asmt_subject.label('asmt_subject'),
                                 dim_asmt.c.asmt_period.label('asmt_period'),
@@ -115,7 +115,7 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 from_obj=[fact_asmt_outcome_vw
                                           .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
-    query = query.where(and_(fact_asmt_outcome_vw.c.student_guid == student_guid, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+    query = query.where(and_(fact_asmt_outcome_vw.c.student_id == student_id, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
@@ -205,26 +205,26 @@ def get_student_report(params):
     '''
     Individual Student Report
     '''
-    student_guid = params[Constants.STUDENTGUID]
+    student_id = params[Constants.STUDENTGUID]
     state_code = params[Constants.STATECODE]
     assessment_guid = params.get(Constants.ASSESSMENTGUID)
     academic_year = params.get(Constants.ASMTYEAR)
 
     with EdCoreDBConnection(state_code=state_code) as connection:
-        query = __prepare_query(connection, state_code, student_guid, assessment_guid)
+        query = __prepare_query(connection, state_code, student_id, assessment_guid)
         result = connection.get_result(query)
         if not result:
-            raise NotFoundException("There are no results for student id {0}".format(student_guid))
+            raise NotFoundException("There are no results for student id {0}".format(student_id))
 
         records = [record for record in result if record['asmt_period_year'] == academic_year]
         first_student = records[0] if len(records) > 0 else result[0]
         state_code = first_student[Constants.STATE_CODE]
-        district_guid = first_student[Constants.DISTRICT_GUID]
-        school_guid = first_student[Constants.SCHOOL_GUID]
+        district_id = first_student[Constants.DISTRICT_ID]
+        school_id = first_student[Constants.SCHOOL_ID]
         asmt_grade = first_student['asmt_grade']
         student_name = format_full_name(first_student['first_name'], first_student['middle_name'], first_student['last_name'])
-        context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
-        student_report_asmt_administration = get_student_report_asmt_administration(state_code, student_guid)
+        context = get_breadcrumbs_context(state_code=state_code, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_name=student_name)
+        student_report_asmt_administration = get_student_report_asmt_administration(state_code, student_id)
 
         # color metadata
         custom_metadata_map = get_custom_metadata(result[0].get(Constants.STATE_CODE), None)

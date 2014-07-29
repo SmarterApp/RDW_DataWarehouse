@@ -30,7 +30,7 @@ define [
       asmtType = edwarePreferences.getAsmtType()
       params = edwareUtil.getUrlParams()
       url = edwareUtil.getBaseURL() + "/assets/html/print.html?"
-      url += 'studentGuid=' + params['studentGuid']
+      url += 'studentId=' + params['studentId']
       url += '&stateCode=' + params['stateCode']
       url += '&pdf=true'
       url += "&mode=color" if option is "color"

@@ -58,15 +58,15 @@
 #         for item in res['Big']:
 #             self.assertIsInstance(item, District)
 #             self.assertIsNotNone(item.district_name)
-#             self.assertIsNotNone(item.district_guid)
+#             self.assertIsNotNone(item.district_id)
 #         for item in res['Medium']:
 #             self.assertIsInstance(item, District)
 #             self.assertIsNotNone(item.district_name)
-#             self.assertIsNotNone(item.district_guid)
+#             self.assertIsNotNone(item.district_id)
 #         for item in res['Small']:
 #             self.assertIsInstance(item, District)
 #             self.assertIsNotNone(item.district_name)
-#             self.assertIsNotNone(item.district_guid)
+#             self.assertIsNotNone(item.district_id)
 #
 #     def test_create_school_dictionary(self):
 #         school_counts = {'min': 100, 'max': 310, 'avg': 500}
@@ -90,11 +90,11 @@
 #         state.state_name = 'Georgia'
 #         state.state_code = 'GA'
 #         district = DummyClass()
-#         district.district_guid = 'dguid1'
+#         district.district_id = 'dguid1'
 #         district.district_name = 'District1'
 #         school = DummyClass()
 #         school.school_name = 'School1'
-#         school.school_guid = 'sguid1'
+#         school.school_id = 'sguid1'
 #         school.school_category = 'Middle'
 #
 #         res = generate_data.generate_institution_hierarchy_from_helper_entities(self.config_module, state, district, school)
@@ -117,13 +117,13 @@
 #
 #     def test_generate_assessment_outcomes_from_helper_entities_and_lists(self):
 #         grade = 5
-#         district_guid = 'dist123'
-#         school_guid = 'scho2343'
+#         district_id = 'dist123'
+#         school_id = 'scho2343'
 #         school_name = 'school1'
 #         state_code = 'GA'
 #         section_guid = 'sect123'
 #         subject = 'Math'
-#         students = self.create_students(10, grade, subject, section_guid, school_guid, state_code, district_guid)
+#         students = self.create_students(10, grade, subject, section_guid, school_id, state_code, district_id)
 #         scores = [1300, 1400, 1500, 1700, 1800, 1900, 2000, 2100, 2200, 2300]
 #         teacher_guid = 'teach234'
 #         section = DummyClass()
@@ -133,8 +133,8 @@
 #         institution_hierarchy = DummyClass()
 #         institution_hierarchy.inst_hier_rec_id = 23
 #         institution_hierarchy.state_code = state_code
-#         institution_hierarchy.district_guid = district_guid
-#         institution_hierarchy.school_guid = school_guid
+#         institution_hierarchy.district_id = district_id
+#         institution_hierarchy.school_id = school_id
 #         institution_hierarchy.school_name = school_name
 #         assessment = self.create_assessment(grade, subject)
 #         ebmin = 32
@@ -166,8 +166,8 @@
 #         number_of_students = 50
 #         institution_hierarchy = DummyClass()
 #         institution_hierarchy.state_code = 'GA'
-#         institution_hierarchy.district_guid = 'dist123'
-#         institution_hierarchy.school_guid = 'scho2343'
+#         institution_hierarchy.district_id = 'dist123'
+#         institution_hierarchy.school_id = 'scho2343'
 #         institution_hierarchy.school_name = 'school1'
 #         grade = 10
 #         section_guid = 'sect123'
@@ -179,8 +179,8 @@
 #             street_name = student.address_1.split()[1]
 #             self.assertIn(street_name, street_names)
 #             self.assertEqual(institution_hierarchy.state_code, student.state_code)
-#             self.assertEqual(institution_hierarchy.district_guid, student.district_guid)
-#             self.assertEqual(institution_hierarchy.school_guid, student.school_guid)
+#             self.assertEqual(institution_hierarchy.district_id, student.district_id)
+#             self.assertEqual(institution_hierarchy.school_id, student.school_id)
 #             self.assertEqual(student.grade, grade)
 #
 #     def test_set_students_rec_id_and_section_id(self):
@@ -203,8 +203,8 @@
 #         num_of_staff = 20
 #         institution_hierarchy = DummyClass()
 #         institution_hierarchy.state_code = 'GA'
-#         institution_hierarchy.district_guid = 'dict1234'
-#         institution_hierarchy.school_guid = 'sch1234'
+#         institution_hierarchy.district_id = 'dict1234'
+#         institution_hierarchy.school_id = 'sch1234'
 #         section_guid = 'sect234'
 #         temp_data = self.get_temporal_information_mock()
 #
@@ -218,17 +218,17 @@
 #             self.assertEqual(staff.from_date, temp_data['from_date'])
 #             self.assertEqual(staff.most_recent, temp_data['most_recent'])
 #             self.assertEqual(staff.state_code, 'GA')
-#             self.assertEqual(staff.district_guid, 'dict1234')
-#             self.assertEqual(staff.school_guid, 'sch1234')
+#             self.assertEqual(staff.district_id, 'dict1234')
+#             self.assertEqual(staff.school_id, 'sch1234')
 #             self.assertEqual(staff.section_guid, 'sect234')
 #
 #     def test_generate_non_teaching_staff(self):
 #         state_code = 'GA'
 #         num_of_staff = 20
 #         temp_data = self.get_temporal_information_mock()
-#         district_guid = 'distguid'
-#         school_guid = 'schoolguid'
-#         res = generate_data.generate_non_teaching_staff(self.config_module, num_of_staff, state_code, district_guid, school_guid)
+#         district_id = 'distguid'
+#         school_id = 'schoolguid'
+#         res = generate_data.generate_non_teaching_staff(self.config_module, num_of_staff, state_code, district_id, school_id)
 #         self.assertEqual(len(res), num_of_staff)
 #         for staff in res:
 #             self.assertIsInstance(staff, Staff)
@@ -237,8 +237,8 @@
 #             self.assertEqual(staff.from_date, temp_data['from_date'])
 #             self.assertEqual(staff.most_recent, temp_data['most_recent'])
 #             self.assertEqual(staff.state_code, state_code)
-#             self.assertEqual(staff.district_guid, district_guid)
-#             self.assertEqual(staff.school_guid, school_guid)
+#             self.assertEqual(staff.district_id, district_id)
+#             self.assertEqual(staff.school_id, school_id)
 #
 #     def test_calculate_number_of_schools(self):
 #         res = generate_data.calculate_number_of_schools(100, 800, 200)
@@ -341,11 +341,11 @@
 #         # asmts = generate_entities.generate_assessments([5], self.cut_points, date.today(), True, date.today())
 #         return assmt  # asmts[0]
 #
-#     def create_students(self, num, grade, section_guid, school_guid, state_code, subject, district_guid):
+#     def create_students(self, num, grade, section_guid, school_id, state_code, subject, district_id):
 #         students = []
 #         for i in range(num):
 #             student = DummyClass()
-#             student.student_guid = section_guid
+#             student.student_id = section_guid
 #             student.student_rec_id = 'rec_%d' % i
 #             student.first_name = 'first_%d' % i
 #             student.last_name = 'last_%d' % i
@@ -359,8 +359,8 @@
 #             student.state_code = state_code
 #             student.from_date = date.today()
 #             student.most_recent = True
-#             student.district_guid = district_guid
-#             student.school_guid = school_guid
+#             student.district_id = district_id
+#             student.school_id = school_id
 #             students.append(student)
 #         return students
 #

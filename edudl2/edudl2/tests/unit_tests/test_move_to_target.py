@@ -115,7 +115,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
         table_name = 'dim_student'
         guid_batch = None
         example_record = {
-            'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
+            'student_id': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
             'external_student_id': None,
             'first_name': 'Richard',
             'middle_name': None,
@@ -137,14 +137,14 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'dmg_sts_mig': False,
         }
         bad_record = {
-            'student_guid': 'not_really_exist'
+            'student_id': 'not_really_exist'
         }
 
         with UnittestUDLTargetDBConnection() as conn:
             helper = HandleUpsertHelper(conn, guid_batch, table_name)
             m1 = helper.find_by_natural_key(example_record)
             self.assertIsNotNone(m1, "Find_by_natural_key should return matched value")
-            self.assertEqual(m1['student_guid'], example_record['student_guid'], "Matched records should have the same student guid")
+            self.assertEqual(m1['student_id'], example_record['student_id'], "Matched records should have the same student guid")
             m2 = helper.find_by_natural_key(bad_record)
             self.assertIsNone(m2, "Find_by_natural_key should return None if not match found")
             example_record['first_name'] = 'Sadish'
@@ -155,12 +155,12 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
         table_name = 'dim_student'
         guid_batch = None
         old_record = {
-            'student_guid': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
+            'student_id': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
             'student_rec_id': '356',
             'batch_guid': None
         }
         new_record = {
-            'student_guid': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
+            'student_id': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
             'student_rec_id': '3155',
             'batch_guid': None
         }
@@ -193,9 +193,9 @@ def generate_conf(guid_batch, udl2_conf):
 
 def get_expected_column_types_for_fact_table(table_name):
     column_names = list(get_expected_column_mapping(table_name).keys())
-    column_types = ['asmt_outcome_vw_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
-                    'teacher_guid character varying(50)', 'state_code character varying(2)', 'district_guid character varying(50)',
-                    'school_guid character varying(50)', 'inst_hier_rec_id bigint',
+    column_types = ['asmt_outcome_vw_rec_id bigint', 'asmt_rec_id bigint', 'student_id character varying(50)',
+                    'teacher_guid character varying(50)', 'state_code character varying(2)', 'district_id character varying(50)',
+                    'school_id character varying(50)', 'inst_hier_rec_id bigint',
                     'where_taken_id character varying(50)', 'where_taken_name character varying(256)',
                     'asmt_grade character varying(10)', 'enrl_grade character varying(10)', 'date_taken character varying(8)',
                     'date_taken_day smallint', 'date_taken_month smallint', 'date_taken_year smallint', 'asmt_score smallint',
@@ -212,8 +212,8 @@ def get_expected_column_types_for_fact_table(table_name):
 
 
 def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."{table_name}" (asmt_outcome_vw_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
-           'school_guid,inst_hier_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
+    return 'INSERT INTO "edware"."{table_name}" (asmt_outcome_vw_rec_id,asmt_rec_id,student_id,teacher_guid,state_code,district_id,'\
+           'school_id,inst_hier_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
@@ -223,8 +223,8 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
            'score_claim_4,score_claim_4_min,score_claim_4_max,\'\'\'\',True,guid_batch '\
-           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmt_outcome_vw_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
-           'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
+           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmt_outcome_vw_rec_id bigint,asmt_rec_id bigint,student_id character varying(50),'\
+           'teacher_guid character varying(50),state_code character varying(2),district_id character varying(50),school_id character varying(50),'\
            'inst_hier_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
            'asmt_grade character varying(10),enrl_grade character varying(10),date_taken character varying(8),date_taken_day smallint,date_taken_month smallint,'\
            'date_taken_year smallint,asmt_score smallint,asmt_score_range_min smallint,asmt_score_range_max smallint,asmt_perf_lvl smallint,asmt_claim_1_score smallint,'\
@@ -238,21 +238,21 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
 
 def get_expected_update_inst_hier_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET inst_hier_rec_id=dim.dim_inst_hier_rec_id FROM '\
-        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid, school_guid AS dim_school_guid, state_code AS dim_state_code  '\
-        'FROM "edware"."dim_inst_hier") dim  WHERE inst_hier_rec_id =  -1 AND district_guid = dim_district_guid AND '\
-        'school_guid = dim_school_guid AND state_code = dim_state_code'.format(table_name=table_name)
+        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_id AS dim_district_id, school_id AS dim_school_id, state_code AS dim_state_code  '\
+        'FROM "edware"."dim_inst_hier") dim  WHERE inst_hier_rec_id =  -1 AND district_id = dim_district_id AND '\
+        'school_id = dim_school_id AND state_code = dim_state_code'.format(table_name=table_name)
 
 
 def get_expected_update_student_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET student_rec_id=dim.dim_student_rec_id FROM '\
-        '(SELECT student_rec_id AS dim_student_rec_id, student_guid AS dim_student_guid  ' \
-        'FROM "edware"."dim_student") dim  WHERE student_rec_id =  -1 AND student_guid = dim_student_guid'.format(table_name=table_name)
+        '(SELECT student_rec_id AS dim_student_rec_id, student_id AS dim_student_id  ' \
+        'FROM "edware"."dim_student") dim  WHERE student_rec_id =  -1 AND student_id = dim_student_id'.format(table_name=table_name)
 
 
 def get_expected_column_types_for_dim_inst_hier(table_name):
     column_names = list(get_expected_column_mapping(table_name).keys())
-    column_types = ['inst_hier_rec_id bigint', 'state_code character varying(2)', 'district_guid character varying(50)',
-                    'district_name character varying(256)', 'school_guid character varying(50)', 'school_name character varying(256)',
+    column_types = ['inst_hier_rec_id bigint', 'state_code character varying(2)', 'district_id character varying(50)',
+                    'district_name character varying(256)', 'school_id character varying(50)', 'school_name character varying(256)',
                     'from_date character varying(8)', 'to_date character varying(8)', 'most_recent boolean']
     column_name_type_map = OrderedDict()
     for i in range(len(column_names)):
@@ -261,27 +261,27 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
 
 
 def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, guid_batch, dbname, user, password):
-    return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_code,district_guid,district_name,"\
-           "school_guid,school_name,from_date,to_date,most_recent) SELECT * FROM "\
+    return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_code,district_id,district_name,"\
+           "school_id,school_name,from_date,to_date,most_recent) SELECT * FROM "\
            "dblink('host={host} port={port} dbname={dbname} user={user} password={password}', " \
            "'SELECT nextval(''\"global_rec_seq\"''), "\
            "* FROM (SELECT DISTINCT code_state,guid_district,name_district,guid_school,name_school,"\
            "to_char(CURRENT_TIMESTAMP, ''yyyymmdd''),''99991231'',True FROM \"udl2\".\"INT_SBAC_ASMT_OUTCOME\" WHERE op = ''C'' AND guid_batch=''{guid_batch}'') as y') "\
-           "AS t(inst_hier_rec_id bigint,state_code character varying(2),district_guid character varying(50),"\
-           "district_name character varying(256),school_guid character varying(50),school_name character varying(256),"\
+           "AS t(inst_hier_rec_id bigint,state_code character varying(2),district_id character varying(50),"\
+           "district_name character varying(256),school_id character varying(50),school_name character varying(256),"\
            "from_date character varying(8),to_date character varying(8),"\
            "most_recent boolean);".format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_code,district_guid,district_name,'\
-           'school_guid,school_name,student_guid,external_student_ssid,first_name,middle_name,last_name,'\
+    return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_name,state_code,district_id,district_name,'\
+           'school_id,school_name,student_id,external_student_ssid,first_name,middle_name,last_name,'\
            'sex,birthdate,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
            'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"global_rec_seq"\'\'), * '\
-           'FROM (SELECT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.code_state,'\
+           'FROM (SELECT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
            'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
@@ -297,9 +297,9 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'FROM "udl2"."INT_SBAC_STU_REG" int_sbac_stu_reg INNER JOIN "udl2"."INT_SBAC_STU_REG_META" int_sbac_stu_reg_meta '\
            'ON int_sbac_stu_reg_meta.guid_batch = int_sbac_stu_reg.guid_batch '\
            'WHERE int_sbac_stu_reg.guid_batch=\'\'{guid_batch}\'\') AS y\') AS t(student_reg_rec_id bigint,'\
-           'batch_guid character varying(36),state_code character varying(2),'\
-           'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\
-           'school_name character varying(60),student_guid character varying(30),external_student_ssid character varying(50),'\
+           'batch_guid character varying(36),state_name character varying(50),state_code character varying(2),'\
+           'district_id character varying(30),district_name character varying(60),school_id character varying(30),'\
+           'school_name character varying(60),student_id character varying(30),external_student_ssid character varying(50),'\
            'student_first_name character varying(35),student_middle_name character varying(35),'\
            'student_last_name character varying(35),sex character varying(6),birthdate_student character varying(10),'\
            'enrl_grade character varying(10),dmg_eth_hsp boolean,dmg_eth_ami boolean,dmg_eth_asn boolean,dmg_eth_blk boolean,'\
@@ -360,16 +360,16 @@ def get_expected_column_mapping(target_table):
 
                                         'dim_inst_hier': OrderedDict([('inst_hier_rec_id', 'nextval(\'"global_rec_seq"\')'),
                                                                       ('state_code', 'code_state'),
-                                                                      ('district_guid', 'guid_district'),
+                                                                      ('district_id', 'guid_district'),
                                                                       ('district_name', 'name_district'),
-                                                                      ('school_guid', 'guid_school'),
+                                                                      ('school_id', 'guid_school'),
                                                                       ('school_name', 'name_school'),
                                                                       ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
                                                                       ('to_date', "'99991231'"),
                                                                       ('most_recent', 'True'),
                                                                       ]),
                                         'dim_student': OrderedDict([('student_rec_id', 'nextval(\'"global_rec_seq"\')'),
-                                                                    ('student_guid', 'guid_student'),
+                                                                    ('student_id', 'guid_student'),
                                                                     ('first_name', 'name_student_first'),
                                                                     ('middle_name', 'name_student_middle'),
                                                                     ('last_name', 'name_student_last'),
@@ -377,8 +377,8 @@ def get_expected_column_mapping(target_table):
                                                                     ('birthdate', 'birthdate_student'),
                                                                     ('grade', 'grade_enrolled'),
                                                                     ('state_code', 'code_state'),
-                                                                    ('district_guid', 'guid_district'),
-                                                                    ('school_guid', 'guid_school'),
+                                                                    ('district_id', 'guid_district'),
+                                                                    ('school_id', 'guid_school'),
                                                                     ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
                                                                     ('to_date', "'99991231'"),
                                                                     ('most_recent', 'True'),
@@ -386,11 +386,11 @@ def get_expected_column_mapping(target_table):
 
                                         'fact_asmt_outcome_vw': OrderedDict([('asmt_outcome_vw_rec_id', 'nextval(\'"global_rec_seq"\')'),
                                                                              ('asmt_rec_id', None),
-                                                                             ('student_guid', 'guid_student'),
+                                                                             ('student_id', 'guid_student'),
                                                                              ('teacher_guid', 'guid_staff'),
                                                                              ('state_code', 'code_state'),
-                                                                             ('district_guid', 'guid_district'),
-                                                                             ('school_guid', 'guid_school'),
+                                                                             ('district_id', 'guid_district'),
+                                                                             ('school_id', 'guid_school'),
                                                                              ('inst_hier_rec_id', '-1'),
                                                                              ('where_taken_id', 'guid_asmt_location'),
                                                                              ('where_taken_name', 'name_asmt_location'),
@@ -433,12 +433,13 @@ def get_expected_sr_column_and_type_mapping():
 
     mapping = OrderedDict([('INT_SBAC_STU_REG', OrderedDict([('student_reg_rec_id', Column(src_col='nextval(\'"global_rec_seq"\')', type='bigint')),
                                                              ('batch_guid', Column(src_col='guid_batch', type='character varying(36)')),
+                                                             ('state_name', Column(src_col='name_state', type='character varying(50)')),
                                                              ('state_code', Column(src_col='code_state', type='character varying(2)')),
-                                                             ('district_guid', Column(src_col='guid_district', type='character varying(30)')),
+                                                             ('district_id', Column(src_col='guid_district', type='character varying(30)')),
                                                              ('district_name', Column(src_col='name_district', type='character varying(60)')),
-                                                             ('school_guid', Column(src_col='guid_school', type='character varying(30)')),
+                                                             ('school_id', Column(src_col='guid_school', type='character varying(30)')),
                                                              ('school_name', Column(src_col='name_school', type='character varying(60)')),
-                                                             ('student_guid', Column(src_col='guid_student', type='character varying(30)')),
+                                                             ('student_id', Column(src_col='guid_student', type='character varying(30)')),
                                                              ('external_student_ssid', Column(src_col='external_ssid_student', type='character varying(50)')),
                                                              ('student_first_name', Column(src_col='name_student_first', type='character varying(35)')),
                                                              ('student_middle_name', Column(src_col='name_student_middle', type='character varying(35)')),

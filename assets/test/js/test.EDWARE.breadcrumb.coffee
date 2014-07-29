@@ -21,11 +21,11 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       link : "/assets/html/comparingPopulations.html"
      ,
       type : "district"
-      queryParam : "districtGuid"
+      queryParam : "districtId"
       link : "/assets/html/comparingPopulations.html"
      ,
       type : "school"
-      queryParam : "schoolGuid"
+      queryParam : "schoolId"
       link : "/assets/html/comparingPopulations.html"
      ,
       type : "grade"

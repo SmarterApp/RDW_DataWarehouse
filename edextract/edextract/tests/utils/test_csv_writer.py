@@ -23,11 +23,11 @@ class TestCSVWriter(unittest.TestCase):
 
     def test_write_csv(self):
         output = os.path.join(self.__tmp_dir, 'asmt_extract.csv')
-        header = ['asmt_guid', 'asmt_grade', 'state_code', 'district_guid', 'district_name', 'school_guid', 'school_name']
+        header = ['asmt_guid', 'asmt_grade', 'state_name', 'state_code', 'district_id', 'district_name', 'school_id', 'school_name']
         data = [
-            ['1-2-3', 'F', 'NJ', 'a-b-c', 'Jersey City', 'i-ii-iii', 'Newport School'],
-            ['1-2-3', 'A', 'NJ', 'd-e-f', 'Hoboken', 'iv-v-vi', 'Sinatra School'],
-            ['1-2-3', 'B', 'NJ', 'g-h-i', 'Bayonne', 'vii-viii-ix', 'Bayonne School']
+            ['1-2-3', 'F', 'New Jersey', 'NJ', 'a-b-c', 'Jersey City', 'i-ii-iii', 'Newport School'],
+            ['1-2-3', 'A', 'New Jersey', 'NJ', 'd-e-f', 'Hoboken', 'iv-v-vi', 'Sinatra School'],
+            ['1-2-3', 'B', 'New Jersey', 'NJ', 'g-h-i', 'Bayonne', 'vii-viii-ix', 'Bayonne School']
         ]
         write_csv(output, header, data)
 

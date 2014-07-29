@@ -147,11 +147,11 @@ def merge_filtered_results(filtered, unfiltered):
 def get_comparing_populations_cache_route(comparing_pop):
     '''
     Returns cache region based on whether filters exist
-    If school_guid is present, return none - do not cache
+    If school_id is present, return none - do not cache
 
     :param comparing_pop:  instance of ComparingPopReport
     '''
-    if comparing_pop.school_guid is not None:
+    if comparing_pop.school_id is not None:
         return None  # do not cache school level
     return CACHE_REGION_PUBLIC_FILTERING_DATA if len(comparing_pop.filters.keys()) > 0 else CACHE_REGION_PUBLIC_DATA
 
@@ -166,8 +166,8 @@ def get_comparing_populations_cache_key(comparing_pop):
     cache_args = []
     if comparing_pop.state_code is not None:
         cache_args.append(comparing_pop.state_code)
-    if comparing_pop.district_guid is not None:
-        cache_args.append(comparing_pop.district_guid)
+    if comparing_pop.district_id is not None:
+        cache_args.append(comparing_pop.district_id)
     # We cache based on summative and interim as well
     cache_args.append(comparing_pop.asmt_type)
     cache_args.append(comparing_pop.asmt_year)
@@ -189,29 +189,29 @@ class ComparingPopReport(object):
     '''
     Comparing populations report
     '''
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, **filters):
+    def __init__(self, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, **filters):
         '''
         :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district, could be None
-        :param string schoolGuid:  Guid of the school, could be None
+        :param string districtId:  Guid of the district, could be None
+        :param string schoolId:  Guid of the school, could be None
         :param string tenant:  tenant name of the user.  Specify if report is not going through a web request
         :param dict filter: dict of filters to apply to query
         '''
         self.state_code = stateCode
-        self.district_guid = districtGuid
-        self.school_guid = schoolGuid
+        self.district_id = districtId
+        self.school_id = schoolId
         self.asmt_type = asmtType
         self.asmt_year = asmtYear
         self.tenant = tenant
         self.filters = filters
 
-    def set_district_guid(self, guid):
+    def set_district_id(self, guid):
         '''
         Sets district guid
 
         :param string guid:  the guid to set district guid to be
         '''
-        self.district_guid = guid
+        self.district_id = guid
 
     def set_filters(self, filters):
         '''
@@ -229,8 +229,8 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
         '''
-        params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid,
-                  Constants.SCHOOLGUID: self.school_guid, Constants.ASMTTYPE: self.asmt_type,
+        params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_id,
+                  Constants.SCHOOLGUID: self.school_id, Constants.ASMTTYPE: self.asmt_type,
                   Constants.ASMTYEAR: self.asmt_year, 'filters': self.filters}
         results = self.run_query(**params)
 
@@ -272,7 +272,7 @@ class ComparingPopReport(object):
         return {Constants.METADATA: custom_metadata,
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
-                Constants.CONTEXT: get_breadcrumbs_context(state_code=state_code, district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant),
+                Constants.CONTEXT: get_breadcrumbs_context(state_code=state_code, district_id=param.get(Constants.DISTRICTGUID), school_id=param.get(Constants.SCHOOLGUID), tenant=self.tenant),
                 Constants.ASMT_PERIOD_YEAR: get_asmt_academic_years(state_code, self.tenant)}
 
     @staticmethod
@@ -287,10 +287,10 @@ class ComparingPopReport(object):
 
 
 class RecordManager():
-    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtId=None, schoolId=None, **kwargs):
         self._stateCode = stateCode
-        self._districtGuid = districtGuid
-        self._schoolGuid = schoolGuid
+        self._districtId = districtId
+        self._schoolId = schoolId
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
         self._summary = {}
@@ -378,10 +378,10 @@ class RecordManager():
             __record = {Constants.ROWID: record.id, Constants.ID: record.id, Constants.NAME: record.name,
                         Constants.RESULTS: self.format_results(record.subjects),
                         Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
-            if self._districtGuid is not None:
-                __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
-            if self._schoolGuid is not None:
-                __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
+            if self._districtId is not None:
+                __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtId
+            if self._schoolId is not None:
+                __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolId
             records.append(__record)
         return records
 
@@ -437,18 +437,18 @@ class QueryHelper():
     '''
     Helper class to build a sqlalchemy query based on the view type (state, district, or school)
     '''
-    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, filters=None):
+    def __init__(self, connector, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, filters=None):
         self._state_code = stateCode
-        self._district_guid = districtGuid
-        self._school_guid = schoolGuid
+        self._district_id = districtId
+        self._school_id = schoolId
         self._asmt_type = asmtType
         self._asmt_year = asmtYear
         self._filters = filters
-        if self._state_code is not None and self._district_guid is None and self._school_guid is None:
+        if self._state_code is not None and self._district_id is None and self._school_id is None:
             self._f = self.get_query_for_state_view
-        elif self._state_code is not None and self._district_guid is not None and self._school_guid is None:
+        elif self._state_code is not None and self._district_id is not None and self._school_id is None:
             self._f = self.get_query_for_district_view
-        elif self._state_code is not None and self._district_guid is not None and self._school_guid is not None:
+        elif self._state_code is not None and self._district_id is not None and self._school_id is not None:
             self._f = self.get_query_for_school_view
         else:
             raise InvalidParameterException()
@@ -490,13 +490,13 @@ class QueryHelper():
         return self._f()
 
     def get_query_for_state_view(self):
-        return self.build_query(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)
+        return self.build_query(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_id)
 
     def get_query_for_district_view(self):
-        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid, subquery_where_guid=(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid))
+        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, subquery_where_guid=(self._fact_asmt_outcome_vw.c.district_id == self._district_id))
 
     def get_query_for_school_view(self):
         return self.build_sub_query(extra_columns=[self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ID)],
-                                    where_guid=(and_(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid, self._fact_asmt_outcome_vw.c.school_guid == self._school_guid)))\
+                                    where_guid=(and_(self._fact_asmt_outcome_vw.c.district_id == self._district_id, self._fact_asmt_outcome_vw.c.school_id == self._school_id)))\
             .group_by(self._fact_asmt_outcome_vw.c.asmt_grade)\
             .order_by(self._fact_asmt_outcome_vw.c.asmt_grade)

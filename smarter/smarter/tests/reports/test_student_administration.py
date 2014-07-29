@@ -51,9 +51,9 @@ class TestStudentAdministration(Unittest_with_edcore_sqlite):
             self.assertEqual(expect, results, "%d most recent academic year should be %r" % (year_back, expect))
 
     def test_get_student_reg_academic_years(self):
-        results = get_student_reg_academic_years('NC')
-        self.assertEqual(0, len(results))
         results = get_student_reg_academic_years('ES')
+        self.assertEqual(0, len(results))
+        results = get_student_reg_academic_years('NC')
         self.assertEqual(2, len(results))
         self.assertIn(2015, results)
         self.assertIn(2016, results)

@@ -83,7 +83,7 @@ class ValidateSchemaChange(unittest.TestCase):
 
             #TODO add dim student verification
             #dim_student = ed_connector.get_table(DIM_STUDENT)
-            #student_table = select([dim_student.c.student_rec_id, dim_student.c.student_guid])
+            #student_table = select([dim_student.c.student_rec_id, dim_student.c.student_id])
             #output_data3 = ed_connector.execute(student_table).fetchall()
 
     def test_schema_change(self):

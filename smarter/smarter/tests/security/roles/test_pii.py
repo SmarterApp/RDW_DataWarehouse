@@ -87,14 +87,14 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome_vw.c.school_guid],
+            query = select([fact_asmt_outcome_vw.c.school_id],
                            from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
             self.assertTrue(len(results) > 0)
             for result in results:
-                self.assertEqual(result[Constants.SCHOOL_GUID], '242')
+                self.assertEqual(result[Constants.SCHOOL_ID], '242')
 
     def test_pii_context_with_multiple_chain(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -182,45 +182,45 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.SAR_EXTRACTS)
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact_asmt_outcome_vw.c.school_guid],
+            query = select([fact_asmt_outcome_vw.c.school_id],
                            from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
             self.assertTrue(len(results) > 0)
             for result in results:
-                self.assertEqual(result[Constants.SCHOOL_GUID], '242')
+                self.assertEqual(result[Constants.SCHOOL_ID], '242')
 
     def test_check_context_with_context(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            student_guids = ['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
+            student_ids = ['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
 
-            context = pii.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_ids)
             self.assertTrue(context)
 
     def test_check_context_with_no_context(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            student_guids = ['dd']
+            student_ids = ['dd']
 
-            context = pii.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_ids)
             self.assertFalse(context)
 
     def test_check_context_with_no_context_to_all_guids(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            student_guids = ['dd', 'e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
+            student_ids = ['dd', 'e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
 
-            context = pii.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_ids)
             self.assertFalse(context)
 
     def test_check_context_with_empty_context(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            student_guids = []
+            student_ids = []
 
-            context = pii.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_ids)
             self.assertTrue(context)
 
     def test_add_context_without_tenant(self):
@@ -265,7 +265,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         # Checks that the query has applied where clause
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-            query = select([fact.c.student_guid], from_obj=[fact])
+            query = select([fact.c.student_id], from_obj=[fact])
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
             self.assertIsNotNone(query._whereclause)

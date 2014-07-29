@@ -27,9 +27,10 @@ define [
           otherYears.push v
 
       years = []
-      for year in @config.years?
-        if year.value isnt currentYear
-          years.push year
+      if @config.years
+        for year in @config.years
+          if year.value isnt currentYear
+            years.push year
 
       output = Mustache.to_html AsmtDropdownTemplate,
         latestYear: latestYear

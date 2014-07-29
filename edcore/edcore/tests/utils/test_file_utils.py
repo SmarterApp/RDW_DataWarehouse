@@ -65,11 +65,15 @@ class TestFileUtils(TestCase):
         record = {'state_code': 'NC'}
         record['asmt_year'] = 2015
         record['asmt_type'] = 'SUMMATIVE'
-        record['effective_date'] = 20150402
         record['asmt_subject'] = 'Math'
         record['asmt_grade'] = 3
         record['district_id'] = '3ab54de78a'
         record['student_id'] = 'a78dbf34'
+        path = generate_path_to_raw_xml(items_root_dir, **record)
+        expect_path = os.path.join(items_root_dir, "NC/2015/SUMMATIVE/MATH/3/3ab54de78a/a78dbf34.xml")
+        self.assertEqual(path, expect_path)
+
+        record['effective_date'] = 20150402
         path = generate_path_to_raw_xml(items_root_dir, **record)
         expect_path = os.path.join(items_root_dir, "NC/2015/SUMMATIVE/20150402/MATH/3/3ab54de78a/a78dbf34.xml")
         self.assertEqual(path, expect_path)

@@ -237,6 +237,9 @@ define [
 
     renderReportInfo: () ->
       if @reportType == 'school' then displaySearch = false else displaySearch = true
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
+      @config.labels.SearchResultText = @config.SearchResultText
       @infoBar ?= edwareReportInfoBar.create '#infoBar',
         reportTitle: @breadcrumbs.getReportTitle()
         reportName: Constants.REPORT_NAME.CPOP
@@ -268,9 +271,6 @@ define [
       self = this
       @config.colorsData = @data.metadata
       @config.reportName = Constants.REPORT_NAME.CPOP
-      # placeholder text for search box
-      @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
-      @config.labels.SearchResultText = @config.SearchResultText
       # academic year
       @config.academicYears= {}
       @config.academicYears.options = @academicYears

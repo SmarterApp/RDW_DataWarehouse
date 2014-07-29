@@ -220,6 +220,9 @@ define [
       $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder
+      @config.labels.SearchResultText = @config.SearchResultText
       @infoBar = edwareReportInfoBar.create '#infoBar',
         reportTitle: "Students in #{@contextData.items[4].name}"
         reportType: Constants.REPORT_TYPE.GRADE
@@ -253,9 +256,6 @@ define [
       @config.academicYears =
         options: @academicYears
         callback: @onAcademicYearSelected.bind(this)
-      # placeholder text for search box
-      @config.labels.searchPlaceholder = @config.searchPlaceholder
-      @config.labels.SearchResultText = @config.SearchResultText
       @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
         edwarePreferences.saveAsmtForISR(asmt)
         edwarePreferences.saveAsmtPreference asmt

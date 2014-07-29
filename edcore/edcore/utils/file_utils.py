@@ -1,6 +1,18 @@
 import os
 
 
+def generate_path_to_raw_xml(root_dir, **kwargs):
+    """Generates file path for raw xml extract.
+    """
+    return generate_file_path(root_dir, "xml", **kwargs)
+
+
+def generate_path_to_item_csv(items_root_dir, **kwargs):
+    """Generates file path for item level csv data.
+    """
+    return generate_file_path(items_root_dir, "csv", **kwargs)
+
+
 def generate_file_path(items_root_dir, extension, state_code=None, asmt_year=None,
                        asmt_type=None, effective_date=None, asmt_subject=None,
                        asmt_grade=None, district_id=None, student_id=None, **kwargs):

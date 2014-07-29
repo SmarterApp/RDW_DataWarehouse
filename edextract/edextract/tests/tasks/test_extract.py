@@ -7,7 +7,6 @@ Created on Nov 7, 2013
 import unittest
 from unittest.mock import patch
 
-import glob
 import tempfile
 import os
 import shutil

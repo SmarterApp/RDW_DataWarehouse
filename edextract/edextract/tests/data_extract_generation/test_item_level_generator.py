@@ -12,10 +12,11 @@ import tempfile
 from sqlalchemy.sql.expression import and_, select
 
 from edcore.security.tenant import set_tenant_map
+from edcore.utils.file_utils import generate_path_to_item_csv
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import (get_unittest_tenant_name, Unittest_with_edcore_sqlite,
                                                             UnittestEdcoreDBConnection)
-from edextract.data_extract_generation.item_level_generator import generate_items_csv, _get_path_to_item_csv, \
+from edextract.data_extract_generation.item_level_generator import generate_items_csv, \
     _append_csv_files
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
@@ -102,52 +103,6 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         self.assertIn('student_id', csv_data[0])
         self.assertIn('score', csv_data[0])
 
-    def test_get_path_to_item_csv(self):
-        items_root_dir = os.path.dirname(os.path.abspath(__file__))
-        record = {}
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        self.assertEqual(path, items_root_dir)
-
-        record = {'state_code': 'NC'}
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(items_root_dir, 'NC')
-        self.assertEqual(path, expect_path)
-
-        record['asmt_year'] = 2015
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, '2015')
-        self.assertEqual(path, expect_path)
-
-        record['asmt_type'] = 'SUMMATIVE'
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, 'SUMMATIVE')
-        self.assertEqual(path, expect_path)
-
-        record['effective_date'] = 20150402
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, '20150402')
-        self.assertEqual(path, expect_path)
-
-        record['asmt_subject'] = 'Math'
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, 'MATH')
-        self.assertEqual(path, expect_path)
-
-        record['asmt_grade'] = 3
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, '3')
-        self.assertEqual(path, expect_path)
-
-        record['district_id'] = '3ab54de78a'
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, '3ab54de78a')
-        self.assertEqual(path, expect_path)
-
-        record['student_id'] = 'a78dbf34'
-        path = _get_path_to_item_csv(items_root_dir, **record)
-        expect_path = os.path.join(expect_path, 'a78dbf34.csv')
-        self.assertEqual(path, expect_path)
-
     def test_append_csv_files(self):
         record = {'state_code': 'NC',
                   'asmt_year': 2015,
@@ -160,13 +115,13 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         tempdir = tempfile.TemporaryDirectory()
         record1 = copy.deepcopy(record)
         record1['student_id'] = '1'
-        file1 = _get_path_to_item_csv(tempdir.name, **record1)
+        file1 = generate_path_to_item_csv(tempdir.name, **record1)
         record2 = copy.deepcopy(record)
         record2['student_id'] = '2'
-        file2 = _get_path_to_item_csv(tempdir.name, **record2)
+        file2 = generate_path_to_item_csv(tempdir.name, **record2)
         record3 = copy.deepcopy(record)
         record3['student_id'] = '3'
-        file3 = _get_path_to_item_csv(tempdir.name, **record3)
+        file3 = generate_path_to_item_csv(tempdir.name, **record3)
         os.makedirs(os.path.dirname(file1))
         with open(file1, 'w') as csv1:
             csvwriter1 = csv.writer(csv1, delimiter=',')
@@ -210,13 +165,13 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         tempdir = tempfile.TemporaryDirectory()
         record1 = copy.deepcopy(record)
         record1['student_id'] = '1'
-        file1 = _get_path_to_item_csv(tempdir.name, **record1)
+        file1 = generate_path_to_item_csv(tempdir.name, **record1)
         record2 = copy.deepcopy(record)
         record2['student_id'] = '2'
-        file2 = _get_path_to_item_csv(tempdir.name, **record2)
+        file2 = generate_path_to_item_csv(tempdir.name, **record2)
         record3 = copy.deepcopy(record)
         record3['student_id'] = '3'
-        file3 = _get_path_to_item_csv(tempdir.name, **record3)
+        file3 = generate_path_to_item_csv(tempdir.name, **record3)
         os.makedirs(os.path.dirname(file1))
         with open(file1, 'w') as csv1:
             csvwriter1 = csv.writer(csv1, delimiter=',')
@@ -321,7 +276,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 if not os.path.exists(dir_path):
                     os.makedirs(dir_path)
 
-                with open(_get_path_to_item_csv(TestItemLevelGenerator.__tmp_item_dir, **dict(result)), 'w') as csv_file:
+                with open(generate_path_to_item_csv(TestItemLevelGenerator.__tmp_item_dir, **dict(result)), 'w') as csv_file:
                     csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
                     for item in student_pool:
                         csv_writer.writerow([item['key'], result['student_id'], item['segment'], 0, item['client'],

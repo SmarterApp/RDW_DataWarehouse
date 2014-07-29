@@ -9,7 +9,7 @@ import logging
 import copy
 
 from edcore.database.edcore_connector import EdCoreDBConnection
-from edcore.utils.file_utils import generate_file_path
+from edcore.utils.file_utils import generate_path_to_item_csv
 from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
@@ -48,10 +48,6 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
         _append_csv_files(items_root_dir, item_ids, results, output_files, CSV_HEADER)
         # Done
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
-
-
-def _get_path_to_item_csv(items_root_dir, **kwargs):
-    return generate_file_path(items_root_dir, "csv", **kwargs)
 
 
 def _check_file_for_items(file_descriptor, item_ids):
@@ -108,7 +104,7 @@ def _prepare_file_list(items_root_dir, results):
     files = []
     total_size = 0
     for result in results:
-        path = _get_path_to_item_csv(items_root_dir, **result)
+        path = generate_path_to_item_csv(items_root_dir, **result)
         # Get the file size of the file from metadata file
         size = metadata_reader.get_size(path)
         if size is -1:

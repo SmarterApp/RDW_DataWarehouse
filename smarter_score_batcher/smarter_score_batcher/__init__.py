@@ -16,9 +16,10 @@ def main(global_config, **settings):
     # include add routes from edapi. Calls includeme
     config.include(edapi)
     # Pass edauth the roles/permission mapping that is defined in smarter
-    edauth.set_roles(RootFactory.__acl__)
+    # edauth.set_roles(RootFactory.__acl__)
 
-    config.add_route('xml_catcher', 'services/test/report')
+    config.add_route('xml', '/services/xml')
     config.scan()
+
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

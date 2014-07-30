@@ -99,13 +99,8 @@ def login(request):
     params = urllib.parse.urlencode(params)
 
     redirect_url = url + "?%s" % params
-    # Treat ajax calls differently
     # We need to return 401 with a redirect url and the front end will handle the redirect
-    if request.is_xhr:
-        return HTTPUnauthorized(body=json.dumps({'redirect': redirect_url}), content_type='application/json')
-
-    # Redirect to openam
-    return HTTPFound(location=redirect_url)
+    return HTTPUnauthorized(body=json.dumps({'redirect': redirect_url}), content_type='application/json')
 
 
 def _get_landing_page(request, redirect_url_decoded, headers):

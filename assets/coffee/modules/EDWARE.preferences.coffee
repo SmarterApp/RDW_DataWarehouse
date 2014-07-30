@@ -29,7 +29,8 @@ define [
 
   getAsmtYearPreference = () ->
     pref = getPreferences() || {}
-    pref[pref["stateCode"] + "asmtYear"]
+    asmtYear = pref[pref["stateCode"] + "asmtYear"]
+    asmtYear || parseInt(edwareUtil.getUrlParams()["asmtYear"])
 
   getEffectiveDate = () ->
     pref = getPreferences() || {}

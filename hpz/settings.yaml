@@ -26,6 +26,7 @@ common:
         cookie_name: edware
         hashalg: sha512
         http_only: true
+        timeout: 1200
         # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
         #max_age: 2400
       idp:
@@ -34,8 +35,6 @@ common:
       saml:
         identity_parser: smarter_common.security.sbac_identity_parser.SbacIdentityParser
       session:
-        timeout: 1200
-      policy:
         timeout: 1200
     cache:
       lock_dir: /tmp/memcachehpz

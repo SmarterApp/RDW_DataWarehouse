@@ -1,5 +1,3 @@
-import os
-
 from setuptools import setup, find_packages
 import shutil
 from distutils.core import run_setup

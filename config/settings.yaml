@@ -611,8 +611,8 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
     hpz:
-        file_registration_url: http://localhost/registration
-        file_upload_base_url: http://localhost/files
+        file_registration_url: https://hpzweb0.dmo.som.edwdc.net:8443/registration
+        file_upload_base_url: https://hpzweb0.dmo.som.edwdc.net:8443/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -671,7 +671,7 @@ uat.pdf_generator:
   '[app:main]':
     batch.user.session.timeout: 300000
     cache:
-      session.expire: 1200 # 20 minutes
+      session.expire: 300000 # 20 minutes
 
 localOpenAM:
   '[app:main]':

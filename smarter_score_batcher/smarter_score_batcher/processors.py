@@ -1,4 +1,5 @@
 import os
+from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 
 
@@ -30,9 +31,11 @@ def process_xml(raw_xml_string):
     file_path = parse_file_path(raw_xml_string)
     args = (file_path, raw_xml_string)
     # TODO: may need a separate queue to write xml files ?
+    settings = get_current_registry().settings
+    timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
     celery_response = remote_write.apply_async(args=args)
     # TODO: wait until writing succeeds
-    return celery_response.get(timeout=30)
+    return celery_response.get(timeout=timeout)
 
 
 def parse_file_path(args):

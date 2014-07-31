@@ -1,4 +1,8 @@
 import os
+from pyramid.response import Response
+from smarter_score_batcher.tasks.remote_file_writer import remote_write
+
+
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -21,17 +25,20 @@ class Meta:
         self.effective_date = effective_date
 
 
-def process_tdsreport(raw_xml_string):
+def process_xml(raw_xml_string):
+    ''' Process tdsreport doc
     '''
-    Process tdsreport doc
-    '''
-    try:
-        root = ET.fromstring(raw_xml_string)
-        m = extract_meta_names(root)
-        f = open(os.path.join(create_path(ROOT_DIR, m), '{}.xml'.format(m.student_id)), 'wb')
-        f.write(raw_xml_string)
-    except ET.ParseError:
-        None
+    file_path = parse_file_path(raw_xml_string)
+    args = (file_path, raw_xml_string)
+    # TODO: may need a separate queue to write xml files ?
+    celery_response = remote_write.apply_async(args=args)
+    # TODO: wait until writing succeeds
+    pdf_stream = celery_response.get(timeout=30)
+    return Response()
+
+
+def parse_file_path(args):
+    return "/tmp/hello/world/test.xml"
 
 
 def create_path(root_dir, meta):

@@ -253,6 +253,7 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
     options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
 
     celery_response = get.apply_async(args=args, kwargs=options, queue=single_generate_queue)  # @UndefinedVariable
+    celery_response = get.apply_async(args=args, kwargs=options, queue=single_generate_queue)  # @UndefinedVariable
     pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type=Constants.APPLICATION_PDF)

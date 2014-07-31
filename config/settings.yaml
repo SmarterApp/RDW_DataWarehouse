@@ -162,6 +162,9 @@ common:
           -   name: extract_sync
               exchange: direct
               key: extract_sync
+    smarter_score_batcher.celery:
+        CELERY_RESULT_BACKEND: amqp
+        CELERYD_CONCURRENCY: 20
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home
@@ -710,6 +713,8 @@ development:
     extract.celery:
       celery_always_eager: true
     migrate.celery:
+      celery_always_eager: true
+    smarter_score_batcher.celery:
       celery_always_eager: true
     edware:
       db:

@@ -5,26 +5,25 @@ define [
   "text!InfoBarTemplate"
   "edwareDownload"
   "edwarePopover"
-  "edwareYearDropdown"
   "edwareDataProxy"
-  "edwareUtil"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown, edwareDataProxy, edwareUtil) ->
+  "edwareSearch"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch) ->
 
   class ReportInfoBar
 
-    constructor: (@container, @config, @contextSecurity) ->
-      @initialize()
+    constructor: (@container, @config, createSearch, @contextSecurity) ->
+      @initialize(createSearch)
       @bindEvent()
 
-    initialize: () ->
+    initialize: (createSearch) ->
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
-      years = edwareUtil.getAcademicYears @config.academicYears?.options
-      @createAcademicYear(years)
       @createDownloadMenu()
       @render()
+      # Create search box if true, else remove it
+      @searchBox ?= @createSearchBox() if createSearch 
 
     bindEvent: () ->
       self = @
@@ -33,9 +32,10 @@ define [
         self.edwareDownloadMenu.show()
       $('.reportInfoIcon').click ->
         $(this).popover('show')
-      $('.academicYearInfoIcon').click ->
-        $(this).popover('show')
 
+    createSearchBox: () ->
+      $('#search').edwareSearchBox @config.labels
+    
     render: () ->
       # bind report info popover
       $('.reportInfoIcon').edwarePopover
@@ -47,24 +47,15 @@ define [
       # set report info text
       $('.reportInfoWrapper').append @config.reportInfoText
 
-      # bind academic year info popover
-      $('.academicYearInfoIcon').edwarePopover
-        class: 'academicYearInfoPopover'
-        labelledby: 'academicYearInfoPopover'
-        content: 'placeholder'
-        tabindex: 0
-
     createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config, @contextSecurity)
 
-    createAcademicYear: (years) ->
-      return if not years
-      callback = @config.academicYears.callback
-      @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
+    update: () ->
+      # Callback to search box to highlight if necessary
+      @searchBox.addHighlight() if @searchBox
 
-  create = (container, config, contextSecurity) ->
-    infoBar = new ReportInfoBar(container, config, contextSecurity)
-
+  create = (container, config, createSearch, contextSecurity) ->
+    infoBar = new ReportInfoBar(container, config, createSearch, contextSecurity)
 
   ReportInfoBar: ReportInfoBar
   create: create

@@ -11,27 +11,31 @@ define [
   "edwarePrint"
   "edwarePopover"
   "edwareConstants"
-  "edwareSearch"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareSearch) ->
+  "edwareUtil"
+  "edwareYearDropdown"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareUtil, edwareYearDropdown) ->
 
   class ReportActionBar
 
-    constructor: (@container, @config, createSearch, @reloadCallback) ->
-      @initialize(createSearch)
+    constructor: (@container, @config, @reloadCallback) ->
+      @initialize()
       @bindEvents()
 
-    initialize: (createSearch) ->
+    initialize: () ->
       @container = $(@container)
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
+        detailsSelection: @config.detailsSelection
       @legend ?= @createLegend()
-      @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
-      # Create search box if true, else remove it
-      @searchBox ?= @createSearchBox() if createSearch 
+      years = edwareUtil.getAcademicYears @config.academicYears?.options
+      @createAcademicYear(years)
+      @asmtDropdown = @createAsmtDropdown(years)
 
-    createSearchBox: () ->
-      $('#search').edwareSearchBox @config.labels
+    createAcademicYear: (years) ->
+      return if not years
+      callback = @config.academicYears.callback
+      @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
     createPrint: () ->
       @printer = edwarePrint.create '.printModal', @config.labels
@@ -44,7 +48,7 @@ define [
         labels: @config.labels
 
     # Create assessment type dropdown
-    createAsmtDropdown: () ->
+    createAsmtDropdown: (years) ->
       if not @config.asmtTypes || @config.asmtTypes.length is 0
         $('.asmtTypeItem').remove()
         return
@@ -53,9 +57,15 @@ define [
         preference = edwarePreferences.getAsmtForISR
       else
         preference = edwarePreferences.getAsmtPreference
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.labels, @config.asmtTypes, preference, (asmt) ->
-        self.updateDisclaimer asmt
-        self.reloadCallback asmt
+      # render academic years
+      @config.years= years
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config, preference,
+        onAcademicYearSelected: (academicYear) ->
+          self.config.academicYears.callback academicYear
+        onAsmtYearSelected: (asmt) ->
+          # save assessment type
+          self.updateDisclaimer asmt
+          self.reloadCallback(asmt)
       @createDisclaimer()
       asmtDropdown
 
@@ -66,10 +76,6 @@ define [
     updateDisclaimer: (asmtType) ->
       currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()
       @disclaimer.update currentAsmtType
-
-    update: () ->
-      # Callback to search box to highlight if necessary
-      @searchBox.addHighlight() if @searchBox
 
     prepareSubjects: () ->
       # use customized subject interval
@@ -107,8 +113,21 @@ define [
       $('a.printLabel').click ->
         self.printer.show()
 
-  create = (container, config, createSearch, reloadCallback) ->
-    new ReportActionBar(container, config, createSearch, reloadCallback)
+      $('.academicYearInfoIcon').click ->
+        $(this).popover('show')
+
+      # bind subject details selecting events
+      $("li.detailsItem button").click ()->
+        $this = $(this)
+        $this.siblings("button").removeClass('selected')
+        $this.addClass('selected')
+        asmtView = $this.data('view')
+        edwarePreferences.saveAsmtView(asmtView)
+        self.reloadCallback()
+
+
+  create = (container, config, reloadCallback) ->
+    new ReportActionBar(container, config, reloadCallback)
 
   ReportActionBar: ReportActionBar
   create: create

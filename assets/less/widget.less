@@ -1047,7 +1047,7 @@ th.ui-th-column div {
   position: absolute;
   margin-top: -9px;
   width: 22px;
-  right: 343px;
+  right: 61px;
 }
 
 .filter {
@@ -1500,7 +1500,7 @@ th.ui-th-column div {
     .rawXML {display: block;}
     .itemLevel {display: block;}
   }
-  
+
   .disabled {
     color: #B0B0B0;
     cursor: not-allowed;
@@ -1528,7 +1528,7 @@ th.ui-th-column div {
     border-right: solid 1px @color-B16;
   }
 
-  .reportInfoIcon, .downloadIcon, .academicYearInfoIcon{
+  .reportInfoIcon, .downloadIcon{
     font-size: 10px;
     font-weight: bold;
 
@@ -1536,14 +1536,6 @@ th.ui-th-column div {
                background-color: @color-A7;
                color: @color-A4;
              }
-  }
-
-  #academicYearAnchor ul {
-    min-width: 127px;
-  }
-
-  .academicYearText {
-    line-height: 30px;
   }
 
   #downloadMenuPopup {
@@ -1686,6 +1678,32 @@ th.ui-th-column div {
   background-color: @color-C11;
   border-top: solid 1px @color-B17;
 
+  #academicYearAnchor {
+    margin-top: 2px;
+    ul {
+      min-width: 127px;
+      li {
+        font-weight: normal;
+      }
+    }
+  }
+
+  .academicYearText {
+    line-height: 35px;
+    cursor: default;
+    padding-right: 10px;
+  }
+
+  .academicYearInfoIcon{
+    font-size: 10px;
+    font-weight: bold;
+
+    &:hover, &:focus {
+      background-color: @color-C11;
+      color: @color-A4;
+    }
+  }
+
   &>ul {
     cursor: pointer;
     list-style: none;
@@ -1706,7 +1724,7 @@ th.ui-th-column div {
       font-weight: bold;
       font-size: 12px;
 
-      .asmtViewText, .asmtDropdown, .divider, .disclaimerInfo {
+      .asmtViewText, .asmtDropdown, .divider, .disclaimerInfo, .subjectSelection {
         height: 20px;
         top: 50%;
         margin-top: -13px;
@@ -1726,6 +1744,60 @@ th.ui-th-column div {
       }
     }
 
+    .detailsItem {
+      margin-left: 50px;
+
+      .subjectSelection {
+        height:25px;
+        padding:0 15px;
+        border:1px solid #bbbbbb;
+        border-left:1px solid #ffffff;
+        border-radius: 0px;
+        font-family: helvetica, arial, sans-serif;
+        font-size:12px;
+        line-height:25px;
+        color:#838383;
+	    background-image: -webkit-linear-gradient(top, rgba(255,255,255,.85) 0%,rgba(255,255,255,.25) 100%);
+	    background-image:    -moz-linear-gradient(top, rgba(255,255,255,.85) 0%,rgba(255,255,255,.25) 100%);
+	    background-image:     -ms-linear-gradient(top, rgba(255,255,255,.85) 0%,rgba(255,255,255,.25) 100%);
+	    background-image:      -o-linear-gradient(top, rgba(255,255,255,.85) 0%,rgba(255,255,255,.25) 100%);
+	    background-image:         linear-gradient(top, rgba(255,255,255,.85) 0%,rgba(255,255,255,.25) 100%);
+	    -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,.8);
+	    -webkit-box-shadow: 0 1px 0 0 rgba(255,255,255,.8);
+	    box-shadow: 0 1px 0 0 rgba(255,255,255,.8);
+
+        &.selected {
+          background:#DADADA !important;
+          color:#000000 !important;
+          text-shadow: 0 1px 0 rgba(255,255,255,.6);
+          border:none;
+          border-top:1px solid #838383;
+	      -moz-box-shadow: 0 2px 4px -1px rgba(50,50,50,.3) inset, 0 1px 0 0 rgba(255,255,255,.8);
+	      -webkit-box-shadow: 0 2px 4px -1px rgba(50,50,50,.3) inset, 0 1px 0 0 rgba(255,255,255,.8);
+	      box-shadow: 0 2px 4px -1px rgba(50,50,50,.3) inset, 0 1px 0 0 rgba(255,255,255,.8);
+        }
+
+        &:first-child {
+	      border-radius:3px 0 0 3px;
+          border-left:1px solid #bbbbbb;
+        }
+
+        &:last-child {
+	      border-radius:0 3px 3px 0;
+        }
+
+        &:hover {
+          color:#323232;
+          background-color:rgba(255,255,255,.2);
+        }
+
+        &:focus {
+          outline: none;
+          -webkit-outline: none;
+        }
+      }
+    }
+
     .legendItem.active {
       color: @color-A1;
 
@@ -1736,10 +1808,6 @@ th.ui-th-column div {
 
     .filterItem .divider {
       border-right: solid 1px @color-B5;
-    }
-
-    .searchItem .divider {
-      padding-right: 0px;
     }
 
     .align_button_area {
@@ -1860,6 +1928,12 @@ th.ui-th-column div {
             margin-left: 15px;
             background-position: 0 -52px;
           }
+
+          #selectedAsmtType {
+            display: inline-block;
+            min-width: 194px;
+            text-align: left;
+          }
         }
 
         ul {
@@ -1869,18 +1943,19 @@ th.ui-th-column div {
         a {
           text-decoration: none;
         }
-
       }
 
       .asmtDropdownMenu {
-        min-width: 302px;
+        min-width: 247px;
 
         &>li {
-          padding: 5px 0px;
-          border-bottom: solid 1px @color-B5;
+          padding: 3px 0px;
 
-          &:last-child {
-            border-bottom: none;
+          &.otherAcadmicYears {
+            border-top: solid 1px @color-B2;
+            margin: 5px 10px -5px 10px;
+            font-size: 11px;
+            padding-top: 7px;
           }
         }
 
@@ -1897,7 +1972,7 @@ th.ui-th-column div {
 
         ul { margin: 0px; }
 
-        .asmtSelection {
+        .asmtSelection, .asmtYearButton {
           margin: 0px;
 
           &:hover, &:focus {
@@ -1993,6 +2068,7 @@ th.ui-th-column div {
     line-height: 12px;
     width: 44px;
   }
+  margin-top: 8px;
 }
 
 .searchResult {

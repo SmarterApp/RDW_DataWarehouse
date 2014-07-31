@@ -8,6 +8,8 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from smarter_score_batcher.processors import process_xml
 from edapi.decorators import validate_params
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
+    EdApiHTTPInternalServerError
 
 
 logger = logging.getLogger(__name__)
@@ -35,7 +37,13 @@ def xml_catcher(request):
     try:
         params = request.json_body
         xml_body = params.get(Constants.CONTENT)
-        return process_xml(xml_body)
+        succeed = process_xml(xml_body)
+        if succeed:
+            return Response()
+        else:
+            return EdApiHTTPInternalServerError()
+    except EdApiHTTPPreconditionFailed:
+        raise
     except Exception as e:
         logger.error(str(e))
         raise

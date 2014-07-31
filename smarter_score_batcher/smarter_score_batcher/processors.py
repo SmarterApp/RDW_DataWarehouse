@@ -1,6 +1,7 @@
 import os
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 
 
 try:
@@ -28,18 +29,28 @@ class Meta:
 def process_xml(raw_xml_string):
     ''' Process tdsreport doc
     '''
+    # validate input
+    if not validate_xml(raw_xml_string):
+        return False
     file_path = parse_file_path(raw_xml_string)
     args = (file_path, raw_xml_string)
-    # TODO: may need a separate queue to write xml files ?
     settings = get_current_registry().settings
     timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
-    celery_response = remote_write.apply_async(args=args)
-    # TODO: wait until writing succeeds
+    queue_name = settings.get('smarter_score_batcher.sync_queue')
+    celery_response = remote_write.apply_async(args=args, queue=queue_name)
+    # wait until file successfully written to disk
     return celery_response.get(timeout=timeout)
+
+
+def validate_xml(raw_xml_string):
+    if not raw_xml_string:
+        raise EdApiHTTPPreconditionFailed("content cannot be empty")
+    return True
 
 
 def parse_file_path(args):
     # TODO: raise exception if we cannot parse file path
+    # TODO: need to update unit test after removing this line
     return "/tmp/hello/world/test.xml"
 
 

@@ -163,7 +163,7 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
-        celery_timeout: 30
+      celery_timeout: 30
       celery:
         CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_writer',)
         CELERY_RESULT_BACKEND: amqp

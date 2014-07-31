@@ -6,17 +6,13 @@ Created on Jul 15, 2014
 import logging
 from pyramid.view import view_config
 from pyramid.response import Response
-from smarter_score_batcher.processors import process_xml
+from pyramid.httpexceptions import HTTPServiceUnavailable
 from edapi.decorators import validate_params
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPInternalServerError
+from smarter_score_batcher.processors import process_xml
+from smarter_score_batcher.constants import Constants
 
 
-logger = logging.getLogger(__name__)
-
-
-class Constants:
-    CONTENT = "content"
+logger = logging.getLogger("smarter_score_batcher")
 
 
 XML_PARAMS = {
@@ -41,9 +37,7 @@ def xml_catcher(request):
         if succeed:
             return Response()
         else:
-            return EdApiHTTPInternalServerError()
-    except EdApiHTTPPreconditionFailed:
-        raise
+            return HTTPServiceUnavailable("Writing XML file to disk failed.")
     except Exception as e:
         logger.error(str(e))
         raise

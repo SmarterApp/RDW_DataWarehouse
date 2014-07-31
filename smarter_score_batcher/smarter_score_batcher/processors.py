@@ -1,5 +1,4 @@
 import os
-from pyramid.response import Response
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 
 
@@ -33,11 +32,11 @@ def process_xml(raw_xml_string):
     # TODO: may need a separate queue to write xml files ?
     celery_response = remote_write.apply_async(args=args)
     # TODO: wait until writing succeeds
-    pdf_stream = celery_response.get(timeout=30)
-    return Response()
+    return celery_response.get(timeout=30)
 
 
 def parse_file_path(args):
+    # TODO: raise exception if we cannot parse file path
     return "/tmp/hello/world/test.xml"
 
 

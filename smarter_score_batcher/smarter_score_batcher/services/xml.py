@@ -25,14 +25,13 @@ XML_PARAMS = {
 }
 
 
-@view_config(route_name='xml', request_method='POST', content_type="application/json", renderer='json')
+@view_config(route_name='xml', request_method='POST', content_type="application/xml", renderer='json')
 # @validate_params(schema=XML_PARAMS)
 def xml_catcher(request):
     """ XML cacther service expects XML post and will delegate processing based on the root element.
     """
     try:
-        params = request.json_body
-        xml_body = params.get(Constants.CONTENT)
+        xml_body = request.body
         succeed = process_xml(xml_body)
         if succeed:
             return Response()

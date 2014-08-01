@@ -33,26 +33,21 @@ class TestXML(unittest.TestCase):
     @patch('smarter_score_batcher.services.xml.process_xml')
     def test_xml_catcher_succeed(self, mock_process_xml):
         mock_process_xml.return_value = True
-        self.__request.json_body = {
-            Constants.CONTENT: 'hello'
-        }
+        self.__request.body = '<xml></xml>'
         response = xml.xml_catcher(self.__request)
         self.assertEqual(response.status_code, 200, "should return 200 after writing xml file")
 
     @patch('smarter_score_batcher.services.xml.process_xml')
     def test_xml_catcher_failed(self, mock_process_xml):
         mock_process_xml.return_value = False
-        self.__request.json_body = {
-            Constants.CONTENT: 'hello'
-        }
+        self.__request.body = '<xml></xml>'
         response = xml.xml_catcher(self.__request)
         self.assertEqual(response.status_code, 503, "should return 200 after writing xml file")
 
     @patch('smarter_score_batcher.services.xml.process_xml')
     def test_xml_catcher_no_content(self, mock_process_xml):
         mock_process_xml.side_effect = Exception()
-        self.__request.json_body = {
-        }
+        self.__request.body = ''
         self.assertRaises(Exception, xml.xml_catcher, self.__request)
 
 

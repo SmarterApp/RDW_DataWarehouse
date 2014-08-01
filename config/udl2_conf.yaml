@@ -121,7 +121,7 @@ uat:
         db_schema: udl2
     target_db_conn:
         ca:
-            url: postgresql://edware:xON.yw27aw@drbtmqudl0.dmo.som.edwdc.net:5432/edware
+            url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
     prod_db_conn:
         ca:
             url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware

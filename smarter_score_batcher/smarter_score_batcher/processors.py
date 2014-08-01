@@ -45,7 +45,7 @@ def process_xml(raw_xml_string):
             # wait until file successfully written to disk
             return celery_response.get(timeout=timeout)
     except ET.ParseError:
-        None
+        pass
     return False
 
 

@@ -229,6 +229,13 @@ define [
       height += $component.height() if $component.is(':visible')
     window.innerHeight - height
 
+  # add hook to run before browser print
+  if window.matchMedia
+    window.matchMedia('print').addListener (mql)->
+      $('#gridTable').eagerLoad() if mql.matches
+  window.onbeforeprint = ()->
+    $('#gridTable').eagerLoad()
+
   #
   #    * Creates EDWARE grid
   #    * @param tableId - The container id for grid

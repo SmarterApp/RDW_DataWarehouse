@@ -1,4 +1,4 @@
-import os
+import os, logging
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
@@ -8,6 +8,8 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
+
+logger = logging.getLogger("smarter_score_batcher")
 
 DEFAULT_VALUE = 'NA'
 ATTRIBUTE_CONTEXT_VALUE_FINAL = 'FINAL'
@@ -31,95 +33,63 @@ class Meta:
 def process_xml(raw_xml_string):
     ''' Process tdsreport doc
     '''
-    try:
-        tree = ET.parse(raw_xml_string)
-        root = tree.getroot()
-        m = extract_meta_names(root)
-        if(m.valid_meta):
-            file_path = create_path(ROOT_DIR, m)
-            args = (file_path, raw_xml_string)
-            settings = get_current_registry().settings
-            timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
-            queue_name = settings.get('smarter_score_batcher.sync_queue')
-            celery_response = remote_write.apply_async(args=args, queue=queue_name)
-            # wait until file successfully written to disk
-            return celery_response.get(timeout=timeout)
-    except ET.ParseError:
-        pass
-    return False
-
-
-def validate_xml(raw_xml_string):
-    if not raw_xml_string:
+    meta_names = extract_meta_names(raw_xml_string)
+    if not meta_names.valid_meta:
         raise EdApiHTTPPreconditionFailed("content cannot be empty")
-    return True
+    file_path = create_path(ROOT_DIR, meta_names)
+    args = (file_path, raw_xml_string)
+    settings = get_current_registry().settings
+    timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
+    queue_name = settings.get('smarter_score_batcher.sync_queue')
+    celery_response = remote_write.apply_async(args=args, queue=queue_name)
+    # wait until file successfully written to disk
+    return celery_response.get(timeout=timeout)
 
 
 def create_path(root_dir, meta):
     path = os.path.join(root_dir, meta.state_name, meta.academic_year, meta.asmt_type, meta.effective_date, meta.subject, meta.grade, meta.district_id)
-    try:
-        os.makedirs(path, exist_ok=True)
-    except OSError:        
-        return False
     return path
 
 
-def extract_meta_names(root):
+def extract_meta_names(raw_xml_string):
     '''Validates and extracts meta from the XML.
-    
-    Returns:
-    True if meta for file path is valid. And the parts for folder creation.
+    Returns: True if meta for file path is valid. And the parts for folder creation.
     '''
-    validMeta = True
-    student_id = state_name = district_id = academic_year = asmt_type = subject = grade = effective_date = None
-    
-    if (root.find("./Examinee/ExamineeRelationship/[@name='StateName']")) is not None:
-        try:
-            state_name = [e.get('value', DEFAULT_VALUE) for e in root.findall("./Examinee/ExamineeRelationship/[@name='StateName']") if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_FINAL][0]
-        except IndexError:
-            try:
-                state_name = [e.get('value', DEFAULT_VALUE) for e in root.findall("./Examinee/ExamineeRelationship/[@name='StateName']") if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_INITIAL][0]
-            except IndexError:
-                state_name = DEFAULT_VALUE
-    else:
-        validMeta = False 
-   
-    if (root.find("./Examinee/ExamineeRelationship/[@name='DistrictID']")) is not None:
-        try:
-            district_id = [e.get('value', DEFAULT_VALUE) for e in root.findall("./Examinee/ExamineeRelationship/[@name='DistrictID']") if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_FINAL][0]
-        except IndexError:
-            try:
-                district_id = [e.get('value', DEFAULT_VALUE) for e in root.findall("./Examinee/ExamineeRelationship/[@name='DistrictID']") if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_INITIAL][0]
-            except IndexError:
-                district_id = DEFAULT_VALUE
-    else:
-        validMeta = False  
-    
-    if (root.find("./Examinee/ExamineeAttribute/[@name='SSID']")) is not None:
-        try:
-            student_id = [e.get('value', DEFAULT_VALUE) for e in root.findall("./Examinee/ExamineeAttribute/[@name='SSID']") if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_FINAL][0]
-        except IndexError:
-            try:
-                student_id = [e.get('value', DEFAULT_VALUE) for e in root.findall("./Examinee/ExamineeAttribute/[@name='SSID']") if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_INITIAL][0]
-            except IndexError:
-                student_id = DEFAULT_VALUE
-    else:
-        validMeta = False
-    if (root.find("./Test").get('assessmentType')) is not None:
-        asmt_type = root.find("./Test").get('assessmentType', DEFAULT_VALUE)
-    else:
-        validMeta = False
-    if (root.find("./Test").get('subject')) is not None:
-        subject = root.find("./Test").get('subject', DEFAULT_VALUE)
-    else:
-        validMeta = False
-    if (root.find("./Test").get('academicYear')) is not None:
-        academic_year = root.find("./Test").get('academicYear', DEFAULT_VALUE)
-    else:
-        validMeta = False
-    if (root.find("./Test").get('grade')) is not None:
-        grade = root.find("./Test").get('grade', DEFAULT_VALUE)
-    else:
-        validMeta = False
+    root = ET.fromstring(raw_xml_string)
+    state_name, is_state_name_valid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']" )
+    student_id, is_student_id_valid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']" )
+    district_id, is_district_id_valid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']" )
+    academic_year, is_academic_year_valid = extract_meta_without_fallback_helper(root, "academicYear")
+    asmt_type, is_asmt_type_valid = extract_meta_without_fallback_helper(root, "assessmentType")
+    subject, is_subject_valid = extract_meta_without_fallback_helper(root, "subject")
+    grade, is_grade_valid = extract_meta_without_fallback_helper(root, "grade")
     effective_date = 'NA'  # root.find("./test").get('effectiveDate', DEFAULT_VALUE)
+    validMeta = is_state_name_valid and is_student_id_valid and is_district_id_valid and is_academic_year_valid and is_asmt_type_valid and is_subject_valid and is_grade_valid
     return Meta(validMeta, student_id, state_name, district_id, academic_year, asmt_type, subject, grade, effective_date)
+
+
+def extract_meta_with_fallback_helper(root, element_xpath):
+    valid_meta = True
+    if (root.find(element_xpath)) is not None:
+        try:
+            element = [e.get('value', DEFAULT_VALUE) for e in root.findall(element_xpath) if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_FINAL][0]
+        except IndexError:
+            try:
+                element = [e.get('value', DEFAULT_VALUE) for e in root.findall(element_xpath) if e.attrib['context'] == ATTRIBUTE_CONTEXT_VALUE_INITIAL][0]
+            except IndexError:
+                element = DEFAULT_VALUE
+    else:
+        element = None
+        valid_meta = False
+    return (element, valid_meta)
+
+
+def extract_meta_without_fallback_helper(root, element_xpath):
+    valid_meta = True
+    if (root.find("./Test").get(element_xpath)) is not None:
+        element = root.find("./Test").get(element_xpath, DEFAULT_VALUE)
+    else:
+        element = None
+        valid_meta = False
+    return (element, valid_meta)
+

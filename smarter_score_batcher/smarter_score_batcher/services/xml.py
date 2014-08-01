@@ -10,6 +10,7 @@ from pyramid.httpexceptions import HTTPServiceUnavailable
 from edapi.decorators import validate_params
 from smarter_score_batcher.processors import process_xml
 from smarter_score_batcher.constants import Constants
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -37,6 +38,9 @@ def xml_catcher(request):
             return Response()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")
+    except EdApiHTTPPreconditionFailed as e:
+        # return error code 412
+        return e
     except Exception as e:
         logger.error(str(e))
         raise

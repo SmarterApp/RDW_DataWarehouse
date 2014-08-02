@@ -174,7 +174,7 @@ define [
       # Rebind events and reset sticky comparison
       this.stickyCompare.update()
       this.alignment.update()
-      this.actionBar.update()
+      this.infoBar.update()
       # Save the current sorting column and order to apply after filtering
       name = $('#gridTable').getGridParam('sortname')
       order = $('#gridTable').getGridParam('sortorder')
@@ -236,7 +236,11 @@ define [
       this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType, displayHome, labels)
 
     renderReportInfo: () ->
-      edwareReportInfoBar.create '#infoBar',
+      if @reportType == 'school' then displaySearch = false else displaySearch = true
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
+      @config.labels.SearchResultText = @config.SearchResultText
+      @infoBar ?= edwareReportInfoBar.create '#infoBar',
         reportTitle: @breadcrumbs.getReportTitle()
         reportName: Constants.REPORT_NAME.CPOP
         reportInfoText: @config.reportInfo[@reportType]
@@ -245,10 +249,7 @@ define [
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions
         param: @param
-        academicYears:
-          options: @academicYears
-          callback: @onAcademicYearSelected.bind(this)
-        getReportParams: @getReportParams.bind(this), contextSecurity
+        getReportParams: @getReportParams.bind(this), displaySearch, contextSecurity
 
     getReportParams: () ->
       params = {}
@@ -270,11 +271,12 @@ define [
       self = this
       @config.colorsData = @data.metadata
       @config.reportName = Constants.REPORT_NAME.CPOP
-      # placeholder text for search box
-      @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
-      @config.labels.SearchResultText = @config.SearchResultText
-      if @reportType == 'school' then displaySearch = false else displaySearch = true
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, displaySearch, () ->
+      # academic year
+      @config.academicYears= {}
+      @config.academicYears.options = @academicYears
+      @config.academicYears.callback = @onAcademicYearSelected.bind(this)
+      # action bar contains academic year drop down, which needs to be reloaded
+      edwareReportActionBar.create '#actionBar', @config, () ->
         self.reload self.param
 
     onAcademicYearSelected: (year) ->

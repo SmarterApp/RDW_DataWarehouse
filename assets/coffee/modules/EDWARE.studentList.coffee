@@ -111,12 +111,8 @@ define [
     getAsmtData: (viewName)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
-      #TODO asmtGuid = @asmtGuid
-      # if not @cache[asmtGuid]
-        #reload from server
-        # window.location.reload()
-      effectiveDate = asmt.effectiveDate
-      asmtType = asmt.asmtType
+      effectiveDate = asmt.effective_date
+      asmtType = asmt.asmt_type
       data = @cache[effectiveDate]?[asmtType]?[viewName]
       if data
         for item in data
@@ -224,7 +220,10 @@ define [
       $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
-      edwareReportInfoBar.create '#infoBar',
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder
+      @config.labels.SearchResultText = @config.SearchResultText
+      @infoBar = edwareReportInfoBar.create '#infoBar',
         reportTitle: "Students in #{@contextData.items[4].name}"
         reportType: Constants.REPORT_TYPE.GRADE
         reportName: Constants.REPORT_NAME.LOS
@@ -236,7 +235,7 @@ define [
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
-        getReportParams: @getReportParams.bind(this), contextSecurity
+        getReportParams: @getReportParams.bind(this), true, contextSecurity
 
     getReportParams: () ->
       params = {}
@@ -253,15 +252,13 @@ define [
       self = this
       @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
-      @config.asmtTypes = asmtTypeDropdown
-      # placeholder text for search box
-      @config.labels.searchPlaceholder = @config.searchPlaceholder
-      @config.labels.SearchResultText = @config.SearchResultText
-      @actionBar = edwareReportActionBar.create '#actionBar', @config, true, (asmt) ->
-        # save assessment type
+      @config.asmtTypes = @data.asmt_administration
+      @config.academicYears =
+        options: @academicYears
+        callback: @onAcademicYearSelected.bind(this)
+      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
+        edwarePreferences.saveAsmtForISR(asmt)
         edwarePreferences.saveAsmtPreference asmt
-        edwarePreferences.saveAsmtForISR asmt
         self.updateView()
 
     createGrid: (filters) ->
@@ -275,10 +272,11 @@ define [
       edwarePreferences.saveSubjectPreference subjects
 
     updateView: () ->
-      viewName = edwarePreferences.getAsmtPreference().asmtView
+      viewName = edwarePreferences.getAsmtView()
       viewName = viewName || @studentsDataSet.allSubjects
       # Add dark border color between Math and ELA section
       $('#gridWrapper').removeClass().addClass(viewName)
+      $("#subjectSelection#{viewName}").addClass('selected')
       this.renderGrid viewName
 
     fetchData: (params) ->
@@ -292,7 +290,7 @@ define [
 
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
-      this.actionBar.update()
+      this.infoBar.update()
       # Remove second row header as that counts as a column in setLabel function
       $('.jqg-second-row-header').remove()
 
@@ -337,32 +335,5 @@ define [
         rainbowAnchor = $("#"+key+"_perfBar")
         rainbowAnchor.html(output)
         rainbowAnchor.closest('th').append(rainbowAnchor)
-
-
-    convertAsmtTypes: (asmtAdministration) ->
-      selectors = []
-      for asmt in asmtAdministration
-        selector = {}
-        # mapping asmt type to capitalized case
-        selector.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        selector.effective_date = asmt.effective_date
-        selector.asmt_grade = this.grade.name
-        selector.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
-        selector.hasAsmtSubject = true
-
-        # add subjects combination, i.e. Math & ELA
-        defaultSubject = "#{this.subjectsData.subject1}_#{this.subjectsData.subject2}"
-        defaultSubjectText = "#{this.subjectsData.subject1} & #{this.subjectsData.subject2}"
-        selector.defaultSubjectText = defaultSubjectText
-
-        asmts = [{ asmt_subject: defaultSubject, asmt_subject_text: defaultSubjectText }]
-        for subject, subject_text of @subjectsData
-          asmts.push
-            asmt_subject: subject_text
-            asmt_subject_text: "#{subject_text} Details"
-        selector.asmts = asmts
-        selectors.push selector
-      selectors
-
 
   StudentGrid: StudentGrid

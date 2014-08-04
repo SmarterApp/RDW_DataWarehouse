@@ -17,6 +17,7 @@ requires = [
     'waitress==0.8.7',
     'config',
     'edauth',
+    'edworker',
     'edapi',
     'smarter_common']
 

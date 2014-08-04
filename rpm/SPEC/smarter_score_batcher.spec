@@ -53,6 +53,10 @@ cd ${WORKSPACE}/edauth
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edworker
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edapi
 python setup.py clean --all
 python setup.py install

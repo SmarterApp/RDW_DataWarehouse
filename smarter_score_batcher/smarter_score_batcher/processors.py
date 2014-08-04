@@ -1,4 +1,5 @@
-import os, logging
+import os
+import logging
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
@@ -28,39 +29,39 @@ class Meta:
         self.__subject = subject
         self.__effective_date = effective_date
         self.__valid_meta = valid_meta
-        
+
     @property
     def student_id(self):
         return self.__student_id
-        
+
     @property
     def state_name(self):
         return self.__state_name
-        
+
     @property
     def district_id(self):
         return self.__district_id
-        
+
     @property
     def academic_year(self):
         return self.__academic_year
-        
+
     @property
     def asmt_type(self):
         return self.__asmt_type
-        
+
     @property
     def grade(self):
         return self.__grade
-        
+
     @property
     def subject(self):
         return self.__subject
-        
+
     @property
     def effective_date(self):
         return self.__effective_date
-        
+
     @property
     def valid_meta(self):
         return self.__valid_meta
@@ -94,9 +95,9 @@ def extract_meta_names(raw_xml_string):
     '''
     try:
         root = ET.fromstring(raw_xml_string)
-        state_name = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']", "value", "context" )
-        student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context" )
-        district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context" )
+        state_name = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']", "value", "context")
+        student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context")
+        district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context")
         academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
         asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
         subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
@@ -106,7 +107,7 @@ def extract_meta_names(raw_xml_string):
         return Meta(validMeta, student_id, state_name, district_id, academic_year, asmt_type, subject, grade, effective_date)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")
-        
+
 
 def extract_meta_with_fallback_helper(root, element_xpath, attribute_to_get, attribute_to_compare):
     if (root.find(element_xpath)) is not None:

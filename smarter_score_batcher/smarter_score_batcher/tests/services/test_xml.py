@@ -2,12 +2,8 @@ import unittest
 from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
-from smarter_score_batcher.constants import Constants
 from smarter_score_batcher.services import xml
 from smarter_score_batcher.celery import setup_celery
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-import tempfile
-import os
 from unittest.mock import patch
 
 

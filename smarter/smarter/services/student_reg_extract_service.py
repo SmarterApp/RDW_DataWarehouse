@@ -57,7 +57,7 @@ def post_sa_comp_extract_service(context, request):
     '''
     params = request.validated_params.copy()
     params[Extract.EXTRACTTYPE] = ExtractType.studentAssessmentCompletion
-    return process_extract(request.json_body)
+    return process_extract(params)
 
 
 def process_extract(params):

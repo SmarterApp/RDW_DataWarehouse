@@ -83,7 +83,7 @@ def process_xml(raw_xml_string):
 
 
 def create_path(root_dir, meta):
-    path = os.path.join(root_dir, meta.state_name, meta.academic_year, meta.asmt_type, meta.effective_date, meta.subject, meta.grade, meta.district_id)
+    path = os.path.join(root_dir, meta.student_id, meta.state_name, meta.district_id, meta.academic_year, meta.asmt_type, meta.subject, meta.grade, meta.effective_date)
     return path
 
 

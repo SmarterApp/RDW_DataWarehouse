@@ -255,6 +255,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/smarter_score_batcher/smarter_score_batcher.wsgi ${APACHE_DIR}/smarter_score_batcher_conf
     /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
     compile_assets true
 
@@ -330,7 +331,7 @@ function import_data_from_csv {
     python create_source_data_files.py --item --config ${WORKSPACE}/config/data_copy.ini
     echo "Generate Metadata for Item Level"
     python test_utils/metadata/metadata_generator.py -d /opt/edware/item_level -f -v
- 
+
  	echo "Generate Raw Data"
  	python create_source_data_files.py --raw --config ${WORKSPACE}/config/data_copy.ini
 }
@@ -386,9 +387,11 @@ function generate_ini {
 	cd "$WORKSPACE/config"
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
+		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
 	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini
 	else
 	    python generate_ini.py -e jenkins_dev -i settings.yaml
+		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
 	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
 	fi
 }

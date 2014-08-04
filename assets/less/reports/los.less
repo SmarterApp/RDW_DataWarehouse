@@ -1,25 +1,21 @@
 body.los {
 
     #infoBar {
-
         li.overall {
             display: none;
         }
     }
 
     #actionBar {
-	.printItem, .alignmentItem {
-	    display: none;
-	}
-
+    	.printItem, .alignmentItem {
+    	    display: none;
+    	}
+    	li {
+        &.download, &.academicYearArea, &.divider1 {
+        display: none;
+        }
+      }
     }
-  // Make search box smaller in LOS
-  #SearchBoxTemplate .searchbox {
-    width: 120px;
-  }
-  .filterArrow{
-    right: 298px;
-  }
 }
 
 .losWrapper {

@@ -14,7 +14,7 @@ STUDENT_REGISTRATION_PARAMS = {
         Extract.EXTRACTTYPE: {
             "type": "string",
             "pattern": "^(" + ExtractType.studentRegistrationStatistics + "|" + ExtractType.studentAssessmentCompletion + ")$",
-            "required": True
+            "required": False
         },
         Constants.ACADEMIC_YEAR: {
             "type": "integer",
@@ -30,7 +30,7 @@ STUDENT_REGISTRATION_PARAMS = {
 }
 
 
-@view_config(route_name='student_registration_statistics', request_method='POST')
+@view_config(route_name='student_registration_statistics')
 @validate_params(schema=STUDENT_REGISTRATION_PARAMS)
 @audit_event()
 def post_sr_stat_extract_service(context, request):
@@ -40,7 +40,9 @@ def post_sr_stat_extract_service(context, request):
     :param context:  Pyramid context object
     :param request:  Pyramid request object
     '''
-    return process_extract(request)
+    params = request.validated_params.copy()
+    params[Extract.EXTRACTTYPE] = ExtractType.studentRegistrationStatistics
+    return process_extract(params)
 
 
 @view_config(route_name='student_assessment_completion', request_method='POST')
@@ -53,12 +55,14 @@ def post_sa_comp_extract_service(context, request):
     :param context:  Pyramid context object
     :param request:  Pyramid request object
     '''
-    return process_extract(request)
+    params = request.validated_params.copy()
+    params[Extract.EXTRACTTYPE] = ExtractType.studentAssessmentCompletion
+    return process_extract(params)
 
 
-def process_extract(request):
-    params = {}
-    for k, v in request.json_body.items():
-        params[k] = v
-    results = process_extraction_request(params)
+def process_extract(params):
+    fixed_params = {}
+    for k, v in params.items():
+        fixed_params[k] = v
+    results = process_extraction_request(fixed_params)
     return Response(body=json.dumps(results), content_type='application/json')

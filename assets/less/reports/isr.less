@@ -3,14 +3,12 @@ body.isr {
   body {border: solid 1px @color-A8;}
 
   #infoBar {
-    li {
-      &.download, &.academicYearArea {
-	    display: none;
-      }
-    }
-
     .nav {
       margin: 8px 0 12px 0;
+    }
+
+    li {
+      &.download {display: none;}
     }
   }
 
@@ -21,6 +19,20 @@ body.isr {
 	  display: none;
 	}
 
+    li {
+      &.academicYearArea, &.divider2, &.asmtYearButton {
+        display: none;
+      }
+    }
+
+  }
+
+  .asmtDropdownMenu {
+    min-width: 299px !important;
+  }
+
+  #selectedAsmtType {
+    min-width: 246px !important;
   }
 
   .assessmentSection {

@@ -29,18 +29,23 @@ define [
 
   getAsmtYearPreference = () ->
     pref = getPreferences() || {}
-    pref[pref["stateCode"] + "asmtYear"]
+    asmtYear = pref[pref["stateCode"] + "asmtYear"]
+    asmtYear || parseInt(edwareUtil.getUrlParams()["asmtYear"])
 
   getEffectiveDate = () ->
     pref = getPreferences() || {}
-    pref["ISRAsmt"]?.effectiveDate
+    pref["ISRAsmt"]?.effective_date
 
   getAsmtType = () ->
     pref = getPreferences() || {}
-    pref["ISRAsmt"]?.asmtType
+    pref["ISRAsmt"]?.asmt_type
 
   saveAsmtPreference = (asmt) ->
     savePreferences {"asmt" : asmt}
+
+  getAsmtPreference = () ->
+    pref = getPreferences() || {}
+    pref['asmt']
 
   saveAsmtForISR = (asmt) ->
     savePreferences {"ISRAsmt": asmt}
@@ -49,9 +54,12 @@ define [
     pref = getPreferences() || {}
     pref['ISRAsmt']
 
-  getAsmtPreference = () ->
+  getAsmtView = () ->
     pref = getPreferences() || {}
-    pref['asmt']
+    pref['asmtView']
+
+  saveAsmtView = (asmtView) ->
+    savePreferences {"asmtView": asmtView}
 
   clearAsmtPreference = ->
     saveAsmtPreference {}
@@ -112,3 +120,5 @@ define [
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR
   getFilters: getFilters
+  saveAsmtView: saveAsmtView
+  getAsmtView: getAsmtView

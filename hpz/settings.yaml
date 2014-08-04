@@ -26,6 +26,7 @@ common:
         cookie_name: edware
         hashalg: sha512
         http_only: true
+        timeout: 1200
         # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
         #max_age: 2400
       idp:
@@ -33,12 +34,14 @@ common:
       skip.verify: False
       saml:
         identity_parser: smarter_common.security.sbac_identity_parser.SbacIdentityParser
+      session:
+        timeout: 1200
     cache:
       lock_dir: /tmp/memcachehpz
+      expire: 1200 # 20 minutes
       session.expire: 1200
       regions: session
-      type:
-       memory
+      type: memory
     ldap:
       base:
         dn: ou=environment,dc=edwdc,dc=net
@@ -105,14 +108,6 @@ development:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:80/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
-      session:
-        timeout: 1200
-      policy:
-        timeout: 1200
-    cache:
-      expire: 3600
-      session:
-        expire: 1200
 
 jenkins_dev:
   '[app:main]':
@@ -131,10 +126,6 @@ jenkins_dev:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
         issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
-      session:
-        timeout: 1200
-      policy:
-        timeout: 1200
 
 qa:
   '[app:main]':
@@ -155,21 +146,31 @@ qa:
         idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
-      session:
-        timeout: 7200
-      policy:
-        timeout: 7200
     cache:
-      public:
-        shortlived:
-            url: dwcache0.qa.dum.edwdc.net:11211
-        data:
-            url: dwcache0.qa.dum.edwdc.net:11211
-            expire: 31556940
-        filtered_data:
-            url: dwcache0.qa.dum.edwdc.net:11211
       session:
         url: dwcache0.qa.dum.edwdc.net:11211
-        expire: 7200
       type: ext:memcached
-      expire: 7200
+
+uat:
+  '[app:main]':
+    hpz:
+      db:
+        schema_name: hpz
+        url: postgresql+psycopg2://hpz:hpz2014@dbpghpz0.dmo.som.edwdc.net:5432/hpz
+        pool_size: 20
+      frs:
+        upload_base_path: /opt/edware/hpz/uploads
+        file_size_limit: 4294967296
+        download_base_url: https://reportdownload.smarterbalancedreporting.org/download
+    auth:
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
+      saml:
+        issuer_name: https://hpzweb0.dmo.som.edwdc.net
+        idp_server_login_url: https://betaauth.smarterbalancedreporting.org/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
+    cache:
+      session:
+        url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      type: ext:memcached

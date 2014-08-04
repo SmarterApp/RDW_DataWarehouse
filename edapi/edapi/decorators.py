@@ -100,9 +100,11 @@ def validate_params(schema):
             :param kwargs: function to accept an arbitrary number of keyword arguments.
             '''
             params = {}
+            request = None
             for arg in args:
                 if type(arg) == pyramid.request.Request or type(arg) == pyramid.testing.DummyRequest:
                     try:
+                        request = arg
                         params = Validator.fix_types_for_schema(schema.get('properties'), arg.GET, True)
                         if getattr(arg, 'method', 'GET') == 'POST' and len(arg.json_body) > 0:  # parse request params in POST
                             params.update(arg.json_body)
@@ -114,6 +116,13 @@ def validate_params(schema):
 
             try:
                 validictory.validate(params, schema)
+
+                def validated(request):
+                    '''
+                    Return validated parameters for this request
+                    '''
+                    return params
+                request.set_property(validated, 'validated_params', reify=True)
             except Exception as e:
                 raise EdApiHTTPPreconditionFailed(e)
             return request_handler(*args, **kwargs)

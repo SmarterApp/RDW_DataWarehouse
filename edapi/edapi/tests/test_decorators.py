@@ -51,8 +51,10 @@ class TestDecorators(unittest.TestCase):
         self.assertIsInstance(results['user_info'], DummyUser)
 
     def test_validate_params(self):
+        # test params
+        params = {'param0': 'value0', 'param2': "2"}
         # test with value
-        dummy_request = DummyRequest({'param0': 'value0'})
+        dummy_request = DummyRequest(params)
 
         def dummy_handler(*args, **kwargs):
             return args[0]
@@ -65,11 +67,16 @@ class TestDecorators(unittest.TestCase):
                     'items': {
                         'type': 'string'
                     }
+                },
+                'param2': {
+                    'type': 'integer',
                 }
             },
             'required': ['param0']
         })(dummy_handler)
-        self.assertEqual(request_handler(dummy_request), dummy_request)
+        req = request_handler(dummy_request)
+        self.assertEqual(req, dummy_request)
+        self.assertEqual(req.validated_params, {'param0': ['value0'], 'param2': 2})
         # test without value
         try:
             dummy_request = DummyRequest({'param0': 'value0'})

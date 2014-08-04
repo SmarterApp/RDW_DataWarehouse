@@ -4,30 +4,34 @@
         <span id="selectedAsmtType">{{defaultValue}}</span>
     </button>
     <ul class="dropdown-menu asmtDropdownMenu" role="menu">
-        {{#dropdownValues}}
-    {{#hasAsmtSubject}}
-        <li>
-            <span class="asmtTypeText">{{effective_date_text}} · {{asmt_grade}} · {{asmt_type}}</span>
-            <ul class="asmtDropdownOption">
-            {{#asmts}}
-                <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
-                    data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}'
-                    data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}' tabindex='0' role='button'
-                          aria-label='click to select {{asmt_subject_text}}'>
-                    <span class="subjectText">{{asmt_subject_text}}</span>
-                </li>
-            {{/asmts}}
-            </ul>
+        {{#latestYear}}
+        <li class="asmtSelection" data-display='{{displayTemplate}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
+            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-grade='{{asmt_grade}}' tabindex="0"
+            aria-label="{{display}} click to select assessment">
+            <span class="asmtTypeText" role="button">{{display}}</span>
         </li>
-    {{/hasAsmtSubject}}
-    {{^hasAsmtSubject}}
-        <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
-            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}'
-            data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}' tabindex="0">
-                <span class="asmtTypeText" role="button"
-                      aria-label="click to select assessment">{{effective_date_text}} · {{asmt_grade}} · {{asmt_type}}</span>
+        {{/latestYear}}
+        {{#hasOtherYears}}
+        <li class="otherAcadmicYears divider1">
+            <span><b>OTHER ACADEMIC YEARS</b></span>
         </li>
-    {{/hasAsmtSubject}}
-        {{/dropdownValues}}
-    </ul>
+        {{/hasOtherYears}}
+        {{#otherYears}}
+        <li class="asmtSelection" data-display='{{displayTemplate}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
+            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-grade='{{asmt_grade}}' tabindex="0"
+            aria-label="{{display}} click to select assessment">
+            <span class="asmtTypeText" role="button">{{display}}</span>
+        </li>
+        {{/otherYears}}
+        {{#hasOtherAcademicYears}}
+        <li class="otherAcadmicYears divider2">
+            <span><b>OTHER ACADEMIC YEARS</b></span>
+        </li>
+        {{#academicYears}}
+        <li class="asmtYearButton asmtYearButton{{value}}" data-display='{{display}}' data-value='{{value}}'
+            tabindex="0" role="button" aria-label="Select academic year {{display}}">
+            <span class="asmtTypeText" role="button" aria-label="click to view previous academic years">{{display}}</span>
+        </li>
+        {{/academicYears}}
+        {{/hasOtherAcademicYears}}
 </div>

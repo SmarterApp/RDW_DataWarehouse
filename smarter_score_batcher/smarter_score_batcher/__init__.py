@@ -1,6 +1,7 @@
 from pyramid.config import Configurator
-import edapi
 import logging
+import edauth
+import edapi
 from smarter_common.security.root_factory import RootFactory
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as servicesPrefix
 
@@ -13,7 +14,7 @@ def main(global_config, **settings):
     """
     config = Configurator(settings=settings, root_factory=RootFactory)
     # include edauth. Calls includeme
-    # config.include(edauth.idp_initiated_includeme)
+    config.include(edauth.idp_initiated_includeme)
     # Pass edauth the roles/permission mapping that is defined in smarter
     # edauth.set_roles(RootFactory.__acl__)
     # include add routes from edapi. Calls includeme

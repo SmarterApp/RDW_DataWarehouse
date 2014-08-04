@@ -36,7 +36,7 @@ class PDFGenerator(BatchBase):
         # build url for generating pdf
         pdf_url = self.build_url(student_id, state_code, effective_date, report)
         # send asynchronous request
-        kwargs = {'cookie_name': self.cookie_name, 'timeout': services.celery.TIMEOUT}
+        kwargs = {'cookie_name': self.cookie_name, 'timeout': services.celery.TIMEOUT, 'grayscale': True}
         return generate.apply_async((self.cookie_value, pdf_url, file_name), kwargs=kwargs, queue=self.__queue_name)  # @UndefinedVariable
 
     def build_url(self, student_id, state_code, effective_date, report):

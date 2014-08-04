@@ -72,9 +72,10 @@ def process_xml(raw_xml_string):
     meta_names = extract_meta_names(raw_xml_string)
     if not meta_names.valid_meta:
         raise EdApiHTTPPreconditionFailed("Invalid XML")
-    file_path = create_path(ROOT_DIR, meta_names)
-    args = (file_path, raw_xml_string)
     settings = get_current_registry().settings
+    root_dir = settings.get("smarter_score_batcher.base_dir")
+    file_path = create_path(root_dir, meta_names)
+    args = (file_path, raw_xml_string)
     timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
     queue_name = settings.get('smarter_score_batcher.sync_queue')
     celery_response = remote_write.apply_async(args=args, queue=queue_name)

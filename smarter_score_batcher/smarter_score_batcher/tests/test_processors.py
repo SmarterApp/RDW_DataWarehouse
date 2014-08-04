@@ -8,6 +8,8 @@ import tempfile
 import os
 from smarter_score_batcher import processors
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from pyramid.registry import Registry
+from pyramid import testing
 
 try:
     import xml.etree.cElementTree as ET
@@ -17,18 +19,23 @@ except ImportError:
 
 class Test(unittest.TestCase):
     def setUp(self):
-        pass
+        settings = {
+            'smarter_score_batcher.base_dir': '/tmp'
+        }
+        reg = Registry()
+        reg.settings = settings
+        self.__config = testing.setUp(registry=reg)
 
     def tearDown(self):
-        pass
+        testing.tearDown()
         
     def test_create_path_valid(self):
         meta = processors.Meta( True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
-        self.assertEqual('/tmp/student_id/state_name/district_id/academic_year/asmt_type/subject/grade/effective_date', processors.create_path(processors.ROOT_DIR, meta))
+        self.assertEqual('/tmp/student_id/state_name/district_id/academic_year/asmt_type/subject/grade/effective_date', processors.create_path(self.__config.registry.settings.get('smarter_score_batcher.base_dir'), meta))
         
     def test_create_path_in_valid(self):
         meta = processors.Meta( True, 'NA', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
-        self.assertNotEqual('/tmp/student_id/state_name/district_id/academic_year/asmt_type/subject/grade/effective_date', processors.create_path(processors.ROOT_DIR, meta))
+        self.assertNotEqual('/tmp/student_id/state_name/district_id/academic_year/asmt_type/subject/grade/effective_date', processors.create_path(self.__config.registry.settings.get('smarter_score_batcher.base_dir'), meta))
         
         
     def test_extract_meta_names_empty_xml(self):

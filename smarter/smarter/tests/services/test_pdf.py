@@ -17,13 +17,13 @@ from edapi.tests.test_views import DummyValueError
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name
 import services
-from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
+from smarter.services.pdf import sync_pdf_service, async_pdf_service, send_pdf_request, \
     get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_ids, _get_archive_name, \
     _get_merged_pdf_name, _create_student_ids, get_single_pdf_content, \
     _create_student_pdf_url, _create_pdf_merge_tasks, \
     _create_urls_by_student_id, get_bulk_pdf_content,\
     _create_pdf_generate_tasks, _create_cover_sheet_generate_tasks, _create_pdf_cover_merge_tasks,\
-    _get_cover_sheet_name, post_pdf_service_bc
+    _get_cover_sheet_name, async_pdf_service
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_id
@@ -81,31 +81,28 @@ class TestServices(Unittest_with_edcore_sqlite):
         testing.tearDown()
 
     def test_post_pdf_serivce_post_invalid_payload(self):
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_pdf_service, DummyValueError())
+        self.assertRaises(EdApiHTTPPreconditionFailed, sync_pdf_service, DummyValueError())
 
-    def test_post_pdf_service_post_invalid_param(self):
+    def test_sync_pdf_service_post_invalid_param(self):
         self.__request.json_body = {}
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_pdf_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, sync_pdf_service, self.__request)
 
-    def test_post_pdf_service_no_context(self):
+    def test_sync_pdf_service_no_context(self):
         self.__request.method = 'POST'
         self.__request.json_body = {Constants.STUDENTGUID: ['19489898-d469-41e2-babc-265ecbab2337'],
                                     Constants.STATECODE: 'NC',
-                                    Constants.ALLOWSINGLE: 'false',
                                     Constants.ASMTTYPE: AssessmentType.SUMMATIVE,
                                     Constants.EFFECTIVEDATE: 20160404}
 
-        self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
+        self.assertRaises(EdApiHTTPForbiddenAccess, sync_pdf_service, None, self.__request)
 
-    def test_post_pdf_service_bc(self):
-        self.__request.method = 'POST'
-        studentId = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
-        self.__request.json_body = {Constants.STUDENTGUID: [studentId],
+    def test_sync_pdf_service(self):
+        self.__request.method = 'GET'
+        studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        self.__request.GET = {Constants.STUDENTGUID: [studentId],
                                     Constants.STATECODE: 'NC',
-                                    Constants.ALLOWSINGLE: 'false',
                                     Constants.ASMTTYPE: AssessmentType.SUMMATIVE,
-                                    Constants.EFFECTIVEDATE: 20160404,
-                                    Constants.ALLOWSINGLE: 'true'}
+                                    Constants.EFFECTIVEDATE: 20160404}
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
@@ -115,45 +112,24 @@ class TestServices(Unittest_with_edcore_sqlite):
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
-        response = post_pdf_service_bc(None, self.__request)
+        response = sync_pdf_service(None, self.__request)
         self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
 
-    # def test_post_pdf_service_post_valid_payload(self):
-    #     studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
-    #     self.__request.method = 'POST'
-    #     self.__request.json_body = {Constants.STUDENTGUID: [studentId], Constants.STATECODE: 'NC',
-    #                                 Constants.ASMTTYPE: AssessmentType.SUMMATIVE, Constants.EFFECTIVEDATE: 20160404,
-    #                                 Constants.DISTRICTGUID: '229', Constants.SCHOOLGUID: '939'}
-    #     self.__request.cookies = {'edware': '123'}
-    #     # Override the wkhtmltopdf command
-    #     services.tasks.pdf.pdf_procs = ['echo', 'dummy']
-    #     # prepare empty file
-    #     pdf_file = generate_isr_report_path_by_student_id('NC', "20160404", pdf_report_base_dir=self.__temp_dir,
-    #                                                         student_ids=studentId,
-    #                                                         asmt_type=AssessmentType.SUMMATIVE)
-    #     prepare_path(pdf_file[studentId])
-    #     with open(pdf_file[studentId], 'w') as file:
-    #         file.write('%PDF-1.4')
-    #     response = post_pdf_service(None, self.__request)
-    #     self.assertIsInstance(response, Response)
-    #     self.assertIsNotNone(response.body)
-    #     self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
-
-    def test_get_pdf_service_invalid_param(self):
+    def test_async_pdf_service_invalid_param(self):
         self.__request.GET = {}
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_pdf_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, async_pdf_service, self.__request)
 
-    def test_get_pdf_service_invalid_report_name(self):
+    def test_async_pdf_service_invalid_report_name(self):
         self.__request.GET = {}
         self.__request.matchdict[Constants.REPORT] = 'newReport'
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_pdf_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, async_pdf_service, self.__request)
 
-    def test_get_pdf_service_no_context(self):
+    def test_async_pdf_service_no_context(self):
         self.__request.method
         self.__request.GET = {Constants.STUDENTGUID: '19489898-d469-41e2-babc-265ecbab2337', Constants.STATECODE: 'NC', Constants.EFFECTIVEDATE: 20160404}
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
 
-        self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, None, self.__request)
+        self.assertRaises(EdApiHTTPForbiddenAccess, sync_pdf_service, None, self.__request)
 
     def test_get_pdf_valid_params(self):
         studentId = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
@@ -169,7 +145,7 @@ class TestServices(Unittest_with_edcore_sqlite):
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
-        response = get_pdf_service(None, self.__request)
+        response = sync_pdf_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertIsNotNone(response.body)
         self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
@@ -189,7 +165,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         prepare_path(pdf_file[studentId])
         with open(pdf_file[studentId], 'w') as file:
             file.write('%PDF-1.4')
-        response = send_pdf_request(params)
+        response = send_pdf_request(params, sync=True)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
         self.assertIsInstance(response.body, bytes)
@@ -204,7 +180,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
-        self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
+        self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params, sync=True)
 
     def test_get_pdf_content_with_missing_student_id(self):
         params = {}
@@ -218,7 +194,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         params[Constants.ASMTYEAR] = '2016'
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
-        self.assertRaises(ForbiddenError, get_pdf_content, params)
+        self.assertRaises(ForbiddenError, get_pdf_content, params, sync=True)
 
     def test_has_context_for_pdf_request(self):
         student_id = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
@@ -246,7 +222,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         prepare_path(pdf_file[studentId])
         with open(pdf_file[studentId], 'w') as file:
             file.write('%PDF-1.4')
-        self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
+        self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params, sync=True)
 
     def test_send_pdf_request_no_such_report(self):
         self.__request.matchdict[Constants.REPORT] = 'fake_report.html'

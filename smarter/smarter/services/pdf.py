@@ -113,60 +113,39 @@ PDF_PARAMS = {
             "type": "string",
             "required": False,
             "pattern": "^\d+$",
-        },
-        Constants.ALLOWSINGLE: {
-            "type": "string",
-            "required": False,
-            "pattern": "^(true|false|TRUE|FALSE)$"
         }
     }, FILTERS_CONFIG)
 }
 
 
-@view_config(route_name='pdf', request_method='POST', content_type='application/json')
+@view_config(route_name='pdf', request_method='POST')
 @validate_params(schema=PDF_PARAMS)
-def post_pdf_service_bc(context, request):
+def async_pdf_service(context, request):
     '''
     This is for backward compitibility and batch PDFs.
     '''
-    return post_pdf_service(context, request)
+    return send_pdf_request(request.validated_params)
 
 
-@view_config(route_name='pdf', request_method='POST', content_type='application/pdf')
+@view_config(route_name='pdf', request_method='GET')
 @validate_params(schema=PDF_PARAMS)
-def post_pdf_service(context, request):
+def sync_pdf_service(context, request):
     '''
     Handles POST request to /services/pdf
 
     :param request:  Pyramid request object
     '''
-    try:
-        params = request.json_body
-    except ValueError:
-        raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
-
-    return send_pdf_request(params)
+    return send_pdf_request(request.validated_params, sync=True)
 
 
-@view_config(route_name='pdf', request_method='GET')
-@validate_params(schema=PDF_PARAMS)
-def get_pdf_service(context, request):
-    '''
-    Handles GET request to /services/pdf
-
-    :param request:  Pyramid request object
-    '''
-    return send_pdf_request(request.GET)
-
-
-def send_pdf_request(params):
+def send_pdf_request(params, sync=False):
     '''
     Requests for pdf content, throws http exceptions when error occurs
 
     :param params: python dict that contains query parameters from the request
     '''
     try:
-        response = get_pdf_content(params)
+        response = get_pdf_content(params, sync)
     except InvalidParameterError as e:
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
@@ -181,7 +160,7 @@ def send_pdf_request(params):
     return response
 
 
-def get_pdf_content(params):
+def get_pdf_content(params, sync=False):
     # Collect the parameters
     student_ids = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
@@ -194,7 +173,6 @@ def get_pdf_content(params):
     color_mode = params.get(Constants.MODE, Constants.GRAY).lower()
     lang = params.get(Constants.LANG, 'en').lower()
     subprocess_timeout = services.celery.TIMEOUT
-    allow_single = bool(params.get(Constants.ALLOWSINGLE, False))
     is_grayscale = (color_mode == Constants.GRAY)
 
     # Validate report type
@@ -225,7 +203,7 @@ def get_pdf_content(params):
     base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
     pdf_base_dir = settings.get('pdf.report_base_dir', "/tmp")
 
-    if student_ids is not None and (type(student_ids) is not list or (len(student_ids) == 1 and allow_single)):
+    if sync:
         # Get cookies and other config items
         (cookie_name, cookie_value) = get_session_cookie()
         single_generate_queue = settings.get('pdf.single_generate.queue')

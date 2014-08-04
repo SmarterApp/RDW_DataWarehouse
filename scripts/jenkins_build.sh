@@ -255,6 +255,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/smarter_score_batcher/smarter_score_batcher.wsgi ${APACHE_DIR}/smarter_score_batcher_conf
     /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
     compile_assets true
 

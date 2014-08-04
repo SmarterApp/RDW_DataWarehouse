@@ -100,9 +100,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.method = 'GET'
         studentId = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.GET = {Constants.STUDENTGUID: [studentId],
-                                    Constants.STATECODE: 'NC',
-                                    Constants.ASMTTYPE: AssessmentType.SUMMATIVE,
-                                    Constants.EFFECTIVEDATE: 20160404}
+                              Constants.STATECODE: 'NC',
+                              Constants.ASMTTYPE: AssessmentType.SUMMATIVE,
+                              Constants.EFFECTIVEDATE: 20160404}
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file

@@ -4,7 +4,6 @@ from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 
-
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -15,7 +14,6 @@ logger = logging.getLogger("smarter_score_batcher")
 DEFAULT_VALUE = 'NA'
 ATTRIBUTE_CONTEXT_VALUE_FINAL = 'FINAL'
 ATTRIBUTE_CONTEXT_VALUE_INITIAL = 'INITIAL'
-ROOT_DIR = '/tmp'
 
 
 class Meta:

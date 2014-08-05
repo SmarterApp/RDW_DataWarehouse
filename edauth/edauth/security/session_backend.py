@@ -96,7 +96,7 @@ class BeakerBackend(Backend):
         Return session from persistent storage
         '''
         region = self.__get_cache_region(session_id)
-        if not session_id in region:
+        if session_id not in region:
             logger.info('Session is not found in cache. It may have expired or connection to memcached is down')
             return None
         return region.get(session_id)

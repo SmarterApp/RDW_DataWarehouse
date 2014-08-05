@@ -63,5 +63,5 @@ class TestBasicIdentityParser(unittest.TestCase):
         self.assertEqual(relation[0].role, 'DUMMY')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -1,4 +1,3 @@
-
 '''
 Created on May 20, 2013
 
@@ -42,5 +41,5 @@ class TestUtils(unittest.TestCase):
         self.assertIn('test', results)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

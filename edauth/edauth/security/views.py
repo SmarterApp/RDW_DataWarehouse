@@ -36,6 +36,7 @@ def forbidden_view(request):
     else:
         return login(request)
 
+
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 def login(request):
     '''
@@ -203,7 +204,7 @@ def saml2_post_consumer(request):
         identity_parser_name = request.registry.settings.get('auth.saml.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser')
         identity_parser_array = identity_parser_name.split('.')
         loading_class = identity_parser_array.pop()
-        #Reflection to load identity parser class
+        # Reflection to load identity parser class
         module = __import__('.'.join(identity_parser_array), fromlist=[loading_class])
         identity_parser_class = getattr(module, loading_class)
         session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), identity_parser_class, session_timeout).get_session_id()

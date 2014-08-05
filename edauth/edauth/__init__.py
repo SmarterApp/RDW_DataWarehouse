@@ -23,6 +23,7 @@ idp_initiated = False
 def includeme(config):
     sp_initiated_includeme(config)
 
+
 def base_includeme(config):
     '''
     Performs initialization tasks, such as setting configuration options.
@@ -67,13 +68,16 @@ def base_includeme(config):
     # scans edauth, ignoring test package
     config.scan(ignore='edauth.test')
 
+
 def sp_initiated_includeme(config):
     base_includeme(config)
+
 
 def idp_initiated_includeme(config):
     base_includeme(config)
     global idp_initiated
-    idp_initiated=True
+    idp_initiated = True
+
 
 def set_roles(roles):
     '''

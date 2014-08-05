@@ -16,8 +16,9 @@ requires = [
     'zope.sqlalchemy==0.7.3',
     'waitress==0.8.7',
     'config',
-    'edcore',
     'edworker',
+    'edcore',
+    'edschema',
     'edauth',
     'edapi',
     'smarter_common']

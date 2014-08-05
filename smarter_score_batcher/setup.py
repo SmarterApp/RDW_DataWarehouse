@@ -18,6 +18,7 @@ requires = [
     'config',
     'edworker',
     'edauth',
+    'edcore',
     'edapi',
     'smarter_common']
 

@@ -48,6 +48,7 @@ function setup_virtualenv {
     source ${VIRTUALENV_DIR}/bin/activate
     for var in "${INSTALL_PKGS[@]}"
     do
+        echo "Dawu testing.. ${var}"
         cd "$WORKSPACE/$var"
         pwd
         if [ -f setup-developer.py ];  then

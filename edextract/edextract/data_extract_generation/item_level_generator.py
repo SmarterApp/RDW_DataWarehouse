@@ -6,14 +6,14 @@ This module contains the logic to write to an assessment item-level CSV extract 
 
 import csv
 import logging
-import os
+import copy
 
 from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.utils.file_utils import generate_path_to_item_csv
 from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.file_utils import File
-import copy
 from edextract.utils.metadata_reader import MetadataReader
 from edextract.exceptions import NotFileException
 
@@ -48,46 +48,6 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
         _append_csv_files(items_root_dir, item_ids, results, output_files, CSV_HEADER)
         # Done
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
-
-
-def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_id=None, student_id=None, **kwargs):
-    if type(asmt_year) is int:
-        asmt_year = str(asmt_year)
-    if type(effective_date) is int:
-        effective_date = str(effective_date)
-    if type(asmt_grade) is int:
-        asmt_grade = str(asmt_grade)
-    path = items_root_dir
-    if state_code is not None:
-        path = os.path.join(path, state_code)
-    else:
-        return path
-    if asmt_year is not None:
-        path = os.path.join(path, asmt_year)
-    else:
-        return path
-    if asmt_type is not None:
-        path = os.path.join(path, asmt_type.upper().replace(' ', '_'))
-    else:
-        return path
-    if effective_date is not None:
-        path = os.path.join(path, effective_date)
-
-    if asmt_subject is not None:
-        path = os.path.join(path, asmt_subject.upper())
-    else:
-        return path
-    if asmt_grade is not None:
-        path = os.path.join(path, asmt_grade)
-    else:
-        return path
-    if district_id is not None:
-        path = os.path.join(path, district_id)
-    else:
-        return path
-    if student_id is not None:
-        path = os.path.join(path, student_id + '.csv')
-    return path
 
 
 def _check_file_for_items(file_descriptor, item_ids):
@@ -144,7 +104,7 @@ def _prepare_file_list(items_root_dir, results):
     files = []
     total_size = 0
     for result in results:
-        path = _get_path_to_item_csv(items_root_dir, **result)
+        path = generate_path_to_item_csv(items_root_dir, **result)
         # Get the file size of the file from metadata file
         size = metadata_reader.get_size(path)
         if size is -1:

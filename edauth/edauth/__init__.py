@@ -17,9 +17,14 @@ from edcore.utils.utils import to_bool
 
 
 logger = logging.getLogger(__name__)
+idp_initiated = False
 
 
 def includeme(config):
+    sp_initiated_includeme(config)
+
+
+def base_includeme(config):
     '''
     Performs initialization tasks, such as setting configuration options.
     It is automatically called by a consumer of edauth when it calls config.include(edauth).
@@ -62,6 +67,16 @@ def includeme(config):
 
     # scans edauth, ignoring test package
     config.scan(ignore='edauth.test')
+
+
+def sp_initiated_includeme(config):
+    base_includeme(config)
+
+
+def idp_initiated_includeme(config):
+    base_includeme(config)
+    global idp_initiated
+    idp_initiated = True
 
 
 def set_roles(roles):

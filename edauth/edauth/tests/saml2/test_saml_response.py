@@ -23,5 +23,5 @@ class Test(unittest.TestCase):
         self.assertEqual('s2c39419140bad5e9c015019bcaa49215bf00d0322', samlResponse.get_id(), 'read ID correctly')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

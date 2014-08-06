@@ -7,7 +7,6 @@ README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid',
     'pyramid == 1.4',
     'pyramid_beaker==0.8',
     'SQLAlchemy==0.8.3',
@@ -17,21 +16,22 @@ requires = [
     'zope.sqlalchemy==0.7.3',
     'waitress==0.8.7',
     'config',
+    'edworker',
+    'edcore',
+    'edschema',
     'edauth',
     'edapi',
-    'smarter_common'
-    ]
+    'smarter_common']
 
 setup(name='smarter_score_batcher',
       version='0.0',
       description='smarter_score_batcher',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        "Framework :: Pyramid",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        ],
+          "Programming Language :: Python",
+          "Framework :: Pyramid",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application", ],
       author='',
       author_email='',
       url='',

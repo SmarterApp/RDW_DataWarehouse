@@ -162,6 +162,18 @@ common:
           -   name: extract_sync
               exchange: direct
               key: extract_sync
+    smarter_score_batcher:
+      base_dir: /opt/edware/raw_data
+      celery_timeout: 30
+      sync_queue: smarter_score_batcher_sync
+      celery:
+        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_writer',)
+        CELERY_RESULT_BACKEND: amqp
+        CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+        CELERYD_CONCURRENCY: 20
+        CELERY_DEFAULT_QUEUE: smarter_score_batcher
+        CELERY_DEFAULT_ROUTING_KEY: smarter_score_batcher
+        CELERY_DEFAULT_EXCHANGE_TYPE: direct
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home
@@ -371,6 +383,8 @@ qa:
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
+    smarter_score_batcher.celery:
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -523,6 +537,8 @@ jenkins_qa:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
+    smarter_score_batcher.celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/smarter_score_batcher
     hpz:
         file_registration_url: http://localhost/registration
         file_upload_base_url: http://localhost/files
@@ -537,6 +553,8 @@ uat:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
+    smarter_score_batcher.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
     extract:
       gpg:
         keyserver: hkp://celrydw1.dmo.som.edwdc.net
@@ -715,6 +733,8 @@ development:
       celery_always_eager: true
     migrate.celery:
       celery_always_eager: true
+    smarter_score_batcher.celery:
+      celery_always_eager: true
     edware:
       db:
         pool_size: 20
@@ -824,6 +844,8 @@ test:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+    smarter_score_batcher.celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
     auth:
       skip.verify: False
       saml:
@@ -905,6 +927,9 @@ jenkins_int:
         CELERYD_CONCURRENCY: 4
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
     edware:
       db:
         cat:
@@ -969,6 +994,9 @@ jenkins_dev:
           soft_limit: 300000
           average.csv: 30000
           average.xml: 30000
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
     edware:
       db:
         cat:

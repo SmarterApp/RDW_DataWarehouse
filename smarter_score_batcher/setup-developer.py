@@ -1,13 +1,15 @@
 import os
 
-from setuptools import setup, find_packages
-import shutil
 from distutils.core import run_setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = [
+    'edcore',
+    'edschema',
     'edapi',
+    'edauth',
+    'edworker',
     'smarter_common']
 
 

@@ -139,7 +139,7 @@ function get_opts {
             d)
                # dependency projects are separated by comma, e.g. hpz,smarter_batcher_score
                dependencies="${OPTARG//,/ }"
-               INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$dependencies")
+               INSTALL_PKGS=("${INSTALL_PKGS[@]}" $dependencies)
                ;;
             ?)
                echo "Invalid params"

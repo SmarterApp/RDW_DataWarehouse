@@ -13,8 +13,7 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings, root_factory=RootFactory)
-    # include edauth. Calls includeme
-    config.include(edauth.idp_initiated_includeme)
+    config.include(edauth)
     # Pass edauth the roles/permission mapping that is defined in smarter
     # edauth.set_roles(RootFactory.__acl__)
     # include add routes from edapi. Calls includeme

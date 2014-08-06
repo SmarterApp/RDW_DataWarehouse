@@ -7,8 +7,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     effective_principals, unauthenticated_userid
 from pyramid.httpexceptions import HTTPFound, HTTPMovedPermanently, \
     HTTPForbidden, HTTPUnauthorized, HTTPError
-from pyramid.view import view_config, forbidden_view_config,\
-    render_view_to_response
+from pyramid.view import view_config, forbidden_view_config
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 import urllib
@@ -26,17 +25,9 @@ import json
 import pyramid.security
 from edauth.security.exceptions import NotAuthorized
 from edauth.security.logging import SECURITY_EVENT_TYPE, write_security_event
-from edauth import idp_initiated
 
 
 @forbidden_view_config()
-def forbidden_view(request):
-    if idp_initiated:
-        return HTTPForbidden()
-    else:
-        return login(request)
-
-
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 def login(request):
     '''

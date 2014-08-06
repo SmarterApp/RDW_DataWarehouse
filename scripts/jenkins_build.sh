@@ -252,7 +252,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-    /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
+    /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} /opt/edware/conf/hpz.ini
     /bin/ln -sf ${WORKSPACE}/hpz/frs.wsgi ${APACHE_DIR}/hpz_frs_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}

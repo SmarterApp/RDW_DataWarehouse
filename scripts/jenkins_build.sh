@@ -48,7 +48,6 @@ function setup_virtualenv {
     source ${VIRTUALENV_DIR}/bin/activate
     for var in "${INSTALL_PKGS[@]}"
     do
-        echo "Dawu testing.. ${var}"
         cd "$WORKSPACE/$var"
         pwd
         if [ -f setup-developer.py ];  then
@@ -138,7 +137,9 @@ function get_opts {
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$MAIN_PKG")
                ;;
             d)
-               INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$OPTARG")
+               # dependency projects are separated by comma, e.g. hpz,smarter_batcher_score
+               dependencies="${OPTARG//,/ }"
+               INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$dependencies")
                ;;
             ?)
                echo "Invalid params"

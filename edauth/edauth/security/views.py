@@ -99,6 +99,12 @@ def login(request):
     params = urllib.parse.urlencode(params)
 
     redirect_url = url + "?%s" % params
+
+    # Redirect to sso if it's not an ajax call, and if we detected that the requested url is different than referrer
+    # This is a patch to get around api calls made from browser window.location
+    if not request.is_xhr and request.referrer is not None and request.url != request.referrer:
+        return HTTPFound(location=redirect_url)
+
     # We need to return 401 with a redirect url and the front end will handle the redirect
     return HTTPUnauthorized(body=json.dumps({'redirect': redirect_url}), content_type='application/json')
 

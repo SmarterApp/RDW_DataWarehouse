@@ -1,8 +1,10 @@
 import unittest
 from pyramid.testing import DummyRequest
-from hpz.swi.download_service import download_file
+from hpz.swi.download_service import download_file, is_file_exist, web_download
 from unittest.mock import patch
 from edauth.security.user import User
+from pyramid.response import Response
+from mock import MagicMock
 
 __author__ = 'npandey'
 
@@ -120,3 +122,29 @@ class RegistrationTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 404)
         logger_patch.assert_called_once_with('File %s is registered, but does not exist on disk', 'tmp/filename.zip')
+
+    @patch('hpz.swi.download_service.authenticated_userid')
+    @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
+    def test_file_exists_file_not_exist(self, get_reg_info_patch, auth_userid_patch):
+        auth_userid_patch.return_value = self.dummy_user
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path,
+                                           "file_name": self.dummy_file_name}
+        self.__request.method = 'GET'
+        self.__request.matchdict['reg_id'] = '12345'
+        response = is_file_exist(None, self.__request)
+        self.assertEqual(response.status_code, 404)
+
+    @patch('hpz.swi.download_service.authenticated_userid')
+    @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
+    @patch('os.path.isfile')
+    @patch('hpz.swi.download_service.logger.info')
+    def test_file_exists_for_valid_file(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
+        auth_userid_patch.return_value = self.dummy_user
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path,
+                                           "file_name": self.dummy_file_name}
+        is_file_patch.return_value = True
+        logger_patch.return_value = None
+        self.__request.method = 'GET'
+        self.__request.matchdict['reg_id'] = '1234'
+        response = is_file_exist(None, self.__request)
+        self.assertEqual(response.status_code, 200)

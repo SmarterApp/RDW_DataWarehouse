@@ -21,7 +21,6 @@ from pyramid.registry import Registry
 from edauth.tests.test_helper.create_session import create_test_session
 from beaker.cache import cache_managers, cache_regions
 import json
-from edauth.security.exceptions import NotAuthorized
 
 
 def get_saml_from_resource_file(file_mame):
@@ -36,14 +35,11 @@ class EdAuthDummyRequest(DummyRequest):
     def __init__(self, xhr=False):
         super().__init__()
         self.xhr = xhr
+        self.referrer = self.url
 
     @property
     def is_xhr(self):
         return self.xhr
-
-    @property
-    def referrer(self):
-        return self.url
 
 
 class TestViews(unittest.TestCase):
@@ -84,8 +80,8 @@ class TestViews(unittest.TestCase):
         cache_regions.clear()
 
     def test_login_referred_by_login_page(self):
-        self.assertTrue(True)
         self.__request.url = 'http://example.com/dummy/login'
+        self.__request.referrer = 'http://example.com/r'
         http = login(self.__request)
         self.assertIsInstance(http, HTTPFound)
 
@@ -101,6 +97,18 @@ class TestViews(unittest.TestCase):
         self.assertIsNotNone(queries['SAMLRequest'])
         relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
         self.assertEqual(relay_state.path, "/dummy/report")
+
+    def test_login_with_no_referrer_url(self):
+        self.__request = EdAuthDummyRequest(False)
+        self.__request.url = 'http://example.com/dummy/data'
+        self.__request.referrer = None
+        # Must set hook_zca to false to work with uniittest_with_sqlite
+        self.__config = testing.setUp(registry=self.registry, request=self.__request, hook_zca=False)
+        resp = login(self.__request)
+        self.assertIsInstance(resp, HTTPUnauthorized)
+
+        body = json.loads(resp.body.decode())
+        self.assertIsNotNone(body['redirect'])
 
     def test_login_with_xhr(self):
         self.__request = EdAuthDummyRequest(True)

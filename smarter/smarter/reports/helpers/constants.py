@@ -117,6 +117,7 @@ class Constants():
     FILES = 'files'
     URL = 'url'
     DOWNLOAD_URL = 'download_url'
+    WEB_DOWNLOAD_URL = 'web_download_url'
     APPLICATION_JSON = 'application/json'
     APPLICATION_PDF = 'application/pdf'
     COOKIE = 'cookie'

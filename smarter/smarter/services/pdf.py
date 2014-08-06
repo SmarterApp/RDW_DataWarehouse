@@ -283,7 +283,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params)
 
     # Register expected file with HPZ
-    registration_id, download_url = register_file(user.get_uid())
+    registration_id, download_url, web_download_url = register_file(user.get_uid())
 
     # Get the name of the school
     school_name = _get_school_name(state_code, district_id, school_id)
@@ -297,7 +297,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     archive_file_path = os.path.join(directory_for_zip, archive_file_name)
 
     # Create JSON response
-    response = {Constants.FILES: [{Constants.FILENAME: archive_file_name, Constants.DOWNLOAD_URL: download_url}]}
+    response = {Constants.FILES: [{Constants.FILENAME: archive_file_name, Constants.DOWNLOAD_URL: download_url, Constants.WEB_DOWNLOAD_URL: web_download_url}]}
 
     # Generate cookie
     pdfGenerator = PDFGenerator(settings)

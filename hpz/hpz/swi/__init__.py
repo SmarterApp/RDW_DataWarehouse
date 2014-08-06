@@ -10,14 +10,15 @@ def includeme(config):
     '''
     Routes to service endpoints
     '''
-
-    # Add File Download end point
     config.add_route('download', '/download/{reg_id}')
     config.add_route('error', 'error')
+    config.add_route('validate', '/validate/{reg_id}')
+    config.add_route('web_download', '/web/{reg_id}')
 
     here = os.path.abspath(os.path.dirname(__file__))
     assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..', '..'), 'assets'))
     config.add_static_view('assets/images', os.path.join(assets_dir, 'images'))
+    config.add_static_view('js', os.path.join(assets_dir, 'js'))
 
 
 @view_config(route_name='error', renderer='../../assets/templates/hpz_error.pt')

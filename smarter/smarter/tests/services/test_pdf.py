@@ -549,7 +549,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         mock_create_student_ids.return_value = '', ''
         mock_generate_isr_report_path_by_student_id.return_value = ''
         mock_create_urls_by_student_id.return_value = ''
-        mock_register_file.return_value = '', 'http://foo.com/abc/hello'
+        mock_register_file.return_value = '', 'http://foo.com/abc/hello', 'http://blah/blah'
         mock_get_school_name.return_value = ''
         mock_create_pdf_generate_tasks.return_value = ''
         mock_create_pdf_merge_tasks.return_value = '', '', ''

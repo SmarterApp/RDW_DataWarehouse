@@ -45,6 +45,10 @@ common:
     ldap:
       base:
         dn: ou=environment,dc=edwdc,dc=net
+    hpz:
+      frs:
+        upload_base_path: /opt/edware/hpz/uploads
+        file_size_limit: 4294967296
 
   '[server:main]':
     use: 'egg:waitress#main'
@@ -99,9 +103,7 @@ development:
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
         pool_size: 5
       frs:
-        upload_base_path: /opt/edware/hpz/uploads
-        file_size_limit: 4294967296
-        download_base_url: http://localhost/download
+        download_base_url: http://localhost
     auth:
       saml:
         idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
@@ -117,9 +119,7 @@ jenkins_dev:
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
         pool_size: 5
       frs:
-        upload_base_path: /opt/edware/hpz/uploads
-        file_size_limit: 4294967296
-        download_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/download
+        download_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/
     auth:
       saml:
         idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
@@ -135,9 +135,7 @@ qa:
         url: postgresql+psycopg2://hpz:hpz2014@dbpghpz0.qa.dum.edwdc.net:5432/hpz
         pool_size: 20
       frs:
-        upload_base_path: /opt/edware/hpz/uploads
-        file_size_limit: 4294967296
-        download_base_url: https://hpzweb0.qa.dum.edwdc.net/download
+        download_base_url: https://hpzweb0.qa.dum.edwdc.net/
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -159,9 +157,7 @@ uat:
         url: postgresql+psycopg2://hpz:hpz2014@dbpghpz0.dmo.som.edwdc.net:5432/hpz
         pool_size: 20
       frs:
-        upload_base_path: /opt/edware/hpz/uploads
-        file_size_limit: 4294967296
-        download_base_url: https://reportdownload.smarterbalancedreporting.org/download
+        download_base_url: https://reportdownload.smarterbalancedreporting.org/
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

@@ -66,9 +66,10 @@ def process_extraction_request(params):
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
     # Register extract file with HPZ.
-    registration_id, download_url = register_file(user.get_uid())
-    extract_file['download_url'] = download_url
-    response['files'] = [extract_file]
+    registration_id, download_url, web_download_url = register_file(user.get_uid())
+    extract_file[EndpointConstants.DOWNLOAD_URL] = download_url
+    extract_file[EndpointConstants.WEB_DOWNLOAD_URL] = web_download_url
+    response[EndpointConstants.FILES] = [extract_file]
 
     start_extract(tenant, request_id, [archived_file_path], [data_directory_to_archive], [registration_id], [task_info], queue=queue)
 

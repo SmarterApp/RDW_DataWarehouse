@@ -127,7 +127,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
     @patch('smarter.extracts.student_reg_processor._create_task_info')
     @patch('smarter.extracts.student_reg_processor.register_file')
     def test_process_async_extraction_request(self, register_file_patch, task_info, mock_start_extract):
-        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://something/web/as'
         dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
         task_info.return_value = dummy_task_info
         params = {Constants.STATECODE: 'NC',

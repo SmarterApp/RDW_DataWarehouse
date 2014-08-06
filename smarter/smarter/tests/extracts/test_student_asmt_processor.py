@@ -217,7 +217,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_process_async_extraction_request_with_subject(self, register_file_patch):
-        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://somehost:82/web/a1-b2-c3-d4-e1e10'
         params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],
                   'districtId': [None],
@@ -236,7 +236,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
     @patch('smarter.extracts.student_asmt_processor.start_extract')
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_process_async_items_extraction_request_with_subject(self, mock_register_file, mock_start_extract):
-        mock_register_file.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+        mock_register_file.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://somehost:82/web/a1-b2-c3-d4-e1e10'
         params = {'stateCode': 'NC',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',

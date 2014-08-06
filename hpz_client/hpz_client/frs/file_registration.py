@@ -17,5 +17,6 @@ def register_file(user_id):
     response_json = response.json()
     registration_id = response_json['registration_id']
     download_url = response_json['url']
+    web_download_url = response_json['web_url']
 
-    return registration_id, download_url
+    return registration_id, download_url, web_download_url

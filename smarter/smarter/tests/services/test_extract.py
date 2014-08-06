@@ -185,7 +185,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_get_valid_tenant_extract(self, register_file_patch):
-        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://somehost:82/web/a1-b2-c3-d4-e1e10'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -201,7 +201,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_post_valid_tenant_extract(self, register_file_patch):
-        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://somehost:82/web/a1-b2-c3-d4-e1e10'
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['NC'],
                                     'asmtSubject': ['Math'],
@@ -251,7 +251,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_send_extraction_requesttest_get_extract_service_async(self, register_file_patch):
-        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://somehost:82/web/a1-b2-c3-d4-e1e10'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'

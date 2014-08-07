@@ -9,13 +9,16 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPServiceUnavailable
 from smarter_score_batcher.processors import process_xml
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from edapi.decorators import validate_xml
+from smarter_score_batcher.utils import xsd
 
 
 logger = logging.getLogger("smarter_score_batcher")
 
 
 @view_config(route_name='xml', request_method='POST', content_type="application/xml", renderer='json')
-def xml_catcher(request):
+@validate_xml(xsd.xsd.get_xsd())
+def xml_catcher(context, request):
     """
     XML cacther service expects XML post and will delegate processing based on the root element.
     """

@@ -4,6 +4,8 @@ import edauth
 import edapi
 from smarter_common.security.root_factory import RootFactory
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as servicesPrefix
+import os
+from smarter_score_batcher.utils import xsd
 
 
 logger = logging.getLogger(__name__)
@@ -19,6 +21,7 @@ def main(global_config, **settings):
     # edauth.set_roles(RootFactory.__acl__)
     # include add routes from edapi. Calls includeme
     config.include(edapi)
+    xsd.xsd = xsd.XSD(settings['smarter_score_batcher.xsd.path'])
 
     config.add_route('xml', '/services/xml')
     config.scan()

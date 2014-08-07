@@ -252,7 +252,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-    /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} /opt/edware/conf/hpz.ini
+    /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
     /bin/ln -sf ${WORKSPACE}/hpz/frs.wsgi ${APACHE_DIR}/hpz_frs_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
@@ -390,11 +390,11 @@ function generate_ini {
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
 		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
-	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini
+	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini -p hpz
 	else
 	    python generate_ini.py -e jenkins_dev -i settings.yaml
 		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
-	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
+	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini -p hpz
 	fi
 }
 

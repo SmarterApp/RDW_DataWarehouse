@@ -19,6 +19,7 @@ __updated__ = '2013-02-02'
 # known projects names
 SMARTER = "smarter"
 SMARTER_SCORE_BATCHER = "smarter_score_batcher"
+HPZ = "hpz"
 
 
 def flatten_yaml(a_dict, result, path=""):
@@ -120,7 +121,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--env", default='development', help="set environment name.")
     parser.add_argument("-i", "--input", default="settings.yaml", help="set input yaml file name default[settings.yaml]")
     parser.add_argument("-o", "--output", help="set output ini file name. Default is development.ini")
-    parser.add_argument("-p", "--project", default=SMARTER, choices=[SMARTER, SMARTER_SCORE_BATCHER], help="the project name. Default is smarter.")
+    parser.add_argument("-p", "--project", default=SMARTER, choices=[SMARTER, SMARTER_SCORE_BATCHER, HPZ], help="the project name. Default is smarter.")
     args = parser.parse_args()
 
     if args.env is None:

@@ -3,6 +3,7 @@ import logging
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from edcore.utils.file_utils import generate_path_to_raw_xml
 
 try:
     import xml.etree.cElementTree as ET
@@ -17,9 +18,9 @@ ATTRIBUTE_CONTEXT_VALUE_INITIAL = 'INITIAL'
 
 
 class Meta:
-    def __init__(self, valid_meta, student_id, state_name, district_id, academic_year, asmt_type, subject, grade, effective_date):
+    def __init__(self, valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date):
         self.__student_id = student_id
-        self.__state_name = state_name
+        self.__state_code = state_code
         self.__district_id = district_id
         self.__academic_year = academic_year
         self.__asmt_type = asmt_type
@@ -33,8 +34,8 @@ class Meta:
         return self.__student_id
 
     @property
-    def state_name(self):
-        return self.__state_name
+    def state_code(self):
+        return self.__state_code
 
     @property
     def district_id(self):
@@ -83,7 +84,16 @@ def process_xml(raw_xml_string):
 
 
 def create_path(root_dir, meta):
-    path = os.path.join(root_dir, meta.student_id, meta.state_name, meta.district_id, meta.academic_year, meta.asmt_type, meta.subject, meta.grade, meta.effective_date)
+    kwargs = {}
+    kwargs['state_code'] = meta.state_code
+    kwargs['asmt_year'] = meta.academic_year
+    kwargs['asmt_type'] = meta.asmt_type
+    kwargs['effective_date'] = meta.effective_date
+    kwargs['asmt_subject'] = meta.subject
+    kwargs['asmt_grade'] = meta.grade
+    kwargs['district_id'] = meta.district_id
+    kwargs['student_id'] = meta.student_id
+    path = generate_path_to_raw_xml(root_dir, **kwargs)
     return path
 
 
@@ -93,7 +103,7 @@ def extract_meta_names(raw_xml_string):
     '''
     try:
         root = ET.fromstring(raw_xml_string)
-        state_name = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']", "value", "context")
+        state_code = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateCode']", "value", "context")
         student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context")
         district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context")
         academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
@@ -101,8 +111,8 @@ def extract_meta_names(raw_xml_string):
         subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
         effective_date = 'NA'  # root.find("./test").get('effectiveDate', DEFAULT_VALUE)
-        validMeta = state_name and student_id and district_id and academic_year and asmt_type and subject and grade
-        return Meta(validMeta, student_id, state_name, district_id, academic_year, asmt_type, subject, grade, effective_date)
+        validMeta = state_code and student_id and district_id and academic_year and asmt_type and subject and grade
+        return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")
 

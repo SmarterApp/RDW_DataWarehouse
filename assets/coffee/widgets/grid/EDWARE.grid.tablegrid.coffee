@@ -272,10 +272,10 @@ define [
     config = $.extend true, {}, DEFAULT_CONFIG, config
     options = config['options']
     data = config['data']
-    options.data = data
-    # for i in [1..2]
-    #   data = data.concat(data)
     # options.data = data
+    for i in [1..2]
+      data = data.concat(data)
+    options.data = data
     columns = config['columns']
     footer = config['footer']
     if data and data[0]

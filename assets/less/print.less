@@ -2,7 +2,12 @@
 @media print {
   .pageBreak { page-break-after:always; }
 
-  .printContent, .legendPopup { display: block; }
+  .printContent { display: block; }
+
+  .legendPopup {
+    display: block;
+    page-break-inside: avoid;
+  }
 
   .printNone { display: none; }
 

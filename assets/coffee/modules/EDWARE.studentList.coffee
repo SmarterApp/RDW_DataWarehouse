@@ -224,6 +224,7 @@ define [
       @config.labels.searchPlaceholder = @config.searchPlaceholder
       @config.labels.SearchResultText = @config.SearchResultText
       @infoBar = edwareReportInfoBar.create '#infoBar',
+        breadcrumb: @contextData
         reportTitle: "Students in #{@contextData.items[4].name}"
         reportType: Constants.REPORT_TYPE.GRADE
         reportName: Constants.REPORT_NAME.LOS

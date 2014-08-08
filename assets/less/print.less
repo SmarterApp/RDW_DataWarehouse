@@ -1,91 +1,165 @@
 /* Print css */
 @media print {
+  .pageBreak { page-break-after:always; }
 
-    body {
-        border: none;
+  .printContent, .legendPopup { display: block; }
+
+  .printNone { display: none; }
+
+  a[href]:after {content: ""} // do not print urls
+
+  .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+    font-weight: bold;
+  }
+
+  .ui-th-column {
+    background-image: none !important;
+    background-color: @color-C14 !important;
+    border: solid 1px @color-black !important;
+    border-left: none !important;
+
+    &:last-child {
+      border-right: none !important;
     }
+  }
+
+  .ui-jqgrid tr.footrow td {
+    border-top: none;
+    border-right: solid 1px black;
+    border-bottom: solid 1px black;
+  }
+
+  .ui-jqgrid tr.ui-row-ltr td{ border-right: solid 1px black; }
+
+  .printHeader {
+    margin-top: 10px;
+    clear: both;
+    margin-bottom: 20px;
+    border-bottom: solid 2px @color-black;
+    width: 100%;
+    min-height: 65px;
+
+    .logo {
+      position: relative;
+      float: left;
+      margin-left: 15px;
+    }
+    .summary {
+      text-align: right;
+      float: right;
+      font-size: 15px;
+      line-height: 15px;
+      color: @color-B1;
+      margin-right: 15px;
+
+      .label {
+        color: @color-black;
+        background: none;
+        font-weight: normal;
+        font-size: 15px;
+        padding: 0;
+      }
+
+      .title {
+        color: @color-black;
+        font-size: 17px;
+        font-weight: bold;
+        margin-bottom: 5px;
+
+        i {
+          font-style: normal;
+          font-weight: 400;
+          color: @color-B7 !important;
+        }
+      }
+    }
+  }
+
+  #header, #breadcrumb, #actionBar, .stickySection { display: none !important; }
+
+  .selectedFilter_panel {
+
+    border-bottom: none;
+
+    em {
+      font-style: normal;
+      color: @color-B2 !important;
+
+      &.black { color: black !important; }
+    }
+
+    .removeAllFilters { display: none; }
+
+    a[href]:after {
+      content: "&";
+      color: @color-B2;
+      font-weight: normal;
+    }
+
+    .selectedFilterGroup {
+      margin-right: 0px;
+      border-right: none;
+      font-weight: bold;
+
+      &:last-child {
+        a[href]:after {
+          content: "";
+        }
+      }
+    }
+  }
+
+  body.cpop, body.los {
+    .printHeader {
+      border-bottom: none;
+    }
+  }
+
+  body.isr {
+    border: none;
     .assessmentOtherInfoHeader.show { display: block;}
     #breadcrumb {
-        background-image: transparent;
-        background: #ECECE6;
+      background-image: transparent;
+      background: #ECECE6;
     }
 
     .ui-jqgrid-bdiv {
-        min-height: 700px;
-        display: block !important;
-        overflow: hidden !important;
+      min-height: 700px;
+      display: block !important;
+      overflow: hidden !important;
     }
     .ui-jqgrid-bdiv table {
-        display: block !important;
+      display: block !important;
     }
     #lui_gridTable, #load_gridTable {
-        display: none !important;
+      display: none !important;
     }
 
-    .printContent { display: block; }
     #header, #breadcrumb{ display: none; }
     #individualStudentContent  { background: none; float: none;}
     .outerBox h2 { display: none;}
     .innerBox { border: none; position: relative; float: none; margin: 0;}
-    .printHeader {
-        margin-top: 10px;
-        clear: both;
-        margin-bottom: 20px;
-        border-bottom: solid 2px @color-black;
-        width: 100%;
-        min-height: 65px;
-
-        .logo {
-            position: relative;
-            float: left;
-            margin-left: 15px;
-        }
-        .summary {
-            text-align: right;
-            float: right;
-            font-size: 15px;
-            line-height: 15px;
-            color: @color-B1;
-            margin-right: 15px;
-
-            .label {
-                color: @color-black;
-                background: none;
-                font-weight: normal;
-                font-size: 15px;
-                padding: 0;
-            }
-
-            .title {
-                color: @color-black;
-                font-size: 17px;
-                font-weight: bold;
-                margin-bottom: 5px;
-            }
-        }
-    }
-    .pageBreak { page-break-after:always;}
     .sidebar { display: none; }
     .contentWrapper { margin-left: 0; width: 100%; }
     .confidenceLevel { position: relative; margin: 20px auto 0; width: 640px;}
     .info2 a { display: none; }
     .claims {
-        background: none;
-        padding: 16px 16px !important;
+      background: none;
+      padding: 16px 16px !important;
 
-        .header h4 { font-size: 15px;}
+      .header h4 { font-size: 15px;}
 
-        .level1, .level2, .level3 {font-size: 16px;}
+      .level1, .level2, .level3 {font-size: 16px;}
 
-        .description {font-size: 14px;}
+      .description {font-size: 14px;}
 
-        &.MATH {
-            h4 { max-width: 200px;}
-        }
+      &.MATH {
+        h4 { max-width: 200px;}
+      }
 
-        &.ELA {
-            h4 { max-width: 135px; }
-        }
+      &.ELA {
+        h4 { max-width: 135px; }
+      }
 
     }
 
@@ -94,270 +168,278 @@
     #print_reportInfoContent { color: @color-B1; width: 100%;}
     #print_reportInfoContent .helpPopup, #print_reportInfoContent .printPopup { display: none;}
     #print_reportInfoContent {
-        .aboutReportPopup {
-            border-bottom: solid 1px @color-B4;
-            p {
-                line-height: 14px;
-            }
-
-            li {
-                line-height: 14px;
-            }
+      .aboutReportPopup {
+        border-bottom: solid 1px @color-B4;
+        p {
+          line-height: 14px;
         }
 
-        .legendPopup {
-            margin-top: 10px;
+        li {
+          line-height: 14px;
         }
+      }
+
+      .legendPopup {
+        margin-top: 10px;
+      }
     }
     #print_reportInfoContent h3 { color: @color-black; font-size: 20px; }
     .reportInfoWrapper { width: 100%; }
     #content { min-height: 0; }
 
     .overallScoreSection {
-        .summary {
-            margin: 40px 15px 15px 0;
+      .summary {
+        margin: 40px 15px 15px 0;
 
-            h1 {
-                color: @color-A1 !important;
-                margin-top: -10px;
-            }
-
-            h3 {
-                strong{
-                    color: @color-B2 !important;
-                }
-                line-height: 20px;
-            }
-
-            .teacher, .date {
-                span {
-                    color: @color-B2 !important;
-                }
-                .labelText{
-                    color: @color-black !important;
-                }
-                font-size: 15px;
-            }
-
+        h1 {
+          color: @color-A1 !important;
+          margin-top: -10px;
         }
+
+        h3 {
+          strong{
+            color: @color-B2 !important;
+          }
+          line-height: 20px;
+        }
+
+        .teacher, .date {
+          span {
+            color: @color-B2 !important;
+          }
+          .labelText{
+            color: @color-black !important;
+          }
+          font-size: 15px;
+        }
+
+      }
     }
     .contentWrapper {
-        .overallScoreSection {
-            .info {
-                margin-left: 20px;
-                .overallText {
-                    strong {
-                        color: @color-B1 !important;
-                    }
-                }
-                .overallDesc {
-                    .scoreName{
-                        color: @color-black !important;
-                    }
-                }
-                .indicator {
-                    .asmtScore {
-                        color: @color-black !important;
-                    }
-                    margin-left: 7px;
-                }
+      .overallScoreSection {
+        .info {
+          margin-left: 20px;
+          .overallText {
+            strong {
+              color: @color-B1 !important;
             }
-            .info2 {
-                margin-left: 450px;
-                color: @color-B1 !important;
+          }
+          .overallDesc {
+            .scoreName{
+              color: @color-black !important;
             }
+          }
+          .indicator {
+            .asmtScore {
+              color: @color-black !important;
+            }
+            margin-left: 7px;
+          }
         }
-        .confidenceLevel {
-            .cutPointsBar {
-                .cutPoints {
-                    color: @color-B3 !important;
-                }
-            }
+        .info2 {
+          margin-left: 450px;
+          color: @color-B1 !important;
         }
+      }
+      .confidenceLevel {
+        .cutPointsBar {
+          .cutPoints {
+            color: @color-B3 !important;
+          }
+        }
+      }
     }
 
     .assessmentOtherInfo {
-        float:left;
-        padding: 15px 0;
-        border-bottom: solid 1px @color-B4;
+      float:left;
+      padding: 15px 0;
+      border-bottom: solid 1px @color-B4;
 
-        h3 {
-            color: @color-black;
-            font-size: 17px;
-        }
+      h3 {
+        color: @color-black;
+        font-size: 17px;
+      }
 
-        li.inline {
-            width: 50%;
-            float: left;
-            margin-top: 0;
-        }
+      li.inline {
+        width: 50%;
+        float: left;
+        margin-top: 0;
+      }
     }
 
     .confidenceLevel {
-        height: 150px;
-        .progress {
-            .bar {
-                background-image: none !important;
-            }
-        }
-        .transImage1 {
-            background-image: url('../images/ISRleftBracket_print.png') !important;
-            background-repeat: no-repeat;
-            background-position: top left;
-        }
-        .transImage2 {
-            background-image: url("../images/ISRrightBracket_print.png") !important;
-            background-repeat: no-repeat;
-            background-position: top left;
-        }
+      height: 150px;
+      .progress {
+        page-break-inside: avoid;
+        break-inside: avoid; /* W3C */
+        -webkit-page-break-inside: avoid; /* Safari & Chrome */
+        -moz-page-inside: avoid; /* Firefox */
+        -ms-page-inside: avoid; /* Internet Explorer */
+        -o-page-inside: avoid; /* Opera */
 
-        .transImage1.confLevelRight {
-            background-image: url("../images/ISRleftBracketwEB_print.png") !important;
-            background-repeat: no-repeat;
-            background-position: top left;
+        .bar {
+          background-image: none !important;
         }
+      }
+      .transImage1 {
+        background-image: url('../images/ISRleftBracket_print.png') !important;
+        background-repeat: no-repeat;
+        background-position: top left;
+      }
+      .transImage2 {
+        background-image: url("../images/ISRrightBracket_print.png") !important;
+        background-repeat: no-repeat;
+        background-position: top left;
+      }
 
-        .transImage2.confLevelRight {
-            background-image: url("../images/ISRrightBracket_print.png") !important;
-            background-repeat: no-repeat;
-            background-position: top left;
-        }
+      .transImage1.confLevelRight {
+        background-image: url("../images/ISRleftBracketwEB_print.png") !important;
+        background-repeat: no-repeat;
+        background-position: top left;
+      }
 
-        .aldDescText {
-            visibility: visible;
-        }
+      .transImage2.confLevelRight {
+        background-image: url("../images/ISRrightBracket_print.png") !important;
+        background-repeat: no-repeat;
+        background-position: top left;
+      }
+
+      .aldDescText {
+        visibility: visible;
+      }
     }
 
     #legendTemplate {
-        display: none;
+      display: none;
     }
 
     #legendTemplatePrint {
 
-        .span5 {width: 352px;}
+      .span5 {width: 352px;}
 
-        .span7 {width: 590px;}
+      .span7 {width: 590px;}
 
-        h4 { font-size: 17px; }
+      h4 { font-size: 17px; }
 
-        p { font-size: 14px; }
+      p { font-size: 14px; }
 
-        hr { border-top: dashed 1px @color-B4; }
+      hr { border-top: dashed 1px @color-B4; }
 
-        table {
-            font-size: 16px;
-            margin-top: 15px;
-            margin-bottom: 0px;
+      table {
+        font-size: 16px;
+        margin-top: 15px;
+        margin-bottom: 0px;
 
-            td {
-                padding: 8px;
-                height: 35px;
-            }
+        td {
+          padding: 8px;
+          height: 35px;
+        }
+      }
+
+      .edware-border-left { border-left: dashed 1px @color-B4; }
+
+      img {
+        -webkit-transform: scale(1.2);
+        -moz-transform: scale(1.2);
+        -o-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        transform: scale(1.2);
+      }
+
+      .overall_score_wrapper {
+
+        position: relative;
+
+        .confidenceLevel {
+
+          margin: 0 0 0 80px;
+          display: inline-block;
+          height: 100px;
+
+          .aldDescText { display: none; }
+
+          .progressbar_indicator640 {
+            background-position: -1255px 0;
+            width: 20px;
+          }
+        }
+      }
+
+      .overall_score_lower {
+        .ALD_cutpoints { margin-left: 10px; }
+
+        .overall_lowerleft {
+          left: 10px;
+          bottom: 10px;
         }
 
-        .edware-border-left { border-left: dashed 1px @color-B4; }
-
-        img {
-            -webkit-transform: scale(1.2);
-            -moz-transform: scale(1.2);
-            -o-transform: scale(1.2);
-            -ms-transform: scale(1.2);
-            transform: scale(1.2);
+        .overall_lowermid {
+          left: 188px;
+          bottom: 10px;
         }
 
-        .overall_score_wrapper {
+        .desc_error_bands {
+          left: 200px;
 
-            position: relative;
-
-            .confidenceLevel {
-
-                margin: 0 0 0 80px;
-                display: inline-block;
-                height: 100px;
-
-                .aldDescText { display: none; }
-
-                .progressbar_indicator640 {
-                    background-position: -1255px 0;
-                    width: 20px;
-                }
-            }
+          span {
+            font-style: italic;
+            font-size: 14px;
+          }
         }
 
-        .overall_score_lower {
-            .ALD_cutpoints { margin-left: 10px; }
+        * { display: inline-block; position: relative; }
+      }
 
-            .overall_lowerleft {
-                left: 10px;
-                bottom: 10px;
-            }
+      .overall_score_upper {
 
-            .overall_lowermid {
-                left: 188px;
-                bottom: 10px;
-            }
-
-            .desc_error_bands {
-                left: 200px;
-
-                span {
-                    font-style: italic;
-                    font-size: 14px;
-                }
-            }
-
-            * { display: inline-block; position: relative; }
+        .asmtScore {
+          font-size: 18px;
+          padding: 11px 12px;
+          border-radius: 5px;
         }
 
-        .overall_score_upper {
+        .desc_overall_score {
+          left: 10px;
+          top: 22px;
+          width: 120px;
+          text-align: left;
 
-            .asmtScore {
-                font-size: 18px;
-                padding: 11px 12px;
-                border-radius: 5px;
-            }
-
-            .desc_overall_score {
-                left: 10px;
-                top: 22px;
-                width: 120px;
-                text-align: left;
-
-                span {
-                    font-size: 14px;
-                    font-weight: normal;
-                    margin-top: 0px;
-                }
-            }
-
-            .desc_overall_score_indicator { left: 210px; }
-
-            .overall_upperleft { left: 5px; }
-
-            .overall_uppermid {
-                left: 200px;
-                top: 3px;
-            }
-
-            * { display: inline-block; position: relative; }
+          span {
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 0px;
+          }
         }
 
-        .overall_right {
-            display:inline-block;
-            position: relative;
-            bottom: 52px;
-            margin-left: 23px;
+        .desc_overall_score_indicator { left: 210px; }
 
-            .desc_scaled_score_range {
-                display: inline;
-                position: relative;
-                top: 2px;
-                left: 4px;
-            }
+        .overall_upperleft { left: 5px; }
+
+        .overall_uppermid {
+          left: 200px;
+          top: 3px;
         }
+
+        * { display: inline-block; position: relative; }
+      }
+
+      .overall_right {
+        display:inline-block;
+        position: relative;
+        bottom: 52px;
+        margin-left: 23px;
+
+        .desc_scaled_score_range {
+          display: inline;
+          position: relative;
+          top: 2px;
+          left: 4px;
+        }
+      }
     }
 
     #infoBar, #actionBar {
-        display: none;
+      display: none;
     }
+  }
 }

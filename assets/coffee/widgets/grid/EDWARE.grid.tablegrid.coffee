@@ -25,7 +25,6 @@ define [
       defaultWidth: 980
       loadComplete: () ->
 
-
   class EdwareGrid
 
     constructor: (@table, columns, @options, @footer) ->
@@ -82,11 +81,17 @@ define [
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
+      # this.renderPrintHeader()
       this.addARIA()
       this.bindEvents()
 
+    renderPrintHeader: ()->
+      # set repeating headers
+      $gridTable = $("div.ui-jqgrid-bdiv table")
+      $gridTable.prepend $('.ui-jqgrid-hdiv thead').clone()
+      # $gridTable.prepend $('.ui-jqgrid-sdiv .footrow').clone()
+
     addARIA: ()->
-      # TODO:
       $('.ui-jqgrid-hdiv .jqg-third-row-header').attr('role', 'row')
       $('.ui-jqgrid-sdiv').attr('aria-label', 'summary')
       $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
@@ -229,12 +234,30 @@ define [
       height += $component.height() if $component.is(':visible')
     window.innerHeight - height
 
+  beforePrint = () ->
+    $('#gridTable').eagerLoad()
+    # adjust height to show all rows
+    rowHeight = $('.jqgrow').height() + 1 # add 1 for border
+    height = $('.jqgrow, .footrow').length * rowHeight
+    $("#gview_gridTable > .ui-jqgrid-bdiv").css {
+      'height': height
+    }
+
+  afterPrint = () ->
+    $('#gridTable').lazyLoad()
+
   # add hook to run before browser print
   if window.matchMedia
     window.matchMedia('print').addListener (mql)->
-      $('#gridTable').eagerLoad() if mql.matches
-  window.onbeforeprint = ()->
-    $('#gridTable').eagerLoad()
+      if mql.matches
+        beforePrint()
+      else
+        afterPrint()
+
+  window.onbeforeprint = () ->
+    beforePrint()
+  window.onafterprint = () ->
+    afterPrint()
 
   #
   #    * Creates EDWARE grid
@@ -250,6 +273,9 @@ define [
     options = config['options']
     data = config['data']
     options.data = data
+    # for i in [1..2]
+    #   data = data.concat(data)
+    # options.data = data
     columns = config['columns']
     footer = config['footer']
     if data and data[0]

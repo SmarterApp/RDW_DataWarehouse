@@ -242,6 +242,7 @@ define [
       @config.labels.SearchResultText = @config.SearchResultText
       @infoBar ?= edwareReportInfoBar.create '#infoBar',
         reportTitle: @breadcrumbs.getReportTitle()
+        breadcrumb: @breadcrumbs.breadcrumbsData
         reportName: Constants.REPORT_NAME.CPOP
         reportInfoText: @config.reportInfo[@reportType]
         reportType: @reportType

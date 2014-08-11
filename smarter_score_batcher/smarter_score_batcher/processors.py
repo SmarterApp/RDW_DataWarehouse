@@ -1,9 +1,11 @@
 import os
 import logging
+import csv
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from edcore.utils.file_utils import generate_path_to_raw_xml
+from edcore.utils.file_utils import generate_path_to_item_csv
 
 try:
     import xml.etree.cElementTree as ET
@@ -66,6 +68,100 @@ class Meta:
         return self.__valid_meta
 
 
+class TsbCsv:
+    def __init__(self, key, student_guid, segmentId, position, clientId, operational, isSelected, format_type, score, scoreStatus, adminDate, numberVisits, strand, contentLevel, pageNumber, pageVisits, pageTime, dropped):
+        self.__key = key
+        self.__student_guid = student_guid
+        self.__segmentId = segmentId
+        self.__position = position
+        self.__clientId = clientId
+        self.__operational = operational
+        self.__isSelected = isSelected
+        self.__format_type = format_type
+        self.__score = score
+        self.__scoreStatus = scoreStatus
+        self.__adminDate = adminDate
+        self.__numberVisits = numberVisits
+        self.__strand = strand
+        self.__contentLevel = contentLevel
+        self.__pageNumber = pageNumber
+        self.__pageVisits = pageVisits
+        self.__pageTime = pageTime
+        self.__dropped = dropped
+
+    @property
+    def key(self):
+        return self.__key
+
+    @property
+    def student_guid(self):
+        return self.__student_guid
+
+    @property
+    def segmentId(self):
+        return self.__segmentId
+
+    @property
+    def position(self):
+        return self.__position
+
+    @property
+    def clientId(self):
+        return self.__clientId
+
+    @property
+    def operational(self):
+        return self.__operational
+
+    @property
+    def isSelected(self):
+        return self.__isSelected
+
+    @property
+    def format_type(self):
+        return self.__format_type
+
+    @property
+    def score(self):
+        return self.__score
+
+    @property
+    def scoreStatus(self):
+        return self.__scoreStatus
+
+    @property
+    def adminDate(self):
+        return self.__adminDate
+
+    @property
+    def numberVisits(self):
+        return self.__numberVisits
+
+    @property
+    def strand(self):
+        return self.__strand
+
+    @property
+    def contentLevel(self):
+        return self.__contentLevel
+
+    @property
+    def pageNumber(self):
+        return self.__pageNumber
+
+    @property
+    def pageVisits(self):
+        return self.__pageVisits
+
+    @property
+    def pageTime(self):
+        return self.__pageTime
+
+    @property
+    def dropped(self):
+        return self.__dropped
+
+
 def process_xml(raw_xml_string):
     ''' Process tdsreport doc
     '''
@@ -74,7 +170,7 @@ def process_xml(raw_xml_string):
         raise EdApiHTTPPreconditionFailed("Invalid XML")
     settings = get_current_registry().settings
     root_dir = settings.get("smarter_score_batcher.base_dir")
-    file_path = create_path(root_dir, meta_names)
+    file_path = create_path(root_dir, meta_names, True)
     args = (file_path, raw_xml_string)
     timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
     queue_name = settings.get('smarter_score_batcher.sync_queue')
@@ -83,7 +179,58 @@ def process_xml(raw_xml_string):
     return celery_response.get(timeout=timeout)
 
 
-def create_path(root_dir, meta):
+def create_csv(complete_path_to_xml):
+    try:
+        tree = ET.parse(complete_path_to_xml)
+        root = tree.getroot()
+    except ET.ParseError as e:
+        logger.error(str(e))
+    matrix_to_feed_csv = get_all_elements_for_tsb_csv(root, './Opportunity/Item')
+    #Save csv to same folder as xml 
+    with open('sample_csv.csv', 'w', newline='') as csv_out:
+        csv_writer = csv.writer(csv_out, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerows(matrix_to_feed_csv)
+        csv_out.close()
+
+
+#Returns a list of dictionaires of element attributes for all the times the element appears
+def get_all_elements(root, xpath_of_element):
+    list_of_dict = []
+    for element_item in root.findall(xpath_of_element):
+        attribute_dict = dict(element_item.items())
+        list_of_dict.append(attribute_dict)
+    return list_of_dict
+
+
+def get_all_elements_for_tsb_csv(root, element_to_get):
+    key = 'key'  # ItemID placeholder for now
+    clientId = 'client_id'  # placeholder for now
+    student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context")
+    matrix = []
+    list_of_elements = get_all_elements(root, element_to_get)
+    for element_item in list_of_elements:
+        segmentId = element_item.get('segmentId')
+        position = element_item.get('position')
+        operational = element_item.get('operational')
+        isSelected = element_item.get('isSelected')
+        format_type = element_item.get('format')
+        score = element_item.get('score')
+        scoreStatus = element_item.get('scoreStatus')
+        adminDate = element_item.get('adminDate')
+        numberVisits = element_item.get('numberVisits')
+        strand = element_item.get('strand')
+        contentLevel = element_item.get('contentLevel')
+        pageNumber = element_item.get('pageNumber')
+        pageVisits = element_item.get('pageVisits')
+        pageTime = element_item.get('pageTime')
+        dropped = element_item.get('dropped')
+        columns = TsbCsv(key, student_guid, segmentId, position, clientId, operational, isSelected, format_type, score, scoreStatus, adminDate, numberVisits, strand, contentLevel, pageNumber, pageVisits, pageTime, dropped)
+        row = [columns.key, columns.student_guid, columns.segmentId, columns.position, columns.clientId, columns.operational, columns.isSelected, columns.format_type, columns.score, columns.scoreStatus, columns.adminDate, columns.numberVisits, columns.strand, columns.contentLevel, columns.pageNumber, columns.pageVisits, columns.pageTime, columns.dropped]
+        matrix.append(row)
+    return matrix
+
+
+def create_path(root_dir, meta, for_save_as_xml):
     kwargs = {}
     kwargs['state_code'] = meta.state_code
     kwargs['asmt_year'] = meta.academic_year
@@ -93,7 +240,10 @@ def create_path(root_dir, meta):
     kwargs['asmt_grade'] = meta.grade
     kwargs['district_id'] = meta.district_id
     kwargs['student_id'] = meta.student_id
-    path = generate_path_to_raw_xml(root_dir, **kwargs)
+    if (for_save_as_xml):
+        path = generate_path_to_raw_xml(root_dir, **kwargs)
+    else:
+        path = generate_path_to_item_csv(root_dir, **kwargs)
     return path
 
 

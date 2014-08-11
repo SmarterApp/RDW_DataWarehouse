@@ -211,6 +211,11 @@ define [
             self.afterGridLoadComplete()
       }
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
+      @updateTotalNumber(filteredInfo.data.length)
+
+    updateTotalNumber: (total) ->
+      display = "#{total} #{@labels.next_level[@reportType]}"
+      $('#total_number').text display
 
     updateSortLabels: (index, sortorder) ->
       # Remove second row header as that counts as a column in setLabel function

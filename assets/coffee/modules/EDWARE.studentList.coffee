@@ -313,8 +313,14 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
+      @updateTotalNumber(filteredInfo.data.length)
       this.renderHeaderPerfBar()
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
+
+    updateTotalNumber: (total) ->
+      reportType = Constants.REPORT_TYPE.GRADE
+      display = "#{total} #{@labels.next_level[reportType]}"
+      $('#total_number').text display
 
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer

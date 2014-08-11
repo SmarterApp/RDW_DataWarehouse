@@ -90,7 +90,7 @@ def generate_ini(env, input_file='settings.yaml', output_file=None, project_name
         yaml_object = flatten_yaml(hc_settings, yaml_object, "")
 
     # update project name in yaml settings
-    if project_name is not None:
+    if project_name is not None and '[app:main]' in yaml_object:
         yaml_object['[app:main]']['use'] = 'egg:' + project_name
 
     result = ""

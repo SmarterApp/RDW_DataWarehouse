@@ -14,6 +14,7 @@ FILE = 'f'
 
 logger = logging.getLogger("smarter_score_batcher")
 
+
 def metadata_generator_top_down(dir_path, metadata_filename='.metadata', recursive=True, force=True):
     if os.path.isdir(dir_path):
         logger.info('seaching directory: [' + dir_path + ']')
@@ -42,7 +43,7 @@ def metadata_generator_bottom_up(file_path, metadata_filename='.metadata', recur
             fileMetadata.write()
         if recursive:
             metadata_generator_bottom_up(dirname, metadata_filename=metadata_filename, recursive=recursive)
-        
+
 
 class FileMetadata():
     '''
@@ -71,7 +72,7 @@ class FileMetadata():
     def __exit__(self, type, value, tb):
         fcntl.flock(self.__metadata_fd, fcntl.LOCK_UN)
         self.__metadata_fd.close()
-        
+
     def load_metadata(self, delimiter=':'):
         def setMetadata(metainfo):
             metainfo.name = meta[1]
@@ -141,7 +142,7 @@ class FileMetadata():
             self.__metadata_fd.truncate(0)
             _write(self.__metadata_fd, list(self.__dirs.values()))
             _write(self.__metadata_fd, list(self.__files.values()))
-            
+
     class DirInfo():
         def __init__(self):
             pass
@@ -152,7 +153,6 @@ class FileMetadata():
             self.__last_c_time = stat_info.st_ctime
             self.__metadata_filename = metadata_filename
             self.__size = self.get_size(delimiter=delimiter)
-
 
         def read_metadata(self, delimiter=':'):
             metadata = []

@@ -7,9 +7,12 @@ import unittest
 import tempfile
 import uuid
 import os
-from smarter_score_batcher.utils.file_utils import file_writer, csv_file_writer
+from smarter_score_batcher.utils.file_utils import file_writer, csv_file_writer,\
+    create_path
 import hashlib
 import csv
+from smarter_score_batcher.utils.meta import Meta
+from edcore.utils.file_utils import generate_path_to_raw_xml
 
 
 class Test(unittest.TestCase):
@@ -65,6 +68,19 @@ class Test(unittest.TestCase):
         self.assertEqual(len(rows), len(rows))
         for i in range(len(rows)):
             self.assertListEqual(rows[i], new_rows[i])
+
+    def test_create_path_valid(self):
+        meta = Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        path = os.path.join(self.__temp_dir.name, 'state_name', 'academic_year', 'ASMT_TYPE', 'effective_date', 'SUBJECT', 'grade', 'district_id', 'student_id.xml')
+        create_path_result = create_path(self.__temp_dir.name, meta, generate_path_to_raw_xml)
+        self.assertEqual(path, create_path_result)
+
+    def test_create_path_invalid(self):
+        meta = Meta(True, 'NA', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        path = os.path.join(self.__temp_dir.name, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        create_path_result = create_path(self.__temp_dir.name, meta, generate_path_to_raw_xml)
+        self.assertNotEqual(path, create_path_result)
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

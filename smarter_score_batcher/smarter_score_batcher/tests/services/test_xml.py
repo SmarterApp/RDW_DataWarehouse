@@ -10,7 +10,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 import uuid
 import hashlib
 import tempfile
-from smarter_score_batcher.processors import extract_meta_names
+from smarter_score_batcher.utils.meta import extract_meta_names
 here = os.path.abspath(os.path.dirname(__file__))
 xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))
 
@@ -39,7 +39,7 @@ class TestXML(unittest.TestCase):
     @patch('smarter_score_batcher.services.xml.process_xml')
     def test_xml_catcher_succeed(self, mock_process_xml, mock_create_csv, mock_extract_meta_names):
         mock_process_xml.return_value = True
-        extract_meta_names.return_value = {'valid_meta': True}
+        mock_extract_meta_names.return_value.valid_meta.return_value = True
         self.__request.body = '<xml></xml>'
         response = xml_catcher(self.__request)
         self.assertEqual(response.status_code, 200, "should return 200 after writing xml file")

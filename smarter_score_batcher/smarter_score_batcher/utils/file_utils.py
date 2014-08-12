@@ -25,3 +25,16 @@ def csv_file_writer(csv_file_path, data, mode=0o700):
     if os.path.exists(csv_file_path):
         os.chmod(csv_file_path, mode)
     return written if written else False
+
+
+def create_path(root_dir, meta, generate_path):
+    kwargs = {}
+    kwargs['state_code'] = meta.state_code
+    kwargs['asmt_year'] = meta.academic_year
+    kwargs['asmt_type'] = meta.asmt_type
+    kwargs['effective_date'] = meta.effective_date
+    kwargs['asmt_subject'] = meta.subject
+    kwargs['asmt_grade'] = meta.grade
+    kwargs['district_id'] = meta.district_id
+    kwargs['student_id'] = meta.student_id
+    return generate_path(root_dir, **kwargs)

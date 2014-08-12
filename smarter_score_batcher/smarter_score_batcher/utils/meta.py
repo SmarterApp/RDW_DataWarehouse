@@ -1,4 +1,8 @@
-import logging
+'''
+Created on Aug 12, 2014
+
+@author: tosako
+'''
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper
 from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
@@ -7,12 +11,6 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
-
-logger = logging.getLogger("smarter_score_batcher")
-
-DEFAULT_VALUE = 'NA'
-ATTRIBUTE_CONTEXT_VALUE_FINAL = 'FINAL'
-ATTRIBUTE_CONTEXT_VALUE_INITIAL = 'INITIAL'
 
 
 class Meta:
@@ -62,19 +60,6 @@ class Meta:
     @property
     def valid_meta(self):
         return self.__valid_meta
-
-
-def create_path(root_dir, meta, generate_path):
-    kwargs = {}
-    kwargs['state_code'] = meta.state_code
-    kwargs['asmt_year'] = meta.academic_year
-    kwargs['asmt_type'] = meta.asmt_type
-    kwargs['effective_date'] = meta.effective_date
-    kwargs['asmt_subject'] = meta.subject
-    kwargs['asmt_grade'] = meta.grade
-    kwargs['district_id'] = meta.district_id
-    kwargs['student_id'] = meta.student_id
-    return generate_path(root_dir, **kwargs)
 
 
 def extract_meta_names(raw_xml_string):

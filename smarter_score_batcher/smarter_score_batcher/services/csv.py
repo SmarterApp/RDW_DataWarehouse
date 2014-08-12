@@ -3,11 +3,11 @@ Created on Aug 12, 2014
 
 @author: tosako
 '''
-from smarter_score_batcher.processors import create_path
 from pyramid.threadlocal import get_current_registry
 from edcore.utils.file_utils import generate_path_to_raw_xml,\
     generate_path_to_item_csv
 from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
+from smarter_score_batcher.utils.file_utils import create_path
 
 
 def create_csv(meta_names):

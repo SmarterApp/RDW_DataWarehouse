@@ -1,12 +1,7 @@
 import logging
-from pyramid.threadlocal import get_current_registry
-from smarter_score_batcher.tasks.remote_file_writer import remote_write
-from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper
 from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from edcore.utils.file_utils import generate_path_to_raw_xml
-from edcore.utils.file_utils import generate_path_to_item_csv
 
 try:
     import xml.etree.cElementTree as ET
@@ -67,36 +62,6 @@ class Meta:
     @property
     def valid_meta(self):
         return self.__valid_meta
-
-
-def process_xml(raw_xml_string):
-    ''' Process tdsreport doc
-    '''
-    meta_names = extract_meta_names(raw_xml_string)
-    if not meta_names.valid_meta:
-        raise EdApiHTTPPreconditionFailed("Invalid XML")
-    settings = get_current_registry().settings
-    root_dir = settings.get("smarter_score_batcher.base_dir.xml")
-    xml_file_path = create_path(root_dir, meta_names, generate_path_to_raw_xml)
-    args = (xml_file_path, raw_xml_string)
-    timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
-    queue_name = settings.get('smarter_score_batcher.sync_queue')
-    celery_response = remote_write.apply_async(args=args, queue=queue_name)
-    # wait until file successfully written to disk
-    return celery_response.get(timeout=timeout)
-
-
-def create_csv(raw_xml_string):
-    meta_names = extract_meta_names(raw_xml_string)
-    settings = get_current_registry().settings
-    root_dir_csv = settings.get("smarter_score_batcher.base_dir.csv")
-    root_dir_xml = settings.get("smarter_score_batcher.base_dir.xml")
-    xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
-    csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-    queue_name = settings.get('smarter_score_batcher.sync_queue')
-    args = (csv_file_path, xml_file_path)
-    celery_response = remote_csv_generator.apply_async(args=args, queue=queue_name)
-    return celery_response
 
 
 def create_path(root_dir, meta, generate_path):

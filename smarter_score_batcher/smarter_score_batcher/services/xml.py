@@ -7,11 +7,14 @@ import logging
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPServiceUnavailable
-from smarter_score_batcher.processors import process_xml
-from smarter_score_batcher.processors import create_csv
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from edapi.decorators import validate_xml
 from smarter_score_batcher.utils import xsd
+from smarter_score_batcher.services.csv import create_csv
+from smarter_score_batcher.processors import extract_meta_names, create_path
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from pyramid.threadlocal import get_current_registry
+from edcore.utils.file_utils import generate_path_to_raw_xml
+from smarter_score_batcher.tasks.remote_file_writer import remote_write
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -35,3 +38,20 @@ def xml_catcher(xml_body):
     except Exception as e:
         logger.error(str(e))
         raise
+
+
+def process_xml(raw_xml_string):
+    ''' Process tdsreport doc
+    '''
+    meta_names = extract_meta_names(raw_xml_string)
+    if not meta_names.valid_meta:
+        raise EdApiHTTPPreconditionFailed("Invalid XML")
+    settings = get_current_registry().settings
+    root_dir = settings.get("smarter_score_batcher.base_dir.xml")
+    xml_file_path = create_path(root_dir, meta_names, generate_path_to_raw_xml)
+    args = (xml_file_path, raw_xml_string)
+    timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
+    queue_name = settings.get('smarter_score_batcher.sync_queue')
+    celery_response = remote_write.apply_async(args=args, queue=queue_name)
+    # wait until file successfully written to disk
+    return celery_response.get(timeout=timeout)

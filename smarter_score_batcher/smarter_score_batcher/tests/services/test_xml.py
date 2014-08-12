@@ -5,7 +5,11 @@ from pyramid.testing import DummyRequest
 from smarter_score_batcher.celery import setup_celery
 from unittest.mock import patch
 import os
-from smarter_score_batcher.services.xml import xml_catcher
+from smarter_score_batcher.services.xml import xml_catcher, process_xml
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+import uuid
+import hashlib
+import tempfile
 here = os.path.abspath(os.path.dirname(__file__))
 xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))
 
@@ -50,6 +54,39 @@ class TestXML(unittest.TestCase):
         self.__request.body = ''
         self.assertRaises(Exception, xml_catcher, self.__request)
 
+    def test_process_xml_incomplete_xml(self):
+        xml_string = '<xml></xml>'
+        self.assertRaises(EdApiHTTPPreconditionFailed, process_xml, xml_string)
+
+    @patch('smarter_score_batcher.services.xml.create_path')
+    def test_process_xml_valid(self, mock_create_path):
+        
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="">
+        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
+        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
+        <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="FINAL" name="StateName" value="California" />
+        <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
+        </Examinee>
+        </TDSReport>'''
+        m1 = hashlib.md5()
+        m1.update(bytes(xml_string, 'utf-8'))
+        digest1 = m1.digest()
+        
+        with tempfile.TemporaryDirectory() as tempfolder:
+            target = os.path.join(tempfolder, str(uuid.uuid4()), str(uuid.uuid4()))
+            mock_create_path.return_value = target
+    
+            result_process_xml = process_xml(xml_string)
+            self.assertTrue(result_process_xml)
+            m2 = hashlib.md5()
+            with open(target, 'rb') as f:
+                m2.update(f.read())
+            digest2 = m2.digest()
+        self.assertEqual(digest1, digest2)
 
 if __name__ == '__main__':
     unittest.main()

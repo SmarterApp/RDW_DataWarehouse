@@ -11,10 +11,7 @@ from pyramid.registry import Registry
 from pyramid import testing
 from smarter_score_batcher.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from unittest.mock import patch
 from edcore.utils.file_utils import generate_path_to_raw_xml
-import hashlib
-import uuid
 
 try:
     import xml.etree.cElementTree as ET
@@ -39,36 +36,6 @@ class Test(unittest.TestCase):
     def tearDown(self):
         self.__tempfolder.cleanup()
         testing.tearDown()
-
-    def test_process_xml_incomplete_xml(self):
-        xml_string = '<xml></xml>'
-        self.assertRaises(EdApiHTTPPreconditionFailed, processors.process_xml, xml_string)
-
-    @patch('smarter_score_batcher.processors.create_path')
-    def test_process_xml_valid(self, mock_create_path):
-        target = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
-        mock_create_path.return_value = target
-        xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
-        <Examinee key="">
-        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
-        <ExamineeRelationship context="FINAL" name="StateName" value="California" />
-        <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
-        <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
-        </Examinee>
-        </TDSReport>'''
-        result_process_xml = processors.process_xml(xml_string)
-        self.assertTrue(result_process_xml)
-        m1 = hashlib.md5()
-        m1.update(bytes(xml_string, 'utf-8'))
-        digest1 = m1.digest()
-        m2 = hashlib.md5()
-        with open(target, 'rb') as f:
-            m2.update(f.read())
-        digest2 = m2.digest()
-        self.assertEqual(digest1, digest2)
 
     def test_create_path_valid(self):
         meta = processors.Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')

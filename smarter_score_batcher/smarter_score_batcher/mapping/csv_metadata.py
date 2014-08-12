@@ -159,8 +159,8 @@ class CSVHeaders:
 
 def get_csv_mapping(root):
     examinee = root.find("./Examinee")
-    accommodation = root.findall("./Opportunity/Accommodation")
     opportunity = root.find("./Opportunity")
+    accommodation = root.findall("./Opportunity/Accommodation")
 
     # In the order of the csv headers
     mappings = [Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateName']", "value", "context"), CSVHeaders.StateAbbreviation),

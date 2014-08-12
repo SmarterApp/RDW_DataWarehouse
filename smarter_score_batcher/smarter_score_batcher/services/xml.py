@@ -25,7 +25,7 @@ xsd_data = xsd.xsd.get_xsd() if xsd.xsd is not None else None
 @validate_xml(xsd_data)
 def xml_catcher(xml_body):
     """
-    XML cacther service expects XML post and will delegate processing based on the root element.
+    XML receiver service expects XML post and will delegate processing based on the root element.
     """
     try:
         succeed = process_xml(xml_body)
@@ -48,10 +48,9 @@ def process_xml(raw_xml_string):
         raise EdApiHTTPPreconditionFailed("Invalid XML")
     settings = get_current_registry().settings
     root_dir = settings.get("smarter_score_batcher.base_dir.xml")
-    xml_file_path = create_path(root_dir, meta_names, generate_path_to_raw_xml)
-    args = (xml_file_path, raw_xml_string)
     timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
     queue_name = settings.get('smarter_score_batcher.sync_queue')
-    celery_response = remote_write.apply_async(args=args, queue=queue_name)
+    xml_file_path = create_path(root_dir, meta_names, generate_path_to_raw_xml)
+    celery_response = remote_write.apply_async(args=(xml_file_path, raw_xml_string), queue=queue_name)  # @UndefinedVariable
     # wait until file successfully written to disk
     return celery_response.get(timeout=timeout)

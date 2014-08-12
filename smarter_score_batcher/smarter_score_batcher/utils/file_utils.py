@@ -18,10 +18,10 @@ def file_writer(path, data, mode=0o700):
     return written if written else False
 
 
-def csv_file_writer(csv_file_path, matrix_to_feed_csv, mode=0o700):
+def csv_file_writer(csv_file_path, data, mode=0o700):
     # create directory
     os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
-    written = write_csv(csv_file_path, matrix_to_feed_csv, header=None)
+    written = write_csv(csv_file_path, data, header=None)
     if os.path.exists(csv_file_path):
         os.chmod(csv_file_path, mode)
     return written if written else False

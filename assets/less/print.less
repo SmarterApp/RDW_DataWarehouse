@@ -82,10 +82,24 @@
 
   #header, #breadcrumb, #actionBar, .stickySection { display: none !important; }
 
+  #total_number {
+    padding: 3px;
+  }
+
+  .ui-state-disabled, .ui-widget-content .ui-state-disabled {
+    display: none !important;
+  }
+
+  .removeAllFilters, .filterArrow { display: none !important; }
+
   .selectedFilter_panel {
-    display: block !important;
+    background: transparent!important;
 
     border-bottom: none;
+
+    .removeIcon {
+      background: transparent;
+    }
 
     em {
       font-style: normal;
@@ -93,8 +107,6 @@
 
       &.black { color: black !important; }
     }
-
-    .removeAllFilters { display: none; }
 
     a[href]:after {
       content: "&";

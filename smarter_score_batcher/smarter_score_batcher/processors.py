@@ -92,7 +92,7 @@ def extract_meta_names(raw_xml_string):
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
         # TODO: This needs to be fixed
         effective_date = 'NA'  # root.find("./test").get('effectiveDate', DEFAULT_VALUE)
-        validMeta = True if (state_code and student_id and district_id and academic_year and asmt_type and subject and grade) else False
+        validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade)
         return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

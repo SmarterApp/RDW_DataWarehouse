@@ -10,6 +10,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 import uuid
 import hashlib
 import tempfile
+from smarter_score_batcher.processors import extract_meta_names
 here = os.path.abspath(os.path.dirname(__file__))
 xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))
 
@@ -33,10 +34,12 @@ class TestXML(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+    @patch('smarter_score_batcher.services.xml.extract_meta_names')
     @patch('smarter_score_batcher.services.xml.create_csv')
     @patch('smarter_score_batcher.services.xml.process_xml')
-    def test_xml_catcher_succeed(self, mock_process_xml, mock_create_csv):
+    def test_xml_catcher_succeed(self, mock_process_xml, mock_create_csv, mock_extract_meta_names):
         mock_process_xml.return_value = True
+        extract_meta_names.return_value = {'valid_meta': True}
         self.__request.body = '<xml></xml>'
         response = xml_catcher(self.__request)
         self.assertEqual(response.status_code, 200, "should return 200 after writing xml file")
@@ -45,18 +48,13 @@ class TestXML(unittest.TestCase):
     def test_xml_catcher_failed(self, mock_process_xml):
         mock_process_xml.return_value = False
         self.__request.body = '<xml></xml>'
-        response = xml_catcher(self.__request)
-        self.assertEqual(response.status_code, 503, "should return 200 after writing xml file")
+        self.assertRaises(EdApiHTTPPreconditionFailed, xml_catcher, self.__request)
 
     @patch('smarter_score_batcher.services.xml.process_xml')
     def test_xml_catcher_no_content(self, mock_process_xml):
         mock_process_xml.side_effect = Exception()
         self.__request.body = ''
         self.assertRaises(Exception, xml_catcher, self.__request)
-
-    def test_process_xml_incomplete_xml(self):
-        xml_string = '<xml></xml>'
-        self.assertRaises(EdApiHTTPPreconditionFailed, process_xml, xml_string)
 
     @patch('smarter_score_batcher.services.xml.create_path')
     def test_process_xml_valid(self, mock_create_path):
@@ -74,12 +72,12 @@ class TestXML(unittest.TestCase):
         m1 = hashlib.md5()
         m1.update(bytes(xml_string, 'utf-8'))
         digest1 = m1.digest()
-
+        meta_names = extract_meta_names(xml_string)
         with tempfile.TemporaryDirectory() as tempfolder:
             target = os.path.join(tempfolder, str(uuid.uuid4()), str(uuid.uuid4()))
             mock_create_path.return_value = target
 
-            result_process_xml = process_xml(xml_string)
+            result_process_xml = process_xml(meta_names, xml_string)
             self.assertTrue(result_process_xml)
             m2 = hashlib.md5()
             with open(target, 'rb') as f:

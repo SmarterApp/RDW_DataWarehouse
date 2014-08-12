@@ -11,7 +11,6 @@ import hashlib
 
 class Test(unittest.TestCase):
 
-
     def test_XSD(self):
         here = os.path.abspath(os.path.dirname(__file__))
         xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))

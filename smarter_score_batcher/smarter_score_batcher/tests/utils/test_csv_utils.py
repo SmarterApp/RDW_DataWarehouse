@@ -23,12 +23,22 @@ class Test(unittest.TestCase):
         </TestXML>'''
         root = ET.fromstring(xml_string)
         attributeDict = csv_utils.get_all_elements(root, "./ElementOne/ElementTwo")
-        self.assertTrue('name' in attributeDict)
+        self.assertTrue('name' in attributeDict[0])
 
     def test_get_all_elements_for_tsb_csv(self):
-        csv_utils.get_all_elements_for_tsb_csv(root, element_to_get)
-        
-        
+        xml_string = '''<TestXML>
+        <Item position="test" segmentId="segmentId_value"
+        bankKey="test" key="key_value" operational="test" isSelected="test" format="test"
+        score="test" scoreStatus="test" adminDate="test" numberVisits="test"
+        mimeType="test" strand="test" contentLevel="test" pageNumber="test" pageVisits="test"
+        pageTime="test" dropped="test">
+        </Item>
+        </TestXML>'''
+        root = ET.fromstring(xml_string)
+        row = csv_utils.get_all_elements_for_tsb_csv(root, "./Item")
+        self.assertEqual('key_value', row[0][0])
+        self.assertEqual('segmentId_value', row[0][2])
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

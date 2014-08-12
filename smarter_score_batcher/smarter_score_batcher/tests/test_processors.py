@@ -106,24 +106,6 @@ class Test(unittest.TestCase):
         meta = processors.extract_meta_names(xml_string)
         self.assertTrue(meta.valid_meta)
 
-    def test_extract_meta_with_fallback_helper(self):
-        xml_string = '<TestXML>'
-        xml_string = xml_string + ' <ElementOne key="">'
-        xml_string = xml_string + ' <ElementTwo context="FINAL" name="dummyValue" value="DummyState" />'
-        xml_string = xml_string + ' </ElementOne>'
-        xml_string = xml_string + ' </TestXML>'
-        root = ET.fromstring(xml_string)
-        state_name = processors.extract_meta_with_fallback_helper(root, "./ElementOne/ElementTwo/[@name='dummyValue']", "value", "context")
-        self.assertEqual('DummyState', state_name)
-
-    def test_extract_meta_without_fallback_helper(self):
-        xml_string = '<TestXML>'
-        xml_string = xml_string + ' <ElementOne context="FINAL" name="StateName" dummyAttribute="DummyValue" />'
-        xml_string = xml_string + ' </TestXML>'
-        root = ET.fromstring(xml_string)
-        state_name = processors.extract_meta_without_fallback_helper(root, "./ElementOne", "dummyAttribute")
-        self.assertEqual('DummyValue', state_name)
-
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

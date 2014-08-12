@@ -109,8 +109,7 @@ def create_path(root_dir, meta, generate_path):
     kwargs['asmt_grade'] = meta.grade
     kwargs['district_id'] = meta.district_id
     kwargs['student_id'] = meta.student_id
-    path = generate_path(root_dir, **kwargs)
-    return path
+    return generate_path(root_dir, **kwargs)
 
 
 def extract_meta_names(raw_xml_string):
@@ -119,16 +118,16 @@ def extract_meta_names(raw_xml_string):
     '''
     try:
         root = ET.fromstring(raw_xml_string)
-        #state_code -> StateName for now
         state_code = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']", "value", "context")
-        student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context")
+        student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
         district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context")
         academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
         asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
         subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
+        # TODO: This needs to be fixed
         effective_date = 'NA'  # root.find("./test").get('effectiveDate', DEFAULT_VALUE)
-        validMeta = state_code and student_id and district_id and academic_year and asmt_type and subject and grade
+        validMeta = True if (state_code and student_id and district_id and academic_year and asmt_type and subject and grade) else False
         return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

@@ -51,8 +51,8 @@ class Test(unittest.TestCase):
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="">
-        <ExamineeAttribute context="FINAL" name="SSID" value="CA-9999999598" />
-        <ExamineeAttribute context="INITIAL" name="SSID" value="CA-9999999598" />
+        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
+        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
         <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
         <ExamineeRelationship context="FINAL" name="StateName" value="California" />
         <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
@@ -95,8 +95,8 @@ class Test(unittest.TestCase):
         xml_string = '<TDSReport>'
         xml_string = xml_string + ' <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />'
         xml_string = xml_string + ' <Examinee key="">'
-        xml_string = xml_string + ' <ExamineeAttribute context="FINAL" name="SSID" value="CA-9999999598" />'
-        xml_string = xml_string + ' <ExamineeAttribute context="INITIAL" name="SSID" value="CA-9999999598" />'
+        xml_string = xml_string + ' <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />'
+        xml_string = xml_string + ' <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />'
         xml_string = xml_string + ' <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />'
         xml_string = xml_string + ' <ExamineeRelationship context="FINAL" name="StateName" value="California" />'
         xml_string = xml_string + ' <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />'

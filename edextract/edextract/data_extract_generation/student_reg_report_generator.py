@@ -9,11 +9,11 @@ from collections import OrderedDict
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
-from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.student_reg_extract_processors.row_data_processor import RowDataProcessor
 from edextract.data_extract_generation.statistics_generator import get_tracker_results as get_tracker_statistics_results
 from edextract.data_extract_generation.completion_generator import get_tracker_results as get_tracker_completion_results
+from edcore.utils.csv_writer import write_csv
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):
@@ -59,7 +59,7 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     headers = extract_args[TaskConstants.CSV_HEADERS]
     data = data_extract_func(tenant, academic_year, queries)
 
-    write_csv(output_file, headers, data)
+    write_csv(output_file, data, header=headers)
 
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 

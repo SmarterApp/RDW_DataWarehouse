@@ -17,6 +17,7 @@ from smarter_score_batcher.utils import xsd
 logger = logging.getLogger("smarter_score_batcher")
 xsd_data = xsd.xsd.get_xsd() if xsd.xsd is not None else None
 
+
 @view_config(route_name='xml', request_method='POST', content_type="application/xml", renderer='json')
 @validate_xml(xsd_data)
 def xml_catcher(xml_body):

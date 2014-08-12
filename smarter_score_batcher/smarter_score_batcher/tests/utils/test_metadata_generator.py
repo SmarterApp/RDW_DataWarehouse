@@ -6,8 +6,10 @@ Created on Aug 11, 2014
 import unittest
 import tempfile
 import os
-from smarter_score_batcher.utils.metadata_generator import metadata_generator_top_down,\
-    metadata_generator_bottom_up
+from smarter_score_batcher.utils.metadata_generator import metadata_generator_top_down, \
+    metadata_generator_bottom_up, FileMetadata
+from smarter_score_batcher.exceptions import MetadataDirNotExistException
+import uuid
 
 
 class Test(unittest.TestCase):
@@ -109,6 +111,22 @@ class Test(unittest.TestCase):
         metadata_generator_bottom_up(file5)
         self.__assertMetadata()
 
+    def test_metadata_generator_top_down_invalid_dir(self):
+        fake_dir = os.path.join(self.__temp_dir.name, 'fake')
+        self.assertRaises(MetadataDirNotExistException, metadata_generator_top_down, fake_dir)
+
+    def test_FileMetadata_invalid_dir(self):
+        fake_dir = os.path.join(self.__temp_dir.name, 'fake')
+        self.assertRaises(MetadataDirNotExistException, FileMetadata, fake_dir)
+
+    def test_FileMetadata_read_skip(self):
+        dir_path = os.path.join(self.__temp_dir.name, str(uuid.uuid4()))
+        os.makedirs(dir_path)
+        open(os.path.join(dir_path, '.metadata'), 'a').close()
+        with FileMetadata(dir_path) as meta:
+            read_meta = meta.read_files(force=False)
+        self.assertFalse(read_meta)
+
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

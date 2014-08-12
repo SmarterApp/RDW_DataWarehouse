@@ -4,15 +4,16 @@ Created on Jul 21, 2014
 @author: tosako
 '''
 import os
-import argparse
 import fcntl
 import logging
+from smarter_score_batcher.exceptions import MetadataDirNotExistException
 
 
 DIRECTORY = 'd'
 FILE = 'f'
 
 logger = logging.getLogger("smarter_score_batcher")
+
 
 def metadata_generator_top_down(dir_path, metadata_filename='.metadata', recursive=True, force=True):
     if os.path.isdir(dir_path):
@@ -28,6 +29,7 @@ def metadata_generator_top_down(dir_path, metadata_filename='.metadata', recursi
             logger.info('generated metadata: [' + fileMeatadata.name + ']')
     else:
         logger.info('[' + dir_path + '] is not directory')
+        raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
 
 
 def metadata_generator_bottom_up(file_path, metadata_filename='.metadata', recursive=True):
@@ -41,7 +43,7 @@ def metadata_generator_bottom_up(file_path, metadata_filename='.metadata', recur
             fileMetadata.write()
         if recursive:
             metadata_generator_bottom_up(dirname, metadata_filename=metadata_filename, recursive=recursive)
-        
+
 
 class FileMetadata():
     '''
@@ -55,7 +57,7 @@ class FileMetadata():
         if os.path.isdir(dir_path):
             self.__metadat_file_path = os.path.join(self.__path, self.__metadata_filename)
         else:
-            raise IOError()
+            raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
         self.__dirs = {}
         self.__files = {}
 
@@ -70,7 +72,7 @@ class FileMetadata():
     def __exit__(self, type, value, tb):
         fcntl.flock(self.__metadata_fd, fcntl.LOCK_UN)
         self.__metadata_fd.close()
-        
+
     def load_metadata(self, delimiter=':'):
         def setMetadata(metainfo):
             metainfo.name = meta[1]
@@ -96,10 +98,11 @@ class FileMetadata():
         read only files
         '''
         if not force and os.path.exists(os.path.join(self.__path, self.__metadata_filename)):
-            return
+            return False
         files = [os.path.join(self.__path, f) for f in os.listdir(self.__path)]
         for file in files:
             self.read_file(file)
+        return True
 
     def read_file(self, file):
         '''
@@ -139,7 +142,7 @@ class FileMetadata():
             self.__metadata_fd.truncate(0)
             _write(self.__metadata_fd, list(self.__dirs.values()))
             _write(self.__metadata_fd, list(self.__files.values()))
-            
+
     class DirInfo():
         def __init__(self):
             pass
@@ -150,7 +153,6 @@ class FileMetadata():
             self.__last_c_time = stat_info.st_ctime
             self.__metadata_filename = metadata_filename
             self.__size = self.get_size(delimiter=delimiter)
-
 
         def read_metadata(self, delimiter=':'):
             metadata = []
@@ -235,28 +237,3 @@ class FileMetadata():
         @property
         def type(self):
             return FILE
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Metadata generator')
-    # parser.add_argument('-n', '--dir', help='directory to read', required=True)
-    parser.add_argument('-p', '--path', help='directory/file path to read', default='/tmp/a/c/f')
-    parser.add_argument('-r', '--recursive', help='generate metadata recursively', action='store_true', default=True)
-    parser.add_argument('-m', '--metadata', help='metadata filename', default='.metadata')
-    parser.add_argument('-f', '--force', help='force generate metadata if exists', action='store_true', default=False)
-    parser.add_argument('-u', '--up', help='update metadat from bottom to up', action='store_true', default=False)
-    args = parser.parse_args()
-    __path = args.path
-    __recursive = args.recursive
-    __metadata = args.metadata
-    __force = args.force
-    __up = args.up
-    with FileMetadata('/tmp/a') as f:
-        pass
-    with FileMetadata('/tmp/a') as f:
-        with FileMetadata('/tmp/a') as f1:
-            pass
-    if __up:
-        metadata_generator_top_down(__path, metadata_filename=__metadata, recursive=__recursive, force=__force)
-    else:
-        metadata_generator_bottom_up(__path, metadata_filename=__metadata, recursive=__recursive)

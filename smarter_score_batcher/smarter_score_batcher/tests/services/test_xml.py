@@ -4,12 +4,12 @@ from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 from smarter_score_batcher.celery import setup_celery
 from unittest.mock import patch
-from smarter_score_batcher.utils import xsd
 import os
 here = os.path.abspath(os.path.dirname(__file__))
 xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))
 #xsd.xsd = xsd.XSD(xsd_file_path)
 from smarter_score_batcher.services import xml
+
 
 class TestXML(unittest.TestCase):
 

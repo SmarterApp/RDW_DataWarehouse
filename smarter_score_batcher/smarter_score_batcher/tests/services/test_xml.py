@@ -60,7 +60,6 @@ class TestXML(unittest.TestCase):
 
     @patch('smarter_score_batcher.services.xml.create_path')
     def test_process_xml_valid(self, mock_create_path):
-        
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="">
@@ -75,11 +74,11 @@ class TestXML(unittest.TestCase):
         m1 = hashlib.md5()
         m1.update(bytes(xml_string, 'utf-8'))
         digest1 = m1.digest()
-        
+
         with tempfile.TemporaryDirectory() as tempfolder:
             target = os.path.join(tempfolder, str(uuid.uuid4()), str(uuid.uuid4()))
             mock_create_path.return_value = target
-    
+
             result_process_xml = process_xml(xml_string)
             self.assertTrue(result_process_xml)
             m2 = hashlib.md5()

@@ -209,12 +209,12 @@ def get_all_elements(root, xpath_of_element):
 
 
 def get_all_elements_for_tsb_csv(root, element_to_get):
-    key = 'key'  # ItemID placeholder for now
     clientId = 'client_id'  # placeholder for now
     student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context")
     matrix = []
     list_of_elements = get_all_elements(root, element_to_get)
     for element_item in list_of_elements:
+        key = element_item.get('key')
         segmentId = element_item.get('segmentId')
         position = element_item.get('position')
         operational = element_item.get('operational')

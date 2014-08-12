@@ -4,9 +4,9 @@ Created on Jul 21, 2014
 @author: tosako
 '''
 import os
-import argparse
 import fcntl
 import logging
+from smarter_score_batcher.exceptions import MetadataDirNotExistException
 
 
 DIRECTORY = 'd'
@@ -28,6 +28,7 @@ def metadata_generator_top_down(dir_path, metadata_filename='.metadata', recursi
             logger.info('generated metadata: [' + fileMeatadata.name + ']')
     else:
         logger.info('[' + dir_path + '] is not directory')
+        raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
 
 
 def metadata_generator_bottom_up(file_path, metadata_filename='.metadata', recursive=True):
@@ -55,7 +56,7 @@ class FileMetadata():
         if os.path.isdir(dir_path):
             self.__metadat_file_path = os.path.join(self.__path, self.__metadata_filename)
         else:
-            raise IOError()
+            raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
         self.__dirs = {}
         self.__files = {}
 
@@ -96,10 +97,11 @@ class FileMetadata():
         read only files
         '''
         if not force and os.path.exists(os.path.join(self.__path, self.__metadata_filename)):
-            return
+            return False
         files = [os.path.join(self.__path, f) for f in os.listdir(self.__path)]
         for file in files:
             self.read_file(file)
+        return True
 
     def read_file(self, file):
         '''
@@ -235,28 +237,3 @@ class FileMetadata():
         @property
         def type(self):
             return FILE
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Metadata generator')
-    # parser.add_argument('-n', '--dir', help='directory to read', required=True)
-    parser.add_argument('-p', '--path', help='directory/file path to read', default='/tmp/a/c/f')
-    parser.add_argument('-r', '--recursive', help='generate metadata recursively', action='store_true', default=True)
-    parser.add_argument('-m', '--metadata', help='metadata filename', default='.metadata')
-    parser.add_argument('-f', '--force', help='force generate metadata if exists', action='store_true', default=False)
-    parser.add_argument('-u', '--up', help='update metadat from bottom to up', action='store_true', default=False)
-    args = parser.parse_args()
-    __path = args.path
-    __recursive = args.recursive
-    __metadata = args.metadata
-    __force = args.force
-    __up = args.up
-    with FileMetadata('/tmp/a') as f:
-        pass
-    with FileMetadata('/tmp/a') as f:
-        with FileMetadata('/tmp/a') as f1:
-            pass
-    if __up:
-        metadata_generator_top_down(__path, metadata_filename=__metadata, recursive=__recursive, force=__force)
-    else:
-        metadata_generator_bottom_up(__path, metadata_filename=__metadata, recursive=__recursive)

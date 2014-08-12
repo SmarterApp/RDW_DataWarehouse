@@ -1,10 +1,7 @@
-import os
 import logging
-import csv
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
-from smarter_score_batcher.utils.csv_utils import get_all_elements_for_tsb_csv
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper
 from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed

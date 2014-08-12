@@ -151,6 +151,7 @@ def validate_xml(xsd):
                 if type(arg) == pyramid.request.Request or type(arg) == pyramid.testing.DummyRequest:
                     valid = False
                     try:
+                        xml_body = arg.body
                         xml_f = arg.body_file
                         xml_doc = etree.parse(xml_f)
                         if xmlschema.validate(xml_doc):
@@ -159,6 +160,6 @@ def validate_xml(xsd):
                         raise EdApiHTTPPreconditionFailed('Invalid XML')
                     if not valid:
                         raise EdApiHTTPPreconditionFailed('Invalid XML')
-            return request_handler(*args, **kwargs)
+            return request_handler(xml_body)
         return validate_wrap
     return request_wrap

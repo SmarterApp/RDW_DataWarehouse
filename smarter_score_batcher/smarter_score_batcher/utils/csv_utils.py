@@ -19,7 +19,7 @@ def get_all_elements(root, xpath_of_element):
 
 
 def get_all_elements_for_tsb_csv(root, element_to_get):
-    student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='SSID']", "value", "context")
+    student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
     matrix = []
     list_of_elements = get_all_elements(root, element_to_get)
     for element_item in list_of_elements:

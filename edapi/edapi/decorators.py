@@ -154,14 +154,17 @@ def validate_xml(xsd):
                     valid = False
                     try:
                         xml_body = arg.body
-                        if type(arg) == pyramid.testing.DummyRequest:
-                            xml_f = io.BytesIO(bytes(xml_body, 'utf-8'))
-                        else:
-                            xml_f = arg.body_file
-                        xml_doc = etree.parse(xml_f)
                         #for UT, if xmlschema is None, we do not validate
-                        if xmlschema is None or xmlschema.validate(xml_doc):
+                        if xmlschema is None:
                             valid = True
+                        else:
+                            if type(arg) == pyramid.testing.DummyRequest:
+                                xml_f = io.BytesIO(bytes(xml_body, 'utf-8'))
+                            else:
+                                xml_f = arg.body_file
+                            xml_doc = etree.parse(xml_f)
+                            if xmlschema.validate(xml_doc):
+                                valid = True
                     except:
                         raise EdApiHTTPPreconditionFailed('Invalid XML')
                     if not valid:

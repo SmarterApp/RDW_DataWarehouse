@@ -32,9 +32,6 @@ def xml_catcher(xml_body):
             return Response()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")
-    except EdApiHTTPPreconditionFailed as e:
-        # return error code 412
-        return e
     except Exception as e:
         logger.error(str(e))
         raise

@@ -1,6 +1,4 @@
-import os
 import logging
-import csv
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper
 
 try:

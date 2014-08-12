@@ -1,6 +1,4 @@
-import os
 import logging
-import csv
 
 try:
     import xml.etree.cElementTree as ET

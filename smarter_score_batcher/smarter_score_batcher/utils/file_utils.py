@@ -20,7 +20,7 @@ def file_writer(path, data, mode=0o700):
 
 def csv_file_writer(csv_file_path, matrix_to_feed_csv, mode=0o700):
     # create directory
-    os.makedirs(os.path.dirname(csv_file_path), mode=0o700, exist_ok=True)
+    os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
     with open(csv_file_path, 'w', newline='') as csv_out:
         csv_writer = csv.writer(csv_out, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerows(matrix_to_feed_csv)

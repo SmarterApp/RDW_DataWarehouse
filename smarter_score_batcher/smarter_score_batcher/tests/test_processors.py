@@ -5,16 +5,16 @@ Created on Aug 03, 2014
 '''
 import unittest
 import tempfile
-import shutil
 import os
 from smarter_score_batcher import processors
 from pyramid.registry import Registry
 from pyramid import testing
 from smarter_score_batcher.celery import setup_celery
-from smarter_score_batcher.services import xml
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from unittest.mock import patch
+from edcore.utils.file_utils import generate_path_to_raw_xml
+import hashlib
+import uuid
 
 try:
     import xml.etree.cElementTree as ET
@@ -24,12 +24,12 @@ except ImportError:
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.tempfolder = tempfile.mkdtemp('tmp')
+        self.__tempfolder = tempfile.TemporaryDirectory()
         # setup registry
         settings = {
             'smarter_score_batcher.celery_timeout': 30,
             'smarter_score_batcher.celery.celery_always_eager': True,
-            'smarter_score_batcher.base_dir': self.tempfolder
+            'smarter_score_batcher.base_dir': self.__tempfolder.name
         }
         reg = Registry()
         reg.settings = settings
@@ -37,44 +37,49 @@ class Test(unittest.TestCase):
         setup_celery(settings)
 
     def tearDown(self):
-        shutil.rmtree(self.tempfolder)
+        self.__tempfolder.cleanup()
         testing.tearDown()
 
     def test_process_xml_incomplete_xml(self):
         xml_string = '<xml></xml>'
         self.assertRaises(EdApiHTTPPreconditionFailed, processors.process_xml, xml_string)
 
-    def test_process_xml_valid(self):
-        xml_string = '<TDSReport>'
-        xml_string = xml_string + ' <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />'
-        xml_string = xml_string + ' <Examinee key="">'
-        xml_string = xml_string + ' <ExamineeAttribute context="FINAL" name="SSID" value="CA-9999999598" />'
-        xml_string = xml_string + ' <ExamineeAttribute context="INITIAL" name="SSID" value="CA-9999999598" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="FINAL" name="StateName" value="California" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="INITIAL" name="StateName" value="California" />'
-        xml_string = xml_string + ' </Examinee>'
-        xml_string = xml_string + ' </TDSReport>'
+    @patch('smarter_score_batcher.processors.create_path')
+    def test_process_xml_valid(self, mock_create_path):
+        target = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        mock_create_path.return_value = target
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="">
+        <ExamineeAttribute context="FINAL" name="SSID" value="CA-9999999598" />
+        <ExamineeAttribute context="INITIAL" name="SSID" value="CA-9999999598" />
+        <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="FINAL" name="StateName" value="California" />
+        <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
+        </Examinee>
+        </TDSReport>'''
         result_process_xml = processors.process_xml(xml_string)
-        meta_names = processors.extract_meta_names(xml_string)
-        settings = self.__config.registry.settings
-        file_path = processors.create_path(self.tempfolder, meta_names)
-        args = (file_path, xml_string)
-        queue_name = settings.get('smarter_score_batcher.sync_queue')
-        celery_response = remote_write.apply_async(args=args, queue=queue_name)
-        self.assertEqual(celery_response.get(timeout=settings.get('smarter_score_batcher.celery_timeout')), result_process_xml)
+        self.assertTrue(result_process_xml)
+        m1 = hashlib.md5()
+        m1.update(bytes(xml_string, 'utf-8'))
+        digest1 = m1.digest()
+        m2 = hashlib.md5()
+        with open(target, 'rb') as f:
+            m2.update(f.read())
+        digest2 = m2.digest()
+        self.assertEqual(digest1, digest2)
 
     def test_create_path_valid(self):
         meta = processors.Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
-        path = os.path.join(self.tempfolder, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
-        create_path_result = processors.create_path(self.tempfolder, meta)
+        path = os.path.join(self.__tempfolder.name, 'state_name', 'academic_year', 'ASMT_TYPE', 'effective_date', 'SUBJECT', 'grade', 'district_id', 'student_id.xml')
+        create_path_result = processors.create_path(self.__tempfolder.name, meta, generate_path_to_raw_xml)
         self.assertEqual(path, create_path_result)
 
-    def test_create_path_in_valid(self):
+    def test_create_path_invalid(self):
         meta = processors.Meta(True, 'NA', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
-        path = os.path.join(self.tempfolder, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
-        create_path_result = processors.create_path(self.tempfolder, meta)
+        path = os.path.join(self.__tempfolder.name, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        create_path_result = processors.create_path(self.__tempfolder.name, meta, generate_path_to_raw_xml)
         self.assertNotEqual(path, create_path_result)
 
     def test_extract_meta_names_empty_xml(self):

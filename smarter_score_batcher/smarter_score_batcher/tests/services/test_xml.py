@@ -8,7 +8,7 @@ from smarter_score_batcher.utils import xsd
 import os
 here = os.path.abspath(os.path.dirname(__file__))
 xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))
-xsd.xsd = xsd.XSD(xsd_file_path)
+#xsd.xsd = xsd.XSD(xsd_file_path)
 from smarter_score_batcher.services import xml
 
 class TestXML(unittest.TestCase):
@@ -30,8 +30,9 @@ class TestXML(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+    @patch('smarter_score_batcher.services.xml.create_csv')
     @patch('smarter_score_batcher.services.xml.process_xml')
-    def test_xml_catcher_succeed(self, mock_process_xml):
+    def test_xml_catcher_succeed(self, mock_process_xml, mock_create_csv):
         mock_process_xml.return_value = True
         self.__request.body = '<xml></xml>'
         response = xml.xml_catcher(self.__request)

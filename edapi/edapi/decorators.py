@@ -138,9 +138,11 @@ def validate_xml(xsd):
     '''
     validating xml against xsd
     '''
-    xsd_f = io.BytesIO(bytes(xsd, 'UTF-8'))
-    xsd_doc = etree.parse(xsd_f)
-    xmlschema = etree.XMLSchema(xsd_doc)
+    xmlschema = None
+    if xsd is not None:
+        xsd_f = io.BytesIO(bytes(xsd, 'UTF-8'))
+        xsd_doc = etree.parse(xsd_f)
+        xmlschema = etree.XMLSchema(xsd_doc)
     def request_wrap(request_handler):
         '''
         :param request_handler: pyramid request handler
@@ -152,9 +154,13 @@ def validate_xml(xsd):
                     valid = False
                     try:
                         xml_body = arg.body
-                        xml_f = arg.body_file
+                        if type(arg) == pyramid.testing.DummyRequest:
+                            xml_f = io.BytesIO(bytes(xml_body, 'utf-8'))
+                        else:
+                            xml_f = arg.body_file
                         xml_doc = etree.parse(xml_f)
-                        if xmlschema.validate(xml_doc):
+                        #for UT, if xmlschema is None, we do not validate
+                        if xmlschema is None or xmlschema.validate(xml_doc):
                             valid = True
                     except:
                         raise EdApiHTTPPreconditionFailed('Invalid XML')

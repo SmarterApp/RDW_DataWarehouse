@@ -145,7 +145,7 @@
         },
         "next_level": {
             "state": "districts",
-            "district": "school",
+            "district": "schools",
             "school": "grades",
             "grade": "students"
         }

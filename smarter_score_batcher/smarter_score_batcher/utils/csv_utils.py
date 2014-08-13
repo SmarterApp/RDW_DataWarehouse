@@ -4,6 +4,7 @@ from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_hel
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.file_utils import csv_file_writer
+from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
 
@@ -13,36 +14,6 @@ except ImportError:
     import xml.etree.ElementTree as ET
 
 logger = logging.getLogger("smarter_score_batcher")
-
-
-def get_item_level_data(root):
-    '''
-    Generate and return item level data as list of lists for given xml root
-    '''
-    student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
-    matrix = []
-    list_of_elements = get_all_elements(root, './Opportunity/Item')
-    for element_item in list_of_elements:
-        key = element_item.get('key')
-        segmentId = element_item.get('segmentId')
-        position = element_item.get('position')
-        clientId = element_item.get('clientId')
-        operational = element_item.get('operational')
-        isSelected = element_item.get('isSelected')
-        format_type = element_item.get('format')
-        score = element_item.get('score')
-        scoreStatus = element_item.get('scoreStatus')
-        adminDate = element_item.get('adminDate')
-        numberVisits = element_item.get('numberVisits')
-        strand = element_item.get('strand')
-        contentLevel = element_item.get('contentLevel')
-        pageNumber = element_item.get('pageNumber')
-        pageVisits = element_item.get('pageVisits')
-        pageTime = element_item.get('pageTime')
-        dropped = element_item.get('dropped')
-        row = [key, student_guid, segmentId, position, clientId, operational, isSelected, format_type, score, scoreStatus, adminDate, numberVisits, strand, contentLevel, pageNumber, pageVisits, pageTime, dropped]
-        matrix.append(row)
-    return matrix
 
 
 def process_assessment_data(root):

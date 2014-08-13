@@ -1,2 +1,0 @@
-class Constants:
-    CONTENT = "content"

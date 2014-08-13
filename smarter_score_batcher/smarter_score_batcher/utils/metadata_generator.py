@@ -7,15 +7,13 @@ import os
 import fcntl
 import logging
 from smarter_score_batcher.exceptions import MetadataDirNotExistException
+from smarter_score_batcher.utils.constants import Constants
 
-
-DIRECTORY = 'd'
-FILE = 'f'
 
 logger = logging.getLogger("smarter_score_batcher")
 
 
-def metadata_generator_top_down(dir_path, metadata_filename='.metadata', recursive=True, force=True):
+def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, recursive=True, force=True):
     if os.path.isdir(dir_path):
         logger.info('seaching directory: [' + dir_path + ']')
         directories = [os.path.join(dir_path, d) for d in os.listdir(dir_path)]
@@ -32,7 +30,7 @@ def metadata_generator_top_down(dir_path, metadata_filename='.metadata', recursi
         raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
 
 
-def metadata_generator_bottom_up(file_path, metadata_filename='.metadata', recursive=True):
+def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True):
     dirname = os.path.dirname(file_path)
     updating_metadata = os.path.join(dirname, metadata_filename)
     if os.path.isfile(updating_metadata):
@@ -51,7 +49,7 @@ class FileMetadata():
     /path/.metadata
     file_type:base_file_name:file_size:file_creation_date
     '''
-    def __init__(self, dir_path, metadata_filename='.metadata'):
+    def __init__(self, dir_path, metadata_filename=Constants.METADATA):
         self.__path = os.path.abspath(dir_path)
         self.__metadata_filename = metadata_filename
         if os.path.isdir(dir_path):
@@ -83,11 +81,11 @@ class FileMetadata():
             self.__metadata_fd.seek(0)
             for l in self.__metadata_fd:
                 meta = l.strip().split(delimiter)
-                if meta[0] == DIRECTORY:
+                if meta[0] == Constants.DIRECTORY:
                     dirinfo = FileMetadata.DirInfo()
                     metainfo = setMetadata(dirinfo)
                     self.__dirs[metainfo.name] = metainfo
-                elif meta[0] == FILE:
+                elif meta[0] == Constants.FILE:
                     fileinfo = FileMetadata.FileInfo()
                     metainfo = setMetadata(fileinfo)
                     self.__files[metainfo.name] = metainfo
@@ -147,7 +145,7 @@ class FileMetadata():
         def __init__(self):
             pass
 
-        def read_dir_info(self, dir_path, metadata_filename='.metadata', delimiter=':'):
+        def read_dir_info(self, dir_path, metadata_filename=Constants.METADATA, delimiter=':'):
             self.__dir_path = dir_path
             stat_info = os.stat(dir_path)
             self.__last_c_time = stat_info.st_ctime
@@ -198,7 +196,7 @@ class FileMetadata():
 
         @property
         def type(self):
-            return DIRECTORY
+            return Constants.DIRECTORY
 
     class FileInfo():
         def __init__(self):
@@ -236,4 +234,4 @@ class FileMetadata():
 
         @property
         def type(self):
-            return FILE
+            return Constants.FILE

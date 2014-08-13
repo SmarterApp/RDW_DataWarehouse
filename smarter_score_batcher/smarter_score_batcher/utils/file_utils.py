@@ -5,6 +5,7 @@ Created on Aug 11, 2014
 '''
 import os
 from edcore.utils.csv_writer import write_csv
+from smarter_score_batcher.utils.constants import Constants
 
 
 def file_writer(path, data, mode=0o700):
@@ -20,21 +21,23 @@ def file_writer(path, data, mode=0o700):
 
 def csv_file_writer(csv_file_path, data, mode=0o700):
     # create directory
-    os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
-    written = write_csv(csv_file_path, data, header=None)
-    if os.path.exists(csv_file_path):
-        os.chmod(csv_file_path, mode)
+    written = False
+    if data is not None and data:
+        os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
+        written = write_csv(csv_file_path, data, header=None)
+        if os.path.exists(csv_file_path):
+            os.chmod(csv_file_path, mode)
     return written if written else False
 
 
 def create_path(root_dir, meta, generate_path):
     kwargs = {}
-    kwargs['state_code'] = meta.state_code
-    kwargs['asmt_year'] = meta.academic_year
-    kwargs['asmt_type'] = meta.asmt_type
-    kwargs['effective_date'] = meta.effective_date
-    kwargs['asmt_subject'] = meta.subject
-    kwargs['asmt_grade'] = meta.grade
-    kwargs['district_id'] = meta.district_id
-    kwargs['student_id'] = meta.student_id
+    kwargs[Constants.STATE_CODE] = meta.state_code
+    kwargs[Constants.ASMT_YEAR] = meta.academic_year
+    kwargs[Constants.ASMT_TYPE] = meta.asmt_type
+    kwargs[Constants.EFFECTIVE_DATE] = meta.effective_date
+    kwargs[Constants.ASMT_SUBJECT] = meta.subject
+    kwargs[Constants.ASMT_GRADE] = meta.grade
+    kwargs[Constants.DISTRICT_ID] = meta.district_id
+    kwargs[Constants.STUDENT_ID] = meta.student_id
     return generate_path(root_dir, **kwargs)

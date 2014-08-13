@@ -8,7 +8,7 @@ except ImportError:
     import xml.etree.ElementTree as ET
 
 
-class Test(unittest.TestCase):
+class TestCSVUtils(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -26,16 +26,16 @@ class Test(unittest.TestCase):
         self.assertTrue('name' in attributeDict[0])
 
     def test_get_all_elements_for_tsb_csv(self):
-        xml_string = '''<TestXML>
+        xml_string = '''<TestXML><Opportunity>
         <Item position="test" segmentId="segmentId_value"
         bankKey="test" key="key_value" operational="test" isSelected="test" format="test"
         score="test" scoreStatus="test" adminDate="test" numberVisits="test"
         mimeType="test" strand="test" contentLevel="test" pageNumber="test" pageVisits="test"
         pageTime="test" dropped="test">
         </Item>
-        </TestXML>'''
+        </Opportunity></TestXML>'''
         root = ET.fromstring(xml_string)
-        row = csv_utils.get_all_elements_for_tsb_csv(root, "./Item")
+        row = csv_utils.get_item_level_data(root)
         self.assertEqual('key_value', row[0][0])
         self.assertEqual('segmentId_value', row[0][2])
 

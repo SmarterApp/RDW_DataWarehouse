@@ -1,15 +1,22 @@
 import logging
 
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
 
 logger = logging.getLogger("smarter_score_batcher")
 
 DEFAULT_VALUE = 'NA'
 ATTRIBUTE_CONTEXT_VALUE_FINAL = 'FINAL'
 ATTRIBUTE_CONTEXT_VALUE_INITIAL = 'INITIAL'
+
+
+def get_all_elements(root, xpath_of_element):
+    '''
+    Returns a list of dictionaires of element attributes for all the times the element appears
+    '''
+    list_of_dict = []
+    for element_item in root.findall(xpath_of_element):
+        attribute_dict = dict(element_item.items())
+        list_of_dict.append(attribute_dict)
+    return list_of_dict
 
 
 def extract_meta_with_fallback_helper(root, element_xpath, attribute_to_get, attribute_to_compare):

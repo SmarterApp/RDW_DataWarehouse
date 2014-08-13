@@ -1,27 +1,17 @@
 import logging
-from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper
+from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper,\
+    get_all_elements
+from smarter_score_batcher.mapping.csv_metadata import get_csv_mapping
+from smarter_score_batcher.mapping.json_metadata import get_json_mapping
 
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
 
 logger = logging.getLogger("smarter_score_batcher")
 
 
-#Returns a list of dictionaires of element attributes for all the times the element appears
-def get_all_elements(root, xpath_of_element):
-    list_of_dict = []
-    for element_item in root.findall(xpath_of_element):
-        attribute_dict = dict(element_item.items())
-        list_of_dict.append(attribute_dict)
-    return list_of_dict
-
-
-def get_all_elements_for_tsb_csv(root, element_to_get):
+def get_item_level_data(root):
     student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
     matrix = []
-    list_of_elements = get_all_elements(root, element_to_get)
+    list_of_elements = get_all_elements(root, './Opportunity/Item')
     for element_item in list_of_elements:
         key = element_item.get('key')
         segmentId = element_item.get('segmentId')
@@ -43,3 +33,11 @@ def get_all_elements_for_tsb_csv(root, element_to_get):
         row = [key, student_guid, segmentId, position, clientId, operational, isSelected, format_type, score, scoreStatus, adminDate, numberVisits, strand, contentLevel, pageNumber, pageVisits, pageTime, dropped]
         matrix.append(row)
     return matrix
+
+
+def process_assessment_data(root):
+    # csv_data is a dictionary that can be inserted into db
+    csv_data = get_csv_mapping(root)
+    # json_data is a dictionary of the json file format
+    json_data = get_json_mapping(root)
+    # TODO: write to db in next story

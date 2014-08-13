@@ -30,9 +30,11 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
         raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
 
 
-def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True):
+def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True, generateMetadata=False):
     dirname = os.path.dirname(file_path)
     updating_metadata = os.path.join(dirname, metadata_filename)
+    if not os.path.exists(updating_metadata) and generateMetadata:
+        open(updating_metadata, 'a').close()
     if os.path.isfile(updating_metadata):
         dir_path = os.path.dirname(file_path)
         with FileMetadata(dir_path, metadata_filename=metadata_filename) as fileMetadata:

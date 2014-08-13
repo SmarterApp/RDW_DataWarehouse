@@ -161,6 +161,7 @@ def get_csv_mapping(root):
     examinee = root.find("./Examinee")
     opportunity = root.find("./Opportunity")
     accommodation = root.findall("./Opportunity/Accommodation")
+    test_node = root.find("./Test")
 
     # In the order of the csv headers
     mappings = [Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateName']", "value", "context"), CSVHeaders.StateAbbreviation),
@@ -194,14 +195,14 @@ def get_csv_mapping(root):
                 Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Id']", "value", "context"), CSVHeaders.Group2Id),
                 Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Text']", "value", "context"), CSVHeaders.Group2Text),
 
-                Mapping(XMLMeta(root, "./Test", "testId"), CSVHeaders.AssessmentGuid),
+                Mapping(XMLMeta(test_node, ".", "testId"), CSVHeaders.AssessmentGuid),
                 Mapping(XMLMeta(opportunity, ".", "oppId"), CSVHeaders.AssessmentSessionLocationId),
                 Mapping(XMLMeta(opportunity, ".", "server"), CSVHeaders.AssessmentSessionLocation),
                 Mapping(XMLMeta(opportunity, ".", "dateCompleted"), CSVHeaders.AssessmentAdministrationFinishDate),
-                Mapping(XMLMeta(root, "./Test", "academicYear"), CSVHeaders.AssessmentYear),
-                Mapping(XMLMeta(root, "./Test", "assessmentType"), CSVHeaders.AssessmentType),
-                Mapping(XMLMeta(root, "./Test", "subject"), CSVHeaders.AssessmentAcademicSubject),
-                Mapping(XMLMeta(root, "./Test", "grade"), CSVHeaders.AssessmentLevelForWhichDesigned),
+                Mapping(XMLMeta(test_node, ".", "academicYear"), CSVHeaders.AssessmentYear),
+                Mapping(XMLMeta(test_node, ".", "assessmentType"), CSVHeaders.AssessmentType),
+                Mapping(XMLMeta(test_node, ".", "subject"), CSVHeaders.AssessmentAcademicSubject),
+                Mapping(XMLMeta(test_node, ".", "grade"), CSVHeaders.AssessmentLevelForWhichDesigned),
 
                 Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value"), CSVHeaders.AssessmentSubtestResultScoreValue),
                 Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MinScore']", "value"), CSVHeaders.AssessmentSubtestMinimumValue),

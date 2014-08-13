@@ -10,7 +10,7 @@ ATTRIBUTE_CONTEXT_VALUE_INITIAL = 'INITIAL'
 
 def get_all_elements(root, xpath_of_element):
     '''
-    Returns a list of dictionaires of element attributes for all the times the element appears
+    Returns a list of dictionaries of element attributes for all the times the element appears
     '''
     list_of_dict = []
     for element_item in root.findall(xpath_of_element):

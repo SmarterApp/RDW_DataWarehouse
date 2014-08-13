@@ -62,6 +62,7 @@ def generate_csv_from_xml(csv_file_path, xml_file_path):
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
         process_assessment_data(root)
+        # TODO:  Takashi fix this to be processed in its own function
         matrix_to_feed_csv = get_item_level_data(root)
         written = csv_file_writer(csv_file_path, matrix_to_feed_csv)
         if written:

@@ -996,8 +996,8 @@ jenkins_dev:
           average.xml: 30000
     smarter_score_batcher:
       celery:
-        celery_always_eager: true
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
+        CELERYD_CONCURRENCY: 4
     edware:
       db:
         cat:

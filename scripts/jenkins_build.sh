@@ -22,6 +22,7 @@ function set_vars {
     HPZ_PACKAGE="hpz"
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/conf/smarter.ini"
+    SMARTER_TSB_INI="/opt/edware/conf/smarter_score_batcher.ini"
     HPZ_INI="/opt/edware/conf/hpz.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
     EGG_REPO="/opt/edware/pynest"
@@ -256,6 +257,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/hpz/frs.wsgi ${APACHE_DIR}/hpz_frs_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/config/smarter_score_batcher.ini ${SMARTER_TSB_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${WORKSPACE}/smarter_score_batcher/smarter_score_batcher.wsgi ${APACHE_DIR}/smarter_score_batcher_conf
     /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}

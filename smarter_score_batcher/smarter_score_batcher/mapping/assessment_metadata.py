@@ -4,10 +4,13 @@ Created on Aug 11, 2014
 @author: dip
 '''
 from copy import deepcopy
-from smarter_score_batcher.mapping.csv_metadata import XMLMeta, Mapping
+from smarter_score_batcher.mapping.assessment import XMLMeta, Mapping
 
 
 class JSONHeaders:
+    '''
+    Data Structure used to store json landing zone file
+    '''
     lz_json = {"Content": "assessment",
                "Identification": {"Guid": None,
                                   "Type": None,
@@ -317,6 +320,9 @@ class JSONHeaders:
 
 
 class JSONMapping(Mapping):
+    '''
+    Data Structure used to store mapping values from xml to csv
+    '''
     def __init__(self, src, target, property_name):
         super(JSONMapping, self).__init__(src, target)
         self.property = property_name
@@ -325,9 +331,9 @@ class JSONMapping(Mapping):
         setattr(self.target, self.property, self.src.get_value())
 
 
-def get_json_mapping(root):
+def get_assessment_metadata_mapping(root):
     '''
-    Returns the json format needed for landing zone file
+    Returns the json format needed for landing zone assessment file
     '''
     json_output = JSONHeaders()
     opportunity = root.find("./Opportunity")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TDSReport>
-	<Test name="(SBAC)SBAC-FT-SomeDescription-MATH-7-Fall-2013-2014" subject="MA" mode="online" testId="SBAC-FT-SomeDescription-MATH-7" grade="3-12" contract="SBAC" assessmentType="Formative" academicYear="2014" assessmentVersion="SomeNewVersion" />
+	<Test name="(SBAC)SBAC-FT-SomeDescription-MATH-7-Fall-2013-2014" subject="MA" mode="online" testId="SBAC-FT-SomeDescription-MATH-7" grade="3-12" contract="SBAC" assessmentType="Formative" academicYear="2014" assessmentVersion="SomeNewVersion" effectiveDate="2014-04-14T11:13:40.900"/>
 	<Examinee key="12">
 		<ExamineeAttribute context="FINAL" name="DOB" value="2005-03-19" contextDate="2014-04-14T11:13:41.803" />
 		<ExamineeAttribute context="FINAL" name="HispanicOrLatinoEthnicity" value="No" contextDate="2014-04-14T11:13:41.803"/>
@@ -41,7 +41,7 @@
 		<Accommodation type="AmericanSignLanguage" value="4" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
 		<Accommodation type="AmericanSignLanguageInterpreter" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433" />
 		<Accommodation type="Braile" value="8" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="Closed Captioning" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
+		<Accommodation type="ClosedCaptioning" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
 		<Accommodation type="TTS" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
 		<Accommodation type="Abacus" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
 		<Accommodation type="AlternateResponseOptions" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
@@ -66,26 +66,20 @@
 		<Score measureOf="Claim1" measureLabel="PerformanceLevel" value="1" />
 		<Score measureOf="Claim1" measureLabel="MinScore" value="1200" />
 		<Score measureOf="Claim1" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Claim1" measureLabel="CutPoint1" value="1600" />
-		<Score measureOf="Claim1" measureLabel="CutPoint2" value="2000" />
 		<Score measureOf="Claim1" measureLabel="Text" value="Communicating Reasoning" />
 		<Score measureOf="Claim2" measureLabel="ScaleScore" value="1505" standardError="13" />
 		<Score measureOf="Claim2" measureLabel="PerformanceLevel" value="1" />
 		<Score measureOf="Claim2" measureLabel="MinScore" value="1200" />
 		<Score measureOf="Claim2" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Claim2" measureLabel="CutPoint1" value="1600" />
-		<Score measureOf="Claim2" measureLabel="CutPoint2" value="2000" />
 		<Score measureOf="Claim2" measureLabel="Text" value="Problem Solving and Modeling and Data Analysis" />
 		<Score measureOf="Claim3" measureLabel="ScaleScore" value="1684" standardError="13" />
 		<Score measureOf="Claim3" measureLabel="PerformanceLevel" value="2" />
 		<Score measureOf="Claim3" measureLabel="MinScore" value="1200" />
 		<Score measureOf="Claim3" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Claim3" measureLabel="CutPoint1" value="1600" />
-		<Score measureOf="Claim3" measureLabel="CutPoint2" value="2000" />
 		<Score measureOf="Claim3" measureLabel="Text" value="Concepts and Procedures" />
-		<Score measureOf="ClaimLevel1" measureLabel="Text" value="Below Standard" />
-		<Score measureOf="ClaimLevel2" measureLabel="Text" value="At/Near Standard" />
-		<Score measureOf="ClaimLevel3" measureLabel="Text" value="Above Standard" />
+		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level1" value="Below Standard" />
+		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level2" value="At/Near Standard" />
+		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level3" value="Above Standard" />
 		<Item position="2" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15566" operational="0" isSelected="1" format="MC" score="0" scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="3" contentLevel="3|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
 		<Item position="1" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15558" operational="0" isSelected="1" format="EQ" score="0" scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="2" contentLevel="2|G|NA|C" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
 		<Item position="5" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15560" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="2" contentLevel="2|EE|NA|A" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>

@@ -4,8 +4,8 @@ Created on Aug 12, 2014
 @author: dip
 '''
 import unittest
-from smarter_score_batcher.mapping.json_metadata import JSONHeaders, JSONMapping,\
-    get_json_mapping
+from smarter_score_batcher.mapping.assessment_metadata import JSONHeaders, JSONMapping,\
+    get_assessment_metadata_mapping
 from smarter_score_batcher.tests.mapping.utils import DummyObj, read_data
 try:
     import xml.etree.cElementTree as ET
@@ -32,7 +32,7 @@ class TestJSONMetadata(unittest.TestCase):
     def test_get_json_mapping(self):
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
-        mapping = get_json_mapping(root)
+        mapping = get_assessment_metadata_mapping(root)
         self.assertEqual(mapping['Identification']['Guid'], 'SBAC-FT-SomeDescription-MATH-7')
         self.assertEqual(mapping['Overall']['MinScore'], '1200')
         self.assertEqual(mapping['PerformanceLevels']['Level1']['Name'], 'Minimal Understanding')

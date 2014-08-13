@@ -4,10 +4,13 @@ Created on Aug 11, 2014
 @author: dip
 '''
 from copy import deepcopy
-from smarter_score_batcher.mapping.csv_metadata import XMLMeta, Mapping
+from smarter_score_batcher.mapping.assessment import XMLMeta, Mapping
 
 
 class JSONHeaders:
+    '''
+    Data Structure used to store json landing zone file
+    '''
     lz_json = {"Content": "assessment",
                "Identification": {"Guid": None,
                                   "Type": None,
@@ -164,14 +167,6 @@ class JSONHeaders:
         self.values['PerformanceLevels']['Level5']['Name'] = value
 
     @property
-    def level1_cutpoint(self):
-        return self.values['PerformanceLevels']['Level1']['Cutpoint']
-
-    @level1_cutpoint.setter
-    def level1_cutpoint(self, value):
-        self.values['PerformanceLevels']['Level1']['Cutpoint'] = value
-
-    @property
     def level2_cutpoint(self):
         return self.values['PerformanceLevels']['Level2']['Cutpoint']
 
@@ -325,6 +320,9 @@ class JSONHeaders:
 
 
 class JSONMapping(Mapping):
+    '''
+    Data Structure used to store mapping values from xml to csv
+    '''
     def __init__(self, src, target, property_name):
         super(JSONMapping, self).__init__(src, target)
         self.property = property_name
@@ -333,9 +331,9 @@ class JSONMapping(Mapping):
         setattr(self.target, self.property, self.src.get_value())
 
 
-def get_json_mapping(root):
+def get_assessment_metadata_mapping(root):
     '''
-    Returns the json format needed for landing zone file
+    Returns the json format needed for landing zone assessment file
     '''
     json_output = JSONHeaders()
     opportunity = root.find("./Opportunity")
@@ -350,9 +348,9 @@ def get_json_mapping(root):
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level2']", "value"), json_output, 'level2_name'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level3']", "value"), json_output, 'level3_name'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level4']", "value"), json_output, 'level4_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimLevel1'][@measureLabel='Text']", "value"), json_output, 'claim_perf_level1_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimLevel2'][@measureLabel='Text']", "value"), json_output, 'claim_perf_level2_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimLevel3'][@measureLabel='Text']", "value"), json_output, 'claim_perf_level3_name'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimPerformanceLevel'][@measureLabel='Level1']", "value"), json_output, 'claim_perf_level1_name'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimPerformanceLevel'][@measureLabel='Level2']", "value"), json_output, 'claim_perf_level2_name'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimPerformanceLevel'][@measureLabel='Level3']", "value"), json_output, 'claim_perf_level3_name'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim1'][@measureLabel='MaxScore']", "value"), json_output, 'claim1_max_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim1'][@measureLabel='MinScore']", "value"), json_output, 'claim1_min_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim2'][@measureLabel='MaxScore']", "value"), json_output, 'claim2_max_score'),
@@ -361,10 +359,10 @@ def get_json_mapping(root):
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim3'][@measureLabel='MinScore']", "value"), json_output, 'claim3_min_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='MaxScore']", "value"), json_output, 'claim4_max_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='MinScore']", "value"), json_output, 'claim4_min_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint1']", "value"), json_output, 'level1_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint2']", "value"), json_output, 'level2_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint3']", "value"), json_output, 'level3_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint4']", "value"), json_output, 'level4_cutpoint'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint1']", "value"), json_output, 'level2_cutpoint'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint2']", "value"), json_output, 'level3_cutpoint'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint3']", "value"), json_output, 'level4_cutpoint'),
+                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint4']", "value"), json_output, 'level5_cutpoint'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MinScore']", "value"), json_output, 'min_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MaxScore']", "value"), json_output, 'max_score'),
                 JSONMapping(XMLMeta(test_node, ".", "subject"), json_output, 'subject'),

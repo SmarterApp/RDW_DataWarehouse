@@ -1,8 +1,8 @@
 import logging
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper,\
     get_all_elements
-from smarter_score_batcher.mapping.csv_metadata import get_csv_mapping
-from smarter_score_batcher.mapping.json_metadata import get_json_mapping
+from smarter_score_batcher.mapping.assessment import get_assessment_mapping
+from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.file_utils import csv_file_writer
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
@@ -47,9 +47,9 @@ def get_item_level_data(root):
 
 def process_assessment_data(root):
     # csv_data is a dictionary that can be inserted into db
-    csv_data = get_csv_mapping(root)
+    csv_data = get_assessment_mapping(root)
     # json_data is a dictionary of the json file format
-    json_data = get_json_mapping(root)
+    json_data = get_assessment_metadata_mapping(root)
     # TODO: write to db in next story
 
 

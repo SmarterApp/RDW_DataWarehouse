@@ -4,8 +4,8 @@ Created on Aug 12, 2014
 @author: dip
 '''
 import unittest
-from smarter_score_batcher.mapping.csv_metadata import XMLMeta, Mapping,\
-    get_csv_mapping, CSVHeaders
+from smarter_score_batcher.mapping.assessment import XMLMeta, Mapping,\
+    get_assessment_mapping, AssessmentHeaders
 from smarter_score_batcher.tests.mapping.utils import DummyObj, read_data
 try:
     import xml.etree.cElementTree as ET
@@ -41,16 +41,16 @@ class TestCSVMetadata(unittest.TestCase):
     def test_get_csv_mapping(self):
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
-        mapping = get_csv_mapping(root)
-        self.assertEqual(mapping[CSVHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-MATH-7')
-        self.assertEqual(mapping[CSVHeaders.AccommodationBraille], '8')
-        self.assertEqual(mapping[CSVHeaders.StudentIdentifier], 'CA-9999999598')
-        self.assertEqual(mapping[CSVHeaders.Asian], 'No')
-        self.assertIsNone(mapping[CSVHeaders.Group1Id], None)
-        self.assertEqual(mapping[CSVHeaders.NameOfInstitution], 'My Elementary School')
-        self.assertEqual(mapping[CSVHeaders.AssessmentSessionLocationId], '1855629')
-        self.assertEqual(mapping[CSVHeaders.AssessmentSubtestResultScoreValue], '1295')
-        self.assertEqual(mapping[CSVHeaders.AccommodationAmericanSignLanguage], '4')
+        mapping = get_assessment_mapping(root)
+        self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-MATH-7')
+        self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '8')
+        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], 'CA-9999999598')
+        self.assertEqual(mapping[AssessmentHeaders.Asian], 'No')
+        self.assertIsNone(mapping[AssessmentHeaders.Group1Id], None)
+        self.assertEqual(mapping[AssessmentHeaders.NameOfInstitution], 'My Elementary School')
+        self.assertEqual(mapping[AssessmentHeaders.AssessmentSessionLocationId], '1855629')
+        self.assertEqual(mapping[AssessmentHeaders.AssessmentSubtestResultScoreValue], '1295')
+        self.assertEqual(mapping[AssessmentHeaders.AccommodationAmericanSignLanguage], '4')
 
 
 if __name__ == "__main__":

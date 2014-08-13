@@ -40,6 +40,7 @@ def xml_catcher(xml_body):
             # TODO:  We need the async queue
             queue_name = settings.get('smarter_score_batcher.sync_queue')
             # create csv asynchronous
+            # TODO: Rename this Doris
             create_item_level_csv(root_dir_xml, root_dir_csv, queue_name, meta_names)
             return Response()
         else:

@@ -4,6 +4,7 @@ import os
 import csv
 from smarter_score_batcher.utils import meta
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
+from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
 
 from pyramid.registry import Registry
 from pyramid import testing
@@ -37,18 +38,13 @@ class Test(unittest.TestCase):
         self.__tempfolder.cleanup()
         testing.tearDown()
 
-    def test_create_item_level_csv(self):
+    def test_create_csv(self):
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="">
         <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
-        <ExamineeRelationship context="FINAL" name="StateName" value="California" />
-        <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
-        <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
         </Examinee>
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"
@@ -62,9 +58,9 @@ class Test(unittest.TestCase):
         meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
-        create_item_level_csv(root_dir_xml, root_dir_csv, None, meta_names)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+        remote_csv_generator(csv_file_path, xml_file_path)
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:

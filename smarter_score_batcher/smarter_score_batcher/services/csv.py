@@ -4,7 +4,6 @@ Created on Aug 12, 2014
 @author: tosako
 '''
 import logging
-from pyramid.threadlocal import get_current_registry
 from edcore.utils.file_utils import generate_path_to_raw_xml,\
     generate_path_to_item_csv
 from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator

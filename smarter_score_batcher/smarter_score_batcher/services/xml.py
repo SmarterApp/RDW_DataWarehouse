@@ -11,11 +11,12 @@ from edapi.decorators import validate_xml
 from smarter_score_batcher.utils import xsd
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.threadlocal import get_current_registry
-from edcore.utils.file_utils import generate_path_to_raw_xml
+from edcore.utils.file_utils import generate_path_to_raw_xml,\
+    generate_path_to_item_csv
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from smarter_score_batcher.utils.meta import extract_meta_names
 from smarter_score_batcher.utils.file_utils import create_path
-from smarter_score_batcher.services.csv import create_item_level_csv
+from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -37,12 +38,11 @@ def xml_catcher(xml_body):
         root_dir_xml = settings.get("smarter_score_batcher.base_dir.xml")
         timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
         queue_name = settings.get('smarter_score_batcher.sync_queue')
-        succeed = process_xml(meta_names, xml_body, root_dir_xml, queue_name, timeout)
+        succeed = pre_process_xml(meta_names, xml_body, root_dir_xml, queue_name, timeout)
         if succeed:
             # TODO:  We need the async queue
-            # create csv asynchronous
-            # TODO: Rename this Doris
-            create_item_level_csv(root_dir_xml, root_dir_csv, queue_name, meta_names)
+            # Extract xml for LZ assessment and Item level csv
+            post_process_xml(root_dir_xml, root_dir_csv, queue_name, meta_names)
             return Response()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")
@@ -51,11 +51,20 @@ def xml_catcher(xml_body):
         raise
 
 
-def process_xml(meta_names, raw_xml_string, root_dir_xml, queue_name, timeout):
+def pre_process_xml(meta_names, raw_xml_string, root_dir_xml, queue_name, timeout):
     '''
-    Process tdsreport doc
+    Pre-Process XML (Save it to disk)
     '''
     xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
     celery_response = remote_write.apply_async(args=(xml_file_path, raw_xml_string), queue=queue_name)  # @UndefinedVariable
     # wait until file successfully written to disk
     return celery_response.get(timeout=timeout)
+
+
+def post_process_xml(root_dir_xml, root_dir_csv, queue_name, meta_names):
+    '''
+    Post-Process XML by call celery task to process xml for assessment and item level
+    '''
+    xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+    csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+    return remote_csv_generator.apply_async(args=(csv_file_path, xml_file_path), queue=queue_name)      # @UndefinedVariable

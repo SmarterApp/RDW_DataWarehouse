@@ -5,19 +5,12 @@ import csv
 from smarter_score_batcher.utils import meta
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
 from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
-
 from pyramid.registry import Registry
 from pyramid import testing
 from smarter_score_batcher.celery import setup_celery
 import uuid
 from edcore.utils.file_utils import generate_path_to_raw_xml,\
     generate_path_to_item_csv
-from smarter_score_batcher.services.csv import create_item_level_csv
-
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
 
 
 class Test(unittest.TestCase):

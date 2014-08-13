@@ -51,11 +51,11 @@ class Test(unittest.TestCase):
         <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
         </Examinee>
         <Opportunity>
-        <Item position="test" segmentId="segmentId_value"
-        bankKey="test" key="key_value" operational="test" isSelected="test" format="test"
-        score="test" scoreStatus="test" adminDate="test" numberVisits="test"
-        mimeType="test" strand="test" contentLevel="test" pageNumber="test" pageVisits="test"
-        pageTime="test" dropped="test">
+        <Item position="position_value" segmentId="segmentId_value"
+        bankKey="test" key="key_value" operational="operational_value" isSelected="isSelected_value" format="format_type_value"
+        score="score_value" scoreStatus="scoreStatus_value" adminDate="adminDate_value" numberVisits="numberVisits_value"
+        mimeType="test" strand="strand_value" contentLevel="contentLevel_value" pageNumber="pageNumber_value" pageVisits="pageVisits_value"
+        pageTime="pageTime_value" dropped="dropped_value">
         </Item>
         </Opportunity>
         </TDSReport>'''
@@ -69,7 +69,7 @@ class Test(unittest.TestCase):
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 rows.append(row)
-        csv_first_row_list = ['key_value', 'CA-9999999598', 'segmentId_value', 'test', '', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test']
+        csv_first_row_list = ['key_value', 'CA-9999999598', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
         self.assertEqual(1, len(rows))
         self.assertEqual(csv_first_row_list, rows[0])
 

@@ -21,7 +21,9 @@ def main(global_config, **settings):
     # edauth.set_roles(RootFactory.__acl__)
     # include add routes from edapi. Calls includeme
     config.include(edapi)
-    xsd.xsd = xsd.XSD(settings['smarter_score_batcher.xsd.path'])
+    here = os.path.abspath(os.path.dirname(__file__))
+    xsd_file = os.path.join(here, settings['smarter_score_batcher.xsd.path'])
+    xsd.xsd = xsd.XSD(xsd_file)
 
     config.add_route('xml', '/services/xml')
     config.scan()

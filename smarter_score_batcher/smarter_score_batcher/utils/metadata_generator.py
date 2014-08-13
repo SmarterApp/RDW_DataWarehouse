@@ -16,6 +16,10 @@ logger = logging.getLogger("smarter_score_batcher")
 def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, recursive=True, force=True):
     '''
     generate metadata from a parent directory to child directories
+    :param dir_path: directory to generate metadata
+    :param metadata_filename: metadata basename
+    :param recursive: generate metadata recursivly
+    :param force: generate metadata even if metadata is already existed.
     '''
     if os.path.isdir(dir_path):
         logger.info('seaching directory: [' + dir_path + ']')
@@ -37,6 +41,10 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
 def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True, generateMetadata=False):
     '''
     generate metadata for one file then update parent directories.
+    :param file_path: filename to be updated for metadata
+    :param metadata_filename: metadata basename
+    :param recursive: update metadata recursivly
+    :param generateMetadata: generate an empty metadata file first if it does not eixst
     '''
     dirname = os.path.dirname(file_path)
     updating_metadata = os.path.join(dirname, metadata_filename)
@@ -58,8 +66,14 @@ class FileMetadata():
     create file metadata to each directories and recursivly.
     /path/.metadata
     file_type:base_file_name:file_size:file_creation_date
+    Instantiate FileMetadata with "with" statement in order to take advantage of file lock for metadata.
     '''
     def __init__(self, dir_path, metadata_filename=Constants.METADATA):
+        '''
+        Constructor
+        :param dir_path: directory to generate metadata
+        :param metadata_filename: metadata filename
+        '''
         self.__path = os.path.abspath(dir_path)
         self.__metadata_filename = metadata_filename
         if os.path.isdir(dir_path):
@@ -87,6 +101,7 @@ class FileMetadata():
     def load_metadata(self, delimiter=':'):
         '''
         load metadata into memory
+        :param delimiter: metadata field delimiter
         '''
         def setMetadata(metainfo):
             metainfo.name = meta[1]
@@ -110,6 +125,7 @@ class FileMetadata():
     def read_files(self, force=True):
         '''
         read all files in the directory
+        :param force: generate metadata even if it is already exist
         '''
         if not force and os.path.exists(self.__metadat_file_path):
             return False
@@ -122,6 +138,7 @@ class FileMetadata():
     def read_file(self, file):
         '''
         read a file stat for file size and ctime
+        :param file: specific file to updaet metadata
         '''
         basename = os.path.basename(file)
         if os.path.exists(file):
@@ -181,6 +198,11 @@ class FileMetadata():
             pass
 
         def read_dir_info(self, dir_path, metadata_filename=Constants.METADATA, delimiter=':'):
+            '''
+            read direcotry stat and all metadatas from children directories
+            :param dir_path: directory to update metadata
+            :param metadata_filename: metadata filename
+            '''
             self.__dir_path = dir_path
             stat_info = os.stat(dir_path)
             self.__last_c_time = stat_info.st_ctime
@@ -190,6 +212,7 @@ class FileMetadata():
         def read_metadata(self, delimiter=':'):
             '''
             read a metadata file under the child directory
+            :param delimiter: metadata field delimiter
             '''
             metadata = []
             metadata_file = os.path.join(self.__dir_path, self.__metadata_filename)
@@ -202,6 +225,10 @@ class FileMetadata():
             return metadata
 
         def get_size(self, delimiter=':'):
+            '''
+            sum up file/directory size from metadata
+            :return: total file/directory size
+            '''
             size = 0
             metadata = self.read_metadata(delimiter=delimiter)
             for m in metadata:
@@ -244,6 +271,10 @@ class FileMetadata():
             pass
 
         def read_file_info(self, filename):
+            '''
+            read file stat
+            :param filename: directory to update metadata
+            '''
             self.__filename = filename
             stat_info = os.stat(filename)
             self.__last_c_time = stat_info.st_ctime

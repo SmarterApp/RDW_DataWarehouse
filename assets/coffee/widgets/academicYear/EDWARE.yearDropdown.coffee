@@ -31,7 +31,7 @@ define [
       @setSelectedValue display, asmtYear
 
     setSelectedValue: (display, value) ->
-      $("#selectedAcademicYear").html(display)
+      $(".selectedAcademicYear").html(display)
       $reminder =  $(".reminderMessage")
       if not value || value is @latestYear
         $reminder.hide()

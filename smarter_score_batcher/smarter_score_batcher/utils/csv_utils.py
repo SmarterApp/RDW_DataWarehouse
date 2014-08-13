@@ -17,6 +17,10 @@ logger = logging.getLogger("smarter_score_batcher")
 
 
 def process_assessment_data(root):
+    '''
+    process assessment data
+    :param root: xml root document
+    '''
     # csv_data is a dictionary that can be inserted into db
     csv_data = get_assessment_mapping(root)
     # json_data is a dictionary of the json file format
@@ -32,6 +36,9 @@ def process_item_level_data(root, csv_file_path):
 def generate_csv_from_xml(csv_file_path, xml_file_path):
     '''
     Creates a csv in the given csv file path by reading from the xml file path
+    :param csv_file_path: csv file path
+    :param xml_file_path: xml file path
+    :returns: True when csv file is generated
     '''
     written = False
     try:

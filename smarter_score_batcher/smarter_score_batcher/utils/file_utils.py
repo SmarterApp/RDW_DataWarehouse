@@ -11,6 +11,10 @@ from smarter_score_batcher.utils.constants import Constants
 def file_writer(path, data, mode=0o700):
     '''
     Creates a file in the specified path and fills with data
+    :param path: file to create
+    :param data: data to be written
+    :param mode: file attribute
+    :returns: Truen when file is written
     '''
     # create directory
     os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
@@ -25,6 +29,10 @@ def file_writer(path, data, mode=0o700):
 def csv_file_writer(csv_file_path, data, mode=0o700):
     '''
     Creates a csv file in the specified path and fills with data
+    :param csv_file_path: csv file path
+    :param data: data to be written
+    :param mode: file attribute
+    :returns: True when a file is written
     '''
     # create directory
     written = False
@@ -39,6 +47,10 @@ def csv_file_writer(csv_file_path, data, mode=0o700):
 def create_path(root_dir, meta, generate_path):
     '''
     Constructs and returns a path from the meta
+    :param root_dir: root dir
+    :param meta: Meta object
+    :param generate_path: function to generate path
+    :returns: file path
     '''
     kwargs = {}
     kwargs[Constants.STATE_CODE] = meta.state_code

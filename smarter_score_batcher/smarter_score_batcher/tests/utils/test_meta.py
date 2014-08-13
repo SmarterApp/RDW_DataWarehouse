@@ -20,21 +20,21 @@ class Test(unittest.TestCase):
         self.assertFalse(meta.valid_meta)
 
     def test_extract_meta_names_valid_minimum_xml(self):
-        xml_string = '<TDSReport>'
-        xml_string = xml_string + ' <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />'
-        xml_string = xml_string + ' <Examinee key="">'
-        xml_string = xml_string + ' <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />'
-        xml_string = xml_string + ' <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="FINAL" name="StateName" value="California" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />'
-        xml_string = xml_string + ' <ExamineeRelationship context="INITIAL" name="StateName" value="California" />'
-        xml_string = xml_string + ' </Examinee>'
-        xml_string = xml_string + ' </TDSReport>'
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="">
+        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
+        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
+        <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="FINAL" name="StateName" value="California" />
+        <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
+        </Examinee>
+        </TDSReport>'''
         meta = extract_meta_names(xml_string)
         self.assertTrue(meta.valid_meta)
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

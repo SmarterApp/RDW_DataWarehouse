@@ -28,6 +28,8 @@ xsd_data = xsd.xsd.get_xsd() if xsd.xsd is not None else None
 def xml_catcher(xml_body):
     '''
     XML receiver service expects XML post and will delegate processing based on the root element.
+    :param xml_body: xml data
+    :returns: http response
     '''
     try:
         meta_names = extract_meta_names(xml_body)
@@ -55,6 +57,12 @@ def xml_catcher(xml_body):
 def pre_process_xml(meta_names, raw_xml_string, root_dir_xml, queue_name, timeout):
     '''
     Pre-Process XML (Save it to disk)
+    :param meta_names: Meta object
+    :param raw_xml_string: xml data
+    :param root_dir_xml: xml root directory
+    :param queue_name: celery sync queue name
+    :param timeout: timeout in second for celery to get result
+    :returns" celery response
     '''
     xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
     celery_response = remote_write.apply_async(args=(xml_file_path, raw_xml_string), queue=queue_name)  # @UndefinedVariable
@@ -65,6 +73,11 @@ def pre_process_xml(meta_names, raw_xml_string, root_dir_xml, queue_name, timeou
 def post_process_xml(root_dir_xml, root_dir_csv, queue_name, meta_names):
     '''
     Post-Process XML by call celery task to process xml for assessment and item level
+    :param root_dir_xml: xml root directory
+    :param root_dir_csv: csv root directory
+    :param queue_name: celery sync queue name
+    :param meta_names: Meta object
+    :returns: celery response
     '''
     xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
     csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)

@@ -3,38 +3,37 @@ Created on Aug 8, 2014
 
 @author: dip
 '''
-from edcore.utils.utils import merge_dict, reverse_map
+from edcore.utils.utils import merge_dict
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper,\
     extract_meta_without_fallback_helper
 
 
 class XMLMeta:
     def __init__(self, root, xpath, attribute, attribute_to_compare=None):
-        self.__root = root
-        self.__path = xpath
-        self.__attribute = attribute
-        self.__attribute_to_compare = attribute_to_compare
+        self.root = root
+        self.path = xpath
+        self.attribute = attribute
+        self.attribute_to_compare = attribute_to_compare
 
     def get_value(self):
-        if self.__attribute_to_compare:
-            val = extract_meta_with_fallback_helper(self.__root, self.__path, self.__attribute, self.__attribute_to_compare)
+        if self.attribute_to_compare:
+            val = extract_meta_with_fallback_helper(self.root, self.path, self.attribute, self.attribute_to_compare)
         else:
-            val = extract_meta_without_fallback_helper(self.__root, self.__path, self.__attribute)
+            val = extract_meta_without_fallback_helper(self.root, self.path, self.attribute)
         return val
 
 
-class AccommodationMeta:
-    def __init__(self, root, attribute):
-        self._root = root
-        self._attribute = attribute
+class AccommodationMeta(XMLMeta):
+    '''
+    Accommodation Specific - Perhaps to handle default values
+    '''
+    def __init__(self, root, xpath, attribute, attribute_to_compare):
+        super(AccommodationMeta, self).__init__(root, xpath, attribute, attribute_to_compare)
 
     def get_value(self):
+        val = super(AccommodationMeta, self).get_value()
         # TODO:  Some defaults are different
-        val = '0'
-        for element in self._root:
-            if element.get('type') == self._attribute:
-                return element.get('value')
-        return val
+        return '0' if val is None else val
 
 
 class Mapping:
@@ -121,46 +120,9 @@ class CSVHeaders:
     AccommodationStreamlineMode = 'AccommodationStreamlineMode'
 
 
-#def get_accomodation_mapping(root):
-#    '''
-#    Accomodation has 0 to many nodes in XML
-#    '''
-#    # TODO:  Use this instead?
-#    accommodation = root.findall("./Accommodation")
-#    # mapping from XML to CSV
-#    mapping = {'AmericanSignLanguage': CSVHeaders.AccommodationAmericanSignLanguage,
-#               'AmericanSignLanguageInterpreter': CSVHeaders.AccommodationSignLanguageHumanIntervention,
-#               'Braile': CSVHeaders.AccommodationBraille,
-#               'ClosedCaptioning': CSVHeaders.AccommodationClosedCaptioning,
-#               'TTS': CSVHeaders.AccommodationTextToSpeech,
-#               'Abacus': CSVHeaders.AccommodationAbacus,
-#               'AlternateResponseOptions': CSVHeaders.AccommodationAlternateResponseOptions,
-#               'Calculator': CSVHeaders.AccommodationCalculator,
-#               'MultiplicationTable': CSVHeaders.AccommodationMultiplicationTable,
-#               'PrintOnDemand': CSVHeaders.AccommodationPrintOnDemand,
-#               'ReadAloud': CSVHeaders.AccommodationReadAloud,
-#               'Scribe': CSVHeaders.AccommodationScribe,
-#               'SpeechToText': CSVHeaders.AccommodationSpeechToText,
-#               'StreamlineMode': CSVHeaders.AccommodationStreamlineMode}
-#
-#    # Reverse it and default to zero
-#    accommodation_values = reverse_map(mapping)
-#    for k in accommodation_values.keys():
-#        # TODO:  Some defaults are different
-#        accommodation_values[k] = 0
-#
-#    for element in accommodation:
-#        name = element['type']
-#        if name in mapping.keys():
-#            accommodation_values[name] = element['value']
-#
-#    return accommodation_values
-
-
 def get_csv_mapping(root):
     examinee = root.find("./Examinee")
     opportunity = root.find("./Opportunity")
-    accommodation = root.findall("./Opportunity/Accommodation")
     test_node = root.find("./Test")
 
     # In the order of the csv headers
@@ -225,20 +187,20 @@ def get_csv_mapping(root):
                 Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='MaxScore']", "value"), CSVHeaders.AssessmentSubtestClaim4MaximumValue),
                 Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='PerformanceLevel']", "value"), CSVHeaders.AssessmentClaim4PerformanceLevelIdentifier),
 
-                Mapping(AccommodationMeta(accommodation, 'AmericanSignLanguage'), CSVHeaders.AccommodationAmericanSignLanguage),
-                Mapping(AccommodationMeta(accommodation, 'AmericanSignLanguageInterpreter'), CSVHeaders.AccommodationSignLanguageHumanIntervention),
-                Mapping(AccommodationMeta(accommodation, 'Braile'), CSVHeaders.AccommodationBraille),
-                Mapping(AccommodationMeta(accommodation, 'ClosedCaptioning'), CSVHeaders.AccommodationClosedCaptioning),
-                Mapping(AccommodationMeta(accommodation, 'TTS'), CSVHeaders.AccommodationTextToSpeech),
-                Mapping(AccommodationMeta(accommodation, 'Abacus'), CSVHeaders.AccommodationAbacus),
-                Mapping(AccommodationMeta(accommodation, 'AlternateResponseOptions'), CSVHeaders.AccommodationAlternateResponseOptions),
-                Mapping(AccommodationMeta(accommodation, 'Calculator'), CSVHeaders.AccommodationCalculator),
-                Mapping(AccommodationMeta(accommodation, 'MultiplicationTable'), CSVHeaders.AccommodationMultiplicationTable),
-                Mapping(AccommodationMeta(accommodation, 'PrintOnDemand'), CSVHeaders.AccommodationPrintOnDemand),
-                Mapping(AccommodationMeta(accommodation, 'ReadAloud'), CSVHeaders.AccommodationReadAloud),
-                Mapping(AccommodationMeta(accommodation, 'Scribe'), CSVHeaders.AccommodationScribe),
-                Mapping(AccommodationMeta(accommodation, 'SpeechToText'), CSVHeaders.AccommodationSpeechToText),
-                Mapping(AccommodationMeta(accommodation, 'StreamlineMode'), CSVHeaders.AccommodationStreamlineMode)]
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='AmericanSignLanguage']", "value", "context"), CSVHeaders.AccommodationAmericanSignLanguage),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='AmericanSignLanguageInterpreter']", "value", "context"), CSVHeaders.AccommodationSignLanguageHumanIntervention),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='Braile']", "value", "context"), CSVHeaders.AccommodationBraille),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='ClosedCaptioning']", "value", "context"), CSVHeaders.AccommodationClosedCaptioning),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='TTS']", "value", "context"), CSVHeaders.AccommodationTextToSpeech),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='Abacus']", "value", "context"), CSVHeaders.AccommodationAbacus),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='AlternateResponseOptions']", "value", "context"), CSVHeaders.AccommodationAlternateResponseOptions),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='Calculator']", "value", "context"), CSVHeaders.AccommodationCalculator),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='MultiplicationTable']", "value", "context"), CSVHeaders.AccommodationMultiplicationTable),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='PrintOnDemand']", "value", "context"), CSVHeaders.AccommodationPrintOnDemand),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='ReadAloud']", "value", "context"), CSVHeaders.AccommodationReadAloud),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='Scribe']", "value", "context"), CSVHeaders.AccommodationScribe),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='SpeechToText']", "value", "context"), CSVHeaders.AccommodationSpeechToText),
+                Mapping(AccommodationMeta(opportunity, "./Accommodation/[@type='StreamlineMode']", "value", "context"), CSVHeaders.AccommodationStreamlineMode)]
 
     values = {}
     for m in mappings:

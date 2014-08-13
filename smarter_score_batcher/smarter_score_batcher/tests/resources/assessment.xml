@@ -37,7 +37,8 @@
 		<ExamineeRelationship context="FINAL" name="StateName" value="CA" contextDate="2014-04-14T11:13:41.803"/>
 	</Examinee>
 	<Opportunity server="562299-SBASQL8" database="CASBAC_SHARD_2013sp" clientName="California" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="1855629" startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2014-04-14T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
-		<Accommodation type="AmericanSignLanguage" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
+		<Accommodation type="AmericanSignLanguage" value="0" context="INITIAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
+		<Accommodation type="AmericanSignLanguage" value="4" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
 		<Accommodation type="AmericanSignLanguageInterpreter" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433" />
 		<Accommodation type="Braile" value="8" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
 		<Accommodation type="Closed Captioning" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>

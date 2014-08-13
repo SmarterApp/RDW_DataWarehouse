@@ -50,6 +50,7 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(mapping[CSVHeaders.NameOfInstitution], 'My Elementary School')
         self.assertEqual(mapping[CSVHeaders.AssessmentSessionLocationId], '1855629')
         self.assertEqual(mapping[CSVHeaders.AssessmentSubtestResultScoreValue], '1295')
+        self.assertEqual(mapping[CSVHeaders.AccommodationAmericanSignLanguage], '4')
 
 
 if __name__ == "__main__":

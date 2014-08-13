@@ -1,6 +1,17 @@
 import unittest
+import tempfile
+import os
+import csv
+from unittest.mock import patch
+from smarter_score_batcher.utils import meta
+from smarter_score_batcher.utils.file_utils import file_writer, create_path
 from smarter_score_batcher.utils import csv_utils
+from pyramid.registry import Registry
 from pyramid import testing
+from smarter_score_batcher.celery import setup_celery
+import uuid
+from edcore.utils.file_utils import generate_path_to_raw_xml,\
+    generate_path_to_item_csv
 
 try:
     import xml.etree.cElementTree as ET
@@ -10,36 +21,89 @@ except ImportError:
 
 class TestCSVUtils(unittest.TestCase):
     def setUp(self):
-        pass
+        self.__tempfolder = tempfile.TemporaryDirectory()
+        # setup registry
+        settings = {
+            'smarter_score_batcher.celery_timeout': 30,
+            'smarter_score_batcher.celery.celery_always_eager': True,
+            'smarter_score_batcher.base_dir': self.__tempfolder.name
+        }
+        reg = Registry()
+        reg.settings = settings
+        self.__config = testing.setUp(registry=reg)
+        setup_celery(settings)
 
     def tearDown(self):
+        self.__tempfolder.cleanup()
         testing.tearDown()
 
-    def test_get_all_elements(self):
-        xml_string = '''<TestXML>
-        <ElementOne key="">
-        <ElementTwo context="FINAL" name="dummyValue" value="DummyState" />
-        </ElementOne>
-        </TestXML>'''
-        root = ET.fromstring(xml_string)
-        attributeDict = csv_utils.get_all_elements(root, "./ElementOne/ElementTwo")
-        self.assertTrue('name' in attributeDict[0])
-
-    def test_get_all_elements_for_tsb_csv(self):
-        xml_string = '''<TestXML><Opportunity>
-        <Item position="test" segmentId="segmentId_value"
-        bankKey="test" key="key_value" operational="test" isSelected="test" format="test"
-        score="test" scoreStatus="test" adminDate="test" numberVisits="test"
-        mimeType="test" strand="test" contentLevel="test" pageNumber="test" pageVisits="test"
-        pageTime="test" dropped="test">
+    def test_generate_csv_from_xml(self):
+        root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="">
+        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
+        </Examinee>
+        <Opportunity>
+        <Item position="position_value" segmentId="segmentId_value"
+        bankKey="test" key="key_value" operational="operational_value" isSelected="isSelected_value" format="format_type_value"
+        score="score_value" scoreStatus="scoreStatus_value" adminDate="adminDate_value" numberVisits="numberVisits_value"
+        mimeType="test" strand="strand_value" contentLevel="contentLevel_value" pageNumber="pageNumber_value" pageVisits="pageVisits_value"
+        pageTime="pageTime_value" dropped="dropped_value">
         </Item>
-        </Opportunity></TestXML>'''
-        root = ET.fromstring(xml_string)
-        row = csv_utils.get_item_level_data(root)
-        print("Suva : ", row)
-        self.assertEqual('key_value', row[0][0])
-        self.assertEqual('segmentId_value', row[0][2])
+        </Opportunity>
+        </TDSReport>'''
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+        file_writer(xml_file_path, xml_string)
+        rows = []
+        csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        with open(csv_file_path, newline='') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                rows.append(row)
+        csv_first_row_list = ['key_value', 'CA-9999999598', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
+        self.assertEqual(1, len(rows))
+        self.assertEqual(csv_first_row_list, rows[0])
+
+    def test_generate_csv_from_xml_parse_error(self):
+        root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        xml_string = "bad xml"
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+        file_writer(xml_file_path, xml_string)
+        csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        self.assertRaises(ET.ParseError)
+
+    @patch('smarter_score_batcher.utils.csv_utils.generate_csv_from_xml')
+    def test_generate_csv_from_xml_parse_exception(self, mock_generate_csv_from_xml):
+        mock_generate_csv_from_xml.side_effect = Exception()
+        root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="">
+        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
+        </Examinee>
+        <Opportunity>
+        <Item position="position_value" segmentId="segmentId_value"
+        bankKey="test" key="key_value" operational="operational_value" isSelected="isSelected_value" format="format_type_value"
+        score="score_value" scoreStatus="scoreStatus_value" adminDate="adminDate_value" numberVisits="numberVisits_value"
+        mimeType="test" strand="strand_value" contentLevel="contentLevel_value" pageNumber="pageNumber_value" pageVisits="pageVisits_value"
+        pageTime="pageTime_value" dropped="dropped_value">
+        </Item>
+        </Opportunity>
+        </TDSReport>'''
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+        file_writer(xml_file_path, xml_string)
+        csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        self.assertRaises(Exception)
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

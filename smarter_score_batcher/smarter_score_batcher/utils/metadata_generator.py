@@ -19,6 +19,7 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
     '''
     if os.path.isdir(dir_path):
         logger.info('seaching directory: [' + dir_path + ']')
+        # list directories and files
         directories = [os.path.join(dir_path, d) for d in os.listdir(dir_path)]
         if recursive:
             for directory in directories:
@@ -40,6 +41,7 @@ def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA
     dirname = os.path.dirname(file_path)
     updating_metadata = os.path.join(dirname, metadata_filename)
     if not os.path.exists(updating_metadata) and generateMetadata:
+        # create empty metadata file
         open(updating_metadata, 'a').close()
     if os.path.isfile(updating_metadata):
         dir_path = os.path.dirname(file_path)
@@ -111,6 +113,7 @@ class FileMetadata():
         '''
         if not force and os.path.exists(self.__metadat_file_path):
             return False
+        # list files and directories
         files = [os.path.join(self.__path, f) for f in os.listdir(self.__path)]
         for file in files:
             self.read_file(file)
@@ -186,7 +189,7 @@ class FileMetadata():
 
         def read_metadata(self, delimiter=':'):
             '''
-            read all metadata files under the child directories
+            read a metadata file under the child directory
             '''
             metadata = []
             metadata_file = os.path.join(self.__dir_path, self.__metadata_filename)

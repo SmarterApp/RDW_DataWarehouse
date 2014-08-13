@@ -177,7 +177,7 @@ common:
         CELERY_DEFAULT_ROUTING_KEY: smarter_score_batcher
         CELERY_DEFAULT_EXCHANGE_TYPE: direct
       xsd:
-        path: resources/sample_xsd.xsd
+        path: ../resources/sample_xsd.xsd
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home

@@ -36,6 +36,7 @@ class TestCSVUtils(unittest.TestCase):
         </Opportunity></TestXML>'''
         root = ET.fromstring(xml_string)
         row = csv_utils.get_item_level_data(root)
+        print("Suva : ", row)
         self.assertEqual('key_value', row[0][0])
         self.assertEqual('segmentId_value', row[0][2])
 

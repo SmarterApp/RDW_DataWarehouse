@@ -35,9 +35,9 @@ class TestXML(unittest.TestCase):
         testing.tearDown()
 
     @patch('smarter_score_batcher.services.xml.extract_meta_names')
-    @patch('smarter_score_batcher.services.xml.create_csv')
+    @patch('smarter_score_batcher.services.xml.create_item_level_csv')
     @patch('smarter_score_batcher.services.xml.process_xml')
-    def test_xml_catcher_succeed(self, mock_process_xml, mock_create_csv, mock_extract_meta_names):
+    def test_xml_catcher_succeed(self, mock_process_xml, mock_create_item_level_csv, mock_extract_meta_names):
         mock_process_xml.return_value = True
         mock_extract_meta_names.return_value.valid_meta.return_value = True
         self.__request.body = '<xml></xml>'

@@ -9,13 +9,13 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPServiceUnavailable
 from edapi.decorators import validate_xml
 from smarter_score_batcher.utils import xsd
-from smarter_score_batcher.services.csv import create_csv
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.threadlocal import get_current_registry
 from edcore.utils.file_utils import generate_path_to_raw_xml
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from smarter_score_batcher.utils.meta import extract_meta_names
 from smarter_score_batcher.utils.file_utils import create_path
+from smarter_score_batcher.services.csv import create_item_level_csv
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -40,7 +40,7 @@ def xml_catcher(xml_body):
             # TODO:  We need the async queue
             queue_name = settings.get('smarter_score_batcher.sync_queue')
             # create csv asynchronous
-            create_csv(root_dir_csv, root_dir_xml, queue_name, meta_names)
+            create_item_level_csv(root_dir_xml, root_dir_csv, queue_name, meta_names)
             return Response()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")

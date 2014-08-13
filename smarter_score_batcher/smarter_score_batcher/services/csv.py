@@ -13,7 +13,7 @@ from smarter_score_batcher.utils.file_utils import create_path
 logger = logging.getLogger("smarter_score_batcher")
 
 
-def create_csv(root_dir_csv, root_dir_xml, meta_names, queue_name):
+def create_item_level_csv(root_dir_xml, root_dir_csv, queue_name, meta_names):
     '''
     Call celery task to process xml for assessment and item level
     '''

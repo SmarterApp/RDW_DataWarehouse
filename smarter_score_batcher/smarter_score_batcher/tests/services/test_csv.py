@@ -2,15 +2,16 @@ import unittest
 import tempfile
 import os
 import csv
-from smarter_score_batcher.services import csv as Csv
 from smarter_score_batcher.utils import meta
-from smarter_score_batcher.utils.file_utils import file_writer
+from smarter_score_batcher.utils.file_utils import file_writer, create_path
 
 from pyramid.registry import Registry
 from pyramid import testing
 from smarter_score_batcher.celery import setup_celery
-from unittest.mock import patch
 import uuid
+from edcore.utils.file_utils import generate_path_to_raw_xml,\
+    generate_path_to_item_csv
+from smarter_score_batcher.services.csv import create_item_level_csv
 
 try:
     import xml.etree.cElementTree as ET
@@ -36,11 +37,9 @@ class Test(unittest.TestCase):
         self.__tempfolder.cleanup()
         testing.tearDown()
 
-    @patch('smarter_score_batcher.services.csv.create_path')
-    def test_create_csv(self, mock_create_path):
-        target1 = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
-        target2 = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
-        mock_create_path.side_effect = [target1, target2]
+    def test_create_csv(self):
+        root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="">
@@ -60,15 +59,19 @@ class Test(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        file_writer(target1, xml_string)
-        meta_names = meta.Meta(True, 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test')
-        Csv.create_csv(None, None, None, meta_names)
-        with open(target2, newline='') as csv_file:
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+        file_writer(xml_file_path, xml_string)
+        create_item_level_csv(root_dir_xml, root_dir_csv, None, meta_names)
+        rows = []
+        csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+        with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
-                first_row = row
+                rows.append(row)
         csv_first_row_list = ['key_value', 'CA-9999999598', 'segmentId_value', 'test', '', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test']
-        self.assertEqual(csv_first_row_list, first_row)
+        self.assertEqual(1, len(rows))
+        self.assertEqual(csv_first_row_list, rows[0])
 
 if __name__ == "__main__":
     unittest.main()

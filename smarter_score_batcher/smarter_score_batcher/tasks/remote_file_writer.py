@@ -13,5 +13,8 @@ from smarter_score_batcher.utils.file_utils import file_writer
 def remote_write(path, data, mode=0o700):
     '''
     save data in given path
+    :param path: file to create
+    :param data: data to write
+    :returns: True when file is written
     '''
     return file_writer(path, data, mode=mode)

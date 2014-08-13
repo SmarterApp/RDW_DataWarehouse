@@ -22,6 +22,11 @@ class ItemLevelCsvColumns:
     DROPPED = 'dropped'
 
     def get_item_level_csv_keys(self):
+        '''
+        Returns the landing zone format of assessment csv file
+        :param self: self
+        :returns: item levels for csv
+        '''
         return [ItemLevelCsvColumns.KEY,
         ItemLevelCsvColumns.SEGMENT_ID,
         ItemLevelCsvColumns.POSTITION,

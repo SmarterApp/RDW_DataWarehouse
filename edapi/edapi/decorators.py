@@ -166,9 +166,9 @@ def validate_xml(xsd):
                             if xmlschema.validate(xml_doc):
                                 valid = True
                     except:
-                        raise EdApiHTTPPreconditionFailed('Invalid XML')
+                        raise EdApiHTTPPreconditionFailed('Invalid XML by xsd')
                     if not valid:
-                        raise EdApiHTTPPreconditionFailed('Invalid XML')
+                        raise EdApiHTTPPreconditionFailed('Invalid XML by xsd')
             return request_handler(xml_body)
         return validate_wrap
     return request_wrap

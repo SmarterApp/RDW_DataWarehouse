@@ -32,6 +32,7 @@ def xml_catcher(xml_body):
     try:
         meta_names = extract_meta_names(xml_body)
         if not meta_names.valid_meta:
+            logger.error('condition of meta_name was not satisfied')
             raise EdApiHTTPPreconditionFailed("Invalid XML")
         settings = get_current_registry().settings
         root_dir_csv = settings.get("smarter_score_batcher.base_dir.csv")

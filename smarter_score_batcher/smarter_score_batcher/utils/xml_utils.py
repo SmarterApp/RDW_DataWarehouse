@@ -8,6 +8,9 @@ logger = logging.getLogger("smarter_score_batcher")
 def get_all_elements(root, xpath_of_element):
     '''
     Returns a list of dictionaries of element attributes for all the times the element appears
+    :param root: xml root document
+    :param xpath_of_element: xpath of element
+    :returns: a list of matched elements
     '''
     list_of_dict = []
     for element_item in root.findall(xpath_of_element):
@@ -20,6 +23,11 @@ def extract_meta_with_fallback_helper(root, element_xpath, attribute_to_get, att
     '''
     Returns the value in the attribute to get for the given element from the xml root provided.
     Handles context INITIAL and FINAL
+    :param root: xml root document
+    :param element_xpath: xpath of element
+    :param attribute_to_get: attribute to get
+    :param attribute_to_compare: attribute to compare
+    :returns: matched element
     '''
     element = None
     if (root.find(element_xpath)) is not None:
@@ -36,6 +44,10 @@ def extract_meta_with_fallback_helper(root, element_xpath, attribute_to_get, att
 def extract_meta_without_fallback_helper(root, element_xpath, attribute_to_get):
     '''
     Returns the value in the attribute to get for the given element from the xml root provided.
+    :param root: xml root document
+    :param element_xpath: xpath of element
+    :param attribute_to_get: attribute to get
+    :returns: matched element
     '''
     element = None
     if (root.find(element_xpath)) is not None:

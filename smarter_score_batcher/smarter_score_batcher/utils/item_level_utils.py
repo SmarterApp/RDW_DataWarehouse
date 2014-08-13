@@ -14,6 +14,8 @@ logger = logging.getLogger("smarter_score_batcher")
 def get_item_level_data(root):
     '''
     Generate and return item level data as list of lists for given xml root
+    :param root: xml root document
+    :returns: csv rows
     '''
     student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
     matrix = []

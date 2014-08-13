@@ -70,8 +70,10 @@ class Meta:
 
 
 def extract_meta_names(raw_xml_string):
-    '''Validates and extracts meta from the XML.
+    '''
+    Validates and extracts meta from the XML.
     Returns: True if meta for file path is valid. And the parts for folder creation.
+    :param raw_xml_string: xml data
     '''
     try:
         root = ET.fromstring(raw_xml_string)

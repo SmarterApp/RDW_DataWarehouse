@@ -41,7 +41,7 @@ if __name__ == '__main__':
         if args.archive_file is None:
             src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
             # Find the first tar.gz.gpg file as LZ file
-            file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
+            file_name = glob.glob(os.path.join(src_dir, "test*.tar.gz.gpg"))[0]
             # Copy file to arrivals dir of ca tenant
             dest = os.path.join(udl2_conf['zones']['arrivals'], args.tenant, os.path.basename(file_name) + '.processing')
             shutil.copy(file_name, dest)

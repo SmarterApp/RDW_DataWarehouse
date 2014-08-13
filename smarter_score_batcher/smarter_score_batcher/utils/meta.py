@@ -6,11 +6,15 @@ Created on Aug 12, 2014
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper
 from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+import logging
 
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
+
+
+logger = logging.getLogger("smarter_score_batcher")
 
 
 class Meta:
@@ -81,6 +85,21 @@ def extract_meta_names(raw_xml_string):
         # TODO: This needs to be fixed
         effective_date = 'NA'  # root.find("./test").get('effectiveDate', DEFAULT_VALUE)
         validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade)
+        if not validMeta:
+            if not state_code:
+                logger.error('extract_meta_names: state_code is missing')
+            if not student_id:
+                logger.error('extract_meta_names: student_id is missing')
+            if not district_id:
+                logger.error('extract_meta_names: district_id is missing')
+            if not academic_year:
+                logger.error('extract_meta_names: academic_year is missing')
+            if not asmt_type:
+                logger.error('extract_meta_names: asmt_type is missing')
+            if not subject:
+                logger.error('extract_meta_names: subject is missing')
+            if not grade:
+                logger.error('extract_meta_names: grade is missing')
         return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

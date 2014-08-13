@@ -14,6 +14,9 @@ logger = logging.getLogger("smarter_score_batcher")
 
 
 def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, recursive=True, force=True):
+    '''
+    generate metadata from a parent directory to child directories
+    '''
     if os.path.isdir(dir_path):
         logger.info('seaching directory: [' + dir_path + ']')
         directories = [os.path.join(dir_path, d) for d in os.listdir(dir_path)]
@@ -31,6 +34,9 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
 
 
 def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True, generateMetadata=False):
+    '''
+    generate metadata for one file then update parent directories.
+    '''
     dirname = os.path.dirname(file_path)
     updating_metadata = os.path.join(dirname, metadata_filename)
     if not os.path.exists(updating_metadata) and generateMetadata:
@@ -62,6 +68,9 @@ class FileMetadata():
         self.__files = {}
 
     def __enter__(self):
+        '''
+        "with" will lock metadata.
+        '''
         if not os.path.exists(self.__metadat_file_path):
             # if metadata file does not exist, create empty file first
             open(self.__metadat_file_path, 'a').close()
@@ -74,6 +83,9 @@ class FileMetadata():
         self.__metadata_fd.close()
 
     def load_metadata(self, delimiter=':'):
+        '''
+        load metadata into memory
+        '''
         def setMetadata(metainfo):
             metainfo.name = meta[1]
             metainfo.size = meta[2]
@@ -95,9 +107,9 @@ class FileMetadata():
 
     def read_files(self, force=True):
         '''
-        read only files
+        read all files in the directory
         '''
-        if not force and os.path.exists(os.path.join(self.__path, self.__metadata_filename)):
+        if not force and os.path.exists(self.__metadat_file_path):
             return False
         files = [os.path.join(self.__path, f) for f in os.listdir(self.__path)]
         for file in files:
@@ -106,35 +118,50 @@ class FileMetadata():
 
     def read_file(self, file):
         '''
-        read a file
+        read a file stat for file size and ctime
         '''
         basename = os.path.basename(file)
         if os.path.exists(file):
             if os.path.isfile(file):
                 if not basename.startswith('.') and basename != self.__metadata_filename:
+                    '''
+                    do not read hidden file or metadata file
+                    '''
                     fileinfo = FileMetadata.FileInfo()
                     fileinfo.read_file_info(file)
                     self.__files[basename] = fileinfo
             elif os.path.isdir(file) and not basename.startswith('.'):
+                '''
+                do not read hidden directory
+                '''
                 dirinfo = FileMetadata.DirInfo()
                 dirinfo.read_dir_info(file)
                 self.__dirs[basename] = dirinfo
         else:
-            # possibly deleted
+            # possibly file is deleted
             self.__files.pop(basename, None)
             self.__dirs.pop(basename, None)
 
     @property
     def name(self):
-        return os.path.join(self.__path, self.__metadata_filename)
+        return self.__metadat_file_path
 
     @staticmethod
     def _format(file, delimiter=':'):
+        '''
+        metadata formatter
+        '''
         return file.type + delimiter + file.name + delimiter + str(file.size) + delimiter + str(file.time)
 
     def write(self):
+        '''
+        metadata file writer
+        '''
         def _write(fd, info):
             for d in sorted(info, key=lambda x: x.name):
+                '''
+                write in alphabetical order
+                '''
                 if fd.tell() > 0:
                     fd.write('\n')
                 fd.write(self._format(d))
@@ -144,6 +171,9 @@ class FileMetadata():
             _write(self.__metadata_fd, list(self.__files.values()))
 
     class DirInfo():
+        '''
+        metadata for directory
+        '''
         def __init__(self):
             pass
 
@@ -155,6 +185,9 @@ class FileMetadata():
             self.__size = self.get_size(delimiter=delimiter)
 
         def read_metadata(self, delimiter=':'):
+            '''
+            read all metadata files under the child directories
+            '''
             metadata = []
             metadata_file = os.path.join(self.__dir_path, self.__metadata_filename)
             if os.path.exists(metadata_file):
@@ -201,6 +234,9 @@ class FileMetadata():
             return Constants.DIRECTORY
 
     class FileInfo():
+        '''
+        metadata for file
+        '''
         def __init__(self):
             pass
 

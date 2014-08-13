@@ -79,9 +79,9 @@ class TestCSVUtils(unittest.TestCase):
         csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
         self.assertRaises(ET.ParseError)
 
-    @patch('smarter_score_batcher.utils.csv_utils.generate_csv_from_xml')
-    def test_generate_csv_from_xml_parse_exception(self, mock_generate_csv_from_xml):
-        mock_generate_csv_from_xml.side_effect = Exception()
+    @patch('smarter_score_batcher.utils.csv_utils.process_assessment_data')
+    def test_generate_csv_from_xml_parse_exception(self, mock_process_assessment_data):
+        mock_process_assessment_data.side_effect = Exception()
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         xml_string = '''<TDSReport>
@@ -103,7 +103,8 @@ class TestCSVUtils(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
         csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
-        self.assertRaises(Exception)
+        #self.assertRaises(Exception, csv_utils.generate_csv_from_xml, csv_file_path, xml_file_path)
+        self.assertFalse(os.path.isfile(csv_file_path))
 
 if __name__ == "__main__":
     unittest.main()

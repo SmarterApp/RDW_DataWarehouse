@@ -77,7 +77,7 @@ class TestXML(unittest.TestCase):
             target = os.path.join(tempfolder, str(uuid.uuid4()), str(uuid.uuid4()))
             mock_create_path.return_value = target
 
-            result_process_xml = process_xml(meta_names, xml_string)
+            result_process_xml = process_xml(meta_names, xml_string, None, None, 0)
             self.assertTrue(result_process_xml)
             m2 = hashlib.md5()
             with open(target, 'rb') as f:

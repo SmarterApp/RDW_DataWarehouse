@@ -32,13 +32,14 @@ def xml_catcher(xml_body):
         meta_names = extract_meta_names(xml_body)
         if not meta_names.valid_meta:
             raise EdApiHTTPPreconditionFailed("Invalid XML")
-        succeed = process_xml(meta_names, xml_body)
+        settings = get_current_registry().settings
+        root_dir_csv = settings.get("smarter_score_batcher.base_dir.csv")
+        root_dir_xml = settings.get("smarter_score_batcher.base_dir.xml")
+        timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
+        queue_name = settings.get('smarter_score_batcher.sync_queue')
+        succeed = process_xml(meta_names, xml_body, root_dir_xml, queue_name, timeout)
         if succeed:
-            settings = get_current_registry().settings
-            root_dir_csv = settings.get("smarter_score_batcher.base_dir.csv")
-            root_dir_xml = settings.get("smarter_score_batcher.base_dir.xml")
             # TODO:  We need the async queue
-            queue_name = settings.get('smarter_score_batcher.sync_queue')
             # create csv asynchronous
             # TODO: Rename this Doris
             create_item_level_csv(root_dir_xml, root_dir_csv, queue_name, meta_names)
@@ -50,15 +51,11 @@ def xml_catcher(xml_body):
         raise
 
 
-def process_xml(meta_names, raw_xml_string):
+def process_xml(meta_names, raw_xml_string, root_dir_xml, queue_name, timeout):
     '''
     Process tdsreport doc
     '''
-    settings = get_current_registry().settings
-    root_dir = settings.get("smarter_score_batcher.base_dir.xml")
-    timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
-    queue_name = settings.get('smarter_score_batcher.sync_queue')
-    xml_file_path = create_path(root_dir, meta_names, generate_path_to_raw_xml)
+    xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
     celery_response = remote_write.apply_async(args=(xml_file_path, raw_xml_string), queue=queue_name)  # @UndefinedVariable
     # wait until file successfully written to disk
     return celery_response.get(timeout=timeout)

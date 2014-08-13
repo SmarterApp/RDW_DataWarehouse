@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
         </TDSReport>'''
         file_writer(target1, xml_string)
         meta_names = meta.Meta(True, 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test')
-        Csv.create_csv(meta_names)
+        Csv.create_csv(None, None, None, meta_names)
         with open(target2, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:

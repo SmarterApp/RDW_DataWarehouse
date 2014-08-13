@@ -34,8 +34,13 @@ def xml_catcher(xml_body):
             raise EdApiHTTPPreconditionFailed("Invalid XML")
         succeed = process_xml(meta_names, xml_body)
         if succeed:
+            settings = get_current_registry().settings
+            root_dir_csv = settings.get("smarter_score_batcher.base_dir.csv")
+            root_dir_xml = settings.get("smarter_score_batcher.base_dir.xml")
+            # TODO:  We need the async queue
+            queue_name = settings.get('smarter_score_batcher.sync_queue')
             # create csv asynchronous
-            create_csv(meta_names)
+            create_csv(root_dir_csv, root_dir_xml, queue_name, meta_names)
             return Response()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")

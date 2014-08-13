@@ -389,11 +389,11 @@ function generate_ini {
 	cd "$WORKSPACE/config"
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
-		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
-	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini -p hpz
+		python generate_ini.py -e jenkins_dev -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
+	        python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini -p hpz
 	else
 	    python generate_ini.py -e jenkins_dev -i settings.yaml
-		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
+    	    python generate_ini.py -e jenkins_dev -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
 	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini -p hpz
 	fi
 }

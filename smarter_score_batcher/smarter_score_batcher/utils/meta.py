@@ -14,6 +14,9 @@ except ImportError:
 
 
 class Meta:
+    '''
+    Object to hold parts of the folder structure
+    '''
     def __init__(self, valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date):
         self.__student_id = student_id
         self.__state_code = state_code

@@ -16,6 +16,9 @@ logger = logging.getLogger("smarter_score_batcher")
 
 
 def get_item_level_data(root):
+    '''
+    Generate and return item level data as list of lists for given xml root
+    '''
     student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
     matrix = []
     list_of_elements = get_all_elements(root, './Opportunity/Item')
@@ -51,6 +54,9 @@ def process_assessment_data(root):
 
 
 def generate_csv_from_xml(csv_file_path, xml_file_path):
+    '''
+    Creates a csv in the given csv file path by reading from the xml file path
+    '''
     written = False
     try:
         tree = ET.parse(xml_file_path)

@@ -17,6 +17,10 @@ def get_all_elements(root, xpath_of_element):
 
 
 def extract_meta_with_fallback_helper(root, element_xpath, attribute_to_get, attribute_to_compare):
+    '''
+    Returns the value in the attribute to get for the given element from the xml root provided.
+    Handles context INITIAL and FINAL
+    '''
     element = None
     if (root.find(element_xpath)) is not None:
         try:
@@ -30,6 +34,9 @@ def extract_meta_with_fallback_helper(root, element_xpath, attribute_to_get, att
 
 
 def extract_meta_without_fallback_helper(root, element_xpath, attribute_to_get):
+    '''
+    Returns the value in the attribute to get for the given element from the xml root provided.
+    '''
     element = None
     if (root.find(element_xpath)) is not None:
         if(root.find(element_xpath).get(attribute_to_get)) is not None:

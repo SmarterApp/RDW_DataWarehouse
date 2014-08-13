@@ -9,6 +9,9 @@ from smarter_score_batcher.utils.constants import Constants
 
 
 def file_writer(path, data, mode=0o700):
+    '''
+    Creates a file in the specified path and fills with data
+    '''
     # create directory
     os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
     with open(path, 'wb') as f:
@@ -20,6 +23,9 @@ def file_writer(path, data, mode=0o700):
 
 
 def csv_file_writer(csv_file_path, data, mode=0o700):
+    '''
+    Creates a csv file in the specified path and fills with data
+    '''
     # create directory
     written = False
     if data is not None and data:
@@ -31,6 +37,9 @@ def csv_file_writer(csv_file_path, data, mode=0o700):
 
 
 def create_path(root_dir, meta, generate_path):
+    '''
+    Constructs and returns a path from the meta
+    '''
     kwargs = {}
     kwargs[Constants.STATE_CODE] = meta.state_code
     kwargs[Constants.ASMT_YEAR] = meta.academic_year

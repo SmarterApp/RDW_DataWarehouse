@@ -69,13 +69,12 @@ cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -
-cd %{buildroot}/opt/edware/smarter_score_batcher
+cd ${WORKSPACE}/smarter_score_batcher
 python setup.py clean --all
 python setup.py install
 cd -
 
 deactivate
-echo -e "/opt/edware/smarter_score_batcher\n." > virtualenv/smarter_score_batcher/lib/python3.3/site-packages/smarter-score-batcher.egg-link
 find virtualenv/smarter_score_batcher/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install

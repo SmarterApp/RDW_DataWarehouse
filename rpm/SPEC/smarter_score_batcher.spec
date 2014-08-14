@@ -45,6 +45,10 @@ cd ${WORKSPACE}/config
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edcore
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edschema
 python setup.py clean --all
 python setup.py install

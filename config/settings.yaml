@@ -169,7 +169,7 @@ common:
       celery_timeout: 30
       sync_queue: smarter_score_batcher_sync
       celery:
-        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer',)
+        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer',)
         CELERY_RESULT_BACKEND: amqp
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 20

@@ -25,7 +25,7 @@ requires = [
     'smarter_common']
 
 setup(name='smarter_score_batcher',
-      version='0.0',
+      version='0.1',
       description='smarter_score_batcher',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

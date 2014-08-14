@@ -3,9 +3,9 @@ import logging
 import edauth
 import edapi
 from smarter_common.security.root_factory import RootFactory
-from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as servicesPrefix
 import os
 from smarter_score_batcher.utils import xsd
+from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
 
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def main(global_config, **settings):
     # Set default permission on all views
     # config.set_default_permission('view')
 
-    setup_xml_celery(settings, prefix=servicesPrefix)
+    setup_xml_celery(settings, prefix=prefix)
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

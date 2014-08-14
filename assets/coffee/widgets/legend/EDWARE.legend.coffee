@@ -59,7 +59,7 @@ define [
         interval['range'] = start_score + '-' + end_score
         ALDs.push interval
         i++
-      ALDs.reverse()
+      ALDs
 
 
   # Legend section on comparing population report
@@ -108,12 +108,16 @@ define [
       LOSTemplate
 
     createBar: (subject, container)->
-      output = edwareLOSConfidenceLevelBar.create subject, 110
+      # confidence level bar
+      output = edwareLOSConfidenceLevelBar.create subject, 150
       $('#legendTemplate .confidenceLevel', container).append(output)
+      # error band
+      output = edwareLOSConfidenceLevelBar.create subject, 100
+      $('#legendTemplate .errorBand', container).append(output)
       # customize interval width and position
-      $('.interval', container).css('margin-left', '89px').css('width', '28px')
-      $('.indicator', container).css('margin-left', '98px')
-      $('.cutLine', container).css('left', '19px')
+      # $('.interval', container).css('margin-left', '89px').css('width', '28px')
+      # $('.indicator', container).css('margin-left', '98px')
+      # $('.cutLine', container).css('left', '19px')
 
   ( ($) ->
 

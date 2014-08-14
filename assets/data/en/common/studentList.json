@@ -1,17 +1,9 @@
 {
     "reportInfo": "<h4>Purpose:</h4><p>This report presents a list of individual student scores for a selected assessment.</p><br><h4>Uses:</h4><ul><li>Use this report to view the assessment results for a class or other sub-group of students, filtered or sorted for your specific needs.</li><li>Review scale scores and error bands for overall student performance on a specific assessment.</li><li>View claim score icons to understand students’ performance for each claim.</li></ul><br><h4>Features:</h4><ul><li>Select assessment and content area(s) to view</li><li>Sort results by any column </li><li>Select specific students to focus your review</li><li>Search for particular students</li><li>Filter students by attributes (e.g., Gender, IEP, Economic Disadvantage)</li><li>Download student assessment results for further analysis</li><li>Print Individual Student Reports (PDF) for a selected group of students</li>",
     "legendInfo": {
-        "desc1": "Overall Score Indicator",
-        "desc2": "Scaled Score Range",
-        "desc3": "Error Band",
-        "desc4": "(size of error band is indicated graphically)",
-        "desc5": "Numeric Score",
-        "desc6": "(color coded by Achievement Level)",
-        "desc7": "Claim Score",
-        "desc8": "1381 ",
-        "desc9": "Error Band",
-        "desc10": "(size of error band is indicated numerically)",
-        "error_band": "Smarter Balanced tests try to provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would be very likely to achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys."
+        "report_info": "This report presents a list of <b>individual student scores for a selected assessment</b>.",
+        "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would like achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
+        "error_band_1": "<b>Achievement Level Scores</b> vary by subject & grade level."
     },
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
     "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",

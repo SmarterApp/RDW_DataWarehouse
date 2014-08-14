@@ -634,6 +634,7 @@ th.ui-th-column div {
     left: 15px;
 
     .asmtScore {
+      font-size: 20px;
       vertical-align: middle;
       display: table-cell;
     }
@@ -758,62 +759,34 @@ th.ui-th-column div {
 
   .losPerformanceBar {
 
+    b { color: @color-black;}
+
+    p {
+      font-weight: normal;
+      color: @color-B2;
+      font-size: 13px;
+    }
+
     #overall_score_details {
       width: 325px;
 
       .confidenceLevel {
-        border: solid 1px #d0d0d0;
-        height: auto;
-        width: 170px;
-        float: left;
+        height: 45px;
         position: relative;
-        display: inline-block;
         margin-bottom: 13px;
         margin-left: 5px;
+
+        .progress {
+          height: 58px;
+          margin: 0 150px 0 90px;
+        }
 
         .indicator_cell {
           position: relative;
           display: inline-table;
-          top: 10px;
-          left: 10px;
+          top: 15px;
+          left: 15px;
 
-        }
-
-        .progress {
-          position: relative;
-          height: 40px;
-          margin: 0 0 0 60px;
-
-          .bar {
-            border-right: 1px dashed #000;
-          }
-        }
-
-        .scoreWrapper {
-
-          .indicator {
-            margin-top: 2px;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAkCAYAAABBn/B2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowREI3NjQ4RjkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowREI3NjQ5MDkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjBEQjc2NDhEOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjBEQjc2NDhFOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+DHTmvQAAAGVJREFUeNpi/P//PwM6YGLAAkYF0QEo6HR0dExVVVX7gbQhOChBDDY2tn8geRAN5Bsz/fz5M/bXr1+MIF0gGsiPZmJnZ18KVAEOflZW1v8gPsxMcxUVlekgs0F8xtE4oqogQIABAOYcK5weP3EcAAAAAElFTkSuQmCC') no-repeat top center;
-            z-index: 110;
-          }
-
-          .interval {
-            margin-top: 4px;
-            height: 33px;
-            border-left: 1px solid #a0a0a0;
-            border-right: 1px solid #a0a0a0;
-            background: @color-B7;
-            opacity: .8;
-            position: relative;
-
-            .cutLine {
-              position: relative;
-              width: 1px;
-              height: 100%;
-              background-color: @color-white;
-            }
-
-          }
         }
 
         .arrow1 {
@@ -855,22 +828,63 @@ th.ui-th-column div {
         }
       }
 
-      .notes {
-        display: inline-block;
-        float:right;
-        width: 133px;
+      .perf-level-icon {
+        padding: 18px 18px 0px 18px;
+      }
+    }
+
+    .errorBand {
+      .progress {
+        height: 40px;
+        border-radius: 0px;
       }
 
-      .numeric_score {
-        clear: left;
+      .scoreWrapper {
+        position: absolute;
+        z-index: 9999;
+        left: 47px;
+
+        .interval {
+          margin-left: 20px !important;
+        }
+      }
+    }
+
+    .progress {
+      position: relative;
+
+      .bar {
+        border-right: 1px dashed #000;
+      }
+    }
+
+    .scoreWrapper {
+
+      .indicator {
+        width: 5px;
+        height: 33px;
+        position: absolute;
+        margin-top: 2px;
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAkCAYAAABBn/B2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowREI3NjQ4RjkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowREI3NjQ5MDkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjBEQjc2NDhEOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjBEQjc2NDhFOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+DHTmvQAAAGVJREFUeNpi/P//PwM6YGLAAkYF0QEo6HR0dExVVVX7gbQhOChBDDY2tn8geRAN5Bsz/fz5M/bXr1+MIF0gGsiPZmJnZ18KVAEOflZW1v8gPsxMcxUVlekgs0F8xtE4oqogQIABAOYcK5weP3EcAAAAAElFTkSuQmCC') no-repeat top center !important;
+        z-index: 110;
       }
 
-      p {
+      .interval {
+        margin-top: 4px;
+        height: 33px;
+        border-left: 1px solid #a0a0a0;
+        border-right: 1px solid #a0a0a0;
+        background: @color-B7;
+        opacity: .8;
+        position: relative;
 
-        font-weight: normal;
-        color: @color-B2;
-        font-size: 11px;
-        font-style: italic;
+        .cutLine {
+          position: relative;
+          width: 1px;
+          height: 100%;
+          background-color: @color-white;
+        }
+
       }
     }
 
@@ -2027,7 +2041,7 @@ th.ui-th-column div {
   }
 
   .legendPopover {
-    min-width: 920px;
+    min-width: 700px;
   }
 
   .active {

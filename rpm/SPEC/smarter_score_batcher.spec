@@ -30,7 +30,7 @@ mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/smarter_score_bathcer/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
 
 %build
 export LANG=en_US.UTF-8

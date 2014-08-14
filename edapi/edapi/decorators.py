@@ -143,6 +143,7 @@ def validate_xml(xsd):
         xsd_f = io.BytesIO(bytes(xsd, 'UTF-8'))
         xsd_doc = etree.parse(xsd_f)
         xmlschema = etree.XMLSchema(xsd_doc)
+
     def request_wrap(request_handler):
         '''
         :param request_handler: pyramid request handler

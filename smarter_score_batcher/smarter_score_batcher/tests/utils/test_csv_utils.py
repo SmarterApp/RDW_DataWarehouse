@@ -103,7 +103,34 @@ class TestCSVUtils(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
         csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
-        #self.assertRaises(Exception, csv_utils.generate_csv_from_xml, csv_file_path, xml_file_path)
+        self.assertFalse(os.path.isfile(csv_file_path))
+
+    @patch('smarter_score_batcher.utils.csv_utils.metadata_generator_bottom_up')
+    @patch('smarter_score_batcher.utils.csv_utils.process_item_level_data')
+    def test_generate_csv_from_xml_parse_exception_written(self, mock_process_item_level_data, mock_metadata_generator_bottom_up):
+        mock_process_item_level_data.return_value = True
+        mock_metadata_generator_bottom_up.side_effect = Exception()
+        root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="">
+        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
+        </Examinee>
+        <Opportunity>
+        <Item position="position_value" segmentId="segmentId_value"
+        bankKey="test" key="key_value" operational="operational_value" isSelected="isSelected_value" format="format_type_value"
+        score="score_value" scoreStatus="scoreStatus_value" adminDate="adminDate_value" numberVisits="numberVisits_value"
+        mimeType="test" strand="strand_value" contentLevel="contentLevel_value" pageNumber="pageNumber_value" pageVisits="pageVisits_value"
+        pageTime="pageTime_value" dropped="dropped_value">
+        </Item>
+        </Opportunity>
+        </TDSReport>'''
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+        file_writer(xml_file_path, xml_string)
+        csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
+        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
         self.assertFalse(os.path.isfile(csv_file_path))
 
 if __name__ == "__main__":

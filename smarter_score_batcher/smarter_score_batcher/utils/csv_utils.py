@@ -1,6 +1,4 @@
 import logging
-from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper,\
-    get_all_elements
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.file_utils import csv_file_writer

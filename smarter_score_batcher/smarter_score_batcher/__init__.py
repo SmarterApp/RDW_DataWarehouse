@@ -25,12 +25,13 @@ def main(global_config, **settings):
     xsd_file = os.path.join(here, settings['smarter_score_batcher.xsd.path'])
     xsd.xsd = xsd.XSD(xsd_file)
 
+    # Set up celery. Important - This must happen before scan
+    setup_xml_celery(settings, prefix=prefix)
+
     config.add_route('xml', '/services/xml')
     config.scan()
     # Set default permission on all views
     # config.set_default_permission('view')
-
-    setup_xml_celery(settings, prefix=prefix)
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

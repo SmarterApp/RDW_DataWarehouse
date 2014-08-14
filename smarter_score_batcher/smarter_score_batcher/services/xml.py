@@ -39,7 +39,7 @@ def xml_catcher(xml_body):
         settings = get_current_registry().settings
         root_dir_csv = settings.get("smarter_score_batcher.base_dir.csv")
         root_dir_xml = settings.get("smarter_score_batcher.base_dir.xml")
-        timeout = settings.get("smarter_score_batcher.celery_timeout", 30)
+        timeout = int(settings.get("smarter_score_batcher.celery_timeout", 30))
         queue_name = settings.get('smarter_score_batcher.sync_queue')
         succeed = pre_process_xml(meta_names, xml_body, root_dir_xml, queue_name, timeout)
         if succeed:

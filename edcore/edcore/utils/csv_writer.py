@@ -16,11 +16,11 @@ def write_csv(file, rows, header=None, delimiter=','):
     @param header: Header row for CSV file.
     @param rows: Data rows for CSV file.
     """
-    written=False
+    written = False
     with open(file, 'w') as csv_file:
         csvwriter = csv.writer(csv_file, delimiter=delimiter, quoting=csv.QUOTE_MINIMAL)
         if header is not None:
             csvwriter.writerow(header)
         csvwriter.writerows(rows)
-        written=True
+        written = True
     return written

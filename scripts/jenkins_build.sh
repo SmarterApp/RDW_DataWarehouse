@@ -340,7 +340,7 @@ function import_data_from_csv {
     python create_source_data_files.py --raw --config ${WORKSPACE}/config/data_copy.ini
     echo "Generate Metadata for Item Level"
     cd "$WORKSPACE/smarter_score_batcher"
-    python metadata_generator.py -p /opt/edware/item_level -f -v
+    python smarter_score_batcher/metadata_generator.py -p /opt/edware/item_level -f -v
 
  	echo "Generate Raw Data"
  	python create_source_data_files.py --raw --config ${WORKSPACE}/config/data_copy.ini

@@ -21,26 +21,27 @@ class ItemLevelCsvColumns:
     PAGE_TIME = 'pageTime'
     DROPPED = 'dropped'
 
-    def get_item_level_csv_keys(self):
+    @staticmethod
+    def get_item_level_csv_keys():
         '''
         Returns the landing zone format of assessment csv file
         :param self: self
         :returns: item levels for csv
         '''
         return [ItemLevelCsvColumns.KEY,
-        ItemLevelCsvColumns.SEGMENT_ID,
-        ItemLevelCsvColumns.POSTITION,
-        ItemLevelCsvColumns.CLIENT_ID,
-        ItemLevelCsvColumns.OPERATIONAL,
-        ItemLevelCsvColumns.ISSELECTED,
-        ItemLevelCsvColumns.FORMAT,
-        ItemLevelCsvColumns.SCORE,
-        ItemLevelCsvColumns.SCORE_STATUS,
-        ItemLevelCsvColumns.ADMIN_DATE,
-        ItemLevelCsvColumns.NUMBER_VISITS,
-        ItemLevelCsvColumns.STRAND,
-        ItemLevelCsvColumns.CONTENT_LEVEL,
-        ItemLevelCsvColumns.PAGE_NUMBER,
-        ItemLevelCsvColumns.PAGE_VISITS,
-        ItemLevelCsvColumns.PAGE_TIME,
-        ItemLevelCsvColumns.DROPPED]
+                ItemLevelCsvColumns.SEGMENT_ID,
+                ItemLevelCsvColumns.POSTITION,
+                ItemLevelCsvColumns.CLIENT_ID,
+                ItemLevelCsvColumns.OPERATIONAL,
+                ItemLevelCsvColumns.ISSELECTED,
+                ItemLevelCsvColumns.FORMAT,
+                ItemLevelCsvColumns.SCORE,
+                ItemLevelCsvColumns.SCORE_STATUS,
+                ItemLevelCsvColumns.ADMIN_DATE,
+                ItemLevelCsvColumns.NUMBER_VISITS,
+                ItemLevelCsvColumns.STRAND,
+                ItemLevelCsvColumns.CONTENT_LEVEL,
+                ItemLevelCsvColumns.PAGE_NUMBER,
+                ItemLevelCsvColumns.PAGE_VISITS,
+                ItemLevelCsvColumns.PAGE_TIME,
+                ItemLevelCsvColumns.DROPPED]

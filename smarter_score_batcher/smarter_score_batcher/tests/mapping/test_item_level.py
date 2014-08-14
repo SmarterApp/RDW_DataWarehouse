@@ -5,7 +5,7 @@ from smarter_score_batcher.mapping.item_level import ItemLevelCsvColumns
 class TestCSVMetadata(unittest.TestCase):
 
     def test_get_item_level_csv_keys(self):
-        items = ItemLevelCsvColumns.get_item_level_csv_keys(ItemLevelCsvColumns)
+        items = ItemLevelCsvColumns.get_item_level_csv_keys()
         items_from_class = [ItemLevelCsvColumns.KEY, ItemLevelCsvColumns.SEGMENT_ID, ItemLevelCsvColumns.POSTITION,
                             ItemLevelCsvColumns.CLIENT_ID, ItemLevelCsvColumns.OPERATIONAL, ItemLevelCsvColumns.ISSELECTED,
                             ItemLevelCsvColumns.FORMAT, ItemLevelCsvColumns.SCORE, ItemLevelCsvColumns.SCORE_STATUS,

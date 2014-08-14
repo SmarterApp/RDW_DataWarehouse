@@ -27,6 +27,7 @@
                                 <div class="confidenceLevel">
                                     <div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000;">
                                         <strong class="asmtScore">{{asmtScore}}</strong>
+                                        <i class="edware-icon-asterisk"></i>
                                     </div>
                                 </div>
                             </td>
@@ -35,6 +36,7 @@
                             {{/legendInfo.performance_levels}}
                         </tr>
                     </table>
+                    <div class="arrow1"></div>
                 </div>
             </div>
         </div>
@@ -71,15 +73,16 @@
         <div class="row" aria-hidden="true">
             <div class="span2">
                 <h4>{{labels.error_band}}</h4>
+                <div class="score"><b>{{labels.score}}</b></div>
                 <div class="errorBand"></div>
-                <h4 style="width: 80px; line-height: 15px;">Archievement Level Score</h4>
+                <h4 style="width: 80px; line-height: 15px;">{{legendInfo.achievement_level_scores}}</h4>
             </div>
             <div class="span6">
                 <p>{{{legendInfo.error_band}}}</p>
                 <p>{{{legendInfo.error_band_1}}}</p>
             </div>
-            <div class="span8">
-                <p>Data is for illustrative purposes only.</p>
+            <div class="span8 note">
+                <p><i class="edware-icon-asterisk"></i> {{legendInfo.note}}.</p>
             </div>
         </div>
     </div>

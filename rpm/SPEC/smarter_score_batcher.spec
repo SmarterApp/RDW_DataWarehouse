@@ -34,8 +34,8 @@ cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smart
 
 %build
 export LANG=en_US.UTF-8
-virtualenv-3.3 --distribute virtualenv/smarter
-source virtualenv/smarter/bin/activate
+virtualenv-3.3 --distribute virtualenv/smarter_score_batcher
+source virtualenv/smarter_score_batcher/bin/activate
 
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}
@@ -75,12 +75,12 @@ python setup.py install
 cd -
 
 deactivate
-echo -e "/opt/edware/smarter_score_batcher\n." > virtualenv/smarter/lib/python3.3/site-packages/smarter-score-batcher.egg-link
-find virtualenv/smarter/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
+echo -e "/opt/edware/smarter_score_batcher\n." > virtualenv/smarter_score_batcher/lib/python3.3/site-packages/smarter-score-batcher.egg-link
+find virtualenv/smarter_score_batcher/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
-cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
+cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
 
 
 %clean
@@ -92,38 +92,38 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
 /opt/edware/conf/celeryd-smarter_score_batcher.conf
-/opt/virtualenv/smarter/include/*
-/opt/virtualenv/smarter/lib/*
-/opt/virtualenv/smarter/lib64
-/opt/virtualenv/smarter/bin/activate
-/opt/virtualenv/smarter/bin/activate.csh
-/opt/virtualenv/smarter/bin/activate.fish
-/opt/virtualenv/smarter/bin/activate_this.py
-%attr(755,root,root) /opt/virtualenv/smarter/bin/bfg2pyramid
-%attr(755,root,root) /opt/virtualenv/smarter/bin/easy_install
-%attr(755,root,root) /opt/virtualenv/smarter/bin/easy_install-3.3
-%attr(755,root,root) /opt/virtualenv/smarter/bin/initialize_smarter_db
-%attr(755,root,root) /opt/virtualenv/smarter/bin/mako-render
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pcreate
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pip
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pip-3.3
-%attr(755,root,root) /opt/virtualenv/smarter/bin/prequest
-%attr(755,root,root) /opt/virtualenv/smarter/bin/proutes
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pserve
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pshell
-%attr(755,root,root) /opt/virtualenv/smarter/bin/ptweens
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pviews
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pygmentize
-%attr(755,root,root) /opt/virtualenv/smarter/bin/python3.3
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celery
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celery
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celerybeat
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryctl
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryd
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryd-multi
-%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryev
-/opt/virtualenv/smarter/bin/python
-/opt/virtualenv/smarter/bin/python3
+/opt/virtualenv/smarter_score_batcher/include/*
+/opt/virtualenv/smarter_score_batcher/lib/*
+/opt/virtualenv/smarter_score_batcher/lib64
+/opt/virtualenv/smarter_score_batcher/bin/activate
+/opt/virtualenv/smarter_score_batcher/bin/activate.csh
+/opt/virtualenv/smarter_score_batcher/bin/activate.fish
+/opt/virtualenv/smarter_score_batcher/bin/activate_this.py
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/bfg2pyramid
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/easy_install
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/easy_install-3.3
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/initialize_smarter_db
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/mako-render
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pcreate
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/prequest
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/proutes
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pserve
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pshell
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/ptweens
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pviews
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pygmentize
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/python3.3
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celery
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celery
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celerybeat
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryctl
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryd
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryd-multi
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryev
+/opt/virtualenv/smarter_score_batcher/bin/python
+/opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-smarter_score_batcher
 
 %pre

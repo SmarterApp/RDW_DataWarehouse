@@ -425,6 +425,7 @@ define [
         element = {'count': 0, 'percentage': 0} if element is undefined
         element.count = edwareUtil.formatNumber(element.count)
         element.description = @intervals[i].name
+        element.text_color_class = @intervals[i].text_color?.substr(1)
         if colors and colors[i]
           element.color = colors[i]
         else

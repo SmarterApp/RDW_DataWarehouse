@@ -1,5 +1,8 @@
 /* Print css */
 @media print {
+  body {
+    background: transparent !important;
+  }
   .pageBreak { page-break-after:always; }
 
   .printContent { display: block; }
@@ -82,10 +85,6 @@
 
   #header, #breadcrumb, #actionBar, .stickySection { display: none !important; }
 
-  #total_number {
-    padding: 3px;
-  }
-
   .ui-state-disabled, .ui-widget-content .ui-state-disabled {
     display: none !important;
   }
@@ -94,11 +93,17 @@
 
   .selectedFilter_panel {
     background: transparent!important;
+    display: block !important;
 
     border-bottom: none;
 
     .removeIcon {
       background: transparent;
+    }
+
+    #total_number {
+      display: block;
+      padding-right: 3px;
     }
 
     em {

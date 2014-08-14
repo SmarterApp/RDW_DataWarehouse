@@ -22,6 +22,7 @@ function set_vars {
     HPZ_PACKAGE="hpz"
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/conf/smarter.ini"
+    SMARTER_TSB_INI="/opt/edware/conf/smarter_score_batcher.ini"
     HPZ_INI="/opt/edware/conf/hpz.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
     EGG_REPO="/opt/edware/pynest"
@@ -256,6 +257,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/hpz/frs.wsgi ${APACHE_DIR}/hpz_frs_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/config/smarter_score_batcher.ini ${SMARTER_TSB_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${WORKSPACE}/smarter_score_batcher/smarter_score_batcher.wsgi ${APACHE_DIR}/smarter_score_batcher_conf
     /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
@@ -274,6 +276,9 @@ function create_sym_link_for_apache {
 
     sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf
     sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf
+    
+    sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf
+    sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf
 }
 
 function compile_assets {
@@ -304,6 +309,7 @@ function restart_memcached {
 function restart_celeryd {
    /usr/bin/sudo /etc/init.d/celeryd-services restart
    /usr/bin/sudo /etc/init.d/celeryd-edextract restart
+   # /usr/bin/sudo /etc/init.d/celeryd-smarter_score_batcher restart
    RES=$?
    if [ $RES != 0 ]; then
       echo "celeryd failed to restart"
@@ -389,11 +395,11 @@ function generate_ini {
 	cd "$WORKSPACE/config"
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
-		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
-	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini -p hpz
+		python generate_ini.py -e jenkins_dev -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
+	        python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini -p hpz
 	else
 	    python generate_ini.py -e jenkins_dev -i settings.yaml
-		python generate_ini.py -e jenkins_int -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
+    	    python generate_ini.py -e jenkins_dev -i settings.yaml -p smarter_score_batcher -o smarter_score_batcher.ini
 	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini -p hpz
 	fi
 }

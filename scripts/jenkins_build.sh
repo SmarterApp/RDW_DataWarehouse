@@ -309,7 +309,7 @@ function restart_memcached {
 function restart_celeryd {
    /usr/bin/sudo /etc/init.d/celeryd-services restart
    /usr/bin/sudo /etc/init.d/celeryd-edextract restart
-   # /usr/bin/sudo /etc/init.d/celeryd-smarter_score_batcher restart
+   /usr/bin/sudo /etc/init.d/celeryd-smarter_score_batcher restart
    RES=$?
    if [ $RES != 0 ]; then
       echo "celeryd failed to restart"

@@ -74,7 +74,7 @@ def main():
     args = parser.parse_args()
     file = args.ini_file
     logging.config.fileConfig(file)
-    ini_file = read_ini(file, header='app')
+    ini_file = read_ini(file)
     d = get_config_from_ini(ini_file, '')
     # setup cron
     run_cron_job(d, 'udl2_rsync.', rsync)

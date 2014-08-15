@@ -216,11 +216,13 @@ function run_functional_tests {
     enable_python27
 
     cd "$WORKSPACE/$FUNC_DIR"
-
+	#Override the values from localhost to jenkins dev specifics
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     sed -i.bak "s/host_hpz = localhost/host_hpz = $HOSTNAME/g" test.ini
     sed -i.bak 's/port_hpz = 80/port_hpz = 81/g' test.ini
+    sed -i.bak "s/tsb_host = localhost/host=$HOSTNAME/g" test.ini
+    sed -i.bak 's/tsb_port = 6543/port = 82/g' test.ini
     sed -i.bak 's/cleanup_script_relative_location = \/..\/..\/..\/edware\/hpz\/scripts\/pickup_zone_cleanup.py/cleanup_script_relative_location = \/..\/..\/..\/..\/hpz\/scripts\/pickup_zone_cleanup.py/g' test.ini
     export DISPLAY=:6.0
 

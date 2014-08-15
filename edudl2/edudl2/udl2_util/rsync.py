@@ -20,8 +20,6 @@ def rsync(*args, **kwargs):
     private_key = settings.get('rsync.args.private_key')
     if private_key is not None:
         rsyc_command.append("-e 'ssh -i " + private_key + "'")
-    else:
-        rsyc_command.append("-e 'ssh -i " + private_key + "'")
 
     rsyc_command.append(remote_user + '@' + remote_host + ':' + remote_dir)
     rsyc_command.append(landing)

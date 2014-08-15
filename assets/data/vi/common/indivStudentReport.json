@@ -1,0 +1,32 @@
+{
+    "reportInfo": "<h4>Purpose:</h4><p>This report presents individual student assessment scores and provides guidance on how to interpret the results.</p><br/><h4>Uses:</h4><ul><li>Educators, parents or students may use this report to understand student achievement, progress toward mastery of the Common Core State Standards and attainment of the academic knowledge and skills required to be college content- and career-ready.</li></ul><br/><h4>Understanding your score:</h4><p>The Smarter Balanced assessment is different than other tests with which you may be familiar.</p><ul><li>First, the Smarter Balanced assessments are Computer Adaptive Tests and take advantage of technology to customize each test to the individual student. This means that when a student answers a question correctly, the next question they see will be slightly more difficult. Likewise, if an answer is incorrect, the next question will be somewhat less difficult. This procedure allows for more efficient and precise measurement of students' knowledge and skills.</li><li>Second, the assessment is a criterion-referenced test, meaning that it reports individual students’ understanding of a particular set of academic knowledge and skills. As a result, scores are not meant to compare students to each other, but rather to determine how well each student understands the content assessed. </li></ul><br/>",
+    "legendInfo": {
+        "relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
+        "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would likely achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys."
+    },
+    "accommodationMapping": {
+        "5": " used <strong>without prior registration:</strong>",
+        "6": " was eligible for, but <strong>availability and use are unknown:</strong>",
+        "7": " was eligible for, but <strong>was not available for use:</strong>",
+        "8": " was eligible for and had <strong>available, but use is unknown:</strong>",
+        "9": " was eligible for and had <strong>available, but did not use:</strong>",
+        "10": " was eligible for and had <strong>available, and used:</strong>"
+    },
+    "accommodationColumns": {
+        "acc_asl_video_embed": "ASL Videos",
+        "acc_asl_human_nonembed": "Human ASL Signer",
+        "acc_braile_embed": "Fully Brailled",
+        "acc_closed_captioning_embed": "Closed Captioning: ELA/Literacy Listening Stimuli",
+        "acc_text_to_speech_embed": "Text-to-speech: ELA/Literacy Reading Passages",
+        "acc_abacus_nonembed": "Abacus",
+        "acc_alternate_response_options_nonembed": "Alternative Response Options",
+        "acc_calculator_nonembed": "Calculator",
+        "acc_multiplication_table_nonembed": "Multiplication Table",
+        "acc_print_on_demand_nonembed": "Printed Stimuli / Items",
+        "acc_read_aloud_nonembed": "Read-aloud: ELA/Literacy Reading Passages",
+        "acc_scribe_nonembed": "Scribe: ELA/Literacy Writing Items",
+        "acc_speech_to_text_nonembed": "Speech-to-text: ELA/Literacy Writing Items",
+        "acc_streamline_mode": "Streamline Mode"
+    },
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · Grade {{asmt_grade}} · {{asmt_type}}"
+}

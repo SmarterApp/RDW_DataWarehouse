@@ -1,0 +1,63 @@
+{
+    "content": {
+        "psychometric_implications": "Psychometric Implications",
+        "policy_content": "Policy Content",
+        "admin_details": "Test Administration Details",
+        "overall_ald": "Achievement Level Descriptor",
+        "claim_1_ald": "Achievement Level Descriptor",
+        "claim_2_ald": "Achievement Level Descriptor",
+        "claim_3_ald": "Achievement Level Descriptor"
+    },
+
+    "overall_ald": {
+        "Math": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
+        "ELA": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the English language arts and literacy knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards."
+    },
+
+    "psychometric_implications": {
+       "Summative": {
+        "Math": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do.",
+        "ELA": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do."
+       },
+       "Interim Comprehensive": {
+        "Math": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do.",
+        "ELA": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do."
+       }
+    },
+
+    "policy_content": {
+        "11": {
+            "Math": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>",
+            "ELA": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>"
+        }
+    },
+
+    "claims": {
+        "Math": {
+            "description": {
+                "1": "Students can explain and apply mathematical concepts and carry out mathematical procedures with precision and fluency.",
+                "2": "Students can solve a range of complex, well-posed problems in pure and applied mathematics, making productive use of knowledge and problem-solving strategies.  Students can analyze complex, real-world scenarios and can construct and use mathematical models to interpret and solve problems.",
+                "3": "Students can clearly and precisely construct viable arguments to support their own reasoning and to critique the reasoning of others."
+            },
+            "scoreTooltip": {
+                "1": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
+                "2": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
+                "3": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths."
+            }
+        },
+        "ELA": {
+            "description": {
+                "1": "Students can read closely and analytically to comprehend a range of increasingly complex literary and informational texts.",
+                "2": "Students can produce effective and well-grounded writing for a range of purposes and audiences.",
+                "3": "Students can employ effective speaking and listening skills for a range of purposes and audiences.",
+                "4": "Students can engage in research and inquiry to investigate topics and to analyze, integrate, and present information."
+            },
+            "scoreTooltip": {
+                "1": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
+                "2": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
+                "3": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
+                "4": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths."
+            }
+        }
+    }
+}

@@ -100,7 +100,6 @@ cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/bfg2pyramid
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/easy_install
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/easy_install-3.3
-%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/initialize_smarter_db
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/mako-render
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pcreate
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip

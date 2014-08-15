@@ -1,5 +1,5 @@
 import logging
-from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper,\
+from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper,\
     get_all_elements
 from smarter_score_batcher.mapping.item_level import ItemLevelCsvColumns
 
@@ -17,7 +17,7 @@ def get_item_level_data(root):
     :param root: xml root document
     :returns: csv rows
     '''
-    student_guid = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
+    student_guid = extract_meta_without_fallback_helper(root, "./Examinee", "key")
     matrix = []
     list_of_elements = get_all_elements(root, './Opportunity/Item')
     attribute_name_keys = ItemLevelCsvColumns.get_item_level_csv_keys()

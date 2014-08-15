@@ -44,7 +44,7 @@ class TestCSVMetadata(unittest.TestCase):
         mapping = get_assessment_mapping(root)
         self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-MATH-7')
         self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '8')
-        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], 'CA-9999999598')
+        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '12')
         self.assertEqual(mapping[AssessmentHeaders.Asian], 'No')
         self.assertIsNone(mapping[AssessmentHeaders.Group1Id], None)
         self.assertEqual(mapping[AssessmentHeaders.NameOfInstitution], 'My Elementary School')

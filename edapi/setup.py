@@ -10,7 +10,8 @@ install_requires = [
     'venusian == 1.0a8',
     'validictory == 0.9.3',
     'simplejson==3.3.1',
-    'Beaker==1.6.4']
+    'Beaker==1.6.4',
+    'lxml==3.3.5']
 
 tests_require = [
     'WebTest == 1.3.6',  # py3 compat

@@ -142,6 +142,12 @@
             "Below Standard": "Below Standard",
             "At/Near Standard": "At/Near Standard",
             "Above Standard": "Above Standard"
+        },
+        "next_level": {
+            "state": "districts",
+            "district": "schools",
+            "school": "grades",
+            "grade": "students"
         }
     }
 }

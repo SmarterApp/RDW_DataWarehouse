@@ -5,6 +5,7 @@ Created on Jul 22, 2014
 '''
 import os
 import logging
+import fcntl
 
 
 logger = logging.getLogger('edextract')
@@ -33,12 +34,14 @@ class MetadataReader():
         if os.path.exists(metadata_file) and metadata_file not in self.__metadata_tracker:
             self.__metadata_tracker.add(metadata_file)
             with open(metadata_file, 'r') as f:
+                fcntl.flock(f, fcntl.LOCK_EX)
                 logging.info('opening metadata[' + metadata_file + ']')
                 directory = os.path.dirname(metadata_file)
                 for l in f:
                     metadata = l.strip().split(self.__delimiter)
                     self.__metadata[os.path.join(directory, metadata[1])] = int(metadata[2])
                 logging.info('closing metadata[' + metadata_file + ']')
+                fcntl.flock(f, fcntl.LOCK_UN)
             if self.__metadata.get(filepath) is None:
                 self.__metadata[filepath] = os.stat(filepath).st_size
         else:

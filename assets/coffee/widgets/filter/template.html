@@ -2,42 +2,43 @@
 <div class="selectedFilter_panel clearfix">
     <div>
         <span id="aria-filter-remove" class="screenreader">clear this filter</span>
-    <em class="pull-left" aria-hidden="true" id="aria-filtered-by">{{labels.filterd_by}}: </em>
-    <div class="filters"></div>
-    <div class="removeAllFilters" aria-label="clear all filters"><div class="pull-left">{{labels.clear_all}} </div><a href="#" class="icon_removeAll"></a></div>
+        <div class="pull-left printContent black clearfix" aria-hidden="true" id="total_number"></div>
+        <em class="pull-left" aria-hidden="true" id="aria-filtered-by">{{labels.filterd_by}}: </em>
+        <div class="filters"></div>
+        <div class="removeAllFilters" aria-label="clear all filters"><div class="pull-left">{{labels.clear_all}} </div><a href="#" class="icon_removeAll"></a></div>
     </div>
 </div>
 <div class="filter">
     <div class="section"><h3>{{labels.student_filters}}</h3></div>
     <div class="section filter_section">
-            {{#grades}}
-    <div class="grade_range filter-group filter-group-focuslost" data-name="{{name}}" data-display="{{display}}">
-                {{#options}}
-        <label><input type="checkbox" value="{{value}}" data-label={{value}} data-value={{value}}>{{label}}</label></input>
-                {{/options}}
-    </div>
-            {{/grades}}
-    <div>
-                {{#filters}}
-        <div class="filter-wrapper filter-group" data-name="{{name}}" data-display="{{tag}}">
-        <div class="btn-group">
-            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span class="display">{{display}}</span><span class="caret"></span></button>
-            <ul class="dropdown-menu filter-group-focuslost">
-                          {{#options}}
-                <li><label><input type="checkbox" value="{{value}}" data-label="{{label}}" data-value={{value}}>{{label}}</label></li>
-                          {{/options}}
-                          {{#comment}}
-                <li><p class="small">{{comment}}</p></li>
-                          {{/comment}}
+        {{#grades}}
+        <div class="grade_range filter-group filter-group-focuslost" data-name="{{name}}" data-display="{{display}}">
+            {{#options}}
+            <label><input type="checkbox" value="{{value}}" data-label={{value}} data-value={{value}}>{{label}}</label></input>
+            {{/options}}
+        </div>
+        {{/grades}}
+        <div>
+            {{#filters}}
+            <div class="filter-wrapper filter-group" data-name="{{name}}" data-display="{{tag}}">
+                <div class="btn-group">
+                    <button class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span class="display">{{display}}</span><span class="caret"></span></button>
+                    <ul class="dropdown-menu filter-group-focuslost">
+                        {{#options}}
+                        <li><label><input type="checkbox" value="{{value}}" data-label="{{label}}" data-value={{value}}>{{label}}</label></li>
+                        {{/options}}
+                        {{#comment}}
+                        <li><p class="small">{{comment}}</p></li>
+                        {{/comment}}
                         <li><p class='not_stated small'></p></li>
-            </ul>
+                    </ul>
+                </div>
+            </div>
+            {{/filters}}
         </div>
-        </div>
-                {{/filters}}
-    </div>
     </div>
     <div class="section form-actions">
-    <button id="cancel-btn" type="button" class="btn btn-primary edware-btn-primary">{{labels.cancel}}</button>
-    <button id="submit-btn" type="submit" class="btn btn-primary edware-btn-primary">{{labels.apply_filters}}</button>
+        <button id="cancel-btn" type="button" class="btn btn-primary edware-btn-primary">{{labels.cancel}}</button>
+        <button id="submit-btn" type="submit" class="btn btn-primary edware-btn-primary">{{labels.apply_filters}}</button>
     </div>
 </div>

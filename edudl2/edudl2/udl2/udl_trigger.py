@@ -77,7 +77,7 @@ def main():
     ini_file = read_ini(file, header='app')
     d = get_config_from_ini(ini_file, '')
     # setup cron
-    run_cron_job(d, 'rsync.', rsync)
+    run_cron_job(d, 'udl2_rsync.', rsync)
     time.sleep(300)
 
     daemon_mode = args.daemon

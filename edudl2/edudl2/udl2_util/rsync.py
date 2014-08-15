@@ -16,11 +16,11 @@ def rsync(*args, **kwargs):
     '''
     settings = args[0]
     rsyc_command = ['rsync', '-az', '--exclude', '*.partial', '--remove-source-files']
-    remote_user = settings.get('rsync.args.remote_user')
-    remote_host = settings.get('rsync.args.remote_host')
-    remote_dir = settings.get('rsync.args.remote_dir')
-    landing = settings.get('rsync.args.landing')
-    private_key = settings.get('rsync.args.private_key')
+    remote_user = settings.get('udl2_rsync.args.remote_user')
+    remote_host = settings.get('udl2_rsync.args.remote_host')
+    remote_dir = settings.get('udl2_rsync.args.remote_dir')
+    landing = settings.get('udl2_rsync.args.landing')
+    private_key = settings.get('udl2_rsync.args.private_key')
     if private_key is not None:
         rsyc_command.append("-e 'ssh -i " + private_key + "'")
 

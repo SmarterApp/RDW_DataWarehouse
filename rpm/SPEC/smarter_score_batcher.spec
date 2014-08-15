@@ -37,7 +37,6 @@ export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/smarter_score_batcher
 source virtualenv/smarter_score_batcher/bin/activate
 
-cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}
 # WORKSPACE_PATH=${BUILDROOT//\//\\\/}
 

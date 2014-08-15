@@ -83,17 +83,6 @@ qa:
         arrivals: /opt/edware/zones/landing/arrivals/   # this is where the file arrives.
         work: /opt/edware/zones/landing/work/           # this is the where the file are use for work. this should always be local for speed
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
-    rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
-      enable: True
-      schedule:
-          cron:
-            hour: '*/1'
-      args:
-        remote_user: udl2
-        remote_host: lz.foo.com
-        remote_dir: /sftp/opt/edware/staging/
-        landing: /opt/edware/zones/landing/arrivals/
     udl2_trigger:
         file_stat_watch_interval: 10
         file_stat_watch_period: 120
@@ -127,16 +116,6 @@ uat:
         arrivals: /opt/edware/zones/landing/arrivals/   # this is where the file arrives.
         work: /opt/edware/zones/landing/work/           # this is the where the file are use for work. this should always be local for speed
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3
-    rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
-      schedule:
-          cron:
-            hour: '*/1'
-      args:
-        remote_user: udl2
-        remote_host: lz.foo.com
-        remote_dir: /sftp/opt/edware/staging/
-        landing: /opt/edware/zones/landing/arrivals/
     udl2_db_conn:
         url: postgresql://udl2:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/udl2
         db_schema: udl2
@@ -162,16 +141,6 @@ development:
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
         datafiles: /opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: /opt/edware/zones/tests/                 # this is for running unit tests.
-    rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
-      schedule:
-          cron:
-            hour: '*/1'
-      args:
-        remote_user: udl2
-        remote_host: lz.foo.com
-        remote_dir: /sftp/opt/edware/staging/
-        landing: /opt/edware/zones/landing/arrivals/
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2
@@ -205,16 +174,6 @@ jenksins_dev:
         history: $WORKSPACE/opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
         datafiles: $WORKSPACE/opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: $WORKSPACE/opt/edware/zones/tests/                 # this is for running unit tests.
-    rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
-      schedule:
-          cron:
-            hour: '*/1'
-      args:
-        remote_user: udl2
-        remote_host: lz.foo.com
-        remote_dir: /sftp/opt/edware/staging/
-        landing: $WORKSPACE/opt/edware/zones/landing/arrivals/
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2

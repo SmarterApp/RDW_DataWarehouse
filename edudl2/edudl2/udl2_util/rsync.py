@@ -4,7 +4,10 @@ Created on Aug 14, 2014
 @author: tosako
 '''
 import subprocess
+import logging
 
+
+logger = logging.getLogger('edudl2')
 
 
 def rsync(*args, **kwargs):
@@ -23,4 +26,6 @@ def rsync(*args, **kwargs):
 
     rsyc_command.append(remote_user + '@' + remote_host + ':' + remote_dir)
     rsyc_command.append(landing)
-    subprocess.call(rsyc_command)
+    returncode = subprocess.call(rsyc_command)
+    if returncode is not 0:
+        logger.error('failed rsync. return code: ' + str(returncode))

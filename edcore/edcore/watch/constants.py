@@ -14,6 +14,7 @@ class WatcherConstants():
     DEST_DIR = 'dest_dir'
     FILE_PATTERNS_TO_WATCH = 'file_patterns_to_watch'
     CHECKSUM_FILE_EXTENSION = '.done'
+    STAGING_DIR = 'staging_dir'
 
 
 class MoverConstants():
@@ -26,3 +27,4 @@ class MoverConstants():
     ARRIVALS_PATH = 'arrivals_path'
     FILE_TENANT = 'file_tenant'
     FILE_USER = 'file_user'
+    FILE_MOEV_TYPE = 'file_move_type'

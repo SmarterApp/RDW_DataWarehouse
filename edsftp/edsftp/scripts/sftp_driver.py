@@ -13,7 +13,7 @@ from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup
 from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
-from edsftp.scripts.sftp_watcher import sftp_file_sync
+from edsftp.scripts.sftp_watcher import file_sync
 from edcore.utils.utils import read_ini, get_config_from_ini
 from edcore.utils.utils import create_daemon
 from edcore import DEFAULT_LOGGER_NAME
@@ -24,7 +24,7 @@ logger = logging.getLogger(DEFAULT_LOGGER_NAME)
 def run_sftp_sync_process(daemon_mode, sftp_conf, pid_file):
     if daemon_mode:
         create_daemon(pid_file)
-    sftp_file_sync(sftp_conf)
+    file_sync(sftp_conf)
 
 
 def main():

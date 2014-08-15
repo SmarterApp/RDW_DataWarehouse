@@ -183,6 +183,8 @@ common:
         home: /
         base_dir: /sftp/opt/edware/home
         arrivals_dir: arrivals
+        staging_dir: /sftp/opt/edware/staging
+        file_move_type: local
         file_patterns_to_watch:
             - '*.gpg'
             - '*.gpg.done'

@@ -1,3 +1,4 @@
+from edudl2.udl2_util.rsync import rsync
 __author__ = 'sravi'
 
 import os
@@ -6,10 +7,10 @@ import logging
 import logging.config
 import argparse
 from edcore.watch.watcher import FileWatcher
-from edudl2.udl2.W_schedule_pipeline import schedule_pipeline
-from edcore.utils.utils import get_config_from_ini
+#from edudl2.udl2.W_schedule_pipeline import schedule_pipeline
+from edcore.utils.utils import get_config_from_ini, run_cron_job, read_ini
 from edcore.watch.constants import WatcherConstants as Const
-from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
+#from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
 from edcore.utils.utils import create_daemon
 
 
@@ -42,7 +43,7 @@ def udl_trigger(config, loop_once=False):
             logger.debug('Found {count} files ready to process'.format(count=str(len(udl_ready_files))))
             for file in udl_ready_files:
                 logger.debug('Scheduling pipeline for file - {file}'.format(file=file))
-                schedule_pipeline.delay(file)
+#                schedule_pipeline.delay(file)
             if loop_once:
                 break
         except KeyboardInterrupt:
@@ -72,11 +73,17 @@ def main():
 
     args = parser.parse_args()
     file = args.ini_file
-    logging.config.fileConfig(file)
+    file='/tmp/test.ini'
+    #logging.config.fileConfig(file)
+    ini_file = read_ini(file, header='app')
+    d = get_config_from_ini(ini_file, '')
+    # setup cron
+    run_cron_job(d, 'rsync.', rsync)
+    time.sleep(300)
 
-    daemon_mode = args.daemon
-    pid_file = args.pidfile
-    run_udl2_trigger_process(daemon_mode, udl2_conf, pid_file)
+    #daemon_mode = args.daemon
+    #pid_file = args.pidfile
+    #run_udl2_trigger_process(daemon_mode, udl2_conf, pid_file)
 
 
 if __name__ == "__main__":

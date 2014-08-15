@@ -45,7 +45,7 @@ class FileMover():
                 destination_file = os.path.basename(file)
                 destination_partial_file = destination_file + '.partial'
                 destination_partial_file_path = os.path.join(destination_dir, destination_partial_file)
-                destination_file_path = os.path.join(destination_dir, destination_partial_file)
+                destination_file_path = os.path.join(destination_dir, destination_file)
                 os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
                 os.rename(file, destination_partial_file_path)
                 os.rename(destination_partial_file_path, destination_file_path)

@@ -15,7 +15,7 @@ def rsync(*args, **kwargs):
     executing rsync command
     '''
     settings = args[0]
-    rsyc_command = ['rsync', '-az', '--exclude', '*.partial', '--remove-source-files']
+    rsyc_command = ['rsync', '-rltzu', '--exclude', '*.partial', '--remove-source-files']
     remote_user = settings.get('udl2_rsync.args.remote_user')
     remote_host = settings.get('udl2_rsync.args.remote_host')
     remote_dir = settings.get('udl2_rsync.args.remote_dir')

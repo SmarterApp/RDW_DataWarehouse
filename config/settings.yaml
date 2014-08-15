@@ -416,7 +416,6 @@ qa:
         remote:
             landing_zone_hostname: rbtmqudl0.qa.dum.edwdc.net
     udl2_rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
       enable: True
       schedule:
           cron:
@@ -602,7 +601,6 @@ uat:
         remote:
             landing_zone_hostname: rbtmqudl0.dmo.som.edwdc.net
     udl2_rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
       schedule:
           cron:
             hour: '*/1'
@@ -835,7 +833,6 @@ development:
         remote:
             landing_zone_hostname: localhost
     udl2_rsync:
-      command: rsync -az --exclude "*.partial" --remove-source-files {remote_user}@{remote_host}:{remote_dir} {landing}
       schedule:
           cron:
             hour: '*/1'

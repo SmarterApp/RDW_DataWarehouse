@@ -4,13 +4,12 @@
 
 # Source function library.
 . /etc/rc.d/init.d/functions
-. /opt/virtualenv/udl2/bin/activate
 PIDFILE="/var/run/edudl2-trigger/edudl2-trigger.pid"
-EDUDL2_TRIGGER="python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
+EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
 
 start() {
 	echo -n "Starting edsftp sync: "
-	daemon $EDUDL2_TRIGGER
+	daemon --user udl2 $EDUDL2_TRIGGER
 	RETVAL=$?
 }
 
@@ -31,5 +30,4 @@ case $1 in
 	echo $"Usage: edudl2-trigger {start|stop}"
 	exit 2
 esac
-deactivate
 exit $RETVAL

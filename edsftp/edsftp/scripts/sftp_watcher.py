@@ -49,7 +49,7 @@ def _watch_and_move_files(file_watcher, file_mover):
     files_to_move = list(file_watcher.get_file_stats().keys())
     if len(files_to_move) > 0:
         logger.debug('files to move {files_to_move}'.format(files_to_move=files_to_move))
-        files_moved = file_mover.move_files_by_sftp(files_to_move)
+        files_moved = file_mover.move_files(files_to_move)
     return files_moved
 
 
@@ -70,8 +70,7 @@ def file_sync(config):
         try:
             logger.debug('Searching for new files in {source_dir}'.format(source_dir=config.get(SFTPConst.ARRIVALS_DIR)))
             files_moved = _watch_and_move_files(file_watcher, file_mover)
-            logger.debug('Moved {count} files to {destination}'.format(count=str(files_moved),
-                                                                       destination=remote_conf.get(MoverConst.LANDING_ZONE_HOSTNAME)))
+            logger.debug('Moved {count} files '.format(count=str(files_moved)))
         except KeyboardInterrupt:
             logger.warn('SFTP watcher process terminated by a user')
             os._exit(0)

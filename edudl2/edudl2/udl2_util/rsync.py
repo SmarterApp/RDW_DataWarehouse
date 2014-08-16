@@ -22,7 +22,8 @@ def rsync(*args, **kwargs):
     landing = settings.get('udl2_rsync.args.landing')
     private_key = settings.get('udl2_rsync.args.private_key')
     if private_key is not None:
-        rsyc_command.append("-e 'ssh -i " + private_key + "'")
+        rsyc_command.append("-e")
+        rsyc_command.append("ssh -i " + private_key)
 
     rsyc_command.append(remote_user + '@' + remote_host + ':' + remote_dir)
     rsyc_command.append(landing)

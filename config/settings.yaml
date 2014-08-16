@@ -419,12 +419,13 @@ qa:
       enable: True
       schedule:
           cron:
-            hour: '*/1'
+            minute: '*/1'
       args:
         remote_user: udl2
         remote_host: lzsftpudl0.qa.dum.edwdc.net
         remote_dir: /sftp/opt/edware/staging/
         landing: /opt/edware/zones/landing/arrivals/
+        private_key: /home/udl2/.ssh/id_rsa
     edware:
       db:
         cat:
@@ -603,7 +604,7 @@ uat:
     udl2_rsync:
       schedule:
           cron:
-            hour: '*/1'
+            minute: '*/1'
       args:
         remote_user: udl2
         remote_host: lz.foo.com
@@ -835,7 +836,7 @@ development:
     udl2_rsync:
       schedule:
           cron:
-            hour: '*/1'
+            minute: '*/1'
       args:
         remote_user: udl2
         remote_host: lz.foo.com

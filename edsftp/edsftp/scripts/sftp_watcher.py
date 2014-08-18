@@ -63,19 +63,17 @@ def file_sync(config):
     remote_conf = get_mover_conf(config)
     file_watcher = FileWatcher(get_watcher_conf(config), append_logs_to=DEFAULT_LOGGER_NAME)
     file_mover = FileMover(remote_conf, append_logs_to=DEFAULT_LOGGER_NAME)
-    logger.info('Starting SFTP file sync loop {source_dir} => {dest_host}:{dest_dir}'.format(
-        source_dir=config.get(SFTPConst.ARRIVALS_DIR), dest_host=remote_conf.get(MoverConst.LANDING_ZONE_HOSTNAME),
-        dest_dir=remote_conf.get(MoverConst.ARRIVALS_PATH)))
+    logger.info('Starting SFTP file sync loop')
     while True:
         try:
             logger.debug('Searching for new files in {source_dir}'.format(source_dir=config.get(SFTPConst.ARRIVALS_DIR)))
             files_moved = _watch_and_move_files(file_watcher, file_mover)
             logger.debug('Moved {count} files '.format(count=str(files_moved)))
         except KeyboardInterrupt:
-            logger.warn('SFTP watcher process terminated by a user')
+            logger.warn('watcher process terminated by a user')
             os._exit(0)
         except Exception as e:
             logger.error(e)
         finally:
             time.sleep(float(file_watcher.conf.get(WatcherConst.FILE_SYSTEM_SCAN_DELAY)))
-    logger.warn('Exiting sftp watcher process')
+    logger.warn('Exiting watcher process')

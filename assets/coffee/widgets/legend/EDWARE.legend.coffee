@@ -109,15 +109,11 @@ define [
 
     createBar: (subject, container)->
       # confidence level bar
-      output = edwareLOSConfidenceLevelBar.create subject, 150
+      output = edwareLOSConfidenceLevelBar.create subject, 180
       $('#legendTemplate .confidenceLevel', container).append(output)
       # error band
-      output = edwareLOSConfidenceLevelBar.create subject, 100
+      output = edwareLOSConfidenceLevelBar.create subject, 180
       $('#legendTemplate .errorBand', container).append(output)
-      # customize interval width and position
-      # $('.interval', container).css('margin-left', '89px').css('width', '28px')
-      # $('.indicator', container).css('margin-left', '98px')
-      # $('.cutLine', container).css('left', '19px')
 
   ( ($) ->
 

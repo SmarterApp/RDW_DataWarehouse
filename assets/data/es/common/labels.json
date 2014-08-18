@@ -119,6 +119,7 @@
         "total_assessed": "Total evaluado",
         "total_count": "Conteo total",
         "unfiltered_total_assessed": "Total evaluado sin filtrar",
+        "uses": "Uses",
         "viewing": "Vista",
         "viewing_previous_year": "You are viewing a previous academic year. <a href='#'>Return to <span class='latestYear'>{{latestYear}}</span></a>.",
         "asmt": {

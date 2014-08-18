@@ -554,7 +554,7 @@ th.ui-th-column div {
     line-height: 120%;
   }
 
-  hr {margin: 20px 0 18px;}
+  hr {margin: 30px 0 20px;}
 
   table {
     font-size: 11px;
@@ -642,7 +642,7 @@ th.ui-th-column div {
 
   .desc {
     float: left;
-    height: 21px;
+    height: 30px;
     display: table;
 
     h5 {
@@ -758,6 +758,7 @@ th.ui-th-column div {
   }
 
   .losPerformanceBar {
+    width: 670px;
 
     b { color: @color-black;}
 
@@ -769,23 +770,24 @@ th.ui-th-column div {
 
     #overall_score_details {
       width: 325px;
+      padding: 25px 0px 30px 0px;
+      position: relative;
 
       .confidenceLevel {
-        height: 45px;
+        height: 46px;
         position: relative;
         margin-bottom: 13px;
         margin-left: 5px;
 
         .progress {
-          height: 58px;
-          margin: 0 150px 0 90px;
+          margin: 0 142px 0 115px;
         }
 
         .indicator_cell {
           position: relative;
           display: inline-table;
           top: 15px;
-          left: 15px;
+          left: 21px;
         }
 
         .edware-icon-asterisk {
@@ -795,77 +797,43 @@ th.ui-th-column div {
         }
       }
 
-      .arrow1 {
-        background-image: url('../images/');
-        width: 187px;
-        height: 27px;
-        position: absolute;;
-        background-repeat: no-repeat;
-        top: -17px;
-        left: 108px;
-        z-index: 9999;
-      }
-      .arrow2 {
-        background-image: url('../images/roster_errorbandarrow.png');
-        width: 187px;
-        height: 27px;
-        position: absolute;;
-        background-repeat: no-repeat;
-        top: 38px;
-        left: 93px;
-      }
-      .arrow3 {
-        background-image: url('../images/roster_downarrow.png');
-        width: 187px;
-        height: 27px;
-        position: absolute;;
-        background-repeat: no-repeat;
-        top: 31px;
-        left: 26px;
-      }
-      .arrow4 {
-        background-image: url('../images/roster_scalescore_cmppop_total.png');
-        width: 187px;
-        height: 27px;
-        position: absolute;;
-        background-repeat: no-repeat;
-        top: 14px;
-        left: 169px;
-      }
-
       .perf-level-icon {
-        padding: 18px 18px 0px 18px;
+        padding: 18px 25px 0px 26px;
       }
     }
 
     .errorBand {
+      margin-bottom: 32px;
       position: relative;
 
       .progress {
-        height: 40px;
         border-radius: 0px;
       }
 
       .scoreWrapper {
         position: absolute;;
         z-index: 9999;
-        // left: 47px;
+
+        .indicator {
+          left: -8px;
+        }
 
         .interval {
-          // margin-left: 20px !important;
+          margin-left: 63px !important;
         }
       }
     }
 
     .score {
       position: relative;
-      top: 30px;
+      top: 40px;
       left: 10px;
       z-index: 1000;
     }
 
     .progress {
       position: relative;
+      height: 60px;
 
       .bar {
         border-right: 1px dashed #000;
@@ -873,19 +841,23 @@ th.ui-th-column div {
     }
 
     .scoreWrapper {
+      height: 60px;
 
       .indicator {
         width: 5px;
+        left: 52px;
         height: 33px;
         position: absolute;;
-        margin-top: 2px;
+        margin-top: 11px;
         background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAkCAYAAABBn/B2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowREI3NjQ4RjkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowREI3NjQ5MDkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjBEQjc2NDhEOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjBEQjc2NDhFOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+DHTmvQAAAGVJREFUeNpi/P//PwM6YGLAAkYF0QEo6HR0dExVVVX7gbQhOChBDDY2tn8geRAN5Bsz/fz5M/bXr1+MIF0gGsiPZmJnZ18KVAEOflZW1v8gPsxMcxUVlekgs0F8xtE4oqogQIABAOYcK5weP3EcAAAAAElFTkSuQmCC') no-repeat top center !important;
         z-index: 110;
       }
 
       .interval {
-        margin-top: 4px;
-        height: 33px;
+        margin-top: 8px;
+        height: 42px;
+        width: 45px !important;
+        margin-left: 128px !important;
         border-left: 1px solid #a0a0a0;
         border-right: 1px solid #a0a0a0;
         background: @color-B7;
@@ -893,6 +865,7 @@ th.ui-th-column div {
         position: relative;
 
         .cutLine {
+          left: 25px !important;
           position: relative;
           width: 1px;
           height: 100%;
@@ -903,12 +876,69 @@ th.ui-th-column div {
     }
 
     .note {
-      margin-top: 20px;
+      margin-top: 40px;
 
       .edware-icon-asterisk {
         position: relative;
         top: -4px;
       }
+    }
+
+    .arrow1 {
+      background-image: url('../images/LOSLegendBracket1.png');
+      width: 187px;
+      height: 32px;
+      position: absolute;
+      background-repeat: no-repeat;
+      top: 0px;
+      left: 50px;
+      z-index: 9999;
+    }
+    .arrow2 {
+      background-image: url('../images/LOSLegendBracket3.png');
+      width: 230px;
+      height: 39px;
+      position: absolute;;
+      background-repeat: no-repeat;
+      top: 0px;
+      left: 442px;
+    }
+    .arrow3 {
+      background-image: url('../images/LOSLegendBracket2.png');
+      width: 187px;
+      height: 27px;
+      position: absolute;;
+      background-repeat: no-repeat;
+      left: 118px;
+      margin-top: 4px;
+    }
+    .arrow_up {
+      background-image: url('../images/LOSLegendArrow.png');
+      width: 18px;
+      height: 40px;
+      position: absolute;;
+      background-repeat: no-repeat;
+      margin-top: 6px;
+    }
+
+    .arrow4 {
+      left: 475px;
+    }
+    .arrow5 {
+      left: 548px;
+    }
+    .arrow6 {
+      left: 619px;
+    }
+
+    .arrow8 {
+      background-image: url('../images/LOSLegendArrowBracket.png');
+      width: 200px;
+      height: 40px;
+      position: absolute;;
+      background-repeat: no-repeat;
+      top: 103px;
+      left: 25px;
     }
   }
 
@@ -2060,7 +2090,7 @@ th.ui-th-column div {
   }
 
   .legendPopover {
-    min-width: 700px;
+    min-width: 740px;
   }
 
   .active {

@@ -9,18 +9,20 @@
    	<!-- End of section is for screenreader-->
 
     <div class="losPerformanceBar span8">
-        <div class="row">
+        <div class="row padTopBottom9">
             <div class="span8"><p>{{{legendInfo.report_info}}}</p></div>
         </div>
         <div class="row">
-            <div class="span5">
-                <h4>{{labels.overall_score}}</h4>
+            <div class="span6">
+                <h4 class="padLeft10">{{labels.overall_score}}</h4>
             </div>
-            <div class="span3">
-                <h4>{{labels.details}}</h4>
+            <div class="span2">
+                <h4 class="padLeft50">{{labels.details}}</h4>
             </div>
             <div class="span8">
                 <div id="overall_score_details">
+                    <div class="arrow1"></div>
+                    <div class="arrow2"></div>
                     <table class="table edware-table-bordered">
                         <tr>
                             <td class="pad0">
@@ -36,7 +38,11 @@
                             {{/legendInfo.performance_levels}}
                         </tr>
                     </table>
-                    <div class="arrow1"></div>
+                    <div class="arrow3"></div>
+                    <div class="arrow4 arrow_up"></div>
+                    <div class="arrow5 arrow_up"></div>
+                    <div class="arrow6 arrow_up"></div>
+                    <div class=""></div>
                 </div>
             </div>
         </div>
@@ -47,43 +53,56 @@
                 <table class="pull-left">
                     <tr>
                         {{#ALDs}}
-                        <th style="width: 30px; height: 5px; background-color: {{color}} !important;">
+                        <th style="width: 30px; height: 8px; background-color: {{color}} !important;">
                             <i style=""></i>
                         </th>
                         {{/ALDs}}
                     </tr>
                     <tr>
                         {{#ALDs}}
-                        <th style="width: 30px;">{{description}}</th>
+                        <th style="width: 30px; line-height: 12px; padding-top: 7px;">{{description}}</th>
                         {{/ALDs}}
                     </tr>
                 </table>
             </div>
             <div class="span3">
-                <table class="pull-left">
+                <table class="pull-left marginLeft50">
                     <tr>
                         {{#legendInfo.performance_levels}}
-                        <td style="width: 20px;">{{desc}}</td>
+                        <td style="width: 20px; padding: 13px 13px 0px 13px; line-height: 12px;">{{desc}}</td>
                         {{/legendInfo.performance_levels}}
                     </tr>
                 </table>
             </div>
+            <div class="span8 printContent padTop30">
+                <p class="margin0"><i class="edware-icon-asterisk"></i> {{legendInfo.note}}.</p>
+            </div>
         </div>
         <hr>
         <div class="row" aria-hidden="true">
-            <div class="span2">
+            <div class="span3" style="position: relative;">
                 <h4>{{labels.error_band}}</h4>
                 <div class="score"><b>{{labels.score}}</b></div>
+                <div class="arrow7"></div>
                 <div class="errorBand"></div>
-                <h4 style="width: 80px; line-height: 15px;">{{legendInfo.achievement_level_scores}}</h4>
+                <div class="arrow8"></div>
+                <h4 style="margin-left: 40px; width: 80px; line-height: 15px;">{{legendInfo.achievement_level_scores}}</h4>
             </div>
-            <div class="span6">
-                <p>{{{legendInfo.error_band}}}</p>
+            <div class="span5 marginLeft0">
+                <p style="width: 447px;">{{{legendInfo.error_band}}}</p>
                 <p>{{{legendInfo.error_band_1}}}</p>
             </div>
             <div class="span8 note">
                 <p><i class="edware-icon-asterisk"></i> {{legendInfo.note}}.</p>
             </div>
         </div>
+    </div>
+    <div class="uses span4 printContent">
+        <h4 class="padTopBottom9">{{labels.uses}}:</h4>
+        <ul class="marginLeft17">
+            {{#legendInfo.uses}}
+            <li>{{.}}</li>
+            {{/legendInfo.uses}}
+        </ul>
     </div>
 </div>

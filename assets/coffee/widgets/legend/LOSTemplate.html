@@ -50,26 +50,26 @@
             <div class="span8">
             </div>
             <div class="span5">
-                <table class="pull-left">
+                <table class="pull-left ALD">
                     <tr>
                         {{#ALDs}}
-                        <th style="width: 30px; height: 8px; background-color: {{color}} !important;">
+                        <th style="background-color: {{color}} !important;">
                             <i style=""></i>
                         </th>
                         {{/ALDs}}
                     </tr>
                     <tr>
                         {{#ALDs}}
-                        <th style="width: 30px; line-height: 12px; padding-top: 7px;">{{description}}</th>
+                        <td>{{description}}</td>
                         {{/ALDs}}
                     </tr>
                 </table>
             </div>
             <div class="span3">
-                <table class="pull-left marginLeft50">
+                <table class="pull-left marginLeft50 performance_levels">
                     <tr>
                         {{#legendInfo.performance_levels}}
-                        <td style="width: 20px; padding: 13px 13px 0px 13px; line-height: 12px;">{{desc}}</td>
+                        <td>{{desc}}</td>
                         {{/legendInfo.performance_levels}}
                     </tr>
                 </table>
@@ -87,7 +87,7 @@
                 <div class="arrow7"></div>
                 <div class="errorBand"></div>
                 <div class="arrow8"></div>
-                <h4 style="margin-left: 40px; width: 80px; line-height: 15px;">{{legendInfo.achievement_level_scores}}</h4>
+                <h4 style="margin-left: 40px; width: 100px; line-height: 15px;">{{legendInfo.achievement_level_scores}}</h4>
             </div>
             <div class="span5 marginLeft0">
                 <p style="width: 447px;">{{{legendInfo.error_band}}}</p>

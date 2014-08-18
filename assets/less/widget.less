@@ -559,8 +559,6 @@ th.ui-th-column div {
   table {
     font-size: 11px;
     margin-bottom: 0px;
-
-    td:first-child { text-align: center; }
   }
 
   .claim_score {
@@ -766,6 +764,28 @@ th.ui-th-column div {
       font-weight: normal;
       color: @color-B2;
       font-size: 13px;
+    }
+
+    table {
+      &.performance_levels {
+        td {
+          width: 20px;
+          padding: 13px 12px 0px 0px;
+          line-height: 12px;
+          text-align: center;
+        }
+      }
+      &.ALD {
+        th {
+          width: 30px;
+          height: 8px;
+        }
+        td {
+          width: 30px;
+          line-height: 12px;
+          padding-top: 7px;
+        }
+      }
     }
 
     #overall_score_details {

@@ -29,6 +29,7 @@ mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-trigger %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-file-grabber %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
@@ -120,6 +121,7 @@ rm -rf %{buildroot}
 /opt/virtualenv/udl2/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
+%attr(755,root,root) /etc/rc.d/init.d/edudl2-file-grabber
 
 %pre
 # check if udl2 group exists and create if not
@@ -152,6 +154,10 @@ if [ ! -d /var/log/edudl2-trigger ]; then
     mkdir -p /var/log/edudl2-trigger
     chown udl2.udl2 /var/log/edudl2-trigger
 fi
+if [ ! -d /var/log/edudl2-file-grabber]; then
+    mkdir -p /var/log/edudl2-file-grabber
+    chown udl2.udl2 /var/log/edudl2-file-grabber
+fi
 if [ ! -d /var/run/celery-udl2 ]; then
     mkdir -p /var/run/celery-udl2
     chown udl2.udl2 /var/run/celery-udl2
@@ -160,14 +166,21 @@ if [ ! -d /var/run/edudl2-trigger ]; then
     mkdir -p /var/run/edudl2-trigger
     chown udl2.udl2 /var/run/edudl2-trigger
 fi
+if [ ! -d /var/run/edudl2-file-grabber ]; then
+    mkdir -p /var/run/edudl2-file-grabber
+    chown udl2.udl2 /var/run/edudl2-file-grabber
+fi
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger
+chkconfig --add edudl2-file-grabber
 chkconfig --level 2345 celeryd-udl2 off
 chkconfig --level 2345 edudl2-trigger off
+chkconfig --level 2345 edudl2-file-grabber off
 
 %preun
 chkconfig --del celeryd-udl2
 chkconfig --del edudl2-trigger
+chkconfig --del edudl2-file-grabber
 
 %postun
 

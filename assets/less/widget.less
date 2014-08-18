@@ -1005,10 +1005,10 @@ th.ui-th-column div {
       font-size: 13px;
     }
 
-    .test.edware-icon-asterisk {
+    .cpop-asterisk.edware-icon-asterisk {
         position : relative;
-        top: 0px;
-        left: -70px;
+        top: -11px;
+        left: 5px;
     }
 
     .total_students {
@@ -1025,12 +1025,23 @@ th.ui-th-column div {
     }
 
     .achievement_levels {
+      margin-top: 5px;
+
       p {
         font-family: Arial !important;
         font-size: 11px !important;
       }
+
+      table {
+        td {
+          line-height: 12px;
+          text-align: right;
+          font-size: 10px;
+          width: 115px;
+        }
+      }
     }
-    
+
     .arrow1 {
         background-image: url('../images/CpopLegendBracket1.png');
         width: 440px;
@@ -1099,8 +1110,12 @@ th.ui-th-column div {
       padding-right: 300px;
       min-height: 20px;
       min-width: 264px;
-      left: 200px !important;
+      left: 112px !important;
       top: 0px !important;
+
+      .progress {
+        border-radius: 0px;
+      }
 
       .bar {
         cursor: auto;
@@ -2215,13 +2230,19 @@ th.ui-th-column div {
     min-width: 740px;
   }
 
-  .legendAchievementLevel {
-    height: 40px;
-    min-width: 350px !important;
-    margin-top: -80px;
-    left: -150px !important;
-    top: 0px !important;
-    position: absolute; 
+  .populationBarSmallTooltip {
+
+    position: relative;
+
+    .legendAchievementLevel {
+      height: 40px;
+      min-width: 476px !important;
+      left: 0px !important;
+      // margin-top: -80px;
+      // top: 0px !important;
+      // position: absolute;
+    }
+
   }
 
   .active {

@@ -85,7 +85,7 @@ define [
             class: 'legendAchievementLevel'
             html: true
             placement: 'top'
-            container: '#legendTemplate .populationBarSmall .progress'
+            container: '#legendTemplate .populationBarSmallTooltip'
             trigger: 'hover'
             content: ->
               # template location: widgets/populationBar/template.html

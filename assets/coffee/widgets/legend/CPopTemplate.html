@@ -14,7 +14,7 @@
             	<p>{{{legendInfo.desc1}}}</p>
             	<!--p>This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.<p-->
                 </div>
-            </div>    
+            </div>
             <div class="number_students row">
             	<div class="span5">
                      <p><b>{{legendInfo.percent_students}}</b></p>
@@ -45,49 +45,34 @@
             		</div>
     				<div class="span1 total_students"><b>{{legendInfo.indicator}}</b><i class="edware-icon-asterisk"></i></div>
 			</div>
-			<div class="row">
-					<div class="span2">
-            			<i class="edware-icon-arrow"></i>
-            		</div>
-            		<div class="span1">
-            			<i class="edware-icon-arrow"></i>
-					</div>
-            		<div class="span2">
-            			<i class="edware-icon-arrow"></i>
-            		</div>
-            		<div class="span2">
-            			<i class="edware-icon-arrow"></i>
-            		</div>			
-			</div>
 			<div class="achievement_levels row">
-					<div class="">
-            			<p><b>MINIMAL</b> UNDERSTANDING</p>
-            		</div>
-            		<div class="">
-            			<p><b>PARTIAL</b> UNDERSTANDING</p>
-					</div>
-            		<div class="">
-            			<p><b>ADEQUATE</b> UNDERSTANDING</p>
-            		</div>
-            		<div class="">
-            			<p><b>THOROUGH</b> UNDERSTANDING</p>
-            		</div>
-    				
+                <table>
+                    <tr>
+                        {{#ALDs}}
+                        <td><i class="edware-icon-arrow"></td>
+                        {{/ALDs}}
+                    </tr>
+                    <tr>
+                        {{#ALDs}}
+                        <td>{{description}}</td>
+                        {{/ALDs}}
+                    </tr>
+                </table>
 			</div>
 			<hr>
             <div class="row">
-            	<div class="span7">
+            	<div class="span7 marginBottom12">
             	<p>{{legendInfo.desc2}}<p>
                 </div>
-            </div> 
-            <div class="row"><span class="span6"><p></p> </span><span class="span1"><p><i class="test edware-icon-asterisk"></i></p> </span> </div>
-            <div class="row-fluid"><span class="span7"><p></p></span </div>
+            </div>
             <div class="row">
-            	<div class="span1"></div>
-            	<div class="span5">
+                <div class="span6 populationBarSmallTooltip"></div>
+                <div class="span1"><i class="cpop-asterisk edware-icon-asterisk"></i></div>
+            </div>
+            <div class="row">
+            	<div class="span3">
             		<span class="populationBarSmall"></span>
             	</div>
-            	<div class="span1"></div>
            	</div>
            	<div class="row">
             	<div class="span7">

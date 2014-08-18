@@ -125,9 +125,9 @@
                         "start_gradient_bg_color": "#E14A45",
                         "text_color": "#ffffff"
                     },
-                    "count": 27,
+                    "count": 2200,
                     "level": 1,
-                    "percentage": 27,
+                    "percentage": 22,
                     "showPercentage": true
                 },
                 {
@@ -137,9 +137,9 @@
                         "end_gradient_bg_color": "#e3c703",
                         "text_color": "#000"
                     },
-                    "count": 22,
+                    "count": 2600,
                     "level": 2,
-                    "percentage": 22,
+                    "percentage": 26,
                     "showPercentage": true
                 },
                 {
@@ -149,9 +149,9 @@
                         "end_gradient_bg_color": "#6aa506",
                         "text_color": "#FFFFFF"
                     },
-                    "count": 26,
+                    "count": 2500,
                     "level": 3,
-                    "percentage": 26,
+                    "percentage": 25,
                     "showPercentage": true
                 },
                 {
@@ -161,9 +161,9 @@
                         "end_gradient_bg_color": "#2078ca",
                         "text_color": "#FFFFFF"
                     },
-                    "count": 25,
+                    "count": 2700,
                     "level": 4,
-                    "percentage": 25,
+                    "percentage": 27,
                     "showPercentage": true
                 }
             ]

@@ -8,11 +8,12 @@ import tempfile
 import uuid
 import os
 from smarter_score_batcher.utils.file_utils import file_writer, csv_file_writer,\
-    create_path
+    create_path, json_file_writer
 import hashlib
 import csv
 from smarter_score_batcher.utils.meta import Meta
 from edcore.utils.file_utils import generate_path_to_raw_xml
+import json
 
 
 class Test(unittest.TestCase):
@@ -68,6 +69,13 @@ class Test(unittest.TestCase):
         self.assertEqual(len(rows), len(rows))
         for i in range(len(rows)):
             self.assertListEqual(rows[i], new_rows[i])
+
+    def test_json_writer(self):
+        target = os.path.join(self.__temp_dir.name, "test.json")
+        json_file_writer(target, {'Test': '1'})
+        with open(target) as f:
+            content = json.load(f)
+            self.assertEqual(content['Test'], '1')
 
     def test_create_path_valid(self):
         meta = Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')

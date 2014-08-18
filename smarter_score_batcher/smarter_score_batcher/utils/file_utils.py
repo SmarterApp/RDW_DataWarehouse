@@ -6,6 +6,7 @@ Created on Aug 11, 2014
 import os
 from edcore.utils.csv_writer import write_csv
 from smarter_score_batcher.utils.constants import Constants
+import json
 
 
 def file_writer(path, data, mode=0o700):
@@ -26,7 +27,7 @@ def file_writer(path, data, mode=0o700):
     return written if written else False
 
 
-def csv_file_writer(csv_file_path, data, mode=0o700):
+def csv_file_writer(csv_file_path, data, header=None, mode=0o700):
     '''
     Creates a csv file in the specified path and fills with data
     :param csv_file_path: csv file path
@@ -38,10 +39,21 @@ def csv_file_writer(csv_file_path, data, mode=0o700):
     written = False
     if data is not None and data:
         os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
-        written = write_csv(csv_file_path, data, header=None)
+        written = write_csv(csv_file_path, data, header=header)
         if os.path.exists(csv_file_path):
             os.chmod(csv_file_path, mode)
-    return written if written else False
+    return written
+
+
+def json_file_writer(file_path, data):
+    '''
+    Writes to a JSON file
+
+    :param file_path: the path of the file to write to
+    :param dict data: a python dictionary that is the content that is written to the file
+    '''
+    with open(file_path, 'w') as json_file:
+        json.dump(data, json_file, indent=4)
 
 
 def create_path(root_dir, meta, generate_path):

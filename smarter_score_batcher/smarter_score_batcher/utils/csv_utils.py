@@ -1,7 +1,8 @@
 import logging
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
-from smarter_score_batcher.utils.file_utils import csv_file_writer
+from smarter_score_batcher.utils.file_utils import csv_file_writer,\
+    json_file_writer
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
@@ -21,10 +22,13 @@ def process_assessment_data(root):
     '''
     # csv_data is an AssessmentData object
     csv_data = get_assessment_mapping(root)
-    headers = csv_data.headers
+    header = csv_data.header
     values = csv_data.values
-    # json_data is a dictionary of the json file format
     json_data = get_assessment_metadata_mapping(root)
+    # TODO: Only write json if json file doesn't already exist
+    # TODO: Only write header for csv if file doesn't have header
+    #json_file_writer('somepath', json_data)
+    #csv_file_writer('somepath', values, header=header)
 
 
 def process_item_level_data(root, csv_file_path):

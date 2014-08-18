@@ -131,16 +131,16 @@ class AssessmentHeaders:
 class AssessmentData:
     def __init__(self, mappings):
         self.__mappings = mappings
-        self.__headers = []
+        self.__header = []
         self.__values = []
 
     def add(self, header, value):
-        self.__headers.append(header)
+        self.__header.append(header)
         self.__values.append(value)
 
     @property
-    def headers(self):
-        return self.__headers
+    def header(self):
+        return self.__header
 
     @property
     def values(self):

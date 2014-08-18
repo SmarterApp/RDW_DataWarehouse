@@ -5,7 +5,7 @@ Created on Aug 12, 2014
 '''
 import unittest
 from smarter_score_batcher.mapping.assessment import XMLMeta, Mapping,\
-    get_assessment_mapping, AssessmentHeaders
+    get_assessment_mapping, AssessmentHeaders, AssessmentData
 from smarter_score_batcher.tests.mapping.utils import DummyObj, read_data
 try:
     import xml.etree.cElementTree as ET
@@ -36,12 +36,17 @@ class TestCSVMetadata(unittest.TestCase):
     def test_mapping_class(self):
         mapping = Mapping(DummyObj(), 'test')
         val = mapping.evaluate()
-        self.assertEquals(val['test'], 1)
+        self.assertEquals(val, 1)
 
     def test_get_csv_mapping(self):
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
-        mapping = get_assessment_mapping(root)
+        data = get_assessment_mapping(root)
+        headers = data.headers
+        values = data.values
+        self.assertEqual(len(headers), len(values))
+        self.assertTrue(len(headers) > 0)
+        mapping = dict(zip(headers, values))
         self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-MATH-7')
         self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '8')
         self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '12')
@@ -52,6 +57,11 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(mapping[AssessmentHeaders.AssessmentSubtestResultScoreValue], '1295')
         self.assertEqual(mapping[AssessmentHeaders.AccommodationAmericanSignLanguage], '4')
 
+    def test_assessment_data_class(self):
+        data = AssessmentData([Mapping(DummyObj(), "test_header")])
+        data.evaluate()
+        self.assertListEqual(data.headers, ['test_header'])
+        self.assertListEqual(data.values, [1])
 
 if __name__ == "__main__":
     unittest.main()

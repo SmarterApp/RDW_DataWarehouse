@@ -19,11 +19,12 @@ def process_assessment_data(root):
     process assessment data
     :param root: xml root document
     '''
-    # csv_data is a dictionary that can be inserted into db
+    # csv_data is an AssessmentData object
     csv_data = get_assessment_mapping(root)
+    headers = csv_data.headers
+    values = csv_data.values
     # json_data is a dictionary of the json file format
     json_data = get_assessment_metadata_mapping(root)
-    # TODO: write to db in next story
 
 
 def process_item_level_data(root, csv_file_path):

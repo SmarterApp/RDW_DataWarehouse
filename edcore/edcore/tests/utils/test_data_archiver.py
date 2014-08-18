@@ -7,7 +7,7 @@ import io
 import unittest
 import os
 from edcore.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
-                                           GPGPublicKeyException, GPGException)
+                                        GPGPublicKeyException, GPGException)
 import tempfile
 
 

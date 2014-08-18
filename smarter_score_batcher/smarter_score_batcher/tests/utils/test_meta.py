@@ -28,6 +28,7 @@ class Test(unittest.TestCase):
         <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
         <ExamineeRelationship context="INITIAL" name="StateName" value="California" />
         </Examinee>
+        <Opportunity effectiveDate="2014-02-02" />
         </TDSReport>'''
         meta = extract_meta_names(xml_string)
         self.assertTrue(meta.valid_meta)

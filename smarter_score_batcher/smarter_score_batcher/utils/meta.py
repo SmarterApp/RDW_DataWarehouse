@@ -84,9 +84,8 @@ def extract_meta_names(raw_xml_string):
         asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
         subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
-        # TODO: This needs to be fixed
-        effective_date = 'NA'  # root.find("./test").get('effectiveDate', DEFAULT_VALUE)
-        validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade)
+        effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "effectiveDate")
+        validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade and effective_date)
         if not validMeta:
             if not state_code:
                 logger.error('extract_meta_names: state_code is missing')
@@ -102,6 +101,8 @@ def extract_meta_names(raw_xml_string):
                 logger.error('extract_meta_names: subject is missing')
             if not grade:
                 logger.error('extract_meta_names: grade is missing')
+            if not effective_date:
+                logger.error('extract_meta_names: effective_date is missing')
         return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

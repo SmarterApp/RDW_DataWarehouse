@@ -27,4 +27,4 @@ class MoverConstants():
     ARRIVALS_PATH = 'arrivals_path'
     FILE_TENANT = 'file_tenant'
     FILE_USER = 'file_user'
-    FILE_MOEV_TYPE = 'file_move_type'
+    FILE_MOVE_TYPE = 'file_move_type'

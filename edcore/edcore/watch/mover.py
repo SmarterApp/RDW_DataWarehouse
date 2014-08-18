@@ -21,7 +21,7 @@ class FileMover():
         move files
         :param files_to_move: a list of files to move
         '''
-        if self.conf.get(MoverConst.FILE_MOEV_TYPE) == 'sftp':
+        if self.conf.get(MoverConst.FILE_MOVE_TYPE) == 'sftp':
             return self.move_files_by_sftp(files_to_move)
         else:
             return self.move_files_local(files_to_move)

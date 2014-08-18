@@ -154,7 +154,7 @@ if [ ! -d /var/log/edudl2-trigger ]; then
     mkdir -p /var/log/edudl2-trigger
     chown udl2.udl2 /var/log/edudl2-trigger
 fi
-if [ ! -d /var/log/edudl2-file-grabber]; then
+if [ ! -d /var/log/edudl2-file-grabber ]; then
     mkdir -p /var/log/edudl2-file-grabber
     chown udl2.udl2 /var/log/edudl2-file-grabber
 fi

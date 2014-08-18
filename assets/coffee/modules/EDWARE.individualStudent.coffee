@@ -175,6 +175,7 @@ define [
         reportTitle: $('#individualStudentContent h2.title').text()
         reportName: Constants.REPORT_NAME.ISR
         reportInfoText: @configData.reportInfo
+        breadcrumb: @data.context
         labels: @labels
         CSVOptions: @configData.CSVOptions
         # subjects on ISR

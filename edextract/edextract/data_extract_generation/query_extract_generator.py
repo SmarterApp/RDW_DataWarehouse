@@ -7,12 +7,12 @@ This module contains the logic to write to an Assessment CSV or JSON extract fil
 from itertools import chain
 import json
 
-from edextract.utils.csv_writer import write_csv
 from edextract.utils.json_formatter import format_json
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.utils.csv_writer import write_csv
 import logging
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ def generate_csv(tenant, output_file, task_info, extract_args):
     with EdCoreDBConnection(tenant=tenant) as connection:
         results = connection.get_streaming_result(query)  # this result is a generator
         header, data = _generate_csv_data(results)
-        write_csv(output_file, header, data)
+        write_csv(output_file, data, header=header)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 

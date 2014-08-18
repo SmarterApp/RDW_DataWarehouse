@@ -8,7 +8,7 @@ from edextract.settings.config import Config, get_setting
 from edextract.celery import celery
 from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
-from edextract.utils.data_archiver import encrypted_archive_files, GPGPublicKeyException
+from edcore.utils.data_archiver import encrypted_archive_files, GPGPublicKeyException
 from edextract.exceptions import ExtractionError
 
 

@@ -226,6 +226,8 @@ table td {
 // DE76: hide horizontal bar when vertical bar shows up
 .ui-jqgrid .ui-jqgrid-bdiv {
   overflow-x: hidden;
+
+  thead { display: none; }
 }
 th.ui-th-column div {
   height: auto !important;
@@ -271,13 +273,14 @@ th.ui-th-column div {
   background: @color-B6;
 
   .ui-widget-content {
-    background: @color-B8;
+    background: @color-B8 !important;
   }
 }
 
 .ui-jqgrid tr.footrow td {
   border-top: none;
   border-right: solid 1px @color-B7;
+  border-bottom: solid 1px @color-B7;
 }
 
 .ui-jqgrid tr.jqgrow td:last-child, .ui-jqgrid .ui-jqgrid-htable th:last-child, .ui-jqgrid tr.footrow td:last-child { border-right: solid 1px transparent; }
@@ -432,6 +435,14 @@ th.ui-th-column div {
 
     .bar {
       text-align: right;
+
+      &.FFFFFF .percentageOnBar {
+        color: @color-white !important;
+      }
+
+      &.000 .percentageOnBar {
+        color: @color-black !important;
+      }
     }
   }
 }
@@ -1573,6 +1584,10 @@ th.ui-th-column div {
     padding: 3px;
   }
 
+  #DownloadSuccessModal .modal-body {
+    overflow-y: scroll;
+  }
+
   #DownloadMenuModal, #PDFModal, #DownloadSuccessModal, #DownloadFailureModal, #StateDownloadModal{
 
     width: 420px;
@@ -2011,10 +2026,6 @@ th.ui-th-column div {
     }
   }
 
-  .legendPopup {
-    display: none;
-  }
-
   .legendPopover {
     min-width: 920px;
   }
@@ -2106,4 +2117,8 @@ th.ui-th-column div {
 .searchHighlight {
   background-color: #F9E101;
   color: #053556;
+}
+
+.legendPopup {
+  display: none;
 }

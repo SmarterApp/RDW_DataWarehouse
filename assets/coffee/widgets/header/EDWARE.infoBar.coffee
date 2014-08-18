@@ -16,14 +16,16 @@ define [
       @bindEvent()
 
     initialize: (createSearch) ->
+      breadcrumb = (item.name for item in @config.breadcrumb.items).join(" / ")
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
+        breadcrumb: breadcrumb
       @createDownloadMenu()
       @render()
       # Create search box if true, else remove it
-      @searchBox ?= @createSearchBox() if createSearch 
+      @searchBox ?= @createSearchBox() if createSearch
 
     bindEvent: () ->
       self = @
@@ -35,7 +37,7 @@ define [
 
     createSearchBox: () ->
       $('#search').edwareSearchBox @config.labels
-    
+
     render: () ->
       # bind report info popover
       $('.reportInfoIcon').edwarePopover

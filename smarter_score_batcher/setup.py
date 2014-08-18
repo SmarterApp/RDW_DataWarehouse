@@ -15,6 +15,7 @@ requires = [
     'pyramid_debugtoolbar==1.0.8',
     'zope.sqlalchemy==0.7.3',
     'waitress==0.8.7',
+    'lxml==3.3.5',
     'config',
     'edworker',
     'edcore',
@@ -24,7 +25,7 @@ requires = [
     'smarter_common']
 
 setup(name='smarter_score_batcher',
-      version='0.0',
+      version='0.1',
       description='smarter_score_batcher',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

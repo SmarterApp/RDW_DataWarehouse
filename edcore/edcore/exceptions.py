@@ -27,3 +27,15 @@ class NotForWindowsException(EdCoreError):
     '''
     def __init__(self, msg):
         EdCoreError.__init__(self, msg)
+
+
+class GPGException(Exception):
+    def __init__(self, msg='gpg execution error'):
+        self.msg = msg
+        Exception.__init__(self, msg)
+
+
+class GPGPublicKeyException(GPGException):
+    def __init__(self, msg='public key is not available'):
+        self.msg = msg
+        GPGException.__init__(self, msg)

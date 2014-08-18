@@ -3,11 +3,9 @@ Created on Jul 29, 2014
 
 @author: tosako
 '''
-import logging
-from edworker.celery import setup_celery as setup_for_worker, configure_celeryd, get_config_file
+from edworker.celery import setup_celery as setup_for_worker, configure_celeryd
 
 
-logger = logging.getLogger('smarter_score_batcher')
 PREFIX = 'smarter_score_batcher.celery'
 
 
@@ -24,8 +22,3 @@ def setup_celery(settings, prefix=PREFIX):
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
-prod_config = get_config_file()
-if prod_config:
-    # We should only need to setup db connection in prod mode
-    # setup_db_connection(conf)
-    logging.config.fileConfig(prod_config)

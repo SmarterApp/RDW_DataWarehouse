@@ -53,7 +53,7 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         generate_statistics_report(self._tenant, output, self.task_info, extract_args)
 
         mock__generate_statistics_report_data.assert_called_with(self._tenant, academic_year, queries)
-        mock_write_csv.assert_called_with(output, header, data)
+        mock_write_csv.assert_called_with(output, data, header=header)
 
     @patch('edextract.data_extract_generation.student_reg_report_generator._generate_completion_report_data')
     @patch('edextract.data_extract_generation.student_reg_report_generator.write_csv')
@@ -72,4 +72,4 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         generate_completion_report(self._tenant, output, self.task_info, extract_args)
 
         mock__generate_completion_report_data.assert_called_with(self._tenant, academic_year, queries)
-        mock_write_csv.assert_called_with(output, header, data)
+        mock_write_csv.assert_called_with(output, data, header=header)

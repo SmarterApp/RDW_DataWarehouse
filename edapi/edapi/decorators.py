@@ -13,6 +13,8 @@ from functools import wraps
 from pyramid.security import authenticated_userid
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from edapi.validation import Validator
+import io
+from lxml import etree
 
 
 class report_config(object):
@@ -129,4 +131,45 @@ def validate_params(schema):
 
         return validate_wrap
 
+    return request_wrap
+
+
+def validate_xml(xsd):
+    '''
+    validating xml against xsd
+    '''
+    xmlschema = None
+    if xsd is not None:
+        xsd_f = io.BytesIO(bytes(xsd, 'UTF-8'))
+        xsd_doc = etree.parse(xsd_f)
+        xmlschema = etree.XMLSchema(xsd_doc)
+
+    def request_wrap(request_handler):
+        '''
+        :param request_handler: pyramid request handler
+        '''
+        @wraps(request_wrap)
+        def validate_wrap(*args, **kwargs):
+            for arg in args:
+                if type(arg) == pyramid.request.Request or type(arg) == pyramid.testing.DummyRequest:
+                    valid = False
+                    try:
+                        xml_body = arg.body
+                        #for UT, if xmlschema is None, we do not validate
+                        if xmlschema is None:
+                            valid = True
+                        else:
+                            if type(arg) == pyramid.testing.DummyRequest:
+                                xml_f = io.BytesIO(bytes(xml_body, 'utf-8'))
+                            else:
+                                xml_f = arg.body_file
+                            xml_doc = etree.parse(xml_f)
+                            if xmlschema.validate(xml_doc):
+                                valid = True
+                    except:
+                        raise EdApiHTTPPreconditionFailed('Invalid XML by xsd')
+                    if not valid:
+                        raise EdApiHTTPPreconditionFailed('Invalid XML by xsd')
+            return request_handler(xml_body)
+        return validate_wrap
     return request_wrap

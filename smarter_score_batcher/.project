@@ -5,6 +5,7 @@
 	<projects>
 		<project>edapi</project>
 		<project>edauth</project>
+		<project>edcore</project>
 		<project>edworker</project>
 		<project>smarter_common</project>
 	</projects>

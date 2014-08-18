@@ -211,6 +211,11 @@ define [
             self.afterGridLoadComplete()
       }
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
+      @updateTotalNumber(filteredInfo.data.length)
+
+    updateTotalNumber: (total) ->
+      display = "#{total} #{@labels.next_level[@reportType]}"
+      $('#total_number').text display
 
     updateSortLabels: (index, sortorder) ->
       # Remove second row header as that counts as a column in setLabel function
@@ -242,6 +247,7 @@ define [
       @config.labels.SearchResultText = @config.SearchResultText
       @infoBar ?= edwareReportInfoBar.create '#infoBar',
         reportTitle: @breadcrumbs.getReportTitle()
+        breadcrumb: @breadcrumbs.breadcrumbsData
         reportName: Constants.REPORT_NAME.CPOP
         reportInfoText: @config.reportInfo[@reportType]
         reportType: @reportType
@@ -419,6 +425,7 @@ define [
         element = {'count': 0, 'percentage': 0} if element is undefined
         element.count = edwareUtil.formatNumber(element.count)
         element.description = @intervals[i].name
+        element.text_color_class = @intervals[i].text_color?.substr(1)
         if colors and colors[i]
           element.color = colors[i]
         else

@@ -6,8 +6,8 @@ Created on Dec 19, 2013
 import io
 import unittest
 import os
-from edextract.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
-                                           GPGPublicKeyException, GPGException)
+from edcore.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
+                                        GPGPublicKeyException, GPGException)
 import tempfile
 
 

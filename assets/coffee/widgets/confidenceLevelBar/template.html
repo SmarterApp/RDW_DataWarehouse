@@ -1,4 +1,4 @@
-<div class="screenreader"> Overall Score {{asmt_score}} {{score_name}} with Error band from {{asmt_score_range_min}} to {{asmt_score_range_max}}</div> 
+<div class="screenreader"> Overall Score {{asmt_score}} {{score_name}} with Error band from {{asmt_score_range_min}} to {{asmt_score_range_max}}</div>
 <div class="scoreWrapper" aria-hidden="true" style="width: {{bar_width}}px;">
     <div class="overall_score" style="margin-left: {{score_text_pos}}px;color: {{score_color}}"><strong style="color: {{score_color}}!important;">{{asmt_score}}</strong></div>
     <div class="indicator progressbar_indicator{{bar_width}}" style="margin-left: {{asmt_score_pos}}px"></div>
@@ -16,7 +16,7 @@
 </div>
 <div class="progress" style="width: {{bar_width}}px;">
     {{#cut_point_intervals}}
-        <div class="bar" style="background-color: {{bg_color}} !important; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;"></div>
+        <div class="bar" style="background-color: {{bg_color}}!important; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;"></div>
     {{/cut_point_intervals}}
 </div>
 <div class="cutPointsBar" aria-hidden="true" style="width: {{bar_width}}px;">

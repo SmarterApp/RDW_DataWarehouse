@@ -163,17 +163,22 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
-      base_dir: /opt/edware/raw_data
+      base_dir:
+        xml: /opt/edware/raw_data
+        csv: /opt/edware/item_level
       celery_timeout: 30
       sync_queue: smarter_score_batcher_sync
+      async_queue: smarter_score_batcher_async
       celery:
-        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_writer',)
+        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer',)
         CELERY_RESULT_BACKEND: amqp
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 20
-        CELERY_DEFAULT_QUEUE: smarter_score_batcher
-        CELERY_DEFAULT_ROUTING_KEY: smarter_score_batcher
+        CELERY_DEFAULT_QUEUE: smarter_score_batcher_async
+        CELERY_DEFAULT_ROUTING_KEY: smarter_score_batcher_async
         CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      xsd:
+        path: ../resources/sample_xsd.xsd
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home
@@ -997,6 +1002,7 @@ jenkins_dev:
     smarter_score_batcher:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
+        CELERYD_CONCURRENCY: 4
     edware:
       db:
         cat:

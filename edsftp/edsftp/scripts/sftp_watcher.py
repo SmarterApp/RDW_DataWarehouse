@@ -54,16 +54,16 @@ def _watch_and_move_files(file_watcher, file_mover):
 
 
 def file_sync(config):
-    """sftp file sync main entry point
+    """file sync main entry point
 
     This is a forever script
 
-    :param config: sftp config needed for file sync
+    :param config: config needed for file sync
     """
     remote_conf = get_mover_conf(config)
     file_watcher = FileWatcher(get_watcher_conf(config), append_logs_to=DEFAULT_LOGGER_NAME)
     file_mover = FileMover(remote_conf, append_logs_to=DEFAULT_LOGGER_NAME)
-    logger.info('Starting SFTP file sync loop')
+    logger.info('Starting file sync loop')
     while True:
         try:
             logger.debug('Searching for new files in {source_dir}'.format(source_dir=config.get(SFTPConst.ARRIVALS_DIR)))

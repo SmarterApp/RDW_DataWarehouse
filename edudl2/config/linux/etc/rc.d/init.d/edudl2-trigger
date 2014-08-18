@@ -4,7 +4,7 @@
 
 # Source function library.
 . /etc/rc.d/init.d/functions
-PIDFILE="/var/run/edudl2-trigger/edudl2-trigger.pid"
+PIDFILE="/var/run/edudl2/edudl2-file-trigger.pid"
 EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
 
 start() {
@@ -14,7 +14,7 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping edudl2 trigger: "
+	echo -n "Stopping edudl2-trigger: "
 	killproc -p $PIDFILE
 	RETVAL=$?
 }

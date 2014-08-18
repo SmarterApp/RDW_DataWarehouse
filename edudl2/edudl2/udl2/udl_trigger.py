@@ -1,4 +1,3 @@
-from edudl2.udl2_util.rsync import rsync
 __author__ = 'sravi'
 
 import os
@@ -12,6 +11,7 @@ from edcore.utils.utils import get_config_from_ini, run_cron_job, read_ini
 from edcore.watch.constants import WatcherConstants as Const
 from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
 from edcore.utils.utils import create_daemon
+from edudl2.udl2_util.rsync import rsync
 
 
 logger = logging.getLogger('edudl2')
@@ -74,10 +74,6 @@ def main():
     args = parser.parse_args()
     file = args.ini_file
     logging.config.fileConfig(file)
-    ini_file = read_ini(file)
-    d = get_config_from_ini(ini_file, '')
-    # setup cron
-    run_cron_job(d, 'udl2_rsync.', rsync)
 
     daemon_mode = args.daemon
     pid_file = args.pidfile

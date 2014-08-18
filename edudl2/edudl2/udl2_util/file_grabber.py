@@ -5,7 +5,9 @@ Created on Aug 18, 2014
 '''
 import argparse
 import logging
-from edcore.utils.utils import read_ini, get_config_from_ini, run_cron_job
+import logging.config
+from edcore.utils.utils import read_ini, get_config_from_ini, run_cron_job,\
+    create_daemon
 from edudl2.udl2_util.rsync import rsync
 import time
 
@@ -24,10 +26,12 @@ def main():
     logging.config.fileConfig(file)
     ini_file = read_ini(file)
     d = get_config_from_ini(ini_file, '')
+    daemon_mode = args.daemon
+    pid_file = args.pidfile
+    if daemon_mode:
+        create_daemon(pid_file)
     # setup cron
     run_cron_job(d, 'udl2_rsync.', rsync)
-    while True:
-        time.sleep(1)
 
 if __name__ == "__main__":
     main()

@@ -8,6 +8,7 @@ install_requires = [
     'SQLAlchemy==0.8.3',
     'pyramid==1.4',
     'apscheduler==2.1.1',
+    "python-gnupg==0.3.5",
     'psycopg2==2.5.1']
 
 tests_require = [

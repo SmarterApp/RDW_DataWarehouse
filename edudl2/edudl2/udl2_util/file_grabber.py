@@ -32,6 +32,8 @@ def main():
         create_daemon(pid_file)
     # setup cron
     run_cron_job(d, 'udl2_rsync.', rsync)
+    while True:
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()

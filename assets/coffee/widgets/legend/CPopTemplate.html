@@ -8,44 +8,91 @@
         {{/ALDs}}
         {{#legendInfo.notes}}{{.}} {{/legendInfo.notes}}
     </div>
-    <div class="row" aria-hidden='true'>
-        <div class="span4">
-            <!-- ALD -->
-            <h4>{{labels.achievement_level_descriptors}}:</h4>
-            <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
-                <thead>
-                    <tr>
-                        <th style="width:11%;">{{labels.color}}</th>
-                        <th>{{labels.description}}</th>
-                        <th>{{labels.score_range}}</th>
-                    </tr>
-                </thead>
-                {{#ALDs}}
-                <tr>
-                    <td><div class="edware-icon-ALD-color" style="background-color:{{color}};"></div></td>
-                    <td><strong class="blackText">{{description}}</strong></td>
-                    <td><strong class="blackText">{{range}}</strong></td>
-                </tr>
-                {{/ALDs}}
-            </table>
-        </div>
-        <div class="populationBarDetails span7 edware-border-left">
-            <h4>{{labels.population_bar_details}}:</h4>
-            <div class="populationBar">
-                <div class="arrow1"></div>
-                <div class="arrow2"></div>
-                <div class="arrow3"></div>
-                <span class="indicator">{{legendInfo.indicator}}</span>
+    <div class="cpopPerformanceBar populationBarDetails span7">
+            <div class="row">
+            	<div class="span7">
+            	<p>{{{legendInfo.desc1}}}</p>
+            	<!--p>This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.<p-->
+                </div>
+            </div>    
+            <div class="number_students row">
+            	<div class="span5">
+                     <p><b>{{legendInfo.percent_students}}</b></p>
+                </div>
+                <div class="span2">
+                     <p><b>{{legendInfo.number_students}}</b></p>
+                </div>
             </div>
-            <div class="description">
-                <h5>{{legendInfo.desc1}}</h5>
-                <h5>{{legendInfo.desc2}}</h5>
-                <p>{{legendInfo.desc3}}</p>
+             <div class="number_students row">
+            	<div class="span5">
+                     <p>{{legendInfo.desc4}}</p>
+                </div>
+                <div class="span2">
+                     <p> {{labels.assessed}}</p>
+                </div>
             </div>
-            <div class="notes" id="aria-populationbardetails">
-                <h5>{{labels.notes}}:</h5>
-                <p>{{#legendInfo.notes}}{{.}}<br/><br/>{{/legendInfo.notes}}</p>
-            </div>
+            <div class="row">
+            	<div class="span6">
+                	<div class="arrow1"></div>
+            	</div>
+            	<div class="span1">
+                	<div class="arrow2"></div>
+            	</div>
+                </div>
+            <div class="row">
+					<div class="span6">
+            			<span class="populationBar"></span>
+            		</div>
+    				<div class="span1 total_students"><b>{{legendInfo.indicator}}</b><i class="edware-icon-asterisk"></i></div>
+			</div>
+			<div class="row">
+					<div class="span2">
+            			<i class="edware-icon-arrow"></i>
+            		</div>
+            		<div class="span1">
+            			<i class="edware-icon-arrow"></i>
+					</div>
+            		<div class="span2">
+            			<i class="edware-icon-arrow"></i>
+            		</div>
+            		<div class="span2">
+            			<i class="edware-icon-arrow"></i>
+            		</div>			
+			</div>
+			<div class="achievement_levels row">
+					<div class="">
+            			<p><b>MINIMAL</b> UNDERSTANDING</p>
+            		</div>
+            		<div class="">
+            			<p><b>PARTIAL</b> UNDERSTANDING</p>
+					</div>
+            		<div class="">
+            			<p><b>ADEQUATE</b> UNDERSTANDING</p>
+            		</div>
+            		<div class="">
+            			<p><b>THOROUGH</b> UNDERSTANDING</p>
+            		</div>
+    				
+			</div>
+			<hr>
+            <div class="row">
+            	<div class="span7">
+            	<p>{{legendInfo.desc2}}<p>
+                </div>
+            </div> 
+            <div class="row"><span class="span6"><p></p> </span><span class="span1"><p><i class="test edware-icon-asterisk"></i></p> </span> </div>
+            <div class="row-fluid"><span class="span7"><p></p></span </div>
+            <div class="row">
+            	<div class="span1"></div>
+            	<div class="span5">
+            		<span class="populationBarSmall"></span>
+            	</div>
+            	<div class="span1"></div>
+           	</div>
+           	<div class="row">
+            	<div class="span7">
+                <p><i class="edware-icon-asterisk"></i>{{legendInfo.desc3}}</p>
+           </div>
         </div>
     </div>
 </div>

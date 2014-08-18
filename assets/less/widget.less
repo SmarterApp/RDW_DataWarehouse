@@ -985,14 +985,99 @@ th.ui-th-column div {
 
   .populationBarDetails {
 
-    .populationBar {
+    .edware-icon-arrow {
       position: relative;
-      top: 30px;
+      top: 0px;
+    }
+
+    b { color: @color-black;}
+
+    p {
+      font-weight: normal;
+      color: @color-C10;
+      font-size: 13px;
+      font-family: helvetica;
+    }
+
+    .number_students {
+      text-align: center;
+      font-family: helvetica;
+      font-size: 13px;
+    }
+
+    .test.edware-icon-asterisk {
+        position : relative;
+        top: 0px;
+        left: -70px;
+    }
+
+    .total_students {
+      font-family: Arial !important;
+      font-size: 20px !important;
+      margin-left: -10px;
+      position : relative;
+
+      .edware-icon-asterisk {
+       position : absolute;
+       top: 0px;
+       left: 55px;
+      }
+    }
+
+    .achievement_levels {
+      p {
+        font-family: Arial !important;
+        font-size: 11px !important;
+      }
+    }
+    
+    .arrow1 {
+        background-image: url('../images/CpopLegendBracket1.png');
+        width: 440px;
+        height: 27px;
+        position: relative;
+        background-repeat: no-repeat;
+        top: -10x;
+        left: 0px;
+    }
+
+    .arrow2 {
+        background-image: url('../images/CpopLegendBracket2.png');
+        width: 60px;
+        height: 27px;
+        position: relative;
+        background-repeat: no-repeat;
+        top: 0px;
+        left: -30px;
+    }
+
+    .populationBar {
+      width: 440px;
+      height: 33px;
+      position: relative;
       padding-right: 50px;
-      height: 110px;
+      margin-left: 0px;
+      float: left;
+
+      .progress {
+        height: 33px;
+      }
 
       .bar {
-        cursor: auto;
+        font-size: 18px;
+        font-family: Arial !important;
+        font-weight: normal;
+        cursor: pointer;
+        text-align: right;
+        line-height: 33px;
+
+        &.FFFFFF .percentageOnBar {
+          color: @color-white !important;
+        }
+
+        &.000 .percentageOnBar {
+          color: @color-black !important;
+        }
       }
 
       .progressBar_tooltip {
@@ -1006,35 +1091,31 @@ th.ui-th-column div {
         color: black;
         font-style: bold;
       }
+    }
 
-      .arrow1 {
-        background-image: url('../images/cmppop_percentarrow.png');
-        width: 187px;
-        height: 27px;
-        position: absolute;;
-        background-repeat: no-repeat;
-        top: -25px;
-        left: 140px;
+    .populationBarSmall {
+      position: relative;
+      top: 30px;
+      padding-right: 300px;
+      min-height: 20px;
+      min-width: 264px;
+      left: 200px !important;
+      top: 0px !important;
+
+      .bar {
+        cursor: auto;
       }
 
-      .arrow2 {
-        background-image: url('../images/cmppop_segmentarrow.png');
-        width: 261px;
-        height: 27px;
-        position: absolute;;
-        background-repeat: no-repeat;
-        top: 21px;
-        left: 70px;
-      }
+      //.progressBar_tooltip {
+      //  display: none;
+      //}
 
-      .arrow3 {
-        background-image: url('../images/roster_scalescore_cmppop_total.png');
-        width: 187px;
-        height: 27px;
+      .indicator {
         position: absolute;;
-        background-repeat: no-repeat;
-        top: 5px;
-        left: 311px;
+        left: 274px;
+        top: 0px;
+        color: black;
+        font-style: bold;
       }
     }
 
@@ -2132,6 +2213,15 @@ th.ui-th-column div {
 
   .legendPopover {
     min-width: 740px;
+  }
+
+  .legendAchievementLevel {
+    height: 40px;
+    min-width: 350px !important;
+    margin-top: -80px;
+    left: -150px !important;
+    top: 0px !important;
+    position: absolute; 
   }
 
   .active {

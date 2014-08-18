@@ -9,7 +9,8 @@ define [
   "text!LOSTemplate"
   "text!CPopTemplate"
   "edwareConstants"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate, Constants) ->
+  "edwarePopover"
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate, Constants, edwarePopover) ->
 
   # Legend base class.
   # This is an abstract class, derived class should implement two functions: getTemplate() and createBar()
@@ -74,10 +75,27 @@ define [
     createBar:(subject, container) ->
       output = edwarePopulationBar.create subject
       $('#legendTemplate .populationBar', container).prepend(output)
+      $('#legendTemplate .populationBarSmall', container).prepend(output)
       # remove pop up when hovering over population bar
-      container.find('.progressBar_tooltip').remove()
+      # container.find('.progressBar_tooltip').remove()
       # do not tab on progress bar in legend
       container.find('.progress').removeAttr('tabindex')
+       # Show tooltip for population bar on mouseover
+      $("#legendTemplate .populationBarSmall .progress").edwarePopover
+            class: 'legendAchievementLevel'
+            html: true
+            placement: 'top'
+            container: '#legendTemplate .populationBarSmall .progress'
+            trigger: 'hover'
+            content: ->
+              # template location: widgets/populationBar/template.html
+              $(this).find(".progressBar_tooltip").html()
+      $("#legendTemplate .populationBarSmall .progress").popover('show')
+      # also display tooltips when focus on
+      #$(".progress").on 'focus', ()->
+      # $(this).popover('show')
+      #.focusout ()->
+      # $(this).popover('hide')
 
 
   # Legend section on individual student report

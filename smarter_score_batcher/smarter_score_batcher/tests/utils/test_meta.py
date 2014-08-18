@@ -22,9 +22,7 @@ class Test(unittest.TestCase):
     def test_extract_meta_names_valid_minimum_xml(self):
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
-        <Examinee key="">
-        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
+        <Examinee key="CA-9999999598">
         <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
         <ExamineeRelationship context="FINAL" name="StateName" value="California" />
         <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />

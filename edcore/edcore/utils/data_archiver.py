@@ -9,7 +9,7 @@ import io
 import gnupg
 import tempfile
 from edcore.utils.utils import archive_files
-from edextract.exceptions import GPGPublicKeyException, GPGException
+from edcore.exceptions import GPGPublicKeyException, GPGException
 
 
 def import_recipient_keys(gpg, recipients, keyserver):

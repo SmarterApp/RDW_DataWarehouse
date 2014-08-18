@@ -15,7 +15,6 @@
 		<ExamineeAttribute context="FINAL" name="LastName" value="Smith" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="Sex" value="M" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="GradeLevelWhenAssessed" value="04" contextDate="2014-04-14T11:13:41.803"/>
-		<ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="ExternalSSID" value="CA-9999999598" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="IDEAIndicator" value="No" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="LEPStatus" value="No" contextDate="2014-04-14T11:13:41.803"/>

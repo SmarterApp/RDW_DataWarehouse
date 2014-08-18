@@ -68,9 +68,7 @@ class TestXML(unittest.TestCase):
     def test_process_xml_valid(self, mock_create_path):
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
-        <Examinee key="">
-        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
+        <Examinee key="12">
         <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
         <ExamineeRelationship context="FINAL" name="StateName" value="California" />
         <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
@@ -98,9 +96,7 @@ class TestXML(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
-        <Examinee key="">
-        <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="CA-9999999598" />
-        <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
+        <Examinee key="12">
         <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
         <ExamineeRelationship context="FINAL" name="StateName" value="California" />
         <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
@@ -125,7 +121,7 @@ class TestXML(unittest.TestCase):
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 rows.append(row)
-        csv_first_row_list = ['key_value', 'CA-9999999598', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
+        csv_first_row_list = ['key_value', '12', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
         self.assertEqual(1, len(rows))
         self.assertEqual(csv_first_row_list, rows[0])
 

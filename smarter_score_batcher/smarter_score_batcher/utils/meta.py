@@ -78,7 +78,7 @@ def extract_meta_names(raw_xml_string):
     try:
         root = ET.fromstring(raw_xml_string)
         state_code = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']", "value", "context")
-        student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
+        student_id = extract_meta_without_fallback_helper(root, "./Examinee", "key")
         district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context")
         academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
         asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")

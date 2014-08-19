@@ -415,17 +415,29 @@ qa:
         file_system_scan_delay: 60
         remote:
             landing_zone_hostname: rbtmqudl0.qa.dum.edwdc.net
-    udl2_rsync:
-      enable: True
-      schedule:
-          cron:
-            minute: '*/1'
-      args:
-        remote_user: udl2
-        remote_host: lzsftpudl0.qa.dum.edwdc.net
-        remote_dir: /sftp/opt/edware/staging/
-        landing: /opt/edware/zones/landing/arrivals/
-        private_key: /home/udl2/.ssh/id_rsa
+    file-grabber:
+      lz:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: root
+          remote_host: lzsftpudl0.qa.dum.edwdc.net
+          remote_dir: /sftp/opt/edware/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
+      tbs:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: celery
+          remote_host: tsb.qa.dum.edwdc.net
+          remote_dir: /opt/edware/assessment/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
     edware:
       db:
         cat:

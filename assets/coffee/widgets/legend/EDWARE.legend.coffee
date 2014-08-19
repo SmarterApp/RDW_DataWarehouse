@@ -76,20 +76,18 @@ define [
       output = edwarePopulationBar.create subject
       $('#legendTemplate .populationBar', container).prepend(output)
       $('#legendTemplate .populationBarSmall', container).prepend(output)
-      # remove pop up when hovering over population bar
-      # container.find('.progressBar_tooltip').remove()
       # do not tab on progress bar in legend
       container.find('.progress').removeAttr('tabindex')
-       # Show tooltip for population bar on mouseover
+      # Show tooltip for population bar on mouseover
       $("#legendTemplate .populationBarSmall .progress").edwarePopover
-            class: 'legendAchievementLevel'
-            html: true
-            placement: 'top'
-            container: '#legendTemplate .populationBarSmallTooltip'
-            trigger: 'hover'
-            content: ->
-              # template location: widgets/populationBar/template.html
-              $(this).find(".progressBar_tooltip").html()
+        class: 'legendAchievementLevel'
+        html: true
+        placement: 'top'
+        container: '#legendTemplate .populationBarSmallTooltip'
+        trigger: 'manual'
+        content: ->
+          # template location: widgets/populationBar/template.html
+          $(this).find(".progressBar_tooltip").html()
       $("#legendTemplate .populationBarSmall .progress").popover('show')
 
   # Legend section on individual student report

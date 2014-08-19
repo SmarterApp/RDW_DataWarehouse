@@ -125,7 +125,7 @@
                         "start_gradient_bg_color": "#E14A45",
                         "text_color": "#ffffff"
                     },
-                    "count": 2200,
+                    "count": "2,200",
                     "level": 1,
                     "percentage": 22,
                     "showPercentage": true
@@ -137,7 +137,7 @@
                         "end_gradient_bg_color": "#e3c703",
                         "text_color": "#000"
                     },
-                    "count": 2600,
+                    "count": "2,600",
                     "level": 2,
                     "percentage": 26,
                     "showPercentage": true
@@ -149,7 +149,7 @@
                         "end_gradient_bg_color": "#6aa506",
                         "text_color": "#FFFFFF"
                     },
-                    "count": 2500,
+                    "count": "2,500",
                     "level": 3,
                     "percentage": 25,
                     "showPercentage": true
@@ -161,7 +161,7 @@
                         "end_gradient_bg_color": "#2078ca",
                         "text_color": "#FFFFFF"
                     },
-                    "count": 2700,
+                    "count": "2,700",
                     "level": 4,
                     "percentage": 27,
                     "showPercentage": true

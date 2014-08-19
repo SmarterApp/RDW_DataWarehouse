@@ -58,5 +58,5 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
       self.focuslost ->
         self.popover 'hide'
     this.unbind('mouseleave').on 'mouseleave', ->
-      # self.popover 'hide'
+      self.popover 'hide'
     this

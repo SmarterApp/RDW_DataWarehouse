@@ -16,7 +16,7 @@ define [
       @bindEvent()
 
     initialize: (createSearch) ->
-      breadcrumb = (item.name for item in @config.breadcrumb.items).join(" / ")
+      breadcrumb = (item.name for item in @config.breadcrumb.items[1..]).join(" / ")
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects

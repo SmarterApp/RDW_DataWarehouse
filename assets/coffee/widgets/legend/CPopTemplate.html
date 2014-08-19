@@ -9,75 +9,82 @@
         {{#legendInfo.notes}}{{.}} {{/legendInfo.notes}}
     </div>
     <div class="cpopPerformanceBar populationBarDetails span7">
-            <div class="row">
-            	<div class="span7">
+        <div class="row">
+            <div class="span7">
             	<p>{{{legendInfo.desc1}}}</p>
-            	<!--p>This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.<p-->
-                </div>
             </div>
-            <div class="number_students row">
-            	<div class="span5">
-                     <p><b>{{legendInfo.percent_students}}</b></p>
-                </div>
-                <div class="span2">
-                     <p><b>{{legendInfo.number_students}}</b></p>
-                </div>
-            </div>
-             <div class="number_students row">
-            	<div class="span5">
-                     <p>{{legendInfo.desc4}}</p>
-                </div>
-                <div class="span2">
-                     <p> {{labels.assessed}}</p>
-                </div>
-            </div>
-            <div class="row">
-            	<div class="span6">
-                	<div class="arrow1"></div>
-            	</div>
-            	<div class="span1">
-                	<div class="arrow2"></div>
-            	</div>
-                </div>
-            <div class="row">
-					<div class="span6">
-            			<span class="populationBar"></span>
-            		</div>
-    				<div class="span1 total_students"><b>{{legendInfo.indicator}}</b><i class="edware-icon-asterisk"></i></div>
-			</div>
-			<div class="achievement_levels row">
-                <table>
-                    <tr>
-                        {{#ALDs}}
-                        <td><i class="edware-icon-arrow"></td>
-                        {{/ALDs}}
-                    </tr>
-                    <tr>
-                        {{#ALDs}}
-                        <td>{{description}}</td>
-                        {{/ALDs}}
-                    </tr>
-                </table>
-			</div>
-			<hr>
-            <div class="row">
-            	<div class="span7 marginBottom12">
-            	<p>{{legendInfo.desc2}}<p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span6 populationBarSmallTooltip"></div>
-                <div class="span1"><i class="cpop-asterisk edware-icon-asterisk"></i></div>
-            </div>
-            <div class="row">
-            	<div class="span3">
-            		<span class="populationBarSmall"></span>
-            	</div>
-           	</div>
-           	<div class="row">
-            	<div class="span7">
-                <p><i class="edware-icon-asterisk"></i>{{legendInfo.desc3}}</p>
-           </div>
         </div>
+        <div class="number_students row">
+            <div class="span5">
+                <p><b>{{legendInfo.percent_students}}</b></p>
+            </div>
+            <div class="span2">
+                <p><b>{{legendInfo.number_students}}</b></p>
+            </div>
+        </div>
+        <div class="number_students row">
+            <div class="span5">
+                <p>{{legendInfo.desc4}}</p>
+            </div>
+            <div class="span2">
+                <p> {{labels.assessed}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span6">
+                <div class="arrow1"></div>
+            </div>
+            <div class="span1">
+                <div class="arrow2"></div>
+            </div>
+        </div>
+        <div class="row">
+			<div class="span6">
+            	<span class="populationBar"></span>
+            </div>
+    		<div class="span1 total_students"><b>{{legendInfo.indicator}}</b><i class="edware-icon-asterisk"></i></div>
+		</div>
+		<div class="achievement_levels row">
+            <table>
+                <tr>
+                    {{#ALDs}}
+                    <td><i class="edware-icon-arrow"></td>
+                    {{/ALDs}}
+                </tr>
+                <tr>
+                    {{#ALDs}}
+                    <td>{{description}}</td>
+                    {{/ALDs}}
+                </tr>
+            </table>
+		</div>
+		<hr>
+        <div class="row">
+            <div class="span7 marginBottom12">
+            	<p>{{legendInfo.desc2}}<p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span6 populationBarSmallTooltip"></div>
+            <div class="span1"><i class="cpop-asterisk edware-icon-asterisk"></i></div>
+        </div>
+        <div class="row">
+            <div class="span3">
+            	<span class="populationBarSmall"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span7">
+                <p><i class="edware-icon-asterisk"></i>{{legendInfo.desc3}}</p>
+           	</div>
+        </div>
+    </div>
+    <div class="uses span2 printContent">
+        <h4 class="padTopBottom9">{{labels.uses}}:</h4>
+        <ul class="marginLeft17">
+        	{{#legendInfo.uses}}
+        	<li>{{.}}</li>
+            {{/legendInfo.uses}}
+        </ul>
     </div>
 </div>

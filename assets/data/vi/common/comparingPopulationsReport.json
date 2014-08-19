@@ -6,10 +6,17 @@
     },
     "legendInfo": {
         "indicator": "8,345",
-        "desc1": "Percentage of population",
-        "desc2": "Total Students",
-        "desc3": "The width of a colored segment is proportional to the number of students in that segment.",
-        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
+        "desc1": "This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.",
+        "desc2": "Mouse-over or tap bar for the number of students in each Achievement Level.",
+        "desc3": "Data is for illustrative purposes only.",
+        "percent_students":"% of students",
+        "number_students":"# of students",
+        "desc4":"in each Achievement Level",
+        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."],
+        "uses": [
+            "Use this report to compare overall school achievement within a district.",
+            "Filter the view to analyze sub-groups within schools."
+        ]
     },
     "proficiencyAscending": "(achievement: <b>least</b> to <b>most</b>)",
     "proficiencyDescending": "(achievement: <b>most</b> to <b>least</b>)",

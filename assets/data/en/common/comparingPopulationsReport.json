@@ -12,7 +12,11 @@
         "percent_students":"% of students",
         "number_students":"# of students",
         "desc4":"in each Achievement Level",
-        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
+        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."],
+        "uses": [
+            "Use this report to compare overall school achievement within a district.",
+            "Filter the view to analyze sub-groups within schools."
+        ]
     },
     "proficiencyAscending": "(achievement: <b>least</b> to <b>most</b>)",
     "proficiencyDescending": "(achievement: <b>most</b> to <b>least</b>)",

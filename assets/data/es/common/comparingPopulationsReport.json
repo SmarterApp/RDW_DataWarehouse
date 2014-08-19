@@ -6,10 +6,17 @@
     },
     "legendInfo": {
         "indicator": "8,345",
-        "desc1": "Porcentaje de la población",
-        "desc2": "Total de estudiantes",
-        "desc3": "El ancho de un segmento de color es proporcional al número de estudiantes en ese segmento.",
-        "notes": ["Haga clic o pase el indicador del ratón sobre la barra para desglosar las cifras de la población", "Los porcentajes están redondeados al número entero más cercano. Por lo tanto, los porcentajes menores podrían aparecer reportados como '0'."]
+        "desc1": "This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.",
+        "desc2": "Mouse-over or tap bar for the number of students in each Achievement Level.",
+        "desc3": "Data is for illustrative purposes only.",
+        "percent_students":"% of students",
+        "number_students":"# of students",
+        "desc4":"in each Achievement Level",
+        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."],
+        "uses": [
+            "Use this report to compare overall school achievement within a district.",
+            "Filter the view to analyze sub-groups within schools."
+        ]
     },
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
     "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",

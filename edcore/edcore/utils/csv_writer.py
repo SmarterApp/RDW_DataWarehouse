@@ -7,7 +7,7 @@ This module defines a simple CSV file writer.
 import csv
 
 
-def write_csv(file, rows, header=None, delimiter=','):
+def write_csv(file, rows, header=None, delimiter=',', mode='w'):
     """
     Write the header and data to the specified file in CSV format.
     NOTE: Special characters will be quoted.
@@ -17,7 +17,7 @@ def write_csv(file, rows, header=None, delimiter=','):
     @param rows: Data rows for CSV file.
     """
     written = False
-    with open(file, 'w') as csv_file:
+    with open(file, mode) as csv_file:
         csvwriter = csv.writer(csv_file, delimiter=delimiter, quoting=csv.QUOTE_MINIMAL)
         if header is not None:
             csvwriter.writerow(header)

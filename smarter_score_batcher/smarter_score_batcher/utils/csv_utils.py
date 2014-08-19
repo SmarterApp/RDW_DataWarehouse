@@ -1,4 +1,3 @@
-import logging
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.file_utils import csv_file_writer,\
@@ -6,7 +5,8 @@ from smarter_score_batcher.utils.file_utils import csv_file_writer,\
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
-
+from smarter_score_batcher.utils.file_lock import FileLock
+import logging
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -22,16 +22,39 @@ def process_assessment_data(root):
     '''
     # csv_data is an AssessmentData object
     csv_data = get_assessment_mapping(root)
-    header = csv_data.header
-    values = csv_data.values
     json_data = get_assessment_metadata_mapping(root)
-    # TODO: Only write json if json file doesn't already exist
-    # TODO: Only write header for csv if file doesn't have header
-    #json_file_writer('somepath', json_data)
-    #csv_file_writer('somepath', values, header=header)
+
+    json_file_path = '/tmp/blah/somepath.json'
+    csv_file_path = '/tmp/blah/somepath.csv'
+    os.makedirs(os.path.dirname(json_file_path), mode=0o700, exist_ok=True)
+    
+    generate_assessment_file(csv_file_path, csv_data)
+    generate_assessment_metadata_file(json_file_path, json_data)
+
+
+def generate_assessment_file(file_path, data):
+    '''
+    Append to existing assessment file if it exists
+    Else write header and content into the file
+    '''
+    with FileLock(file_path) as fl:
+        header = data.header if fl.created_file is True else None
+        csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
+        
+
+def generate_assessment_metadata_file(file_path, data):
+    '''
+    Only write to JSON metadata file if the file doesn't already exist
+    '''
+    if not os.path.exists(file_path):
+        with FileLock(file_path):
+            json_file_writer(file_path, data)
 
 
 def process_item_level_data(root, csv_file_path):
+    '''
+    Get Item level data and writes it to csv files
+    '''
     data = get_item_level_data(root)
     return csv_file_writer(csv_file_path, data)
 

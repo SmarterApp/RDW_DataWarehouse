@@ -365,12 +365,11 @@ def get_assessment_metadata_mapping(root):
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint4']", "value"), json_output, 'level5_cutpoint'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MinScore']", "value"), json_output, 'min_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MaxScore']", "value"), json_output, 'max_score'),
+                JSONMapping(XMLMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
                 JSONMapping(XMLMeta(test_node, ".", "subject"), json_output, 'subject'),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentType"), json_output, 'asmt_type'),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
-                JSONMapping(XMLMeta(test_node, ".", "academicYear"), json_output, 'asmt_year'),
-                # TODO effective date is unknown
-                JSONMapping(XMLMeta(test_node, ".", "effectiveDate"), json_output, 'effective_date')]
+                JSONMapping(XMLMeta(test_node, ".", "academicYear"), json_output, 'asmt_year')]
     for m in mappings:
         m.evaluate()
     return json_output.get_values()

@@ -213,6 +213,7 @@
 						<xs:attribute name="qaLevel" />
             <!-- new field requested for open source -->
             <xs:attribute name="assessmentParticipantSessionPlatformUserAgent" use="required" />
+            <xs:attribute name="effectiveDate" use="required" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="Comment" minOccurs="0" maxOccurs="unbounded">

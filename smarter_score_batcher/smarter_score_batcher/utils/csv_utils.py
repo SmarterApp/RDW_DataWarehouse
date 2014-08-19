@@ -1,7 +1,8 @@
 import logging
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
-from smarter_score_batcher.utils.file_utils import csv_file_writer
+from smarter_score_batcher.utils.file_utils import csv_file_writer,\
+    json_file_writer
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
@@ -19,16 +20,20 @@ def process_assessment_data(root):
     process assessment data
     :param root: xml root document
     '''
-    # csv_data is a dictionary that can be inserted into db
+    # csv_data is an AssessmentData object
     csv_data = get_assessment_mapping(root)
-    # json_data is a dictionary of the json file format
+    header = csv_data.header
+    values = csv_data.values
     json_data = get_assessment_metadata_mapping(root)
-    # TODO: write to db in next story
+    # TODO: Only write json if json file doesn't already exist
+    # TODO: Only write header for csv if file doesn't have header
+    #json_file_writer('somepath', json_data)
+    #csv_file_writer('somepath', values, header=header)
 
 
 def process_item_level_data(root, csv_file_path):
-    matrix_to_feed_csv = get_item_level_data(root)
-    return csv_file_writer(csv_file_path, matrix_to_feed_csv)
+    data = get_item_level_data(root)
+    return csv_file_writer(csv_file_path, data)
 
 
 def generate_csv_from_xml(csv_file_path, xml_file_path):

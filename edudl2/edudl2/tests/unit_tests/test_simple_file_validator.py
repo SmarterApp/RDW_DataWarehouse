@@ -25,7 +25,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir,
                                     'test_data_latest/'
-                                    'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
+                                    'REALDATA_ASMT_ID_76a9ab517e76402793d3f2339391f5.csv', 1)
         self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_passes_for_valid_student_reg_csv(self):
@@ -73,29 +73,11 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.assertEqual(results[1][0], ErrorCode.SRC_FILE_WRONG_DELIMITER)
 
     def test_for_source_file_with_matching_columns(self):
-        test_csv_fields = ['AssessmentAdministrationFinishDate', 'Birthdate',
-                           'AssessmentLevelForWhichDesigned', 'GradeLevelWhenAssessed', 'Group1Id', 'Group1Text', 'Group2Id', 'Group2Text',
-                           'AssessmentGuid', 'AssessmentSessionLocationId', 'ResponsibleDistrictIdentifier', 'ResponsibleSchoolIdentifier',
-                           'StudentIdentifier', 'ExternalSSID', 'StateAbbreviation',
-                           'AssessmentSessionLocation', 'OrganizationName', 'NameOfInstitution', 'FirstName',
-                           'LastOrSurname', 'MiddleName', 'AssessmentSubtestResultScoreValue', 'AssessmentSubtestMaximumValue', 'AssessmentSubtestMinimumValue',
-                           'AssessmentSubtestResultScoreClaim1Value', 'AssessmentSubtestClaim1MaximumValue', 'AssessmentSubtestClaim1MinimumValue',
-                           'AssessmentClaim1PerformanceLevelIdentifier', 'AssessmentSubtestResultScoreClaim2Value',
-                           'AssessmentSubtestClaim2MaximumValue', 'AssessmentSubtestClaim2MinimumValue', 'AssessmentClaim2PerformanceLevelIdentifier', 'AssessmentSubtestResultScoreClaim3Value',
-                           'AssessmentSubtestClaim3MaximumValue', 'AssessmentSubtestClaim3MinimumValue', 'AssessmentClaim3PerformanceLevelIdentifier',
-                           'AssessmentSubtestResultScoreClaim4Value', 'AssessmentSubtestClaim4MaximumValue',
-                           'AssessmentSubtestClaim4MinimumValue', 'AssessmentClaim4PerformanceLevelIdentifier', 'AssessmentPerformanceLevelIdentifier', 'AssessmentYear', 'Sex',
-                           'HispanicOrLatinoEthnicity', 'AmericanIndianOrAlaskaNative', 'Asian', 'BlackOrAfricanAmerican', 'NativeHawaiianOrOtherPacificIslander',
-                           'White', 'DemographicRaceTwoOrMoreRaces', 'IDEAIndicator', 'LEPStatus', 'Section504Status', 'EconomicDisadvantageStatus', 'MigrantStatus',
-                           'AssessmentAcademicSubject', 'AssessmentType', 'AccommodationAmericanSignLanguage', 'AccommodationSignLanguageHumanIntervention',
-                           'AccommodationBraille', 'AccommodationClosedCaptioning', 'AccommodationTextToSpeech', 'AccommodationAbacus',
-                           'AccommodationAlternateResponseOptions', 'AccommodationCalculator', 'AccommodationMultiplicationTable',
-                           'AccommodationPrintOnDemand', 'AccommodationReadAloud', 'AccommodationScribe', 'AccommodationSpeechToText',
-                           'AccommodationStreamlineMode']
+        test_csv_fields = ["StateAbbreviation", "ResponsibleDistrictIdentifier", "OrganizationName", "ResponsibleSchoolIdentifier", "NameOfInstitution", "StudentIdentifier", "ExternalSSID", "FirstName", "MiddleName", "LastOrSurname", "Sex", "Birthdate", "GradeLevelWhenAssessed", "HispanicOrLatinoEthnicity", "AmericanIndianOrAlaskaNative", "Asian", "BlackOrAfricanAmerican", "NativeHawaiianOrOtherPacificIslander", "White", "DemographicRaceTwoOrMoreRaces", "IDEAIndicator", "LEPStatus", "Section504Status", "EconomicDisadvantageStatus", "MigrantStatus", "Group1Id", "Group1Text", "Group2Id", "Group2Text", "AssessmentGuid", "AssessmentSessionLocationId", "AssessmentSessionLocation", "AssessmentAdministrationFinishDate", "AssessmentYear", "AssessmentType", "AssessmentAcademicSubject", "AssessmentLevelForWhichDesigned", "AssessmentSubtestResultScoreValue", "AssessmentSubtestMinimumValue", "AssessmentSubtestMaximumValue", "AssessmentPerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim1Value", "AssessmentSubtestClaim1MinimumValue", "AssessmentSubtestClaim1MaximumValue", "AssessmentClaim1PerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim2Value", "AssessmentSubtestClaim2MinimumValue", "AssessmentSubtestClaim2MaximumValue", "AssessmentClaim2PerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim3Value", "AssessmentSubtestClaim3MinimumValue", "AssessmentSubtestClaim3MaximumValue", "AssessmentClaim3PerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim4Value", "AssessmentSubtestClaim4MinimumValue", "AssessmentSubtestClaim4MaximumValue", "AssessmentClaim4PerformanceLevelIdentifier", "AccommodationAmericanSignLanguage", "AccommodationSignLanguageHumanIntervention", "AccommodationBraille", "AccommodationClosedCaptioning", "AccommodationTextToSpeech", "AccommodationAbacus", "AccommodationAlternateResponseOptions", "AccommodationCalculator", "AccommodationMultiplicationTable", "AccommodationPrintOnDemand", "AccommodationReadAloud", "AccommodationScribe", "AccommodationSpeechToText", "AccommodationStreamlineMode", "Op"]
         validator = csv_validator.DoesSourceFileInExpectedFormat('assessment', csv_fields=test_csv_fields)
         results = [validator.execute(self.data_dir,
                                      'test_data_latest/'
-                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)]
+                                     'REALDATA_ASMT_ID_76a9ab517e76402793d3f2339391f5.csv', 1)]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][0], '0')
 

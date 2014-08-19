@@ -85,7 +85,7 @@
                     "bg_color": "#BB231C",
                     "end_gradient_bg_color": "#C32C25",
                     "interval": "1400",
-                    "name": "MINIMAL UNDERSTANDING",
+                    "name": "Minimal Understanding",
                     "start_gradient_bg_color": "#E14A45",
                     "text_color": "#FFFFFF"
                 },
@@ -94,7 +94,7 @@
                     "bg_color": "#e4c904",
                     "end_gradient_bg_color": "#e3c703",
                     "interval": "1800",
-                    "name": "PARTIAL UNDERSTANDING",
+                    "name": "Partial Understanding",
                     "start_gradient_bg_color": "#eed909",
                     "text_color": "#000"
                 },
@@ -103,7 +103,7 @@
                     "bg_color": "#6aa506",
                     "end_gradient_bg_color": "#6aa506",
                     "interval": "2100",
-                    "name": "ADEQUATE UNDERSTANDING",
+                    "name": "Adequate Understanding",
                     "start_gradient_bg_color": "#99be23",
                     "text_color": "#FFFFFF"
                 },
@@ -112,7 +112,7 @@
                     "bg_color": "#237ccb",
                     "end_gradient_bg_color": "#2078ca",
                     "interval": "2400",
-                    "name": "THOROUGH UNDERSTANDING",
+                    "name": "Thorough Understanding",
                     "start_gradient_bg_color": "#3a98d1",
                     "text_color": "#FFFFFF"
                 }
@@ -125,7 +125,7 @@
                         "start_gradient_bg_color": "#E14A45",
                         "text_color": "#ffffff"
                     },
-                    "count": "2,200",
+                    "count": 2200,
                     "level": 1,
                     "percentage": 22,
                     "showPercentage": true
@@ -137,7 +137,7 @@
                         "end_gradient_bg_color": "#e3c703",
                         "text_color": "#000"
                     },
-                    "count": "2,600",
+                    "count": 2600,
                     "level": 2,
                     "percentage": 26,
                     "showPercentage": true
@@ -149,7 +149,7 @@
                         "end_gradient_bg_color": "#6aa506",
                         "text_color": "#FFFFFF"
                     },
-                    "count": "2,500",
+                    "count": 2500,
                     "level": 3,
                     "percentage": 25,
                     "showPercentage": true
@@ -161,7 +161,7 @@
                         "end_gradient_bg_color": "#2078ca",
                         "text_color": "#FFFFFF"
                     },
-                    "count": "2,700",
+                    "count":2700,
                     "level": 4,
                     "percentage": 27,
                     "showPercentage": true
@@ -171,17 +171,17 @@
         "performance_levels": [
             {
                 "level": 1,
-                "desc": "BELOW STANDARD",
+                "desc": "Below Standard",
                 "meaning": "Your test results clearly show that you have not yet met the standard in this subject-area for your grade."
             },
             {
                 "level": 2,
-                "desc": "AT/NEAR STANDARD",
+                "desc": "At/Near Standard",
                 "meaning": "Your test results may be just above or just below the standard, but due to the error band (see below), the result it too close to call."
             },
             {
                 "level": 3,
-                "desc": "ABOVE STANDARD",
+                "desc": "Above Standard",
                 "meaning": "Your test results clearly show that you understand and are able to apply your knowledge to the standards in this subject-area of your grade."
             }
         ]

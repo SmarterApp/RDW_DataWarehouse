@@ -9,7 +9,8 @@ define [
   "text!LOSTemplate"
   "text!CPopTemplate"
   "edwareConstants"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate, Constants) ->
+  "edwarePopover"
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate, Constants, edwarePopover) ->
 
   # Legend base class.
   # This is an abstract class, derived class should implement two functions: getTemplate() and createBar()
@@ -59,7 +60,7 @@ define [
         interval['range'] = start_score + '-' + end_score
         ALDs.push interval
         i++
-      ALDs.reverse()
+      ALDs
 
 
   # Legend section on comparing population report
@@ -74,11 +75,20 @@ define [
     createBar:(subject, container) ->
       output = edwarePopulationBar.create subject
       $('#legendTemplate .populationBar', container).prepend(output)
-      # remove pop up when hovering over population bar
-      container.find('.progressBar_tooltip').remove()
+      $('#legendTemplate .populationBarSmall', container).prepend(output)
       # do not tab on progress bar in legend
       container.find('.progress').removeAttr('tabindex')
-
+      # Show tooltip for population bar on mouseover
+      $("#legendTemplate .populationBarSmall .progress").edwarePopover
+        class: 'legendAchievementLevel'
+        html: true
+        placement: 'top'
+        container: '#legendTemplate .populationBarSmallTooltip'
+        trigger: 'manual'
+        content: ->
+          # template location: widgets/populationBar/template.html
+          $(this).find(".progressBar_tooltip").html()
+      $("#legendTemplate .populationBarSmall .progress").popover('show')
 
   # Legend section on individual student report
   class ISRLegend extends Legend
@@ -108,12 +118,11 @@ define [
       LOSTemplate
 
     createBar: (subject, container)->
-      output = edwareLOSConfidenceLevelBar.create subject, 110
+      # confidence level bar
+      output = edwareLOSConfidenceLevelBar.create subject, 180
       $('#legendTemplate .confidenceLevel', container).append(output)
-      # customize interval width and position
-      $('.interval', container).css('margin-left', '89px').css('width', '28px')
-      $('.indicator', container).css('margin-left', '98px')
-      $('.cutLine', container).css('left', '19px')
+      # error band
+      $('#legendTemplate .errorBand', container).append(output)
 
   ( ($) ->
 

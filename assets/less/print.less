@@ -6,6 +6,7 @@
   .pageBreak { page-break-after:always; }
 
   .printContent { display: block; }
+  .screenContent { display: none; }
 
   .legendPopup {
     display: block;
@@ -136,6 +137,38 @@
     .printHeader {
       border-bottom: none;
     }
+
+    .losPerformanceBar {
+      margin-left: 0px;
+      page-break-inside: avoid;
+
+      .note {
+        display: none;
+      }
+    }
+
+    .cpopPerformanceBar {
+      page-break-inside: avoid;
+    }
+
+    .uses {
+      width: 250px !important;
+      margin-left: 29px;
+      padding-left: 29px;
+      padding-bottom: 230px;
+      margin-bottom: 30px;
+      border-left: solid 1px @color-B5;
+    }
+
+    .uses_cpop {
+      width: 250px !important;
+      margin-left: 29px;
+      padding-left: 29px;
+      padding-bottom: 100px;
+      margin-bottom: 30px;
+      border-left: solid 1px @color-B5;
+    }
+  
   }
 
   body.isr {

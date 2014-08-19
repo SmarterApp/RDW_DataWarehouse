@@ -91,12 +91,6 @@ define [
               # template location: widgets/populationBar/template.html
               $(this).find(".progressBar_tooltip").html()
       $("#legendTemplate .populationBarSmall .progress").popover('show')
-      # also display tooltips when focus on
-      #$(".progress").on 'focus', ()->
-      # $(this).popover('show')
-      #.focusout ()->
-      # $(this).popover('hide')
-
 
   # Legend section on individual student report
   class ISRLegend extends Legend
@@ -130,7 +124,6 @@ define [
       output = edwareLOSConfidenceLevelBar.create subject, 180
       $('#legendTemplate .confidenceLevel', container).append(output)
       # error band
-      output = edwareLOSConfidenceLevelBar.create subject, 180
       $('#legendTemplate .errorBand', container).append(output)
 
   ( ($) ->

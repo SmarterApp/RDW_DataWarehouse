@@ -55,7 +55,7 @@ class TestUtil(unittest.TestCase):
 
     @patch('edcore.watch.mover.FileMover.move_files_by_sftp')
     def test_move_files_with_sftp(self, mock_move_files_by_sftp):
-        self.file_mover.conf[MoverConst.FILE_MOEV_TYPE] = 'sftp'
+        self.file_mover.conf[MoverConst.FILE_MOVE_TYPE] = 'sftp'
         files_to_move = ['hello']
         self.file_mover.move_files(files_to_move=files_to_move)
         self.assertEqual(1, mock_move_files_by_sftp.call_count)

@@ -44,8 +44,11 @@ define [
       if asmt.asmt_type is "Interim Comprehensive"
         @interimDisclaimerIcon.show()
         @displayPopover()
+        # show on print version
+        $('.disclaimerInfo.printContent').append("<hr>").append(@content)
       else
         @interimDisclaimerIcon.hide()
+        $('.disclaimerInfo.printContent').empty()
 
   (($)->
     $.fn.edwareDisclaimer = (content) ->

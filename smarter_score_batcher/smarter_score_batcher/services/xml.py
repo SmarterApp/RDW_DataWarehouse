@@ -44,8 +44,9 @@ def xml_catcher(xml_body):
         succeed = pre_process_xml(meta_names, xml_body, root_dir_xml, queue_name, timeout)
         if succeed:
             # Extract xml for LZ assessment and Item level csv
+            work_dir = settings.get("smarter_score_batcher.base_dir.work")
             queue_name = settings.get('smarter_score_batcher.async_queue')
-            post_process_xml(root_dir_xml, root_dir_csv, queue_name, meta_names)
+            post_process_xml(root_dir_xml, root_dir_csv, work_dir, queue_name, meta_names)
             return Response()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")
@@ -70,7 +71,7 @@ def pre_process_xml(meta_names, raw_xml_string, root_dir_xml, queue_name, timeou
     return celery_response.get(timeout=timeout)
 
 
-def post_process_xml(root_dir_xml, root_dir_csv, queue_name, meta_names):
+def post_process_xml(root_dir_xml, root_dir_csv, work_dir, queue_name, meta):
     '''
     Post-Process XML by call celery task to process xml for assessment and item level
     :param root_dir_xml: xml root directory
@@ -79,6 +80,6 @@ def post_process_xml(root_dir_xml, root_dir_csv, queue_name, meta_names):
     :param meta_names: Meta object
     :returns: celery response
     '''
-    xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
-    csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-    return remote_csv_generator.apply_async(args=(csv_file_path, xml_file_path), queue=queue_name)      # @UndefinedVariable
+    xml_file_path = create_path(root_dir_xml, meta, generate_path_to_raw_xml)
+    csv_file_path = create_path(root_dir_csv, meta, generate_path_to_item_csv)
+    return remote_csv_generator.apply_async(args=(meta, csv_file_path, xml_file_path, work_dir), queue=queue_name)      # @UndefinedVariable

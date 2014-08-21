@@ -9,6 +9,13 @@ from smarter_score_batcher.utils.constants import Constants
 import json
 
 
+def make_dirs(path, mode=0o700, exist_ok=True):
+    '''
+    Create the directory for a path given
+    '''
+    os.makedirs(path, mode=mode, exist_ok=exist_ok)
+
+
 def file_writer(path, data, mode=0o700):
     '''
     Creates a file in the specified path and fills with data
@@ -18,7 +25,7 @@ def file_writer(path, data, mode=0o700):
     :returns: Truen when file is written
     '''
     # create directory
-    os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
+    make_dirs(os.path.dirname(path))
     with open(path, 'wb') as f:
         f.write(str.encode(data) if type(data) is str else data)
         written = True
@@ -38,23 +45,21 @@ def csv_file_writer(csv_file_path, data, header=None, mode=0o700, csv_write_mode
     # create directory
     written = False
     if data is not None and data:
-        os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
+        make_dirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
         written = write_csv(csv_file_path, data, header=header, mode=csv_write_mode)
         if os.path.exists(csv_file_path):
             os.chmod(csv_file_path, mode)
     return written
 
 
-def json_file_writer(file_path, data, mode=0o700):
+def json_file_writer(file_descriptor, data, mode=0o700):
     '''
     Writes to a JSON file
 
     :param file_path: the path of the file to write to
     :param dict data: a python dictionary that is the content that is written to the file
     '''
-    os.makedirs(os.path.dirname(file_path), mode=mode, exist_ok=True)
-    with open(file_path, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+    json.dump(data, file_descriptor, indent=4)
 
 
 def create_path(root_dir, meta, generate_path):

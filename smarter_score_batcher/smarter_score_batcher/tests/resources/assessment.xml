@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TDSReport>
-	<Test name="(SBAC)SBAC-FT-SomeDescription-MATH-7-Fall-2013-2014" subject="MA" mode="online" testId="SBAC-FT-SomeDescription-MATH-7" grade="3-12" contract="SBAC" assessmentType="Formative" academicYear="2014" assessmentVersion="SomeNewVersion"/>
+	<Test name="(SBAC)SBAC-FT-SomeDescription-MATH-7-Fall-2013-2014" subject="MATH" mode="online" testId="SBAC-FT-SomeDescription-MATH-7" grade="3-12" contract="SBAC" assessmentType="Summative" academicYear="2014" assessmentVersion="SomeNewVersion"/>
 	<Examinee key="12">
 		<ExamineeAttribute context="FINAL" name="DOB" value="2005-03-19" contextDate="2014-04-14T11:13:41.803" />
 		<ExamineeAttribute context="FINAL" name="HispanicOrLatinoEthnicity" value="No" contextDate="2014-04-14T11:13:41.803"/>

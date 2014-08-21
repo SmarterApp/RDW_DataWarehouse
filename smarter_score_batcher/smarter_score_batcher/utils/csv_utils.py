@@ -1,7 +1,7 @@
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.file_utils import csv_file_writer,\
-    json_file_writer
+    json_file_writer, make_dirs
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
@@ -15,51 +15,48 @@ except ImportError:
 logger = logging.getLogger("smarter_score_batcher")
 
 
-def process_assessment_data(root):
+def process_assessment_data(root, meta, base_dir):
     '''
     process assessment data
     :param root: xml root document
     '''
-    # csv_data is an AssessmentData object
-    csv_data = get_assessment_mapping(root)
-    json_data = get_assessment_metadata_mapping(root)
-
-    json_file_path = '/tmp/blah/somepath.json'
-    csv_file_path = '/tmp/blah/somepath.csv'
-    os.makedirs(os.path.dirname(json_file_path), mode=0o700, exist_ok=True)
-    
-    generate_assessment_file(csv_file_path, csv_data)
-    generate_assessment_metadata_file(json_file_path, json_data)
+    # Create dir name based on state code and file name from asmt id
+    directory = os.path.join(base_dir, meta.state_code, meta.asmt_id)
+    make_dirs(directory)
+    generate_assessment_metadata_file(root, os.path.join(directory, meta.asmt_id + '.json'))
+    generate_assessment_file(root, os.path.join(directory, meta.asmt_id + '.csv'))
 
 
-def generate_assessment_file(file_path, data):
+def generate_assessment_file(root, file_path):
     '''
     Append to existing assessment file if it exists
     Else write header and content into the file
     '''
-    with FileLock(file_path) as fl:
-        header = data.header if fl.created_file is True else None
+    data = get_assessment_mapping(root)
+    with FileLock(file_path, mode='a') as fl:
+        header = data.header if fl.new_file is True else None
         csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
-        
 
-def generate_assessment_metadata_file(file_path, data):
+
+def generate_assessment_metadata_file(root, file_path):
     '''
     Only write to JSON metadata file if the file doesn't already exist
     '''
-    if not os.path.exists(file_path):
-        with FileLock(file_path):
-            json_file_writer(file_path, data)
+    data = get_assessment_metadata_mapping(root)
+    with FileLock(file_path) as fl:
+        if fl.new_file:
+            json_file_writer(fl.file_descriptor, data)
 
 
-def process_item_level_data(root, csv_file_path):
+def process_item_level_data(root, meta, csv_file_path):
     '''
     Get Item level data and writes it to csv files
     '''
-    data = get_item_level_data(root)
+    data = get_item_level_data(root, meta)
     return csv_file_writer(csv_file_path, data)
 
 
-def generate_csv_from_xml(csv_file_path, xml_file_path):
+def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
     '''
     Creates a csv in the given csv file path by reading from the xml file path
     :param csv_file_path: csv file path
@@ -70,8 +67,8 @@ def generate_csv_from_xml(csv_file_path, xml_file_path):
     try:
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
-        process_assessment_data(root)
-        written = process_item_level_data(root, csv_file_path)
+        process_assessment_data(root, meta, work_dir)
+        written = process_item_level_data(root, meta, csv_file_path)
         if written:
             metadata_generator_bottom_up(csv_file_path, generateMetadata=True)
     except ET.ParseError as e:

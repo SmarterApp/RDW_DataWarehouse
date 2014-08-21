@@ -46,12 +46,12 @@ class Test(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        meta_names = meta.Meta(True, '12', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        remote_csv_generator(csv_file_path, xml_file_path)
+        remote_csv_generator(meta_names, csv_file_path, xml_file_path, 'work_dir')
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:

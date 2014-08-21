@@ -53,17 +53,17 @@ class TestCSVUtils(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, 'work_dir')
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 rows.append(row)
-        csv_first_row_list = ['key_value', '12', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
+        csv_first_row_list = ['key_value', 'test1', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
         self.assertEqual(1, len(rows))
         self.assertEqual(csv_first_row_list, rows[0])
 
@@ -71,11 +71,11 @@ class TestCSVUtils(unittest.TestCase):
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         xml_string = "bad xml"
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, 'work_dir')
         self.assertRaises(ET.ParseError)
 
     @patch('smarter_score_batcher.utils.csv_utils.process_assessment_data')
@@ -95,11 +95,11 @@ class TestCSVUtils(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, 'work_dir')
         self.assertFalse(os.path.isfile(csv_file_path))
 
     @patch('smarter_score_batcher.utils.csv_utils.metadata_generator_bottom_up')
@@ -121,11 +121,11 @@ class TestCSVUtils(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(csv_file_path, xml_file_path)
+        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, 'work_dir')
         self.assertFalse(os.path.isfile(csv_file_path))
 
 if __name__ == "__main__":

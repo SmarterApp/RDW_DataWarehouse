@@ -166,6 +166,7 @@ common:
       base_dir:
         xml: /opt/edware/raw_data
         csv: /opt/edware/item_level
+        working: /opt/edware/tsb/assessments
       celery_timeout: 30
       sync_queue: smarter_score_batcher_sync
       async_queue: smarter_score_batcher_async

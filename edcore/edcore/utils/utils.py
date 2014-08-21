@@ -118,10 +118,10 @@ def run_cron_job(settings, prefix, job):
             sched.add_cron_job(job, args=[settings], **cron_time)
 
 
-def read_ini(ini_file):
+def read_ini(ini_file, header='app:main'):
     config = configparser.ConfigParser()
     config.read(ini_file)
-    return config['app:main']
+    return config[header]
 
 
 def get_config_from_ini(config, config_prefix):

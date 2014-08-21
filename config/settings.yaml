@@ -183,6 +183,8 @@ common:
         home: /
         base_dir: /sftp/opt/edware/home
         arrivals_dir: arrivals
+        staging_dir: /sftp/opt/edware/staging
+        file_move_type: local
         file_patterns_to_watch:
             - '*.gpg'
             - '*.gpg.done'
@@ -413,6 +415,29 @@ qa:
         file_system_scan_delay: 60
         remote:
             landing_zone_hostname: rbtmqudl0.qa.dum.edwdc.net
+    file-grabber:
+      lz:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: root
+          remote_host: lzsftpudl0.qa.dum.edwdc.net
+          remote_dir: /sftp/opt/edware/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
+      tbs:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: celery
+          remote_host: tsb.qa.dum.edwdc.net
+          remote_dir: /opt/edware/assessment/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
     edware:
       db:
         cat:
@@ -588,6 +613,15 @@ uat:
         file_system_scan_delay: 300
         remote:
             landing_zone_hostname: rbtmqudl0.dmo.som.edwdc.net
+    udl2_rsync:
+      schedule:
+          cron:
+            minute: '*/1'
+      args:
+        remote_user: udl2
+        remote_host: lz.foo.com
+        remote_dir: /sftp/opt/edware/staging/
+        landing: /opt/edware/zones/landing/arrivals/
     edware:
       db:
         es:
@@ -811,6 +845,15 @@ development:
         file_system_scan_delay: 30
         remote:
             landing_zone_hostname: localhost
+    udl2_rsync:
+      schedule:
+          cron:
+            minute: '*/1'
+      args:
+        remote_user: udl2
+        remote_host: lz.foo.com
+        remote_dir: /sftp/opt/edware/staging/
+        landing: /opt/edware/zones/landing/arrivals/
     hpz:
         file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
         file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files

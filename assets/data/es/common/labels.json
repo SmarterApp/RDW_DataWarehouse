@@ -9,6 +9,7 @@
         "apply_filters": "Aplicar filtros",
         "asmt_type": "Tipo de prueba",
         "assessment": "Assessment",
+        "assessed": "assessed",
         "brackets_denote_min_max": "los paréntesis denotan mínimo/máximo",
         "breadcrumb_home": "Casa",
         "cancel": "Cancelar",
@@ -119,6 +120,7 @@
         "total_assessed": "Total evaluado",
         "total_count": "Conteo total",
         "unfiltered_total_assessed": "Total evaluado sin filtrar",
+        "uses": "Uses",
         "viewing": "Vista",
         "viewing_previous_year": "You are viewing a previous academic year. <a href='#'>Return to <span class='latestYear'>{{latestYear}}</span></a>.",
         "asmt": {

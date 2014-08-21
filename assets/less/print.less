@@ -6,6 +6,7 @@
   .pageBreak { page-break-after:always; }
 
   .printContent { display: block; }
+  .screenContent { display: none; }
 
   .legendPopup {
     display: block;
@@ -83,7 +84,7 @@
     }
   }
 
-  #header, #breadcrumb, #actionBar, .stickySection { display: none !important; }
+  #header, #breadcrumb, #actionBar, .stickySection, #stickyCompareSection { display: none !important; }
 
   .ui-state-disabled, .ui-widget-content .ui-state-disabled {
     display: none !important;
@@ -133,9 +134,56 @@
   }
 
   body.cpop, body.los {
+    .disclaimerInfo {
+      u {
+        text-decoration: none;
+        font-weight: bold;
+        line-height: 20px;
+      }
+
+      ol {
+        margin-left: 18px;
+      }
+    }
+
     .printHeader {
       border-bottom: none;
     }
+
+    .losPerformanceBar {
+      margin-left: 0px;
+      page-break-inside: avoid;
+
+      .note {
+        display: none;
+      }
+    }
+
+    .cpopPerformanceBar {
+      page-break-inside: avoid;
+    }
+
+    .uses {
+      width: 250px !important;
+      margin-left: 0px;
+    }
+
+    .losPerformanceBar {
+      margin-right: 29px;
+      padding-right: 29px;
+      margin-bottom: 30px;
+      border-right: solid 1px @color-B5;
+    }
+
+    .uses_cpop {
+      width: 250px !important;
+      margin-left: 29px;
+      padding-left: 29px;
+      padding-bottom: 100px;
+      margin-bottom: 30px;
+      border-left: solid 1px @color-B5;
+    }
+
   }
 
   body.isr {

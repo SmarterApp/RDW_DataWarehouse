@@ -3,7 +3,6 @@ import tempfile
 import os
 import csv
 from unittest.mock import patch
-from smarter_score_batcher.utils import meta
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
 from smarter_score_batcher.utils import csv_utils
 from pyramid.registry import Registry
@@ -12,6 +11,9 @@ from smarter_score_batcher.celery import setup_celery
 import uuid
 from edcore.utils.file_utils import generate_path_to_raw_xml,\
     generate_path_to_item_csv
+from smarter_score_batcher.utils.csv_utils import process_assessment_data,\
+    generate_assessment_file
+from smarter_score_batcher.utils.meta import Meta
 
 try:
     import xml.etree.cElementTree as ET
@@ -54,7 +56,7 @@ class TestCSVUtils(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
+        meta_names = Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         rows = []
@@ -73,11 +75,11 @@ class TestCSVUtils(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = "bad xml"
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
+        meta_names = Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
+        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         self.assertRaises(ET.ParseError)
 
     @patch('smarter_score_batcher.utils.csv_utils.process_assessment_data')
@@ -98,11 +100,11 @@ class TestCSVUtils(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
+        meta_names = Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
+        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         self.assertFalse(os.path.isfile(csv_file_path))
 
     @patch('smarter_score_batcher.utils.csv_utils.metadata_generator_bottom_up')
@@ -125,12 +127,53 @@ class TestCSVUtils(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
+        meta_names = Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
+        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         self.assertFalse(os.path.isfile(csv_file_path))
+
+    def test_process_assessment_data(self):
+        base_dir = os.path.join(self.__tempfolder.name, 'work')
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="12" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="134"/>
+        <Opportunity>
+        </Opportunity>
+        </TDSReport>'''
+        meta = Meta(True, 'test1', 'state_code', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'asmt_id')
+        root = ET.fromstring(xml_string)
+        process_assessment_data(root, meta, base_dir)
+        self.assertTrue(os.path.isfile(os.path.join(base_dir, 'state_code', 'asmt_id', 'asmt_id.csv')))
+        self.assertTrue(os.path.isfile(os.path.join(base_dir, 'state_code', 'asmt_id', 'asmt_id.json')))
+
+    def test_generate_assessment_file_when_file_exists(self):
+        file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="134"/>
+        <Opportunity>
+        </Opportunity>
+        </TDSReport>'''
+        root = ET.fromstring(xml_string)
+        # Tes tht athe file has 3 lines (1 header + 2 data)
+        generate_assessment_file(root, file_path)
+        self.assertTrue(os.path.isfile(file_path))
+        rows = []
+        with open(file_path, 'r') as f:
+            csv_reader = csv.reader(f, delimiter=',')
+            for row in csv_reader:
+                rows.append(row)
+        self.assertTrue(len(rows), 2)
+        generate_assessment_file(root, file_path)
+        rows = []
+        with open(file_path, 'r') as f:
+            csv_reader = csv.reader(f, delimiter=',')
+            for row in csv_reader:
+                rows.append(row)
+        self.assertTrue(len(rows), 3)
+
 
 if __name__ == "__main__":
     unittest.main()

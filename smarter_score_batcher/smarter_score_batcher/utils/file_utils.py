@@ -52,11 +52,11 @@ def csv_file_writer(csv_file_path, data, header=None, mode=0o700, csv_write_mode
     return written
 
 
-def json_file_writer(file_descriptor, data, mode=0o700):
+def json_file_writer(file_descriptor, data):
     '''
     Writes to a JSON file
 
-    :param file_path: the path of the file to write to
+    :param file_descriptor: the file descriptor for the file
     :param dict data: a python dictionary that is the content that is written to the file
     '''
     json.dump(data, file_descriptor, indent=4)

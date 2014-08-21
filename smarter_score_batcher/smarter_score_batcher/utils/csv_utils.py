@@ -46,6 +46,12 @@ def generate_assessment_file(root, file_path):
 
 
 def lock_and_write(file_path, data):
+    '''
+    lock file then write
+    non-block lock, if the file is already locked, then raise IOError instead of waiting.
+    :param file_path: file path
+    :param data: data
+    '''
     with FileLock(file_path, mode='a', no_block_lock=True) as fl:
         header = data.header if fl.new_file is True else None
         csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')

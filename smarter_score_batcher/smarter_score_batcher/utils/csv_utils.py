@@ -7,7 +7,6 @@ import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
 from smarter_score_batcher.utils.file_lock import FileLock
 import logging
-import fcntl
 import time
 try:
     import xml.etree.cElementTree as ET
@@ -34,14 +33,10 @@ def generate_assessment_file(root, file_path):
     Append to existing assessment file if it exists
     Else write header and content into the file
     '''
-    def lock_and_write(data):
-        with FileLock(file_path, mode='a', lock_operation=fcntl.LOCK_EX | fcntl.LOCK_NB) as fl:
-            header = data.header if fl.new_file is True else None
-            csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
     data = get_assessment_mapping(root)
     while True:
         try:
-            lock_and_write(data)
+            lock_and_write(file_path, data)
             break
         except IOError:
             # spin lock
@@ -49,7 +44,13 @@ def generate_assessment_file(root, file_path):
         except:
             raise
 
-  
+
+def lock_and_write(file_path, data):
+    with FileLock(file_path, mode='a', no_block_lock=True) as fl:
+        header = data.header if fl.new_file is True else None
+        csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
+
+
 def generate_assessment_metadata_file(root, file_path):
     '''
     Only write to JSON metadata file if the file doesn't already exist

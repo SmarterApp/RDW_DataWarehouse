@@ -14,6 +14,8 @@ from edcore.utils.file_utils import generate_path_to_raw_xml,\
 from smarter_score_batcher.utils.csv_utils import process_assessment_data,\
     generate_assessment_file
 from smarter_score_batcher.utils.meta import Meta
+import fcntl
+from smarter_score_batcher.utils.file_lock import FileLock
 
 try:
     import xml.etree.cElementTree as ET
@@ -174,6 +176,37 @@ class TestCSVUtils(unittest.TestCase):
                 rows.append(row)
         self.assertTrue(len(rows), 3)
 
+    @patch('smarter_score_batcher.utils.csv_utils.lock_and_write')
+    def test_generate_assessment_spin_lock(self, mock_lock_and_write):
+        mock_lock_and_write.side_effect = [IOError(), IOError(), True]
+        file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="134"/>
+        <Opportunity>
+        </Opportunity>
+        </TDSReport>'''
+        root = ET.fromstring(xml_string)
+        generate_assessment_file(root, file_path)
+        self.assertEqual(3, mock_lock_and_write.call_count)
+
+    @patch('smarter_score_batcher.utils.csv_utils.lock_and_write')
+    def test_generate_assessment_exception(self, mock_lock_and_write):
+        mock_lock_and_write.side_effect = [Exception()]
+        file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
+        xml_string = '''<TDSReport>
+        <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
+        <Examinee key="134"/>
+        <Opportunity>
+        </Opportunity>
+        </TDSReport>'''
+        root = ET.fromstring(xml_string)
+        self.assertRaises(Exception, generate_assessment_file, root, file_path)
+
+    def test_lock_and_write_IOError(self):
+        temp_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
+        fl = FileLock(temp_file)
+        self.assertRaises(IOError, FileLock, temp_file, no_block_lock=True)
 
 if __name__ == "__main__":
     unittest.main()

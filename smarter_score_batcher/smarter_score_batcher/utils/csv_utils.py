@@ -1,12 +1,14 @@
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
-from smarter_score_batcher.utils.file_utils import csv_file_writer,\
+from smarter_score_batcher.utils.file_utils import csv_file_writer, \
     json_file_writer, make_dirs
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
 from smarter_score_batcher.utils.file_lock import FileLock
 import logging
+import fcntl
+import time
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -32,20 +34,30 @@ def generate_assessment_file(root, file_path):
     Append to existing assessment file if it exists
     Else write header and content into the file
     '''
+    def lock_and_write(data):
+        with FileLock(file_path, mode='a', lock_operation=fcntl.LOCK_EX | fcntl.LOCK_NB) as fl:
+            header = data.header if fl.new_file is True else None
+            csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
     data = get_assessment_mapping(root)
-    with FileLock(file_path, mode='a') as fl:
-        header = data.header if fl.new_file is True else None
-        csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
+    while True:
+        try:
+            lock_and_write(data)
+            break
+        except IOError:
+            # spin lock
+            time.sleep(1)
+        except:
+            raise
 
-
+  
 def generate_assessment_metadata_file(root, file_path):
     '''
     Only write to JSON metadata file if the file doesn't already exist
     '''
-    data = get_assessment_metadata_mapping(root)
-    with FileLock(file_path) as fl:
-        if fl.new_file:
-            json_file_writer(fl.file_descriptor, data)
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as f:
+            data = get_assessment_metadata_mapping(root)
+            json_file_writer(f, data)
 
 
 def process_item_level_data(root, meta, csv_file_path):

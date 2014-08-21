@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
     def test_json_writer(self):
         target = os.path.join(self.__temp_dir.name, "test.json")
         with FileLock(target) as f:
-            json_file_writer(f.file_descriptor, {'Test': '1'})
+            json_file_writer(f.file_object, {'Test': '1'})
         with open(target) as f:
             content = json.load(f)
             self.assertEqual(content['Test'], '1')

@@ -34,6 +34,7 @@ class Test(unittest.TestCase):
     def test_create_csv(self):
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        work_dir = os.path.join(self.__tempfolder.name, 'work_dir')
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="12"></Examinee>
@@ -51,7 +52,7 @@ class Test(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        remote_csv_generator(meta_names, csv_file_path, xml_file_path, 'work_dir')
+        remote_csv_generator(meta_names, csv_file_path, xml_file_path, work_dir)
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:

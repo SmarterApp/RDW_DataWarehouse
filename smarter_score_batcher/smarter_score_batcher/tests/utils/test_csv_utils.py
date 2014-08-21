@@ -40,6 +40,7 @@ class TestCSVUtils(unittest.TestCase):
     def test_generate_csv_from_xml(self):
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="12">
@@ -58,7 +59,7 @@ class TestCSVUtils(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, 'work_dir')
+        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
@@ -70,12 +71,13 @@ class TestCSVUtils(unittest.TestCase):
     def test_generate_csv_from_xml_parse_error(self):
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = "bad xml"
         meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, 'work_dir')
+        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
         self.assertRaises(ET.ParseError)
 
     @patch('smarter_score_batcher.utils.csv_utils.process_assessment_data')
@@ -83,6 +85,7 @@ class TestCSVUtils(unittest.TestCase):
         mock_process_assessment_data.side_effect = Exception()
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="12">
@@ -99,7 +102,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, 'work_dir')
+        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
         self.assertFalse(os.path.isfile(csv_file_path))
 
     @patch('smarter_score_batcher.utils.csv_utils.metadata_generator_bottom_up')
@@ -109,6 +112,7 @@ class TestCSVUtils(unittest.TestCase):
         mock_metadata_generator_bottom_up.side_effect = Exception()
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="12">
@@ -125,7 +129,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, 'work_dir')
+        csv_utils.generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
         self.assertFalse(os.path.isfile(csv_file_path))
 
 if __name__ == "__main__":

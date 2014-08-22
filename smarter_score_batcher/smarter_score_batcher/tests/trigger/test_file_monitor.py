@@ -91,6 +91,7 @@ class TestFileMonitor(unittest.TestCase):
             fl.move_files(outputfile, staging_dir)
             self.assertTrue(path.isfile(expected_file), "should move gpg file to staging directory")
             self.assertFalse(path.exists(expected_file + ".partial"), "should remove transient file after file transfer complete")
+            self.assertTrue(path.isfile(expected_file + ".done"), "should move checksum file to staging directory")
 
     def test_context_management(self):
         with FileEncryption(self.temp_directory):
@@ -106,3 +107,11 @@ class TestFileMonitor(unittest.TestCase):
         working_dir = self.__workspace
         unexpected_dir = path.join(working_dir, "test_1")
         self.assertFalse(path.exists(unexpected_dir), "working directory should be cleaned up after assessments being moved")
+
+    def test_create_checksum(self):
+        # use test_1.csv to test checksum
+        csv_file_path = path.join(self.temp_directory, "test_1.csv")
+        with FileEncryption(self.temp_directory) as fl:
+            checksum = fl._create_checksum(csv_file_path)
+            self.assertIsNotNone(checksum, "should create a checksum file")
+            self.assertTrue(path.isfile(checksum), "should create a checksum file")

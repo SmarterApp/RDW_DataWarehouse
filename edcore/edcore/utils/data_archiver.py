@@ -35,14 +35,14 @@ def encrypt_file(file, recipients, outputfile, homedir=None, keyserver=None, gpg
         if keyserver is None or keyserver == 'None':
             gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary, verbose=True)
             if passphrase is None:
-                gpg.encrypt(file.read(), recipients, output=outputfile, always_trust=True)
+                gpg.encrypt_file(file, recipients, output=outputfile, always_trust=True)
             else:
-                gpg.encrypt(file.read(), recipients, output=outputfile, sign=sign, passphrase=passphrase)
+                gpg.encrypt_file(file, recipients, output=outputfile, sign=sign, passphrase=passphrase)
         else:
             with tempfile.TemporaryDirectory() as gpghomedir:
                 gpg = gnupg.GPG(gnupghome=gpghomedir, gpgbinary=gpgbinary)
                 import_recipient_keys(gpg, recipients, keyserver)
-                gpg.encrypt(file.read(), recipients, output=outputfile, always_trust=True)
+                gpg.encrypt_file(file, recipients, output=outputfile, always_trust=True)
     except GPGPublicKeyException:
         # recoverable error because of public key server
         raise

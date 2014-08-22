@@ -6,6 +6,7 @@ from edcore.watch.util import FileUtil
 from edcore.utils.utils import tar_files
 from edcore.utils.utils import run_cron_job
 from edcore.utils.data_archiver import encrypt_file
+from edcore.watch.file_hasher import MD5Hasher
 from smarter_score_batcher.utils.file_lock import FileLock
 
 
@@ -86,17 +87,20 @@ class FileEncryption(FileLock):
         if not path.isfile(self.lock_file):
             # TODO: need to handle exception properly if lock file doesn't exist for some reason
             raise FileNotFoundError()
+        self.hasher = MD5Hasher()
         super().__init__(self.lock_file)
 
     def move_files(self, src_file, dst_dir):
-        # TODO: create checksum
-        # FileUtil.create_checksum_file()
+        # create checksum
+        checksum = self._create_checksum(src_file)
         dst_file = path.join(dst_dir, path.basename(src_file))
         # add .partial extension to avoid rsync copying incomplete file
         tmp_file = dst_file + Extensions.PARTIAL
         shutil.copy(src_file, tmp_file)
         # remove partial extension
         shutil.move(tmp_file, dst_file)
+        # move checksum file over
+        shutil.move(checksum, dst_dir)
 
     def encrypt(self, settings):
         # move JSON and CSV file to temporary directory
@@ -156,5 +160,6 @@ class FileEncryption(FileLock):
         tar_files(data_path, output)
         return output
 
-    def create_file_hash(self):
-        raise NotImplementedError()
+    def _create_checksum(self, source_file):
+        checksum_file = self.hasher.get_file_hash(source_file)
+        return FileUtil.create_checksum_file(source_file, checksum_file)

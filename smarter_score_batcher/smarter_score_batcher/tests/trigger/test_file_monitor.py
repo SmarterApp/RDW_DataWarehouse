@@ -94,7 +94,7 @@ class TestFileMonitor(unittest.TestCase):
             self.assertFalse(path.exists(expected_file + ".partial"), "should remove transient file after file transfer complete")
 
     def test_context_management(self):
-        with FileEncryption(self.temp_directory) as fl:
+        with FileEncryption(self.temp_directory):
             temp_dir = path.join(self.temp_directory, ".tmp")
             self.assertTrue(path.exists(temp_dir), "should create a temporary directory for file manipulation")
         self.assertFalse(path.exists(temp_dir), "should remove the temporary directory that is created for file manipulation")

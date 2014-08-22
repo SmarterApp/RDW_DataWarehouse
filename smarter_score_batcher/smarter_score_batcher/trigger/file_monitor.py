@@ -22,23 +22,35 @@ class Extensions:
 
 
 def move_to_staging(settings):
+    # TODO: do we need to write down logging information?
+    logger.debug("start synchronizing files from working directory to staging directory")
     working_dir = settings['smarter_score_batcher.base_dir.working']
     staging_dir = settings['smarter_score_batcher.base_dir.staging']
     assessments = list_assessments(working_dir)
     for assessment in assessments:
-        with FileEncryption(assessment) as fl:
-            # encrypt tar file
-            gpg_file_path = fl.encrypt(settings)
-            fl.move_files(gpg_file_path, staging_dir)
-        # do housekeeping afterwards
-        _clean_up(assessment)
+        logger.debug("start processing assessment %s", assessment)
+        try:
+            with FileEncryption(assessment) as fl:
+                # TODO: should we make a backup before manipulating files?
+                # encrypt tar file
+                gpg_file_path = fl.encrypt(settings)
+                fl.move_files(gpg_file_path, staging_dir)
+            # do housekeeping afterwards
+            _clean_up(assessment)
+        except FileNotFoundError:
+            # if file not found, file might be already in process or
+            logger.debug("assessment %s data not found", assessment)
+        except Exception:
+            raise
+        logger.debug("complete processing assessment %s data", assessment)
 
 
 def _clean_up(dir_path):
     try:
-        os.removedirs(dir_path)
-    except OSError:
-        logger.warning("OSError occurs while attempting to remove %s", dir_path)
+        # TODO: this directory might contains a .DS_Store file locally
+        os.rmdir(dir_path)
+    except OSError as e:
+        logger.warning("OSError occurs while attempting to remove %s: %s", dir_path, e)
 
 
 def list_assessments(workspace):
@@ -92,12 +104,13 @@ class FileEncryption(FileLock):
         tar_file = self._compress(data_path)
         gpg_file = path.join(self.temp_dir, tar_file + Extensions.GPG)
         # gpg settings
+        # TODO: how to know which tenant to use?
         recipients = settings.get('smarter_score_batcher.gpg.public_key.cat', None)
         homedir = settings.get('smarter_score_batcher.gpg.homedir', None)
         keyserver = settings.get('smarter_score_batcher.gpg.keyserver', None)
-        gpg_binary_file = settings.get('smarter_score_batcher.gpg.path', None)
+        gpg_binary_file = settings.get('smarter_score_batcher.gpg.path', 'gpg')
         with open(tar_file, 'rb') as file:
-            encrypt_file(file, recipients, gpg_file, homedir=homedir, keyserver=keyserver, gpgbinary=gpg_binary_file)
+            encrypt_file(file, recipients, gpg_file, homedir, keyserver, gpg_binary_file)
         return gpg_file
 
     def __enter__(self):
@@ -108,6 +121,7 @@ class FileEncryption(FileLock):
         return lock
 
     def __exit__(self, type, value, tb):
+        # TODO: should I remove temp directory here? Error might be occur during manipulating files, and the original copy might disappear
         shutil.rmtree(self.temp_dir)
         super().__exit__(type, value, tb)
 

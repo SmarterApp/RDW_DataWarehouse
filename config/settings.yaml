@@ -45,6 +45,11 @@ common:
         schedule:
           cron:
             day: '*/1'
+      assessment:
+        enable: False
+        schedule:
+          cron:
+            day: '*/1'
 
     # Authentication
     auth:
@@ -814,6 +819,9 @@ development:
           soft_limit: 300000
           average.csv: 30000
           average.xml: 30000
+    smarter_score_batcher:
+      gpg.homedir: ../edware/config/gpg
+      gpg.keyserver: None
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'

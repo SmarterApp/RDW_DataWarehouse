@@ -24,20 +24,22 @@ def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyse
     '''
     create encrypted archive file.
     '''
+    archive_memory_file = io.BytesIO()
+    archive_files(dirname, archive_memory_file)
+    encrypt_file(archive_memory_file, recipients, outputfile, homedir, keyserver, gpgbinary)
+
+
+def encrypt_file(file, recipients, outputfile, homedir=None, keyserver=None, gpgbinary='gpg'):
     try:
-        archive_memory_file = io.BytesIO()
-
-        archive_files(dirname, archive_memory_file)
-
         # a bug in celery config that convert None into 'None' instead of None
         if keyserver is None or keyserver == 'None':
             gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary, verbose=True)
-            gpg.encrypt(archive_memory_file.getvalue(), recipients, output=outputfile, always_trust=True)
+            gpg.encrypt(file.read(), recipients, output=outputfile, always_trust=True)
         else:
             with tempfile.TemporaryDirectory() as gpghomedir:
                 gpg = gnupg.GPG(gnupghome=gpghomedir, gpgbinary=gpgbinary)
                 import_recipient_keys(gpg, recipients, keyserver)
-                gpg.encrypt(archive_memory_file.getvalue(), recipients, output=outputfile, always_trust=True)
+                gpg.encrypt(file.read(), recipients, output=outputfile, always_trust=True)
     except GPGPublicKeyException:
         # recoverable error because of public key server
         raise

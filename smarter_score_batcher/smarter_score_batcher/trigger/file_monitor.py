@@ -107,10 +107,16 @@ class FileEncryption(FileLock):
         # TODO: how to know which tenant to use?
         recipients = settings.get('smarter_score_batcher.gpg.public_key.cat', None)
         homedir = settings.get('smarter_score_batcher.gpg.homedir', None)
+        # TODO: don't like below code, but necessary because udl gpg
+        # is configured in '~/.gnupg' locally
+        if homedir:
+            homedir = path.expanduser(homedir)
         keyserver = settings.get('smarter_score_batcher.gpg.keyserver', None)
         gpg_binary_file = settings.get('smarter_score_batcher.gpg.path', 'gpg')
+        passphrase = settings.get('smarter_score_batcher.gpg.passphrase', None)
+        sign = settings.get('smarter_score_batcher.gpg.sign', None)
         with open(tar_file, 'rb') as file:
-            encrypt_file(file, recipients, gpg_file, homedir, keyserver, gpg_binary_file)
+            encrypt_file(file, recipients, gpg_file, homedir, keyserver, gpg_binary_file, passphrase, sign)
         return gpg_file
 
     def __enter__(self):
@@ -145,6 +151,7 @@ class FileEncryption(FileLock):
 
     def _compress(self, data_path):
         ''' compress JSON and CSV file into tar which have the same assessment id.'''
+        # TODO: actually .tar extension works just fine, but do we have to keep .tar.gz just for consistence?
         output = path.join(self.temp_dir, data_path + Extensions.TAR)
         tar_files(data_path, output)
         return output

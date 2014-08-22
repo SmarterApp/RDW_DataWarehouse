@@ -29,12 +29,15 @@ def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyse
     encrypt_file(archive_memory_file, recipients, outputfile, homedir, keyserver, gpgbinary)
 
 
-def encrypt_file(file, recipients, outputfile, homedir=None, keyserver=None, gpgbinary='gpg'):
+def encrypt_file(file, recipients, outputfile, homedir=None, keyserver=None, gpgbinary='gpg', passphrase=None, sign=None):
     try:
         # a bug in celery config that convert None into 'None' instead of None
         if keyserver is None or keyserver == 'None':
             gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary, verbose=True)
-            gpg.encrypt(file.read(), recipients, output=outputfile, always_trust=True)
+            if passphrase is None:
+                gpg.encrypt(file.read(), recipients, output=outputfile, always_trust=True)
+            else:
+                gpg.encrypt(file.read(), recipients, output=outputfile, sign=sign, passphrase=passphrase)
         else:
             with tempfile.TemporaryDirectory() as gpghomedir:
                 gpg = gnupg.GPG(gnupghome=gpghomedir, gpgbinary=gpgbinary)

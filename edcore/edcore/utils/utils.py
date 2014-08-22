@@ -13,6 +13,7 @@ from apscheduler.scheduler import Scheduler
 from sqlalchemy.sql.compiler import BIND_TEMPLATES
 import configparser
 import zipfile
+import tarfile
 
 logger = logging.getLogger(__name__)
 pidfile = None
@@ -189,3 +190,13 @@ def archive_files(dir_name, archive_file):
             if os.path.islink(file):
                 file = os.readlink(file)
             zf.write(file, arcname=os.path.basename(file))
+
+
+def tar_files(dir_name, output_file):
+    ''' create tar file
+    '''
+    # TODO: may need to compress here?
+    with tarfile.TarFile(output_file, mode='w') as tf:
+        files = [os.path.join(dir_name, f) for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))]
+        for file in files:
+            tf.add(file)

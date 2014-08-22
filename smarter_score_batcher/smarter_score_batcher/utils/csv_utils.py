@@ -24,55 +24,70 @@ def process_assessment_data(root, meta, base_dir):
     # Create dir name based on state code and file name from asmt id
     directory = os.path.join(base_dir, meta.state_code, meta.asmt_id)
     make_dirs(directory)
-    generate_assessment_metadata_file(root, os.path.join(directory, meta.asmt_id + '.json'))
-    generate_assessment_file(root, os.path.join(directory, meta.asmt_id + '.csv'))
+    lock_and_write(root, os.path.join(directory, meta.asmt_id))
 
 
-def generate_assessment_file(root, file_path):
+def lock_and_write(root, file_path, mode=0o700):
     '''
     Append to existing assessment file if it exists
     Else write header and content into the file
     '''
-    data = get_assessment_mapping(root)
-    while True:
+    csv_file_path = file_path + '.csv'
+    json_file_path = file_path + '.json'
+    parent = os.path.dirname(file_path)
+    make_dirs(parent, mode=mode, exist_ok=True)
+    SPIN_LOCK = True
+    while SPIN_LOCK:
         try:
-            lock_and_write(file_path, data)
-            break
-        except IOError:
+            with FileLock(csv_file_path, mode='a', no_block_lock=True) as fl:
+                generate_assessment_file(fl.file_object, root, header=fl.new_file)
+                if not os.path.isfile(json_file_path):
+                    generate_assessment_metadata_file(root, json_file_path)
+            SPIN_LOCK = False
+        except BlockingIOError:
             # spin lock
             time.sleep(1)
-        except:
+        except Exception as e:
             raise
 
 
-def lock_and_write(file_path, data):
+def generate_assessment_file(file_object, root, header=False):
     '''
     lock file then write
     non-block lock, if the file is already locked, then raise IOError instead of waiting.
     :param file_path: file path
     :param data: data
     '''
-    with FileLock(file_path, mode='a', no_block_lock=True) as fl:
-        header = data.header if fl.new_file is True else None
-        csv_file_writer(file_path, [data.values], header=header, csv_write_mode='a')
+    data = get_assessment_mapping(root)
+    csv_file_writer(file_object, [data.values], header=data.header if header else None)
 
 
 def generate_assessment_metadata_file(root, file_path):
     '''
     Only write to JSON metadata file if the file doesn't already exist
     '''
-    if not os.path.exists(file_path):
-        with open(file_path, 'w') as f:
+    try:
+        # create file only when file does not eixst
+        with open(file_path, 'x') as f:
             data = get_assessment_metadata_mapping(root)
             json_file_writer(f, data)
+    except:
+        # most likely file already exist
+        pass
 
 
 def process_item_level_data(root, meta, csv_file_path):
     '''
     Get Item level data and writes it to csv files
     '''
+    written = False
     data = get_item_level_data(root, meta)
-    return csv_file_writer(csv_file_path, data)
+    dirname = os.path.dirname(csv_file_path)
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname, exist_ok=True)
+    with open(csv_file_path, 'w') as f:
+        written = csv_file_writer(f, data)
+    return written
 
 
 def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):

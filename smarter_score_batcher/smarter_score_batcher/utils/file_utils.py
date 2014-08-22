@@ -34,7 +34,7 @@ def file_writer(path, data, mode=0o700):
     return written if written else False
 
 
-def csv_file_writer(csv_file_path, data, header=None, mode=0o700, csv_write_mode='w'):
+def csv_file_writer(file_object, data, header=None):
     '''
     Creates a csv file in the specified path and fills with data
     :param csv_file_path: csv file path
@@ -45,10 +45,7 @@ def csv_file_writer(csv_file_path, data, header=None, mode=0o700, csv_write_mode
     # create directory
     written = False
     if data is not None and data:
-        make_dirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
-        written = write_csv(csv_file_path, data, header=header, mode=csv_write_mode)
-        if os.path.exists(csv_file_path):
-            os.chmod(csv_file_path, mode)
+        written = write_csv(file_object, data, header=header)
     return written
 
 

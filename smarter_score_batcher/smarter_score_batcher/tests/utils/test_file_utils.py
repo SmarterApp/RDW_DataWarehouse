@@ -61,7 +61,9 @@ class Test(unittest.TestCase):
         for i in range(5):
             row = [str(i), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4())]
             rows.append(row)
-        written = csv_file_writer(target, rows)
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, 'w') as f:
+            written = csv_file_writer(f, rows)
         self.assertTrue(written)
         with open(target) as f:
             csv_reader = csv.reader(f, delimiter=',')

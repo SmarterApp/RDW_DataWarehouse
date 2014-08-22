@@ -28,7 +28,8 @@ class TestCSVWriter(unittest.TestCase):
             ['1-2-3', 'A', 'New Jersey', 'NJ', 'd-e-f', 'Hoboken', 'iv-v-vi', 'Sinatra School'],
             ['1-2-3', 'B', 'New Jersey', 'NJ', 'g-h-i', 'Bayonne', 'vii-viii-ix', 'Bayonne School']
         ]
-        write_csv(output, data, header=header)
+        with open(output, 'w') as f:
+            write_csv(f, data, header=header)
 
         self.assertTrue(os.path.exists(output))
         csv_data = []

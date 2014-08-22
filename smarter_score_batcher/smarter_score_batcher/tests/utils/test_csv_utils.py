@@ -2,20 +2,21 @@ import unittest
 import tempfile
 import os
 import csv
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
 from smarter_score_batcher.utils import csv_utils
 from pyramid.registry import Registry
 from pyramid import testing
 from smarter_score_batcher.celery import setup_celery
 import uuid
-from edcore.utils.file_utils import generate_path_to_raw_xml,\
+from edcore.utils.file_utils import generate_path_to_raw_xml, \
     generate_path_to_item_csv
-from smarter_score_batcher.utils.csv_utils import process_assessment_data,\
-    generate_assessment_file
+from smarter_score_batcher.utils.csv_utils import process_assessment_data, \
+    generate_assessment_file, lock_and_write
 from smarter_score_batcher.utils.meta import Meta
-import fcntl
 from smarter_score_batcher.utils.file_lock import FileLock
+from smarter_score_batcher.mapping.assessment import get_assessment_mapping
+import time
 
 try:
     import xml.etree.cElementTree as ET
@@ -160,7 +161,8 @@ class TestCSVUtils(unittest.TestCase):
         </TDSReport>'''
         root = ET.fromstring(xml_string)
         # Tes tht athe file has 3 lines (1 header + 2 data)
-        generate_assessment_file(root, file_path)
+        with open(file_path, 'a') as f:
+            generate_assessment_file(f, root, header=True)
         self.assertTrue(os.path.isfile(file_path))
         rows = []
         with open(file_path, 'r') as f:
@@ -168,7 +170,8 @@ class TestCSVUtils(unittest.TestCase):
             for row in csv_reader:
                 rows.append(row)
         self.assertTrue(len(rows), 2)
-        generate_assessment_file(root, file_path)
+        with open(file_path, 'a') as f:
+            generate_assessment_file(f, root, header=True)
         rows = []
         with open(file_path, 'r') as f:
             csv_reader = csv.reader(f, delimiter=',')
@@ -176,10 +179,11 @@ class TestCSVUtils(unittest.TestCase):
                 rows.append(row)
         self.assertTrue(len(rows), 3)
 
-    @patch('smarter_score_batcher.utils.csv_utils.lock_and_write')
-    def test_generate_assessment_spin_lock(self, mock_lock_and_write):
-        mock_lock_and_write.side_effect = [IOError(), IOError(), True]
-        file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
+    @PropertyMock('smarter_score_batcher.utils.csv_utils.SPIN_LOCK')
+    def test_lock_and_write_spin_lock(self, mock_SPIN_LOCK):
+        file_path = os.path.join(self.__tempfolder.name, 'testassessment')
+        fl = FileLock(file_path + '.csv')
+        mock_SPIN_LOCK.return_value = [True, True, False]
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
         <Examinee key="134"/>
@@ -187,8 +191,8 @@ class TestCSVUtils(unittest.TestCase):
         </Opportunity>
         </TDSReport>'''
         root = ET.fromstring(xml_string)
-        generate_assessment_file(root, file_path)
-        self.assertEqual(3, mock_lock_and_write.call_count)
+        lock_and_write(root, file_path)
+        self.assertEqual(3, mock_SPIN_LOCK.call_count)
 
     @patch('smarter_score_batcher.utils.csv_utils.lock_and_write')
     def test_generate_assessment_exception(self, mock_lock_and_write):

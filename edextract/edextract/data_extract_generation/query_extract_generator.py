@@ -32,7 +32,8 @@ def generate_csv(tenant, output_file, task_info, extract_args):
     with EdCoreDBConnection(tenant=tenant) as connection:
         results = connection.get_streaming_result(query)  # this result is a generator
         header, data = _generate_csv_data(results)
-        write_csv(output_file, data, header=header)
+        with open(output_file, 'w') as f:
+            write_csv(f, data, header=header)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 

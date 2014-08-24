@@ -61,7 +61,7 @@ class TestFileMonitor(unittest.TestCase):
     def test_list_asmt_with_tenant(self):
         base_dir = self.__workspace
         filenames = list_asmt_with_tenant(base_dir)
-        expected = set([(t, path.join(base_dir, t, self.test_asmt)) for t in self.test_tenants])
+        expected = [(t, path.join(base_dir, t, self.test_asmt)) for t in self.test_tenants]
         self.assertEqual(filenames, expected, "list_asmt_with_tenant() should return a list of tuple of (tenant, asmt_dir_path)")
 
     def test_compress(self):
@@ -91,7 +91,7 @@ class TestFileMonitor(unittest.TestCase):
 
     def test_move_files(self):
         staging_dir = self.__staging
-        expected_file = path.join(staging_dir, self.test_tenant, "test_1.tar.gpg")
+        expected_file = path.join(staging_dir, self.test_tenant, "test_1.tar.gz.gpg")
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:
             data_directory = fl.move_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
@@ -110,7 +110,7 @@ class TestFileMonitor(unittest.TestCase):
     def test_move_to_staging(self):
         move_to_staging(self.settings)
         staging_dir = self.__staging
-        expected_file = path.join(staging_dir, self.test_tenant, "test_1.tar.gpg")
+        expected_file = path.join(staging_dir, self.test_tenant, "test_1.tar.gz.gpg")
         self.assertTrue(path.exists(expected_file), "should create gpg file under staging directory")
         working_dir = self.__workspace
         unexpected_dir = path.join(working_dir, "test_1")

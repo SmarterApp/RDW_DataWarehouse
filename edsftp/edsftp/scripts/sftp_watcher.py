@@ -33,7 +33,7 @@ def get_mover_conf(config):
                         MoverConst.SFTP_USER: config.get(prefix + MoverConst.SFTP_USER),
                         MoverConst.PRIVATE_KEY_FILE: config.get(prefix + MoverConst.PRIVATE_KEY_FILE),
                         MoverConst.ARRIVALS_PATH: config.get(prefix + MoverConst.ARRIVALS_PATH),
-                        MoverConst.FILE_MOEV_TYPE: config.get(MoverConst.FILE_MOEV_TYPE),
+                        MoverConst.FILE_MOVE_TYPE: config.get(MoverConst.FILE_MOVE_TYPE),
                         WatcherConst.BASE_DIR: config.get(WatcherConst.BASE_DIR),
                         WatcherConst.SOURCE_DIR: config.get(SFTPConst.ARRIVALS_DIR),
                         WatcherConst.STAGING_DIR: config.get(WatcherConst.STAGING_DIR)})

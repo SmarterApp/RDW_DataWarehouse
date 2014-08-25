@@ -12,11 +12,12 @@ import uuid
 from edcore.utils.file_utils import generate_path_to_raw_xml, \
     generate_path_to_item_csv
 from smarter_score_batcher.utils.csv_utils import process_assessment_data, \
-    generate_assessment_file, lock_and_write
+    generate_assessment_file, lock_and_write, generate_assessment_metadata_file
 from smarter_score_batcher.utils.meta import Meta
 from smarter_score_batcher.utils.file_lock import FileLock
 from smarter_score_batcher.mapping.assessment import get_assessment_mapping
 import time
+import json
 
 try:
     import xml.etree.cElementTree as ET
@@ -211,6 +212,23 @@ class TestCSVUtils(unittest.TestCase):
         temp_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
         fl = FileLock(temp_file)
         self.assertRaises(IOError, FileLock, temp_file, no_block_lock=True)
+
+    @patch('smarter_score_batcher.utils.csv_utils.get_assessment_metadata_mapping')
+    def test_generate_assessment_metadata_file_file_already_exist(self, mock_get_assessment_metadata_mapping):
+        fake_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
+        open(fake_file, 'a').close()
+        generate_assessment_metadata_file(None, fake_file)
+        self.assertEqual(mock_get_assessment_metadata_mapping.call_count, 0)
+
+    @patch('smarter_score_batcher.utils.csv_utils.get_assessment_metadata_mapping')
+    def test_generate_assessment_metadata_file(self, mock_get_assessment_metadata_mapping):
+        values = {'hello': 'world'}
+        mock_get_assessment_metadata_mapping.return_value = values
+        fake_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
+        generate_assessment_metadata_file(None, fake_file)
+        with open(fake_file) as f:
+            line = f.read()
+        self.assertEqual(line, json.dumps(values, indent=4))
 
 if __name__ == "__main__":
     unittest.main()

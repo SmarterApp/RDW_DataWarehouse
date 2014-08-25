@@ -89,7 +89,7 @@ def list_asmt_with_tenant(workspace):
         return name and not name.startswith(".")
 
     def _list_dirs(base_dir):
-        return [(d, path.join(base_dir, d)) for d in os.listdir(base_dir) if _valid_name(d)]
+        return [(d, path.join(base_dir, d)) for d in os.listdir(base_dir) if path.isdir(path.join(base_dir, d)) and _valid_name(d)]
 
     files = []
     for tenant, tenant_full_path in _list_dirs(workspace):

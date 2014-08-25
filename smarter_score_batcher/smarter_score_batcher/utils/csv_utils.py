@@ -106,16 +106,11 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
         if written:
             metadata_generator_bottom_up(csv_file_path, generateMetadata=True)
     except ET.ParseError as e:
-        '''
-        this should not be happened because we already validate against xsd
-        '''
-        logger.error('csv file[' + csv_file_path + '] is failed to generate: ' + str(e))
+        # this should not be happened because we already validate against xsd
+        logger.error(str(e))
         logger.error('this error may be caused because you have an old xsd?')
     except Exception as e:
-        if written:
-            logger.error('metadata for csv file[' + csv_file_path + '] is failed to updated: ' + str(e))
-        else:
-            logger.error('csv file[' + csv_file_path + '] is failed to generate: ' + str(e))
-            if os.path.exists(csv_file_path):
-                os.remove(csv_file_path)
+        logger.error(str(e))
+        if os.path.exists(csv_file_path):
+            os.remove(csv_file_path)
     return written

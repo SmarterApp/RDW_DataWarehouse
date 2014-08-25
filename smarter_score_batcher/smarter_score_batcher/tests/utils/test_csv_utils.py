@@ -160,7 +160,7 @@ class TestCSVUtils(unittest.TestCase):
         </Opportunity>
         </TDSReport>'''
         root = ET.fromstring(xml_string)
-        # Tes tht athe file has 3 lines (1 header + 2 data)
+        # Test that the file has 3 lines (1 header + 2 data)
         with open(file_path, 'a') as f:
             generate_assessment_file(f, root, header=True)
         self.assertTrue(os.path.isfile(file_path))

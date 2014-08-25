@@ -22,7 +22,7 @@ def file_writer(path, data, mode=0o700):
     :param path: file to create
     :param data: data to be written
     :param mode: file attribute
-    :returns: Truen when file is written
+    :returns: True when file is written
     '''
     # create directory
     make_dirs(os.path.dirname(path))

@@ -66,7 +66,7 @@ class TestFileMonitor(unittest.TestCase):
 
     def test_compress(self):
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            data_directory = fl.move_to_tempdir()
+            data_directory = fl.copy_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             self.assertTrue(path.exists(tar), "compress funcion should create a tar file")
             self.assertTrue(tarfile.is_tarfile(tar), "compress funcion should create a tar file")
@@ -74,7 +74,7 @@ class TestFileMonitor(unittest.TestCase):
 
     def test_encrypted_archive_files(self):
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            data_directory = fl.move_to_tempdir()
+            data_directory = fl.copy_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             outputfile = fl.encrypt(tar, self.settings)
             self.assertTrue(os.path.isfile(outputfile))
@@ -82,18 +82,18 @@ class TestFileMonitor(unittest.TestCase):
 
     def test_move_to_tempdir(self):
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            target_dir = fl.move_to_tempdir()
+            target_dir = fl.copy_to_tempdir()
             self.assertTrue(path.exists(target_dir), "should create a temporary directory for JSON and CSV files")
             expected_csv = path.join(target_dir, "test_1.csv")
             self.assertTrue(path.isfile(expected_csv), "CSV file should be moved to temporary directory")
             old_csv = path.join(self.temp_directory, "test_1.csv")
-            self.assertFalse(path.exists(old_csv), "Should remove csv file from workspace")
+            self.assertTrue(path.exists(old_csv), "Should keep csv file to hold the lock")
 
     def test_move_files(self):
         staging_dir = self.__staging
         expected_file = path.join(staging_dir, self.test_tenant, "test_1.tar.gz.gpg")
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            data_directory = fl.move_to_tempdir()
+            data_directory = fl.copy_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             outputfile = fl.encrypt(tar, self.settings)
             fl.move_files(outputfile, staging_dir)

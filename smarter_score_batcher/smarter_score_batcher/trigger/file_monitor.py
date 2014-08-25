@@ -58,7 +58,7 @@ def move_to_staging(settings):
             with FileEncryption(tenant, assessment) as fl:
                 # TODO: should we make a backup before manipulating files?
                 # encrypt tar file
-                data_path = fl.move_to_tempdir()
+                data_path = fl.copy_to_tempdir()
                 tar_file = fl.archive_to_tar(data_path)
                 gpg_file_path = fl.encrypt(tar_file, settings)
                 fl.move_files(gpg_file_path, staging_dir)
@@ -196,7 +196,7 @@ class FileEncryption(FileLock):
         shutil.rmtree(self.temp_dir)
         super().__exit__(type, value, tb)
 
-    def move_to_tempdir(self):
+    def copy_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
 
         This function moves JSON file before CSV because CSV file
@@ -215,7 +215,7 @@ class FileEncryption(FileLock):
         # move JSON file before moving CSV
         for ext in [Extensions.JSON, Extensions.CSV]:
             for file in _list_file_with_ext(self.asmt_dir, ext):
-                shutil.move(file, tmp_dir)
+                shutil.copy(file, tmp_dir)
         return tmp_dir
 
     def archive_to_tar(self, data_path):

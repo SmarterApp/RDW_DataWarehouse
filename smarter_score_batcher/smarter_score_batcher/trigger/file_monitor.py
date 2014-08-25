@@ -137,11 +137,12 @@ class FileEncryption(FileLock):
         self.tenant = tenant
         self.asmt_dir = asmt_dir
         self.assessment_id = path.split(asmt_dir)[1]
-        self.lock_file = path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
-        if not path.isfile(self.lock_file):
+        self.json_file = path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
+        self.csv_file = path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
+        if not path.isfile(self.csv_file):
             raise FileNotFoundError()
         self.hasher = MD5Hasher()
-        super().__init__(self.lock_file)
+        super().__init__(self.csv_file)
 
     def move_files(self, src_file, staging_dir):
         '''Moves encrypted file to `staging_dir`.
@@ -194,6 +195,9 @@ class FileEncryption(FileLock):
     def __exit__(self, type, value, tb):
         ''' releases lock and remove .tmp directory. '''
         shutil.rmtree(self.temp_dir)
+        # delete JSON and CSV files to release the lock
+        os.remove(self.json_file)
+        os.remove(self.csv_file)
         super().__exit__(type, value, tb)
 
     def copy_to_tempdir(self):

@@ -66,6 +66,7 @@
         "off": "Desactivar",
         "on": "Activar",
         "ok": "OK",
+        "out_of_students": "Out of {{count}}<div class='studentText'>students</div>",
         "outside_error_band": "Fuera del margen de error",
         "overall_score": "Puntuación general",
         "overall_score_details": "Detalles de la puntuación general",

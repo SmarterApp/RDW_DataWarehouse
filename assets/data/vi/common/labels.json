@@ -70,6 +70,7 @@
         "on": "On",
         "ok": "OK",
         "or": "or",
+        "out_of_students": "Out of {{count}}<div class='studentText'>students</div>",
         "outside_error_band": "Outside Error Band",
         "overall_score": "Overall Score",
         "overall_score_details": "Overall Score Details",

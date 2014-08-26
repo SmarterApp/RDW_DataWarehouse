@@ -12,7 +12,7 @@
         {{#subject.unfilteredTotal}}
             <div class='studentsTotal' aria-label='{{subject.asmt_subject_text}} total population {{subject.total}} {{subject.ratio}}% of {{subject.unfilteredTotal}}' role=''>
                 {{subject.total}}
-                <div class='unfilteredTotal' aria-hidden='true'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
+                <div class='unfilteredTotal' aria-hidden='true'>{{{unfilter_msg}}}</div>
                 <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject_text}} {{labels.filtered_student_count}}'></span>
                 <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject_text}} {{labels.filtered_percentage_of_total}}'></span>
                 <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject_text}} {{labels.total_assessed}}'></span>

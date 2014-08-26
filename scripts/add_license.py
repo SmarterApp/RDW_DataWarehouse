@@ -86,7 +86,7 @@ def add_license_to_js(file, license):
 
 
 def add_license_to_less(file, license):
-    add_license_style2(file, license, start_comment='<!--', end_comment='-->')
+    add_license_style2(file, license, start_comment='/*', end_comment='*/')
 
 
 def add_license_to_css(file, license):

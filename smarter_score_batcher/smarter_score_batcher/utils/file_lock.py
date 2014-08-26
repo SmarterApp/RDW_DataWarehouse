@@ -5,17 +5,19 @@ Created on Aug 18, 2014
 '''
 import os
 import fcntl
+from smarter_score_batcher.exceptions import FileLockFileDoesNotExist
 
 
 class FileLock():
     '''
     File Lock class for locking a particular file
     '''
-    def __init__(self, file_name, mode='r+', no_block_lock=False):
+    def __init__(self, file_name, mode='r+', no_block_lock=False, do_not_create_lock_file=False):
         self.__file_name = file_name
         self.__new_file = False
         self.__mode = mode
         self.__no_block_lock = no_block_lock
+        self.__do_not_create_lock_file = do_not_create_lock_file
         self.lock()
 
     def __enter__(self):
@@ -29,6 +31,8 @@ class FileLock():
 
     def lock(self):
         if not os.path.exists(self.file_name):
+            if self.__do_not_create_lock_file:
+                raise FileLockFileDoesNotExist('lockfile: ' + self.file_name + ' does not exist')
             # if file doesn't exist, create it
             self.__new_file = True
             open(self.__file_name, 'a').close()

@@ -10,7 +10,6 @@ from edcore.utils.utils import read_ini, get_config_from_ini, run_cron_job, \
     create_daemon
 from edudl2.udl2_util.rsync import rsync
 import time
-import json
 import copy
 
 
@@ -25,7 +24,6 @@ def main():
 
     args = parser.parse_args()
     file = args.ini_file
-    file = '/Users/tosako/development/edware/config/development.ini'
     logging.config.fileConfig(file)
     ini_file = read_ini(file)
     config = get_config_from_ini(ini_file, '')

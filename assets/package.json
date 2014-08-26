@@ -14,7 +14,6 @@
     "wrench":"1.5.4",
     "chokidar":"0.7.0",
     "shelljs":"0.2.6",
-    "coffeedoc": "0.3.0",
-    "prepend-file": "0.1.2"
+    "coffeedoc": "0.3.0"
   }
 }

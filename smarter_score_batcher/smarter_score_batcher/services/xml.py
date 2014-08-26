@@ -44,7 +44,7 @@ def xml_catcher(xml_body):
         succeed = pre_process_xml(meta_names, xml_body, root_dir_xml, queue_name, timeout)
         if succeed:
             # Extract xml for LZ assessment and Item level csv
-            work_dir = settings.get("smarter_score_batcher.base_dir.work")
+            work_dir = settings.get("smarter_score_batcher.base_dir.working")
             queue_name = settings.get('smarter_score_batcher.async_queue')
             post_process_xml(root_dir_xml, root_dir_csv, work_dir, queue_name, meta_names)
             return Response()

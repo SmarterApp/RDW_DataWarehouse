@@ -193,12 +193,15 @@ class FileEncryption(FileLock):
         return self
 
     def __exit__(self, type, value, tb):
+        self.__cleanup()
+        super().__exit__(type, value, tb)
+
+    def __cleanup(self):
         ''' releases lock and remove .tmp directory. '''
         shutil.rmtree(self.temp_dir)
         # delete JSON and CSV files to release the lock
         os.remove(self.json_file)
         os.remove(self.csv_file)
-        super().__exit__(type, value, tb)
 
     def copy_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.

@@ -6,6 +6,7 @@ Created on Aug 18, 2014
 import os
 import fcntl
 from smarter_score_batcher.exceptions import FileLockFileDoesNotExist
+from smarter_score_batcher.utils.file_utils import make_dirs
 
 
 class FileLock():
@@ -35,6 +36,9 @@ class FileLock():
                 raise FileLockFileDoesNotExist('lockfile: ' + self.file_name + ' does not exist')
             # if file doesn't exist, create it
             self.__new_file = True
+            parent = os.path.dirname(self.file_name)
+            if not os.path.exists(parent):
+                make_dirs(parent, exist_ok=True)
             open(self.__file_name, 'a').close()
         self.__fd = open(self.__file_name, self.__mode)
         lock_operation = fcntl.LOCK_EX

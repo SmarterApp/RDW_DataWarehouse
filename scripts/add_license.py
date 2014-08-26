@@ -85,6 +85,10 @@ def add_license_to_js(file, license):
     add_license_style2(file, license, start_comment='/*', end_comment='*/')
 
 
+def add_license_to_less_main(file, license):
+    add_license_style2(file, license, start_comment='/*!', end_comment='*/')
+
+
 def add_license_to_less(file, license):
     add_license_style2(file, license, start_comment='/*', end_comment='*/')
 
@@ -121,7 +125,10 @@ def add_license_to_shell(file, license):
 
 def add_license(file, license, license_func=None):
     basename = os.path.basename(file)
-    if '.' in basename:
+    func = LICENSE.get(basename, license_func)
+    if func is not None:
+        func(file, license)
+    elif '.' in basename:
         ext = basename.split('.')[-1]
         func = EXT_LICENSE.get('.' + ext, license_func)
         if func is not None:
@@ -133,11 +140,7 @@ def add_license(file, license, license_func=None):
         else:
             print('no license: ' + file)
     else:
-        func = LICENSE.get(basename, license_func)
-        if func is not None:
-            func(file, license)
-        else:
-            print('no license: ' + file)
+        print('no license: ' + file)
 
 
 def find_files_for_license(top, license, license_func=None):
@@ -186,7 +189,11 @@ EXT_LICENSE = {'.py': add_license_to_python,
                '.pt': add_license_to_html}
 LICENSE = {'Cakefile': add_license_style1,
            'wsgi_swi_template': add_license_style1,
-           'wsgi_frs_template': add_license_style1}
+           'wsgi_frs_template': add_license_style1,
+           'style.less': add_license_to_less_main,
+           'grayscale.less': add_license_to_less_main,
+           'pdf.less': add_license_to_less_main
+           }
 LICENSE_DIR = {'init.d': add_license_to_shell}
 
 if __name__ == '__main__':

@@ -40,10 +40,10 @@ def lock_and_write(root, file_path, mode=0o700):
     while SPIN_LOCK:
         try:
             with FileLock(csv_file_path, mode='a', no_block_lock=True) as fl:
+                SPIN_LOCK = False
                 generate_assessment_file(fl.file_object, root, header=fl.new_file)
                 if not os.path.isfile(json_file_path):
                     generate_assessment_metadata_file(root, json_file_path)
-            SPIN_LOCK = False
         except BlockingIOError:
             # spin lock
             time.sleep(1)

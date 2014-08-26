@@ -9,6 +9,7 @@ from edcore.utils.data_archiver import encrypt_file
 from edcore.watch.file_hasher import MD5Hasher
 from smarter_score_batcher.constant import Extensions
 from smarter_score_batcher.utils.file_lock import FileLock
+import time
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -54,24 +55,32 @@ def move_to_staging(settings):
     staging_dir = settings['smarter_score_batcher.base_dir.staging']
     for tenant, assessment in list_asmt_with_tenant(working_dir):
         logger.debug("start processing assessment %s", assessment)
-        try:
-            with FileEncryption(tenant, assessment) as fl:
-                # TODO: should we make a backup before manipulating files?
-                # encrypt tar file
-                data_path = fl.copy_to_tempdir()
-                tar_file = fl.archive_to_tar(data_path)
-                gpg_file_path = fl.encrypt(tar_file, settings)
-                fl.move_files(gpg_file_path, staging_dir)
-            # do housekeeping afterwards
-            _clean_up(assessment)
-        except FileNotFoundError:
-            # if file not found, file might be already in process or
-            logger.debug("assessment %s data not found for tenant",
-                         assessment, tenant)
-        except Exception as e:
-            # pass to process next assessment data
-            logger.error("Error occurs during process assessment %s for tenant %s: %s",
-                         assessment, tenant, e)
+        SPINLOCK = True
+        while SPINLOCK:
+            try:
+                with FileEncryption(tenant, assessment) as fl:
+                    # TODO: should we make a backup before manipulating files?
+                    # encrypt tar file
+                    SPINLOCK = False
+                    data_path = fl.copy_to_tempdir()
+                    tar_file = fl.archive_to_tar(data_path)
+                    gpg_file_path = fl.encrypt(tar_file, settings)
+                    fl.move_files(gpg_file_path, staging_dir)
+                # do housekeeping afterwards
+                _clean_up(assessment)
+            except BlockingIOError:
+                # someone already lock.
+                time.sleep(1)
+            except FileNotFoundError:
+                # if file not found, file might be already in process or
+                logger.debug("assessment %s data not found for tenant",
+                             assessment, tenant)
+                SPINLOCK = False
+            except Exception as e:
+                # pass to process next assessment data
+                logger.error("Error occurs during process assessment %s for tenant %s: %s",
+                             assessment, tenant, e)
+                SPINLOCK = False
         logger.debug("complete processing assessment %s data", assessment)
 
 
@@ -142,7 +151,7 @@ class FileEncryption(FileLock):
         if not path.isfile(self.csv_file):
             raise FileNotFoundError()
         self.hasher = MD5Hasher()
-        super().__init__(self.csv_file)
+        super().__init__(self.csv_file, no_block_lock=True, do_not_create_lock_file=True)
 
     def move_files(self, src_file, staging_dir):
         '''Moves encrypted file to `staging_dir`.

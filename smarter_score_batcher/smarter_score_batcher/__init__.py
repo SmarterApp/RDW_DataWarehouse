@@ -7,7 +7,6 @@ import os
 from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
 from smarter_score_batcher import trigger
-from smarter_score_batcher.trigger.file_monitor import run_cron_sync_file
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +31,6 @@ def main(global_config, **settings):
 
     config.add_route('xml', '/services/xml')
     config.add_route('error', '/error')
-    run_cron_sync_file(settings)
     config.scan()
     # Set default permission on all views
     # config.set_default_permission('view')

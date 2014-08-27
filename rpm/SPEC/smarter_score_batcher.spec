@@ -24,7 +24,7 @@ rm -rf virtualenv/smarter_score_batcher
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/smarter_score_batcher %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/resources %{buildroot}/opt/edware
+cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d

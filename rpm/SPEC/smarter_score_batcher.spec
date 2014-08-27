@@ -22,9 +22,8 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/smarter_score_batcher
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/smarter_score_batcher %{buildroot}/opt/edware
-touch %{buildroot}/opt/edware/smarter_score_batcher/resources/__init__.py
+mkdir -p %{buildroot}/opt/edware/resources
+cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware/resources
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d

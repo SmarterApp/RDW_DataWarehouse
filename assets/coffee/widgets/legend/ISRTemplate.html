@@ -12,7 +12,7 @@
         <div class="span7 edware-border-left isrBarDetails">
             <div class="overall_score_wrapper">
                 <!--h4>{{labels.overall_score_details}}:</h4-->
-                <p>This report presents an <b>individual student’s scores on a selected assessment.</b></p>
+                <p>{{{legendInfo.report_info}}}</p>
                 <b>{{labels.overall_score}}</b>
                 <img src="../images/ISRLegendArrowOverall.png" class="overall_upperleft"/>
                 <div class="overall_score_upper">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row">
                     <div class="span3 error_band">
-                        <p><b>Error Band</b></p>
+                        <p><b>{{labels.error_band}}</b></p>
                         <img src="../images/ISRCurlyBracket.png" class="isr_legend_curly_bracket"/>
                         <img src="../images/ISRLegendScoreIndicator.png" class="isr_legend_score_indicator_bottom"/>
                         <img src="../images/ISRLegendBandLeft.png" class="isr_legend_band_left_bottom"/>
@@ -57,11 +57,11 @@
                         <div class="score"><b>{{labels.score}}</b></div>
                         <img src="../images/ISRScoreArrow.png" class="isr_legend_score_arrow"/>
                         <img src="../images/ISRArrowBracket.png" class="isr_legend_arrow_bracket"/>
-                        <div class="achievement_level_scores"><b>Achievement Level Scores</b></div>
+                        <div class="achievement_level_scores"><b>{{labels.achievement_level_scores}}</b></div>
                     </div>
                     <div class="span4 isr_details">
-                        <p>Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would likely achieve if they were to take the test multiple times. It is similar to the "margin of error" that newspapers report for public opinion surveys.</p>
-                        <p><b>Achievement Level Scores</b> vary by subject & grade level.</p>
+                        <p>{{{legendInfo.error_band}}}</p>
+                        <p><b>{{labels.achievement_level_scores}}</b>{{legendInfo.vary_subject_grade}}</p>
                     </div>
                 </div>
                 <div class="row">

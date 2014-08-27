@@ -22,8 +22,9 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/smarter_score_batcher
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/opt/edware/resources
-cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware/resources
+mkdir -p %{buildroot}/opt/edware
+cp -r ${WORKSPACE}/smarter_score_batcher %{buildroot}/opt/edware
+cp -r ${WORKSPACE}/resources %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
@@ -87,6 +88,7 @@ cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
 %files
 %defattr(644,root,root,-)
 /opt/edware/smarter_score_batcher/smarter_score_batcher.wsgi
+/opt/edware/resources/*
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
 /opt/edware/conf/celeryd-smarter_score_batcher.conf

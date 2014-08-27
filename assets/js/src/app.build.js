@@ -2,7 +2,7 @@
   appDir: ".",
   baseUrl: ".",
   dir : "build",
-  preserveLicenseComments: false,
+  preserveLicenseComments: true,
   optimize: 'uglify',
   modules: [
     {

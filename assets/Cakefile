@@ -55,8 +55,6 @@ copyAssets = (assetsDest, assetsDir) ->
 
 copyScripts = () ->
     buildDir = path.join(jspath,"build/")
-    # add license information
-    shell.exec('node js/src/license.js ' + buildDir + ' js/src/license.txt')
     moduleDir = path.join(buildDir, "modules/")
     destDir = path.join(jspath, "modules/")
     if fs.existsSync destDir

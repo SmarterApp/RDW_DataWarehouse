@@ -31,6 +31,7 @@ def main(global_config, **settings):
     setup_xml_celery(settings, prefix=prefix)
 
     config.add_route('xml', '/services/xml')
+    config.add_route('error', '/error')
     run_cron_sync_file(settings)
     config.scan()
     # Set default permission on all views

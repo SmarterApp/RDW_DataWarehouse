@@ -687,9 +687,9 @@ th.ui-th-column div {
   }
 
   .overall_upperleft {
-    position: absolute;;
-    left: 60px;
-    top: 6px;
+    position: relative;
+    left: -60px;
+    top: 25px;
   }
 
   .overall_uppermid {
@@ -989,6 +989,266 @@ th.ui-th-column div {
       top: 20px;
       left: 64px;
     }
+  }
+
+  .isrBarDetails {
+
+    p {
+      font-weight: normal;
+      color: @color-C10;
+      font-size: 13px;
+      font-family: helvetica;
+    }
+
+    b { color: @color-black;}
+
+    table {
+        td {
+          line-height: 12px;
+          text-align: left;
+          font-size: 11px;
+          width: 115px;
+        }
+      }
+
+    .overall_upperleft {
+      position: relative;
+      left: -60px;
+      top: 25px;
+    }
+
+    .isr_legend_bracket{
+      position: relative;
+      margin-left: 15px;
+    }
+
+    .isr_legend_band_left {
+      position: relative;
+      left: -280px;
+      top: -45px;
+    }
+
+    .isr_legend_band_right {
+      position: relative;
+      left: -250px;
+      top: -45px;
+    }
+
+    .isr_legend_band_left_bottom {
+      position: relative;
+      left: -65px;
+      top: 20px;
+    }
+
+    .isr_legend_band_right_bottom {
+      position: relative;
+      left: -35px;
+      top: 20px;
+    }
+
+    .isr_legend_curly_bracket {
+      position: relative;
+      left: 25px;
+      top: -20px;
+    }
+
+    .isr_legend_arrow_bracket {
+      position: relative;
+      left: 5px;
+      top: -45px;
+    }
+
+    .pull-left{
+      width: 440px;
+      margin-left: -25px;
+      margin-top: 5px;
+      height: 40px;
+    }
+
+    .overall_score_upper {
+      margin-top: 20px;
+      left: -20px;
+      position: relative;
+
+      .edware-icon-asterisk {
+       position : absolute;
+       top: 0px;
+       left: 90px;
+      }
+
+      .desc_overall_score_indicator {
+        position: relative;
+        left: 140px;
+      }
+
+      .indicator_cell {
+        font-size: 12px;
+        height: 32px;
+        width: 64px;
+        text-align: center;
+      }
+    }
+
+    .error_band {
+      text-align: center;
+      .achievement_level_scores {
+        position: relative;
+        top: -40px;
+        width: 100px;
+        left: 60px;
+      }
+
+      .isr_legend_score_indicator_bottom {
+        position: relative;
+        left: -25px;
+        top: -5px;
+      }
+
+      .score {
+        top: -85px;
+        position: relative;
+      }
+
+      .isr_legend_score_arrow {
+      position: relative;
+      background-repeat: no-repeat;
+      top: -110px;
+      left: 125px;
+      z-index: 99999999;
+    }
+    }
+
+    .table.edware-table-bordered.edware-table-center {
+      border-collapse: separate; 
+      border-spacing: 10px;
+      
+      tr {
+        max-height: 40px;
+      }
+
+      td {
+        height: 40px;
+        border-radius: 5px;
+        font-size: 11px;
+        margin: 0px;
+        padding: 0px;
+        .icon_perf_level_desc {
+          position: relative;
+          width: 40px;
+          left: 30px;
+          top: -10px;
+        }
+        .icon_perf_level {
+          position: relative;
+          top: 10px;
+          left: 5px;
+        } 
+
+
+      }
+    }
+
+
+    .isr_details {
+      p {
+        width: 432px;
+      }
+    }
+
+    .isrPerfBar {
+      position: relative;
+      height: 79px;
+      left: 25px;
+      margin-top: -10px;
+      margin-left: 30px;
+      display: inline-block;
+
+      .progressbar_indicator440 {
+        background-image: url("../images/css_images.png");
+        background-position: -1238px 0;
+        width: 18px;
+        margin-top: 30px;
+        margin-left: 130px !important;
+      }
+
+      .progress {
+        margin-top: 40px;
+        margin-left: -40px;
+        height: 32px;
+        width: 440px !important;
+      }
+
+      .overall_score {
+        font-size: 18px;
+        margin-left: 110px !important;
+      }
+
+      .cutPointsBar {
+        .cutPoints {
+          display: none;
+        }
+      }
+
+      .transImage1, .transImage2 {
+        display: none;
+      }
+
+      .transWrapper {
+        margin-top: 23px;
+      }
+    }
+
+    .isrPerfBarSmall {
+      position: relative;
+      height: 79px;
+      left: 25px;
+      margin-top: -10px;
+      margin-left: 30px;
+      display: inline-block;
+
+      .progressbar_indicator300 {
+        background-image: url("../images/css_images.png");
+        background-position: -1238px 0;
+        width: 18px;
+        margin-top: 30px;
+      }
+
+      .progress {
+        margin-top: -35px;
+        margin-left: -40px;
+        height: 30px;
+        width: 199px !important;
+      }
+      
+
+      .overall_score { 
+        display: none;
+      }
+
+      .aldDescText {
+       display: none;
+      }
+
+      .cutPointsBar {
+        .cutPoints {
+          font-size: 10px;
+        }
+      }
+
+      .transWrapper {
+        margin-top: 23px;
+      }
+
+      .cutPointsBar {
+        .cutPoints {
+          display: none;
+        }
+      }
+    }
+
+
+
+
   }
 
   .populationBarDetails {

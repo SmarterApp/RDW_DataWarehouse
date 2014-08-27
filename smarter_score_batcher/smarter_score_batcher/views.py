@@ -3,7 +3,7 @@ Created on Aug 7, 2014
 
 @author: tosako
 '''
-from pyramid.httpexceptions import HTTPPreconditionFailed
+from pyramid.httpexceptions import HTTPPreconditionFailed, HTTPNotFound
 from pyramid.view import view_config
 
 
@@ -13,3 +13,8 @@ def precondition_failed_redirect(request):
     Errors get redirected here
     '''
     return HTTPPreconditionFailed()
+
+
+@view_config(route_name='error')
+def tsb_error(request):
+    return HTTPNotFound()

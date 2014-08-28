@@ -10,6 +10,7 @@ from edcore.watch.file_hasher import MD5Hasher
 from smarter_score_batcher.constant import Extensions
 from smarter_score_batcher.utils.file_lock import FileLock
 import time
+import uuid
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -68,6 +69,7 @@ def move_to_staging(settings):
                     fl.move_files(gpg_file_path, staging_dir)
                 # do housekeeping afterwards
                 _clean_up(assessment)
+                logger.debug("complete processing assessment %s data", assessment)
             except BlockingIOError:
                 # someone already lock.
                 time.sleep(1)
@@ -81,7 +83,7 @@ def move_to_staging(settings):
                 logger.error("Error occurs during process assessment %s for tenant %s: %s",
                              assessment, tenant, e)
                 SPINLOCK = False
-        logger.debug("complete processing assessment %s data", assessment)
+                raise
 
 
 def _clean_up(dir_path):
@@ -117,7 +119,7 @@ def run_cron_sync_file(settings):
 
 def _get_gpg_settings_by_tenant(tenant, settings):
     ''' fetches gpg encryption settings. '''
-    recipient_key = 'smarter_score_batcher.gpg.public_key.' + tenant
+    recipient_key = 'smarter_score_batcher.gpg.public_key.' + tenant.lower()
     recipients = settings.get(recipient_key, None)
     homedir = settings.get('smarter_score_batcher.gpg.homedir', None)
     # TODO: don't really like below code, but this is necessary
@@ -148,6 +150,7 @@ class FileEncryption(FileLock):
         self.assessment_id = path.split(asmt_dir)[1]
         self.json_file = path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
         self.csv_file = path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
+        self.__success = False
         if not path.isfile(self.csv_file):
             raise FileNotFoundError()
         self.hasher = MD5Hasher()
@@ -178,6 +181,7 @@ class FileEncryption(FileLock):
         os.rename(tmp_file, dst_file)
         # move checksum file over
         shutil.move(checksum, dst_dir)
+        self.__success = True
 
     def encrypt(self, tar_file, settings):
         ''' Encrypts `tar_file`.
@@ -208,9 +212,10 @@ class FileEncryption(FileLock):
     def __cleanup(self):
         ''' releases lock and remove .tmp directory. '''
         shutil.rmtree(self.temp_dir)
-        # delete JSON and CSV files to release the lock
-        os.remove(self.json_file)
-        os.remove(self.csv_file)
+        if self.__success:
+            # delete JSON and CSV files to release the lock
+            os.remove(self.json_file)
+            os.remove(self.csv_file)
 
     def copy_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
@@ -239,7 +244,7 @@ class FileEncryption(FileLock):
 
         :param data_path str: full path of assessment directory.
         '''
-        output = path.join(self.temp_dir, data_path + Extensions.TAR + Extensions.GZ)
+        output = path.join(self.temp_dir, data_path + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
         tar_files(data_path, output)
         return output
 

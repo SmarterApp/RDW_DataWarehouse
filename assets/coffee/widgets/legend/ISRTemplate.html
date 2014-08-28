@@ -9,12 +9,11 @@
 			{{labels.error_band}} means {{legendInfo.error_band}}
        </div>
    	<!-- End of section is for screenreader-->
-        <div class="span7 edware-border-left isrBarDetails">
+        <div class="span9 edware-border-left isrBarDetails">
             <div class="overall_score_wrapper">
-                <!--h4>{{labels.overall_score_details}}:</h4-->
                 <p>{{{legendInfo.report_info}}}</p>
                 <b>{{labels.overall_score}}</b>
-                <img src="../images/ISRLegendArrowOverall.png" class="overall_upperleft"/>
+                <img src="../images/ISR_OverviewArrow.png" class="overall_upperleft"/>
                 <div class="overall_score_upper">
                     <div class="indicator_cell desc" style="background-color: {{scoreColor}}!important; color: #000;">
                         <strong class="asmtScore">{{asmtScore}}</strong>
@@ -22,10 +21,23 @@
                     <i class="edware-icon-asterisk"></i>
                 </div>
                 <div class="row">
-                    <br><div class="span7 isrPerfBar losPopover"></div>
-                    <img src="../images/ISRLegendBracket.png" class="isr_legend_bracket"/>
-                    <img src="../images/ISRLegendBandLeft.png" class="isr_legend_band_left"/>
-                    <img src="../images/ISRLegendBandRight.png" class="isr_legend_band_right"/>
+                    <br><div class="span9 isrPerfBar"></div>
+                    <img src="../images/ISR_BracketLeft.png" class="isr_legend_band_left"/>
+                    <img src="../images/ISR_BracketRight.png" class="isr_legend_band_right"/>
+                    <img src="../images/ISR_Score.png" class="isr_score_arrow"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_1"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_2"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_3"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_4"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_5"/>
+                    <img src="../images/ISR_AchievementLevelsArrow.png" class="isr_legend_bracket"/>
+                    <div class="achievement_level_scores">{{legendInfo.achievement_level_scores}}</div>
+                </div>
+                <div class="row">
+                    <div class="span8">
+                        <hr>
+                        <b>{{labels.achievement_levels}}</b>
+                    </div>
                 </div>
                 <div class="span5">
                     <table class="pull-left ALD">
@@ -49,6 +61,7 @@
                 <div class="row">
                     <div class="span3 error_band">
                         <p><b>{{labels.error_band}}</b></p>
+                        <img src="../images/ISR_ErrorBandConnector.png" class="isr_legend_error_connector"/>
                         <img src="../images/ISRCurlyBracket.png" class="isr_legend_curly_bracket"/>
                         <img src="../images/ISRLegendScoreIndicator.png" class="isr_legend_score_indicator_bottom"/>
                         <img src="../images/ISRLegendBandLeft.png" class="isr_legend_band_left_bottom"/>
@@ -56,7 +69,6 @@
                         <div class="isrPerfBarSmall"></div>
                         <div class="score"><b>{{labels.score}}</b></div>
                         <img src="../images/ISRScoreArrow.png" class="isr_legend_score_arrow"/>
-                        <img src="../images/ISRArrowBracket.png" class="isr_legend_arrow_bracket"/>
                         <div class="achievement_level_scores"><b>{{labels.achievement_level_scores}}</b></div>
                     </div>
                     <div class="span4 isr_details">

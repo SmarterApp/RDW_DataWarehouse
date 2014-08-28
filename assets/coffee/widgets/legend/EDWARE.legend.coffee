@@ -102,7 +102,7 @@ define [
     createBar: (subject, container)->
       # use mustache template to display the json data
       # show 300px performance bar on html page
-      output = edwareConfidenceLevelBar.create subject, 440
+      output = edwareConfidenceLevelBar.create subject, 640
       $('#legendTemplate .isrPerfBar', container).html(output)
       # show small performance bar on html page
       output = edwareConfidenceLevelBar.create subject, 198

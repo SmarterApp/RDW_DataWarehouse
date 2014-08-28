@@ -104,8 +104,12 @@ define [
       # show 300px performance bar on html page
       output = edwareConfidenceLevelBar.create subject, 640
       $('#legendTemplate .isrPerfBar', container).html(output)
-      # show small performance bar on html page
-      output = edwareConfidenceLevelBar.create subject, 198
+      # show small performance bar on legend
+      #output = edwareConfidenceLevelBar.create subject, 198
+      smallSample = $.extend true, {}, subject
+      smallSample.cut_point_intervals.shift()
+      smallSample.cut_point_intervals.pop()
+      output = edwareConfidenceLevelBar.create smallSample, 260
       $('#legendTemplate .isrBarDetails .isrPerfBarSmall', container).html(output)
       # show 640px performance bar on pdf
       output = edwareConfidenceLevelBar.create subject, 640

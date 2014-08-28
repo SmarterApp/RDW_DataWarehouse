@@ -31,7 +31,14 @@
             </div>
             <div class="tab-pane" id="userGuide"></div>
             <div class="tab-pane" id="glossary"></div>
-            <div class="tab-pane" id="resources">{{{helpContent.resources_content}}}</div>
+            <div class="tab-pane" id="resources">
+            	<p class='header'>{{{helpContent.resources_content.header}}}</p>
+            	<ul>
+            		{{#helpContent.resources_content.items}}
+            		<li>{{{.}}}</li>
+            		{{/helpContent.resources_content.items}}
+            	</ul>
+           	</div>
         </div>
 
     </div>

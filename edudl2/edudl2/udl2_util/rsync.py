@@ -15,18 +15,18 @@ def rsync(*args, **kwargs):
     executing rsync command
     '''
     settings = args[0]
-    rsyc_command = ['rsync', '-rltzu', '--exclude', '*.partial', '--remove-source-files']
+    rsync_command = ['rsync', '-rltzu', '--exclude', '*.partial', '--remove-source-files']
     remote_user = settings.get('file-grabber.args.remote_user')
     remote_host = settings.get('file-grabber.args.remote_host')
     remote_dir = settings.get('file-grabber.args.remote_dir')
     landing = settings.get('file-grabber.args.landing')
     private_key = settings.get('file-grabber.args.private_key')
     if private_key is not None:
-        rsyc_command.append("-e")
-        rsyc_command.append("ssh -i " + private_key)
+        rsync_command.append("-e")
+        rsync_command.append("ssh -i " + private_key)
 
-    rsyc_command.append(remote_user + '@' + remote_host + ':' + remote_dir)
-    rsyc_command.append(landing)
-    returncode = subprocess.call(rsyc_command)
+    rsync_command.append(remote_user + '@' + remote_host + ':' + remote_dir)
+    rsync_command.append(landing)
+    returncode = subprocess.call(rsync_command)
     if returncode is not 0:
         logger.error('failed rsync. return code: ' + str(returncode))

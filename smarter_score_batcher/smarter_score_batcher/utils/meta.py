@@ -21,7 +21,7 @@ class Meta:
     '''
     Object to hold parts of the folder structure
     '''
-    def __init__(self, valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date):
+    def __init__(self, valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id):
         self.__student_id = student_id
         self.__state_code = state_code
         self.__district_id = district_id
@@ -30,6 +30,7 @@ class Meta:
         self.__grade = grade
         self.__subject = subject
         self.__effective_date = effective_date
+        self.__asmt_id = asmt_id
         self.__valid_meta = valid_meta
 
     @property
@@ -65,6 +66,10 @@ class Meta:
         return self.__effective_date
 
     @property
+    def asmt_id(self):
+        return self.__asmt_id
+
+    @property
     def valid_meta(self):
         return self.__valid_meta
 
@@ -77,7 +82,7 @@ def extract_meta_names(raw_xml_string):
     '''
     try:
         root = ET.fromstring(raw_xml_string)
-        state_code = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateName']", "value", "context")
+        state_code = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateCode']", "value", "context")
         student_id = extract_meta_without_fallback_helper(root, "./Examinee", "key")
         district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context")
         academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
@@ -85,6 +90,8 @@ def extract_meta_names(raw_xml_string):
         subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
         effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "effectiveDate")
+        # Get asmt id, not required for validation
+        asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
         validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade and effective_date)
         if not validMeta:
             if not state_code:
@@ -103,6 +110,6 @@ def extract_meta_names(raw_xml_string):
                 logger.error('extract_meta_names: grade is missing')
             if not effective_date:
                 logger.error('extract_meta_names: effective_date is missing')
-        return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date)
+        return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

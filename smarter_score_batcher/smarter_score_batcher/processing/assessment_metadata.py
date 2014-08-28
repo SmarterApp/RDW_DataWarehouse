@@ -4,7 +4,7 @@ Created on Aug 11, 2014
 @author: dip
 '''
 from copy import deepcopy
-from smarter_score_batcher.mapping.assessment import XMLMeta, Mapping
+from smarter_score_batcher.processing.assessment import XMLMeta, Mapping
 
 
 class JSONHeaders:

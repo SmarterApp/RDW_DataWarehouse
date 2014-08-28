@@ -50,7 +50,7 @@ class TestXML(unittest.TestCase):
         mock_extract_meta_names.return_value.valid_meta.return_value = True
         self.__request.body = '<xml></xml>'
         response = xml_catcher(self.__request)
-        self.assertEqual(response.status_code, 200, "should return 200 after writing xml file")
+        self.assertEqual(response.status_code, 202, "should return 200 after writing xml file")
 
     @patch('smarter_score_batcher.services.xml.pre_process_xml')
     def test_xml_catcher_failed(self, mock_process_xml):
@@ -94,6 +94,7 @@ class TestXML(unittest.TestCase):
     def test_create_item_level_csv(self):
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
+        work_dir = os.path.join(self.__tempfolder.name, 'work')
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="12">
@@ -111,10 +112,10 @@ class TestXML(unittest.TestCase):
         </Item>
         </Opportunity>
         </TDSReport>'''
-        meta_names = meta.Meta(True, 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8')
+        meta_names = meta.Meta(True, '12', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9')
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
-        post_process_xml(root_dir_xml, root_dir_csv, None, meta_names)
+        post_process_xml(root_dir_xml, root_dir_csv, work_dir, None, meta_names)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
         with open(csv_file_path, newline='') as csv_file:

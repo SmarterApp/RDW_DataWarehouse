@@ -1,5 +1,5 @@
 import unittest
-from smarter_score_batcher.mapping.item_level import ItemLevelCsvColumns
+from smarter_score_batcher.processing.item_level import ItemLevelCsvColumns
 
 
 class TestCSVMetadata(unittest.TestCase):

@@ -9,6 +9,7 @@ import os
 from edcore.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
                                         GPGPublicKeyException, GPGException)
 import tempfile
+from edcore.utils.utils import tar_files
 
 
 class MockKeyserver():
@@ -76,6 +77,16 @@ class Test_FileUtils(unittest.TestCase):
             archive_files(dir, archive_memory_file)
             fixture_len = 343
             self.assertEqual(len(archive_memory_file.getvalue()), fixture_len)
+
+    def test_tar_files(self):
+        files = ['test_0.csv', 'test_1.csv', 'test.json']
+        with tempfile.TemporaryDirectory() as dir, tempfile.TemporaryDirectory() as output_dir:
+            for file in files:
+                with open(os.path.join(dir, file), 'a') as f:
+                    f.write(file)
+            output = os.path.join(output_dir, "test.tar")
+            tar_files(dir, output)
+            self.assertNotEqual(os.path.getsize(output), 0)
 
     def test_encrypted_archive_files_public_key_exception(self):
         here = os.path.abspath(os.path.dirname(__file__))

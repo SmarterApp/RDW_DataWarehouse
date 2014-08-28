@@ -216,12 +216,14 @@ define [
   # Used to display total population count
   totalPopulation = (value, options, rowObject) ->
     subject = processSubject options, rowObject
+    unfilter_msg = Mustache.to_html options.colModel.labels.out_of_students, {count: subject.unfilteredTotal}
     return Mustache.to_html TOTAL_POPULATION_TEMPLATE, {
       subject: subject
       hasTextReplacement: subject.hasTextReplacement
       displayText: subject.displayText
       labels: options.colModel.labels
       export: subject.export
+      unfilter_msg: unfilter_msg
     }
 
   processSubject = (options, rowObject) ->

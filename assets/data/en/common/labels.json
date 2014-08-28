@@ -51,7 +51,7 @@
         "help_tab_faq": "FAQ",
         "help_tab_guide": "User Guide",
         "help_tab_glossary": "Glossary",
-        "help_tab_additional": "Resources",
+        "help_tab_resources": "Resources",
         "hide": "Hide",
         "icon": "Icon",
         "insufficient_data": "Data Suppressed to Protect Student Privacy",
@@ -71,6 +71,7 @@
         "on": "On",
         "ok": "OK",
         "or": "or",
+        "out_of_students": "Out of {{count}}<div class='studentText'>students</div>",
         "outside_error_band": "Outside Error Band",
         "overall_score": "Overall Score",
         "overall_score_details": "Overall Score Details",
@@ -129,6 +130,12 @@
         "uses": "Uses",
         "viewing": "Viewing",
         "viewing_previous_year": "You are viewing a previous academic year. <a href='#'>Return to <span class='latestYear'>{{latestYear}}</span></a>.",
+        "viewing_default_year": {
+            "state": "The results below are from last year's summative assessments.",
+            "district": "The results below are from last year's summative assessments.",
+            "school": "The results below are from last year's summative assessments.",
+            "grade": "There are no results yet for this year's grade {{gradeNumber}} students.  The results below are from the previous academic year."
+        }, 
         "asmt": {
             "Communicating Reasoning": "Communicating Reasoning",
             "Concepts & Procedures": "Concepts & Procedures",

@@ -50,7 +50,7 @@
         "help_tab_faq": "FAQ",
         "help_tab_guide": "User Guide",
         "help_tab_glossary": "Glossary",
-        "help_tab_additional": "Recursos",
+        "help_tab_resources": "Recursos",
         "hide": "Ocultar",
         "icon": "Ícono",
         "insufficient_data": "Data Suppressed to Protect Student Privacy",
@@ -67,6 +67,7 @@
         "off": "Desactivar",
         "on": "Activar",
         "ok": "OK",
+        "out_of_students": "Out of {{count}}<div class='studentText'>students</div>",
         "outside_error_band": "Fuera del margen de error",
         "overall_score": "Puntuación general",
         "overall_score_details": "Detalles de la puntuación general",
@@ -124,6 +125,12 @@
         "uses": "Uses",
         "viewing": "Vista",
         "viewing_previous_year": "You are viewing a previous academic year. <a href='#'>Return to <span class='latestYear'>{{latestYear}}</span></a>.",
+        "viewing_default_year": {
+            "state": "The results below are from last year's summative assessments.",
+            "district": "The results below are from last year's summative assessments.",
+            "school": "The results below are from last year's summative assessments.",
+            "grade": "There are no results yet for this year's grade {{gradeNumber}} students.  The results below are from the previous academic year."
+        },
         "asmt": {
             "Communicating Reasoning": "Razonamiento para comunicarse",
             "Concepts & Procedures": "Conceptos y procedimientos",

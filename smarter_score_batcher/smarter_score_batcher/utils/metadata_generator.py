@@ -9,6 +9,7 @@ import logging
 from smarter_score_batcher.exceptions import MetadataDirNotExistException
 from smarter_score_batcher.utils.constants import Constants
 import argparse
+from smarter_score_batcher.utils.file_lock import FileLock
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -62,7 +63,7 @@ def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA
             metadata_generator_bottom_up(dirname, metadata_filename=metadata_filename, recursive=recursive)
 
 
-class FileMetadata():
+class FileMetadata(FileLock):
     '''
     create file metadata to each directories and recursivly.
     /path/.metadata
@@ -83,21 +84,7 @@ class FileMetadata():
             raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
         self.__dirs = {}
         self.__files = {}
-
-    def __enter__(self):
-        '''
-        "with" will lock metadata.
-        '''
-        if not os.path.exists(self.__metadat_file_path):
-            # if metadata file does not exist, create empty file first
-            open(self.__metadat_file_path, 'a').close()
-        self.__metadata_fd = open(self.__metadat_file_path, 'r+')
-        fcntl.flock(self.__metadata_fd, fcntl.LOCK_EX)
-        return self
-
-    def __exit__(self, type, value, tb):
-        fcntl.flock(self.__metadata_fd, fcntl.LOCK_UN)
-        self.__metadata_fd.close()
+        super().__init__(self.__metadat_file_path)
 
     def load_metadata(self, delimiter=':'):
         '''
@@ -109,9 +96,9 @@ class FileMetadata():
             metainfo.size = meta[2]
             metainfo.time = meta[3]
             return metainfo
-        if os.fstat(self.__metadata_fd.fileno()).st_size > 0:
-            self.__metadata_fd.seek(0)
-            for l in self.__metadata_fd:
+        if os.fstat(self.file_object.fileno()).st_size > 0:
+            self.file_object.seek(0)
+            for l in self.file_object:
                 meta = l.strip().split(delimiter)
                 if meta[0] == Constants.DIRECTORY:
                     dirinfo = FileMetadata.DirInfo()
@@ -121,7 +108,7 @@ class FileMetadata():
                     fileinfo = FileMetadata.FileInfo()
                     metainfo = setMetadata(fileinfo)
                     self.__files[metainfo.name] = metainfo
-            self.__metadata_fd.seek(0)
+            self.file_object.seek(0)
 
     def read_files(self, force=True):
         '''
@@ -187,9 +174,9 @@ class FileMetadata():
                     fd.write('\n')
                 fd.write(self._format(d))
         if self.__files or self.__dirs:
-            self.__metadata_fd.truncate(0)
-            _write(self.__metadata_fd, list(self.__dirs.values()))
-            _write(self.__metadata_fd, list(self.__files.values()))
+            self.file_object.truncate(0)
+            _write(self.file_object, list(self.__dirs.values()))
+            _write(self.file_object, list(self.__files.values()))
 
     class DirInfo():
         '''

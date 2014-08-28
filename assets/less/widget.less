@@ -1684,7 +1684,11 @@ th.ui-th-column div {
 #HelpMenuModal {
 
   width: 600px;
-
+  
+  .tab-content{
+    max-height: 500px;
+    overflow-y: auto;
+  }
   #helpMenuTab {
 
     font-size: 16px;
@@ -1715,6 +1719,17 @@ th.ui-th-column div {
     }
     ul {
       color: #4B4B4B;
+    }
+  }
+  #faq{
+    .backToTop {
+      padding-top: 10px;
+      padding-bottom: 15px;
+      font-size: 12px;
+    }
+    hr {
+      background-color: @color-B2;
+      width: 540px;
     }
   }
 }

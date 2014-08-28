@@ -51,7 +51,6 @@
         "help_tab_guide": "User Guide",
         "help_tab_glossary": "Glossary",
         "help_tab_resources": "Resources",
-        "help_tab_resources_content": "<p class='header'>Resources for educators are currently being developed in the Digital Library. Topics for those resources include:</p><ul><li><a href='https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=60411' target='_blank'>Score Report Modules</a></li><li><a href='https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=20' target='_blank'>ELA/Literacy Instructional Modules</a></li><li><a href='https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=157' target='_blank'>Mathematics Instructional Modules</a></li><li><a href='https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19' target='_blank'>Assessment Literacy Modules</a></li></ul>",
         "hide": "Hide",
         "icon": "Icon",
         "insufficient_data": "Data Suppressed to Protect Student Privacy",

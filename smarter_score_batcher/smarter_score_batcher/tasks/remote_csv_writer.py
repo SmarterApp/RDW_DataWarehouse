@@ -1,5 +1,5 @@
 from smarter_score_batcher.celery import celery
-from smarter_score_batcher.utils.csv_utils import generate_csv_from_xml
+from smarter_score_batcher.processing.file_processor import generate_csv_from_xml
 
 
 @celery.task(name="tasks.tsb.remote_csv_writer")

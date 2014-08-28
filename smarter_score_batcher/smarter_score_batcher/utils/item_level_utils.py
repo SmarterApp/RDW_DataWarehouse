@@ -2,11 +2,6 @@ import logging
 from smarter_score_batcher.utils.xml_utils import get_all_elements
 from smarter_score_batcher.processing.item_level import ItemLevelCsvColumns
 
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
-
 logger = logging.getLogger("smarter_score_batcher")
 
 

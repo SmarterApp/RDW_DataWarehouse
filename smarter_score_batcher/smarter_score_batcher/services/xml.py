@@ -6,7 +6,7 @@ Created on Jul 15, 2014
 import logging
 from pyramid.view import view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPServiceUnavailable
+from pyramid.httpexceptions import HTTPServiceUnavailable, HTTPAccepted
 from edapi.decorators import validate_xml
 from smarter_score_batcher.utils import xsd
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
@@ -47,7 +47,7 @@ def xml_catcher(xml_body):
             work_dir = settings.get("smarter_score_batcher.base_dir.working")
             queue_name = settings.get('smarter_score_batcher.async_queue')
             post_process_xml(root_dir_xml, root_dir_csv, work_dir, queue_name, meta_names)
-            return Response()
+            return HTTPAccepted()
         else:
             return HTTPServiceUnavailable("Writing XML file to disk failed.")
     except Exception as e:

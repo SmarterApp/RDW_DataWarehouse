@@ -4,9 +4,9 @@ Created on Aug 12, 2014
 @author: dip
 '''
 import unittest
-from smarter_score_batcher.mapping.assessment_metadata import JSONHeaders, JSONMapping,\
+from smarter_score_batcher.processing.assessment_metadata import JSONHeaders, JSONMapping,\
     get_assessment_metadata_mapping
-from smarter_score_batcher.tests.mapping.utils import DummyObj, read_data
+from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 try:
     import xml.etree.cElementTree as ET
 except ImportError:

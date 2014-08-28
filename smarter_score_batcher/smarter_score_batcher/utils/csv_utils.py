@@ -1,5 +1,5 @@
-from smarter_score_batcher.mapping.assessment import get_assessment_mapping
-from smarter_score_batcher.mapping.assessment_metadata import get_assessment_metadata_mapping
+from smarter_score_batcher.processing.assessment import get_assessment_mapping
+from smarter_score_batcher.processing.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.file_utils import csv_file_writer, \
     json_file_writer, make_dirs
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data

@@ -15,8 +15,6 @@ from smarter_score_batcher.utils.csv_utils import process_assessment_data, \
     generate_assessment_file, lock_and_write, generate_assessment_metadata_file
 from smarter_score_batcher.utils.meta import Meta
 from smarter_score_batcher.utils.file_lock import FileLock
-from smarter_score_batcher.mapping.assessment import get_assessment_mapping
-import time
 import json
 
 try:

@@ -438,7 +438,7 @@ qa:
           remote_dir: /sftp/opt/edware/staging/
           landing: /opt/edware/zones/landing/arrivals/
           private_key: /home/udl2/.ssh/id_rsa
-      tbs:
+      tsb:
         enable: True
         schedule:
             cron:

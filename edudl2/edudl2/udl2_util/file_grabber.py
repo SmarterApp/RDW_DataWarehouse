@@ -13,9 +13,12 @@ import time
 import copy
 
 
+FILE_GRABBER = 'file-grabber'
+
+
 def main():
     parser = argparse.ArgumentParser(description='Process udl trigger args')
-    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edudl2-trigger.pid',
+    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edudl2-filegrabber.pid',
                         help="pid file for edudl2 trigger daemon")
     parser.add_argument('-d', dest='daemon', action='store_true', default=False,
                         help="daemon mode for udl trigger")
@@ -36,17 +39,17 @@ def main():
     file_grabber_configs = {}
     for key in config_for_grabber.keys():
         key_values = key.split('.')
-        if key_values[0] == 'file-grabber':
+        if key_values[0] == FILE_GRABBER:
             key_values.pop(0)
             name = key_values.pop(0)
             file_grabber_config = file_grabber_configs.get(name, {})
-            file_grabber_config['file-grabber.' + '.'.join(key_values)] = config['.'.join(['file-grabber', name]) + '.' + '.'.join(key_values)]
+            file_grabber_config[FILE_GRABBER + '.' + '.'.join(key_values)] = config['.'.join([FILE_GRABBER, name]) + '.' + '.'.join(key_values)]
             file_grabber_configs[name] = file_grabber_config
 
     if file_grabber_configs:
         # setup cron
         for file_grabber_config in file_grabber_configs:
-            run_cron_job(file_grabber_configs[file_grabber_config], 'file-grabber.', rsync)
+            run_cron_job(file_grabber_configs[file_grabber_config], FILE_GRABBER + '.', rsync)
         while True:
             time.sleep(1)
 

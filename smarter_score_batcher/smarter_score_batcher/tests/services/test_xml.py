@@ -50,7 +50,7 @@ class TestXML(unittest.TestCase):
         mock_extract_meta_names.return_value.valid_meta.return_value = True
         self.__request.body = '<xml></xml>'
         response = xml_catcher(self.__request)
-        self.assertEqual(response.status_code, 200, "should return 200 after writing xml file")
+        self.assertEqual(response.status_code, 202, "should return 200 after writing xml file")
 
     @patch('smarter_score_batcher.services.xml.pre_process_xml')
     def test_xml_catcher_failed(self, mock_process_xml):

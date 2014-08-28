@@ -59,7 +59,8 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     headers = extract_args[TaskConstants.CSV_HEADERS]
     data = data_extract_func(tenant, academic_year, queries)
 
-    write_csv(output_file, data, header=headers)
+    with open(output_file, 'w') as f:
+        write_csv(f, data, header=headers)
 
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 

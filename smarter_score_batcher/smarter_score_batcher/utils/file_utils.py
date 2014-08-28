@@ -9,16 +9,23 @@ from smarter_score_batcher.utils.constants import Constants
 import json
 
 
+def make_dirs(path, mode=0o700, exist_ok=True):
+    '''
+    Create the directory for a path given
+    '''
+    os.makedirs(path, mode=mode, exist_ok=exist_ok)
+
+
 def file_writer(path, data, mode=0o700):
     '''
     Creates a file in the specified path and fills with data
     :param path: file to create
     :param data: data to be written
     :param mode: file attribute
-    :returns: Truen when file is written
+    :returns: True when file is written
     '''
     # create directory
-    os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
+    make_dirs(os.path.dirname(path))
     with open(path, 'wb') as f:
         f.write(str.encode(data) if type(data) is str else data)
         written = True
@@ -27,7 +34,7 @@ def file_writer(path, data, mode=0o700):
     return written if written else False
 
 
-def csv_file_writer(csv_file_path, data, header=None, mode=0o700):
+def csv_file_writer(file_object, data, header=None):
     '''
     Creates a csv file in the specified path and fills with data
     :param csv_file_path: csv file path
@@ -38,22 +45,18 @@ def csv_file_writer(csv_file_path, data, header=None, mode=0o700):
     # create directory
     written = False
     if data is not None and data:
-        os.makedirs(os.path.dirname(csv_file_path), mode=mode, exist_ok=True)
-        written = write_csv(csv_file_path, data, header=header)
-        if os.path.exists(csv_file_path):
-            os.chmod(csv_file_path, mode)
+        written = write_csv(file_object, data, header=header)
     return written
 
 
-def json_file_writer(file_path, data):
+def json_file_writer(file_descriptor, data):
     '''
     Writes to a JSON file
 
-    :param file_path: the path of the file to write to
+    :param file_descriptor: the file descriptor for the file
     :param dict data: a python dictionary that is the content that is written to the file
     '''
-    with open(file_path, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+    json.dump(data, file_descriptor, indent=4)
 
 
 def create_path(root_dir, meta, generate_path):

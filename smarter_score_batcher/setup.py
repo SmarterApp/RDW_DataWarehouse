@@ -22,7 +22,8 @@ requires = [
     'edschema',
     'edauth',
     'edapi',
-    'smarter_common']
+    'smarter_common',
+    'pyramid_exclog==0.7']
 
 setup(name='smarter_score_batcher',
       version='0.1',

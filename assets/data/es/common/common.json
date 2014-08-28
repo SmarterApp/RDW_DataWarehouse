@@ -439,7 +439,7 @@
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
 						"sorttype": "int",
-						"width": 320,
+						"width": 292,
 						"formatter": "populationBar",
 						"options": {
 							"asmt_type": "subject1"
@@ -450,7 +450,7 @@
 					},
 					{
                         "name": "Población total",
-                        "displayTpl": "<a class='inherit' href='#'>Población total</a>",
+                        "displayTpl": "<a class='inherit' href='#'># Assessed</a>",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
                         "sorttype": "int",
@@ -458,7 +458,7 @@
                         "options": {
                             "asmt_type": "subject1"
                         },
-                        "width": 77,
+                        "width": 105,
                         "export": true,
                         "title": false
                     },
@@ -467,7 +467,7 @@
                         "displayTpl": "<a href='#' class='inherit'><b>ELA/Literacy</b></a>",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
-						"width": 320,
+						"width": 292,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -479,7 +479,7 @@
 					},
                     {
                         "name": "Población total",
-                        "displayTpl": "<a class='inherit' href='#'>Población total</a>",
+                        "displayTpl": "<a class='inherit' href='#'># Assessed</a>",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
                         "sorttype": "int",
@@ -487,7 +487,7 @@
                         "options": {
                             "asmt_type": "subject2"
                         },
-                        "width": 77,
+                        "width": 105,
                         "export": true,
                         "title": false
                     }

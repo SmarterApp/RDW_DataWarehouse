@@ -2,9 +2,6 @@ import logging
 from smarter_score_batcher.utils.constants import Constants
 
 
-logger = logging.getLogger("smarter_score_batcher")
-
-
 def get_all_elements(root, xpath_of_element):
     '''
     Returns a list of dictionaries of element attributes for all the times the element appears

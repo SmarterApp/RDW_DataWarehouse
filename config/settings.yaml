@@ -45,6 +45,11 @@ common:
         schedule:
           cron:
             day: '*/1'
+      assessment:
+        enable: False
+        schedule:
+          cron:
+            day: '*/1'
 
     # Authentication
     auth:
@@ -163,9 +168,15 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
+      gpg.homedir: ~/.gnupg
+      gpg.public_key.cat: sbac_data_provider@sbac.com
+      gpg.public_key.fish: sbac_data_provider@sbac.com
+      gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       base_dir:
         xml: /opt/edware/raw_data
         csv: /opt/edware/item_level
+        working: /opt/edware/tsb/assessments
+        staging: /opt/edware/tsb/staging
       celery_timeout: 30
       sync_queue: smarter_score_batcher_sync
       async_queue: smarter_score_batcher_async
@@ -427,7 +438,7 @@ qa:
           remote_dir: /sftp/opt/edware/staging/
           landing: /opt/edware/zones/landing/arrivals/
           private_key: /home/udl2/.ssh/id_rsa
-      tbs:
+      tsb:
         enable: True
         schedule:
             cron:
@@ -808,6 +819,11 @@ development:
           soft_limit: 300000
           average.csv: 30000
           average.xml: 30000
+    smarter_score_batcher:
+      gpg.homedir: ~/.gnupg
+      gpg.keyserver: None
+      gpg.passphrase: sbac udl2
+      gpg.sign: ca_user@ca.com
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'

@@ -1686,7 +1686,7 @@ th.ui-th-column div {
   width: 600px;
   
   .tab-content{
-    max-height: 500px;
+   max-height: 480px;
     overflow-y: auto;
   }
   #helpMenuTab {
@@ -1722,15 +1722,43 @@ th.ui-th-column div {
     }
   }
   #faq{
+    padding-left: 30px;
+    padding-right: 40px;
+ 
     .backToTop {
-      padding-top: 10px;
-      padding-bottom: 15px;
-      font-size: 12px;
+      padding-bottom: 30px;
+      font-size: 11px;
     }
     hr {
       background-color: @color-B2;
-      width: 540px;
+      width: 480px;
+      margin-top: 30px;
+      margin-bottom: 20px;
     }
+    .faqHeader{
+      font-size: 14px;
+      color: @color-C10;
+      font-weight: bold;
+      padding-bottom: 10px;
+    }
+    li {
+      line-height: 25px;
+    }
+    .faqContentHeader{
+      font-size: 18px;
+      color: @color-B29;
+      font-weight: bold;
+      padding-bottom: 20px;
+    }
+    .faqQuestion{
+      font-weight: bold;
+      color: @color-B1;
+      padding-bottom:15px;
+    }
+    ul, ol {
+      margin: 0 0 10px 12px;
+    }
+    
   }
 }
 

@@ -12,7 +12,7 @@
         <div class="tab-content">
             <div class="tab-pane active" id="faq">
             	{{#helpContent.faq_content}}
-            	<div><b>{{name}}</b></div>
+            	<div class="faqHeader">{{name}}</div>
             	<ul>
             	{{#questions}}
             	<li><a href="#{{key}}{{id}}">{{question}}</a></li></li>
@@ -21,9 +21,9 @@
 	           	{{/helpContent.faq_content}}
 	           	<hr>
 	           	{{#helpContent.faq_content}}
-	            	<h2><b>{{name}}</b></h2>
+	            	<div class="faqContentHeader">{{name}}</div>
 	            	{{#questions}}
-	            	<div id="{{key}}{{id}}"><b>{{question}}</b><p>{{{answer}}}</p></div>
+	            	<div id="{{key}}{{id}}" class="faqQuestion">{{question}}</div><p>{{{answer}}}</p>
 	            	<div class="backToTop"><a href="#faq">{{labels.back_to_top}}</a></div>
 	            	{{/questions}}
 	           	{{/helpContent.faq_content}}

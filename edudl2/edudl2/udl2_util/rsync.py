@@ -25,6 +25,10 @@ def rsync(*args, **kwargs):
         rsync_command.append("-e")
         rsync_command.append("ssh -i " + private_key)
 
+    if not remote_dir.endswith('/'):
+        remote_dir += '/'
+    if not landing.endswith('/'):
+        landing += '/'
     rsync_command.append(remote_user + '@' + remote_host + ':' + remote_dir)
     rsync_command.append(landing)
     returncode = subprocess.call(rsync_command)

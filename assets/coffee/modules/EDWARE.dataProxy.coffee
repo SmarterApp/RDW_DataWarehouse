@@ -16,7 +16,7 @@ define [
     common: "../data/#{language}/common/common.json"
     landingPage: "../data/#{language}/content/landingPage.json"
     stateMap: "../data/stateMap.json"
-    helpContent: "../data/#{language}/common/helpContent.json"
+    helpContent: "../data/#{language}/content/helpContent.json"
     pdf: "/services/pdf/indivStudentReport.html"
 
   # setup URLs for report's specific JSON

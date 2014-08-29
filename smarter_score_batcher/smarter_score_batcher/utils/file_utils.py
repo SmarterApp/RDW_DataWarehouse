@@ -7,6 +7,9 @@ import os
 from edcore.utils.csv_writer import write_csv
 from smarter_score_batcher.utils.constants import Constants
 import json
+import logging
+
+logger = logging.getLogger("smarter_score_batcher")
 
 
 def make_dirs(path, mode=0o700, exist_ok=True):

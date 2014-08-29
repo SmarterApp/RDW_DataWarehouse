@@ -21,8 +21,6 @@ logger = logging.getLogger("smarter_score_batcher")
 def remote_write(xml_data):
     '''
     save data in given path
-    :param path: file to create
-    :param data: data to write
     :returns: True when file is written
     '''
     meta_names = extract_meta_names(xml_data)

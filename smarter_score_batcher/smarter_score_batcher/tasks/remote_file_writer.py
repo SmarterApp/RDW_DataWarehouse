@@ -13,6 +13,7 @@ from edcore.utils.file_utils import generate_path_to_raw_xml, \
     generate_path_to_item_csv
 from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
 from pyramid.threadlocal import get_current_registry
+from smarter_score_batcher.exceptions import MetaNamesException
 
 logger = logging.getLogger("smarter_score_batcher")
 
@@ -26,7 +27,7 @@ def remote_write(xml_data):
     meta_names = extract_meta_names(xml_data)
     if not meta_names.valid_meta:
         logger.error('condition of meta_name was not satisfied')
-        return None
+        raise MetaNamesException('condition of meta_name was not satisfied')
     if conf is None or not conf:
         # maybe service is eager mode. If so, read from registry
         settings = get_current_registry().settings

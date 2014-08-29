@@ -4,18 +4,18 @@ import os
 import csv
 from unittest.mock import patch, PropertyMock
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
-from smarter_score_batcher.utils import csv_utils
 from pyramid.registry import Registry
 from pyramid import testing
 from smarter_score_batcher.celery import setup_celery
 import uuid
 from edcore.utils.file_utils import generate_path_to_raw_xml, \
     generate_path_to_item_csv
-from smarter_score_batcher.utils.csv_utils import process_assessment_data, \
-    generate_assessment_file, lock_and_write, generate_assessment_metadata_file
 from smarter_score_batcher.utils.meta import Meta
 from smarter_score_batcher.utils.file_lock import FileLock
 import json
+from smarter_score_batcher.processing.file_processor import generate_csv_from_xml,\
+    process_assessment_data, generate_assessment_file, lock_and_write,\
+    generate_assessment_metadata_file
 
 try:
     import xml.etree.cElementTree as ET
@@ -63,7 +63,7 @@ class TestCSVUtils(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
+        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
@@ -81,10 +81,10 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
+        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         self.assertRaises(ET.ParseError)
 
-    @patch('smarter_score_batcher.utils.csv_utils.process_assessment_data')
+    @patch('smarter_score_batcher.processing.file_processor.process_assessment_data')
     def test_generate_csv_from_xml_parse_exception(self, mock_process_assessment_data):
         mock_process_assessment_data.side_effect = Exception()
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
@@ -106,11 +106,11 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
+        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         self.assertFalse(os.path.isfile(csv_file_path))
 
-    @patch('smarter_score_batcher.utils.csv_utils.metadata_generator_bottom_up')
-    @patch('smarter_score_batcher.utils.csv_utils.process_item_level_data')
+    @patch('smarter_score_batcher.processing.file_processor.metadata_generator_bottom_up')
+    @patch('smarter_score_batcher.processing.file_processor.process_item_level_data')
     def test_generate_csv_from_xml_parse_exception_written(self, mock_process_item_level_data, mock_metadata_generator_bottom_up):
         mock_process_item_level_data.return_value = True
         mock_metadata_generator_bottom_up.side_effect = Exception()
@@ -133,7 +133,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        csv_utils.generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
+        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
         self.assertFalse(os.path.isfile(csv_file_path))
 
     def test_process_assessment_data(self):
@@ -178,7 +178,7 @@ class TestCSVUtils(unittest.TestCase):
                 rows.append(row)
         self.assertTrue(len(rows), 3)
 
-    @PropertyMock('smarter_score_batcher.utils.csv_utils.SPIN_LOCK')
+    @PropertyMock('smarter_score_batcher.processing.file_processor.SPIN_LOCK')
     def test_lock_and_write_spin_lock(self, mock_SPIN_LOCK):
         file_path = os.path.join(self.__tempfolder.name, 'testassessment')
         fl = FileLock(file_path + '.csv')
@@ -193,7 +193,7 @@ class TestCSVUtils(unittest.TestCase):
         lock_and_write(root, file_path)
         self.assertEqual(3, mock_SPIN_LOCK.call_count)
 
-    @patch('smarter_score_batcher.utils.csv_utils.lock_and_write')
+    @patch('smarter_score_batcher.processing.file_processor.lock_and_write')
     def test_generate_assessment_exception(self, mock_lock_and_write):
         mock_lock_and_write.side_effect = [Exception()]
         file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
@@ -211,14 +211,14 @@ class TestCSVUtils(unittest.TestCase):
         fl = FileLock(temp_file)
         self.assertRaises(IOError, FileLock, temp_file, no_block_lock=True)
 
-    @patch('smarter_score_batcher.utils.csv_utils.get_assessment_metadata_mapping')
+    @patch('smarter_score_batcher.processing.file_processor.get_assessment_metadata_mapping')
     def test_generate_assessment_metadata_file_file_already_exist(self, mock_get_assessment_metadata_mapping):
         fake_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
         open(fake_file, 'a').close()
         generate_assessment_metadata_file(None, fake_file)
         self.assertEqual(mock_get_assessment_metadata_mapping.call_count, 0)
 
-    @patch('smarter_score_batcher.utils.csv_utils.get_assessment_metadata_mapping')
+    @patch('smarter_score_batcher.processing.file_processor.get_assessment_metadata_mapping')
     def test_generate_assessment_metadata_file(self, mock_get_assessment_metadata_mapping):
         values = {'hello': 'world'}
         mock_get_assessment_metadata_mapping.return_value = values

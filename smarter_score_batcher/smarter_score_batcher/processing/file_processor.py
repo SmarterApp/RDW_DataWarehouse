@@ -1,17 +1,24 @@
-from smarter_score_batcher.processing.assessment import get_assessment_mapping
-from smarter_score_batcher.processing.assessment_metadata import get_assessment_metadata_mapping
-from smarter_score_batcher.utils.file_utils import csv_file_writer, \
-    json_file_writer, make_dirs
-from smarter_score_batcher.utils.item_level_utils import get_item_level_data
+'''
+Created on Aug 28, 2014
+
+@author: tosako
+'''
 import os
-from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
-from smarter_score_batcher.utils.file_lock import FileLock
 import logging
 import time
+from smarter_score_batcher.utils.file_lock import FileLock
+from smarter_score_batcher.processing.assessment import get_assessment_mapping
+from smarter_score_batcher.processing.assessment_metadata import get_assessment_metadata_mapping
+from smarter_score_batcher.utils.item_level_utils import get_item_level_data
+from smarter_score_batcher.utils.file_utils import csv_file_writer, \
+    json_file_writer
+from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
+
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
+
 
 logger = logging.getLogger("smarter_score_batcher")
 
@@ -22,33 +29,10 @@ def process_assessment_data(root, meta, base_dir):
     :param root: xml root document
     '''
     # Create dir name based on state code and file name from asmt id
+    mode = 0o700
     directory = os.path.join(base_dir, meta.state_code, meta.asmt_id)
-    make_dirs(directory)
-    lock_and_write(root, os.path.join(directory, meta.asmt_id))
-
-
-def lock_and_write(root, file_path, mode=0o700):
-    '''
-    Append to existing assessment file if it exists
-    Else write header and content into the file
-    '''
-    csv_file_path = file_path + '.csv'
-    json_file_path = file_path + '.json'
-    parent = os.path.dirname(file_path)
-    make_dirs(parent, mode=mode, exist_ok=True)
-    SPIN_LOCK = True
-    while SPIN_LOCK:
-        try:
-            with FileLock(csv_file_path, mode='a', no_block_lock=True) as fl:
-                SPIN_LOCK = False
-                generate_assessment_file(fl.file_object, root, header=fl.new_file)
-                if not os.path.isfile(json_file_path):
-                    generate_assessment_metadata_file(root, json_file_path)
-        except BlockingIOError:
-            # spin lock
-            time.sleep(1)
-        except Exception as e:
-            raise
+    os.makedirs(directory, mode=mode, exist_ok=True)
+    lock_and_write(root, os.path.join(directory, meta.asmt_id), mode=mode)
 
 
 def generate_assessment_file(file_object, root, header=False):
@@ -88,6 +72,30 @@ def process_item_level_data(root, meta, csv_file_path):
     with open(csv_file_path, 'w') as f:
         written = csv_file_writer(f, data)
     return written
+
+
+def lock_and_write(root, file_path, mode=0o700):
+    '''
+    Append to existing assessment file if it exists
+    Else write header and content into the file
+    '''
+    csv_file_path = file_path + '.csv'
+    json_file_path = file_path + '.json'
+    parent = os.path.dirname(file_path)
+    os.makedirs(parent, mode=mode, exist_ok=True)
+    SPIN_LOCK = True
+    while SPIN_LOCK:
+        try:
+            with FileLock(csv_file_path, mode='a', no_block_lock=True) as fl:
+                SPIN_LOCK = False
+                generate_assessment_file(fl.file_object, root, header=fl.new_file)
+                if not os.path.isfile(json_file_path):
+                    generate_assessment_metadata_file(root, json_file_path)
+        except BlockingIOError:
+            # spin lock
+            time.sleep(1)
+        except Exception as e:
+            raise
 
 
 def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):

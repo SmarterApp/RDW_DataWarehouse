@@ -8,44 +8,86 @@
         {{/ALDs}}
         {{#legendInfo.notes}}{{.}} {{/legendInfo.notes}}
     </div>
-    <div class="row" aria-hidden='true'>
-        <div class="span4">
-            <!-- ALD -->
-            <h4>{{labels.achievement_level_descriptors}}:</h4>
-            <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
-                <thead>
-                    <tr>
-                        <th style="width:11%;">{{labels.color}}</th>
-                        <th>{{labels.description}}</th>
-                        <th>{{labels.score_range}}</th>
-                    </tr>
-                </thead>
-                {{#ALDs}}
-                <tr>
-                    <td><div class="edware-icon-ALD-color" style="background-color:{{color}};"></div></td>
-                    <td><strong class="blackText">{{description}}</strong></td>
-                    <td><strong class="blackText">{{range}}</strong></td>
-                </tr>
-                {{/ALDs}}
-            </table>
+    <div class="cpopPerformanceBar populationBarDetails span7">
+        <div class="row printContent">
+            <div class="span2 report_info">
+                {{{labels.report_info}}}
+            </div>
         </div>
-        <div class="populationBarDetails span7 edware-border-left">
-            <h4>{{labels.population_bar_details}}:</h4>
-            <div class="populationBar">
+        <div class="row">
+            <div class="span7">
+            	<p>{{{legendInfo.desc1}}}</p>
+            </div>
+        </div>
+        <div class="number_students row">
+            <div class="span5">
+                <p>
+                    <b>{{legendInfo.percent_students}}</b><br>
+                    {{legendInfo.desc4}}
+                </p>
+            </div>
+            <div class="span2">
+                <p>
+                    <b>{{legendInfo.number_students}}</b><br>
+                    {{labels.assessed}}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span6">
                 <div class="arrow1"></div>
+            </div>
+            <div class="span1">
                 <div class="arrow2"></div>
-                <div class="arrow3"></div>
-                <span class="indicator">{{legendInfo.indicator}}</span>
-            </div>
-            <div class="description">
-                <h5>{{legendInfo.desc1}}</h5>
-                <h5>{{legendInfo.desc2}}</h5>
-                <p>{{legendInfo.desc3}}</p>
-            </div>
-            <div class="notes" id="aria-populationbardetails">
-                <h5>{{labels.notes}}:</h5>
-                <p>{{#legendInfo.notes}}{{.}}<br/><br/>{{/legendInfo.notes}}</p>
             </div>
         </div>
+        <div class="row">
+			<div class="span6">
+            	<span class="populationBar"></span>
+            </div>
+    		<div class="span1 total_students"><b>{{legendInfo.indicator}}</b><i class="edware-icon-asterisk"></i></div>
+		</div>
+		<div class="achievement_levels row">
+            <table>
+                <tr>
+                    {{#ALDs}}
+                    <td><i class="edware-icon-arrow"></td>
+                    {{/ALDs}}
+                </tr>
+                <tr>
+                    {{#ALDs}}
+                    <td>{{description}}</td>
+                    {{/ALDs}}
+                </tr>
+            </table>
+		</div>
+		<hr class="screenContent">
+        <div class="row screenContent">
+            <div class="span7 marginBottom12">
+            	<p>{{legendInfo.desc2}}<p>
+            </div>
+        </div>
+        <div class="row screenContent">
+            <div class="span6 populationBarSmallTooltip"></div>
+            <div class="span1"><i class="cpop-asterisk edware-icon-asterisk"></i></div>
+        </div>
+        <div class="row screenContent">
+            <div class="span3">
+            	<span class="populationBarSmall"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span7 bottom_note">
+                <p><i class="edware-icon-asterisk"></i>{{legendInfo.desc3}}</p>
+           	</div>
+        </div>
+    </div>
+    <div class="uses_cpop span2 printContent">
+    	<h4 class="padTopBottom9">{{labels.uses}}:</h4>
+        <ul class="marginLeft17">
+        	{{#legendInfo.uses}}
+        	<li>{{.}}</li>
+            {{/legendInfo.uses}}
+        </ul>
     </div>
 </div>

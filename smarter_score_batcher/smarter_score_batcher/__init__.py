@@ -6,6 +6,7 @@ from smarter_common.security.root_factory import RootFactory
 import os
 from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
+from smarter_score_batcher import trigger
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,7 @@ def main(global_config, **settings):
     setup_xml_celery(settings, prefix=prefix)
 
     config.add_route('xml', '/services/xml')
+    config.add_route('error', '/error')
     config.scan()
     # Set default permission on all views
     # config.set_default_permission('view')

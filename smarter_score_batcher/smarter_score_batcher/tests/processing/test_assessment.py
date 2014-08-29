@@ -4,9 +4,9 @@ Created on Aug 12, 2014
 @author: dip
 '''
 import unittest
-from smarter_score_batcher.mapping.assessment import XMLMeta, Mapping,\
+from smarter_score_batcher.processing.assessment import XMLMeta, Mapping,\
     get_assessment_mapping, AssessmentHeaders, AssessmentData
-from smarter_score_batcher.tests.mapping.utils import DummyObj, read_data
+from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -42,11 +42,11 @@ class TestCSVMetadata(unittest.TestCase):
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
         data = get_assessment_mapping(root)
-        headers = data.headers
+        header = data.header
         values = data.values
-        self.assertEqual(len(headers), len(values))
-        self.assertTrue(len(headers) > 0)
-        mapping = dict(zip(headers, values))
+        self.assertEqual(len(header), len(values))
+        self.assertTrue(len(header) > 0)
+        mapping = dict(zip(header, values))
         self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-MATH-7')
         self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '8')
         self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '12')
@@ -60,7 +60,7 @@ class TestCSVMetadata(unittest.TestCase):
     def test_assessment_data_class(self):
         data = AssessmentData([Mapping(DummyObj(), "test_header")])
         data.evaluate()
-        self.assertListEqual(data.headers, ['test_header'])
+        self.assertListEqual(data.header, ['test_header'])
         self.assertListEqual(data.values, [1])
 
 if __name__ == "__main__":

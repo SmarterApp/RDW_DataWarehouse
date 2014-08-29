@@ -13,6 +13,7 @@ from apscheduler.scheduler import Scheduler
 from sqlalchemy.sql.compiler import BIND_TEMPLATES
 import configparser
 import zipfile
+import tarfile
 
 logger = logging.getLogger(__name__)
 pidfile = None
@@ -118,10 +119,10 @@ def run_cron_job(settings, prefix, job):
             sched.add_cron_job(job, args=[settings], **cron_time)
 
 
-def read_ini(ini_file):
+def read_ini(ini_file, header='app:main'):
     config = configparser.ConfigParser()
     config.read(ini_file)
-    return config['app:main']
+    return config[header]
 
 
 def get_config_from_ini(config, config_prefix):
@@ -189,3 +190,12 @@ def archive_files(dir_name, archive_file):
             if os.path.islink(file):
                 file = os.readlink(file)
             zf.write(file, arcname=os.path.basename(file))
+
+
+def tar_files(dir_name, output_file):
+    ''' create tar file
+    '''
+    with tarfile.open(output_file, mode='w:gz') as tf:
+        files = [os.path.join(dir_name, f) for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))]
+        for file in files:
+            tf.add(file)

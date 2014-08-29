@@ -131,16 +131,16 @@ class AssessmentHeaders:
 class AssessmentData:
     def __init__(self, mappings):
         self.__mappings = mappings
-        self.__headers = []
+        self.__header = []
         self.__values = []
 
     def add(self, header, value):
-        self.__headers.append(header)
+        self.__header.append(header)
         self.__values.append(value)
 
     @property
-    def headers(self):
-        return self.__headers
+    def header(self):
+        return self.__header
 
     @property
     def values(self):
@@ -161,7 +161,7 @@ def get_assessment_mapping(root):
     test_node = root.find("./Test")
 
     # In the order of the LZ mapping for easier maintenance
-    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateName']", "value", "context"), AssessmentHeaders.StateAbbreviation),
+    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateCode']", "value", "context"), AssessmentHeaders.StateAbbreviation),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),

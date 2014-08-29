@@ -7,10 +7,11 @@ import logging.config
 import argparse
 from edcore.watch.watcher import FileWatcher
 from edudl2.udl2.W_schedule_pipeline import schedule_pipeline
-from edcore.utils.utils import get_config_from_ini
+from edcore.utils.utils import get_config_from_ini, run_cron_job, read_ini
 from edcore.watch.constants import WatcherConstants as Const
 from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
 from edcore.utils.utils import create_daemon
+from edudl2.udl2_util.rsync import rsync
 
 
 logger = logging.getLogger('edudl2')

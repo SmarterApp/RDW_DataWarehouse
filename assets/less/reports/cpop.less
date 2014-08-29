@@ -1,9 +1,12 @@
 body.cpop {
 
   #actionBar {
-	.printItem, .asmtTypeItem {
+  .printItem, .asmtTypeItem {
 	  display: none;
 	}
+  .legendPopover {
+    min-width: 612px;
+  }
   }
 
   #infoBar {
@@ -120,6 +123,9 @@ body.school {
         color: @color-C10;
         position: absolute;
         right: 0px;
+        .studentText{
+          line-height: 2px;
+        }
       }
     }
   }

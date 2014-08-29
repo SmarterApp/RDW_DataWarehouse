@@ -4,9 +4,9 @@ Created on Aug 12, 2014
 @author: dip
 '''
 import unittest
-from smarter_score_batcher.mapping.assessment_metadata import JSONHeaders, JSONMapping,\
+from smarter_score_batcher.processing.assessment_metadata import JSONHeaders, JSONMapping,\
     get_assessment_metadata_mapping
-from smarter_score_batcher.tests.mapping.utils import DummyObj, read_data
+from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -37,7 +37,7 @@ class TestJSONMetadata(unittest.TestCase):
         self.assertEqual(mapping['Overall']['MinScore'], '1200')
         self.assertEqual(mapping['PerformanceLevels']['Level1']['Name'], 'Minimal Understanding')
         self.assertEqual(mapping['Claims']['Claim1']['MinScore'], '1200')
-        self.assertEqual(mapping['Identification']['Subject'], 'MA')
+        self.assertEqual(mapping['Identification']['Subject'], 'MATH')
         self.assertEqual(mapping['ClaimPerformanceLevels']['Level2']['Name'], 'At/Near Standard')
         self.assertEqual(mapping['Identification']['EffectiveDate'], '2014-03-04')
 

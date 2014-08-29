@@ -33,8 +33,10 @@ def get_mover_conf(config):
                         MoverConst.SFTP_USER: config.get(prefix + MoverConst.SFTP_USER),
                         MoverConst.PRIVATE_KEY_FILE: config.get(prefix + MoverConst.PRIVATE_KEY_FILE),
                         MoverConst.ARRIVALS_PATH: config.get(prefix + MoverConst.ARRIVALS_PATH),
+                        MoverConst.FILE_MOVE_TYPE: config.get(MoverConst.FILE_MOVE_TYPE),
                         WatcherConst.BASE_DIR: config.get(WatcherConst.BASE_DIR),
-                        WatcherConst.SOURCE_DIR: config.get(SFTPConst.ARRIVALS_DIR)})
+                        WatcherConst.SOURCE_DIR: config.get(SFTPConst.ARRIVALS_DIR),
+                        WatcherConst.STAGING_DIR: config.get(WatcherConst.STAGING_DIR)})
     return remote_conf
 
 
@@ -51,30 +53,27 @@ def _watch_and_move_files(file_watcher, file_mover):
     return files_moved
 
 
-def sftp_file_sync(config):
-    """sftp file sync main entry point
+def file_sync(config):
+    """file sync main entry point
 
     This is a forever script
 
-    :param config: sftp config needed for file sync
+    :param config: config needed for file sync
     """
     remote_conf = get_mover_conf(config)
     file_watcher = FileWatcher(get_watcher_conf(config), append_logs_to=DEFAULT_LOGGER_NAME)
     file_mover = FileMover(remote_conf, append_logs_to=DEFAULT_LOGGER_NAME)
-    logger.info('Starting SFTP file sync loop {source_dir} => {dest_host}:{dest_dir}'.format(
-        source_dir=config.get(SFTPConst.ARRIVALS_DIR), dest_host=remote_conf.get(MoverConst.LANDING_ZONE_HOSTNAME),
-        dest_dir=remote_conf.get(MoverConst.ARRIVALS_PATH)))
+    logger.info('Starting file sync loop')
     while True:
         try:
             logger.debug('Searching for new files in {source_dir}'.format(source_dir=config.get(SFTPConst.ARRIVALS_DIR)))
             files_moved = _watch_and_move_files(file_watcher, file_mover)
-            logger.debug('Moved {count} files to {destination}'.format(count=str(files_moved),
-                                                                       destination=remote_conf.get(MoverConst.LANDING_ZONE_HOSTNAME)))
+            logger.debug('Moved {count} files '.format(count=str(files_moved)))
         except KeyboardInterrupt:
-            logger.warn('SFTP watcher process terminated by a user')
+            logger.warn('watcher process terminated by a user')
             os._exit(0)
         except Exception as e:
             logger.error(e)
         finally:
             time.sleep(float(file_watcher.conf.get(WatcherConst.FILE_SYSTEM_SCAN_DELAY)))
-    logger.warn('Exiting sftp watcher process')
+    logger.warn('Exiting watcher process')

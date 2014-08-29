@@ -1,6 +1,7 @@
 import unittest
 from smarter_score_batcher.utils import item_level_utils
 from pyramid import testing
+from smarter_score_batcher.utils.meta import Meta
 
 try:
     import xml.etree.cElementTree as ET
@@ -28,7 +29,8 @@ class TestItemLevelUtils(unittest.TestCase):
         </Item>
         </Opportunity></TestXML>'''
         root = ET.fromstring(xml_string)
-        row = item_level_utils.get_item_level_data(root)
+        meta = Meta(True, '213', None, None, None, None, None, None, None, None)
+        row = item_level_utils.get_item_level_data(root, meta)
         self.assertEqual('key_value', row[0][0])
         self.assertEqual('segmentId_value', row[0][2])
 

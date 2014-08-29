@@ -8,11 +8,13 @@ import tempfile
 import uuid
 import os
 from smarter_score_batcher.utils.file_utils import file_writer, csv_file_writer,\
-    create_path
+    create_path, json_file_writer
 import hashlib
 import csv
 from smarter_score_batcher.utils.meta import Meta
 from edcore.utils.file_utils import generate_path_to_raw_xml
+import json
+from smarter_score_batcher.utils.file_lock import FileLock
 
 
 class Test(unittest.TestCase):
@@ -59,7 +61,9 @@ class Test(unittest.TestCase):
         for i in range(5):
             row = [str(i), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4())]
             rows.append(row)
-        written = csv_file_writer(target, rows)
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, 'w') as f:
+            written = csv_file_writer(f, rows)
         self.assertTrue(written)
         with open(target) as f:
             csv_reader = csv.reader(f, delimiter=',')
@@ -69,14 +73,22 @@ class Test(unittest.TestCase):
         for i in range(len(rows)):
             self.assertListEqual(rows[i], new_rows[i])
 
+    def test_json_writer(self):
+        target = os.path.join(self.__temp_dir.name, "test.json")
+        with FileLock(target) as f:
+            json_file_writer(f.file_object, {'Test': '1'})
+        with open(target) as f:
+            content = json.load(f)
+            self.assertEqual(content['Test'], '1')
+
     def test_create_path_valid(self):
-        meta = Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        meta = Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date', 'asmt_id')
         path = os.path.join(self.__temp_dir.name, 'state_name', 'academic_year', 'ASMT_TYPE', 'effective_date', 'SUBJECT', 'grade', 'district_id', 'student_id.xml')
         create_path_result = create_path(self.__temp_dir.name, meta, generate_path_to_raw_xml)
         self.assertEqual(path, create_path_result)
 
     def test_create_path_invalid(self):
-        meta = Meta(True, 'NA', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        meta = Meta(True, 'NA', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date', 'asmt_id')
         path = os.path.join(self.__temp_dir.name, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
         create_path_result = create_path(self.__temp_dir.name, meta, generate_path_to_raw_xml)
         self.assertNotEqual(path, create_path_result)

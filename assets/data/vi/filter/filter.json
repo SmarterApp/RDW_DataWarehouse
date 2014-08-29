@@ -1,0 +1,197 @@
+{
+    "not_stated_message": "{{percentage}}% reported \"not stated\"",
+    "grades" : {
+        "display" : "Grades",
+        "tag" : "Grades",
+        "name" : "grade",
+        "options" : [
+            {
+                "label" : "Grade 3",
+                "value" : "3"
+            },
+            {
+                "label" : "Grade 4",
+                "value" : "4"
+            },
+            {
+                "label" : "Grade 5",
+                "value" : "5"
+            },
+            {
+                "label" : "Grade 6",
+                "value" : "6"
+            },
+            {
+                "label" : "Grade 7",
+                "value" : "7"
+            },
+            {
+                "label" : "Grade 8",
+                "value" : "8"
+            },
+            {
+                "label" : "Grade 11",
+                "value" : "11"
+            }
+        ]
+    },
+    "filters" : [
+        {
+            "display" : "Limited English Proficient (LEP)*",
+            "tag" : "LEP",
+            "name" : "dmgPrgLep",
+            "comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",
+            "options" : [
+
+                {
+                    "label": "Yes",
+                    "value": "Y"
+                },
+                {
+                    "label": "No",
+                    "value": "N"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Race/Ethnicity",
+            "tag" : "Race/Ethnicity",
+            "name" : "ethnicity",
+            "comment" : "*Not Hispanic or Latino",
+            "options" : [
+                {
+                    "label": "Hispanic/Latino of any race",
+                    "value": "3"
+                },
+                {
+                    "label": "American Indian or Alaska Native*",
+                    "value": "4"
+                },
+                {
+                    "label": "Asian*",
+                    "value": "2"
+                },
+                {
+                    "label": "Black or African American*",
+                    "value": "1"
+                },
+                {
+                    "label": "Native Hawaiian or Pacific Islander*",
+                    "value": "5"
+                },
+                {
+                    "label": "White*",
+                    "value": "6"
+                },
+                {
+                    "label": "Two or more races*",
+                    "value": "7"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "0"
+                }
+            ]
+        },
+        {
+            "display" : "IEP",
+            "tag" : "IEP",
+            "name" : "dmgPrgIep",
+            "comment": "*IEP categorization does not include students with a GIEP (i.e., 'gifted' students)",
+            "options" : [
+                {
+                    "label": "Yes",
+                    "value": "Y"
+                },
+                {
+                    "label": "No",
+                    "value": "N"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Gender",
+            "tag" : "Gender",
+            "name" : "sex",
+            "options" : [
+                {
+                    "label": "Male",
+                    "value": "male"
+                },
+                {
+                    "label": "Female",
+                    "value": "female"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "not_stated"
+                }
+            ]
+        },
+        {
+            "display" : "504",
+            "tag" : "504",
+            "name" : "dmgPrg504",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Economic Disadvantage",
+            "tag" : "Economic Disadvantage",
+            "name" : "dmgStsEcd",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                }
+            ]
+        },
+        {
+            "display" : "Migrant Status",
+            "tag" : "Migrant Status",
+            "name" : "dmgStsMig",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "NS"
+                }
+            ]
+        }
+    ],
+    "group_template" : {
+        "display" : "Student Grouping {{index}}",
+        "tag" : "Student Grouping {{index}}",
+        "name" : "group{{index}}Id",
+        "options" : [
+        ]
+    }
+}

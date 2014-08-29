@@ -1,17 +1,24 @@
 define [
   "jquery"
   "mustache"
+  "edwareDataProxy"
   "text!HelpMenuTemplate"
-], ($, Mustache, HelpMenuTemplate) ->
+], ($, Mustache, edwareDataProxy, HelpMenuTemplate) ->
 
   class EdwareHelpMenu
 
     constructor: (@container, @config) ->
-      @initialize()
-      @bindEvents()
+      self = this
+      edwareDataProxy.getDataForHelpContent().done (data) ->
+        self.data = data
+        self.initialize()
+        self.bindEvents()
 
     initialize: () ->
-      output = Mustache.to_html HelpMenuTemplate, @config
+      output = Mustache.to_html HelpMenuTemplate, {
+          labels: @config.labels
+          helpContent: @data
+      } 
       $(@container).html(output)
 
     bindEvents: () ->

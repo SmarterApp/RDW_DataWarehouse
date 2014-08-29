@@ -78,7 +78,7 @@ define [
           set_disabled_option_by_class('.extractType li#rawXML')
         if not item_lvl_access
           set_disabled_option_by_class('.extractType li#itemLevel')
-      
+
     hasPIIAccess: (row_id) ->
       @permissions.pii.all or (row_id in @permissions.pii.guid)
 

@@ -996,6 +996,8 @@ th.ui-th-column div {
   }
 
   .isrBarDetails {
+    width: 640px;
+    margin-left: 40px;
 
     p {
       font-weight: normal;
@@ -1004,7 +1006,9 @@ th.ui-th-column div {
       font-family: helvetica;
     }
 
-    b { color: @color-black;}
+    b { 
+      color: @color-black;
+    }
 
     table {
       td {
@@ -1015,15 +1019,13 @@ th.ui-th-column div {
       }
     }
 
-
-
     .overall_upperleft {
       position: relative;
       left: -70px;
       top: 25px;
     }
 
-    .isr_legend_bracket{
+    .isr_legend_bracket {
       position: relative;
       margin-left: 13px;
       top: -85px;
@@ -1041,32 +1043,31 @@ th.ui-th-column div {
       top: -100px;
     }
 
-    .isr_achievement_line_1{
+    .isr_achievement_line_1 {
         position: relative;
         left: -515px;
         top: -95px;
     }
 
-    .isr_achievement_line_2{
+    .isr_achievement_line_2 {
       position: relative;
       left: -413px;
       top: -95px;
     }
 
-    .isr_achievement_line_3{
+    .isr_achievement_line_3 {
       position: relative;
       top: -95px;
       left: -205px;
     }
 
-    .isr_achievement_line_4{
+    .isr_achievement_line_4 {
       position: relative;
       top: -95px;
       left: -50px;
-        
     }
 
-    .isr_achievement_line_5{
+    .isr_achievement_line_5 {
       position: relative;
       top: -95px;
       left: 105px;
@@ -1084,6 +1085,7 @@ th.ui-th-column div {
       left: 149px;
       top: -126px;
       height: 47px;
+      overflow:hidden;
     }
 
     .isr_legend_curly_bracket {
@@ -1122,11 +1124,20 @@ th.ui-th-column div {
       left: 16px;
     }
 
+    .isr_disclaimer {
+      position: relative;
+      left: -25px;
+    }
+
     .pull-left{
-      width: 440px;
+      width: 500px;
       margin-left: -25px;
-      margin-top: 5px;
-      height: 40px;
+      border-spacing: 1px !important;
+      tbody { 
+        tr {
+          height: 15px;
+        }
+      } 
     }
 
     .overall_score_upper {
@@ -1154,7 +1165,6 @@ th.ui-th-column div {
     }
 
     .error_band {
-
       height: 110px;
       
       .isr_legend_score_indicator_bottom {
@@ -1170,15 +1180,17 @@ th.ui-th-column div {
       }
 
       .isr_legend_score_arrow {
-      position: relative;
-      background-repeat: no-repeat;
-      top: -110px;
-      left: 125px;
-      z-index: 99999999;
-    }
+        position: relative;
+        background-repeat: no-repeat;
+        top: -110px;
+        left: 125px;
+        z-index: 99999999;
+      }
     }
 
     .table.edware-table-bordered.edware-table-center {
+      width: 640px !important;
+      margin-left: -15px !important;
       border-collapse: separate; 
       border-spacing: 10px;
       
@@ -1192,24 +1204,26 @@ th.ui-th-column div {
         font-size: 11px;
         margin: 0px;
         padding: 0px;
+        
         .icon_perf_level_desc {
           position: relative;
           width: 40px;
           left: 30px;
           top: -10px;
         }
+        
         .icon_perf_level {
           position: relative;
           top: 10px;
           left: 5px;
-        } 
-
-
+        }
       }
     }
 
-
     .isr_details {
+      position: relative;
+      left: -25px;
+
       p {
         width: 412px;
       }
@@ -1260,7 +1274,6 @@ th.ui-th-column div {
       .aldDescText {
         display: none;
       }
-
     }
 
     .isrPerfBarSmall {
@@ -1285,7 +1298,6 @@ th.ui-th-column div {
         width: 196px !important;
       }
       
-
       .overall_score { 
         display: none;
       }
@@ -1310,10 +1322,6 @@ th.ui-th-column div {
         }
       }
     }
-
-
-
-
   }
 
   .populationBarDetails {

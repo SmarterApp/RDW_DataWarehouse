@@ -2,7 +2,7 @@ import os
 import shutil
 import logging
 from edcore.watch.util import FileUtil
-from edcore.utils.utils import tar_files
+from edcore.utils.utils import tar_files, read_ini
 from edcore.utils.utils import run_cron_job
 from edcore.utils.data_archiver import encrypt_file
 from edcore.watch.file_hasher import MD5Hasher
@@ -10,6 +10,7 @@ from smarter_score_batcher.constant import Extensions
 from smarter_score_batcher.utils.file_lock import FileLock
 import time
 import uuid
+from argparse import ArgumentParser
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -251,3 +252,19 @@ class FileEncryption(FileLock):
         ''' creates a md5 checksum file for `source_file`. '''
         checksum_value = self.hasher.get_file_hash(source_file)
         return FileUtil.create_checksum_file(source_file, checksum_value)
+
+
+def main():
+    '''
+    Main Entry for ad-hoc testing to trigger batcher
+    '''
+    parser = ArgumentParser(description='File Batcher entry point')
+    parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter.ini', help="ini file")
+    args = parser.parse_args()
+    file = args.ini_file
+    settings = read_ini(file)
+    move_to_staging(settings)
+
+
+if __name__ == '__main__':
+    main()

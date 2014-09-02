@@ -198,4 +198,4 @@ def tar_files(dir_name, output_file):
     with tarfile.open(output_file, mode='w:gz') as tf:
         files = [os.path.join(dir_name, f) for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))]
         for file in files:
-            tf.add(file)
+            tf.add(file, arcname=os.path.basename(file))

@@ -61,6 +61,10 @@
                         "answer": "These reports are designed to provide parents and educators with a common understanding of student progress and achievement. Discuss your child’s report with their teachers and work together to develop appropriate supports for your child."}]}
     ],
     "glossary_content": [
+        {"alphabet": "#",
+         "info": [{
+                        "info_term": "504 plan",
+                        "info_def": "The 504 Plan is a plan developed to ensure that a child who has a disability identified under the law and is attending an elementary or secondary educational institution receives accommodations that will ensure their academic success and access to the learning environment."}]},
         {"alphabet": "A",
          "info": [{
                         "info_term": "Achievement Level",

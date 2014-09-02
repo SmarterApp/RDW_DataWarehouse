@@ -30,7 +30,17 @@
 	            <p>{{{helpContent.faq_footer}}}</p>
             </div>
             <div class="tab-pane" id="userGuide"></div>
-            <div class="tab-pane" id="glossary"></div>
+            <div class="tab-pane" id="glossary">
+
+                <p>{{#helpContent.glossary_content}}
+                    <div class="">{{alphabet}}</div>
+                    <ul>
+                    {{#info}}
+                    <div id="" class=""><b>{{info_term}}</b></div>
+                    <p>{{{info_def}}}</p>
+                    {{/info}}
+                {{/helpContent.glossary_content}}</p>
+            </div>
             <div class="tab-pane" id="resources">
             	<p class='header'>{{{helpContent.resources_content.header}}}</p>
             	<ul>

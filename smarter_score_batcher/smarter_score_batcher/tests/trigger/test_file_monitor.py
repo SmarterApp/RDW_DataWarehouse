@@ -62,7 +62,7 @@ class TestFileMonitor(unittest.TestCase):
         base_dir = self.__workspace
         filenames = list_asmt_with_tenant(base_dir)
         expected = [(t, path.join(base_dir, t, self.test_asmt)) for t in self.test_tenants]
-        self.assertEqual(filenames, expected, "list_asmt_with_tenant() should return a list of tuple of (tenant, asmt_dir_path)")
+        self.assertEqual(filenames.sort(), expected.sort(), "list_asmt_with_tenant() should return a list of tuple of (tenant, asmt_dir_path)")
 
     def test_compress(self):
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:

@@ -820,7 +820,7 @@ development:
           average.csv: 30000
           average.xml: 30000
     smarter_score_batcher:
-      gpg.homedir: ~/.gnupg
+      gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
       gpg.passphrase: sbac udl2
       gpg.sign: ca_user@ca.com

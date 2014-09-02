@@ -41,3 +41,11 @@ class MetadataDirNotExistException(MetadataException):
     '''
     def __init__(self, msg='dir does not exist'):
         MetadataException.__init__(self, msg)
+
+
+class MetaNamesException(Exception):
+    def __init__(self, msg):
+        '''
+        :param msg: the error message.
+        '''
+        self.msg = msg

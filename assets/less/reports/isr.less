@@ -15,17 +15,20 @@ body.isr {
   #actionBar {
     border-bottom: solid 1px @color-B25;
 
-	.sortItem, .alignmentItem, .filterItem, .searchItem {
-	  display: none;
-	}
+    .legendPopover {
+      min-width: 740px;
+    }
+
+    .sortItem, .alignmentItem, .filterItem, .searchItem {
+      display: none;
+    }
 
     li {
       &.academicYearArea, &.divider2, &.asmtYearButton {
         display: none;
       }
     }
-
-  }
+ }
 
   .asmtDropdownMenu {
     min-width: 299px !important;

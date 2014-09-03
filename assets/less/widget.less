@@ -560,6 +560,10 @@ th.ui-th-column div {
     font-size: 11px;
     margin-bottom: 0px;
   }
+  
+  .legendBarSection {
+    height: 125px;
+  }
 
   .claim_score {
     float: left;
@@ -687,9 +691,9 @@ th.ui-th-column div {
   }
 
   .overall_upperleft {
-    position: absolute;;
-    left: 60px;
-    top: 6px;
+    position: relative;
+    left: -60px;
+    top: 25px;
   }
 
   .overall_uppermid {
@@ -988,6 +992,335 @@ th.ui-th-column div {
       background-repeat: no-repeat;
       top: 20px;
       left: 64px;
+    }
+  }
+
+  .isrBarDetails {
+    width: 640px;
+    margin-left: 40px;
+
+    p {
+      font-weight: normal;
+      color: @color-C10;
+      font-size: 13px;
+      font-family: helvetica;
+    }
+
+    b { 
+      color: @color-black;
+    }
+
+    table {
+      td {
+        line-height: 12px;
+        text-align: left;
+        font-size: 11px;
+        width: 115px;
+      }
+    }
+
+    .overall_upperleft {
+      position: relative;
+      left: -70px;
+      top: 25px;
+    }
+
+    .isr_legend_bracket {
+      position: relative;
+      margin-left: 13px;
+      top: -85px;
+    }
+
+    .isr_legend_band_left {
+      position: relative;
+      left: -225px;
+      top: -54px;
+    }
+
+    .isr_legend_band_right {
+      position: relative;
+      left: 350px;
+      top: -100px;
+    }
+
+    .isr_achievement_line_1 {
+        position: relative;
+        left: -515px;
+        top: -95px;
+    }
+
+    .isr_achievement_line_2 {
+      position: relative;
+      left: -413px;
+      top: -95px;
+    }
+
+    .isr_achievement_line_3 {
+      position: relative;
+      top: -95px;
+      left: -205px;
+    }
+
+    .isr_achievement_line_4 {
+      position: relative;
+      top: -95px;
+      left: -50px;
+    }
+
+    .isr_achievement_line_5 {
+      position: relative;
+      top: -95px;
+      left: 105px;
+    }
+
+    .isr_legend_band_left_bottom {
+      position: relative;
+      left: -140px;
+      top: -79px;
+      height: 47px;
+    }
+
+    .isr_legend_band_right_bottom {
+      position: relative;
+      left: 149px;
+      top: -126px;
+      height: 47px;
+      overflow:hidden;
+    }
+
+    .isr_legend_curly_bracket {
+      position: relative;
+      left: 3px;
+      top: 7px;
+    }
+
+    .isr_legend_error_connector {
+      position: relative;
+      top: -20px;
+      left: 45px;
+    }
+
+    .isr_achievement_line_bottom{
+      position: relative;
+      top: -165px;
+      left: 125px;
+    }
+
+    .isr_legend_arrow_bracket {
+      position: relative;
+      left: 5px;
+      top: -45px;
+    }
+
+    .isr_score_arrow {
+      position: relative;
+      top: -105px;
+      left: -200px;
+    }
+
+    .achievement_level_scores {
+      position: relative;
+      top: -83px;
+      left: 16px;
+    }
+
+    .isr_disclaimer {
+      position: relative;
+      left: -25px;
+    }
+
+    .pull-left{
+      width: 500px;
+      margin-left: -25px;
+      border-spacing: 1px !important;
+      tbody { 
+        tr {
+          height: 15px;
+        }
+      } 
+    }
+
+    .overall_score_upper {
+      margin-top: 20px;
+      left: -20px;
+      position: relative;
+
+      .edware-icon-asterisk {
+       position : absolute;
+       top: 0px;
+       left: 90px;
+      }
+
+      .desc_overall_score_indicator {
+        position: relative;
+        left: 140px;
+      }
+
+      .indicator_cell {
+        font-size: 12px;
+        height: 32px;
+        width: 64px;
+        text-align: center;
+      }
+    }
+
+    .error_band {
+      height: 110px;
+      
+      .isr_legend_score_indicator_bottom {
+        position: relative;
+        left: -47px;
+        top: 38px;
+        z-index: 1;
+      }
+
+      .score {
+        top: -85px;
+        position: relative;
+      }
+
+      .isr_legend_score_arrow {
+        position: relative;
+        background-repeat: no-repeat;
+        top: -110px;
+        left: 125px;
+        z-index: 99999999;
+      }
+    }
+
+    .table.edware-table-bordered.edware-table-center {
+      width: 640px !important;
+      margin-left: -15px !important;
+      border-collapse: separate; 
+      border-spacing: 10px;
+      
+      tr {
+        max-height: 40px;
+      }
+
+      td {
+        height: 40px;
+        border-radius: 5px;
+        font-size: 11px;
+        margin: 0px;
+        padding: 0px;
+        
+        .icon_perf_level_desc {
+          position: relative;
+          width: 40px;
+          left: 30px;
+          top: -10px;
+        }
+        
+        .icon_perf_level {
+          position: relative;
+          top: 10px;
+          left: 5px;
+        }
+      }
+    }
+
+    .isr_details {
+      position: relative;
+      left: -25px;
+
+      p {
+        width: 412px;
+      }
+    }
+
+    .isrPerfBar {
+      position: relative;
+      height: 79px;
+      left: 25px;
+      margin-top: -10px;
+      margin-left: 30px;
+      display: inline-block;
+
+      .progressbar_indicator440 {
+        background-image: url("../images/css_images.png");
+        background-position: -1238px 0;
+        width: 18px;
+        margin-top: 30px;
+        margin-left: 130px !important;
+      }
+
+      .progress {
+        margin-top: -10px;
+        margin-left: -40px;
+        height: 30px;
+        width: 640px !important;
+      }
+
+      .overall_score {
+        font-size: 18px;
+        margin-left: 240px !important;
+      }
+
+      .cutPointsBar {
+        .cutPoints {
+          display: none;
+        }
+      }
+
+      .transImage1, .transImage2 {
+        display: none;
+      }
+
+      .transWrapper {
+        margin-top: 23px;
+      }
+
+      .aldDescText {
+        display: none;
+      }
+    }
+
+    .isrPerfBarSmall {
+      position: relative;
+      height: 79px;
+      left: 25px;
+      top: 10px;
+      margin-left: 30px;
+      display: inline-block;
+
+      .progressbar_indicator300 {
+        background-image: url("../images/css_images.png");
+        background-position: -1238px 0;
+        width: 18px;
+        margin-top: 30px;
+      }
+
+      .progress {
+        margin-top: -25px;
+        margin-left: -60px;
+        height: 30px;
+        width: 196px !important;
+      }
+      
+      .overall_score { 
+        display: none;
+      }
+
+      .aldDescText {
+       display: none;
+      }
+
+      .cutPointsBar {
+        .cutPoints {
+          font-size: 10px;
+        }
+      }
+
+      .transWrapper {
+        margin-top: 23px;
+      }
+
+      .cutPointsBar {
+        .cutPoints {
+          display: none;
+        }
+      }
     }
   }
 
@@ -1684,7 +2017,16 @@ th.ui-th-column div {
 #HelpMenuModal {
 
   width: 600px;
-
+  top: 30px;
+  
+  .modal-footer {
+    text-align: left;
+  }
+  
+  .tab-content{
+   max-height: 480px;
+    overflow-y: auto;
+  }
   #helpMenuTab {
 
     font-size: 16px;
@@ -1717,10 +2059,46 @@ th.ui-th-column div {
       color: #4B4B4B;
     }
   }
-}
-
-#SurveryMonkeyModal {
-  width: 600px;
+  #faq{
+    padding-left: 30px;
+    padding-right: 40px;
+ 
+    .backToTop {
+      padding-bottom: 30px;
+      font-size: 11px;
+    }
+    hr {
+      background-color: @color-B2;
+      width: 480px;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+    .faqHeader{
+      font-size: 14px;
+      color: @color-C10;
+      font-weight: bold;
+      padding-bottom: 15px;
+    }
+    li {
+      line-height: 25px;
+      padding-left: 5px;
+    }
+    .faqContentHeader{
+      font-size: 18px;
+      color: @color-B29;
+      font-weight: bold;
+      padding-bottom: 20px;
+    }
+    .faqQuestion{
+      font-weight: bold;
+      color: @color-B1;
+      padding-bottom:15px;
+    }
+    ul, ol {
+      margin: 0 0 20px 12px;
+    }
+    
+  }
 }
 
 

@@ -10,7 +10,25 @@
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane active" id="faq"></div>
+            <div class="tab-pane active" id="faq">
+            	{{#helpContent.faq_content}}
+            	<div class="faqHeader">{{name}}</div>
+            	<ul>
+            	{{#questions}}
+            	<li><a href="#{{key}}{{id}}">{{question}}</a></li></li>
+            	{{/questions}}
+            	</ul>
+	           	{{/helpContent.faq_content}}
+	           	<hr>
+	           	{{#helpContent.faq_content}}
+	            	<div class="faqContentHeader">{{name}}</div>
+	            	{{#questions}}
+	            	<div id="{{key}}{{id}}" class="faqQuestion">{{question}}</div><p>{{{answer}}}</p>
+	            	<div class="backToTop"><a href="#faq">{{labels.back_to_top}}</a></div>
+	            	{{/questions}}
+	           	{{/helpContent.faq_content}}
+	            <p>{{{helpContent.faq_footer}}}</p>
+            </div>
             <div class="tab-pane" id="userGuide"></div>
             <div class="tab-pane" id="glossary"></div>
             <div class="tab-pane" id="resources">
@@ -24,7 +42,7 @@
         </div>
 
     </div>
-    <div class="modal-body">
+    <div class="modal-footer">
         <p>{{{labels.help_message}}}</p>
     </div>
 </div>

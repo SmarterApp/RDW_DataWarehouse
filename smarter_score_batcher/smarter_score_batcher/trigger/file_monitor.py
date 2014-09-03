@@ -1,9 +1,8 @@
 import os
 import shutil
 import logging
-from os import path
 from edcore.watch.util import FileUtil
-from edcore.utils.utils import tar_files
+from edcore.utils.utils import tar_files, read_ini
 from edcore.utils.utils import run_cron_job
 from edcore.utils.data_archiver import encrypt_file
 from edcore.watch.file_hasher import MD5Hasher
@@ -11,6 +10,7 @@ from smarter_score_batcher.constant import Extensions
 from smarter_score_batcher.utils.file_lock import FileLock
 import time
 import uuid
+from argparse import ArgumentParser
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -95,12 +95,12 @@ def _clean_up(dir_path):
 
 
 def list_asmt_with_tenant(workspace):
-    ''' Return list of (tenant, assessment directory path) tuple under workspace. '''
+    ''' Return list of (tenant, assessment directory os.path) tuple under workspace. '''
     def _valid_name(name):
         return name and not name.startswith(".")
 
     def _list_dirs(base_dir):
-        return [(d, path.join(base_dir, d)) for d in os.listdir(base_dir) if path.isdir(path.join(base_dir, d)) and _valid_name(d)]
+        return [(d, os.path.join(base_dir, d)) for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d)) and _valid_name(d)]
 
     files = []
     for tenant, tenant_full_path in _list_dirs(workspace):
@@ -126,7 +126,7 @@ def _get_gpg_settings_by_tenant(tenant, settings):
     # because udl gpg is configured in '~/.gnupg' locally, otherwise
     # encrypt_file() function will give an error later.
     if homedir:
-        homedir = path.expanduser(homedir)
+        homedir = os.path.expanduser(homedir)
     kw_settings = {
         "homedir": homedir,
         "keyserver": settings.get('smarter_score_batcher.gpg.keyserver', None),
@@ -143,15 +143,15 @@ class FileEncryption(FileLock):
         ''' Constructor of FileEncryption class.
 
         :param tenant str: tenant name
-        :param asmt_dir str: full path to assessment directory
+        :param asmt_dir str: full os.path to assessment directory
         '''
         self.tenant = tenant
         self.asmt_dir = asmt_dir
-        self.assessment_id = path.split(asmt_dir)[1]
-        self.json_file = path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
-        self.csv_file = path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
+        self.assessment_id = os.path.split(asmt_dir)[1]
+        self.json_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
+        self.csv_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
         self.__success = False
-        if not path.isfile(self.csv_file):
+        if not os.path.isfile(self.csv_file):
             raise FileNotFoundError()
         self.hasher = MD5Hasher()
         super().__init__(self.csv_file, no_block_lock=True, do_not_create_lock_file=True)
@@ -163,17 +163,17 @@ class FileEncryption(FileLock):
         a checksum for given file `src_file`, and then move both to staging
         directory.
 
-        :param src_file str: path to encrypted GPG file
+        :param src_file str: os.path to encrypted GPG file
         :param staging_dir str: staging directory
 
         '''
         # retain directory structure per tenant in staging
-        dst_dir = path.join(staging_dir, self.tenant)
-        if not path.exists(dst_dir):
+        dst_dir = os.path.join(staging_dir, self.tenant)
+        if not os.path.exists(dst_dir):
             os.makedirs(dst_dir, exist_ok=True)
         # create checksum
         checksum = self._create_checksum(src_file)
-        dst_file = path.join(dst_dir, path.basename(src_file))
+        dst_file = os.path.join(dst_dir, os.path.basename(src_file))
         # add .partial extension to avoid rsync copying incomplete file
         tmp_file = dst_file + Extensions.PARTIAL
         os.rename(src_file, tmp_file)
@@ -182,15 +182,16 @@ class FileEncryption(FileLock):
         # move checksum file over
         shutil.move(checksum, dst_dir)
         self.__success = True
+        return dst_file
 
     def encrypt(self, tar_file, settings):
         ''' Encrypts `tar_file`.
 
-        :param tar_file str: full path of archive file
+        :param tar_file str: full os.path of archive file
         :param settings dict: application settings
         '''
         # move JSON and CSV file to temporary directory
-        gpg_file = path.join(self.temp_dir, tar_file + Extensions.GPG)
+        gpg_file = os.path.join(self.temp_dir, tar_file + Extensions.GPG)
         # get settings for encryption function
         recipients, kwargs = _get_gpg_settings_by_tenant(self.tenant, settings)
         with open(tar_file, 'rb') as file:
@@ -200,8 +201,8 @@ class FileEncryption(FileLock):
     def __enter__(self):
         ''' acquires lock and creates a .tmp directory under current assessment'''
         super().__enter__()
-        self.temp_dir = path.join(self.asmt_dir, ".tmp")
-        if not path.exists(self.temp_dir):
+        self.temp_dir = os.path.join(self.asmt_dir, ".tmp")
+        if not os.path.exists(self.temp_dir):
             os.makedirs(self.temp_dir, exist_ok=True)
         return self
 
@@ -226,11 +227,11 @@ class FileEncryption(FileLock):
         '''
 
         def _list_file_with_ext(base_dir, ext):
-            return [path.join(base_dir, f) for f in os.listdir(base_dir) if f.endswith(ext)]
+            return [os.path.join(base_dir, f) for f in os.listdir(base_dir) if f.endswith(ext)]
 
         # create a directory with name `assessment id` under .tmp
-        tmp_dir = path.join(self.temp_dir, self.assessment_id)
-        if not path.exists(tmp_dir):
+        tmp_dir = os.path.join(self.temp_dir, self.assessment_id)
+        if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir, exist_ok=True)
         # copy JSON and CSV files over
         # move JSON file before moving CSV
@@ -242,9 +243,9 @@ class FileEncryption(FileLock):
     def archive_to_tar(self, data_path):
         ''' compress JSON and CSV file into tar which have the same assessment id.
 
-        :param data_path str: full path of assessment directory.
+        :param data_path str: full os.path of assessment directory.
         '''
-        output = path.join(self.temp_dir, data_path + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
+        output = os.path.join(self.temp_dir, data_path + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
         tar_files(data_path, output)
         return output
 
@@ -252,3 +253,19 @@ class FileEncryption(FileLock):
         ''' creates a md5 checksum file for `source_file`. '''
         checksum_value = self.hasher.get_file_hash(source_file)
         return FileUtil.create_checksum_file(source_file, checksum_value)
+
+
+def main():
+    '''
+    Main Entry for ad-hoc testing to trigger batcher
+    '''
+    parser = ArgumentParser(description='File Batcher entry point')
+    parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter_score_batcher.ini', help="ini file")
+    args = parser.parse_args()
+    file = args.ini_file
+    settings = read_ini(file)
+    move_to_staging(settings)
+
+
+if __name__ == '__main__':
+    main()

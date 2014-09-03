@@ -182,6 +182,7 @@ class FileEncryption(FileLock):
         # move checksum file over
         shutil.move(checksum, dst_dir)
         self.__success = True
+        return dst_file
 
     def encrypt(self, tar_file, settings):
         ''' Encrypts `tar_file`.

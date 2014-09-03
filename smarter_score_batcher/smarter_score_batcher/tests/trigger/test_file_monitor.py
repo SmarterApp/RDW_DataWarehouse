@@ -20,12 +20,13 @@ class TestFileMonitor(unittest.TestCase):
         self.__request.method = 'POST'
         # setup settings
         # use the one for UDL
-        self.gpg_home = os.path.expanduser("~/.gnupg")
+        here = os.path.abspath(os.path.dirname(__file__))
+        self.gpg_home = os.path.abspath(os.path.join(here, '..', '..', '..', '..', 'config', 'gpg'))
         self.settings = {
             'smarter_score_batcher.gpg.keyserver': None,
             'smarter_score_batcher.gpg.homedir': self.gpg_home,
-            'smarter_score_batcher.gpg.public_key.cat': 'sbac_data_provider@sbac.com',
-            'smarter_score_batcher.gpg.public_key.fish': 'sbac_data_provider@sbac.com',
+            'smarter_score_batcher.gpg.public_key.cat': 'kswimberly@amplify.com',
+            'smarter_score_batcher.gpg.public_key.fish': 'kswimberly@amplify.com',
             'smarter_score_batcher.gpg.path': 'gpg',
             'smarter_score_batcher.base_dir.working': self.__workspace,
             'smarter_score_batcher.base_dir.staging': self.__staging
@@ -92,15 +93,14 @@ class TestFileMonitor(unittest.TestCase):
 
     def test_move_files(self):
         staging_dir = self.__staging
-        expected_file = os.path.join(staging_dir, self.test_tenant, "test_1.tar.gz.gpg")
         with FileEncryption(self.test_tenant, self.temp_directory) as fl:
             data_directory = fl.copy_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             outputfile = fl.encrypt(tar, self.settings)
-            fl.move_files(outputfile, staging_dir)
-            self.assertTrue(os.path.isfile(expected_file), "should move gpg file to staging directory")
-            self.assertFalse(os.path.exists(expected_file + ".partial"), "should remove transient file after file transfer complete")
-            self.assertTrue(os.path.isfile(expected_file + ".done"), "should move checksum file to staging directory")
+            dest_file = fl.move_files(outputfile, staging_dir)
+            self.assertTrue(os.path.isfile(dest_file), "should move gpg file to staging directory")
+            self.assertFalse(os.path.exists(dest_file + ".partial"), "should remove transient file after file transfer complete")
+            self.assertTrue(os.path.isfile(dest_file + ".done"), "should move checksum file to staging directory")
 
     def test_context_management(self):
         with FileEncryption(self.test_tenant, self.temp_directory):
@@ -111,8 +111,6 @@ class TestFileMonitor(unittest.TestCase):
     def test_move_to_staging(self):
         move_to_staging(self.settings)
         staging_dir = self.__staging
-        expected_file = os.path.join(staging_dir, self.test_tenant, "test_1.tar.gz.gpg")
-        self.assertTrue(os.path.exists(expected_file), "should create gpg file under staging directory")
         working_dir = self.__workspace
         unexpected_dir = os.path.join(working_dir, "test_1")
         self.assertFalse(os.path.exists(unexpected_dir), "working directory should be cleaned up after assessments being moved")

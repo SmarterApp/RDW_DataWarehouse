@@ -259,7 +259,7 @@ def main():
     Main Entry for ad-hoc testing to trigger batcher
     '''
     parser = ArgumentParser(description='File Batcher entry point')
-    parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter.ini', help="ini file")
+    parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter_score_batcher.ini', help="ini file")
     args = parser.parse_args()
     file = args.ini_file
     settings = read_ini(file)

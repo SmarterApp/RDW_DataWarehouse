@@ -171,7 +171,8 @@ common:
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: sbac_data_provider@sbac.com
       gpg.public_key.fish: sbac_data_provider@sbac.com
-      gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+      gpg.public_key.ca: sbac_data_provider@sbac.com
+      #gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       base_dir:
         xml: /opt/edware/raw_data
         csv: /opt/edware/item_level

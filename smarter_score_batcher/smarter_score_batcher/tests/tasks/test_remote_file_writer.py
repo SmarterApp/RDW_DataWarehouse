@@ -8,6 +8,7 @@ import tempfile
 import os
 import hashlib
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
+from unittest.mock import patch
 
 
 class Test(unittest.TestCase):
@@ -21,34 +22,30 @@ class Test(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def test_remote_write_non_utf8(self):
+    @patch('smarter_score_batcher.tasks.remote_file_writer.remote_csv_generator')
+    @patch('smarter_score_batcher.tasks.remote_file_writer.extract_meta_names')
+    @patch('smarter_score_batcher.tasks.remote_file_writer.create_path')
+    def test_remote_write_non_utf8(self, mock_create_path, mock_extract_meta_names, mock_remote_csv_generator):
         outfile1 = os.path.join(self.temp_dir.name, 'output1.xml')
+        mock_create_path.return_value = outfile1
+        mock_extract_meta_names.return_value.valid_meta.return_value = True
         with open(self.test1, 'r') as f:
             data = f.read()
-        remote_write(outfile1, data)
+        written = remote_write(data)
+        self.assertTrue(written)
         self.assertTrue(is_identical(self.test1, outfile1))
 
-    def test_remote_write_utf8(self):
+    @patch('smarter_score_batcher.tasks.remote_file_writer.remote_csv_generator')
+    @patch('smarter_score_batcher.tasks.remote_file_writer.extract_meta_names')
+    @patch('smarter_score_batcher.tasks.remote_file_writer.create_path')
+    def test_remote_write_utf8(self, mock_create_path, mock_extract_meta_names, mock_remote_csv_generator):
         outfile1 = os.path.join(self.temp_dir.name, 'output2.xml')
+        mock_create_path.return_value = outfile1
+        mock_extract_meta_names.return_value.valid_meta.return_value = True
         with open(self.test2, 'rb') as f:
             data = f.read()
-        remote_write(outfile1, data)
+        remote_write(data)
         self.assertTrue(is_identical(self.test2, outfile1))
-
-    def test_file_permission(self):
-        outfile1 = os.path.join(self.temp_dir.name, 'output1.xml')
-        with open(self.test1, 'r') as f:
-            data = f.read()
-        remote_write(outfile1, data, mode=0o777)
-        stat = os.stat(outfile1)
-        self.assertTrue(stat.st_mode & 0o777 == 0o777)
-
-        outfile2 = os.path.join(self.temp_dir.name, 'output2.xml')
-        with open(self.test2, 'rb') as f:
-            data = f.read()
-        remote_write(outfile2, data, mode=0o710)
-        stat = os.stat(outfile2)
-        self.assertTrue(stat.st_mode & 0o777 == 0o710)
 
 
 def is_identical(file1, file2):

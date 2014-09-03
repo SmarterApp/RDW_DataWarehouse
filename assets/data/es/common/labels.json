@@ -1,6 +1,7 @@
 {
     "labels": {
         "achievement_level_descriptors": "Descriptores del nivel de desempeño (ALD)",
+        "achievement_levels": "Achievement Levels",
         "academic_year": "Año escolar",
         "accommodations": "Accommodations",
         "ald_color_coded": "Código de color ALD ",

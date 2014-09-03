@@ -9,81 +9,91 @@
 			{{labels.error_band}} means {{legendInfo.error_band}}
        </div>
    	<!-- End of section is for screenreader-->
-    <div class="row" aria-hidden="true">
-    	<div class="span4">
-            <!-- ALD -->
-            <h4>{{labels.achievement_level_descriptors}}:</h4>
-            <table class="table edware-table-bordered edware-table-center marginLeft8" style="width: 275px;">
-                <thead>
-                    <tr>
-                        <th style="width:11%;">{{labels.color}}</th>
-                        <th>{{labels.description}}</th>
-                        <th>{{labels.score_range}}</th>
-                    </tr>
-                </thead>
-                {{#ALDs}}
-                <tr>
-                    <td><i class="edware-icon-ALD-color" style="background-color:{{color}} !important;"></i></td>
-                    <td class="blackText"><strong>{{description}}</strong></td>
-                    <td class="blackText"><strong>{{range}}</strong></td>
-                </tr>
-                {{/ALDs}}
-            </table>
-        </div>
-        <div class="span7 edware-border-left">
+        <div class="span9 edware-border-left isrBarDetails">
             <div class="overall_score_wrapper">
-                <h4>{{labels.overall_score_details}}:</h4>
+                <p>{{{legendInfo.report_info}}}</p>
+                <b>{{labels.overall_score}}</b>
+                <img src="../images/ISR_OverviewArrow.png" class="overall_upperleft"/>
                 <div class="overall_score_upper">
                     <div class="indicator_cell desc" style="background-color: {{scoreColor}}!important; color: #000;">
                         <strong class="asmtScore">{{asmtScore}}</strong>
                     </div>
-                    <img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>
-                    <div class="desc_overall_score"><h5>{{labels.overall_score}}</h5><span>({{labels.ald_color_coded}})</span></div>
-                    <img src="../images/OVERALL_uppermid.png" class="overall_uppermid"/>
-                    <h5 class="desc_overall_score_indicator">{{labels.overall_score_indicator}}</h5>
+                    <i class="edware-icon-asterisk"></i>
                 </div>
-                <div class="losPerfBar losPopover"></div>
-                <div class="confidenceLevel printContent"></div>
-                <div class="overall_right">
-                    <img src="../images/OVERALL_upperleft.png">
-                    <h5 class="desc_scaled_score_range">{{labels.scaled_score_range}}</h5>
+                <div class="row legendBarSection">
+                    <br><div class="span9 isrPerfBar"></div>
+                    <img src="../images/ISR_BracketLeft.png" class="isr_legend_band_left"/>
+                    <img src="../images/ISR_BracketRight.png" class="isr_legend_band_right"/>
+                    <img src="../images/ISR_Score.png" class="isr_score_arrow"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_1"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_2"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_3"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_4"/>
+                    <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_5"/>
+                    <img src="../images/ISR_AchievementLevelsArrow.png" class="isr_legend_bracket"/>
+                    <div class="achievement_level_scores">{{legendInfo.achievement_level_scores}}</div>
                 </div>
-                <div class="overall_score_lower">
-                    <h5>{{labels.ald_cutpoints}}</h5>
-                    <img src="../images/OVERALL_lowerleft.png" class="overall_lowerleft"/>
-                    <img id="overall_lowermid50px" src="../images/OVERALL_lowermid.png" class="overall_lowermid"/>
-                    <img id="overall_lowermid69px" src="../images/OVERALL_lowermid69px.png" class="overall_lowermid printContent"/>
-                    <div class="desc_error_bands"><h5>{{labels.error_bands}}</h5><span>({{labels.brackets_denote_min_max}})</span></div>
+                <div class="row">
+                    <div class="span8">
+                        <hr>
+                        <b>{{labels.achievement_levels}}</b>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <div>
-                <h4>{{labels.claim_score_details}}:</h4>
-                <table class="table edware-table-bordered edware-table-center" style="width: 530px;">
-                    <thead>
+                <div class="span7">
+                    <table class="pull-left ALD">
                         <tr>
-                            <th><em>{{labels.icon}}</em></th>
-                            <th><em>{{labels.description}}</em></th>
-                            <th><em>{{labels.meaning}}</em></th>
+                            {{#ALDs}}
+                            <th style="background-color: {{color}} !important;">
+                                <i style=""></i>
+                            </th>
+                            {{/ALDs}}
                         </tr>
-                    </thead>
-                    <tbody>
-                        {{#legendInfo.performance_levels}}
                         <tr>
-                            <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
-                            <td style="width: 115px;" class="blackText"><strong>{{desc}}</strong></td>
-                            <td>{{meaning}}</td>
+                            {{#ALDs}}
+                            <td>{{description}}</td>
+                            {{/ALDs}}
                         </tr>
-                        {{/legendInfo.performance_levels}}
-                    </tbody>
-                </table>
-            </div>
-            <hr>
-            <div class="error_band_wrapper">
-                <h4>{{labels.error_band}}:</h4>
-                <p>
-                    {{legendInfo.error_band}}
-                </p>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="span8"><hr></div>
+                </div>
+                <div class="row" >
+                    <div class="span3 error_band">
+                        <p><b>{{labels.error_band}}</b></p>
+                        <img src="../images/ISR_ErrorBandConnector.png" class="isr_legend_error_connector"/>
+                        <img src="../images/ISRCurlyBracket.png" class="isr_legend_curly_bracket"/>
+                        <img src="../images/ISR_Score.png" class="isr_legend_score_indicator_bottom"/>
+                        
+                        <div class="isrPerfBarSmall"></div>
+                        <img src="../images/ISR_BracketLeft.png" class="isr_legend_band_left_bottom"/>
+                        <img src="../images/ISR_BracketRight.png" class="isr_legend_band_right_bottom"/>
+                        <img src="../images/ISR_AchievementLevelLines.png" class="isr_achievement_line_bottom"/>
+                    </div>
+                    <div class="span5 isr_details">
+                        <p><br><br>{{{legendInfo.error_band}}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="span8"><hr></div>
+                </div>
+                <div>
+                    <h4>{{labels.details}}</h4>
+                    <table class="table edware-table-bordered edware-table-center" style="width: 658px; height: 40px;">
+                        <tbody>
+                            {{#legendInfo.performance_levels}}
+                            <td>
+                                <i class="edware-icon-perf-level-{{level}} icon_perf_level" style="vertical-align: middle;"></i>
+                                <div class="icon_perf_level_desc">{{desc}}</div>
+                            </td>
+                            {{/legendInfo.performance_levels}}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="span7 isr_disclaimer">
+                    <br>
+                    <p><i class="edware-icon-asterisk"></i> {{legendInfo.note}}.</p>
+                </div>
             </div>
         </div>
     </div>

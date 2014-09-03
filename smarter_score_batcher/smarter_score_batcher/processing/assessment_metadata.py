@@ -24,13 +24,13 @@ class JSONHeaders:
                            "MaxScore": None},
                "PerformanceLevels": {"Level1": {"Name": None},
                                      "Level2": {"Name": None,
-                                                "Cutpoint": None},
+                                                "CutPoint": None},
                                      "Level3": {"Name": None,
-                                                "Cutpoint": None},
+                                                "CutPoint": None},
                                      "Level4": {"Name": None,
-                                                "Cutpoint": None},
+                                                "CutPoint": None},
                                      "Level5": {"Name": None,
-                                                "Cutpoint": None}},
+                                                "CutPoint": None}},
                "Claims": {"Claim1": {"Name": None,
                                      "MinScore": None,
                                      "MaxScore": None},
@@ -43,7 +43,7 @@ class JSONHeaders:
                           "Claim4": {"Name": None,
                                      "MinScore": None,
                                      "MaxScore": None}},
-               "ClaimPerformanceLevels": {"Level1": {"Name": None},
+               "ClaimsPerformanceLevel": {"Level1": {"Name": None},
                                           "Level2": {"Name": None},
                                           "Level3": {"Name": None}}
                }
@@ -296,27 +296,27 @@ class JSONHeaders:
 
     @property
     def claim_perf_level1_name(self):
-        return self.values['ClaimPerformanceLevels']['Level1']['Name']
+        return self.values['ClaimsPerformanceLevel']['Level1']['Name']
 
     @claim_perf_level1_name.setter
     def claim_perf_level1_name(self, value):
-        self.values['ClaimPerformanceLevels']['Level1']['Name'] = value
+        self.values['ClaimsPerformanceLevel']['Level1']['Name'] = value
 
     @property
     def claim_perf_level2_name(self):
-        return self.values['ClaimPerformanceLevels']['Level2']['Name']
+        return self.values['ClaimsPerformanceLevel']['Level2']['Name']
 
     @claim_perf_level2_name.setter
     def claim_perf_level2_name(self, value):
-        self.values['ClaimPerformanceLevels']['Level2']['Name'] = value
+        self.values['ClaimsPerformanceLevel']['Level2']['Name'] = value
 
     @property
     def claim_perf_level3_name(self):
-        return self.values['ClaimPerformanceLevels']['Level3']['Name']
+        return self.values['ClaimsPerformanceLevel']['Level3']['Name']
 
     @claim_perf_level3_name.setter
     def claim_perf_level3_name(self, value):
-        self.values['ClaimPerformanceLevels']['Level3']['Name'] = value
+        self.values['ClaimsPerformanceLevel']['Level3']['Name'] = value
 
 
 class JSONMapping(Mapping):

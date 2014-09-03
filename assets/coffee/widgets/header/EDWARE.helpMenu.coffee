@@ -41,6 +41,8 @@ define [
         else
           target = tabs.find("a:first")
         target.tab 'show'
+      $(window).resize (e) ->
+        self.setModalSize()
 
     setActiveTabId: (tabId) ->
       @activeTab = tabId
@@ -48,7 +50,22 @@ define [
     show: (tabId) ->
       @setActiveTabId tabId if tabId
       $('#HelpMenuModal').edwareModal()
-
+      this.setModalSize()
+    
+    setModalSize: () ->
+      # Adjust the modal height based on window height
+      windowHeight = $(window).height()
+      # This is an approximate height for content area in help modal
+      height = windowHeight - 210
+      if height < 0
+        height = 1
+      mainModal = $('#HelpMenuModal')
+      content = $('#HelpMenuModal .tab-content')
+      mainModal.css('top', '30px')
+      mainModal.css('height', height + 80 + 'px')
+      content.css('height', height + 'px')
+      content.css('max-height', height + 'px')
+  
 
   create = (container, config) ->
     new EdwareHelpMenu(container, config)

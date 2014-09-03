@@ -59,10 +59,8 @@ define [
       height = windowHeight - 210
       if height < 0
         height = 1
-      mainModal = $('#HelpMenuModal')
       content = $('#HelpMenuModal .tab-content')
-      mainModal.css('top', '30px')
-      mainModal.css('height', height + 80 + 'px')
+      $('#HelpMenuModal').css('height', height + 80 + 'px')
       content.css('height', height + 'px')
       content.css('max-height', height + 'px')
   

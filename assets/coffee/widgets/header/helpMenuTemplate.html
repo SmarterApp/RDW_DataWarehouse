@@ -30,30 +30,38 @@
 	            <p>{{{helpContent.faq_footer}}}</p>
             </div>
             <div class="tab-pane" id="userGuide"></div>
-            
             <div class="tab-pane" id="glossary">
                 <div class="alphabetList">
                     {{#helpContent.glossary_content}}
+                    {{#has_data}}
                     <ul>
-                        <li><a href="#{{alphabet}}">{{alphabet}}</a>&nbsp;|</li>
+                        <li><a href="#{{alphabet}}">{{alphabet}}</a>&nbsp;<div class="emptyLetter">|</div></li>
                     </ul>
+                    {{/has_data}}
+                    {{^has_data}}
+                    <ul>
+                        <li><div class="emptyLetter">{{alphabet}}&nbsp;|</div></li>
+                    </ul>
+                    {{/has_data}}
                     {{/helpContent.glossary_content}}
                 </div>
-                
-
-                <div>
+                <div class="glossaryContent">
                     {{#helpContent.glossary_content}}
+                    {{#has_data}}
                     <div class="glossaryContentHeader">{{alphabet}}<hr></div>
-                    <ul>
+                    {{/has_data}}
                     {{#info}}
-                    <div id="{{alphabet}}" class="glossaryTerm">{{info_term}}</div>
-                    <p>{{{info_def}}}</p>
-                    {{/info}}
+                    <ul>
+                        <div id="{{alphabet}}" class="glossaryTerm">{{info_term}}</div>
+                        <div class="glossaryDef">{{{info_def}}}</div>
                     </ul>
+                    {{/info}}
+                    {{#has_data}}
+                    <div class="backToTop"><a href="#glossary">{{labels.back_to_top}}</a></div>
+                    {{/has_data}}
                     {{/helpContent.glossary_content}}
                 </div>
             </div>
-
             <div class="tab-pane" id="resources">
             	<p class='header'>{{{helpContent.resources_content.header}}}</p>
             	<ul>

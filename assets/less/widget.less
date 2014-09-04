@@ -2096,16 +2096,41 @@ th.ui-th-column div {
   }
 
   #glossary {
-    padding-left: 30px;
-    padding-right: 40px;
+    padding-left: 25px;
+    padding-right: 30px;
+
+
+    .backToTop {
+      position: relative;
+      padding-bottom: 15px;
+      font-size: 11px;
+      top: -15px;
+    }
 
     .alphabetList {
+      font-size: 12px;
+      font-family: Arial;
+      padding-bottom: 20px;
       ul {
         list-style: none;
         display: inline !important;
         margin: 0 0 10px 2px !important;
         li {
           display: inline !important;
+        }
+      }
+
+      .emptyLetter {
+        color: @color-C19;
+        display: inline !important;
+      }
+    }
+
+    .glossaryContent {
+      ul {
+        
+        margin: 0 0 0 0 !important;
+        li {
         }
       }
     }
@@ -2125,6 +2150,19 @@ th.ui-th-column div {
       color: @color-B29;
       font-weight: bold;
       padding-bottom: 20px;
+    }
+
+    .glossaryTerm {
+      font-size: 14px;
+      color: @color-B2;
+      padding-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .glossaryDef {
+      font-size: 14px;
+      color: @color-B2;
+      padding-bottom: 30px;
     }
   }
 }

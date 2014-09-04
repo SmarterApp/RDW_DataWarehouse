@@ -14,9 +14,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
 from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
     initialize_all_db
-from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.constants import Constants
+from edcore.callback_notification.Constants import Constants as mk
 import json
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 

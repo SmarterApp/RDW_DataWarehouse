@@ -1,5 +1,5 @@
 from edudl2.messages.error_message_helper import retrieve_job_error_messages
-from edudl2.udl2 import message_keys as mk
+from edcore.callback_notification.Constants import Constants
 
 __author__ = 'ablum'
 
@@ -16,7 +16,7 @@ def get_notification_message(status, guid_batch):
     '''
 
     messages = []
-    if status == mk.SUCCESS:
+    if status == Constants.SUCCESS:
         messages.extend(SUCCESS_MESSAGE)
     else:
         messages.extend(retrieve_job_error_messages(guid_batch))

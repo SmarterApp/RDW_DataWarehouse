@@ -103,9 +103,10 @@ def list_asmt_with_tenant(workspace):
         return [(d, os.path.join(base_dir, d)) for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d)) and _valid_name(d)]
 
     files = []
-    for tenant, tenant_full_path in _list_dirs(workspace):
-        for _, asmt in _list_dirs(tenant_full_path):
-            files.append((tenant, asmt))
+    if os.path.isdir(workspace):
+        for tenant, tenant_full_path in _list_dirs(workspace):
+                for _, asmt in _list_dirs(tenant_full_path):
+                    files.append((tenant, asmt))
     return files
 
 

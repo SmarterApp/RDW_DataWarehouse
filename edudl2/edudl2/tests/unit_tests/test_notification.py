@@ -7,9 +7,9 @@ Unit tests for notification module.
 import unittest
 import httpretty
 from unittest.mock import patch
-from edcore.callback_notification.Constants import Constants
+from edcore.notification.Constants import Constants
 from edudl2.notification.notification import create_notification_body, post_udl_job_status
-from edcore.callback_notification.callback import post_notification
+from edcore.notification.callback import post_notification
 
 
 class TestNotification(unittest.TestCase):

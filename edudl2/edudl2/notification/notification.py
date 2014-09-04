@@ -5,8 +5,8 @@ from sqlalchemy.sql import and_
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 import logging
-from edcore.callback_notification.Constants import Constants
-from edcore.callback_notification.callback import post_notification
+from edcore.notification.Constants import Constants
+from edcore.notification.callback import post_notification
 
 __author__ = 'tshewchuk'
 

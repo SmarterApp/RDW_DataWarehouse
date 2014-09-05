@@ -1,7 +1,7 @@
 from sqlalchemy.schema import MetaData, Sequence, Index
 from sqlalchemy import Table, Column, text
 from sqlalchemy.types import Text, Boolean, TIMESTAMP, Interval, TIME
-from sqlalchemy.types import BigInteger, SmallInteger, String, Float
+from sqlalchemy.types import BigInteger, SmallInteger, String
 
 
 def generate_udl2_metadata(schema_name=None, bind=None):
@@ -120,6 +120,22 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('group1text', String(256), nullable=True),
                                   Column('group2id', String(256), nullable=True),
                                   Column('group2text', String(256), nullable=True),
+                                  Column('group3id', String(256), nullable=True),
+                                  Column('group3text', String(256), nullable=True),
+                                  Column('group4id', String(256), nullable=True),
+                                  Column('group4text', String(256), nullable=True),
+                                  Column('group5id', String(256), nullable=True),
+                                  Column('group5text', String(256), nullable=True),
+                                  Column('group6id', String(256), nullable=True),
+                                  Column('group6text', String(256), nullable=True),
+                                  Column('group7id', String(256), nullable=True),
+                                  Column('group7text', String(256), nullable=True),
+                                  Column('group8id', String(256), nullable=True),
+                                  Column('group8text', String(256), nullable=True),
+                                  Column('group9id', String(256), nullable=True),
+                                  Column('group9text', String(256), nullable=True),
+                                  Column('group10id', String(256), nullable=True),
+                                  Column('group10text', String(256), nullable=True),
                                   Column('hispanicorlatinoethnicity', String(256), nullable=True),
                                   Column('americanindianoralaskanative', String(256), nullable=True),
                                   Column('asian', String(256), nullable=True),
@@ -248,6 +264,22 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('group_1_text', String(60), nullable=True),
                                   Column('group_2_id', String(40), nullable=True),
                                   Column('group_2_text', String(60), nullable=True),
+                                  Column('group_3_id', String(40), nullable=True),
+                                  Column('group_3_text', String(60), nullable=True),
+                                  Column('group_4_id', String(40), nullable=True),
+                                  Column('group_4_text', String(60), nullable=True),
+                                  Column('group_5_id', String(40), nullable=True),
+                                  Column('group_5_text', String(60), nullable=True),
+                                  Column('group_6_id', String(40), nullable=True),
+                                  Column('group_6_text', String(60), nullable=True),
+                                  Column('group_7_id', String(40), nullable=True),
+                                  Column('group_7_text', String(60), nullable=True),
+                                  Column('group_8_id', String(40), nullable=True),
+                                  Column('group_8_text', String(60), nullable=True),
+                                  Column('group_9_id', String(40), nullable=True),
+                                  Column('group_9_text', String(60), nullable=True),
+                                  Column('group_10_id', String(40), nullable=True),
+                                  Column('group_10_text', String(60), nullable=True),
                                   Column('dmg_eth_derived', SmallInteger, nullable=True),
                                   Column('dmg_eth_hsp', Boolean, nullable=True),
                                   Column('dmg_eth_ami', Boolean, nullable=True),

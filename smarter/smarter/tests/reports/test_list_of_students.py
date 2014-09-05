@@ -176,13 +176,18 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(results['assessments']['20150106']['Interim Comprehensive']['cad811ad-9b08-4dd1-aa10-52360b80ff7f']['subject2'])
 
     def test_get_group_filters(self):
-        groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None}, {'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': 'id2', 'group_2_text': 'something'}]
+        groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None, 'group_3_id': None, 'group_4_id': None, 'group_5_id': None, 'group_6_id': None, 'group_7_id': None,
+                   'group_8_id': None, 'group_9_id': None, 'group_10_id': None}, {'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': 'id2', 'group_2_text': 'something', 'group_3_id': None,
+                                                                                  'group_4_id': None, 'group_5_id': None, 'group_6_id': None, 'group_7_id': None, 'group_8_id': None, 'group_9_id': None,
+                                                                                  'group_10_id': None}]
         results = get_group_filters(groups)
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]['options'][0]['label'], 'something')
 
     def test_get_group_filters_group_1_only(self):
-        groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None}, {'group_1_id': 'id2', 'group_1_text': 'foo', 'group_2_id': None}]
+        groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None, 'group_3_id': None, 'group_4_id': None, 'group_5_id': None, 'group_6_id': None, 'group_7_id': None,
+                   'group_8_id': None, 'group_9_id': None, 'group_10_id': None}, {'group_1_id': 'id2', 'group_1_text': 'foo', 'group_2_id': None, 'group_3_id': None, 'group_4_id': None,
+                                                                                  'group_5_id': None, 'group_6_id': None, 'group_7_id': None, 'group_8_id': None, 'group_9_id': None, 'group_10_id': None}]
         results = get_group_filters(groups)
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]['options']), 2)

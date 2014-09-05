@@ -236,7 +236,7 @@ def _get_asmt_records(param, extract_type):
         if student_id:
             query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_id)))
 
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, param)
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, None, param)
         results = connector.get_result(query)
     return results
 

@@ -71,10 +71,26 @@ def get_extract_assessment_query(params):
                                     dim_student.c.birthdate.label(dim_student_label.get('birthdate', 'dob')),
                                     dim_student.c.external_student_id.label(dim_student_label.get('external_student_id', 'external_student_id')),
                                     fact_asmt_outcome_vw.c.enrl_grade.label(fact_asmt_outcome_vw_label.get('enrl_grade', 'enrollment_grade')),
-                                    fact_asmt_outcome_vw.c.group_1_id.label(fact_asmt_outcome_vw_label.get('group_1_id', 'group_1_id')),
-                                    fact_asmt_outcome_vw.c.group_1_text.label(fact_asmt_outcome_vw_label.get('group_1_text', 'group_1_text')),
-                                    fact_asmt_outcome_vw.c.group_2_id.label(fact_asmt_outcome_vw_label.get('group_2_id', 'group_2_id')),
-                                    fact_asmt_outcome_vw.c.group_2_text.label(fact_asmt_outcome_vw_label.get('group_2_text', 'group_2_text')),
+                                    dim_student.c.group_1_id.label(dim_student_label.get('group_1_id', 'group_1_id')),
+                                    dim_student.c.group_1_text.label(dim_student_label.get('group_1_text', 'group_1_text')),
+                                    dim_student.c.group_2_id.label(dim_student_label.get('group_2_id', 'group_2_id')),
+                                    dim_student.c.group_2_text.label(dim_student_label.get('group_2_text', 'group_2_text')),
+                                    dim_student.c.group_3_id.label(dim_student_label.get('group_3_id', 'group_3_id')),
+                                    dim_student.c.group_3_text.label(dim_student_label.get('group_3_text', 'group_3_text')),
+                                    dim_student.c.group_4_id.label(dim_student_label.get('group_4_id', 'group_4_id')),
+                                    dim_student.c.group_4_text.label(dim_student_label.get('group_4_text', 'group_4_text')),
+                                    dim_student.c.group_5_id.label(dim_student_label.get('group_5_id', 'group_5_id')),
+                                    dim_student.c.group_5_text.label(dim_student_label.get('group_5_text', 'group_5_text')),
+                                    dim_student.c.group_6_id.label(dim_student_label.get('group_6_id', 'group_6_id')),
+                                    dim_student.c.group_6_text.label(dim_student_label.get('group_6_text', 'group_6_text')),
+                                    dim_student.c.group_7_id.label(dim_student_label.get('group_7_id', 'group_7_id')),
+                                    dim_student.c.group_7_text.label(dim_student_label.get('group_7_text', 'group_7_text')),
+                                    dim_student.c.group_8_id.label(dim_student_label.get('group_8_id', 'group_8_id')),
+                                    dim_student.c.group_8_text.label(dim_student_label.get('group_8_text', 'group_8_text')),
+                                    dim_student.c.group_9_id.label(dim_student_label.get('group_9_id', 'group_9_id')),
+                                    dim_student.c.group_9_text.label(dim_student_label.get('group_9_text', 'group_9_text')),
+                                    dim_student.c.group_10_id.label(dim_student_label.get('group_10_id', 'group_10_id')),
+                                    dim_student.c.group_10_text.label(dim_student_label.get('group_10_text', 'group_10_text')),
                                     fact_asmt_outcome_vw.c.date_taken.label(fact_asmt_outcome_vw_label.get('date_taken', 'date_taken')),
                                     fact_asmt_outcome_vw.c.asmt_score.label(fact_asmt_outcome_vw_label.get('asmt_score', 'asmt_score')),
                                     fact_asmt_outcome_vw.c.asmt_score_range_min.label(fact_asmt_outcome_vw_label.get('asmt_score_range_min', 'asmt_score_range_min')),
@@ -147,7 +163,7 @@ def get_extract_assessment_query(params):
         if student:
             query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student)))
 
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
     return query
 
@@ -208,5 +224,5 @@ def _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, p
     query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code, fact_asmt_outcome_vw.c.asmt_year == asmt_year,
                              fact_asmt_outcome_vw.c.asmt_type == asmt_type, fact_asmt_outcome_vw.c.asmt_subject == asmt_subject,
                              fact_asmt_outcome_vw.c.asmt_grade == asmt_grade, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-    query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)  # Filters demographics
+    query = apply_filter_to_query(query, fact_asmt_outcome_vw, None, params)  # Filters demographics
     return query

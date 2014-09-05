@@ -123,5 +123,5 @@ class ComparingPopStatReport:
             query = query.where(and_(_fact_asmt_outcome_vw.c.district_id == self.district_id))
         if self.school_id is not None:
             query = query.where(and_(_fact_asmt_outcome_vw.c.school_id == self.school_id))
-        query = apply_filter_to_query(query, _fact_asmt_outcome_vw, filters)
+        query = apply_filter_to_query(query, _fact_asmt_outcome_vw, None, filters)
         return query

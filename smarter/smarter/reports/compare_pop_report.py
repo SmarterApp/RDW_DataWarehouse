@@ -472,7 +472,7 @@ class QueryHelper():
                       self._fact_asmt_outcome_vw.c.asmt_perf_lvl)
         if where_guid is not None:
             query = query.where(and_(where_guid))
-        return apply_filter_to_query(query, self._fact_asmt_outcome_vw, self._filters)
+        return apply_filter_to_query(query, self._fact_asmt_outcome_vw, None, self._filters)
 
     def build_query(self, name_field, id_field, subquery_where_guid=None):
         fao = self.build_sub_query(where_guid=subquery_where_guid).alias()

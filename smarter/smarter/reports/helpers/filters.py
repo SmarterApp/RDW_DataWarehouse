@@ -38,6 +38,14 @@ FILTERS_SEX = 'sex'
 
 FILTERS_GROUP_1 = 'group1Id'
 FILTERS_GROUP_2 = 'group2Id'
+FILTERS_GROUP_3 = 'group3Id'
+FILTERS_GROUP_4 = 'group4Id'
+FILTERS_GROUP_5 = 'group5Id'
+FILTERS_GROUP_6 = 'group6Id'
+FILTERS_GROUP_7 = 'group7Id'
+FILTERS_GROUP_8 = 'group8Id'
+FILTERS_GROUP_9 = 'group9Id'
+FILTERS_GROUP_10 = 'group10Id'
 
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
@@ -141,6 +149,70 @@ FILTERS_CONFIG = {
             "type": "string",
             "pattern": "^[a-zA-Z0-9\-]{0,50}$"
         }
+    },
+    FILTERS_GROUP_3: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_4: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_5: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_6: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_7: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_8: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_9: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_10: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
     }
 }
 
@@ -175,7 +247,7 @@ def has_filters(params):
     return not params.keys().isdisjoint(FILTERS_CONFIG.keys())
 
 
-def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
+def apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, filters):
     '''
     Apply demographics filters to a query
 
@@ -210,10 +282,34 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
             query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
         filter_group_1 = filters.get(FILTERS_GROUP_1)
         if filter_group_1 is not None:
-            query = query.where(fact_asmt_outcome_vw.c.group_1_id.in_(filter_group_1))
+            query = query.where(dim_student.c.group_1_id.in_(filter_group_1))
         filter_group_2 = filters.get(FILTERS_GROUP_2)
         if filter_group_2 is not None:
-            query = query.where(fact_asmt_outcome_vw.c.group_2_id.in_(filter_group_2))
+            query = query.where(dim_student.c.group_2_id.in_(filter_group_2))
+        filter_group_3 = filters.get(FILTERS_GROUP_3)
+        if filter_group_3 is not None:
+            query = query.where(dim_student.c.group_3_id.in_(filter_group_3))
+        filter_group_4 = filters.get(FILTERS_GROUP_4)
+        if filter_group_4 is not None:
+            query = query.where(dim_student.c.group_4_id.in_(filter_group_4))
+        filter_group_5 = filters.get(FILTERS_GROUP_5)
+        if filter_group_5 is not None:
+            query = query.where(dim_student.c.group_5_id.in_(filter_group_5))
+        filter_group_6 = filters.get(FILTERS_GROUP_6)
+        if filter_group_6 is not None:
+            query = query.where(dim_student.c.group_6_id.in_(filter_group_6))
+        filter_group_7 = filters.get(FILTERS_GROUP_7)
+        if filter_group_7 is not None:
+            query = query.where(dim_student.c.group_7_id.in_(filter_group_7))
+        filter_group_8 = filters.get(FILTERS_GROUP_8)
+        if filter_group_8 is not None:
+            query = query.where(dim_student.c.group_8_id.in_(filter_group_8))
+        filter_group_9 = filters.get(FILTERS_GROUP_9)
+        if filter_group_9 is not None:
+            query = query.where(dim_student.c.group_9_id.in_(filter_group_9))
+        filter_group_10 = filters.get(FILTERS_GROUP_10)
+        if filter_group_10 is not None:
+            query = query.where(dim_student.c.group_10_id.in_(filter_group_10))
     return query
 
 

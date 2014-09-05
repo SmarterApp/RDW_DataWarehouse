@@ -557,7 +557,7 @@ def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
             query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
         else:
             raise InvalidParameterError('Need one of effective_date or asmt_year')
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, params)
 
         # Add order by clause
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)

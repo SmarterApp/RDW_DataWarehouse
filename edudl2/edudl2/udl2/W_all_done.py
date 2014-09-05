@@ -12,6 +12,7 @@ from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 import json
+from edcore.notification.Constants import Constants as NotificationConstants
 
 
 logger = get_task_logger(__name__)
@@ -34,7 +35,7 @@ def _create_stats_row(msg, end_time, status):
     stats[UdlStatsConstants.LOAD_END] = end_time
     stats[UdlStatsConstants.RECORD_LOADED_COUNT] = msg.get(mk.TOTAL_ROWS_LOADED) if mk.TOTAL_ROWS_LOADED in msg else 0
 
-    if status is mk.SUCCESS:
+    if status is NotificationConstants.SUCCESS:
         stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_INGESTED
         if msg[mk.LOAD_TYPE] == LoadType.STUDENT_REGISTRATION:
             stats[UdlStatsConstants.BATCH_OPERATION] = UdlStatsConstants.SNAPSHOT
@@ -63,7 +64,7 @@ def task(msg):
     guid_batch = msg.get(mk.GUID_BATCH)
 
     # infer overall pipeline_status based on previous pipeline_state
-    pipeline_status = mk.FAILURE if mk.PIPELINE_STATE in msg and msg.get(mk.PIPELINE_STATE) == 'error' else mk.SUCCESS
+    pipeline_status = NotificationConstants.FAILURE if mk.PIPELINE_STATE in msg and msg.get(mk.PIPELINE_STATE) == 'error' else NotificationConstants.SUCCESS
 
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE',
                                     start_time, end_time, udl_phase_step_status=pipeline_status,

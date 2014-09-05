@@ -1,3 +1,4 @@
+from edudl2.udl2.constants import Constants
 __author__ = 'tshewchuk'
 
 """
@@ -14,7 +15,7 @@ from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.celery import celery, udl2_conf
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.notification.notification import post_udl_job_status
-from edudl2.udl2.constants import Constants
+from edcore.notification.Constants import Constants as NotificationConstants
 
 logger = get_task_logger(__name__)
 
@@ -39,8 +40,8 @@ def task(incoming_msg):
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
     if attempt_number >= udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS]:
-        notification_status = mk.FAILURE
-    if notification_status is not mk.PENDING:
+        notification_status = NotificationConstants.FAILURE
+    if notification_status is not NotificationConstants.PENDING:
         end_time = datetime.datetime.now()
         benchmark = BatchTableBenchmark(incoming_msg[mk.GUID_BATCH], incoming_msg[mk.LOAD_TYPE],
                                         'UDL_JOB_STATUS_NOTIFICATION', start_time, end_time,
@@ -79,7 +80,7 @@ def get_conf(msg):
 
 
 def get_notification_errors(msg, notification_status, notification_error):
-    if notification_status != mk.SUCCESS and mk.NOTIFICATION_ERRORS in msg:
+    if notification_status != NotificationConstants.SUCCESS and mk.NOTIFICATION_ERRORS in msg:
         notification_errors = msg[mk.NOTIFICATION_ERRORS]
     else:
         notification_errors = None

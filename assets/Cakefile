@@ -8,6 +8,7 @@ require 'colors'
 wrench = require 'wrench'
 chokidar = require 'chokidar'
 shell = require 'shelljs'
+jsondiffpatch = require 'deep-diff'
 
 coffeepath = 'coffee'
 lesspath = 'less'
@@ -64,7 +65,34 @@ copyScripts = () ->
       wrench.rmdirSyncRecursive buildDir
 
 copyLibraries = () ->
-  copyAssets 'test/js/3p', 'js/3p'
+    copyAssets 'test/js/3p', 'js/3p'
+  
+jsonTranslationsDiff = () ->
+    dataDir = 'data/'
+    translationTmplDir = 'en'
+    translationDirs = fs.readdirSync(dataDir).filter (file) -> file != translationTmplDir && fs.statSync(path.join(dataDir, file)).isDirectory()
+    
+    tmplWalker = walk.walkSync path.join(dataDir, translationTmplDir)
+    tmplWalker.on 'file', (root, stat, next) ->
+      srcFile = path.join(root, stat.name)
+      jsonSrc = JSON.parse(fs.readFileSync(srcFile, "utf8"))
+      
+      for translationDir in translationDirs
+        translatedFile = srcFile.replace translationTmplDir, translationDir
+        
+        if not fs.existsSync translatedFile
+          console.error translatedFile + " is missing"
+          process.exit 1
+        jsonDest = JSON.parse(fs.readFileSync(translatedFile, "utf8"))
+
+        jsonDiff = jsondiffpatch.diff(jsonSrc, jsonDest).filter (x) -> x.kind not in ['E'] 
+        if jsonDiff.length > 0
+          console.error translatedFile + " is structurally different from source file " + srcFile
+          console.error jsonDiff
+      next
+        
+task 'build:translationsDiff', ->
+    jsonTranslationsDiff()
 
 task 'build:coffee', ->
     walkDir coffeepath, (source) ->

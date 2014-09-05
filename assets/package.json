@@ -14,6 +14,7 @@
     "wrench":"1.5.4",
     "chokidar":"0.7.0",
     "shelljs":"0.2.6",
-    "coffeedoc": "0.3.0"
+    "coffeedoc": "0.3.0",
+    "deep-diff": "0.2.0"
   }
 }

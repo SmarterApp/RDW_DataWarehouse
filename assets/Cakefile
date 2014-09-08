@@ -89,6 +89,8 @@ jsonTranslationsDiff = () ->
         if jsonDiff.length > 0
           console.error translatedFile + " is structurally different from source file " + srcFile
           console.error jsonDiff
+          console.error "Fix the translations and build again"
+          process.exit 1
       next
         
 task 'build:translationsDiff', ->
@@ -116,6 +118,7 @@ task 'optimize', 'Optimize javascript', ->
 task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
+    invoke 'build:translationsDiff'
 
 task 'watch', ->
     invoke 'build'

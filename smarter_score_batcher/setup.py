@@ -25,6 +25,11 @@ requires = [
     'smarter_common',
     'pyramid_exclog==0.7']
 
+docs_extras = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface']
+
 setup(name='smarter_score_batcher',
       version='0.1',
       description='smarter_score_batcher',
@@ -43,6 +48,8 @@ setup(name='smarter_score_batcher',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
+      extras_require={
+          'docs': docs_extras, },
       test_suite="smarter_score_batcher",
       entry_points="""\
       [paste.app_factory]

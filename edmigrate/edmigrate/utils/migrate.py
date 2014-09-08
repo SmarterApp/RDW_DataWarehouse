@@ -144,9 +144,9 @@ def get_ordered_tables_to_migrate(connector, load_type):
     """This function returns an ordered list of tables to be migrated based on schema metadata.
 
     :param connector: The connection to the database
-    @param load_type: The load type for the current table
+    :param load_type: The load type for the current table
 
-    @return: A list of table names ordered by dependencies
+    :return: A list of table names ordered by dependencies
              e.g., [dim_section, dim_student, fact_asmt_outcome_vw]
     """
 
@@ -220,10 +220,10 @@ def _include_table(table_name, load_type):
     """
     Determine if table name should be included in tables to migrate.
 
-    @param table_name: Name of table candidate
-    @param load_type: Load type of table candidate
+    :param table_name: Name of table candidate
+    :param load_type: Load type of table candidate
 
-    @return: Whether or not table name should be included in migration.
+    :return: Whether or not table name should be included in migration.
     """
 
     table_select_criteria = {

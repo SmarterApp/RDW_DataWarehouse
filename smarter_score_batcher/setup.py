@@ -17,18 +17,17 @@ requires = [
     'waitress==0.8.7',
     'lxml==3.3.5',
     'config',
-    'edworker',
     'edcore',
     'edschema',
-    'edauth',
     'edapi',
+    'edauth',
+    'edworker',
     'smarter_common',
     'pyramid_exclog==0.7']
 
 docs_extras = [
     'Sphinx',
-    'docutils',
-    'repoze.sphinx.autointerface']
+    'docutils']
 
 setup(name='smarter_score_batcher',
       version='0.1',

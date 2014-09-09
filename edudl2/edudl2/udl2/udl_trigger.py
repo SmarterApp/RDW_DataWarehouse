@@ -21,7 +21,7 @@ def _find_udl_ready_files(file_watcher):
     file_watcher.find_all_files()
     file_watcher.filter_files_for_digest_mismatch()
     file_watcher.filter_checksum_files()
-    keys = file_watcher.get_file_stats().keys()
+    keys = list(file_watcher.get_file_stats().keys())
     keys.sort()
     return keys
 

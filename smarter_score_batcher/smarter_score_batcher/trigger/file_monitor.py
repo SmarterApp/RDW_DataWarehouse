@@ -246,7 +246,8 @@ class FileEncryption(FileLock):
 
         :param data_path str: full os.path of assessment directory.
         '''
-        output = os.path.join(self.temp_dir, data_path + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
+        timestamp = time.strftime('%Y%m%d%H%M%S', time.gmtime())
+        output = os.path.join(self.temp_dir, data_path + '.' + timestamp + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
         tar_files(data_path, output)
         return output
 

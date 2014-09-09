@@ -21,7 +21,7 @@ def _find_udl_ready_files(file_watcher):
     file_watcher.find_all_files()
     file_watcher.filter_files_for_digest_mismatch()
     file_watcher.filter_checksum_files()
-    return file_watcher.get_file_stats().keys()
+    return file_watcher.get_file_stats().keys().sort()
 
 
 def udl_trigger(config, loop_once=False):

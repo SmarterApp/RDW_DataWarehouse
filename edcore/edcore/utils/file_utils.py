@@ -1,19 +1,19 @@
 import os
 
 
-def generate_path_to_raw_xml(root_dir, **kwargs):
+def generate_path_to_raw_xml(root_dir, extension='xml', **kwargs):
     """Generates file path for raw xml extract.
     """
-    return generate_file_path(root_dir, "xml", **kwargs)
+    return generate_file_path(root_dir, extension=extension, **kwargs)
 
 
-def generate_path_to_item_csv(items_root_dir, **kwargs):
+def generate_path_to_item_csv(items_root_dir, extension='csv', **kwargs):
     """Generates file path for item level csv data.
     """
-    return generate_file_path(items_root_dir, "csv", **kwargs)
+    return generate_file_path(items_root_dir, extension=extension, **kwargs)
 
 
-def generate_file_path(items_root_dir, extension, state_code=None, asmt_year=None,
+def generate_file_path(items_root_dir, extension=None, state_code=None, asmt_year=None,
                        asmt_type=None, effective_date=None, asmt_subject=None,
                        asmt_grade=None, district_id=None, student_id=None, **kwargs):
     """Generates a directory path or a file path with file extension.
@@ -30,6 +30,9 @@ def generate_file_path(items_root_dir, extension, state_code=None, asmt_year=Non
     is a path to a directory.
 
     """
+    def path_with_extention(path):
+        return (path + '.' + extension) if extension is not None else path
+
     if type(asmt_year) is int:
         asmt_year = str(asmt_year)
     if type(effective_date) is int:
@@ -40,29 +43,29 @@ def generate_file_path(items_root_dir, extension, state_code=None, asmt_year=Non
     if state_code is not None:
         path = os.path.join(path, state_code)
     else:
-        return path
+        return path_with_extention(path)
     if asmt_year is not None:
         path = os.path.join(path, asmt_year)
     else:
-        return path
+        return path_with_extention(path)
     if asmt_type is not None:
         path = os.path.join(path, asmt_type.upper().replace(' ', '_'))
     else:
-        return path
+        return path_with_extention(path)
     if effective_date is not None:
         path = os.path.join(path, effective_date)
     if asmt_subject is not None:
         path = os.path.join(path, asmt_subject.upper())
     else:
-        return path
+        return path_with_extention(path)
     if asmt_grade is not None:
         path = os.path.join(path, asmt_grade)
     else:
-        return path
+        return path_with_extention(path)
     if district_id is not None:
         path = os.path.join(path, district_id)
     else:
-        return path
+        return path_with_extention(path)
     if student_id is not None:
-        path = os.path.join(path, student_id + "." + extension)
-    return path
+        path = os.path.join(path, student_id)
+    return path_with_extention(path)

@@ -14,10 +14,10 @@ The assessment data is collected in a batch data file, which is then forwarded t
 The score batcher is designed to scale horizontally by adding http servers and workers to handle TDS traffic.
  
 Score Batcher response codes:
-202 Accepted - The payload was received and stored locally. No proper validation has been done and it is not an indication of a successful record ingestion. 
-401 Unauthorized - The requesting service has not been authenticated.
-403 Forbidden - The requesting services has been authenticated but does not have proper rights.
-412 Precondition failed - The payload failed basic validation, such as xsd validation.
+  * 202 Accepted - The payload was received and stored locally. No proper validation has been done and it is not an indication of a successful record ingestion. 
+  * 401 Unauthorized - The requesting service has not been authenticated.
+  * 403 Forbidden - The requesting services has been authenticated but does not have proper rights.
+  * 412 Precondition failed - The payload failed basic validation, such as xsd validation.
 
 
 Configuration

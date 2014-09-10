@@ -331,17 +331,23 @@ define [
           # do not check other attributes
           if not $.isArray(filterValue)
             continue
+          if filterName is 'studentGroupId'
+            continue
           if filterName.substr(0, 5) isnt 'group' and filterName.substr(0, 5) isnt 'grade' # do not check grouping filters
             return false if assessment.demographic[filterName] not in filterValue
         return true
 
       grouping: (subject) ->
-        group1Id = filters.group1Id
-        group2Id = filters.group2Id
-        # we take as a match if there's no grouping filter, or current group id is within filters
-        in_group_1 = not group1Id or subject.group_1_id in group1Id
-        in_group_2 = not group2Id or subject.group_2_id in group2Id
-        return in_group_1 && in_group_2
+        occurs = false
+        numberOfFilters = 0
+        for studentGroupFiltersChosen, index of filters.studentGroupId
+          numberOfFilters = numberOfFilters + 1
+          occurs = true if index is subject.group_1_id or index is subject.group_2_id or index is subject.group_3_id
+        no_filter = numberOfFilters == 0
+        if no_filter
+          return no_filter
+        else
+          return occurs
     }
 
 

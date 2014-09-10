@@ -152,6 +152,10 @@ define [
         for group in @data.groups
           filter = JSON.parse(Mustache.render template, group)
           group_filter.options.push group.options[0]
+        group_filter.options.sort (a, b) ->
+          return 1  if a.label > b.label
+          return -1  if a.label < b.label
+          0
         configs.filters.push group_filter
       return configs
 

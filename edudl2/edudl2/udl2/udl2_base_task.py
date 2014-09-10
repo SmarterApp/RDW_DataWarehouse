@@ -4,6 +4,7 @@ import edudl2.udl2 as udl2
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
+from edcore.notification.Constants import Constants
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -74,7 +75,7 @@ class Udl2BaseTask(Task):
                                         end_timestamp=failure_time,
                                         udl_phase_step=udl_phase_step,
                                         working_schema=working_schema,
-                                        udl_phase_step_status=mk.FAILURE,
+                                        udl_phase_step_status=Constants.FAILURE,
                                         task_id=str(self.request.id),
                                         error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()

@@ -2,7 +2,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 __author__ = 'smuhit'
-
+from edcore.notification.Constants import Constants as NotificationConstants
 import unittest
 import shutil
 import os
@@ -14,9 +14,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
 from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
     initialize_all_db
-from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.constants import Constants
+from edudl2.udl2 import message_keys as mk
 import json
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
@@ -89,7 +89,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertNotEqual(result, [])
             for row in result:
                 status = row['udl_phase_step_status']
-                self.assertEqual(status, mk.SUCCESS, 'UDL process completed successfully')
+                self.assertEqual(status, NotificationConstants.SUCCESS, 'UDL process completed successfully')
 
     #Validate the UDL process completed successfully
     def validate_stats_update(self, status):
@@ -107,7 +107,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 self.assertEqual("800b3654-4406-4a90-9591-be84b67054df", snapshot_criteria['reg_system_id'])
                 self.assertEqual(2015, snapshot_criteria['academic_year'])
 
-                status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
+                status = UdlStatsConstants.UDL_STATUS_INGESTED if status is NotificationConstants.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
                 self.assertEqual(row['load_status'], status)
 
     #Validate that the load type received is student registration
@@ -120,7 +120,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             for row in result:
                 status = row['udl_phase_step_status']
                 load = row['load_type']
-                self.assertEqual(status, mk.SUCCESS)
+                self.assertEqual(status, NotificationConstants.SUCCESS)
                 self.assertEqual(load, self.load_type, 'Not the expected load type.')
 
     #Validate the target table
@@ -171,7 +171,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 notification_status = row['udl_phase_step_status']
                 self.assertEqual(expected_status, notification_status)
                 errors = row['error_desc']
-                if expected_status == mk.FAILURE:
+                if expected_status == NotificationConstants.FAILURE:
                     num_retries = errors.count(',')
                     self.assertEqual(expected_retries, num_retries, 'Incorrect number of retries')
                     for error_code in expected_error_codes:
@@ -232,8 +232,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_load_type()
         self.validate_stu_reg_target_table('original_data')
         self.validate_student_data('original_data')
-        self.validate_notification(mk.SUCCESS, [], 0)
-        self.validate_stats_update(mk.SUCCESS)
+        self.validate_notification(NotificationConstants.SUCCESS, [], 0)
+        self.validate_stats_update(NotificationConstants.SUCCESS)
 
         # Run and verify second run of student registration data (different test registration than previous run)
         # Should retry notification twice, then succeed
@@ -243,7 +243,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_notification(mk.SUCCESS, ['408', '408'], 2)
+        self.validate_notification(NotificationConstants.SUCCESS, ['408', '408'], 2)
 
         # Run and verify second run of student registration data again
         # Should max out on retry attempts, then fail
@@ -253,7 +253,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_notification(mk.FAILURE, ['408', '408', '408', '408', '408'], 4)
+        self.validate_notification(NotificationConstants.FAILURE, ['408', '408', '408', '408', '408'], 4)
 
     def start_http_post_server(self):
         self.receive_requests = True

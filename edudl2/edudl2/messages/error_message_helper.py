@@ -3,6 +3,7 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.constants import Constants
+from edcore.notification.Constants import Constants as NotificationConstants
 
 __author__ = 'ablum'
 
@@ -31,7 +32,7 @@ def retrieve_job_error_messages(guid_batch):
     messages = []
     with get_udl_connection() as source_conn:
         batch_table = source_conn.get_table(Constants.UDL2_BATCH_TABLE)
-        error_message_select = select([batch_table.c.error_desc]).where(and_(batch_table.c.guid_batch == guid_batch, batch_table.c.udl_phase_step_status == mk.FAILURE))
+        error_message_select = select([batch_table.c.error_desc]).where(and_(batch_table.c.guid_batch == guid_batch, batch_table.c.udl_phase_step_status == NotificationConstants.FAILURE))
         error_messages = source_conn.execute(error_message_select)
         messages.extend([r[0] for r in error_messages if r[0]])
 

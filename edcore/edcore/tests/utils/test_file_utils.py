@@ -17,42 +17,42 @@ class TestFileUtils(TestCase):
         record = {}
         extension = "csv"
         path = generate_file_path(items_root_dir, extension, **record)
-        self.assertEqual(path, items_root_dir)
+        self.assertEqual(path, items_root_dir + '.' + extension)
 
         record = {'state_code': 'NC'}
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(items_root_dir, 'NC')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['asmt_year'] = 2015
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(expect_path, '2015')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['asmt_type'] = 'SUMMATIVE'
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(expect_path, 'SUMMATIVE')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['effective_date'] = 20150402
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(expect_path, '20150402')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['asmt_subject'] = 'Math'
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(expect_path, 'MATH')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['asmt_grade'] = 3
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(expect_path, '3')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['district_id'] = '3ab54de78a'
         path = generate_file_path(items_root_dir, extension, **record)
         expect_path = os.path.join(expect_path, '3ab54de78a')
-        self.assertEqual(path, expect_path)
+        self.assertEqual(path, expect_path + '.' + extension)
 
         record['student_id'] = 'a78dbf34'
         path = generate_file_path(items_root_dir, extension, **record)

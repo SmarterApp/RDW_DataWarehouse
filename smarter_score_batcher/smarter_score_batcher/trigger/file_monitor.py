@@ -103,9 +103,10 @@ def list_asmt_with_tenant(workspace):
         return [(d, os.path.join(base_dir, d)) for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d)) and _valid_name(d)]
 
     files = []
-    for tenant, tenant_full_path in _list_dirs(workspace):
-        for _, asmt in _list_dirs(tenant_full_path):
-            files.append((tenant, asmt))
+    if os.path.isdir(workspace):
+        for tenant, tenant_full_path in _list_dirs(workspace):
+                for _, asmt in _list_dirs(tenant_full_path):
+                    files.append((tenant, asmt))
     return files
 
 
@@ -245,7 +246,8 @@ class FileEncryption(FileLock):
 
         :param data_path str: full os.path of assessment directory.
         '''
-        output = os.path.join(self.temp_dir, data_path + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
+        timestamp = time.strftime('%Y%m%d%H%M%S', time.gmtime())
+        output = os.path.join(self.temp_dir, data_path + '.' + timestamp + '.' + str(uuid.uuid4()) + Extensions.TAR + Extensions.GZ)
         tar_files(data_path, output)
         return output
 

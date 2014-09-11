@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import true, false, null, select
 from smarter.reports.helpers.filters import _get_filter,\
     has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP,\
     FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
-    FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN,\
+    FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN, FILTERS_GROUP,\
     FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_ECD, FILTERS_PROGRAM_MIG,\
     FILTERS_GRADE, YES, NOT_STATED, NO,\
     reverse_filter_map, get_student_demographic, FILTERS_SEX
@@ -143,6 +143,20 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
             query = apply_filter_to_query(query, fact_asmt_outcome, dim_student, {FILTERS_SEX: [FILTERS_SEX_FEMALE, FILTERS_SEX_MALE]})
             self.assertIsNotNone(query._whereclause)
             self.assertIn("fact_asmt_outcome_vw.sex", str(query._whereclause))
+
+    def test_apply_filter_to_query_with_groups(self):
+        with UnittestEdcoreDBConnection() as connection:
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            dim_student = connection.get_table(Constants.DIM_STUDENT)
+            query = select([dim_student.c.group_1_id],
+                           from_obj=([dim_student]))
+            query = apply_filter_to_query(query, fact_asmt_outcome, dim_student, {FILTERS_GROUP: ['group1', 'group2']})
+            self.assertIsNotNone(query._whereclause)
+            self.assertIn("dim_student.group_1_id", str(query._whereclause))
+            self.assertIn("dim_student.group_3_id", str(query._whereclause))
+            self.assertIn("dim_student.group_5_id", str(query._whereclause))
+            self.assertIn("dim_student.group_7_id", str(query._whereclause))
+            self.assertIn("dim_student.group_10_id", str(query._whereclause))
 
     def test_apply_filter_to_query_with_multi_filters(self):
         with UnittestEdcoreDBConnection() as connection:

@@ -264,11 +264,11 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_student_ids_group1(self):
         guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
-        self.assertEqual(len(guids), 5)
+        self.assertEqual(len(guids), 8)
 
     def test_get_student_ids_group2(self):
         guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
-        self.assertEqual(len(guids), 6)
+        self.assertEqual(len(guids), 8)
 
     def test_get_student_ids_alphabetical(self):
         recs = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
@@ -371,10 +371,10 @@ class TestServices(Unittest_with_edcore_sqlite):
         all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                                                         '2016', '20160404',
                                                         {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
-        self.assertEqual(len(all_guids), 5)
+        self.assertEqual(len(all_guids), 10)
         self.assertIn('7', guids_by_grade)
-        self.assertNotIn('8', guids_by_grade)
-        self.assertEqual(len(guids_by_grade['7']), 5)
+        #self.assertNotIn('8', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['7']), 8)
 
     def test_create_student_ids_by_guids_no_students(self):
         self.assertRaises(InvalidParameterError, _create_student_ids, [], None, 'NC', '229', '939', AssessmentType.SUMMATIVE,

@@ -142,9 +142,12 @@ def format_assessments(results, subjects_map):
 
         subject = subjects_map[result['asmt_subject']]
         assessment = student.get(subject, {})
+        assessment['group'] = []  # for student group filter
         for i in range(1, 10):
             assessment['group_{count}_id'.format(count=i)] = result['group_{count}_id'.format(count=i)]
             assessment['group_{count}_id'.format(count=i)] = result['group_{count}_id'.format(count=i)]
+            if result['group_{count}_id'.format(count=i)] is not None:
+                assessment['group'].append(result['group_{count}_id'.format(count=i)])
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_score_range_min'] = result['asmt_score_range_min']

@@ -342,7 +342,8 @@ define [
         numberOfFilters = 0
         for studentGroupFiltersChosen, index of filters.studentGroupId
           numberOfFilters = numberOfFilters + 1
-          occurs = true if index is subject.group_1_id or index is subject.group_2_id or index is subject.group_3_id
+          if index in subject.group
+            occurs = true
         no_filter = numberOfFilters == 0
         if no_filter
           return no_filter

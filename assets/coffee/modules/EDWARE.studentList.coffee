@@ -235,6 +235,7 @@ define [
         labels: @labels
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions
+        metadata: @data.metadata
         param: @params
         academicYears:
           options: @academicYears

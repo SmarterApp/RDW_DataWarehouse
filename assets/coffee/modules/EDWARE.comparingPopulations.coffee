@@ -91,9 +91,10 @@ define [
         self.academicYears = self.data.asmt_period_year
         self.notStatedData = self.data.not_stated
         #Check for colors, set to default color if it's null
-        for subject, value of self.data.metadata
+        for s, v of self.asmtSubjectsData
+          value = self.data.metadata[s]['colors']
           if value is null
-            self.data.metadata[subject] = self.defaultColors
+            self.data.metadata[s]['colors'] = self.defaultColors
 
         # initialize context security
         contextSecurity.init data.context.permissions, self.config, self.reportType
@@ -253,6 +254,7 @@ define [
         reportType: @reportType
         labels: @labels
         CSVOptions: @config.CSVOptions
+        metadata: @data.metadata
         ExportOptions: @config.ExportOptions
         param: @param
         getReportParams: @getReportParams.bind(this), displaySearch, contextSecurity

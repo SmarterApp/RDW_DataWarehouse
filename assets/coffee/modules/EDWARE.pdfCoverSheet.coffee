@@ -15,5 +15,11 @@ define [
     $("#spnStudents").html 'Student'
   $("#spnUserName").html @params['user']
   $("#spnDate").html @params['date']
-  if @params['gray']
+  # For tenant level branding
+  if @params['tenant_logo']
+    element = $(".header .logo img")
+    element.attr("src", "/assets/images/branding/" + @params['tenant_logo'])
+    element.removeAttr("width")
+    element.removeAttr("height")
+  else if @params['gray']
     $(".header .logo img").attr("src", "../images/smarter_printlogo_gray.png")

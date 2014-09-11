@@ -333,7 +333,7 @@ def __format_cut_points(results, subjects_map, custom_metadata_map):
         claims[subject_name] = get_claims(number_of_claims=4, result=result, include_names=True)
         # Remove unnecessary data
         del(cutpoint['asmt_subject'])
-    return {'cutpoints': cutpoints, 'claims': claims}
+    return {'cutpoints': cutpoints, 'claims': claims, Constants.BRANDING: custom_metadata_map.get(Constants.BRANDING)}
 
 
 def __reverse_map(map_object):

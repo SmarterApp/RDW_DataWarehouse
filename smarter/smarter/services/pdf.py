@@ -37,6 +37,7 @@ from smarter_common.security.constants import RolesConstants
 import pyramid
 from batch.pdf.pdf_generator import PDFGenerator
 from services.constants import ServicesConstants
+from smarter.reports.helpers.metadata import get_custom_metadata
 
 KNOWN_REPORTS = ['indivStudentReport.html']
 
@@ -290,11 +291,15 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
                                                                                       files_by_student_id,
                                                                                       school_name, lang, is_grayscale)
 
+    # Get metadata for tenant branding
+    custom_metadata = get_custom_metadata(state_code)
+
     # Create tasks for cover sheets
     cover_sheet_tasks, cover_sheets_by_grade = _create_cover_sheet_generate_tasks(pdfGenerator.cookie_value,
                                                                                   pdfGenerator.cookie_name,
                                                                                   is_grayscale, school_name,
                                                                                   user._User__info['name']['fullName'],
+                                                                                  custom_metadata,
                                                                                   directory_for_cover_sheets,
                                                                                   merged_pdfs_by_grade,
                                                                                   student_count_by_pdf)
@@ -406,7 +411,7 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, 
     return merge_tasks, bulk_paths, counts_by_grade
 
 
-def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, school_name, user_name,
+def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, school_name, user_name, custom_metadata,
                                        directory_for_covers, merged_by_grade, student_count_by_grade):
     cover_tasks = []
     cover_sheets_by_grade = {}
@@ -421,6 +426,10 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
     }
     if is_grayscale:
         cv_params['gray'] = True
+    branding = custom_metadata.get(Constants.BRANDING)
+    if branding:
+        cv_params['tenant_logo'] = branding.get('image')
+        cv_params['tenant_label'] = branding.get('display')
     if merged_by_grade:
         for grade, merged_path in merged_by_grade.items():
             # Create cover sheet output name and path

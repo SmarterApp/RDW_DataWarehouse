@@ -153,10 +153,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     custom_metadata = Table('custom_metadata', metadata,
                             Column('state_code', String(2), nullable=False),
-                            Column('asmt_subject', String(100), nullable=False),
                             Column('asmt_custom_metadata', Text, nullable=True)
                             )
-    Index('custom_metadata_id_idx', custom_metadata.c.state_code, custom_metadata.c.asmt_subject, unique=True)
+    Index('custom_metadata_id_idx', custom_metadata.c.state_code, unique=True)
 
     assessment_outcome_vw = Table('fact_asmt_outcome_vw', metadata,
                                   Column('asmt_outcome_vw_rec_id', BigInteger, primary_key=True),

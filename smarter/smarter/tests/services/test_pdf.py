@@ -50,6 +50,11 @@ from beaker.util import parse_cache_config_options
 class TestServices(Unittest_with_edcore_sqlite):
 
     def setUp(self):
+        cache_opts = {
+            'cache.type': 'memory',
+            'cache.regions': 'public.shortlived'
+        }
+        CacheManager(**parse_cache_config_options(cache_opts))
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
@@ -455,8 +460,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         directory_for_covers = '/covers'
         merged_by_grade = {'3': '/merged/3.pdf', '4': '/merged/4.pdf', '5': '/merged/5.pdf'}
         student_count_by_grade = {'3': 7, '4': 9, '5': 15}
+        custom_metadata = {'branding': {'image': '1.jpg', 'display': 'df'}}
         tasks, sheets = _create_cover_sheet_generate_tasks(cookie_val, cookie_name, is_grayscale, school_name,
-                                                           user_name, directory_for_covers, merged_by_grade,
+                                                           user_name, custom_metadata, directory_for_covers, merged_by_grade,
                                                            student_count_by_grade)
         self.assertEqual(3, len(tasks))
         self.assertEqual(3, len(sheets))
@@ -470,8 +476,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         directory_for_covers = '/covers'
         merged_by_grade = None
         student_count_by_grade = {'3': 7, '4': 9, '5': 15}
+        custom_metadata = {'branding': {'image': '1.jpg', 'display': 'df'}}
         tasks, sheets = _create_cover_sheet_generate_tasks(cookie_val, cookie_name, is_grayscale, school_name,
-                                                           user_name, directory_for_covers, merged_by_grade,
+                                                           user_name, custom_metadata, directory_for_covers, merged_by_grade,
                                                            student_count_by_grade)
         self.assertEqual(0, len(tasks))
         self.assertEqual(0, len(sheets))

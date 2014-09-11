@@ -17,7 +17,8 @@
     </div>
     <div class="printHeader printContent">
         <div class="logo">
-            <img src="../images/smarter_printlogo.png" width="150" height="47" />
+            <img src="{{branding.tenantLogo}}" width="{{branding.tenantLogoWidth}}" height="{{branding.tenantLogoHeight}}"/> 
+            <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.asmt_grade}}</div>
@@ -114,7 +115,8 @@
 <div id="print_reportInfoContent" class="printContent clearfix">
     <div class="printHeader">
         <div class="logo">
-            <img src="../images/smarter_printlogo.png" width="150" height="47" />
+            <img src="{{branding.tenantLogo}}" width="{{branding.tenantLogoWidth}}" height="{{branding.tenantLogoHeight}}"/> 
+            <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>

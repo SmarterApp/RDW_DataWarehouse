@@ -19,7 +19,7 @@ define [
     initialize: (createSearch) ->
       breadcrumb = (item.name for item in @config.breadcrumb.items[1..]).join(" / ")
       # Tenant level branding
-      brandingData = edwareUtil.getTenantLevelBrandingDataForPrint @config.metadata, false 
+      brandingData = edwareUtil.getTenantBrandingDataForPrint @config.metadata, false 
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects

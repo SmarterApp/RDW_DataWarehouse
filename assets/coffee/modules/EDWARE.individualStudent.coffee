@@ -212,7 +212,7 @@ define [
       key = @getCacheKey()
       @data.current = @data[key]
       # Get tenant level branding
-      @data.branding = edwareUtil.getTenantLevelBrandingDataForPrint @data.metadata, @isGrayscale
+      @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
       # use mustache template to display the json data
       output = Mustache.to_html indivStudentReportTemplate, @data
       $("#individualStudentContent").html output

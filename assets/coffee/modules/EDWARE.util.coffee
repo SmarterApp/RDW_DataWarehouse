@@ -185,22 +185,22 @@ define [
     else
       return '/assets/images/branding/' + path
 
-  getTenantLevelBrandingData = (metadata) ->
-    brandingData = {'tenantLogo': '/assets/images/smarterHeader_logo.png', 'tenantLabel': ''}
-    if metadata and metadata.branding
-      brandingData.tenantLogo = getAbsolutePathForBrandingResource metadata.branding.image if metadata.branding.image
-      brandingData.tenantLabel = truncateContent metadata.branding.display, 50 if metadata.branding.display
-    return brandingData
+  getTenantBrandingData = (metadata) ->
+    return getTenantBranding(metadata, false, false)
 
-  getTenantLevelBrandingDataForPrint = (metadata, isGrayscale) ->
-    brandingData = {'tenantLogo': '/assets/images/smarter_printlogo.png', 'tenantLabel': '', 'tenantLogoHeight': '47', 'tenantLogoWideth': '150'}
+  getTenantBrandingDataForPrint = (metadata, isGrayscale) ->
+    return getTenantBranding(metadata, true, isGrayscale)
+  
+  getTenantBranding = (metadata, isPrint, isGrayscale) ->
+    defaultLogo = '/assets/images/smarterHeader_logo.png'
+    if isPrint
+      defaultLogo = if isGrayscale then '/assets/images/smarter_printlogo_gray.png' else '/assets/images/smarter_printlogo.png'
+    brandingData = {'tenantLogo': defaultLogo, 'tenantLabel': '', 'tenantLogoHeight': '47', 'tenantLogoWidth': '150'}
     if metadata and metadata.branding
       brandingData.tenantLogo = getAbsolutePathForBrandingResource metadata.branding.image if metadata.branding.image
       brandingData.tenantLabel = truncateContent metadata.branding.display, 50 if metadata.branding.display
       brandingData.tenantLogoHeight = '' if metadata.branding.image
       brandingData.tenantLogoWidth = '' if metadata.branding.image
-    else if isGrayscale
-        brandingData.tenantLogo = "../images/smarter_printlogo_gray.png"
     return brandingData
 
   getConstants: getConstants
@@ -224,5 +224,5 @@ define [
   getBaseURL: getBaseURL
   getAcademicYears: getAcademicYears
   deepFind: deepFind
-  getTenantLevelBrandingData: getTenantLevelBrandingData
-  getTenantLevelBrandingDataForPrint: getTenantLevelBrandingDataForPrint
+  getTenantBrandingData: getTenantBrandingData
+  getTenantBrandingDataForPrint: getTenantBrandingDataForPrint

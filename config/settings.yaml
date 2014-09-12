@@ -494,6 +494,8 @@ qa:
         idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+      oauth2:
+        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo
     hpz:
       file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
       file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
@@ -681,6 +683,8 @@ uat:
         idp_server_login_url: https://betaauth.smarterbalancedreporting.org/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
+      oauth2:
+        idp_server_verify_url: https://betaauth.smarterbalancedreporting.org/auth/oauth2/tokeninfo
     hpz:
         file_registration_url: https://hpzweb0.dmo.som.edwdc.net:8443/registration
         file_upload_base_url: https://hpzweb0.dmo.som.edwdc.net:8443/files
@@ -768,6 +772,8 @@ localOpenAM:
         idp_server_logout_url: http://local.slidev.org:8080/openam/IDPSloRedirect/metaAlias/idp
         issuer_name: http://local.slidev.org:6543/sp.xml
         name_qualifier: http://local.slidev.org:8080/openam
+      oauth2:
+        idp_server_verify_url: http://local.slidev.org:8080/auth/oauth2/tokeninfo
     mode: dev
     hpz:
         file_registration_url: http://localhost/registration
@@ -849,6 +855,8 @@ development:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+      oauth2:
+        idp_server_verify_url: https://drc-dev-secure.opentestsystem.org/auth/oauth2/tokeninfo?realm=/sbac
 
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
@@ -920,6 +928,8 @@ test:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+    oauth2:
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     # Celery config
@@ -974,6 +984,8 @@ integration:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+      oauth2:
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
@@ -1023,6 +1035,8 @@ jenkins_int:
         idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+      oauth2:
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf
@@ -1091,6 +1105,8 @@ jenkins_dev:
         idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+      oauth2:
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf
@@ -1138,10 +1154,12 @@ air:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url: http://drcamp-dev.opentestsystem.org:8080/auth/SSORedirect/metaAlias/sbac/idp
-        idp_server_logout_url: http://drcamp-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp
+        idp_server_login_url: https://drc-dev-secure.opentestsystem.org/auth/SSORedirect/metaAlias/sbac/idp
+        idp_server_logout_url: https://drc-dev-secure.opentestsystem.org/auth/IDPSloRedirect/metaAlias/sbac/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://drcamp-dev.opentestsystem.org:8080/auth
+      oauth2:
+        idp_server_verify_url: https://drc-dev-secure.opentestsystem.org/auth/oauth2/tokeninfo?realm=/sbac
       idp:
         metadata: ../../resource/air_idp_metadata.xml
     # Don't cache any static contents

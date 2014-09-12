@@ -27,6 +27,8 @@ import pyramid.security
 from edauth.security.exceptions import NotAuthorized
 from edauth.security.logging import SECURITY_EVENT_TYPE, write_security_event
 from edauth import idp_initiated
+from requests import post
+from requests.api import get
 
 
 @forbidden_view_config()
@@ -43,7 +45,6 @@ def login(request):
     forbidden_view_config decorator indicates that this is the route to redirect to when an user
     has no access to a page
     '''
-    url = request.registry.settings['auth.saml.idp_server_login_url']
 
     # Get session id from cookie
     session_id = unauthenticated_userid(request)
@@ -63,6 +64,20 @@ def login(request):
     if session_id is not None:
         expire_session(session_id)
 
+    handlers = [_handle_OAUTH2_Implicit_login_flow, _handle_SAML2_login_flow]
+    for handler in handlers:
+        response = handler(request)
+        if response is not None:
+            return response
+
+    return HTTPForbidden()
+
+
+def _get_user_destination(request):
+    '''
+    Get original user requested URL or a default location
+    @param request: current request
+    '''
     if request.is_xhr:
         # If it's a xhr request, use the referrer URL
         referrer = request.referrer
@@ -71,13 +86,30 @@ def login(request):
 
     if referrer == request.route_url('login'):
         # Never redirect back to login page
-        # TODO make it a const
-        # TODO: landing page
         referrer = request.route_url('list_of_reports')
 
+    return referrer
+
+
+def _handle_OAUTH2_Implicit_login_flow(request):
+    bearer = request.headers.get("bearer", None)
+    if bearer is not None:
+        verify_url = request.registry.settings['auth.oauth2.idp_server_verify_url']
+        timeout = request.registry.settings.get('auth.oauth2.idp_server_verify_url.timeout', 10)
+        headers = {"Content-Type": "application/x-www-form-urlenocded"}
+        response = get(verify_url, params={"access_token": bearer}, timeout=timeout, headers=headers)
+        response.raise_for_status()
+        identity_parser_class = _load_class(request.registry.settings.get('auth.oauth2.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
+        session_id = _create_session(request, response.json(), None, None, identity_parser_class)
+        headers = remember(request, session_id)
+        return HTTPFound(location=_get_user_destination(request), headers=headers)
+
+
+def _handle_SAML2_login_flow(request):
+    url = request.registry.settings['auth.saml.idp_server_login_url']
     # TODO:  This doesn't handle POST requests
     # Split the url to read query params for saml_login
-    split_url = urlsplit(referrer)
+    split_url = urlsplit(_get_user_destination(request))
     query_params = parse_qs(split_url.query, keep_blank_values=True)
     last_saml_time = query_params.get('sl')
     current_time = datetime.now().strftime('%s')
@@ -98,7 +130,6 @@ def login(request):
     url_query_params = urllib.parse.urlencode(query_params, doseq=True)
     new_url = (split_url[0], split_url[1], split_url[2], url_query_params, split_url[4])
     referrer = urlunsplit(new_url)
-
     params = {'RelayState': _get_cipher().encrypt(referrer)}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
@@ -113,7 +144,6 @@ def login(request):
     if request.is_xhr:
         return HTTPUnauthorized(body=json.dumps({'redirect': redirect_url}), content_type='application/json')
 
-    # Redirect to openam
     return HTTPFound(location=redirect_url)
 
 
@@ -177,6 +207,27 @@ def logout(request):
     return HTTPFound(location=url, headers=headers)
 
 
+def _load_class(identity_parser_name):
+    identity_parser_array = identity_parser_name.split('.')
+    loading_class = identity_parser_array.pop()
+    # Reflection to load identity parser class
+    module = __import__('.'.join(identity_parser_array), fromlist=[loading_class])
+    return getattr(module, loading_class)
+
+
+def _create_session(request, user_info_response, name_id, session_index, identity_parser_class):
+    session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
+    session_id = create_new_user_session(user_info_response, name_id, session_index, identity_parser_class, session_timeout).get_session_id()
+
+    # If user doesn't have a Tenant, return 403
+    if get_user_session(session_id).get_tenants() is None:
+        write_security_event('No Tenant was found.  Rejecting User', SECURITY_EVENT_TYPE.WARN, session_id)
+        raise NotAuthorized()
+
+    write_security_event("SAML response processed successfully", SECURITY_EVENT_TYPE.INFO, session_id=session_id)
+    return session_id
+
+
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')
 def saml2_post_consumer(request):
     '''
@@ -200,25 +251,13 @@ def saml2_post_consumer(request):
     if condition and status and (__skip_verification or signature):
 
         # create a session
-        session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
-        identity_parser_name = request.registry.settings.get('auth.saml.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser')
-        identity_parser_array = identity_parser_name.split('.')
-        loading_class = identity_parser_array.pop()
-        # Reflection to load identity parser class
-        module = __import__('.'.join(identity_parser_array), fromlist=[loading_class])
-        identity_parser_class = getattr(module, loading_class)
-        session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), identity_parser_class, session_timeout).get_session_id()
-
-        # If user doesn't have a Tenant, return 403
-        if get_user_session(session_id).get_tenants() is None:
-            write_security_event('No Tenant was found.  Rejecting User', SECURITY_EVENT_TYPE.WARN, session_id)
-            raise NotAuthorized()
+        identity_parser_class = _load_class(request.registry.settings.get('auth.saml.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
+        saml = __SAMLResponse_manager.get_SAMLResponse()
+        assertion = saml.get_assertion()
+        session_id = _create_session(request, assertion.get_attributes(), assertion.get_name_id(), assertion.get_session_index(), identity_parser_class)
 
         # Save session id to cookie
         headers = remember(request, session_id)
-
-        write_security_event("SAML response processed successfully", SECURITY_EVENT_TYPE.INFO, session_id=session_id)
-
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports
         # TODO: Need a landing other page

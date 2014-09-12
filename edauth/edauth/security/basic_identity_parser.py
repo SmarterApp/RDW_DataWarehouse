@@ -10,6 +10,8 @@ import re
 from edauth.security.roles import Roles
 from edauth.security.user import RoleRelation
 from edcore.security.tenant import get_state_code_mapping
+from edauth.security.session import Session
+import uuid
 
 
 class BasicIdentityParser(IdentityParser):
@@ -75,3 +77,53 @@ class BasicIdentityParser(IdentityParser):
         roles = BasicIdentityParser.get_roles(attributes)
         tenants = BasicIdentityParser.get_tenant_name(attributes)
         return [RoleRelation(roles[0], tenants[0], get_state_code_mapping(tenants)[0], None, None)]
+
+    @staticmethod
+    def create_session(name, session_index, attributes, last_access, expiration):
+        '''
+        populate session from SAMLResponse
+        '''
+        # make a UUID based on the host ID and current time
+        __session_id = str(uuid.uuid4())
+
+        # get Attributes
+        __attributes = attributes
+        __name_id = name
+        session = Session()
+        session.set_session_id(__session_id)
+        session.set_name_id(__name_id)
+        # get fullName
+        fullName = __attributes.get('fullName')
+        if fullName is not None:
+            session.set_fullName(fullName[0])
+
+        # get firstName
+        firstName = __attributes.get('firstName')
+        if firstName is not None:
+            session.set_firstName(firstName[0])
+
+        # get lastName
+        lastName = __attributes.get('lastName')
+        if lastName is not None:
+            session.set_lastName(lastName[0])
+
+        # get uid
+        if 'uid' in __attributes:
+            if __attributes['uid']:
+                session.set_uid(__attributes['uid'][0])
+
+        # get guid
+        guid = __attributes.get('guid')
+        if guid is not None:
+            session.set_guid(guid[0])
+
+        # get Identity specific parsing values
+        session.set_user_context(BasicIdentityParser.get_role_relationship_chain(__attributes))
+
+        session.set_expiration(expiration)
+        session.set_last_access(last_access)
+
+        # get auth response session index that identifies the session with identity provider
+        session.set_idp_session_index(session_index)
+
+        return session

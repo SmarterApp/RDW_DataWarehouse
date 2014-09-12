@@ -12,7 +12,8 @@ install_requires = [
     'apscheduler==2.1.1',
     'Beaker==1.6.4',
     'zope.component==4.1.0',
-    'zope.interface==4.0.3']
+    'zope.interface==4.0.3',
+    'requests == 2.2.1']
 
 tests_require = [
     'WebTest == 1.3.6',  # py3 compat

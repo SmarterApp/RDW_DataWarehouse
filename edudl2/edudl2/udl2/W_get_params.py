@@ -30,16 +30,16 @@ def task(msg):
     academic_year = get_academic_year_param(expanded_dir, msg[mk.LOAD_TYPE])
     if msg[mk.LOAD_TYPE] == Constants.LOAD_TYPE_STUDENT_REGISTRATION:
         student_reg_guid, reg_system_id, callback_url, emailnotification = get_callback_params_for_studentregistration(expanded_dir)
-        notification.update({NotificationConstants.Constants.STUDENT_REG_GUID: student_reg_guid})
-        notification.update({NotificationConstants.Constants.REG_SYSTEM_ID: reg_system_id})
-        notification.update({NotificationConstants.Constants.CALLBACK_URL: callback_url})
-        notification.update({NotificationConstants.Constants.ACADEMIC_YEAR: academic_year})
-        notification.update({NotificationConstants.Constants.EMAILNOTIFICATION: emailnotification})
+        notification.update({NotificationConstants.STUDENT_REG_GUID: student_reg_guid})
+        notification.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
+        notification.update({NotificationConstants.CALLBACK_URL: callback_url})
+        notification.update({NotificationConstants.ACADEMIC_YEAR: academic_year})
+        notification.update({NotificationConstants.EMAILNOTIFICATION: emailnotification})
     elif msg[mk.LOAD_TYPE] == Constants.LOAD_TYPE_ASSESSMENT:
         reg_system_id, callback_url, emailnotification = get_callback_params_for_assessment(expanded_dir)
-        notification.update({NotificationConstants.Constants.REG_SYSTEM_ID: reg_system_id})
-        notification.update({NotificationConstants.Constants.CALLBACK_URL: callback_url})
-        notification.update({NotificationConstants.Constants.EMAILNOTIFICATION: emailnotification})
+        notification.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
+        notification.update({NotificationConstants.CALLBACK_URL: callback_url})
+        notification.update({NotificationConstants.EMAILNOTIFICATION: emailnotification})
 
     logger.info('W_GET_CALLBACK_URL: Callback URL is <%s>' % callback_url)
     end_time = datetime.datetime.now()
@@ -49,15 +49,15 @@ def task(msg):
 
     #update udl_stat
     if notification:
-        notification.update({NotificationConstants.Constants.SR_NOTIFICATION_MAX_ATTEMPTS: udl2_conf[NotificationConstants.Constants.SR_NOTIFICATION_MAX_ATTEMPTS]})
-        notification.update({NotificationConstants.Constants.SR_NOTIFICATION_RETRY_INTERVAL: udl2_conf[NotificationConstants.Constants.SR_NOTIFICATION_RETRY_INTERVAL]})
-        notification.update({NotificationConstants.Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[NotificationConstants.Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL]})
+        notification.update({NotificationConstants.SR_NOTIFICATION_MAX_ATTEMPTS: udl2_conf[NotificationConstants.SR_NOTIFICATION_MAX_ATTEMPTS]})
+        notification.update({NotificationConstants.SR_NOTIFICATION_RETRY_INTERVAL: udl2_conf[NotificationConstants.SR_NOTIFICATION_RETRY_INTERVAL]})
+        notification.update({NotificationConstants.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[NotificationConstants.SR_NOTIFICATION_TIMEOUT_INTERVAL]})
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION: json.dumps(notification)})
 
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({NotificationConstants.Constants.STUDENT_REG_GUID: student_reg_guid})
-    outgoing_msg.update({NotificationConstants.Constants.REG_SYSTEM_ID: reg_system_id})
-    outgoing_msg.update({NotificationConstants.Constants.CALLBACK_URL: callback_url})
-    outgoing_msg.update({NotificationConstants.Constants.ACADEMIC_YEAR: academic_year})
+    outgoing_msg.update({NotificationConstants.STUDENT_REG_GUID: student_reg_guid})
+    outgoing_msg.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
+    outgoing_msg.update({NotificationConstants.CALLBACK_URL: callback_url})
+    outgoing_msg.update({NotificationConstants.ACADEMIC_YEAR: academic_year})
     return outgoing_msg

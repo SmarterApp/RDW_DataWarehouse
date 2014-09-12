@@ -154,13 +154,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     # Validate that the notification to the callback url matches the status, with a certain number of retries attempted
     def validate_notification(self, expected_status, expected_error_codes, expected_retries):
-        # If there are job notification retries, wait for job notification to finish.
-        if expected_retries > 0:
-            retry_interval = udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL]
-            expected_duration = expected_retries * retry_interval
-            max_wait_time = expected_duration + (retry_interval / 2)
-            self.check_notification_completion(max_wait=max_wait_time)
-
         # Get the job results.
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
@@ -176,9 +169,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                     self.assertEqual(expected_retries, num_retries, 'Incorrect number of retries')
                     for error_code in expected_error_codes:
                         self.assertTrue(error_code in errors)
-                if expected_retries > 0:
-                    duration = row['duration'].seconds
-                    self.assertGreaterEqual(duration, expected_duration)
 
     #Run the UDL pipeline
     def run_udl_pipeline(self, file_to_load, max_wait=30):
@@ -195,20 +185,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase],
                            and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
-            timer = 0
-            result = connector.execute(query).fetchall()
-            while timer < max_wait and not result:
-                sleep(0.25)
-                timer += 0.25
-                result = connector.execute(query).fetchall()
-            self.assertTrue(result, "No result retrieved")
-
-    #Check the batch table periodically for completion of the UDL job status notification, waiting up to max_wait seconds
-    def check_notification_completion(self, max_wait=30):
-        with get_udl_connection() as connector:
-            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            query = select([batch_table.c.udl_phase],
-                           and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             timer = 0
             result = connector.execute(query).fetchall()
             while timer < max_wait and not result:

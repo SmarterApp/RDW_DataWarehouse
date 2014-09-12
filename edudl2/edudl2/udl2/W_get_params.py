@@ -54,4 +54,10 @@ def task(msg):
         notification.update({NotificationConstants.Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[NotificationConstants.Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL]})
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION: json.dumps(notification)})
 
-    return msg
+    outgoing_msg = {}
+    outgoing_msg.update(msg)
+    outgoing_msg.update({NotificationConstants.Constants.STUDENT_REG_GUID: student_reg_guid})
+    outgoing_msg.update({NotificationConstants.Constants.REG_SYSTEM_ID: reg_system_id})
+    outgoing_msg.update({NotificationConstants.Constants.CALLBACK_URL: callback_url})
+    outgoing_msg.update({NotificationConstants.Constants.ACADEMIC_YEAR: academic_year})
+    return outgoing_msg

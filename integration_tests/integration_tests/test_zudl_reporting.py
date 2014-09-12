@@ -33,7 +33,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
     def setUpClass(cls):
         initialize_all_db(udl2_conf, udl2_flat_conf)
         cls.delete_prod_tables(cls)
-        cls.expected_unique_batch_guids = 95
+        cls.expected_unique_batch_guids = 47
         cls.here = os.path.dirname(__file__)
         cls.data_dir = os.path.join(cls.here, "data", "udl_to_reporting_e2e_integration")
         cls.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_1/filedrop/'

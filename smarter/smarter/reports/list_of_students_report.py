@@ -143,7 +143,7 @@ def format_assessments(results, subjects_map):
         subject = subjects_map[result['asmt_subject']]
         assessment = student.get(subject, {})
         assessment['group'] = []  # for student group filter
-        for i in range(1, 10):
+        for i in range(1, 11):
             if result['group_{count}_id'.format(count=i)] is not None:
                 assessment['group'].append(result['group_{count}_id'.format(count=i)])
         assessment['asmt_grade'] = result['asmt_grade']
@@ -163,23 +163,14 @@ def format_assessments(results, subjects_map):
 
 def get_group_filters(results):
     # TODO: use list comprehension, format grouping information for filters
-    all_groups = []
-    for i in range(10):
-        all_groups.append(set())
+    all_groups = set()
     for result in results:
-        for i in range(1, 10):
+        for i in range(1, 11):
             if result['group_{i}_id'.format(i=i)]:
-                all_groups[i - 1].add((result['group_{i}_id'.format(i=i)], result['group_{i}_text'.format(i=i)]))
+                all_groups.add((result['group_{i}_id'.format(i=i)], result['group_{i}_text'.format(i=i)]))
 
-    filters = []
-    for idx in range(10):
-        group = all_groups[idx]
-        options = [{"value": k, "label": v} for k, v in group]
-        if not options:
-            # exclude empty group
-            continue
-        filters.append(options[0])
-    filters = sorted(filters, key=lambda k: k['label'])
+    options = [{"value": k, "label": v} for k, v in all_groups]
+    filters = sorted(options, key=lambda k: k['label'])
     return filters
 
 

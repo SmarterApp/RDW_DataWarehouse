@@ -186,8 +186,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
 
     def test_get_group_filters_group_1_only(self):
         groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None, 'group_3_id': None, 'group_4_id': None, 'group_5_id': None, 'group_6_id': None, 'group_7_id': None,
-                   'group_8_id': None, 'group_9_id': None, 'group_10_id': None}, {'group_1_id': 'id2', 'group_1_text': 'foo', 'group_2_id': None, 'group_3_id': None, 'group_4_id': None,
-                                                                                  'group_5_id': None, 'group_6_id': None, 'group_7_id': None, 'group_8_id': None, 'group_9_id': None, 'group_10_id': None}]
+                   'group_8_id': None, 'group_9_id': None, 'group_10_id': None}]
         results = get_group_filters(groups)
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]), 2)

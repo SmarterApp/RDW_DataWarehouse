@@ -29,7 +29,6 @@ def configure_celery(conf, celery):
                        CELERYD_LOG_LEVEL=conf['logging']['level'],
                        CELERYD_LOG_FILE=conf['logging']['audit'],
                        CELERY_QUEUES=tuple(queues.values()))
-    celery.conf["CELERY_ALWAYS_EAGER"] = True
     return celery
 
 

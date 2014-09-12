@@ -54,7 +54,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         #self.here = os.path.dirname(__file__)
         #cls.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
         self.sr_data_dir = os.path.join(TestUDLReportingIntegration.here, "data", "udl_to_sr_reporting_e2e_integration")
-        self.expected_rows = 1161
+        self.expected_rows = 675
         # TODO EXPECTED_ROWS should be 1186
         empty_stats_table(self)
  
@@ -131,7 +131,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         #Run udl on assessment data (3 rows, math summative)
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_math_summative_assesment.tar.gz.gpg'))
         #Batch table should now have udl success for 6 batches
-        self.validate_udl_database(6, max_wait=35)
+        self.validate_udl_database(5, max_wait=35)
   
         #----RUN 7----
         #Run udl on assessment data (3 rows, ela summative)
@@ -234,7 +234,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
                 timer += 0.25
                 all_successful_batch_guids = connector.get_result(success_query)
 
-            self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "56 guids not found.")
+            self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "6 guids not found.")
 
     def copy_file_to_tenant_dir(self, data_dir, expected_unique_batch_guids):
         '''

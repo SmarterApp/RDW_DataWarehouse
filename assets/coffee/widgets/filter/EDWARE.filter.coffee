@@ -338,17 +338,12 @@ define [
         return true
 
       grouping: (subject) ->
-        occurs = false
-        numberOfFilters = 0
-        for studentGroupFiltersChosen, index of filters.studentGroupId
-          numberOfFilters = numberOfFilters + 1
-          if index in subject.group
-            occurs = true
-        no_filter = numberOfFilters == 0
-        if no_filter
-          return no_filter
-        else
-          return occurs
+        if not filters.studentGroupId
+          return true
+        for groupId in filters.studentGroupId
+          if groupId in subject.group
+            return true
+        return false
     }
 
 

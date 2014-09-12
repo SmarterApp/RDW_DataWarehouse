@@ -41,8 +41,8 @@ def _create_stats_row(msg, end_time, status):
         if msg[mk.LOAD_TYPE] == LoadType.STUDENT_REGISTRATION:
             stats[UdlStatsConstants.BATCH_OPERATION] = UdlStatsConstants.SNAPSHOT
             snapshot_criteria = {}
-            snapshot_criteria['reg_system_id'] = msg.get(mk.REG_SYSTEM_ID)
-            snapshot_criteria['academic_year'] = msg.get(mk.ACADEMIC_YEAR)
+            snapshot_criteria['reg_system_id'] = msg.get(NotificationConstants.REG_SYSTEM_ID)
+            snapshot_criteria['academic_year'] = msg.get(NotificationConstants.ACADEMIC_YEAR)
             stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = json.dumps(snapshot_criteria)
     else:
         stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_FAILED

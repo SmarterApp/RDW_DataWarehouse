@@ -101,50 +101,6 @@
 
 <div id="legendTemplatePrint" class="content printContent">
     <h3>{{labels.legend}}</h3>
-    <div class="row">
-        <div class="span5">
-            <h4>{{labels.achievement_level_descriptors}}:</h4>
-            <table class="table edware-table-bordered edware-table-center">
-                <thead>
-                    <tr>
-                        <th style="width:11%;">{{labels.color}}</th>
-                        <th>{{labels.description}}</th>
-                        <th>{{labels.score_range}}</th>
-                    </tr>
-                </thead>
-                {{#ALDs}}
-                <tr>
-                    <td style="text-align: center;"><i class="edware-icon-ALD-color" style="background-color:{{color}} !important;"></i></td>
-                    <td class="blackText"><strong>{{description}}</strong></td>
-                    <td class="blackText"><strong>{{range}}</strong></td>
-                </tr>
-                {{/ALDs}}
-            </table>
-        </div>
-        <div class="span7 edware-border-left">
-            <div>
-                <h4>{{labels.claim_score_details}}:</h4>
-                <table class="table edware-table-bordered edware-table-center">
-                    <thead>
-                        <tr>
-                            <th style="width: 30px;">{{labels.icon}}</th>
-                            <th style="width: 150px;" >{{labels.description}}</th>
-                            <th>{{labels.meaning}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#legendInfo.performance_levels}}
-                        <tr>
-                            <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
-                            <td class="blackText"><strong>{{desc}}</strong></td>
-                            <td style="font-size: 14px;">{{meaning}}</td>
-                        </tr>
-                        {{/legendInfo.performance_levels}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
     <hr>
     <div class="row">
         <div class="overall_score_wrapper span12">

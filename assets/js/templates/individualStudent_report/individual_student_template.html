@@ -77,7 +77,7 @@
             </div>
         </div>
         {{#accommodations}}
-        <div class="accommodationSection clearfix">
+        <div class="accommodationSection clearfix screenContent">
             <div class="content">
                 <h4>{{labels.accommodations}}</h4>
                 <div id="accommodationScreenReader{{count}}" aria-labelledby="accommodationScreenReader{{count}}">
@@ -128,23 +128,5 @@
             <h3>{{labels.report_info}}:</h3>
         </div>
     </div>
-    {{#current.0}}
-    <div class="assessmentOtherInfo printContent">
-        <ul class="unstyled">
-            {{#psychometric_implications}}
-            <li class="inline">
-                <h3>{{labels.practical_implications}}</h3>
-                <div class="desc">{{{psychometric_implications}}}</div>
-            </li>
-            {{/psychometric_implications}}
-            {{#policy_content}}
-            <li class="inline">
-                <h3>{{labels.policy_information}}</h3>
-                <div class="desc">{{{policy_content}}}</div>
-            </li>
-            {{/policy_content}}
-        </ul>
-    </div>
-    {{/current.0}}
     <div class="legendPopup"></div>
 </div>

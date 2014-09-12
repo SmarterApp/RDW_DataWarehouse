@@ -13,6 +13,7 @@ from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 import json
 from edcore.notification.Constants import Constants as NotificationConstants
+from edudl2.udl2_util.util import merge_to_udl2stat_notification
 
 
 logger = get_task_logger(__name__)
@@ -65,7 +66,6 @@ def task(msg):
 
     # infer overall pipeline_status based on previous pipeline_state
     pipeline_status = NotificationConstants.FAILURE if mk.PIPELINE_STATE in msg and msg.get(mk.PIPELINE_STATE) == 'error' else NotificationConstants.SUCCESS
-
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE',
                                     start_time, end_time, udl_phase_step_status=pipeline_status,
                                     tenant=msg.get(mk.TENANT_NAME))
@@ -76,4 +76,6 @@ def task(msg):
     report_batch_to_udl_stats(msg, end_time, pipeline_status)
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time, pipeline_status)
+    # update udl_stat for notification
+    merge_to_udl2stat_notification(guid_batch, {NotificationConstants.UDL_PHASE_STEP_STATUS: pipeline_status, NotificationConstants.UDL_PHASE: 'UDL_COMPLETE'})
     return msg

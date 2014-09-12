@@ -54,7 +54,7 @@ class ValidateTableData(unittest.TestCase):
     #Run the UDL with specified file
     def run_udl_with_file(self, guid_batch, file_to_load):
         arch_file = self.copy_file_to_tmp(file_to_load)
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
+        command = "/Users/tosako/development/virtual/edware/bin/python {driver_path} --dev -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch)
 

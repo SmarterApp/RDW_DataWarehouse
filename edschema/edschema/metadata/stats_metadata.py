@@ -22,7 +22,9 @@ def generate_stats_metadata(schema_name=None, bind=None):
                       Column('last_pdf_task_requested', DateTime, nullable=True),
                       Column('last_pre_cached', DateTime, nullable=True),
                       Column('batch_operation', String(1), nullable=True),
-                      Column('snapshot_criteria', String(), nullable=True)
+                      Column('snapshot_criteria', String(), nullable=True),
+                      Column('notification', String(), nullable=True),
+                      Column('notification_status', String(), nullable=True)
                       )
     Index('udl_stats_load_status_type_idx', udl_stats.c.load_status, udl_stats.c.load_type, unique=False)
 

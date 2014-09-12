@@ -49,14 +49,6 @@ common:
       echo: False
       max_overflow: 0
       pool_size: 2
-    student_reg_guid_key:
-        studentregistration: identification.guid
-    reg_system_id_key:
-        studentregistration: source.testregsysid
-    callback_url_key:
-        studentregistration: source.testregcallbackurl
-    academic_year_key:
-        studentregistration: identification.academicyear
     sr_notification_max_attempts: 5
     sr_notification_retry_interval: 30
     sr_notification_timeout_interval: 30

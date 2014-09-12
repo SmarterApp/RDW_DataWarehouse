@@ -28,6 +28,8 @@ def task(msg):
 
     notification = {}
     academic_year = get_academic_year_param(expanded_dir, msg[mk.LOAD_TYPE])
+    outgoing_msg = {}
+    outgoing_msg.update(msg)
     if msg[mk.LOAD_TYPE] == Constants.LOAD_TYPE_STUDENT_REGISTRATION:
         student_reg_guid, reg_system_id, callback_url, emailnotification = get_callback_params_for_studentregistration(expanded_dir)
         notification.update({NotificationConstants.STUDENT_REG_GUID: student_reg_guid})
@@ -35,6 +37,10 @@ def task(msg):
         notification.update({NotificationConstants.CALLBACK_URL: callback_url})
         notification.update({NotificationConstants.ACADEMIC_YEAR: academic_year})
         notification.update({NotificationConstants.EMAILNOTIFICATION: emailnotification})
+        outgoing_msg.update({NotificationConstants.STUDENT_REG_GUID: student_reg_guid})
+        outgoing_msg.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
+        outgoing_msg.update({NotificationConstants.CALLBACK_URL: callback_url})
+        outgoing_msg.update({NotificationConstants.ACADEMIC_YEAR: academic_year})
     elif msg[mk.LOAD_TYPE] == Constants.LOAD_TYPE_ASSESSMENT:
         reg_system_id, callback_url, emailnotification = get_callback_params_for_assessment(expanded_dir)
         notification.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
@@ -54,10 +60,4 @@ def task(msg):
         notification.update({NotificationConstants.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[NotificationConstants.SR_NOTIFICATION_TIMEOUT_INTERVAL]})
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION: json.dumps(notification)})
 
-    outgoing_msg = {}
-    outgoing_msg.update(msg)
-    outgoing_msg.update({NotificationConstants.STUDENT_REG_GUID: student_reg_guid})
-    outgoing_msg.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
-    outgoing_msg.update({NotificationConstants.CALLBACK_URL: callback_url})
-    outgoing_msg.update({NotificationConstants.ACADEMIC_YEAR: academic_year})
     return outgoing_msg

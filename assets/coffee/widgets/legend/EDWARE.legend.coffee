@@ -113,7 +113,9 @@ define [
       $('#legendTemplate .isrBarDetails .isrPerfBarSmall', container).html(output)
       # show 640px performance bar on pdf
       output = edwareConfidenceLevelBar.create subject, 640
-      $('#legendTemplatePrint .confidenceLevel', container).html(output)
+      $('#legendTemplatePrint .isrPerfBar', container).html(output)
+      output = edwareConfidenceLevelBar.create smallSample, 260
+      $('#legendTemplatePrint .isrPerfBarSmall', container).html(output)
 
   # Legend section on list of students report
   class LOSLegend extends Legend

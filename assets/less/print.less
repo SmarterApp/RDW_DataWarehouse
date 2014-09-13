@@ -183,7 +183,6 @@
       margin-bottom: 30px;
       border-left: solid 1px @color-B5;
     }
-
   }
 
   body.isr {
@@ -231,7 +230,6 @@
       &.ELA {
         h4 { max-width: 135px; }
       }
-
     }
 
     .exportPopup {display: none;}
@@ -283,9 +281,9 @@
           }
           font-size: 15px;
         }
-
       }
     }
+
     .contentWrapper {
       .overallScoreSection {
         .info {
@@ -421,20 +419,306 @@
 
         position: relative;
 
-        .confidenceLevel {
+        img {
+          transform: none !important;        
+        }
 
-          margin: 0 0 0 80px;
+        table {
+          td {
+            line-height: 12px;
+            text-align: left;
+            font-size: 11px;
+            width: 115px;
+          }
+        }
+
+        .legendBarSection {
+          max-height: 150px;
+        }
+
+        .isrPerfBar {
+          position: relative;
+          height: 79px;
+          left: 25px;
+          margin-top: -10px;
+          margin-left: 30px;
           display: inline-block;
-          height: 100px;
 
-          .aldDescText { display: none; }
+          .progressbar_indicator440 {
+            background-image: url("../images/css_images.png");
+            background-position: -1238px 0;
+            width: 18px;
+            margin-top: 30px;
+            margin-left: 130px !important;
+          }
 
-          .progressbar_indicator640 {
-            background-position: -1255px 0;
-            width: 20px;
+          .progress {
+            margin-top: -10px;
+            margin-left: -40px;
+            height: 30px;
+            width: 640px !important;
+          }
+
+          .overall_score {
+            font-size: 18px;
+            margin-left: 240px !important;
+          }
+
+          .cutPointsBar {
+            .cutPoints {
+              display: none;
+            }
+          }
+
+          .transImage1, .transImage2 {
+            display: none;
+          }
+
+          .transWrapper {
+            margin-top: 23px;
+          }
+
+          .aldDescText {
+            display: none;
+          }
+        }
+
+        .isr_legend_bracket {
+          position: relative;
+          margin-left: 13px;
+          top: -85px;
+          z-index: 1;
+        }
+
+        .isr_legend_band_left {
+          position: relative;
+          left: -225px;
+          top: -54px;
+        }
+
+        .isr_legend_band_right {
+          position: relative;
+          left: 350px;
+          top: -100px;
+        }
+
+        .isr_achievement_line_1 {
+          position: relative;
+          left: -515px;
+          top: -95px;
+        }
+
+        .isr_achievement_line_2 {
+          position: relative;
+          left: -413px;
+          top: -95px;
+        }
+
+        .isr_achievement_line_3 {
+          position: relative;
+          top: -95px;
+          left: -205px;
+        }
+
+        .isr_achievement_line_4 {
+          position: relative;
+          top: -95px;
+          left: -50px;
+        }
+
+        .isr_achievement_line_5 {
+          position: relative;
+          top: -95px;
+          left: 105px;
+        }
+
+        .isr_score_arrow {
+          position: relative;
+          top: -105px;
+          left: -200px;
+        }
+
+        .achievement_level_scores {
+          position: relative;
+          top: -83px;
+          left: 16px;
+        }
+
+        .pull-left{
+          width: 640px;
+          margin-left: -25px;
+          border-spacing: 1px !important;
+          tbody { 
+            tr {
+              height: 15px;
+            }
+          } 
+        }
+
+        .isr_disclaimer {
+          position: relative;
+          left: 340px;
+          top: -225px;
+        }
+
+
+
+
+
+      } /*overall_score_wrapper end*/
+
+      .error_band {
+
+        position: relative;
+        height: 110px;
+      
+        .isr_legend_score_indicator_bottom {
+          position: relative;
+          left: -47px;
+          top: 38px;
+          z-index: 1;
+        }
+
+        .isr_legend_band_left_bottom {
+          position: relative;
+          left: -140px;
+          top: -79px;
+          height: 47px;
+        }
+
+        .isr_legend_band_right_bottom {
+          position: relative;
+          left: 149px;
+          top: -126px;
+          height: 47px;
+          overflow:hidden;
+        }
+
+        .isr_legend_curly_bracket {
+          position: relative;
+          left: 3px;
+          top: 7px;
+        }
+
+        .isr_legend_error_connector {
+          position: relative;
+          top: -20px;
+          left: 45px;
+        }
+
+        .isr_achievement_line_bottom{
+          position: relative;
+          top: -165px;
+          left: 125px;
+        }
+
+        .score {
+          top: -85px;
+          position: relative;
+        }
+
+        .isr_legend_score_arrow {
+          position: relative;
+          background-repeat: no-repeat;
+          top: -110px;
+          left: 125px;
+          z-index: 99999999;
+        }
+
+        img {
+          transform: none !important;        
+        }
+
+        .isrPerfBarSmall {
+          position: relative;
+          height: 79px;
+          left: 25px;
+          top: 10px;
+          margin-left: 30px;
+          display: inline-block;
+
+          .progressbar_indicator300 {
+            background-image: url("../images/css_images.png");
+            background-position: -1238px 0;
+            width: 18px;
+            margin-top: 30px;
+          }
+
+          .progress {
+            margin-top: -25px;
+            margin-left: -60px;
+            height: 30px;
+            width: 196px !important;
+          }
+      
+          .overall_score { 
+            display: none;
+          }
+
+          .aldDescText {
+            display: none;
+          }
+
+          .cutPointsBar {
+            .cutPoints {
+              font-size: 10px;
+            }
+          }
+
+          .transWrapper {
+            margin-top: 23px;
+          }
+
+          .cutPointsBar {
+            .cutPoints {
+              display: none;
+            }
+          }
+        }
+      } /* end of error_band*/
+      
+      .table.edware-table-bordered.edware-table-center {
+        width: 980px !important;
+        margin-left: -15px !important;
+        border-collapse: separate; 
+        border-spacing: 10px;
+
+        p { 
+          margin-left: 15px;
+          width: 261px; 
+        }
+      
+        tr {
+          max-height: 40px;
+        }
+
+        td {
+          height: 40px;
+          border-radius: 5px;
+          font-size: 11px;
+          margin: 0px;
+          padding: 0px;
+          width: 120px;
+        
+          .icon_perf_level_desc {
+            position: relative;
+            width: 120px;
+            left: 40px;
+            top: -7px;
+          }
+        
+          .icon_perf_level {
+            position: relative;
+            top: 10px;
+            left: 15px;
           }
         }
       }
+
+
+
+
+
 
       .overall_score_lower {
         .ALD_cutpoints { margin-left: 10px; }

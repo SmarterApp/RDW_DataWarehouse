@@ -390,7 +390,10 @@
 
       h4 { font-size: 17px; }
 
-      p { font-size: 14px; }
+      p { 
+        font-size: 14px;
+        color: @color-B2 !important;
+      }
 
       hr { border-top: dashed 1px @color-B4; }
 
@@ -433,15 +436,16 @@
         }
 
         .legendBarSection {
-          max-height: 150px;
+          max-height: 185px;
+          margin-left: 40px;
         }
 
         .isrPerfBar {
           position: relative;
           height: 79px;
           left: 25px;
-          margin-top: -10px;
-          margin-left: 30px;
+          margin-top: 20px;
+          margin-left: 15px;
           display: inline-block;
 
           .progressbar_indicator440 {
@@ -461,7 +465,7 @@
 
           .overall_score {
             font-size: 18px;
-            margin-left: 240px !important;
+            margin-left: 245px !important;
           }
 
           .cutPointsBar {
@@ -483,16 +487,23 @@
           }
         }
 
+        .overall_upperleft {
+          position: relative;
+          left: 5px;
+          top: 4px;
+          z-index: 1;
+        }
+
         .isr_legend_bracket {
           position: relative;
-          margin-left: 13px;
-          top: -85px;
+          left: -3px;
+          top: -90px;
           z-index: 1;
         }
 
         .isr_legend_band_left {
           position: relative;
-          left: -225px;
+          left: -230px;
           top: -54px;
         }
 
@@ -504,53 +515,56 @@
 
         .isr_achievement_line_1 {
           position: relative;
-          left: -515px;
+          left: -531px;
           top: -95px;
         }
 
         .isr_achievement_line_2 {
           position: relative;
-          left: -413px;
+          left: -430px;
           top: -95px;
         }
 
         .isr_achievement_line_3 {
           position: relative;
           top: -95px;
-          left: -205px;
+          left: -222px;
         }
 
         .isr_achievement_line_4 {
           position: relative;
           top: -95px;
-          left: -50px;
+          left: -65px;
         }
 
         .isr_achievement_line_5 {
           position: relative;
           top: -95px;
-          left: 105px;
+          left: 89px;
         }
 
         .isr_score_arrow {
           position: relative;
-          top: -105px;
-          left: -200px;
+          top: -106px;
+          left: -214px;
         }
 
         .achievement_level_scores {
+          color: @color-B2 !important;
           position: relative;
           top: -83px;
-          left: 16px;
         }
 
         .pull-left{
           width: 640px;
-          margin-left: -25px;
+          margin-left: 0px;
           border-spacing: 1px !important;
           tbody { 
             tr {
               height: 15px;
+              td {          
+                color: @color-B2 !important;
+              }
             }
           } 
         }
@@ -560,12 +574,17 @@
           left: 340px;
           top: -225px;
         }
-
-
-
-
-
       } /*overall_score_wrapper end*/
+
+      .achievement_levels {
+        margin-left: 15px;
+      }
+
+      .error_band_section {
+        border-left: solid 1px #e2e2e2;
+        z-index: 1;
+        margin-top: -5px;
+      }
 
       .error_band {
 
@@ -574,42 +593,43 @@
       
         .isr_legend_score_indicator_bottom {
           position: relative;
-          left: -47px;
-          top: 38px;
-          z-index: 1;
+          left: -60px;
+          top: 64px;
+          z-index: 300;
         }
 
         .isr_legend_band_left_bottom {
           position: relative;
-          left: -140px;
-          top: -79px;
+          left: -138px;
+          top: -54px;
           height: 47px;
+          overflow:hidden;
         }
 
         .isr_legend_band_right_bottom {
           position: relative;
-          left: 149px;
-          top: -126px;
+          left: 153px;
+          top: -101px;
           height: 47px;
           overflow:hidden;
         }
 
         .isr_legend_curly_bracket {
           position: relative;
-          left: 3px;
-          top: 7px;
+          left: -10px;
+          top: 30px;
         }
 
         .isr_legend_error_connector {
           position: relative;
-          top: -20px;
-          left: 45px;
+          top: 4px;
+          left: 33px;
         }
 
         .isr_achievement_line_bottom{
           position: relative;
-          top: -165px;
-          left: 125px;
+          top: -139px;
+          left: 130px;
         }
 
         .score {
@@ -632,8 +652,8 @@
         .isrPerfBarSmall {
           position: relative;
           height: 79px;
-          left: 25px;
-          top: 10px;
+          left: 30px;
+          top: 36px;
           margin-left: 30px;
           display: inline-block;
 
@@ -714,11 +734,6 @@
           }
         }
       }
-
-
-
-
-
 
       .overall_score_lower {
         .ALD_cutpoints { margin-left: 10px; }

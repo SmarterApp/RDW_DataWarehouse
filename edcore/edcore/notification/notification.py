@@ -45,7 +45,7 @@ def send_notification(conf):
                                                      load_status,
                                                      notification.get(Constants.UDL_PHASE),
                                                      notification.get(Constants.ERROR_DESC))
-    
+
         notification_status = {}
         callback_error = {}
         email_error = {}
@@ -55,8 +55,8 @@ def send_notification(conf):
             ts = time.time()
             call_back_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             callback_notification_status, callback_notification_error = post_notification(conf.get(Constants.CALLBACK_URL),
-                                                                        conf.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
-                                                                        notification_body)
+                                                                                          conf.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
+                                                                                          notification_body)
             callback_error['notification_status'] = callback_notification_status
             callback_error['notification_error'] = callback_notification_error
         notification_status['call_back'] = {'timestamp': call_back_timestamp, 'status': callback_error}
@@ -73,7 +73,6 @@ def send_notification(conf):
                 email_error['email'] = email_notification_error
         notification_status['email'] = {'timestamp': email_timestamp, 'status': email_error}
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION_STATUS: json.dumps(notification_status)})
-        
 
 
 def create_notification_body(load_type, guid_batch, batch_table, id, test_registration_id, row_count, udl_load_status, udl_phase, error_desc):

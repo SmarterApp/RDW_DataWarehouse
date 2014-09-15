@@ -29,4 +29,3 @@ class Constants():
     ERROR_DESC = 'error_desc'
     MAIL_SERVER = 'migrate.notification.mail_server'
     MAIL_SENDER = 'migrate.notification.mail_sender'
-

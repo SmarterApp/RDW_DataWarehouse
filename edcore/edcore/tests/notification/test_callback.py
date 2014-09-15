@@ -48,7 +48,6 @@ class Test(unittest.TestCase):
         self.assertEqual(notification_error, 'hello')
 
 
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_post_notification']
     unittest.main()

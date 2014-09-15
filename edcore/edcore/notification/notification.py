@@ -2,8 +2,11 @@ import logging
 from edcore.notification.constants import Constants
 from edcore.notification.callback import post_notification
 from edcore.notification.mail import send_notification_email
+from edcore.database.utils.constants import UdlStatsConstants, LoadType
+import json
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
-from edcore.database.utils.constants import UdlStatsConstants
+import time
+import datetime
 
 '''
 This package contains the methods needed to post notification of the status, and any errors,
@@ -22,43 +25,60 @@ def send_notification(conf):
 
     :return: Notification status and any error messages
     '''
-
-    guid_batch = conf.get(Constants.GUID_BATCH)
-    call_back = conf.get(Constants.CALLBACK_URL)
-    emailnotification = conf.get(Constants.EMAILNOTIFICATION)
+    notification_error = None
+    email_notification_error = None
+    notification_conf = json.loads(conf.get(UdlStatsConstants.NOTIFICATION))
+    notification = notification_conf if notification_conf is not None and notification_conf else {}
+    guid_batch = conf.get(UdlStatsConstants.BATCH_GUID)
+    call_back = notification.get(Constants.CALLBACK_URL)
+    emailnotification = notification_conf.get(Constants.EMAILNOTIFICATION)
     mail_server = conf.get(Constants.MAIL_SERVER)
     mail_sender = conf.get(Constants.MAIL_SENDER)
-    notification_body = create_notification_body(guid_batch,
-                                                 conf.get(Constants.BATCH_TABLE),
-                                                 conf.get(Constants.STUDENT_REG_GUID),
-                                                 conf.get(Constants.REG_SYSTEM_ID),
-                                                 conf.get(Constants.TOTAL_ROWS_LOADED, 0),
-                                                 conf.get(Constants.UDL_PHASE_STEP_STATUS),
-                                                 conf.get(Constants.UDL_PHASE),
-                                                 conf.get(Constants.ERROR_DESC))
+    load_status = conf.get(UdlStatsConstants.LOAD_STATUS)
+    load_type = conf.get(UdlStatsConstants.LOAD_TYPE)
+    if load_status is not None:
+        notification_body = create_notification_body(load_type, guid_batch,
+                                                     'udl_batch' if load_status.startswith('udl') else 'migrate',
+                                                     notification.get(Constants.STUDENT_REG_GUID),
+                                                     notification.get(Constants.REG_SYSTEM_ID),
+                                                     notification.get(Constants.TOTAL_ROWS_LOADED, 0),
+                                                     load_status,
+                                                     notification.get(Constants.UDL_PHASE),
+                                                     notification.get(Constants.ERROR_DESC))
+    
+        notification_status = {}
+        callback_error = {}
+        email_error = {}
+        call_back_timestamp = ''
+        email_timestamp = ''
+        if call_back is not None:
+            ts = time.time()
+            call_back_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            callback_notification_status, callback_notification_error = post_notification(conf.get(Constants.CALLBACK_URL),
+                                                                        conf.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
+                                                                        notification_body)
+            callback_error['notification_status'] = callback_notification_status
+            callback_error['notification_error'] = callback_notification_error
+        notification_status['call_back'] = {'timestamp': call_back_timestamp, 'status': callback_error}
 
-    if call_back is not None:
-        notification_status, notification_error = post_notification(conf.get(Constants.CALLBACK_URL),
-                                                                    conf.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
-                                                                    notification_body)
-
-    if emailnotification is not None:
-        try:
-            send_notification_email(mail_server, mail_sender, emailnotification, 'Notification', notification_body)
-            email_notification_error = Constants.SUCCESS
-        except:
-            email_notification_error = Constants.FAILURE
-    if notification_error is not None or email_notification_error is not None:
-        error = {}
-        if notification_error is not None:
-            error['call_back'] = notification_error
-        if email_notification_error is not None:
-            error['email'] = email_notification_error
-        update_udl_stats_by_batch_guid(guid_batch, UdlStatsConstants.NOTIFICATION_STATUS)
+        if emailnotification is not None:
+            try:
+                send_notification_email(mail_server, mail_sender, emailnotification, 'Notification', notification_body)
+                email_notification_error = Constants.SUCCESS
+            except:
+                email_notification_error = Constants.FAILURE
+            ts = time.time()
+            email_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            if notification_error is not None:
+                email_error['call_back'] = notification_error
+            if email_notification_error is not None:
+                email_error['email'] = email_notification_error
+        notification_status['email'] = {'timestamp': email_timestamp, 'status': email_error}
+        update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION_STATUS: json.dumps(notification_status)})
         
 
 
-def create_notification_body(guid_batch, batch_table, id, test_registration_id, row_count, udl_phase_step_status, udl_phase, error_desc):
+def create_notification_body(load_type, guid_batch, batch_table, id, test_registration_id, row_count, udl_load_status, udl_phase, error_desc):
     '''
     Create the notification request body for the job referenced by guid_batch.
 
@@ -74,19 +94,21 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id, 
     :return: Notification request body
     '''
 
-    status_codes = {Constants.SUCCESS: 'Success', Constants.FAILURE: 'Failed'}
+    status_codes = {UdlStatsConstants.MIGRATE_INGESTED: 'Success', UdlStatsConstants.UDL_STATUS_FAILED: 'Failed', UdlStatsConstants.MIGRATE_FAILED: 'Failed'}
 
     messages = []
-    if udl_phase_step_status == Constants.SUCCESS:
+    if udl_load_status == UdlStatsConstants.UDL_STATUS_INGESTED:
         messages.extend('Job completed successfully')
     else:
-        messages.extend(error_desc)
+        messages.extend(error_desc if error_desc is not None else '')
 
-    notification_body = {'status': status_codes[udl_phase_step_status], 'id': id, 'message': messages}
+    notification_body = {'status': status_codes[udl_load_status], 'message': messages}
+    if load_type == LoadType.STUDENT_REGISTRATION:
+        notification_body['id'] = id
     if test_registration_id is not None:
         notification_body['testRegistrationId'] = test_registration_id
 
-    if udl_phase_step_status == Constants.SUCCESS:
+    if udl_load_status == UdlStatsConstants.MIGRATE_INGESTED:
         notification_body['rowCount'] = row_count
 
     return notification_body

@@ -8,11 +8,7 @@ import time
 import logging
 from edmigrate.utils.constants import Constants
 from edmigrate.utils.migrate import get_batches_to_migrate
-from edcore.database.stats_connector import StatsDBConnection
-from edcore.database.utils.constants import UdlStatsConstants
-from sqlalchemy.sql.expression import select, and_
-from edcore.notification.constants import Constants as NotificationConstants
-from edcore.notification.notification import send_notification
+from edmigrate.utils.notification_processor import send_notifications
 
 
 logger = logging.getLogger('edmigrate')
@@ -42,11 +38,7 @@ def process_conductor(player_find_time_wait=5, replication_lag_tolerance=100, ap
     else:
         logger.debug('no batch to process')
         admin_logger.info('no batch found to process')
-    batches = get_batch_for_notification()
-    for batch in batches:
-        batch[NotificationConstants.MAIL_SERVER] = mail_server
-        batch[NotificationConstants.MAIL_SENDER] = mail_sender
-        send_notification(batch)
+    send_notifications(mail_server, mail_sender)
 
 
 def regular_process(conductor):
@@ -113,20 +105,3 @@ def single_player_process(conductor):
         admin_logger.error('Error detected by the conductor during migration')
     finally:
         logger.debug('End of single player migration process')
-
-
-def get_batch_for_notification():
-    with StatsDBConnection() as connector:
-        udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
-        query = \
-            select([udl_status_table.c.rec_id,
-                    udl_status_table.c.batch_guid,
-                    udl_status_table.c.load_type,
-                    udl_status_table.c.load_status,
-                    udl_status_table.c.notification,
-                    udl_status_table.c.notification_status],
-                   from_obj=[udl_status_table]).\
-            where(and_(udl_status_table.c.load_status != UdlStatsConstants.UDL_STATUS_INGESTED, udl_status_table.c.notification_status.is_(None))).\
-            order_by(udl_status_table.c.file_arrived)
-        batches = connector.get_result(query)
-    return batches

@@ -61,7 +61,7 @@ def migrate_task(settings):
     apply_lag_tolerance = settings.getint(Constants.REPMGR_APPLY_LAG_TOLERANCE, 100)
     time_lag_tolerance = settings.getint(Constants.REPMGR_TIME_LAG_TOLERANCE, 100)
     monitor_timeout = settings.getint(Constants.REPMGR_MONITOR_TIME, 28800)
-    mail_server = settings.get(NotificationConstants.MAIL_SERVER),
+    mail_server = settings.get(NotificationConstants.MAIL_SERVER)
     mail_sender = settings.get(NotificationConstants.MAIL_SENDER)
     process_conductor(player_find_time_wait=find_player_timeout,
                       replication_lag_tolerance=replication_lag_tolerance,
@@ -144,7 +144,9 @@ def initialize_dbs(run_migrate_only, settings):
 
 def migrate_only(settings, tenant=None):
     initialize_dbs(True, settings)
-    start_migrate_daily_delta(tenant)
+    mail_server = settings.get(NotificationConstants.MAIL_SERVER)
+    mail_sender = settings.get(NotificationConstants.MAIL_SENDER)
+    start_migrate_daily_delta(tenant, mail_server=mail_server, mail_sender=mail_sender)
 
 
 def process(settings, tenant, daemon_mode, pid_file):

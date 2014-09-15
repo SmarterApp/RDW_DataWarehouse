@@ -5,6 +5,7 @@ Created on Sep 9, 2014
 '''
 from email.mime.text import MIMEText
 import smtplib
+import json
 
 
 def send_notification_email(mail_server, msg_from, msg_to, subject, message):
@@ -16,7 +17,7 @@ def send_notification_email(mail_server, msg_from, msg_to, subject, message):
     :param subject: subject
     :param message: message
     '''
-    msg = MIMEText(message)
+    msg = MIMEText(message if type(message) is str else json.dumps(message))
     msg['Subject'] = subject
     msg['From'] = msg_from
     msg['To'] = msg_to

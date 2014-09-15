@@ -11,6 +11,7 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.utils import drop_schema
 from edschema.metadata.ed_metadata import generate_ed_metadata
+from edmigrate.utils.notification_processor import send_notifications
 
 __author__ = 'sravi'
 TABLES_NOT_CONNECTED_WITH_BATCH = []
@@ -18,7 +19,7 @@ logger = logging.getLogger('edmigrate')
 admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
-def start_migrate_daily_delta(tenant=None):
+def start_migrate_daily_delta(tenant=None, mail_server=None, mail_sender=None):
     """migration starting point for a tenant
 
     :param tenant: Tenant name of the tenant to perform the migration
@@ -41,6 +42,7 @@ def start_migrate_daily_delta(tenant=None):
     else:
         logger.debug('no batch found for migration')
         admin_logger.info('no batch found for migration')
+    send_notifications(mail_server, mail_sender)
     return migrate_ok_count, len(batches_to_migrate)
 
 

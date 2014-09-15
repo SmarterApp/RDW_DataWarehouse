@@ -215,6 +215,7 @@ def _get_asmt_records(param, extract_type):
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        dim_student = connector.get_table(Constants.DIM_STUDENT)
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
                                      fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
                                     from_obj=[dim_asmt
@@ -236,7 +237,7 @@ def _get_asmt_records(param, extract_type):
         if student_id:
             query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_id)))
 
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, param)
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, param)
         results = connector.get_result(query)
     return results
 

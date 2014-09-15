@@ -5,7 +5,7 @@
         "relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
         "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would likely achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
         "note": "Data is for illustrative purposes only",
-        "achievement_level_scores": "Achievement Level Scores vary by subject & grade."
+        "achievement_level_scores": "Achievement Level Scores vary by subject and grade."
     },
     "accommodationMapping": {
         "5": " used <strong>without prior registration:</strong>",

@@ -145,11 +145,12 @@ define [
         filter.update {}
 
     mergeFilters: (configs) ->
-      template = JSON.stringify(configs.group_template)
-      for group in @data.groups
-        filter = JSON.parse(Mustache.render template, group)
-        filter.options = group.options
-        configs.filters.push filter
+      total_groups = @data.groups
+      if total_groups.length > 0
+        group_filter = configs.group_template
+        for group in total_groups
+          group_filter.options.push group
+        configs.filters.push group_filter
       return configs
 
     loadPage: (@data) ->
@@ -232,6 +233,7 @@ define [
         labels: @labels
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions
+        metadata: @data.metadata
         param: @params
         academicYears:
           options: @academicYears

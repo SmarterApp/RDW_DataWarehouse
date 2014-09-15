@@ -5,7 +5,7 @@
         "relative_strength_text": "Las flechas muestran su puntuación de la aseveración en comparación con su puntuación general. Una flecha hacia arriba representa una fortaleza relativa, mientras que una flecha hacia abajo puede indicar una debilidad relativa.",
 		"error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would likely achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
         "note": "Data is for illustrative purposes only",
-        "achievement_level_scores": "Achievement Level Scores vary by subject & grade."
+        "achievement_level_scores": "Achievement Level Scores vary by subject and grade."
     },
 	"accommodationMapping": {
         "5": " used <strong>without prior registration:</strong>",

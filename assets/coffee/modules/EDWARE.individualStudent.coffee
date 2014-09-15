@@ -132,9 +132,6 @@ define [
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
-      #Grayscale logo for print version
-      if @isGrayscale
-        $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
 
     initialize: () ->
       @params = edwareUtil.getUrlParams()
@@ -178,6 +175,7 @@ define [
         breadcrumb: @data.context
         labels: @labels
         CSVOptions: @configData.CSVOptions
+        metadata: @data.metadata
         # subjects on ISR
         subjects: @data.current, false, null
 
@@ -213,6 +211,8 @@ define [
     render: () ->
       key = @getCacheKey()
       @data.current = @data[key]
+      # Get tenant level branding
+      @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
       # use mustache template to display the json data
       output = Mustache.to_html indivStudentReportTemplate, @data
       $("#individualStudentContent").html output

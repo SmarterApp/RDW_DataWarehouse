@@ -16,5 +16,5 @@ define [
   $("#spnUserName").html @params['user']
   $("#spnDate").html @params['date']
   # For tenant level branding
-  data = edwareUtil.getTenantBrandingDataForPrint{'branding': {'image': @params['tenant_logo']}}, @params['gray']
+  data = edwareUtil.getTenantBrandingDataForPrint {'branding': {'image': @params['tenant_logo']}}, @params['gray']
   $(".header .logo img").attr("src", data.tenantLogo)

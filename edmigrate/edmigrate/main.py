@@ -25,7 +25,7 @@ from edmigrate.utils.replication_admin_monitor import ReplicationAdminMonitor
 from edcore.utils.utils import run_cron_job
 from edmigrate.utils.constants import Constants
 from edmigrate.conductor_controller import process_conductor
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 
 
 logger = logging.getLogger('edmigrate')
@@ -69,7 +69,7 @@ def migrate_task(settings):
                       time_lag_tolerance=time_lag_tolerance,
                       monitor_timeout=monitor_timeout,
                       mail_server=mail_server,
-                      mail_sender-mail_sender)
+                      mail_sender=mail_sender)
 
 
 def run_with_conductor(daemon_mode, settings):

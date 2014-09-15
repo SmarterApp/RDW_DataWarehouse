@@ -11,7 +11,7 @@ from edmigrate.utils.migrate import get_batches_to_migrate
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from sqlalchemy.sql.expression import select, and_
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 from edcore.notification.notification import send_notification
 
 

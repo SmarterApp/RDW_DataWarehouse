@@ -7,7 +7,7 @@ import os
 import io
 import argparse
 
-IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc']
+IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc', 'assets']
 IGNORE_DIRS = ['node_modules', '3p', 'build', 'js', 'docs']
 IGNORE_EXT = ['.gpg', '.pyc', '.gz', '.png', 'md', '.txt', '.out', '.eml', '.csv', '.jar', '.egg', '.gpz', '.asc', '.ico', '.json', 'gif', '.done', '.in']
 IGNORE_FILES = ['random_seed', 'id_rsa', 'id_rsa.pub']

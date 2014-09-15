@@ -34,7 +34,7 @@ class TestGetParam(unittest.TestCase):
         self.assertEqual('009a34ee-4609-4b13-8ca2-ed1bc0386afb', student_reg_guid)
         self.assertEqual('800b3654-4406-4a90-9591-be84b67054df', reg_system_id)
         self.assertEqual('StateTestReg.gov/StuReg/CallBack', callback_url)
-        self.assertNone(emailnotification)
+        self.assertIsNone(emailnotification)
 
     def test_get_callback_params_from_invalid_loadtype(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)

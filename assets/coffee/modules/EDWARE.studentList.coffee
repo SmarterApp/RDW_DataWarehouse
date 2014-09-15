@@ -145,12 +145,10 @@ define [
         filter.update {}
 
     mergeFilters: (configs) ->
-      template = JSON.stringify(configs.group_template)
       total_groups = @data.groups
       if total_groups.length > 0
-        group_filter = JSON.parse(Mustache.render template, total_groups[0])
-        for group in @data.groups
-          filter = JSON.parse(Mustache.render template, group)
+        group_filter = configs.group_template
+        for group in total_groups
           group_filter.options.push group
         configs.filters.push group_filter
       return configs

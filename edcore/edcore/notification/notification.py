@@ -1,5 +1,5 @@
 import logging
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
 from edcore.notification.callback import post_notification
 from edcore.notification.mail import send_notification_email
 from edcore.database.utils.query import update_udl_stats_by_batch_guid

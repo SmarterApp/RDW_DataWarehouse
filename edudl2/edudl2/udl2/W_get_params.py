@@ -27,7 +27,7 @@ def task(msg):
     expanded_dir = tenant_directory_paths[mk.EXPANDED]
 
     notification = {}
-    academic_year = get_academic_year_param(expanded_dir, msg[mk.LOAD_TYPE])
+    academic_year = get_academic_year_param(expanded_dir)
     outgoing_msg = {}
     outgoing_msg.update(msg)
     if msg[mk.LOAD_TYPE] == Constants.LOAD_TYPE_STUDENT_REGISTRATION:

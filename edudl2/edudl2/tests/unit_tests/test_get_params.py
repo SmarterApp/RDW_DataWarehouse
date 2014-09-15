@@ -43,14 +43,8 @@ class TestGetParam(unittest.TestCase):
         self.assertEqual(None, reg_system_id)
         self.assertEqual(None, callback_url)
 
-    def test_academic_year_param_sr(self):
+    def test_academic_year_param(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        academic_year = get_params.get_academic_year_param(self.test_expanded_dir, 'studentregistration')
+        academic_year = get_params.get_academic_year_param(self.test_expanded_dir)
 
         self.assertEquals(2015, academic_year)
-
-    def test_academic_year_param_assessment(self):
-        shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        academic_year = get_params.get_academic_year_param(self.test_expanded_dir, 'assessment')
-
-        self.assertEqual(None, academic_year)

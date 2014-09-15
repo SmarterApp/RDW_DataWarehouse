@@ -45,12 +45,11 @@ def get_callback_params_for_assessment(json_file_dir):
     return reg_system_id, callback_url, emailnotification
 
 
-def get_academic_year_param(json_file_dir, load_type):
+def get_academic_year_param(json_file_dir):
     """
     Get the academic year parameter from the json file for this job
 
     @param json_file_dir: A directory that houses the json file
-    @param load_type: The key path of an attribute in a nested json structure
 
     @return: the academic year parameter
     @rtype: string
@@ -60,7 +59,7 @@ def get_academic_year_param(json_file_dir, load_type):
         academic_year = get_value_from_json(json_file_dir, Constants.IDENTIFICATION_ACADEMICYEAR)
 
     except KeyError:
-        logger.error('Loadtype %s is not configured for academic year' % load_type)
+        logger.error('Not configured for academic year' )
 
     if academic_year:
         return int(academic_year)

@@ -2,7 +2,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 __author__ = 'smuhit'
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 import unittest
 import shutil
 import os

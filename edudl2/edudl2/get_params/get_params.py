@@ -59,7 +59,7 @@ def get_academic_year_param(json_file_dir):
         academic_year = get_value_from_json(json_file_dir, Constants.IDENTIFICATION_ACADEMICYEAR)
 
     except KeyError:
-        logger.error('Not configured for academic year' )
+        logger.error('Not configured for academic year')
 
     if academic_year:
         return int(academic_year)

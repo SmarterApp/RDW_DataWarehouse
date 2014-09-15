@@ -109,7 +109,7 @@ def add_license_to_spec(file, license):
         l = io.StringIO(content)
         for line in l:
             if line.startswith('License:'):
-                f.write('License: Apache License, Version 2.0' + os.linesep)
+                f.write('License: Amplify Education, Inc and ASL 2.0' + os.linesep)
             else:
                 f.write(line)
     add_license_style1(file, license)

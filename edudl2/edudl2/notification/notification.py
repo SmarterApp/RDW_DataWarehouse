@@ -28,10 +28,10 @@ def post_udl_job_status(conf):
     @return: Notification status and any error messages
     """
 
-    notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[mk.STUDENT_REG_GUID],
-                                                 conf[mk.REG_SYSTEM_ID], conf[mk.TOTAL_ROWS_LOADED])
+    notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[Constants.STUDENT_REG_GUID],
+                                                 conf[Constants.REG_SYSTEM_ID], conf[mk.TOTAL_ROWS_LOADED])
 
-    notification_status, notification_error = post_notification(conf[mk.CALLBACK_URL],
+    notification_status, notification_error = post_notification(conf[Constants.CALLBACK_URL],
                                                                 conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
 
     return notification_status, notification_error

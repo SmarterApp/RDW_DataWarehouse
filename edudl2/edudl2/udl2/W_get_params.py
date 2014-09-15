@@ -9,7 +9,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.constants import Constants
-from edcore.notification import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edcore.database.utils.constants import UdlStatsConstants
 import json

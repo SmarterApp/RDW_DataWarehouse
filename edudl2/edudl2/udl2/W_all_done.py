@@ -12,7 +12,7 @@ from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 import json
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
 
 

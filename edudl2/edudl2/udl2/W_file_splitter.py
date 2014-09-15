@@ -7,7 +7,7 @@ from edudl2.udl2_util.file_util import get_file_type_from_dir
 from edudl2.filesplitter.file_splitter import split_file
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from celery.utils.log import get_task_logger
-from edcore.notification.Constants import Constants as NotificationConstants,\
+from edcore.notification.constants import Constants as NotificationConstants,\
     Constants
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
 

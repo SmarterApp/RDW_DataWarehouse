@@ -1,4 +1,4 @@
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
 __author__ = 'abrien'
 
 # LZ to file_arrived

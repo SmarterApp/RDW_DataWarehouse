@@ -4,7 +4,7 @@ import edudl2.udl2 as udl2
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger

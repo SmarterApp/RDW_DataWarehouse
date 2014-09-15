@@ -5,6 +5,7 @@ Created on Aug 25, 2014
 '''
 import os
 import io
+import argparse
 
 IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc']
 IGNORE_DIRS = ['node_modules', '3p', 'build', 'js', 'docs']
@@ -13,11 +14,11 @@ IGNORE_FILES = ['random_seed', 'id_rsa', 'id_rsa.pub']
 
 
 def owned_by_amplify(project):
-    return not project.startswith("smarter")
+    return not owned_by_SBAC(project)
 
 
 def owned_by_SBAC(project):
-    return project.startswith("smarter")
+    return project.startswith("smarter") or project.endswith("functional_tests")
 
 
 def add_license_style1(file, license, comment='#', offset_line=0):
@@ -171,14 +172,12 @@ def find_files_for_license(top, license, license_func=None):
                         add_license(path, license, license_func=license_func)
 
 
-def main():
-    here = os.path.abspath(os.path.dirname(__file__))
-    parent = os.path.abspath(os.path.join(here, '..'))
+def main(project_root):
     for l, match_func in LICENSE_FILES.items():
         license_file = os.path.join(here, l)
         with open(license_file) as f:
             license = f.read()
-        for d in [os.path.join(parent, d) for d in os.listdir(parent) if os.path.isdir(os.path.join(parent, d)) and not d.startswith(".") and d not in IGNORE_ROOT_DIRS and match_func(d)]:
+        for d in [os.path.join(project_root, d) for d in os.listdir(project_root) if os.path.isdir(os.path.join(project_root, d)) and not d.startswith(".") and d not in IGNORE_ROOT_DIRS and match_func(d)]:
             find_files_for_license(d, license)
 
 
@@ -215,4 +214,9 @@ LICENSE_FILES = {
 }
 
 if __name__ == '__main__':
-    main()
+    here = os.path.abspath(os.path.dirname(__file__))
+    smarter_root = os.path.abspath(os.path.join(here, '..'))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--project", default=smarter_root, help="repository root")
+    args = parser.parse_args()
+    main(args.project)

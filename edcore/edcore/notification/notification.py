@@ -69,8 +69,6 @@ def send_notification(conf):
                 email_notification_error = Constants.FAILURE
             ts = time.time()
             email_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-            if notification_error is not None:
-                email_error['call_back'] = notification_error
             if email_notification_error is not None:
                 email_error['email'] = email_notification_error
         notification_status['email'] = {'timestamp': email_timestamp, 'status': email_error}

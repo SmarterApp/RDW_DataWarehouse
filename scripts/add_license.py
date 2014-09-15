@@ -6,6 +6,7 @@ Created on Aug 25, 2014
 import os
 import io
 
+LICENSE = 'apache_v2.txt'
 IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc']
 IGNORE_DIRS = ['node_modules', '3p', 'build', 'js', 'docs']
 IGNORE_EXT = ['.gpg', '.pyc', '.gz', '.png', 'md', '.txt', '.out', '.eml', '.csv', '.jar', '.egg', '.gpz', '.asc', '.ico', '.json', 'gif', '.done', '.in']
@@ -162,7 +163,7 @@ def find_files_for_license(top, license, license_func=None):
 def main():
     here = os.path.abspath(os.path.dirname(__file__))
     parent = os.path.abspath(os.path.join(here, '..'))
-    license_file = os.path.join(here, 'apache_v2.txt')
+    license_file = os.path.join(here, LICENSE)
     with open(license_file) as f:
         license = f.read()
     for d in [os.path.join(parent, d) for d in os.listdir(parent) if os.path.isdir(os.path.join(parent, d)) and not d.startswith(".") and d not in IGNORE_ROOT_DIRS]:

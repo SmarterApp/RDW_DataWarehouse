@@ -3,7 +3,7 @@
     "legendInfo": {
         "report_info": "This report presents a list of <b>individual student scores for a selected assessment</b>.",
         "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would like achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
-        "error_band_1": "<b>Achievement Level Scores</b> vary by subject & grade level.",
+        "error_band_1": "<b>Achievement Level Scores</b> vary by subject and grade level.",
         "note": "Data is for illustrative purposes only",
         "achievement_level_scores": "Achievement Level Scores",
         "uses": [

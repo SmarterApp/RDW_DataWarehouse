@@ -62,7 +62,7 @@ def json_file_writer(file_descriptor, data):
     json.dump(data, file_descriptor, indent=4)
 
 
-def create_path(root_dir, meta, generate_path):
+def create_path(root_dir, meta, generate_path, **kwargs):
     '''
     Constructs and returns a path from the meta
     :param root_dir: root dir
@@ -70,7 +70,6 @@ def create_path(root_dir, meta, generate_path):
     :param generate_path: function to generate path
     :returns: file path
     '''
-    kwargs = {}
     kwargs[Constants.STATE_CODE] = meta.state_code
     kwargs[Constants.ASMT_YEAR] = meta.academic_year
     kwargs[Constants.ASMT_TYPE] = meta.asmt_type

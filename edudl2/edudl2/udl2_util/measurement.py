@@ -15,9 +15,9 @@ import datetime
 import time
 import logging
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.constants import Constants
+from edcore.notification.Constants import Constants as NotificationConstants
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class BatchTableBenchmark(object):
     '''
 
     def __init__(self, guid_batch, load_type, udl_phase, start_timestamp, end_timestamp=datetime.datetime.now(), working_schema=None, size_records=None, size_units=None,
-                 udl_phase_step_status=mk.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None,
+                 udl_phase_step_status=NotificationConstants.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None,
                  error_desc=None, stack_trace=None, tenant='', input_file=''):
         '''Constructor'''
         self.guid_batch = guid_batch

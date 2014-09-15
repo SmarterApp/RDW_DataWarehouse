@@ -39,7 +39,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         tenant = get_unittest_tenant_name()
         results = get_custom_metadata('NC', tenant)
         # check non-empty results
-        self.assertEqual(set(['subject1', 'subject2']), results.keys(), "result map should contain two subjects' id")
+        self.assertEqual(set(['subject1', 'subject2', 'branding']), results.keys(), "result map should contain two subjects' id")
         subject1 = results.get('subject1')
         self.assertIsNotNone(subject1, "subject1 should not be empty")
         self.assertEqual(4, len(subject1[Constants.COLORS]), "subject 1 should contain 4 colors")
@@ -47,12 +47,14 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         self.assertEqual(2, subject1[Constants.MIN_CELL_SIZE])
         subject2 = results.get('subject2')
         self.assertEqual(2, subject2[Constants.MIN_CELL_SIZE])
+        branding = results.get('branding')
+        self.assertEqual(branding['display'], 'North Carolina Reporting')
 
     def test_get_empty_custom_metadata(self):
         tenant = get_unittest_tenant_name()
         results = get_custom_metadata('blablabla', tenant)
         # check empty results
-        self.assertEqual(set(['subject1', 'subject2']), results.keys(), "result map should contain two subjects' id")
+        self.assertEqual(set(['subject1', 'subject2', 'branding']), results.keys(), "result map should contain two subjects' id")
         text = results.get('subject1').get(Constants.COLORS)
         self.assertIsNone(text, "subject1 should be empty")
 

@@ -36,8 +36,7 @@ FILTERS_GRADE = 'grade'
 FILTERS_ETHNICITY = 'ethnicity'
 FILTERS_SEX = 'sex'
 
-FILTERS_GROUP_1 = 'group1Id'
-FILTERS_GROUP_2 = 'group2Id'
+FILTERS_GROUP = 'studentGroupId'
 
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
@@ -126,15 +125,7 @@ FILTERS_CONFIG = {
             "pattern": "^(" + FILTERS_SEX_MALE + "|" + FILTERS_SEX_FEMALE + "|" + FILTERS_SEX_NOT_STATED + ")$"
         }
     },
-    FILTERS_GROUP_1: {
-        "type": "array",
-        "required": False,
-        "items": {
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
-        }
-    },
-    FILTERS_GROUP_2: {
+    FILTERS_GROUP: {
         "type": "array",
         "required": False,
         "items": {
@@ -175,7 +166,7 @@ def has_filters(params):
     return not params.keys().isdisjoint(FILTERS_CONFIG.keys())
 
 
-def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
+def apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, filters):
     '''
     Apply demographics filters to a query
 
@@ -208,12 +199,9 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
         filter_sex = filters.get(FILTERS_SEX)
         if filter_sex is not None:
             query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
-        filter_group_1 = filters.get(FILTERS_GROUP_1)
-        if filter_group_1 is not None:
-            query = query.where(fact_asmt_outcome_vw.c.group_1_id.in_(filter_group_1))
-        filter_group_2 = filters.get(FILTERS_GROUP_2)
-        if filter_group_2 is not None:
-            query = query.where(fact_asmt_outcome_vw.c.group_2_id.in_(filter_group_2))
+        filter_group = filters.get(FILTERS_GROUP)
+        if filter_group is not None:
+            query = query.where((dim_student.c.group_1_id.in_(filter_group)) | (dim_student.c.group_2_id.in_(filter_group)) | (dim_student.c.group_3_id.in_(filter_group)) | (dim_student.c.group_4_id.in_(filter_group)) | (dim_student.c.group_5_id.in_(filter_group)) | (dim_student.c.group_6_id.in_(filter_group)) | (dim_student.c.group_7_id.in_(filter_group)) | (dim_student.c.group_8_id.in_(filter_group)) | (dim_student.c.group_9_id.in_(filter_group)) | (dim_student.c.group_10_id.in_(filter_group)))
     return query
 
 

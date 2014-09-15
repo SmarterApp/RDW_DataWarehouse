@@ -7,6 +7,7 @@ from edudl2.udl2_util.file_util import get_file_type_from_dir
 from edudl2.filesplitter.file_splitter import split_file
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from celery.utils.log import get_task_logger
+from edcore.notification.Constants import Constants as NotificationConstants
 
 
 logger = get_task_logger(__name__)
@@ -39,7 +40,7 @@ def task(incoming_msg):
 
     # Benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time,
-                                    size_records=totalrows, size_units=filesize, udl_phase_step_status=mk.SUCCESS,
+                                    size_records=totalrows, size_units=filesize, udl_phase_step_status=NotificationConstants.SUCCESS,
                                     task_id=str(task.request.id), tenant=incoming_msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 

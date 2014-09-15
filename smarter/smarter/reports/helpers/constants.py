@@ -126,3 +126,4 @@ class Constants():
     OUTPUTFILE = 'outputfile'
     REPORT = 'report'
     GRAY = 'gray'
+    BRANDING = 'branding'

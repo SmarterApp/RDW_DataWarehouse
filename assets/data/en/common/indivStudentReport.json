@@ -1,11 +1,11 @@
 {
     "reportInfo": "<h4>Purpose:</h4><p>This report presents individual student assessment scores and provides guidance on how to interpret the results.</p><br/><h4>Uses:</h4><ul><li>Educators, parents or students may use this report to understand student achievement, progress toward mastery of the Common Core State Standards and attainment of the academic knowledge and skills required to be college content- and career-ready.</li></ul><br/><h4>Understanding your score:</h4><p>The Smarter Balanced assessment is different than other tests with which you may be familiar.</p><ul><li>First, the Smarter Balanced assessments are Computer Adaptive Tests and take advantage of technology to customize each test to the individual student. This means that when a student answers a question correctly, the next question they see will be slightly more difficult. Likewise, if an answer is incorrect, the next question will be somewhat less difficult. This procedure allows for more efficient and precise measurement of students' knowledge and skills.</li><li>Second, the assessment is a criterion-referenced test, meaning that it reports individual students’ understanding of a particular set of academic knowledge and skills. As a result, scores are not meant to compare students to each other, but rather to determine how well each student understands the content assessed. </li></ul><br/>",
     "legendInfo": {
-        "report_info": "This report presents an <b>individual student's scores for a selected assessment</b>",
+        "report_info": "This report presents an <b>individual student's scores for a selected assessment</b>.",
         "relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
         "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would likely achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
         "note": "Data is for illustrative purposes only",
-        "achievement_level_scores": "Achievement Level Scores vary by subject & grade."
+        "achievement_level_scores": "Achievement Level Scores vary by subject and grade."
     },
     "accommodationMapping": {
         "5": " used <strong>without prior registration:</strong>",

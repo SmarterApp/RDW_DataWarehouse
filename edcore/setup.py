@@ -9,6 +9,7 @@ install_requires = [
     'pyramid==1.4',
     'apscheduler==2.1.1',
     "python-gnupg==0.3.5",
+    'requests == 2.2.1',
     'psycopg2==2.5.1']
 
 tests_require = [

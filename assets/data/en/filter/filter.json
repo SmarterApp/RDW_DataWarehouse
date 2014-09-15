@@ -188,9 +188,9 @@
         }
     ],
     "group_template" : {
-        "display" : "Student Grouping {{index}}",
-        "tag" : "Student Grouping {{index}}",
-        "name" : "group{{index}}Id",
+        "display" : "Student Grouping",
+        "tag" : "Student Grouping",
+        "name" : "studentGroupId",
         "options" : [
         ]
     }

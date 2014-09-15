@@ -118,6 +118,11 @@ require ["jquery", "edwareFilter"], ($, edwareFilter) ->
           "label": "Not Stated",
           "value": "NS"
         ]
+      ,
+        "display" : "Student Group",
+        "tag" : "Student Group",
+        "name" : "StudentGroup",
+        "options" : []
       ]
 
 
@@ -142,5 +147,5 @@ require ["jquery", "edwareFilter"], ($, edwareFilter) ->
     # assertions
     ok not $(filterArea).is(":empty"), "$.fn.edwareFilter function should create filter slide down div"
     notEqual $(filterBtn).find('.filter'), undefined, "filter area should not be empty"
-    equal $(filterArea).find('.filter-group').length, 6, "there should be 6 filters in total"
+    equal $(filterArea).find('.filter-group').length, 7, "there should be 6 filters in total"
     equal $(filterArea).find('.grade_range input').length, 7, "should be 7 grades' checkbox" 

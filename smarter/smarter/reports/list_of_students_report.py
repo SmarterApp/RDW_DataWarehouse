@@ -142,8 +142,10 @@ def format_assessments(results, subjects_map):
 
         subject = subjects_map[result['asmt_subject']]
         assessment = student.get(subject, {})
-        assessment['group_1_id'] = result['group_1_id']
-        assessment['group_2_id'] = result['group_2_id']
+        assessment['group'] = []  # for student group filter
+        for i in range(1, 11):
+            if result['group_{count}_id'.format(count=i)] is not None:
+                assessment['group'].append(result['group_{count}_id'.format(count=i)])
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_score_range_min'] = result['asmt_score_range_min']
@@ -161,25 +163,14 @@ def format_assessments(results, subjects_map):
 
 def get_group_filters(results):
     # TODO: use list comprehension, format grouping information for filters
-    group_1, group_2 = set(), set()
+    all_groups = set()
     for result in results:
-        if result['group_1_id']:
-            group_1.add((result['group_1_id'], result['group_1_text']))
-        if result['group_2_id']:
-            group_2.add((result['group_2_id'], result['group_2_text']))
+        for i in range(1, 11):
+            if result['group_{i}_id'.format(i=i)]:
+                all_groups.add((result['group_{i}_id'.format(i=i)], result['group_{i}_text'.format(i=i)]))
 
-    filters = []
-    for idx, group in enumerate((group_1, group_2)):
-        options = [{"value": k, "label": v} for k, v in group]
-        if not options:
-            # exclude empty group
-            continue
-        groups = {}
-        # temporary names, will be updated to more meaningful text
-        groups["index"] = (idx + 1)
-        options.sort(key=lambda option: option['label'])
-        groups["options"] = options
-        filters.append(groups)
+    options = [{"value": k, "label": v} for k, v in all_groups]
+    filters = sorted(options, key=lambda k: k['label'])
     return filters
 
 
@@ -236,10 +227,26 @@ def get_list_of_students(params):
                                     fact_asmt_outcome_vw.c.dmg_sts_mig.label('dmg_sts_mig'),
                                     fact_asmt_outcome_vw.c.sex.label('sex'),
                                     # grouping information
-                                    fact_asmt_outcome_vw.c.group_1_id.label('group_1_id'),
-                                    fact_asmt_outcome_vw.c.group_1_text.label('group_1_text'),
-                                    fact_asmt_outcome_vw.c.group_2_id.label('group_2_id'),
-                                    fact_asmt_outcome_vw.c.group_2_text.label('group_2_text'),
+                                    dim_student.c.group_1_id.label('group_1_id'),
+                                    dim_student.c.group_1_text.label('group_1_text'),
+                                    dim_student.c.group_2_id.label('group_2_id'),
+                                    dim_student.c.group_2_text.label('group_2_text'),
+                                    dim_student.c.group_3_id.label('group_3_id'),
+                                    dim_student.c.group_3_text.label('group_3_text'),
+                                    dim_student.c.group_4_id.label('group_4_id'),
+                                    dim_student.c.group_4_text.label('group_4_text'),
+                                    dim_student.c.group_5_id.label('group_5_id'),
+                                    dim_student.c.group_5_text.label('group_5_text'),
+                                    dim_student.c.group_6_id.label('group_6_id'),
+                                    dim_student.c.group_6_text.label('group_6_text'),
+                                    dim_student.c.group_7_id.label('group_7_id'),
+                                    dim_student.c.group_7_text.label('group_7_text'),
+                                    dim_student.c.group_8_id.label('group_8_id'),
+                                    dim_student.c.group_8_text.label('group_8_text'),
+                                    dim_student.c.group_9_id.label('group_9_id'),
+                                    dim_student.c.group_9_text.label('group_9_text'),
+                                    dim_student.c.group_10_id.label('group_10_id'),
+                                    dim_student.c.group_10_text.label('group_10_text'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_1.label('asmt_claim_perf_lvl_name_1'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_2.label('asmt_claim_perf_lvl_name_2'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_3.label('asmt_claim_perf_lvl_name_3'),
@@ -256,7 +263,7 @@ def get_list_of_students(params):
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmtYear))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, params)
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:
@@ -317,7 +324,7 @@ def __format_cut_points(results, subjects_map, custom_metadata_map):
         claims[subject_name] = get_claims(number_of_claims=4, result=result, include_names=True)
         # Remove unnecessary data
         del(cutpoint['asmt_subject'])
-    return {'cutpoints': cutpoints, 'claims': claims}
+    return {'cutpoints': cutpoints, 'claims': claims, Constants.BRANDING: custom_metadata_map.get(Constants.BRANDING)}
 
 
 def __reverse_map(map_object):

@@ -9,11 +9,11 @@ import logging
 from smarter_score_batcher.celery import celery, conf
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
 from smarter_score_batcher.utils.meta import extract_meta_names
-from edcore.utils.file_utils import generate_path_to_raw_xml, \
-    generate_path_to_item_csv
+from edcore.utils.file_utils import generate_path_to_item_csv, generate_file_path
 from smarter_score_batcher.tasks.remote_csv_writer import remote_csv_generator
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.exceptions import MetaNamesException
+import time
 
 logger = logging.getLogger("smarter_score_batcher")
 
@@ -37,7 +37,8 @@ def remote_write(xml_data):
 
     root_dir_csv = conf.get("smarter_score_batcher.base_dir.csv")
     root_dir_xml = conf.get("smarter_score_batcher.base_dir.xml")
-    xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
+    timestamp = time.strftime('%Y%m%d%H%M%S', time.gmtime())
+    xml_file_path = create_path(root_dir_xml, meta_names, generate_file_path, **{'extension': timestamp + '.xml'})
     written = file_writer(xml_file_path, xml_data)
     if written:
         work_dir = conf.get("smarter_score_batcher.base_dir.working")

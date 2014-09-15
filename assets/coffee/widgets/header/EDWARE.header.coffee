@@ -12,6 +12,9 @@ define [
 
   create = (data, config) ->
     labels = config.labels
+    # Get tenant level branding information
+    templateData = edwareUtil.getTenantBrandingData data.metadata
+    headerTemplateHtml = Mustache.to_html headerTemplateHtml, templateData
     headerTemplate = $(headerTemplateHtml)
     # Add labels
     headerTemplate.find('.text_hi').html labels.hi

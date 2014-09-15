@@ -7,7 +7,8 @@ define [
   "edwarePopover"
   "edwareDataProxy"
   "edwareSearch"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch) ->
+  "edwareUtil"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch, edwareUtil) ->
 
   class ReportInfoBar
 
@@ -17,11 +18,14 @@ define [
 
     initialize: (createSearch) ->
       breadcrumb = (item.name for item in @config.breadcrumb.items[1..]).join(" / ")
+      # Tenant level branding
+      brandingData = edwareUtil.getTenantBrandingDataForPrint @config.metadata, false 
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
         breadcrumb: breadcrumb
+        branding: brandingData
       @createDownloadMenu()
       @render()
       # Create search box if true, else remove it

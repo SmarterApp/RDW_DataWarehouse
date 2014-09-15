@@ -37,8 +37,9 @@ def add_license_style1(file, license, comment='#', offset_line=0):
                 f.write(comment + ' ' + line)
             else:
                 f.write(comment + line)
-        f.write(os.linesep)
-        f.write(content)
+        if content:
+            f.write(os.linesep)
+            f.write(content)
 
 
 def add_license_style2(file, license, start_comment='###', end_comment='###', offset_line=0):

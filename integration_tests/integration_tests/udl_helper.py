@@ -17,25 +17,25 @@ from edudl2.udl2.constants import Constants
 
 
 def empty_batch_table(self):
-        #Delete all data from batch_table
-        with get_udl_connection() as connector:
-            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            result = connector.execute(batch_table.delete())
-            query = select([batch_table])
-            result1 = connector.execute(query).fetchall()
-            number_of_row = len(result1)
-            self.assertEqual(number_of_row, 0)
+    #Delete all data from batch_table
+    with get_udl_connection() as connector:
+        batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
+        result = connector.execute(batch_table.delete())
+        query = select([batch_table])
+        result1 = connector.execute(query).fetchall()
+        number_of_row = len(result1)
+        self.assertEqual(number_of_row, 0)
 
 
 def empty_stats_table(self):
-        #Delete all data from udl_stats table inside edware_stats DB
-        with StatsDBConnection() as conn:
-            table = conn.get_table('udl_stats')
-            conn.execute(table.delete())
-            query = select([table])
-            query_tab = conn.execute(query).fetchall()
-            no_rows = len(query_tab)
-            self.assertEqual(no_rows, 0)
+    #Delete all data from udl_stats table inside edware_stats DB
+    with StatsDBConnection() as conn:
+        table = conn.get_table('udl_stats')
+        conn.execute(table.delete())
+        query = select([table])
+        query_tab = conn.execute(query).fetchall()
+        no_rows = len(query_tab)
+        self.assertEqual(no_rows, 0)
 
 
 #Copy file to tenant folder

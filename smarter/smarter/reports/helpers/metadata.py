@@ -37,9 +37,10 @@ def get_custom_metadata(state_code, tenant=None):
                 custom_metadata = json.loads(custom_metadata)
                 min_cell_size = custom_metadata.get(Constants.MIN_CELL_SIZE)
                 branding = custom_metadata.get(Constants.BRANDING)
-                subjects = custom_metadata[Constants.SUBJECTS]
-                for subject in subjects:
-                    cstm_meta_map[subject] = subjects[subject]
+                subjects = custom_metadata.get(Constants.SUBJECTS)
+                if subjects:
+                    for subject in subjects:
+                        cstm_meta_map[subject] = subjects[subject]
     # format by subject, we will always return a map of colors and minimum cell size
     result = {Constants.BRANDING: branding}
     subject_map = get_subjects_map()

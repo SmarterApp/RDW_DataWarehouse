@@ -32,7 +32,7 @@ def post_udl_job_status(conf):
                                                  conf[Constants.REG_SYSTEM_ID], conf[mk.TOTAL_ROWS_LOADED])
 
     notification_status, notification_error = post_notification(conf[Constants.CALLBACK_URL],
-                                                                conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
+                                                                conf[ck.NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
 
     return notification_status, notification_error
 

@@ -54,9 +54,9 @@ def task(msg):
 
     #update udl_stat
     if notification:
-        notification.update({NotificationConstants.SR_NOTIFICATION_MAX_ATTEMPTS: udl2_conf[NotificationConstants.SR_NOTIFICATION_MAX_ATTEMPTS]})
-        notification.update({NotificationConstants.SR_NOTIFICATION_RETRY_INTERVAL: udl2_conf[NotificationConstants.SR_NOTIFICATION_RETRY_INTERVAL]})
-        notification.update({NotificationConstants.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[NotificationConstants.SR_NOTIFICATION_TIMEOUT_INTERVAL]})
+        notification.update({NotificationConstants.NOTIFICATION_MAX_ATTEMPTS: udl2_conf[NotificationConstants.NOTIFICATION_MAX_ATTEMPTS]})
+        notification.update({NotificationConstants.NOTIFICATION_RETRY_INTERVAL: udl2_conf[NotificationConstants.NOTIFICATION_RETRY_INTERVAL]})
+        notification.update({NotificationConstants.NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[NotificationConstants.NOTIFICATION_TIMEOUT_INTERVAL]})
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION: json.dumps(notification)})
 
     return outgoing_msg

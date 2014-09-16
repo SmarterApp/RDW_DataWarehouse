@@ -49,9 +49,9 @@ common:
       echo: False
       max_overflow: 0
       pool_size: 2
-    sr_notification_max_attempts: 5
-    sr_notification_retry_interval: 30
-    sr_notification_timeout_interval: 30
+    notification_max_attempts: 5
+    notification_retry_interval: 30
+    notification_timeout_interval: 30
     logging:        # log location. this should be in the long run as file locations or more sophisticated logging system
         level: INFO
         debug: FALSE
@@ -153,9 +153,9 @@ development:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
     gpg_home: ~/.gnupg
-    sr_notification_max_attempts: 5
-    sr_notification_retry_interval: 1
-    sr_notification_timeout_interval: 1
+    notification_max_attempts: 5
+    notification_retry_interval: 1
+    notification_timeout_interval: 1
 
 jenksins_dev:
   '[app]':

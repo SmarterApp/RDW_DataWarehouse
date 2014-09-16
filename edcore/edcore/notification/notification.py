@@ -54,7 +54,7 @@ def send_notification(conf):
             ts = time.time()
             call_back_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             callback_notification_status, callback_notification_error = post_notification(call_back,
-                                                                                          notification.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
+                                                                                          notification.get(Constants.NOTIFICATION_TIMEOUT_INTERVAL),
                                                                                           notification_body)
             callback_error['callback_status'] = callback_notification_status
             callback_error['callback_error'] = callback_notification_error

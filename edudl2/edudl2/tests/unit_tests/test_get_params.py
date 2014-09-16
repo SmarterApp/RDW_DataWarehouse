@@ -38,9 +38,8 @@ class TestGetParam(unittest.TestCase):
 
     def test_get_callback_params_from_invalid_loadtype(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        reg_system_id, callback_url, emailnotification = get_params.get_callback_params_for_assessment(self.test_expanded_dir)
+        callback_url, emailnotification = get_params.get_callback_params_for_assessment(self.test_expanded_dir)
 
-        self.assertEqual(None, reg_system_id)
         self.assertEqual(None, callback_url)
         self.assertEqual(None, emailnotification)
 

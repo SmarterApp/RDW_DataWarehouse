@@ -130,11 +130,21 @@ class TestUDLReportingIntegration(unittest.TestCase):
         #Batch table should now have udl success for 5 batches
         self.validate_udl_database(5, max_wait=35)
 
+        #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
+        #The 10 rows that were in the prod table before should be overwritten
+        self.migrate_data()
+        self.validate_migration('cat', (self.sr_table, 14))
+        #Empty batch table
+        empty_stats_table(self)
+
         #----RUN 6----
         #Run udl on assessment data (3 rows, math summative)
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_math_summative_assesment.tar.gz.gpg'))
         #Batch table should now have udl success for 6 batches
-        self.validate_udl_database(5, max_wait=35)
+        self.validate_udl_database(6, max_wait=35)
+
+        self.migrate_data()
+        self.validate_callback('SUCCESS')
 
         #----RUN 7----
         #Run udl on assessment data (3 rows, ela summative)
@@ -143,8 +153,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.validate_udl_database(7, max_wait=35)
 
         self.migrate_data()
-        #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
-        #The 10 rows that were in the prod table before should be overwritten
         self.validate_migration('cat', (self.sr_table, 14))
 
     def migrate_data(self, tenant='cat'):
@@ -169,10 +177,11 @@ class TestUDLReportingIntegration(unittest.TestCase):
         with StatsDBConnection() as conn:
             udl_stats = conn.get_table('udl_stats')
             query = select([udl_stats.c.notification_status])
+            query = query.where(udl_stats.c.notification is not None)
             results = conn.get_result(query)
             self.assertEqual(len(results), 1)
             actual_status = json.loads(results[0]['notification_status'])
-            self.assertEqual(actual_status['call_back']['status']['notification_status'], status)
+            self.assertEqual(actual_status['call_back']['status'], status)
 
     def empty_table(self):
         '''

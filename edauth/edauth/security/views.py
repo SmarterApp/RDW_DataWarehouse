@@ -102,11 +102,13 @@ def _handle_OAUTH2_Implicit_login_flow(request):
         session_headers = remember(request, session_id)
         headers = session_headers.copy()
         headers.extend(list(request.headers.items()))
+        # we are forwarding the request so we need good auth cookies instead of set-cookie
         cookies = [('Cookie', header[1]) for header in headers if header[0] == 'Set-Cookie']
         headers.append(cookies[0])
         subreq = request.copy()
         subreq.headers = headers
         res = request.invoke_subrequest(subreq, use_tweens=True)
+        # add set-cookie headers to responce
         res.headerlist.extend(session_headers)
         return res
 

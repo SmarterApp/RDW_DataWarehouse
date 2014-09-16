@@ -11,6 +11,9 @@ from edcore.notification.notification import send_notification
 
 
 def get_batch_for_notification():
+    '''
+    
+    '''
     with StatsDBConnection() as connector:
         udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
         query = \

@@ -25,9 +25,8 @@ def send_notification(conf):
 
     :return: Notification status and any error messages
     '''
-    notification_error = None
     email_notification_error = None
-    notification_conf = json.loads(conf.get(UdlStatsConstants.NOTIFICATION))
+    notification_conf = json.loads(conf.get(UdlStatsConstants.NOTIFICATION, '{}'))
     notification = notification_conf if notification_conf is not None and notification_conf else {}
     guid_batch = conf.get(UdlStatsConstants.BATCH_GUID)
     call_back = notification.get(Constants.CALLBACK_URL)
@@ -55,10 +54,10 @@ def send_notification(conf):
             ts = time.time()
             call_back_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             callback_notification_status, callback_notification_error = post_notification(call_back,
-                                                                                          conf.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
+                                                                                          notification.get(Constants.SR_NOTIFICATION_TIMEOUT_INTERVAL),
                                                                                           notification_body)
-            callback_error['notification_status'] = callback_notification_status
-            callback_error['notification_error'] = callback_notification_error
+            callback_error['callback_status'] = callback_notification_status
+            callback_error['callback_error'] = callback_notification_error
         notification_status['call_back'] = {'timestamp': call_back_timestamp, 'status': callback_error}
 
         if emailnotification is not None:
@@ -94,10 +93,10 @@ def create_notification_body(load_type, guid_batch, batch_table, id, test_regist
     status_codes = {UdlStatsConstants.MIGRATE_INGESTED: 'Success', UdlStatsConstants.UDL_STATUS_FAILED: 'Failed', UdlStatsConstants.MIGRATE_FAILED: 'Failed'}
 
     messages = []
-    if udl_load_status == UdlStatsConstants.UDL_STATUS_INGESTED:
-        messages.extend('Job completed successfully')
+    if udl_load_status == UdlStatsConstants.MIGRATE_INGESTED:
+        messages.append('Job completed successfully')
     else:
-        messages.extend(error_desc if error_desc is not None else '')
+        messages.append(error_desc if error_desc is not None else '')
 
     notification_body = {'status': status_codes[udl_load_status], 'message': messages}
     if load_type == LoadType.STUDENT_REGISTRATION:

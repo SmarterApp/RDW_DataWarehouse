@@ -315,7 +315,7 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
-      @updateTotalNumber(filteredInfo.data.length)
+      @updateTotalNumber(filteredInfo.data?.length)
       this.renderHeaderPerfBar()
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
 

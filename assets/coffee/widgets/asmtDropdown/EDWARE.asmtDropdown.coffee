@@ -89,6 +89,7 @@ define [
       $('#selectedAsmtType').html value
 
     getAsmtDisplayText: (asmt)->
+      return "" if not asmt.effective_date
       effective_date = asmt.effective_date.toString()
       asmt.asmt_year = effective_date.substr(0, 4)
       asmt.asmt_month = effective_date.substr(4, 2)

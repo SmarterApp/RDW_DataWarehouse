@@ -190,7 +190,6 @@
       margin-bottom: 30px;
       border-left: solid 1px @color-B5;
     }
-
   }
 
   body.isr {
@@ -238,7 +237,6 @@
       &.ELA {
         h4 { max-width: 135px; }
       }
-
     }
 
     .exportPopup {display: none;}
@@ -290,9 +288,9 @@
           }
           font-size: 15px;
         }
-
       }
     }
+
     .contentWrapper {
       .overallScoreSection {
         .info {
@@ -399,7 +397,10 @@
 
       h4 { font-size: 17px; }
 
-      p { font-size: 14px; }
+      p { 
+        font-size: 14px;
+        color: @color-B2 !important;
+      }
 
       hr { border-top: dashed 1px @color-B4; }
 
@@ -416,29 +417,324 @@
 
       .edware-border-left { border-left: dashed 1px @color-B4; }
 
-      img {
-        -webkit-transform: scale(1.2);
-        -moz-transform: scale(1.2);
-        -o-transform: scale(1.2);
-        -ms-transform: scale(1.2);
-        transform: scale(1.2);
-      }
-
       .overall_score_wrapper {
 
         position: relative;
 
-        .confidenceLevel {
+        table {
+          td {
+            line-height: 12px;
+            text-align: left;
+            font-size: 11px;
+            width: 115px;
+          }
+        }
 
-          margin: 0 0 0 80px;
+        .legendBarSection {
+          max-height: 185px;
+          margin-left: 40px;
+          overflow: hidden;
+          margin-right: 15px;
+        }
+
+        .isrPerfBar {
+          position: relative;
+          height: 79px;
+          left: 25px;
+          margin-top: 20px;
+          margin-left: 15px;
           display: inline-block;
-          height: 100px;
 
-          .aldDescText { display: none; }
+          .progressbar_indicator440 {
+            background-image: url("../images/css_images.png");
+            background-position: -1238px 0;
+            width: 18px;
+            margin-top: 30px;
+            margin-left: 130px !important;
+          }
 
-          .progressbar_indicator640 {
-            background-position: -1255px 0;
-            width: 20px;
+          .progress {
+            margin-top: -10px;
+            margin-left: -40px;
+            height: 30px;
+            width: 640px !important;
+            border-radius: 0px;
+          }
+
+          .overall_score {
+            font-size: 18px;
+            margin-left: 245px !important;
+          }
+
+          .cutPointsBar {
+            .cutPoints {
+              display: none;
+            }
+          }
+
+          .transImage1, .transImage2 {
+            display: none;
+          }
+
+          .transWrapper {
+            margin-top: 23px;
+          }
+
+          .aldDescText {
+            display: none;
+          }
+        }
+
+        .overall_upperleft {
+          position: relative;
+          left: 5px;
+          top: 4px;
+          z-index: 1;
+        }
+
+        .isr_legend_bracket {
+          position: relative;
+          left: 0px;
+          top: -90px;
+          z-index: 1;
+        }
+
+        .isr_legend_band_left {
+          position: relative;
+          left: -230px;
+          top: -54px;
+        }
+
+        .isr_legend_band_right {
+          position: relative;
+          left: 350px;
+          top: -100px;
+          overflow: hidden;
+        }
+
+        .isr_achievement_line_1 {
+          position: relative;
+          left: -531px;
+          top: -95px;
+        }
+
+        .isr_achievement_line_2 {
+          position: relative;
+          left: -430px;
+          top: -95px;
+        }
+
+        .isr_achievement_line_3 {
+          position: relative;
+          top: -95px;
+          left: -222px;
+        }
+
+        .isr_achievement_line_4 {
+          position: relative;
+          top: -95px;
+          left: -65px;
+        }
+
+        .isr_achievement_line_5 {
+          position: relative;
+          top: -95px;
+          left: 89px;
+        }
+
+        .isr_score_arrow {
+          position: relative;
+          top: -106px;
+          left: -214px;
+        }
+
+        .achievement_level_scores {
+          color: @color-B2 !important;
+          position: relative;
+          top: -83px;
+        }
+
+        .pull-left{
+          width: 640px;
+          margin-left: 0px;
+          border-spacing: 1px !important;
+          tbody { 
+            tr {
+              height: 15px;
+              td {          
+                color: @color-B2 !important;
+              }
+            }
+          } 
+        }
+
+        .isr_disclaimer {
+          position: relative;
+          left: 340px;
+          top: -225px;
+        }
+
+        .edware-asterisk {
+          background-image: url("../images/asterisk_icon.png") !important;
+        }
+
+      } /*overall_score_wrapper end*/
+
+      .achievement_levels {
+        margin-left: 15px;
+      }
+
+      .error_band_section {
+        border-left: solid 1px #e2e2e2;
+        z-index: 1;
+        margin-top: -5px;
+      }
+
+      .error_band {
+        position: relative;
+        height: 110px;
+        overflow: hidden;
+      
+        .isr_legend_score_indicator_bottom {
+          position: relative;
+          left: -60px;
+          top: 64px;
+          z-index: 300;
+        }
+
+        .isr_legend_band_left_bottom {
+          position: relative;
+          left: -137px;
+          top: 23px;
+          height: 47px;
+          overflow: hidden;
+          z-index: 1;
+        }
+
+        .isr_legend_band_right_bottom {
+          position: relative;
+          left: 155px;
+          top: -23px;
+          height: 47px;
+          z-index: 1;
+          max-width: 40px !important; 
+        }
+
+        .isr_legend_curly_bracket {
+          position: relative;
+          left: -10px;
+          top: 30px;
+        }
+
+        .isr_legend_error_connector {
+          position: relative;
+          top: 4px;
+          left: 33px;
+        }
+
+        .isr_achievement_line_bottom{
+          position: relative;
+          top: -18px;
+          left: 86px;
+          z-index: 1;
+        }
+
+        .score {
+          top: -85px;
+          position: relative;
+        }
+
+        .isr_legend_score_arrow {
+          position: relative;
+          background-repeat: no-repeat;
+          top: -110px;
+          left: 125px;
+          z-index: 99999999;
+        }
+
+        .isrPerfBarSmall {
+          position: relative;
+          height: 79px;
+          left: 30px;
+          top: -60px;
+          margin-left: 30px;
+          display: inline-block;
+
+          .progressbar_indicator300 {
+            background-image: url("../images/css_images.png");
+            background-position: -1238px 0;
+            width: 18px;
+            margin-top: 30px;
+          }
+
+          .progress {
+            margin-top: -25px;
+            margin-left: -60px;
+            height: 30px;
+            width: 196px !important;
+            border-radius: 0px;
+          }
+      
+          .overall_score { 
+            display: none;
+          }
+
+          .aldDescText {
+            display: none;
+          }
+
+          .cutPointsBar {
+            .cutPoints {
+              font-size: 10px;
+            }
+          }
+
+          .transWrapper {
+            margin-top: 23px;
+          }
+
+          .cutPointsBar {
+            .cutPoints {
+              display: none;
+            }
+          }
+        }
+      } /* end of error_band*/
+      
+      .table.edware-table-bordered.edware-table-center {
+        width: 980px !important;
+        margin-left: -15px !important;
+        border-collapse: separate; 
+        border-spacing: 10px;
+
+        p { 
+          margin-left: 15px;
+          width: 261px; 
+        }
+      
+        tr {
+          max-height: 40px;
+        }
+
+        td {
+          height: 40px;
+          border-radius: 5px;
+          font-size: 11px;
+          margin: 0px;
+          padding: 0px;
+          width: 120px;
+        
+          .icon_perf_level_desc {
+            position: relative;
+            width: 120px;
+            left: 40px;
+            top: -7px;
+          }
+        
+          .icon_perf_level {
+            position: relative;
+            top: 10px;
+            left: 15px;
           }
         }
       }

@@ -20,7 +20,6 @@ class Test(unittest.TestCase):
         self.assertFalse(mock_post_notification.called)
         self.assertFalse(mock_send_notification_email.called)
 
-
     @patch('edcore.notification.notification.update_udl_stats_by_batch_guid')
     @patch('edcore.notification.notification.send_notification_email')
     @patch('edcore.notification.notification.post_notification')
@@ -35,7 +34,6 @@ class Test(unittest.TestCase):
         self.assertTrue(mock_post_notification.called)
         self.assertTrue(mock_send_notification_email.called)
         self.assertTrue(mock_update_udl_stats_by_batch_guid.called)
-
 
     def test_create_notification_body(self):
         load_type = LoadType.ASSESSMENT

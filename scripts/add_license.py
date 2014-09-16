@@ -5,12 +5,20 @@ Created on Aug 25, 2014
 '''
 import os
 import io
+import argparse
 
-LICENSE_FILE = 'apache_v2.txt'
 IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc']
 IGNORE_DIRS = ['node_modules', '3p', 'build', 'js', 'docs']
 IGNORE_EXT = ['.gpg', '.pyc', '.gz', '.png', 'md', '.txt', '.out', '.eml', '.csv', '.jar', '.egg', '.gpz', '.asc', '.ico', '.json', 'gif', '.done', '.in']
 IGNORE_FILES = ['random_seed', 'id_rsa', 'id_rsa.pub']
+
+
+def owned_by_amplify(project):
+    return not owned_by_SBAC(project)
+
+
+def owned_by_SBAC(project):
+    return project.startswith("smarter") or project.endswith("functional_tests")
 
 
 def add_license_style1(file, license, comment='#', offset_line=0):
@@ -24,7 +32,11 @@ def add_license_style1(file, license, comment='#', offset_line=0):
         for line in lines:
             f.write(line)
         for line in l:
-            f.write(comment + ' ' + line)
+            # do not add extra space for empty line to avoid pep8 error
+            if line.strip():
+                f.write(comment + ' ' + line)
+            else:
+                f.write(comment + line)
         f.write(os.linesep)
         f.write(content)
 
@@ -160,14 +172,13 @@ def find_files_for_license(top, license, license_func=None):
                         add_license(path, license, license_func=license_func)
 
 
-def main():
-    here = os.path.abspath(os.path.dirname(__file__))
-    parent = os.path.abspath(os.path.join(here, '..'))
-    license_file = os.path.join(here, LICENSE_FILE)
-    with open(license_file) as f:
-        license = f.read()
-    for d in [os.path.join(parent, d) for d in os.listdir(parent) if os.path.isdir(os.path.join(parent, d)) and not d.startswith(".") and d not in IGNORE_ROOT_DIRS]:
-        find_files_for_license(d, license)
+def main(project_root):
+    for l, match_func in LICENSE_FILES.items():
+        license_file = os.path.join(here, l)
+        with open(license_file) as f:
+            license = f.read()
+        for d in [os.path.join(project_root, d) for d in os.listdir(project_root) if os.path.isdir(os.path.join(project_root, d)) and not d.startswith(".") and d not in IGNORE_ROOT_DIRS and match_func(d)]:
+            find_files_for_license(d, license)
 
 
 EXT_LICENSE = {'.py': add_license_to_python,
@@ -197,5 +208,15 @@ LICENSE = {'Cakefile': add_license_style1,
            }
 LICENSE_DIR = {'init.d': add_license_to_shell}
 
+LICENSE_FILES = {
+    'apache_v2.txt': owned_by_amplify,
+    'apache_v2_smarter.txt': owned_by_SBAC
+}
+
 if __name__ == '__main__':
-    main()
+    here = os.path.abspath(os.path.dirname(__file__))
+    smarter_root = os.path.abspath(os.path.join(here, '..'))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--project", default=smarter_root, help="repository root")
+    args = parser.parse_args()
+    main(args.project)

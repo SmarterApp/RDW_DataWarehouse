@@ -37,12 +37,11 @@ def get_callback_params_for_assessment(json_file_dir):
     '''
     emailnotification = None
     try:
-        reg_system_id = get_value_from_json(json_file_dir, Constants.SOURCE_ASMTREGSYSID)
-        callback_url = get_value_from_json(json_file_dir, Constants.SOURCE_ASMTREGCALLBACKURL)
+        callback_url = get_value_from_json(json_file_dir, Constants.SOURCE_CALLBACKURL)
         emailnotification = get_value_from_json(json_file_dir, Constants.EMAIL_NOTIFICATION)
     except KeyError:
         logger.error('Assessment is not configured for callback notification')
-    return reg_system_id, callback_url, emailnotification
+    return callback_url, emailnotification
 
 
 def get_academic_year_param(json_file_dir):

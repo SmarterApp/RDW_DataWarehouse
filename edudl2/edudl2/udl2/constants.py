@@ -82,5 +82,4 @@ class Constants():
     SOURCE_TESTREGCALLBACKURL = 'source.testregcallbackurl'
     IDENTIFICATION_ACADEMICYEAR = 'identification.academicyear'
     EMAIL_NOTIFICATION = 'source.emailnotification'
-    SOURCE_ASMTREGSYSID = 'source.asmtregsysid'
-    SOURCE_ASMTREGCALLBACKURL = 'source.asmtregcallbackurl'
+    SOURCE_CALLBACKURL = 'source.callbackurl'

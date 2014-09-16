@@ -42,8 +42,7 @@ def task(msg):
         outgoing_msg.update({NotificationConstants.CALLBACK_URL: callback_url})
         outgoing_msg.update({NotificationConstants.ACADEMIC_YEAR: academic_year})
     elif msg[mk.LOAD_TYPE] == Constants.LOAD_TYPE_ASSESSMENT:
-        reg_system_id, callback_url, emailnotification = get_callback_params_for_assessment(expanded_dir)
-        notification.update({NotificationConstants.REG_SYSTEM_ID: reg_system_id})
+        callback_url, emailnotification = get_callback_params_for_assessment(expanded_dir)
         notification.update({NotificationConstants.CALLBACK_URL: callback_url})
         notification.update({NotificationConstants.EMAILNOTIFICATION: emailnotification})
 

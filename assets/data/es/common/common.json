@@ -177,7 +177,7 @@
             {
                 "level": 2,
                 "desc": "En el estándar /Cerca del estándar",
-                "meaning": "Los resultados de tu prueba pueden estar un poco arriba o un poco abajo del estándar, pero debido al margen de error (ver abajo), el resultado está muy cerca como para determinarlo."
+                "meaning": "Your test results may be just above or just below the standard, but due to the error band (see above), the result it too close to call."
             },
             {
                 "level": 1,

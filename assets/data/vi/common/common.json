@@ -177,7 +177,7 @@
             {
                 "level": 2,
                 "desc": "AT/NEAR STANDARD",
-                "meaning": "Your test results may be just above or just below the standard, but due to the error band (see below), the result it too close to call."
+                "meaning": "Your test results may be just above or just below the standard, but due to the error band (see above), the result it too close to call."
             },
             {
                 "level": 3,

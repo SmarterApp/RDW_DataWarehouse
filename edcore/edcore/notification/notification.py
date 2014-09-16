@@ -26,7 +26,8 @@ def send_notification(conf):
     :return: Notification status and any error messages
     '''
     email_notification_error = None
-    notification_conf = json.loads(conf.get(UdlStatsConstants.NOTIFICATION, '{}'))
+    notification_json = conf.get(UdlStatsConstants.NOTIFICATION)
+    notification_conf = json.loads(notification_json if notification_json is not None else '{}')
     notification = notification_conf if notification_conf is not None and notification_conf else {}
     guid_batch = conf.get(UdlStatsConstants.BATCH_GUID)
     call_back = notification.get(Constants.CALLBACK_URL)
@@ -61,7 +62,7 @@ def send_notification(conf):
 
         if emailnotification is not None:
             try:
-                subject = 'Data Load - <' + notification_body['status'] + '> - Batch <' + guid_batch + '>'
+                subject = 'Data Load - ' + notification_body['status'] + ' - Batch ' + guid_batch
                 send_notification_email(mail_server, mail_sender, emailnotification, subject, notification_body)
                 email_notification_error = Constants.SUCCESS
             except:

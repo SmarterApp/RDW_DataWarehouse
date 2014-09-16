@@ -15,7 +15,7 @@ from edcore.notification.callback import post_notification
 class TestNotification(unittest.TestCase):
 
     def setUp(self):
-        self.udl2_conf = {'sr_notification_retries': 5, 'sr_notification_timeout': 1}
+        self.udl2_conf = {'notification_retries': 5, 'notification_timeout': 1}
 
     @httpretty.activate
     def test_post_notification_success_no_retries(self):
@@ -108,7 +108,7 @@ class TestNotification(unittest.TestCase):
         result_status, result_error = post_udl_job_status(conf)
 
         mock_create_notification_body.assert_called_with('guid_batch', 'batch_table', 'student_reg_guid', 'reg_system_id', 'total_rows_loaded')
-        mock_post_notification.assert_called_with('callback_url', 'sr_notification_timeout_interval', body)
+        mock_post_notification.assert_called_with('callback_url', 'notification_timeout_interval', body)
         self.assertEquals(result_status, Constants.SUCCESS)
         self.assertEquals(result_error, None)
 
@@ -125,7 +125,7 @@ class TestNotification(unittest.TestCase):
                 'reg_system_id': 'reg_system_id',
                 'total_rows_loaded': 'total_rows_loaded',
                 'callback_url': 'callback_url',
-                'sr_notification_timeout_interval': 'sr_notification_timeout_interval'}
+                'notification_timeout_interval': 'notification_timeout_interval'}
         return conf
 
 

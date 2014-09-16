@@ -99,15 +99,16 @@ def _handle_OAUTH2_Implicit_login_flow(request):
             return HTTPForbidden()
         identity_parser_class = _load_class(request.registry.settings.get('auth.oauth2.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
         session_id = _create_session(request, response.json(), None, None, identity_parser_class)
-        headers = remember(request, session_id)
-        #=======================================================================
-        # subreq = request.copy()
-        # subreq.cookies.clear()
-        # subreq.cookies = {'edware': '21dd4c027b54b9ac5418c029ee6630ea9c4f7680380572e7ed3aa599f10aa8a27e59fe2c9cb86aebab9dc1238720623ff12cb947b42917a7884205b6a9649bdb54184030NjdkN2FlMDItNzBmYy00OWNlLWJmZDQtMjkyNjEwNWJmMWU0!userid_type:b64unicode'}
-        # request.headers = headers
-        # return request.invoke_subrequest(subreq)
-        #=======================================================================
-        return HTTPFound(location=_get_user_destination(request), headers=headers)
+        session_headers = remember(request, session_id)
+        headers = session_headers.copy()
+        headers.extend(list(request.headers.items()))
+        cookies = [('Cookie', header[1]) for header in headers if header[0] == 'Set-Cookie']
+        headers.append(cookies[0])
+        subreq = request.copy()
+        subreq.headers = headers
+        res = request.invoke_subrequest(subreq, use_tweens=True)
+        res.headerlist.extend(session_headers)
+        return res
 
 
 def _handle_SAML2_login_flow(request):

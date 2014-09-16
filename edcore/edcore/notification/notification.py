@@ -61,7 +61,8 @@ def send_notification(conf):
 
         if emailnotification is not None:
             try:
-                send_notification_email(mail_server, mail_sender, emailnotification, 'Notification', notification_body)
+                subject = 'Data Load - <' + notification_body['status'] + '> - Batch <' + guid_batch + '>'
+                send_notification_email(mail_server, mail_sender, emailnotification, subject, notification_body)
                 email_notification_error = Constants.SUCCESS
             except:
                 email_notification_error = Constants.FAILURE

@@ -46,19 +46,18 @@ def send_notification(conf):
                                                      notification.get(Constants.ERROR_DESC))
 
         notification_status = {}
-        callback_error = {}
-        email_error = {}
         call_back_timestamp = ''
         email_timestamp = ''
+        callback_notification_status = None
+        callback_notification_error = None
+        email_notification_error = None
         if call_back is not None:
             ts = time.time()
             call_back_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             callback_notification_status, callback_notification_error = post_notification(call_back,
                                                                                           notification.get(Constants.NOTIFICATION_TIMEOUT_INTERVAL),
                                                                                           notification_body)
-            callback_error['callback_status'] = callback_notification_status
-            callback_error['callback_error'] = callback_notification_error
-        notification_status['call_back'] = {'timestamp': call_back_timestamp, 'status': callback_error}
+        notification_status['call_back'] = {'timestamp': call_back_timestamp, 'status': callback_notification_status, 'error': callback_notification_error}
 
         if emailnotification is not None:
             try:
@@ -68,9 +67,7 @@ def send_notification(conf):
                 email_notification_error = Constants.FAILURE
             ts = time.time()
             email_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-            if email_notification_error is not None:
-                email_error['email'] = email_notification_error
-        notification_status['email'] = {'timestamp': email_timestamp, 'status': email_error}
+        notification_status['email'] = {'timestamp': email_timestamp, 'status': email_notification_error}
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION_STATUS: json.dumps(notification_status)})
 
 

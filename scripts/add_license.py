@@ -210,8 +210,8 @@ LICENSE = {'Cakefile': add_license_style1,
 LICENSE_DIR = {'init.d': add_license_to_shell}
 
 LICENSE_FILES = {
-    'apache_v2.txt': owned_by_amplify,
-    'apache_v2_smarter.txt': owned_by_SBAC
+    'license_amplify.txt': owned_by_amplify,
+    'license_sbac.txt': owned_by_SBAC
 }
 
 if __name__ == '__main__':

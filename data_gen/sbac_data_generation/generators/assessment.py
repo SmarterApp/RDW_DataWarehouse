@@ -179,22 +179,6 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         period_month = 3
     sao.date_taken = datetime.date(assessment.period_year - year_adj, period_month, 15)
 
-    # Create groupings
-    if assessment.subject == 'ELA':
-        if student.ela_group1 is not None:
-            sao.group_1_id = student.ela_group1.id
-            sao.group_1_text = student.ela_group1.name
-        if student.ela_group2 is not None:
-            sao.group_2_id = student.ela_group2.id
-            sao.group_2_text = student.ela_group2.name
-    elif assessment.subject == 'Math':
-        if student.math_group1 is not None:
-            sao.group_1_id = student.math_group1.id
-            sao.group_1_text = student.math_group1.name
-        if assessment.subject == 'Math' and student.math_group2 is not None:
-            sao.group_2_id = student.math_group2.id
-            sao.group_2_text = student.math_group2.name
-
     demographics = sbac_config.DEMOGRAPHICS_BY_GRADE[student.grade]
     level_breakdowns = sbac_config.LEVELS_BY_GRADE_BY_SUBJ[assessment.subject][student.grade]
     level_generator = RandomLevelByDemographics(demographics, level_breakdowns)

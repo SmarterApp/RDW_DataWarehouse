@@ -217,8 +217,12 @@ def set_up_schools_with_groupings(schools, grades_of_concern):
         grades_for_school = grades_of_concern.intersection(school.config['grades'])
 
         for grade in grades_for_school:
-            group_types = dict(zip(sbac_config.GROUP_TYPE, [[] for _ in range(len(sbac_config.GROUP_TYPE))]))
-            grade_sub_groups[grade] = dict(zip(sbac_config.SUBJECTS, [dict(zip(sbac_config.GROUP_TYPE, [list() for _ in range(len(sbac_config.GROUP_TYPE))])) for _ in range(len(sbac_config.SUBJECTS))]))
+            group_types = dict(zip(sbac_config.GROUP_TYPE,
+                                   [[] for _ in range(len(sbac_config.GROUP_TYPE))]))
+            grade_sub_groups[grade] = dict(zip(sbac_config.SUBJECTS,
+                                               [dict(zip(sbac_config.GROUP_TYPE,
+                                                         [[] for _ in range(len(sbac_config.GROUP_TYPE))]))
+                                                for _ in range(len(sbac_config.SUBJECTS))]))
         schools_with_groupings[school] = grade_sub_groups
 
     return schools_with_groupings

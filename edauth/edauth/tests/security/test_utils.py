@@ -7,7 +7,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.utils import get_session_cookie, SetEncoder,\
-    remove_duplicates_and_none_from_list
+    remove_duplicates_and_none_from_list, load_class
 
 
 class TestUtils(unittest.TestCase):
@@ -27,6 +27,10 @@ class TestUtils(unittest.TestCase):
         (cookie_name, cookie_value) = get_session_cookie()
         self.assertEqual(cookie_name, 'dummy')
         self.assertEqual(cookie_value, 'abc')
+
+    def test_load_class(self):
+        cls = load_class('unittest.TestCase')
+        self.assertEqual(cls, unittest.TestCase)
 
     def test_set_encoder_with_sets(self):
         s = set()

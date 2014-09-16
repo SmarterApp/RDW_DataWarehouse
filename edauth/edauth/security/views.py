@@ -12,21 +12,20 @@ import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 import urllib
 from edauth.security.session_manager import create_new_user_session, \
-    get_user_session, expire_session
+    get_user_session, expire_session, create_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 from urllib.parse import parse_qs, urlsplit, urlunsplit
-from edauth.security.utils import _get_cipher
+from edauth.security.utils import _get_cipher, load_class
 from datetime import datetime
 import json
 import pyramid.security
 from edauth.security.exceptions import NotAuthorized
 from edauth.security.logging import SECURITY_EVENT_TYPE, write_security_event
 from requests.api import get
-from pyramid.request import Request
 
 
 @forbidden_view_config()
@@ -92,14 +91,18 @@ def _handle_OAUTH2_Implicit_login_flow(request):
         verify_url = request.registry.settings['auth.oauth2.idp_server_verify_url']
         timeout = request.registry.settings.get('auth.oauth2.idp_server_verify_url.timeout', 10)
         headers = {"Content-Type": "application/x-www-form-urlenocded"}
+        identity_parser_class = load_class(request.registry.settings.get('auth.oauth2.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
         try:
             response = get(verify_url, params={"access_token": bearer}, timeout=timeout, headers=headers)
             response.raise_for_status()
+            session_id = create_session(request, response.json(), None, None, identity_parser_class)
+        except NotAuthorized as _:
+            write_security_event('No Tenant was found.  Rejecting User', SECURITY_EVENT_TYPE.WARN, session_id)
+            return HTTPForbidden()
         except Exception as _:
             return HTTPForbidden()
-        identity_parser_class = _load_class(request.registry.settings.get('auth.oauth2.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
-        session_id = _create_session(request, response.json(), None, None, identity_parser_class)
         session_headers = remember(request, session_id)
+        write_security_event("Login processed successfully", SECURITY_EVENT_TYPE.INFO, session_id=session_id)
         headers = session_headers.copy()
         headers.extend(list(request.headers.items()))
         # we are forwarding the request so we need good auth cookies instead of set-cookie
@@ -215,27 +218,6 @@ def logout(request):
             expire_session(session_id)
 
     return HTTPFound(location=url, headers=headers)
-
-
-def _load_class(identity_parser_name):
-    identity_parser_array = identity_parser_name.split('.')
-    loading_class = identity_parser_array.pop()
-    # Reflection to load identity parser class
-    module = __import__('.'.join(identity_parser_array), fromlist=[loading_class])
-    return getattr(module, loading_class)
-
-
-def _create_session(request, user_info_response, name_id, session_index, identity_parser_class):
-    session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
-    session_id = create_new_user_session(user_info_response, name_id, session_index, identity_parser_class, session_timeout).get_session_id()
-
-    # If user doesn't have a Tenant, return 403
-    if get_user_session(session_id).get_tenants() is None:
-        write_security_event('No Tenant was found.  Rejecting User', SECURITY_EVENT_TYPE.WARN, session_id)
-        raise NotAuthorized()
-
-    write_security_event("SAML response processed successfully", SECURITY_EVENT_TYPE.INFO, session_id=session_id)
-    return session_id
 
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')

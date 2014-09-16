@@ -34,6 +34,17 @@ def inflate_base64_decode(data_byte_string):
     return zlib.decompress(base_decoded, -15)
 
 
+def load_class(identity_parser_name):
+    '''
+    Load class by class name
+    '''
+    identity_parser_array = identity_parser_name.split('.')
+    loading_class = identity_parser_array.pop()
+    # Reflection to load identity parser class
+    module = __import__('.'.join(identity_parser_array), fromlist=[loading_class])
+    return getattr(module, loading_class)
+
+
 def get_session_cookie():
     '''
     return the cookie value of current request

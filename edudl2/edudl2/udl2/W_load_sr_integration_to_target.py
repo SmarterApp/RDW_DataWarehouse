@@ -8,6 +8,7 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target import move_data_from_int_tables_to_target_table
 from edudl2.move_to_target.move_to_target_setup import generate_conf
 from edudl2.udl2.constants import Constants
+from edudl2.udl2_util.util import merge_to_udl2stat_notification
 
 logger = get_task_logger(__name__)
 
@@ -33,7 +34,9 @@ def task(msg):
                                     working_schema="", size_records=affected_rows[0], tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
+    notification_data = {mk.TOTAL_ROWS_LOADED: affected_rows[0]}
+    merge_to_udl2stat_notification(guid_batch, notification_data)
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows[0]})
+    outgoing_msg.update(notification_data)
     return outgoing_msg

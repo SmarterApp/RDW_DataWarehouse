@@ -454,6 +454,7 @@ class QueryHelper():
             raise InvalidParameterException()
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        self._dim_student = connector.get_table(Constants.DIM_STUDENT)
 
     def build_sub_query(self, extra_columns=[], where_guid=None):
         '''
@@ -472,7 +473,7 @@ class QueryHelper():
                       self._fact_asmt_outcome_vw.c.asmt_perf_lvl)
         if where_guid is not None:
             query = query.where(and_(where_guid))
-        return apply_filter_to_query(query, self._fact_asmt_outcome_vw, self._filters)
+        return apply_filter_to_query(query, self._fact_asmt_outcome_vw, self._dim_student, self._filters)
 
     def build_query(self, name_field, id_field, subquery_where_guid=None):
         fao = self.build_sub_query(where_guid=subquery_where_guid).alias()

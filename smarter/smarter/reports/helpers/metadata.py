@@ -21,25 +21,32 @@ def get_custom_metadata(state_code, tenant=None):
     :returns: dict of custom metadata with subject id as key and metadata as its value
     '''
     cstm_meta_map = {}
+    min_cell_size = None
+    branding = None
     with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connector:
         # query custom metadata by state code
         dim_asmt_cstm = connector.get_table(Constants.CUSTOM_METADATA)
-        query = select([dim_asmt_cstm.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
-                        dim_asmt_cstm.c.asmt_subject.label(Constants.ASMT_SUBJECT)],
+        query = select([dim_asmt_cstm.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA)],
                        from_obj=[dim_asmt_cstm])\
             .where(dim_asmt_cstm.c.state_code == state_code)
         results = connector.get_result(query)
-        for result in results:
+        if results:
+            result = results[0]
             custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)
             if custom_metadata:
                 custom_metadata = json.loads(custom_metadata)
-            cstm_meta_map[result[Constants.ASMT_SUBJECT]] = custom_metadata
+                min_cell_size = custom_metadata.get(Constants.MIN_CELL_SIZE)
+                branding = custom_metadata.get(Constants.BRANDING)
+                subjects = custom_metadata.get(Constants.SUBJECTS)
+                if subjects:
+                    for subject in subjects:
+                        cstm_meta_map[subject] = subjects[subject]
     # format by subject, we will always return a map of colors and minimum cell size
-    result = {}
+    result = {Constants.BRANDING: branding}
     subject_map = get_subjects_map()
     for key, value in subject_map.items():
         metadata = cstm_meta_map.get(key, {})
-        result[value] = {Constants.COLORS: metadata.get(Constants.COLORS), Constants.MIN_CELL_SIZE: metadata.get(Constants.MIN_CELL_SIZE)}
+        result[value] = {Constants.COLORS: metadata.get(Constants.COLORS), Constants.MIN_CELL_SIZE: min_cell_size}
     return result
 
 

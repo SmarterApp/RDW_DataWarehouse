@@ -4,7 +4,8 @@ import edudl2.udl2 as udl2
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
+from edudl2.udl2_util.util import merge_to_udl2stat_notification
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -27,30 +28,19 @@ class Udl2BaseTask(Task):
     abstract = True
 
     def get_post_etl_error_chain(self, msg):
-        tasks = {"assessment": [udl2.W_all_done.task.s(msg)],
-                 "studentregistration": [udl2.W_all_done.task.s(msg),
-                                         udl2.W_job_status_notification.task.s()]}
-        return chain(tasks[msg[mk.LOAD_TYPE]])
+        return chain(udl2.W_all_done.task.s(msg))
 
     def get_all_done_error_chain(self, msg):
-        if msg[mk.LOAD_TYPE] == "studentregistration":
-            return chain(udl2.W_job_status_notification.task.s(msg))
-        else:
-            return None
+        return None
 
     def get_default_error_chain(self, msg):
-        if msg[mk.LOAD_TYPE] == "studentregistration":
-            return chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s(), udl2.W_job_status_notification.task.s())
-        else:
-            return chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
+        return chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
 
     def __get_pipeline_error_handler_chain(self, msg, task_name):
         if task_name == 'udl2.W_post_etl.task':
             error_handler_chain = self.get_post_etl_error_chain(msg)
         elif task_name == 'udl2.W_all_done.task':
             error_handler_chain = self.get_all_done_error_chain(msg)
-        elif task_name == 'udl2.W_job_status_notification.task':
-            error_handler_chain = None
         else:
             error_handler_chain = self.get_default_error_chain(msg)
         return error_handler_chain
@@ -82,6 +72,8 @@ class Udl2BaseTask(Task):
 
         # Write to udl stats table on exceptions
         update_udl_stats_by_batch_guid(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+        # update udl_stat for notification
+        merge_to_udl2stat_notification(batch_guid, {Constants.UDL_PHASE_STEP_STATUS: Constants.FAILURE, Constants.ERROR_DESC: str(exc)})
 
         # Write to ERR_LIST
         try:

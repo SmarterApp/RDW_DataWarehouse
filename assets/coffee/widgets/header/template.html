@@ -1,8 +1,8 @@
 <a href="../html/index.html" id='logo' title='Home' tabindex='1'>
-    <img src='../images/smarterHeader_logo.png' alt='Home' height='36' width='112'>
+	<img src="{{tenantLogo}}">
 </a>
-
 <ul class='nav navbar-nav' role="menubar">
+	<li class='pull-left tenantLabel'>{{tenantLabel}}</li>
     <li class='dropdown pull-right'>
         <a id='user-settings' class='headerLink' data-toggle='dropdown' aria-label='Settings' role='menuitem' href='#' tabindex='5'> <i class='edware-icon-header-cog marginRight8'></i><span class="text_hi"></span>, <span id='username'></span><i class='edware-icon-globalheader-downarrow marginLeft8'></i> </a>
         <ul id='languageSelector' class="dropdown-menu" role="radiogroup">

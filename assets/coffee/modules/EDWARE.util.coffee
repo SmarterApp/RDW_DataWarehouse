@@ -178,6 +178,29 @@ define [
 
     return obj
 
+  getAbsolutePathForBrandingResource = (path) ->
+    # If it starts with \, then it's some abs path
+    if /^\/.+\..+/.test path
+      return path
+    else
+      return '/assets/images/branding/' + path
+
+  getTenantBrandingData = (metadata) ->
+    return getTenantBranding(metadata, false, false)
+
+  getTenantBrandingDataForPrint = (metadata, isGrayscale) ->
+    return getTenantBranding(metadata, true, isGrayscale)
+  
+  getTenantBranding = (metadata, isPrint, isGrayscale) ->
+    defaultLogo = '/assets/images/smarterHeader_logo.png'
+    if isPrint
+      defaultLogo = if isGrayscale then '/assets/images/smarter_printlogo_gray.png' else '/assets/images/smarter_printlogo.png'
+    brandingData = {'tenantLogo': defaultLogo, 'tenantLabel': ''}
+    if metadata and metadata.branding
+      brandingData.tenantLogo = getAbsolutePathForBrandingResource metadata.branding.image if metadata.branding.image
+      brandingData.tenantLabel = truncateContent metadata.branding.display, 50 if metadata.branding.display
+    return brandingData
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams
@@ -199,3 +222,5 @@ define [
   getBaseURL: getBaseURL
   getAcademicYears: getAcademicYears
   deepFind: deepFind
+  getTenantBrandingData: getTenantBrandingData
+  getTenantBrandingDataForPrint: getTenantBrandingDataForPrint

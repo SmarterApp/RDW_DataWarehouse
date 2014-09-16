@@ -1,3 +1,4 @@
+from edcore.notification.constants import Constants
 __author__ = 'abrien'
 
 # LZ to file_arrived
@@ -91,7 +92,7 @@ INT_TABLE_TYPE = 'load_to_integration_table_type'
 MOVE_TO_TARGET = 'move_to_target'
 TENANT_NAME = 'tenant_name'
 
-TOTAL_ROWS_LOADED = 'total_rows_loaded'
+TOTAL_ROWS_LOADED = Constants.TOTAL_ROWS_LOADED
 
 # for benchmarking
 UDL_PHASE = 'udl_phase'
@@ -117,15 +118,6 @@ TASK_URL = 'task_status_url'
 # serializing pipeline
 LOOP_PIPELINE = 'loop_pipeline'
 TENANT_SEARCH_PATHS = 'tenant_search_paths'
-
-# notification
-STUDENT_REG_GUID = 'student_reg_guid'
-REG_SYSTEM_ID = 'reg_system_id'
-CALLBACK_URL = 'callback_url'
-ATTEMPT_NUMBER = 'attempt_number'
-NOTIFICATION_ERRORS = 'notification_errors'
-
-ACADEMIC_YEAR = 'academic_year'
 
 # for udl stats
 UDL_STATS_REC_ID = 'udl_stats_rec_id'

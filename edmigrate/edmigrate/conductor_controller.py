@@ -8,13 +8,14 @@ import time
 import logging
 from edmigrate.utils.constants import Constants
 from edmigrate.utils.migrate import get_batches_to_migrate
+from edmigrate.utils.notification_processor import send_notifications
 
 
 logger = logging.getLogger('edmigrate')
 admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
-def process_conductor(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
+def process_conductor(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800, mail_server=None, mail_sender=None):
     logger.debug('conductor process started')
     batch = get_batches_to_migrate()
     if batch:
@@ -37,6 +38,7 @@ def process_conductor(player_find_time_wait=5, replication_lag_tolerance=100, ap
     else:
         logger.debug('no batch to process')
         admin_logger.info('no batch found to process')
+    send_notifications(mail_server, mail_sender)
 
 
 def regular_process(conductor):

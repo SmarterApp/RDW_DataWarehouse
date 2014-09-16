@@ -1,3 +1,4 @@
+from edcore.database.utils.constants import LoadType
 __author__ = 'sravi'
 
 
@@ -39,8 +40,8 @@ class Constants():
 
     # load types
     LOAD_TYPE_KEY = 'content'
-    LOAD_TYPE_ASSESSMENT = 'assessment'
-    LOAD_TYPE_STUDENT_REGISTRATION = 'studentregistration'
+    LOAD_TYPE_ASSESSMENT = LoadType.ASSESSMENT
+    LOAD_TYPE_STUDENT_REGISTRATION = LoadType.STUDENT_REGISTRATION
 
     # global sequence name
     SEQUENCE_NAME = 'global_rec_seq'
@@ -75,3 +76,10 @@ class Constants():
                                                 Constants.SR_REF_TABLE}.get(load_type, None)
 
     TENANT_SEQUENCE_NAME = lambda tenant: Constants.SEQUENCE_NAME + '_' + tenant if tenant is not None and len(tenant) > 0 else None
+
+    IDENTIFICATION_GUID = 'identification.guid'
+    SOURCE_TESTREGSYSID = 'source.testregsysid'
+    SOURCE_TESTREGCALLBACKURL = 'source.testregcallbackurl'
+    IDENTIFICATION_ACADEMICYEAR = 'identification.academicyear'
+    EMAIL_NOTIFICATION = 'source.emailnotification'
+    SOURCE_CALLBACKURL = 'source.callbackurl'

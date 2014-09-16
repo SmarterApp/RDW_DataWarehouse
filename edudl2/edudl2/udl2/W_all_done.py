@@ -12,7 +12,8 @@ from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 import json
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
+from edudl2.udl2_util.util import merge_to_udl2stat_notification
 
 
 logger = get_task_logger(__name__)
@@ -40,8 +41,8 @@ def _create_stats_row(msg, end_time, status):
         if msg[mk.LOAD_TYPE] == LoadType.STUDENT_REGISTRATION:
             stats[UdlStatsConstants.BATCH_OPERATION] = UdlStatsConstants.SNAPSHOT
             snapshot_criteria = {}
-            snapshot_criteria['reg_system_id'] = msg.get(mk.REG_SYSTEM_ID)
-            snapshot_criteria['academic_year'] = msg.get(mk.ACADEMIC_YEAR)
+            snapshot_criteria['reg_system_id'] = msg.get(NotificationConstants.REG_SYSTEM_ID)
+            snapshot_criteria['academic_year'] = msg.get(NotificationConstants.ACADEMIC_YEAR)
             stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = json.dumps(snapshot_criteria)
     else:
         stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_FAILED
@@ -65,7 +66,6 @@ def task(msg):
 
     # infer overall pipeline_status based on previous pipeline_state
     pipeline_status = NotificationConstants.FAILURE if mk.PIPELINE_STATE in msg and msg.get(mk.PIPELINE_STATE) == 'error' else NotificationConstants.SUCCESS
-
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE',
                                     start_time, end_time, udl_phase_step_status=pipeline_status,
                                     tenant=msg.get(mk.TENANT_NAME))
@@ -76,4 +76,6 @@ def task(msg):
     report_batch_to_udl_stats(msg, end_time, pipeline_status)
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time, pipeline_status)
+    # update udl_stat for notification
+    merge_to_udl2stat_notification(guid_batch, {NotificationConstants.UDL_PHASE_STEP_STATUS: pipeline_status, NotificationConstants.UDL_PHASE: 'UDL_COMPLETE'})
     return msg

@@ -12,7 +12,7 @@ from edcore.notification.notification import send_notification
 
 def get_batch_for_notification():
     '''
-    
+    get records to send notification from udl_stat table
     '''
     with StatsDBConnection() as connector:
         udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
@@ -31,6 +31,11 @@ def get_batch_for_notification():
 
 
 def send_notifications(mail_server, mail_sender):
+    '''
+    send notifications to call_back and/or mail
+    :param mail_server: email server
+    :param mail_sender: email sender
+    '''
     batches = get_batch_for_notification()
     for batch in batches:
         batch[Constants.MAIL_SERVER] = mail_server

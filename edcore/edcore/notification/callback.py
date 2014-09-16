@@ -7,7 +7,7 @@ import logging
 import json
 from requests import post
 import requests.exceptions as req_exc
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
 
 
 logger = logging.getLogger('edcore')

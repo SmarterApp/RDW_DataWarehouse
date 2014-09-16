@@ -22,6 +22,9 @@ from time import sleep
 from edudl2.udl2.constants import Constants
 from edcore.tests.watch.common_test_utils import get_file_hash
 from edcore.tests.watch.common_test_utils import create_checksum_file
+from multiprocessing import Process
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import json
 
 
 class TestUDLReportingIntegration(unittest.TestCase):
@@ -46,21 +49,20 @@ class TestUDLReportingIntegration(unittest.TestCase):
                     checksum_file.write(hex_digest)
 
     def setUp(self):
-        #self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_1/filedrop/'
         self.sr_tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_2/filedrop/'
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome_vw'
         self.sr_table = 'student_reg'
-        #self.here = os.path.dirname(__file__)
-        #cls.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
         self.sr_data_dir = os.path.join(TestUDLReportingIntegration.here, "data", "udl_to_sr_reporting_e2e_integration")
         self.expected_rows = 675
         # TODO EXPECTED_ROWS should be 1186
         empty_stats_table(self)
- 
+        self.start_http_post_server()
+
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        self.shutdown_http_post_server()
 
     def delete_prod_tables(self):
         with get_prod_connection('cat') as conn:
@@ -80,12 +82,12 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.migrate_data()
         time.sleep(30)
         self.validate_migration('cat', (self.fact_table, self.expected_rows),
-                                 (self.dim_table, self.expected_unique_batch_guids))
+                                (self.dim_table, self.expected_unique_batch_guids))
         self.validate_stats_table_after_mig()
 
     def test_validation_student_registration(self):
         #Validate Migration of student registration data from pre-prod to prod
-  
+
         #Empty batch table
         self.empty_table()
         #----RUN 1----
@@ -96,28 +98,29 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.migrate_data()
         #After migration, prod should have the 10 rows that was just ingested via UDL
         self.validate_migration('cat', (self.sr_table, 10))
-  
+        self.validate_callback('SUCCESS')
+
         #Validate snapshot aspect of student registration data
-  
+
         #----RUN 2----
         #Run udl with the same data that's already in prod (10 rows)
         #This should not be migrated since RUN 5 has the same test center and academic year
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
         #Batch table should now have udl success for 2 batches
         self.validate_udl_database(2, max_wait=35)
-  
+
         #----RUN 3----
         #Run udl on a batch that has 4 rows of data, from a previous academic year than the year in RUN 1
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_prior_year_sr_data.tar.gz.gpg'))
         #Batch table should now have udl success for 3 batches
         self.validate_udl_database(3, max_wait=35)
-  
+
         #----RUN 4----
         #Run udl on a batch that has 3 rows of data, from a different test center than the data in RUN 1
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_different_test_center_sr_data.tar.gz.gpg'))
         #Batch table should now have udl success for 4 batches
         self.validate_udl_database(4, max_wait=35)
-  
+
         #----RUN 5----
         #Run udl on a batch that has 7 rows of data
         #From the same test center and academic year as the data in RUN 1
@@ -126,22 +129,30 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_overwrite_sample_sr_data.tar.gz.gpg'))
         #Batch table should now have udl success for 5 batches
         self.validate_udl_database(5, max_wait=35)
-  
+
+        #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
+        #The 10 rows that were in the prod table before should be overwritten
+        self.migrate_data()
+        self.validate_migration('cat', (self.sr_table, 14))
+        #Empty batch table
+        empty_stats_table(self)
+
         #----RUN 6----
         #Run udl on assessment data (3 rows, math summative)
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_math_summative_assesment.tar.gz.gpg'))
         #Batch table should now have udl success for 6 batches
-        self.validate_udl_database(5, max_wait=35)
-  
+        self.validate_udl_database(6, max_wait=35)
+
+        self.migrate_data()
+        self.validate_callback('SUCCESS')
+
         #----RUN 7----
         #Run udl on assessment data (3 rows, ela summative)
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_ela_summative_assesment.tar.gz.gpg'))
         #Batch table should now have udl success for 7 batches
         self.validate_udl_database(7, max_wait=35)
-  
+
         self.migrate_data()
-        #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
-        #The 10 rows that were in the prod table before should be overwritten
         self.validate_migration('cat', (self.sr_table, 14))
 
     def migrate_data(self, tenant='cat'):
@@ -161,6 +172,16 @@ class TestUDLReportingIntegration(unittest.TestCase):
         """
         for arg in args:
             self.assertEqual(get_prod_table_count(tenant, arg[0]), arg[1])
+
+    def validate_callback(self, status):
+        with StatsDBConnection() as conn:
+            udl_stats = conn.get_table('udl_stats')
+            query = select([udl_stats.c.notification_status])
+            query = query.where(udl_stats.c.notification is not None)
+            results = conn.get_result(query)
+            self.assertEqual(len(results), 1)
+            actual_status = json.loads(results[0]['notification_status'])
+            self.assertEqual(actual_status['call_back']['status'], status)
 
     def empty_table(self):
         '''
@@ -282,3 +303,44 @@ class TestUDLReportingIntegration(unittest.TestCase):
             query = select([table]).where(table.c.load_status == 'migrate.ingested')
             result = conn.execute(query).fetchall()
             self.assertEquals(len(result), self.expected_unique_batch_guids)
+
+    def start_http_post_server(self):
+        self.receive_requests = True
+        try:
+            self.proc = Process(target=self.run_http_post_server)
+            self.proc.start()
+        except Exception:
+            pass
+
+    def run_http_post_server(self):
+        try:
+            server_address = ('127.0.0.1', 50473)
+            self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
+            self.post_server.timeout = 0.25
+            while self.receive_requests:
+                self.post_server.handle_request()
+        finally:
+            print('POST Service stop receiving requests.')
+
+    def shutdown_http_post_server(self):
+        try:
+            self.receive_requests = False
+            time.sleep(0.5)  # Give server time to stop listening
+            self.proc.terminate()
+            self.post_server.shutdown()
+        except Exception:
+            pass
+
+
+# This class handles our HTTP POST requests with various responses
+class HTTPPOSTHandler(BaseHTTPRequestHandler):
+
+    def __init__(self, request, client_address, server):
+        BaseHTTPRequestHandler.__init__(self, request, client_address, server)
+
+    def do_POST(self):
+        self.send_response(201)
+        self.end_headers()
+
+    def log_message(self, format, *args):
+        return

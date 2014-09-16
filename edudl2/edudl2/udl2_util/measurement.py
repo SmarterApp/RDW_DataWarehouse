@@ -17,7 +17,7 @@ import logging
 from edudl2.udl2.celery import udl2_conf
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.constants import Constants
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 
 logger = logging.getLogger(__name__)
 

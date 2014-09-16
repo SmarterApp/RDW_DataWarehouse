@@ -199,7 +199,7 @@ define [
 
     $.fn.eagerLoad = () ->
       # load all data at once
-      this.jqGrid('setGridParam', {scroll: false, rowNum: 100000}).trigger("reloadGrid")
+      this.jqGrid('setGridParam', {scroll: true, rowNum: 100000}).trigger("reloadGrid")
 
     $.fn.lazyLoad = () ->
       # dynamically load data when scrolling down

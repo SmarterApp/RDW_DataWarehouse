@@ -24,6 +24,8 @@ class UdlStatsConstants():
     UDL_STATS = 'udl_stats'
     BATCH_OPERATION = 'batch_operation'
     SNAPSHOT_CRITERIA = 'snapshot_criteria'
+    NOTIFICATION = 'notification'
+    NOTIFICATION_STATUS = 'notification_status'
     # Available Load Status
     UDL_STATUS_RECEIVED = 'udl.received'
     UDL_STATUS_FAILED = 'udl.failed'

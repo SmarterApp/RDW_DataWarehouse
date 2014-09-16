@@ -258,6 +258,9 @@ common:
         schedule:
           cron:
             day: '*/1'
+      notification:
+        mail_server: localhost
+        mail_sender: no-reply@amplify.com
     migrate_source:
       db:
         cat:

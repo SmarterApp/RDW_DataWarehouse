@@ -1,5 +1,5 @@
 from edudl2.messages.error_message_helper import retrieve_job_error_messages
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
 
 __author__ = 'ablum'
 

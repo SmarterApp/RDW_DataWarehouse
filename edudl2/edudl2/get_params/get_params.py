@@ -1,12 +1,12 @@
 import logging
 from edudl2.json_util.json_util import get_value_from_json
-from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2.constants import Constants
 
 __author__ = 'ablum'
 logger = logging.getLogger(__name__)
 
 
-def get_callback_params(json_file_dir, load_type):
+def get_callback_params_for_studentregistration(json_file_dir):
     """
     Get the callback parameter for this UDL job from the json file
 
@@ -21,32 +21,44 @@ def get_callback_params(json_file_dir, load_type):
     callback_url = None
 
     try:
-        student_reg_guid = get_value_from_json(json_file_dir, udl2_conf['student_reg_guid_key'][load_type])
-        reg_system_id = get_value_from_json(json_file_dir, udl2_conf['reg_system_id_key'][load_type])
-        callback_url = get_value_from_json(json_file_dir, udl2_conf['callback_url_key'][load_type])
+        student_reg_guid = get_value_from_json(json_file_dir, Constants.IDENTIFICATION_GUID)
+        reg_system_id = get_value_from_json(json_file_dir, Constants.SOURCE_TESTREGSYSID)
+        callback_url = get_value_from_json(json_file_dir, Constants.SOURCE_TESTREGCALLBACKURL)
+        emailnotification = get_value_from_json(json_file_dir, Constants.EMAIL_NOTIFICATION)
 
     except KeyError:
-        logger.error('Loadtype %s is not configured for callback notification' % load_type)
+        logger.error('Student Registration is not configured for callback notification')
 
-    return student_reg_guid, reg_system_id, callback_url
+    return student_reg_guid, reg_system_id, callback_url, emailnotification
 
 
-def get_academic_year_param(json_file_dir, load_type):
+def get_callback_params_for_assessment(json_file_dir):
+    '''
+    '''
+    emailnotification = None
+    try:
+        callback_url = get_value_from_json(json_file_dir, Constants.SOURCE_CALLBACKURL)
+        emailnotification = get_value_from_json(json_file_dir, Constants.EMAIL_NOTIFICATION)
+    except KeyError:
+        logger.error('Assessment is not configured for callback notification')
+    return callback_url, emailnotification
+
+
+def get_academic_year_param(json_file_dir):
     """
     Get the academic year parameter from the json file for this job
 
     @param json_file_dir: A directory that houses the json file
-    @param load_type: The key path of an attribute in a nested json structure
 
     @return: the academic year parameter
     @rtype: string
     """
     academic_year = None
     try:
-        academic_year = get_value_from_json(json_file_dir, udl2_conf['academic_year_key'][load_type])
+        academic_year = get_value_from_json(json_file_dir, Constants.IDENTIFICATION_ACADEMICYEAR)
 
     except KeyError:
-        logger.error('Loadtype %s is not configured for academic year' % load_type)
+        logger.error('Not configured for academic year')
 
     if academic_year:
         return int(academic_year)

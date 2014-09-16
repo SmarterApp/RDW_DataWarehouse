@@ -32,10 +32,27 @@ class SBACStudent(Student):
         self.prg_lep_exit_date = None
         self.prg_primary_disability = None
         self.derived_demographic = None
-        self.ela_group1 = None
-        self.ela_group2 = None
-        self.math_group1 = None
-        self.math_group2 = None
+        self.group_1_id = None
+        self.group_1_text = None
+        self.group_2_id = None
+        self.group_2_text = None
+        self.group_3_id = None
+        self.group_3_text = None
+        self.group_4_id = None
+        self.group_4_text = None
+        self.group_5_id = None
+        self.group_5_text = None
+        self.group_6_id = None
+        self.group_6_text = None
+        self.group_7_id = None
+        self.group_7_text = None
+        self.group_8_id = None
+        self.group_8_text = None
+        self.group_9_id = None
+        self.group_9_text = None
+        self.group_10_id = None
+        self.group_10_text = None
+
 
     def get_object_set(self):
         """Get the set of objects that this exposes to a CSV or JSON writer.

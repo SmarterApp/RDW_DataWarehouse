@@ -49,9 +49,9 @@ define [
 
     # Create assessment type dropdown
     createAsmtDropdown: (years) ->
-      if not @config.asmtTypes || @config.asmtTypes.length is 0
-        $('.asmtTypeItem').remove()
-        return
+      # if not @config.asmtTypes || @config.asmtTypes.length is 0
+      #   $('.asmtTypeItem').remove()
+      #   return
       self = this
       if @config.reportName is Constants.REPORT_NAME.ISR
         preference = edwarePreferences.getAsmtForISR

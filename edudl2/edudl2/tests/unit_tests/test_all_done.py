@@ -3,7 +3,7 @@ from edcore.database.utils.constants import UdlStatsConstants
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.W_all_done import _create_stats_row
 from json import JSONDecoder
-from edcore.notification.Constants import Constants as NotificationConstants
+from edcore.notification.constants import Constants as NotificationConstants
 
 __author__ = 'ablum'
 
@@ -11,7 +11,7 @@ __author__ = 'ablum'
 class TestAllDone(unittest.TestCase):
 
     def test__create_sr_stats_row(self):
-        msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'studentregistration', mk.REG_SYSTEM_ID: '1234', mk.ACADEMIC_YEAR: 2015}
+        msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'studentregistration', NotificationConstants.REG_SYSTEM_ID: '1234', NotificationConstants.ACADEMIC_YEAR: 2015}
         endtime = '1111111'
         status = NotificationConstants.SUCCESS
 

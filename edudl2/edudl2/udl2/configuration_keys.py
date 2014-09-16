@@ -5,6 +5,6 @@ This file contains the key names for UDL properties contained in the udl2_conf.i
 """
 
 # Notification retry parameters.
-SR_NOTIFICATION_MAX_ATTEMPTS = 'sr_notification_max_attempts'
-SR_NOTIFICATION_RETRY_INTERVAL = 'sr_notification_retry_interval'
-SR_NOTIFICATION_TIMEOUT_INTERVAL = 'sr_notification_timeout_interval'
+NOTIFICATION_MAX_ATTEMPTS = 'notification_max_attempts'
+NOTIFICATION_RETRY_INTERVAL = 'notification_retry_interval'
+NOTIFICATION_TIMEOUT_INTERVAL = 'notification_timeout_interval'

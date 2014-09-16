@@ -5,7 +5,7 @@ from sqlalchemy.sql import and_
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 import logging
-from edcore.notification.Constants import Constants
+from edcore.notification.constants import Constants
 from edcore.notification.callback import post_notification
 
 __author__ = 'tshewchuk'
@@ -28,11 +28,11 @@ def post_udl_job_status(conf):
     @return: Notification status and any error messages
     """
 
-    notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[mk.STUDENT_REG_GUID],
-                                                 conf[mk.REG_SYSTEM_ID], conf[mk.TOTAL_ROWS_LOADED])
+    notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[Constants.STUDENT_REG_GUID],
+                                                 conf[Constants.REG_SYSTEM_ID], conf[mk.TOTAL_ROWS_LOADED])
 
-    notification_status, notification_error = post_notification(conf[mk.CALLBACK_URL],
-                                                                conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
+    notification_status, notification_error = post_notification(conf[Constants.CALLBACK_URL],
+                                                                conf[ck.NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
 
     return notification_status, notification_error
 

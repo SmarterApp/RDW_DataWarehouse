@@ -21,7 +21,7 @@ class TestStatsMetadata(Unittest_with_sqlite):
         self.assertTrue('udl_stats' in self.get_Metadata().tables)
         with DBConnection(name='stats') as connector:
             udl_stats = connector.get_table("udl_stats")
-            self.assertEqual(13, len(udl_stats.c))
+            self.assertEqual(15, len(udl_stats.c))
 
     def test_extract_stats(self):
         self.assertTrue('extract_stats' in self.get_Metadata().tables)

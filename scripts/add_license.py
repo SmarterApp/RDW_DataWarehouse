@@ -7,7 +7,7 @@ import os
 import io
 import argparse
 
-IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc']
+IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc', 'assets']
 IGNORE_DIRS = ['node_modules', '3p', 'build', 'js', 'docs']
 IGNORE_EXT = ['.gpg', '.pyc', '.gz', '.png', 'md', '.txt', '.out', '.eml', '.csv', '.jar', '.egg', '.gpz', '.asc', '.ico', '.json', 'gif', '.done', '.in']
 IGNORE_FILES = ['random_seed', 'id_rsa', 'id_rsa.pub']
@@ -37,8 +37,9 @@ def add_license_style1(file, license, comment='#', offset_line=0):
                 f.write(comment + ' ' + line)
             else:
                 f.write(comment + line)
-        f.write(os.linesep)
-        f.write(content)
+        if content:
+            f.write(os.linesep)
+            f.write(content)
 
 
 def add_license_style2(file, license, start_comment='###', end_comment='###', offset_line=0):
@@ -209,8 +210,8 @@ LICENSE = {'Cakefile': add_license_style1,
 LICENSE_DIR = {'init.d': add_license_to_shell}
 
 LICENSE_FILES = {
-    'apache_v2.txt': owned_by_amplify,
-    'apache_v2_smarter.txt': owned_by_SBAC
+    'license_amplify.txt': owned_by_amplify,
+    'license_sbac.txt': owned_by_SBAC
 }
 
 if __name__ == '__main__':

@@ -11,8 +11,8 @@ from pyramid.view import view_config, forbidden_view_config
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 import urllib
-from edauth.security.session_manager import create_new_user_session, \
-    get_user_session, expire_session, create_session
+from edauth.security.session_manager import get_user_session, \
+    expire_session, create_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.roles import Roles
@@ -243,10 +243,10 @@ def saml2_post_consumer(request):
     if condition and status and (__skip_verification or signature):
 
         # create a session
-        identity_parser_class = _load_class(request.registry.settings.get('auth.saml.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
+        identity_parser_class = load_class(request.registry.settings.get('auth.saml.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser'))
         saml = __SAMLResponse_manager.get_SAMLResponse()
         assertion = saml.get_assertion()
-        session_id = _create_session(request, assertion.get_attributes(), assertion.get_name_id(), assertion.get_session_index(), identity_parser_class)
+        session_id = create_session(request, assertion.get_attributes(), assertion.get_name_id(), assertion.get_session_index(), identity_parser_class)
 
         # Save session id to cookie
         headers = remember(request, session_id)

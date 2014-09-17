@@ -57,7 +57,6 @@ class Test(unittest.TestCase):
         self.assertEqual(body['status'], 'Success')
         self.assertIn('Job completed successfully', body['message'])
 
-
     @httpretty.activate
     def test_post_notification_success_no_retries(self):
         # Create the notification request body.

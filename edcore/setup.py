@@ -10,6 +10,7 @@ install_requires = [
     'apscheduler==2.1.1',
     "python-gnupg==0.3.5",
     'requests == 2.2.1',
+    'httpretty == 0.8.0',
     'psycopg2==2.5.1']
 
 tests_require = [

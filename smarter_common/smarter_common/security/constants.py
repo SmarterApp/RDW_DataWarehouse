@@ -18,5 +18,6 @@ class RolesConstants():
     AUDIT_XML_EXTRACTS = 'AUDITXML'
     ITEM_LEVEL_EXTRACTS = 'IIRDEXTRACTS'
     SUPER_USER = 'SUPER_USER'
+    ASMT_DATA_LOAD = 'ASMT_DATA_LOAD'
     # For no role in memberOf in SAML response
     NONE = 'NONE'

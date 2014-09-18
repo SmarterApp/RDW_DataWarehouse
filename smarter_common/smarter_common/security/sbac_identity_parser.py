@@ -136,8 +136,8 @@ def _extract_role_relationship_chain(chains):
         # remove first and last items as they're always blank strings
         tenancy_chain.pop(0)
         tenancy_chain.pop()
-    
+
         role = tenancy_chain[SbacIdentityParser.ROLE_INDEX]
         relations.append(RoleRelation(role, tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
-                        tenancy_chain[SbacIdentityParser.DISTRICT_ID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_ID_INDEX]))
+                         tenancy_chain[SbacIdentityParser.DISTRICT_ID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_ID_INDEX]))
     return relations

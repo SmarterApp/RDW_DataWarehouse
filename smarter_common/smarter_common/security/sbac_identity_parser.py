@@ -26,7 +26,7 @@ class SbacIdentityParser(IdentityParser):
         '''
         Returns a list of role/relationship
         '''
-        return _extract_role_relationship_chain(attributes.get('memberOf', [])[0])
+        return _extract_role_relationship_chain(attributes.get('memberOf', []))
 
     @staticmethod
     def create_session(name, session_index, attributes, last_access, expiration):
@@ -90,7 +90,9 @@ class SbacOauthIdentityParser(IdentityParser):
         '''
         Returns a list of role/relationship
         '''
-        return _extract_role_relationship_chain(attributes.get("sbacTenancyChain", []))
+        # We get a string with all the tenancy chain separated by a comma
+        chain = attributes.get("sbacTenancyChain").split(',') if attributes.get("sbacTenancyChain") else []
+        return _extract_role_relationship_chain(chain)
 
     @staticmethod
     def create_session(name, session_index, attributes, last_access, expiration):
@@ -124,17 +126,18 @@ class SbacOauthIdentityParser(IdentityParser):
         return session
 
 
-def _extract_role_relationship_chain(memberOf):
+def _extract_role_relationship_chain(chains):
     '''
     Returns a list of role/relationship
     '''
     relations = []
-    tenancy_chain = [item if len(item) > 0 else None for item in memberOf.split('|')]
-    # remove first and last items as they're always blank strings
-    tenancy_chain.pop(0)
-    tenancy_chain.pop()
-
-    role = tenancy_chain[SbacIdentityParser.ROLE_INDEX]
-    relations.append(RoleRelation(role, tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
-                    tenancy_chain[SbacIdentityParser.DISTRICT_ID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_ID_INDEX]))
+    for chain in chains:
+        tenancy_chain = [item if len(item) > 0 else None for item in chain.split('|')]
+        # remove first and last items as they're always blank strings
+        tenancy_chain.pop(0)
+        tenancy_chain.pop()
+    
+        role = tenancy_chain[SbacIdentityParser.ROLE_INDEX]
+        relations.append(RoleRelation(role, tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
+                        tenancy_chain[SbacIdentityParser.DISTRICT_ID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_ID_INDEX]))
     return relations

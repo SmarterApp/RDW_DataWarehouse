@@ -1,37 +1,37 @@
 {
     "reportInfo": {
-        "state": "<h4>Purpose:</h4><p>This report presents a view of student performance on the most recent summative assessment for each district in a state. For each district, the report displays the percentage of students in each achievement level and the number of students assessed.</p><br><h4>Uses:</h4><ul><li>Use this report to compare overall district achievement within a state.</li><li>Filter the view to analyze sub-groups within districts.</li></ul><br><h4>Features:</h4><ul><li>Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3</li><li>Sort results by any column</li><li>Filter results by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li></ul><br/>",
-        "district": "<h4>Purpose:</h4><p>This report presents a view of student performance on the most recent summative assessment for each school in a selected district. For each school, the report displays the percentage of students in each achievement level and the number of students assessed.</p><br><h4>Uses:</h4><ul><li>Use this report to compare overall school achievement within a district.</li><li>Filter the view to analyze sub-groups within schools.</li></ul><br><h4>Features:</h4><ul><li>Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3</li><li>Sort results by any column</li><li>Filter results by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li></ul><br/>",
-        "school": "<h4>Purpose:</h4><p>This report presents a view of student performance on the most recent summative assessment for each grade in a selected school. For each grade, the report displays the percentage of students in each achievement level and the number of students assessed.</p><br><h4>Uses:</h4><ul><li>Use this report to compare overall achievement between grades in a school.</li><li>Filter the view to analyze sub-groups within a grade.</li></ul><br><h4>Features:</h4><ul><li>Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3</li><li>Sort results by any column</li><li>Filter results by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li><li>Print Individual Student Reports (PDF) for all students in the school</li></ul><br/>"
+        "state": "<h4>Propósito:</h4><p>Este reporte presenta una perspectiva del rendimiento del estudiante en la evaluación acumulativa más reciente para cada distrito en un estado. Para cada distrito, el reporte muestra el porcentaje de estudiantes en cada nivel de dominio y el número de estudiantes evaluados.</p><br><h4>Usos:</h4><ul><li>Use este reporte para comparar el dominio general del distrito dentro de un estado.</li><li>Filtrar lo que se despliega para analizar subgrupos dentro de los distritos.</li></ul><br><h4>Características:</h4><ul><li>Alinear lo que se despliega según el porcentaje de estudiantes en cada nivel de dominio o a lo largo de la línea entre el nivel 2 y el nivel 3</li><li>Ordenar los resultados por cualquier columna</li><li>Filtrar los resultados por atributos (p. ej., género, IEP, raza/etnicidad)</li><li>Descargar los resultados de la evaluación del estudiante para un mayor análisis </li></ul><br/>",
+        "district": "<h4>Propósito:</h4><p>Este reporte presenta una perspectiva del rendimiento del estudiante en la evaluación acumulativa más reciente para cada escuela en un distrito seleccionado. Para cada escuela, el reporte muestra el porcentaje de estudiantes en cada nivel de dominio y el número de estudiantes evaluados.</p><br><h4>Usos:</h4><ul><li>Use este reporte para comparar el dominio general de la escuela dentro de un distrito.</li><li>Filtrar lo que se despliega para analizar subgrupos dentro de las escuelas.</li></ul><br><h4>Características:</h4><ul><li>Alinear lo que se despliega según el porcentaje de estudiantes en cada nivel de dominio o a lo largo de la línea entre el nivel 2 y el nivel 3</li><li>Ordenar los resultados por cualquier columna </li><li>Filtrar los resultados por atributos (p. ej., género, IEP, raza/etnicidad)</li><li>Descargar los resultados de la evaluación del estudiante para un mayor análisis</li></ul><br/>",
+        "school": "<h4>Propósito:</h4><p>Este reporte presenta una perspectiva del rendimiento del estudiante en la evaluación acumulativa más reciente para cada grado en una escuela seleccionada. Para cada grado, el reporte muestra el porcentaje de estudiantes en cada nivel de dominio y el número de estudiantes evaluados.</p><br><h4>Usos:</h4><ul><li>Use este reporte para comparar el dominio general de los grados en una escuela.</li><li>Filtrar lo que se despliega para analizar subgrupos dentro de un grado.</li></ul><br><h4>Características:</h4><ul><li>Alinear lo que se despliega según el porcentaje de estudiantes en cada nivel de dominio o a lo largo de la línea entre el nivel 2 y el nivel 3</li><li>Ordenar los resultados por cualquier columna</li><li>Filtrar los resultados por atributos (p.ej., género, IEP, raza/etnicidad)</li><li>Descargar los resultados de la evaluación del estudiante para un mayor análisis </li><li>Imprimir reportes individuales del estudiante (PDF) para todos los estudiantes en la escuela</li></ul><br/>"
     },
     "legendInfo": {
         "indicator": "8,345",
-        "desc1": "This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.",
-        "desc2": "Mouse-over or tap bar for the number of students in each Achievement Level.",
-        "desc3": "Data is for illustrative purposes only.",
-        "percent_students":"% of students",
-        "number_students":"# of students",
-        "desc4":"in each Achievement Level",
-        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."],
+        "desc1": "Este reporte presenta una perspectiva del rendimiento del estudiante en la <b>evaluación acumulativa</b> para el <b>año académico seleccionado</b>.",
+        "desc2": "Pase el cursor por encima o haga clic en la barra para ver el número de estudiantes en cada nivel de dominio.",
+        "desc3": "Los datos solo tienen fines ilustrativos.",
+        "percent_students":"% de estudiantes",
+        "number_students":"# de estudiantes",
+        "desc4":"en cada nivel de dominio",
+        "notes": ["Pase el cursor por encima/haga clic en la barra para ver un desglose de las cifras de la población", "Los porcentajes están redondeados al número entero más cercano. Por lo tanto, los porcentajes pequeños pueden reportarse como '0'."],
         "uses": [
-            "Use this report to compare overall school achievement within a district.",
-            "Filter the view to analyze sub-groups within schools."
+            "Use este reporte para comparar el dominio general de la escuela dentro de un distrito.",
+            "Filtrar la perspectiva para analizar subgrupos dentro de las escuelas."
         ]
     },
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
     "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",
     "searchPlaceholder" : {
         "state": {
-            "text": "Enter district",
-            "aria": "Find districts in this state. Enter search text and hit enter"
+            "text": "Ingresar el distrito",
+            "aria": "Encontrar distritos en este estado. Ingresar el texto para búsqueda y oprimir enter"
         },
         "district": {
-            "text": "Enter school",
-            "aria": "Find schools in this district. Enter search text and hit enter"
+            "text": "Ingresar la escuela",
+            "aria": "Encontrar escuelas en este distrito. Ingresar el texto para búsqueda y oprimir enter"
         },
         "school": {
-            "text": "Enter grade",
-            "aria": "Find grade in this school. Enter search text and hit enter"
+            "text": "Ingresar el grado",
+            "aria": "Encontrar el grado en esta escuela. Ingresar el texto para búsqueda y oprimir enter"
         }
     }
 }

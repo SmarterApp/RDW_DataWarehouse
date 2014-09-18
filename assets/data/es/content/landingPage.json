@@ -1,29 +1,29 @@
 {
-    "welcome": "Welcome to the",
-    "title": "Smarter Balanced Reporting System",
-    "summary": "The Smarter Balanced Reporting System is an interactive, online reporting platform that provides a range of reports on the Smarter Balanced summative and interim assessments. It provides clear, easy-to-understand data on student achievement and delivers intuitive and timely reports for teachers, parents and administrators to track student progress towards college content- and career-readiness.",
+    "welcome": "Bienvenido al",
+    "title": "Sistema de reportes de Smarter Balanced",
+    "summary": "El sistema de reportes de Smarter Balanced es una plataforma de reportes interactiva en línea que provee un rango de reportes en las evaluaciones acumulativa y provisional de Smarter Balanced. Provee datos claros y fáciles de comprender acerca del desempeño de los estudiantes y comunica reportes intuitivos y oportunos para los maestros, padres y administradores para dar seguimiento al progreso del estudiante en su preparación para los contenidos de la universidad y la carrera.",
     "about": {
-        "title": "Learn More About Smarter Balanced Reporting:",
+        "title": "Conozca más acerca de los reportes de Smarter Balanced:",
         "sections": [
             {
-                "subtitle": "Annotated Reports",
+                "subtitle": "Reportes con notas",
                 "class": "annotatedReports",
-                "desc": "How to use and interpret the Smarter Balanced Reports",
+                "desc": "Cómo usar e interpretar los reportes de Smarter Balanced",
                 "link": "http://www.smarterbalanced.org/wordpress/wp-content/uploads/2014/06/Reporting-System-OverviewV2.pdf",
                 "linkTarget": "_blank"
             }, {
-                "subtitle": "Reporting Help",
+                "subtitle": "Ayuda con los reportes",
                 "class": "reportingHelp",
-                "desc": "Videos that illustrate how to use the reports",
+                "desc": "Videos que ilustran cómo usar los reportes",
                 "link": "#"
             }, {
-                "subtitle": "FAQ",
+                "subtitle": "Preguntas frecuentes",
                 "helpMenu": "helpMenu",
                 "class": "faq",
-                "desc": "Frequently asked questions about the Smarter Balanced Reporting System",
+                "desc": "Preguntas frecuentes acerca del sistema de reportes de Smarter Balanced",
                 "link": "#faq"
             }
         ]
     },
-    "copyright": "Smarter Balanced Consortium @ Copyright 2015"
+    "copyright": "Smarter Balanced Assessment Consortium @ Derechos reservados 2015"
 }

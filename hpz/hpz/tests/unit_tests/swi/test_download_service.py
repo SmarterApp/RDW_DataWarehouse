@@ -1,10 +1,8 @@
 import unittest
 from pyramid.testing import DummyRequest
-from hpz.swi.download_service import download_file, is_file_exist, web_download
+from hpz.swi.download_service import download_file, is_file_exist
 from unittest.mock import patch
 from edauth.security.user import User
-from pyramid.response import Response
-from mock import MagicMock
 
 __author__ = 'npandey'
 

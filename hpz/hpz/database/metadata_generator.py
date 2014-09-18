@@ -45,15 +45,6 @@ if __name__ == "__main__":
         print("Please specify --schema option")
         exit(-1)
 
-    print("DB Driver:" + DBDRIVER)
-    print("     User:" + __user)
-    print("  Password:" + __passwd)
-    print("      Host:" + __host)
-    print("  Database:" + __database)
-    print("    Schema:" + __schema)
-    print("       URL:" + __URL)
-    print("####################")
-
     engine = create_engine(__URL, echo=True)
 
     with engine.connect() as connection:

@@ -69,7 +69,7 @@
     ],
     "legendInfo": {
         "sample_intervals": {
-            "asmt_score": 1789,
+            "asmt_score": 1772,
             "asmt_score_interval": 65,
             "asmt_score_max": 2400,
             "asmt_score_max_range": 441,
@@ -85,7 +85,7 @@
                     "bg_color": "#BB231C",
                     "end_gradient_bg_color": "#C32C25",
                     "interval": "1400",
-                    "name": "MINIMAL UNDERSTANDING",
+                    "name": "KIẾN THỨC TỐI THIỂU",
                     "start_gradient_bg_color": "#E14A45",
                     "text_color": "#FFFFFF"
                 },
@@ -94,7 +94,7 @@
                     "bg_color": "#e4c904",
                     "end_gradient_bg_color": "#e3c703",
                     "interval": "1800",
-                    "name": "PARTIAL UNDERSTANDING",
+                    "name": "HIỂU BIẾT MỘT PHẦN",
                     "start_gradient_bg_color": "#eed909",
                     "text_color": "#000"
                 },
@@ -103,7 +103,7 @@
                     "bg_color": "#6aa506",
                     "end_gradient_bg_color": "#6aa506",
                     "interval": "2100",
-                    "name": "ADEQUATE UNDERSTANDING",
+                    "name": "KIẾN THỨC ĐẦY ĐỦ",
                     "start_gradient_bg_color": "#99be23",
                     "text_color": "#FFFFFF"
                 },
@@ -112,7 +112,7 @@
                     "bg_color": "#237ccb",
                     "end_gradient_bg_color": "#2078ca",
                     "interval": "2400",
-                    "name": "THOROUGH UNDERSTANDING",
+                    "name": "HIỂU BIẾT THẤU ĐÁO",
                     "start_gradient_bg_color": "#3a98d1",
                     "text_color": "#FFFFFF"
                 }
@@ -171,18 +171,18 @@
         "performance_levels": [
             {
                 "level": 1,
-                "desc": "BELOW STANDARD",
-                "meaning": "Your test results clearly show that you have not yet met the standard in this subject-area for your grade."
+                "desc": "DƯỚI TIÊU CHUẨN",
+                "meaning": "Kết quả kiểm tra của bạn cho thấy rõ ràng rằng bạn chưa đáp ứng tiêu chuẩn trong môn học này đối với cấp lớp của bạn."
             },
             {
                 "level": 2,
-                "desc": "AT/NEAR STANDARD",
-                "meaning": "Your test results may be just above or just below the standard, but due to the error band (see above), the result it too close to call."
+                "desc": "Ở MỨC/GẦN MỨC TIÊU CHUẨN",
+                "meaning": "Kết quả kiểm tra của bạn có thể ngay trên hoặc ngay dưới tiêu chuẩn, nhưng do nhóm lỗi (xem dưới đây), kết quả này quá gần mức báo động."
             },
             {
                 "level": 3,
-                "desc": "ABOVE STANDARD",
-                "meaning": "Your test results clearly show that you understand and are able to apply your knowledge to the standards in this subject-area of your grade."
+                "desc": "TRÊN TIÊU CHUẨN",
+                "meaning": "Kết quả kiểm tra của bạn cho thấy rõ ràng rằng bạn hiểu và có thể áp dụng kiến thức của mình đến mức tiêu chuẩn trong môn học này đối với cấp lớp của bạn."
             }
         ]
     },
@@ -191,8 +191,8 @@
             {
                 "items": [
                     {
-                        "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit'>Students</>",
+                        "name": "Học sinh",
+                        "displayTpl": "<a href='#' class='inherit'>Học sinh</>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -207,7 +207,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Toán học tổng quát</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 230,
@@ -222,7 +222,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Đọc viết tổng quát</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 230,
@@ -250,8 +250,8 @@
             {
                 "items": [
                     {
-                        "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "name": "Học sinh",
+                        "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -266,7 +266,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Toán học tổng quát</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 175,
@@ -323,8 +323,8 @@
                 "name": "",
                 "items": [
                     {
-                        "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "name": "Học sinh",
+                        "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -339,7 +339,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Đọc viết tổng quát</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 175,
@@ -404,7 +404,7 @@
             }
         ],
         "customViews": {
-            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
+            "asmtTypes": [{"name": "Summative", "display": "Tổng hợp"}, {"name": "Interim Comprehensive", "display": "Provisional completa"}],
             "items": {
                 "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
                 "{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -418,8 +418,8 @@
             {
                 "items": [
                     {
-                        "name": "School Name",
-                        "displayTpl": "School Name",
+                        "name": "Tên trường",
+                        "displayTpl": "Tên trường",
                         "index": "name",
                         "field": "name",
                         "width": 186,
@@ -435,7 +435,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='inherit' href='#'><b>Mathematics</b></a>",
+                        "displayTpl": "<a class='inherit' href='#'><b>Toán</b></a>",
                         "index": "results.subject1.sortedValue",
                         "field": "results.subject1.sortedValue",
                         "sorttype": "int",
@@ -449,8 +449,8 @@
                         "title": false
                     },
                     {
-                        "name": "Total Pop",
-                        "displayTpl": "<a class='inherit' href='#'># Assessed</a>",
+                        "name": "Tổng dân số",
+                        "displayTpl": "<a class='inherit' href='#'># Đã đánh giá</a>",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
                         "sorttype": "int",
@@ -464,7 +464,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a href='#' class='inherit'><b>ELA/Literacy</b></a>",
+                        "displayTpl": "<a href='#' class='inherit'><b>ELA/Đọc viết</b></a>",
                         "index": "results.subject2.sortedValue",
                         "field": "results.subject2.sortedValue",
                         "width": 292,
@@ -478,8 +478,8 @@
                         "title": false
                     },
                     {
-                        "name": "Total Pop",
-                        "displayTpl": "<a class='inherit' href='#'># Assessed</a>",
+                        "name": "Tổng dân số",
+                        "displayTpl": "<a class='inherit' href='#'># Đã đánh giá</a>",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
                         "sorttype": "int",
@@ -496,30 +496,30 @@
         ],
         "customViews": {
             "school": {
-                "name": "Grade",
-                "displayTpl": "<a href='#' class='inherit'>Grade</a>",
+                "name": "Cấp lớp",
+                "displayTpl": "<a href='#' class='inherit'>Cấp lớp</a>",
                 "link": "studentList.html",
                 "id_name": "asmtGrade"
             },
             "district": {
-                "name": "School Name",
+                "name": "Tên trường",
                 "displayTpl": "<a href='#' class='inherit'>School Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "schoolId"
             },
             "state": {
-                "name": "District Name",
-                "displayTpl": "<a href='#' class='inherit'>District Name</a>",
+                "name": "Tên học khu",
+                "displayTpl": "<a href='#' class='inherit'>Tên học khu</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "districtId"
             }
         }
     },
-    "interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
+    "interimDisclaimer": "<u>Thông tin quan trọng về các Đánh Giá Tạm Thời</u><ol><li>Câu hỏi trong các bài kiểm tra tạm thời yêu cầu con người tính điểm có thể do giáo viên tại trường tính điểm. Cách tính điểm nội bộ này không chịu sự kiểm soát nghiêm ngặt như được áp dụng trong đánh giá tổng hợp và kết quả nội bộ có thể cho thấy có một vài khác nhau.</li><li>Các câu hỏi đánh giá tạm thời không đảm bảo. Việc áp dụng, và hiểu rõ, những câu hỏi kiểm tra này có thể ảnh hưởng đến hiệu quả hoạt động của học sinh và tính chính xác của kết quả tạm thời.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {
-            "name": "Report / export type",
+            "name": "Loại báo cáo / xuất",
             "key": "extractType",
             "options": [
                 {
@@ -541,15 +541,15 @@
             ]
         },
         "academicYear": {
-            "name": "Academic year",
+            "name": "Năm học",
             "key": "academicYear"
         },
         "registrationAcademicYear": {
-            "name": "Academic year",
+            "name": "Năm học",
             "key": "academicYear"
         },
         "asmtType": {
-            "name": "Assessment Type",
+            "name": "Loại đánh giá",
             "key": "asmtType",
             "options": [
                 {
@@ -562,7 +562,7 @@
             ]
         },
         "asmtSubject": {
-            "name": "Subject",
+            "name": "Môn học",
             "key": "asmtSubject",
             "options": [
                 {
@@ -575,7 +575,7 @@
             ]
         },
         "grade": {
-            "name": "Grade",
+            "name": "Cấp lớp",
             "key": "grade",
             "options": [
                 {
@@ -614,61 +614,61 @@
         }
     },
     "SearchResultText": {
-        "hasMatch": "<b id='cursor'>{{cursor}}</b> of <b>{{total}}</b> matching \"<b>{{keyword}}</b>\"",
-        "notFound": "No matches for \"<b>{{keyword}}</b>\". Please check spelling and try again."
+        "hasMatch": "<b id='cursor'>{{cursor}}</b> trong <b>{{total}}</b> khớp \"<b>{{keyword}}</b>\"",
+        "notFound": "Không có kết quả khớp cho \"<b>{{keyword}}</b>\". Vui lòng kiểm tra chính tả và thử lại."
     },
     "ExportOptions" : {
         "export_bulk_pdf": {
-            "text": "Printable student reports",
+            "text": "Báo cáo của học sinh có thể in",
             "desc": {
-                "enabled": "Download individual reports for students in this school.",
-                "disabled": "Not available. Click into a school to download individual student reports.",
-                "no_permission": "You do not have PII permission for all students in this school."
+                "enabled": "Tải về từng báo cáo cho các học sinh trong trường này.",
+                "disabled": "Không có. Nhấp vào một trường để tải về từng báo cáo của học sinh.",
+                "no_permission": "Bạn không có phép PII cho tất cả học sinh trong trường này."
             }
         },
         "export_download_curr_view": {
-            "text": "Current view",
-            "desc": "Download the current view as a CSV."
+            "text": "Xem hiện tại",
+            "desc": "Tải về trình xem hiện tại là CSV."
         },
         "export_download_raw_view": {
-            "text": "Student assessment results",
+            "text": "Kết quả đánh giá học sinh",
             "desc": {
                 "enabled": {
-                    "state": "Download assessment results for all students in this state.",
-                    "district": "Download assessment results for all students in this district.",
-                    "school": "Download assessment results for all students in this school.",
-                    "grade": "Download assessment results for all students in this grade."
+                    "state": "Tải về kết quả đánh giá cho tất cả các học sinh trong tiểu bang này.",
+                    "district": "Tải về kết quả đánh giá cho tất cả các học sinh trong học khu này.",
+                    "school": "Tải về kết quả đánh giá cho tất cả các học sinh trong trường này.",
+                    "grade": "Tải về kết quả đánh giá cho tất cả các học sinh trong cấp lớp này."
                 },
-                "disabled": "Not available.",
+                "disabled": "Không có.",
                 "no_permission": {
-                    "state": "You do not have PII permission for all students in this state.",
-                    "district": "You do not have PII permission for all students in this district.",
-                    "school": "You do not have PII permission for all students in this school.",
-                    "grade": "You do not have PII permission for all students in this grade."
+                    "state": "Bạn không có phép PII cho tất cả học sinh trong tiểu bang này.",
+                    "district": "Bạn không có phép PII cho tất cả học sinh trong học khu này.",
+                    "school": "Bạn không có phép PII cho tất cả học sinh trong trường này.",
+                    "grade": "Bạn không có phép PII cho tất cả học sinh trong cấp lớp này."
                 }
             }
         },
         "export_request_extract": {
-            "text": "State Downloads",
-            "desc": "Download registration reports and XML extracts."
+            "text": "Tải về tiểu bang",
+            "desc": "Tải về báo cáo đăng ký và các bản trích XML."
         },
-        "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
+        "export_availability_msg": "Khi được yêu cầu, CSV của bạn sẽ có sẵn trong 24 giờ ở trang FTP được đảm bảo của bạn",
         "export_pdf_options": {
-            "title": "Student Report Options",
-            "grayscale": "Grayscale (for black & white printing)",
-            "color": "Color"
+            "title": "Các tùy chọn báo cáo của học sinh",
+            "grayscale": "Thang xám (để in đen & trắng)",
+            "color": "Màu"
         },
-        "export_success": "Your requested reports will be available within 24 hours.",
-        "export_failure": "Something went wrong.",
-        "export_retry": "Please retry again or contact the administrator at <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>",
+        "export_success": "Những báo cáo mà bạn yêu cầu sẽ có sẵn trong vòng 24 giờ.",
+        "export_failure": "Có điều không đúng.",
+        "export_retry": "Vui lòng thử lại hoặc liên lạc quản trị viên tại địa chỉ <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>",
         "no_data": {
-            "title": "Error",
-            "header": "No data.",
-            "message": "Your request contains no data.<p/>Please adjust your selections and try again or contact the administrator at <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>"
+            "title": "Lỗi",
+            "header": "Không có dữ liệu.",
+            "message": "Yêu cầu của bạn không có dữ liệu.<p/>Vui lòng điều chỉnh sự lựa chọn của bạn và thử lại hoặc liên lạc quản trị viên tại địa chỉ <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>"
         },
-        "export_request_files": "Generate",
-        "export_pdf_files": "Generate Reports",
-        "generate_reports": "Generating Requested Reports",
-        "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
+        "export_request_files": "Tạo",
+        "export_pdf_files": "Tạo báo cáo",
+        "generate_reports": "Tạo báo cáo đã yêu cầu",
+        "note": "<b>Lưu ý:</b> Các mục tải về nói trên sẽ phản ánh những chọn lựa của bạn, bao gồm năm học, đánh giá, và thông tin lọc."
     }
 }

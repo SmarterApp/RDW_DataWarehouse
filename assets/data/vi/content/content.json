@@ -1,62 +1,62 @@
 {
     "content": {
-        "psychometric_implications": "Psychometric Implications",
-        "policy_content": "Policy Content",
-        "admin_details": "Test Administration Details",
-        "overall_ald": "Achievement Level Descriptor",
-        "claim_1_ald": "Achievement Level Descriptor",
-        "claim_2_ald": "Achievement Level Descriptor",
-        "claim_3_ald": "Achievement Level Descriptor"
+        "psychometric_implications": "Dấu hiệu tâm lý trắc học",
+        "policy_content": "Nội dung chính sách",
+        "admin_details": "Chi tiết quản lý kiểm tra",
+        "overall_ald": "Bộ Mô Tả Trình Độ",
+        "claim_1_ald": "Bộ Mô Tả Trình Độ",
+        "claim_2_ald": "Bộ Mô Tả Trình Độ",
+        "claim_3_ald": "Bộ Mô Tả Trình Độ"
     },
 
     "overall_ald": {
-        "Math": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
-        "ELA": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the English language arts and literacy knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards."
+        "Math": "Tóm tắt điểm phác thảo: Học sinh ở Cấp độ {{asmt_perf_lvl}} thể hiện <strong>{{score_name}} và khả năng ứng dụng</strong> kiến thức toán học và các kỹ năng cần thiết để thành công trong trường đại học và công việc, như được nêu cụ thể trong Tiêu Chuẩn Cốt Lõi Chung của Tiểu Bang.",
+        "ELA": "Tóm tắt điểm phác thảo: Học sinh ở Cấp độ {{asmt_perf_lvl}} thể hiện <strong>{{score_name}} và khả năng ứng dụng</strong> kiến thức nghệ thuật tiếng Anh và đọc viết cũng như các kỹ năng cần thiết để thành công trong trường đại học và công việc, như được nêu cụ thể trong Tiêu Chuẩn Cốt Lõi Chung của Tiểu Bang."
     },
 
     "psychometric_implications": {
        "Summative": {
-        "Math": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do.",
-        "ELA": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do."
+        "Math": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện.",
+        "ELA": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện."
        },
        "Interim Comprehensive": {
-        "Math": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do.",
-        "ELA": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do."
+        "Math": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện.",
+        "ELA": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện."
        }
     },
 
-    "policy_content": {
+        "policy_content": {
         "11": {
-            "Math": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>",
-            "ELA": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>"
+            "Math": "Các trường cao đẳng và đại học có thể sử dụng điểm có Cân Nhắc về suThông Minh Hơn như là bằng chứng cho sự sẵn sàng tham gia các khóa học mở đầu, và theo tín chỉ của học sinh.  Để biết thêm thông tin, hãy truy cập <a href='#'>http://stateresources.link</a>",
+            "ELA": "Các trường cao đẳng và đại học có thể sử dụng điểm có Cân Nhắc về suThông Minh Hơn như là bằng chứng cho sự sẵn sàng tham gia các khóa học mở đầu, và theo tín chỉ của học sinh.  Để biết thêm thông tin, hãy truy cập <a href='#'>http://stateresources.link</a>"
         }
     },
 
     "claims": {
         "Math": {
             "description": {
-                "1": "Students can explain and apply mathematical concepts and carry out mathematical procedures with precision and fluency.",
-                "2": "Students can solve a range of complex, well-posed problems in pure and applied mathematics, making productive use of knowledge and problem-solving strategies.  Students can analyze complex, real-world scenarios and can construct and use mathematical models to interpret and solve problems.",
-                "3": "Students can clearly and precisely construct viable arguments to support their own reasoning and to critique the reasoning of others."
+                "1": "Học sinh có thể giải thích và áp dụng các khái niệm toán học và thực hiện các bước giải toán một cách chính xác và thành thạo.",
+                "2": "Học sinh có thể giải nhiều loại toán đơn thuần và toán ứng dụng phức tạp, giả định đúng, có sử dụng kiến thức và các bước giải toán hiệu quả.  Học sinh có thể phân tích các viễn cảnh phức tạp, thực tiễn và có thể xây dựng cũng như sử dụng các mô hình toán học để diễn giải và giải toán.",
+                "3": "Học sinh có thể xây dựng các lý luận khả thi một cách rõ ràng và chính xác để hỗ trợ cho lập luận của chính mình và để bình luận lập luận của người khác."
             },
             "scoreTooltip": {
-                "1": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
-                "2": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
-                "3": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths."
+                "1": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan.",
+                "2": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan.",
+                "3": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan."
             }
         },
         "ELA": {
             "description": {
-                "1": "Students can read closely and analytically to comprehend a range of increasingly complex literary and informational texts.",
-                "2": "Students can produce effective and well-grounded writing for a range of purposes and audiences.",
-                "3": "Students can employ effective speaking and listening skills for a range of purposes and audiences.",
-                "4": "Students can engage in research and inquiry to investigate topics and to analyze, integrate, and present information."
+                "1": "Học sinh có thể đọc cẩn thận và theo cách phân tích để lĩnh hội được nhiều đoạn văn mang tính văn chương và thông tin ngày càng phức tạp.",
+                "2": "Học sinh có thể viết được một cách có hiệu quả và có cơ sở cho nhiều mục đích và nhiều nhóm khán giả khác nhau.",
+                "3": "Học sinh có thể sử dụng các kỹ năng nói và nghe một cách có hiệu quả cho nhiều mục đích và nhiều nhóm khán giả khác nhau.",
+                "4": "Học sinh có thể tham gia vào việc nghiên cứu và tìm hiểu để khám phá nhiều chủ đề và phân tích, kết hợp và trình bày thông tin."
             },
             "scoreTooltip": {
-                "1": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
-                "2": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
-                "3": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths.",
-                "4": "Claim scores are on the same scale as the Overall score, but do not fit into Achievement Levels the way Overall scores do. Claim scores are best understood relative to the Overall score and compared to each other as a characterization of relative strengths."
+                "1": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan.",
+                "2": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan.",
+                "3": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan.",
+                "4": "Điểm số thực tế nằm trên thang điểm tương tự như điểm Tổng Kết, nhưng không phù hợp với Trình Độ của điểm Tổng Kết. Điểm số thực tế được hiểu đúng nhất liên quan đến điểm Tổng Kết và được so sánh với nhau như là cách thức miêu tả các ưu điểm liên quan."
             }
         }
     }

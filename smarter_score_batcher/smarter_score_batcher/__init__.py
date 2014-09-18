@@ -16,8 +16,9 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings, root_factory=RootFactory)
-    # Pass edauth the roles/permission mapping that is defined in smarter
-    # edauth.set_roles(RootFactory.__acl__)
+    # Pass edauth the roles/permission mapping
+    config.include(edauth)
+    edauth.set_roles(RootFactory.__acl__)
     # include add routes from edapi. Calls includeme
     config.include(edapi)
     here = os.path.abspath(os.path.dirname(__file__))
@@ -30,8 +31,9 @@ def main(global_config, **settings):
     config.add_route('xml', '/services/xml')
     config.add_route('error', '/error')
     config.scan()
-    # Set default permission on all views
-    # config.set_default_permission('view')
+
+    # Set default permission
+    config.set_default_permission('load')
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

@@ -53,7 +53,6 @@ class SBACStudent(Student):
         self.group_10_id = None
         self.group_10_text = None
 
-
     def get_object_set(self):
         """Get the set of objects that this exposes to a CSV or JSON writer.
 

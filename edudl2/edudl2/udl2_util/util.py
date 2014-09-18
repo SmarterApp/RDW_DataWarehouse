@@ -35,12 +35,12 @@ def merge_to_udl2stat_notification(batch_id, notification_data):
     '''
     with StatsDBConnection() as connector:
         udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
-        query = select([udl_status_table.c.notification], from_obj=[udl_status_table]).where(udl_status_table.c.batch_guid == UdlStatsConstants.UDL_STATUS_INGESTED)
+        query = select([udl_status_table.c.notification], from_obj=[udl_status_table]).where(udl_status_table.c.batch_guid == batch_id)
         batches = connector.get_result(query)
 
     # there should be one record.
     for batch in batches:
-        notification = batch[UdlStatsConstants.NOTIFICATION]
-        notification_dict = json.loads(notification)
+        notification = batch.get(UdlStatsConstants.NOTIFICATION, '{}')
+        notification_dict = json.loads(notification if notification is not None else '{}')
         notification_dict.update(notification_data)
         update_udl_stats_by_batch_guid(batch_id, {UdlStatsConstants.NOTIFICATION: json.dumps(notification_dict)})

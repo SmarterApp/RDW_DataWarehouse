@@ -1,22 +1,22 @@
 {
-    "reportInfo": "<h4>Purpose:</h4><p>This report presents a list of individual student scores for a selected assessment.</p><br><h4>Uses:</h4><ul><li>Use this report to view the assessment results for a class or other sub-group of students, filtered or sorted for your specific needs.</li><li>Review scale scores and error bands for overall student performance on a specific assessment.</li><li>View claim score icons to understand students’ performance for each claim.</li></ul><br><h4>Features:</h4><ul><li>Select assessment and content area(s) to view</li><li>Sort results by any column </li><li>Select specific students to focus your review</li><li>Search for particular students</li><li>Filter students by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li><li>Print Individual Student Reports (PDF) for a selected group of students</li>",
+    "reportInfo": "<h4>Propósito:</h4><p>Este reporte presenta una lista de las puntuaciones individuales del estudiante para una evaluación seleccionada.</p><br><h4>Usos:</h4><ul><li>Use este reporte para ver los resultados de la evaluación para una clase u otros subgrupos de estudiantes, filtrados u ordenados según sus necesidades específicas.</li><li>Revisar las escalas de puntuaciones y bandas de error para el rendimiento general de los estudiantes en una evaluación específica</li><li>Ver los íconos para exponer puntuaciones para comprender el rendimiento de los estudiantes en cada exposición.</li></ul><br><h4>Características:</h4><ul><li>Selecionar la evaluación y área de contenido (o áreas de contenido) a desplegar</li><li>Ordenar los resultados por cualquier columna </li><li>Seleccionar estudiantes específicos para enfocar su revisión </li><li>Buscar estudiantes en particular </li><li>Filtrar a los estudiantes según atributos (p. ej., Género, Programa de Educación Individualizado (IEP), Raza/Etnicidad)</li><li>Descargar resultados de evaluación del estudiante para un mayor análisis </li><li>Imprimir reportes individuales del estudiante (PDF) para un grupo seleccionado de estudiantes </li>",
     "legendInfo": {
-        "report_info": "This report presents a list of <b>individual student scores for a selected assessment</b>.",
-        "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would like achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
-        "error_band_1": "<b>Achievement Level Scores</b> vary by subject and grade level.",
-        "note": "Data is for illustrative purposes only",
-        "achievement_level_scores": "Archievement Level Scores",
+        "report_info": "Este reporte presenta una lista de <b>puntuaciones individuales del estudiante para una evaluación seleccionada</b>.",
+        "error_band": "Las pruebas Smarter Balanced proveen las puntuaciones más precisas posibles dentro de un límite de tiempo razonable, pero ninguna prueba puede ser 100 porciento precisa. La <b>banda de error</b> indica el rango de puntuaciones que un estudiante obtendría si tomara la prueba varias veces. Es similar al \"margen de error\" que los diarios reportan para las encuestas de opinión pública.",
+        "error_band_1": "<b>Las puntuaciones del nivel de dominio </b> varían por materia y nivel de grado.",
+        "note": "Los datos solo tienen fines ilustrativos",
+        "achievement_level_scores": "Puntuaciones del nivel de rendimiento",
         "uses": [
-            "Use this report to view the assessment results for a class or other sub-group of students, filtered or sorted for your specific needs. 7",
-            "Review scale scores and error bands for overall student performance on a specific assessment.",
-            "View claim score icons to understand students’ performance for each claim."
+            "Use este reporte para ver los resultados de la evaluación para una clase u otro subgrupo de estudiantes, filtrados u ordenados según sus necesidades específicas. 7",
+            "Revisar la escala de puntuaciones y las bandas de error para el rendimiento general del estudiante en una evaluación específica.",
+            "Ver los íconos para exponer puntuaciones para comprender el rendimiento de los estudiantes en cada exposición."
         ]
     },
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
     "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",
     "searchPlaceholder": {
-        "text": "Enter student",
-        "aria": "Find students in this grade. Enter search text and hit enter"
+        "text": "Ingresar estudiante",
+        "aria": "Encontrar estudiantes en este grado. Ingrese el texto de búsqueda y oprima enter"
     },
     "detailsSelection": [
         {
@@ -32,5 +32,5 @@
             "key": "ELA"
         }
     ],
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • {{asmt_type}}"
 }

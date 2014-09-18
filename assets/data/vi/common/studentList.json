@@ -1,22 +1,22 @@
 {
-    "reportInfo": "<h4>Purpose:</h4><p>This report presents a list of individual student scores for a selected assessment.</p><br><h4>Uses:</h4><ul><li>Use this report to view the assessment results for a class or other sub-group of students, filtered or sorted for your specific needs.</li><li>Review scale scores and error bands for overall student performance on a specific assessment.</li><li>View claim score icons to understand students’ performance for each claim.</li></ul><br><h4>Features:</h4><ul><li>Select assessment and content area(s) to view</li><li>Sort results by any column </li><li>Select specific students to focus your review</li><li>Search for particular students</li><li>Filter students by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li><li>Print Individual Student Reports (PDF) for a selected group of students</li>",
+    "reportInfo": "<h4>Mục đích:</h4><p>Báo cáo này trình bày điểm số của từng cá nhân học sinh cho một lĩnh vực đánh giá được chọn.</p><br><h4>Sử dụng:</h4><ul><li>Sử dụng báo cáo này để xem kết quả đánh giá cho một lớp hoặc một phân nhóm học sinh khác được lọc hoặc phân loại theo nhu cầu cụ thể của bạn.</li><li>Xem lại điểm chung và nhóm lỗi cho hiệu quả học tập tổng quát của học sinh trong bài đánh giá cụ thể.</li><li>Xem biểu tượng điểm thực tế để hiểu thêm về hiệu quả học tập của học sinh cho từng điểm thực tế.</li></ul><br><h4>Tính năng:</h4><ul><li>Chọn bài đánh giá và (các) nội dung môn học để xem</li><li>Phân loại kết quả theo bất kỳ cột nào </li><li>Chọn các học sinh cụ thể để tập trung vào yêu cầu xem xét của bạn</li><li>Tìm kiếm học sinh cụ thể</li><li>Lọc học sinh theo đặc điểm (ví dụ như Giới tính, IEP, Chủng tộc/Sắc tộc)</li><li>Tải về kết quả đánh giá của học sinh để phân tích thêm</li><li>In Phiếu Kết Quả Cá Nhân (PDF) cho nhóm học sinh đã chọn</li>",
     "legendInfo": {
-        "report_info": "This report presents a list of <b>individual student scores for a selected assessment</b>.",
-        "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would like achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
-        "error_band_1": "<b>Achievement Level Scores</b> vary by subject and grade level.",
-        "note": "Data is for illustrative purposes only",
-        "achievement_level_scores": "Archievement Level Scores",
+        "report_info": "Báo cáo này trình bày <b>điểm số của từng cá nhân học sinh cho một lĩnh vực đánh giá được chọn</b>.",
+        "error_band": "Bài kiểm tra Có Cân Nhắc về sự Thông Minh Hơn cho điểm số chính xác nhất có thể trong thời hạn hợp lý, nhưng không có bài kiểm tra nào có thể chính xác 100 phần trăm. <b>Nhóm lỗi</b> cho biết phạm vi điểm mà học sinh có khả năng đạt được nếu các em làm bài kiểm tra nhiều lần. Điều này tương tự như \"giới hạn lỗi\" mà các tờ báo thường báo cáo cho các khảo sát tìm hiểu ý kiến của công chúng.",
+        "error_band_1": "<b>Điểm Trình Độ</b> khác nhau tùy theo môn học & cấp lớp.",
+        "note": "Dữ liệu chỉ mang tinh minh họa",
+        "achievement_level_scores": "Điểm Trình Độ",
         "uses": [
-            "Use this report to view the assessment results for a class or other sub-group of students, filtered or sorted for your specific needs. 7",
-            "Review scale scores and error bands for overall student performance on a specific assessment.",
-            "View claim score icons to understand students’ performance for each claim."
+            "Sử dụng báo cáo này để xem kết quả đánh giá cho một lớp hoặc phân nhóm học sinh khác, được lọc hoặc phân loại theo nhu cầu cụ thể của bạn. 7",
+            "Xem lại điểm chung và nhóm lỗi cho hiệu quả học tập tổng quát của học sinh trong bài đánh giá cụ thể.",
+            "Xem biểu tượng điểm thực tế để hiểu thêm về hiệu quả học tập của học sinh cho từng điểm thực tế."
         ]
     },
-    "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
-    "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",
+    "proficiencyAscending": "(dominio: <b>thấp</b> a <b>cao</b>)",
+    "proficiencyDescending": "(dominio: <b>cao</b> a <b>thấp</b>)",
     "searchPlaceholder": {
-        "text": "Enter student",
-        "aria": "Find students in this grade. Enter search text and hit enter"
+        "text": "Nhập học sinh",
+        "aria": "Tìm học sinh trong cấp lớp này. Nhập từ tìm kiếm và nhấn enter"
     },
     "detailsSelection": [
         {
@@ -32,5 +32,5 @@
             "key": "ELA"
         }
     ],
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • {{asmt_type}}"
 }

@@ -1,37 +1,37 @@
 {
     "reportInfo": {
-        "state": "<h4>Purpose:</h4><p>This report presents a view of student performance on the most recent summative assessment for each district in a state. For each district, the report displays the percentage of students in each achievement level and the number of students assessed.</p><br><h4>Uses:</h4><ul><li>Use this report to compare overall district achievement within a state.</li><li>Filter the view to analyze sub-groups within districts.</li></ul><br><h4>Features:</h4><ul><li>Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3</li><li>Sort results by any column</li><li>Filter results by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li></ul><br/>",
-        "district": "<h4>Purpose:</h4><p>This report presents a view of student performance on the most recent summative assessment for each school in a selected district. For each school, the report displays the percentage of students in each achievement level and the number of students assessed.</p><br><h4>Uses:</h4><ul><li>Use this report to compare overall school achievement within a district.</li><li>Filter the view to analyze sub-groups within schools.</li></ul><br><h4>Features:</h4><ul><li>Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3</li><li>Sort results by any column</li><li>Filter results by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li></ul><br/>",
-        "school": "<h4>Purpose:</h4><p>This report presents a view of student performance on the most recent summative assessment for each grade in a selected school. For each grade, the report displays the percentage of students in each achievement level and the number of students assessed.</p><br><h4>Uses:</h4><ul><li>Use this report to compare overall achievement between grades in a school.</li><li>Filter the view to analyze sub-groups within a grade.</li></ul><br><h4>Features:</h4><ul><li>Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3</li><li>Sort results by any column</li><li>Filter results by attributes (e.g., Gender, IEP, Race/Ethnicity)</li><li>Download student assessment results for further analysis</li><li>Print Individual Student Reports (PDF) for all students in the school</li></ul><br/>"
+        "state": "<h4>Mục đích:</h4><p>Báo cáo này trình bày hiệu quả học tập của học sinh trong phần đánh giá tổng hợp mới nhất cho từng học khu trong tiểu bang. Đối với từng học khu, báo cáo này thể hiện tỷ lệ phần trăm học sinh trong từng trình độ và số lượng học sinh được đánh giá.</p><br><h4>Sử dụng:</h4><ul><li>Sử dụng báo cáo này để so sánh thành tích chung của học khu trong tiểu bang.</li><li>Lọc quan điểm để phân tích các phân nhóm trong các học khu.</li></ul><br><h4>Tính năng:</h4><ul><li>Sắp xếp theo tỷ lệ phần trăm học sinh trong từng trình độ hoặc dọc theo đường từ Cấp 2 đến Cấp 3</li><li>Phân loại kết quả theo bất kỳ cột nào</li><li>Lọc kết quả theo đặc điểm (ví dụ như Giới tính, IEP, Chủng tộc/Sắc tộc)</li><li>Tải về kết quả đánh giá của học sinh để phân tích thêm</li></ul><br/>",
+        "district": "<h4>Mục đích:</h4><p>Báo cáo này trình bày hiệu quả học tập của học sinh trong phần đánh giá tổng hợp mới nhất cho từng trường trong học khu được chọn. Đối với từng trường, báo cáo này thể hiện tỷ lệ phần trăm học sinh trong từng trình độ và số lượng học sinh được đánh giá.</p><br><h4>Sử dụng:</h4><ul><li>Sử dụng báo cáo này để so sánh thành tích chung của trường trong học khu.</li><li>Lọc quan điểm để phân tích các phân nhóm trong trường.</li></ul><br><h4>Tính năng:</h4><ul><li>Sắp xếp theo tỷ lệ phần trăm học sinh trong từng trình độ hoặc dọc theo đường từ Cấp 2 đến Cấp 3</li><li>Phân loại kết quả theo bất kỳ cột nào</li><li>Lọc kết quả theo đặc điểm (ví dụ như Giới tính, IEP, Chủng tộc/Sắc tộc)</li><li>Tải về kết quả đánh giá học sinh để phân tích thêm</li></ul><br/>",
+        "school": "<h4>Mục đích:</h4><p>Báo cáo này trình bày hiệu quả học tập của học sinh trong phần đánh giá tổng hợp mới nhất cho từng cấp lớp trong trường được chọn. Đối với từng cấp lớp, báo cáo này thể hiện tỷ lệ phần trăm học sinh trong từng trình độ và số lượng học sinh được đánh giá.</p><br><h4>Sử dụng:</h4><ul><li>Sử dụng báo cáo này để so sánh thành tích chung giữa các cấp lớp trong trường.</li><li>Lọc quan điểm để phân tích các phân nhóm trong cấp lớp.</li></ul><br><h4>Tính năng:</h4><ul><li>Sắp xếp theo tỷ lệ phần trăm học sinh trong từng trình độ hoặc dọc theo đường từ Cấp 2 đến Cấp 3</li><li>Phân loại kết quả theo bất kỳ cột nào</li><li>Lọc kết quả theo đặc điểm (ví dụ như Giới tính, IEP, Chủng tộc/Sắc tộc)</li><li>Tải về kết quả đánh giá của học sinh để phân tích thêm</li><li>In Phiếu Kết Quả Cá Nhân (PDF) cho mọi học sinh trong trường</li></ul><br/>"
     },
     "legendInfo": {
         "indicator": "8,345",
-        "desc1": "This report presents a view of student performance on the <b>summative assessment</b> for the <b>selected academic year</b>.",
-        "desc2": "Mouse-over or tap bar for the number of students in each Achievement Level.",
-        "desc3": "Data is for illustrative purposes only.",
+        "desc1": "Báo cáo này trình bày hiệu quả học tập của học sinh trong phần <b>đánh giá tổng hợp</b> cho <b>năm học được chọn</b>.",
+        "desc2": "Rê chuột lên phía trên hoặc chạm vào thanh để biết số lượng học sinh trong từng Trình Độ.",
+        "desc3": "Dữ liệu chỉ mang tinh minh họa.",
         "percent_students":"% of students",
         "number_students":"# of students",
         "desc4":"in each Achievement Level",
-        "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."],
+        "notes": ["Cuộn qua/Chạm vào thanh để biết thông tin phân tích về con số dân số", "Tỷ lệ phần trăm được làm tròn đến số nguyên gần nhất. Vì vậy, tỷ lệ phần trăm nhỏ nhất có thể được báo cáo là '0'."],
         "uses": [
-            "Use this report to compare overall school achievement within a district.",
-            "Filter the view to analyze sub-groups within schools."
+            "Sử dụng báo cáo này để so sánh thành tích chung của trường học trong học khu.",
+            "Lọc quan điểm để phân tích các phân nhóm trong các trường."
         ]
     },
-    "proficiencyAscending": "(achievement: <b>least</b> to <b>most</b>)",
-    "proficiencyDescending": "(achievement: <b>most</b> to <b>least</b>)",
+    "proficiencyAscending": "(achievement: <b>kém nhất</b> to <b>cao nhất</b>)",
+    "proficiencyDescending": "(achievement: <b>cao nhất</b> to <b>kém nhất</b>)",
     "searchPlaceholder" : {
         "state": {
-            "text": "Enter district",
-            "aria": "Find districts in this state. Enter search text and hit enter"
+            "text": "Nhập học khu",
+            "aria": "Tìm học khu trong tiểu bang này. Nhập từ tìm kiếm và nhấn enter"
         },
         "district": {
-            "text": "Enter school",
-            "aria": "Find schools in this district. Enter search text and hit enter"
+            "text": "Nhập trường",
+            "aria": "Tìm trường trong học khu này. Nhập từ tìm kiếm và nhấn enter"
         },
         "school": {
-            "text": "Enter grade",
-            "aria": "Find grade in this school. Enter search text and hit enter"
+            "text": "Nhập cấp lớp",
+            "aria": "Tìm cấp lớp trong trường này. Nhập từ tìm kiếm và nhấn enter"
         }
     }
 }

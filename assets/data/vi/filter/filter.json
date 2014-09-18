@@ -1,98 +1,98 @@
 {
-    "not_stated_message": "{{percentage}}% reported \"not stated\"",
+    "not_stated_message": "{{percentage}}% reported\"không được trình bày\"",
     "grades" : {
-        "display" : "Grades",
-        "tag" : "Grades",
+        "display" : "Cấp lớp",
+        "tag" : "Cấp lớp",
         "name" : "grade",
         "options" : [
             {
-                "label" : "Grade 3",
+                "label" : "Lớp 3",
                 "value" : "3"
             },
             {
-                "label" : "Grade 4",
+                "label" : "Lớp 4",
                 "value" : "4"
             },
             {
-                "label" : "Grade 5",
+                "label" : "Lớp 5",
                 "value" : "5"
             },
             {
-                "label" : "Grade 6",
+                "label" : "Lớp 6",
                 "value" : "6"
             },
             {
-                "label" : "Grade 7",
+                "label" : "Lớp 7",
                 "value" : "7"
             },
             {
-                "label" : "Grade 8",
+                "label" : "Lớp 8",
                 "value" : "8"
             },
             {
-                "label" : "Grade 11",
+                "label" : "Lớp 11",
                 "value" : "11"
             }
         ]
     },
     "filters" : [
         {
-            "display" : "Limited English Proficient (LEP)*",
+            "display" : "Khả Năng Tiếng Anh Hạn Chế (LEP)*",
             "tag" : "LEP",
             "name" : "dmgPrgLep",
-            "comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",
+            "comment" : "*Nhóm này bao gồm Người Học Tiếng Anh(ELL) nếu tiểu bang của bạn xác định học sinh là ELL",
             "options" : [
 
                 {
-                    "label": "Yes",
+                    "label": "Đúng",
                     "value": "Y"
                 },
                 {
-                    "label": "No",
+                    "label": "Không",
                     "value": "N"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "Không được trình bày",
                     "value": "NS"
                 }
             ]
         },
         {
-            "display" : "Race/Ethnicity",
-            "tag" : "Race/Ethnicity",
+            "display" : "Chủng tộc/Sắc tộc",
+            "tag" : "Chủng tộc/Sắc tộc",
             "name" : "ethnicity",
-            "comment" : "*Not Hispanic or Latino",
+            "comment" : "*Không phải người Mỹ gốc Tây Ban Nha hoặc người La-tinh",
             "options" : [
                 {
-                    "label": "Hispanic/Latino of any race",
+                    "label": "Người Mỹ gốc Tây Ban Nha/người La-Tinh thuộc bất kỳ chủng tộc nào",
                     "value": "3"
                 },
                 {
-                    "label": "American Indian or Alaska Native*",
+                    "label": "Người Mỹ bản địa hoặc người Alaska bản địa*",
                     "value": "4"
                 },
                 {
-                    "label": "Asian*",
+                    "label": "Người Châu Á*",
                     "value": "2"
                 },
                 {
-                    "label": "Black or African American*",
+                    "label": "Người Da Đen hoặc người Mỹ gốc Phi*",
                     "value": "1"
                 },
                 {
-                    "label": "Native Hawaiian or Pacific Islander*",
+                    "label": "Người Hawaii bản xứ hoặc Người đảo Thái Bình Dương*",
                     "value": "5"
                 },
                 {
-                    "label": "White*",
+                    "label": "Người da trắng*",
                     "value": "6"
                 },
                 {
-                    "label": "Two or more races*",
+                    "label": "Hai hoặc nhiều chủng tộc*",
                     "value": "7"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "Không được trình bày",
                     "value": "0"
                 }
             ]
@@ -101,37 +101,37 @@
             "display" : "IEP",
             "tag" : "IEP",
             "name" : "dmgPrgIep",
-            "comment": "*IEP categorization does not include students with a GIEP (i.e., 'gifted' students)",
+            "comment": "*Việc phân loại IEP không bao gồm học sinh có GIEP (nghĩa là học sinh 'tài năng')",
             "options" : [
                 {
-                    "label": "Yes",
+                    "label": "Đúng",
                     "value": "Y"
                 },
                 {
-                    "label": "No",
+                    "label": "Không",
                     "value": "N"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "Không được trình bày",
                     "value": "NS"
                 }
             ]
         },
         {
-            "display" : "Gender",
-            "tag" : "Gender",
+            "display" : "Giới tính",
+            "tag" : "Giới tính",
             "name" : "sex",
             "options" : [
                 {
-                    "label": "Male",
+                    "label": "Nam",
                     "value": "male"
                 },
                 {
-                    "label": "Female",
+                    "label": "Nữ",
                     "value": "female"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "Không được trình bày",
                     "value": "not_stated"
                 }
             ]
@@ -142,55 +142,55 @@
             "name" : "dmgPrg504",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Đúng",
                     "value" : "Y"
                 },{
-                    "label" : "No",
+                    "label" : "Không",
                     "value" : "N"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "Không được trình bày",
                     "value": "NS"
                 }
             ]
         },
         {
-            "display" : "Economic Disadvantage",
-            "tag" : "Economic Disadvantage",
+            "display" : "Khó khăn kinh tế",
+            "tag" : "Khó khăn kinh tế",
             "name" : "dmgStsEcd",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Đúng",
                     "value" : "Y"
                 },{
-                    "label" : "No",
+                    "label" : "Không",
                     "value" : "N"
                 }
             ]
         },
         {
-            "display" : "Migrant Status",
-            "tag" : "Migrant Status",
+            "display" : "Tình trạng di cư",
+            "tag" : "Tình trạng di cư",
             "name" : "dmgStsMig",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Đúng",
                     "value" : "Y"
                 },{
-                    "label" : "No",
+                    "label" : "Không",
                     "value" : "N"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "Không được trình bày",
                     "value": "NS"
                 }
             ]
         }
     ],
     "group_template" : {
-        "display" : "Student Grouping {{index}}",
-        "tag" : "Student Grouping {{index}}",
-        "name" : "group{{index}}Id",
+        "display" : "Nhóm học sinh",
+        "tag" : "Nhóm học sinh",
+        "name" : "studentGroupId",
         "options" : [
         ]
     }

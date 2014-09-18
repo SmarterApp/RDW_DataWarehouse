@@ -1,125 +1,125 @@
 {
-	"not_stated_message": "{{percentage}}% reported \"no se especifica\"",
-	"grades" : {
-		"display" : "Grados",
-		"tag" : "Grados",
-		"name" : "grade",
-		"options" : [
-			{
-				"label" : "Grado 3",
-				"value" : "3"
-			},
-			{
-				"label" : "Grado 4",
-				"value" : "4"
-			},
-			{
-				"label" : "Grado 5",
-				"value" : "5"
-			},
-			{
-				"label" : "Grado 6",
-				"value" : "6"
-			},
-			{
-				"label" : "Grado 7",
-				"value" : "7"
-			},
-			{
-				"label" : "Grado 8",
-				"value" : "8"
-			},
-			{
-				"label" : "Grado 11",
-				"value" : "11"
-			}
-		]
-	},
-	"filters" : [
-		{
-			"display" : "Dominio limitado del inglés (LEP)*",
-			"tag" : "LEP",
-			"name" : "dmgPrgLep",
-			"comment" : "*Esta categoría incluye a los aprendices del idioma inglés (<em>English Language Learners</em>, ELL) si su estado identifica a estudiantes como ELL",
-			"options" : [
-
-				{
-					"label": "Sí",
-				  	"value": "S"
-				},
-				{
-					"label": "No",
-				  	"value": "N"
-				},
-				{
-					"label": "No se especifica",
-				  	"value": "NE"
-				}
-			]
-		},
-		{
-			"display" : "Raza/Grupo étnico",
-			"tag" : "Raza/Grupo étnico",
-			"name" : "ethnicity",
-			"comment" : "*Ni hispano ni latino",
-			"options" : [
-				{
-					"label": "Hispano/Latino de cualquier raza ",
-				  	"value": "3"
-				},
-				{
-					"label": "Indígena norteamericano o nativo de Alaska *",
-				  	"value": "4"
-				},
-				{
-					"label": "Asiático*",
-				  	"value": "2"
-				},
-				{
-					"label": "Negro o afroamericano*",
-				  	"value": "1"
-				},
-				{
-					"label": "Nativo de Hawái o de las Islas del Pacífico *",
-				  	"value": "5"
-				},
-				{
-					"label": "Blanco*",
-				  	"value": "6"
-				},
-				{
-					"label": "Dos o más razas*",
-				  	"value": "7"
-				},
-				{
-					"label": "No se especifica",
-				  	"value": "0"
-				}
-			]
-		},
-		{
-			"display" : "IEP",
-			"tag" : "IEP",
-			"name" : "dmgPrgIep",
-			"comment": "*La categoría IEP no incluye a los estudiantes con un GIEP (p. ej., estudiantes dotados)",
-			"options" : [
-				{
-					"label": "Sí",
-				  	"value": "Y"
-				},
-				{
-					"label": "No",
-				  	"value": "N"
-				},
-				{
-					"label": "No se especifica",
-				  	"value": "NS"
-				}
-			]
-		},
+    "not_stated_message": "{{percentage}}% reported \"no se especifica\"",
+    "grades" : {
+        "display" : "Grados",
+        "tag" : "Grados",
+        "name" : "grade",
+        "options" : [
+            {
+                "label" : "Grado 3",
+                "value" : "3"
+            },
+            {
+                "label" : "Grado 4",
+                "value" : "4"
+            },
+            {
+                "label" : "Grado 5",
+                "value" : "5"
+            },
+            {
+                "label" : "Grado 6",
+                "value" : "6"
+            },
+            {
+                "label" : "Grado 7",
+                "value" : "7"
+            },
+            {
+                "label" : "Grado 8",
+                "value" : "8"
+            },
+            {
+                "label" : "Grado 11",
+                "value" : "11"
+            }
+        ]
+    },
+    "filters" : [
         {
-            "display" : "Sexo",
-            "tag" : "Sexo",
+            "display" : "Dominio limitado del inglés (LEP)*",
+            "tag" : "LEP",
+            "name" : "dmgPrgLep",
+            "comment" : "*Esta categoría incluye a los Aprendices del Idioma Inglés (ELL) si su estado identifica estudiantes como ELL",
+            "options" : [
+
+                {
+                    "label": "Sí",
+                    "value": "Y"
+                },
+                {
+                    "label": "No",
+                    "value": "N"
+                },
+                {
+                    "label": "No se especifica",
+                    "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Raza/Etnicidad",
+            "tag" : "Raza/Etnicidad",
+            "name" : "ethnicity",
+            "comment" : "*No hispano o latino ",
+            "options" : [
+                {
+                    "label": "Hispano/Latino de cualquier raza",
+                    "value": "3"
+                },
+                {
+                    "label": "Indígena norteamericano o nativo de Alaska*",
+                    "value": "4"
+                },
+                {
+                    "label": "Asiático*",
+                    "value": "2"
+                },
+                {
+                    "label": "Negro o afroamericano*",
+                    "value": "1"
+                },
+                {
+                    "label": "Nativo de Hawái o de las Islas del Pacífico*",
+                    "value": "5"
+                },
+                {
+                    "label": "Blanco*",
+                    "value": "6"
+                },
+                {
+                    "label": "Dos o más razas*",
+                    "value": "7"
+                },
+                {
+                    "label": "No se especifica",
+                    "value": "0"
+                }
+            ]
+        },
+        {
+            "display" : "IEP",
+            "tag" : "IEP",
+            "name" : "dmgPrgIep",
+            "comment": "*La categoría IEP no incluye a estudiantes con un GIEP (p. ej., estudiantes 'dotados')",
+            "options" : [
+                {
+                    "label": "Sí",
+                    "value": "Y"
+                },
+                {
+                    "label": "No",
+                    "value": "N"
+                },
+                {
+                    "label": "No se especifica",
+                    "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Género",
+            "tag" : "Género",
             "name" : "sex",
             "options" : [
                 {
@@ -136,31 +136,31 @@
                 }
             ]
         },
-		{
-			"display" : "504",
-			"tag" : "504",
-			"name" : "dmgPrg504",
-			"options" : [
-				{
-					"label" : "Sí",
-					"value" : "Y"
-				},{
-					"label" : "No",
-					"value" : "N"
-				},
-				{
-					"label": "No se especifica",
-				  	"value": "NS"
-				}
-			]
-		},
         {
-            "display" : "Economic Disadvantage",
-            "tag" : "econDisad",
+            "display" : "504",
+            "tag" : "504",
+            "name" : "dmgPrg504",
+            "options" : [
+                {
+                    "label" : "Sí",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                },
+                {
+                    "label": "No se especifica",
+                    "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Desventaja económica",
+            "tag" : "Desventaja económica",
             "name" : "dmgStsEcd",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Sí",
                     "value" : "Y"
                 },{
                     "label" : "No",
@@ -169,28 +169,28 @@
             ]
         },
         {
-            "display" : "Migrant Status",
-            "tag" : "migrant",
+            "display" : "Estatus de migrante",
+            "tag" : "Estatus de migrante",
             "name" : "dmgStsMig",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Sí",
                     "value" : "Y"
                 },{
                     "label" : "No",
                     "value" : "N"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "No se especifica",
                     "value": "NS"
                 }
             ]
         }
-	],
+    ],
     "group_template" : {
-        "display" : "Student Grouping {{index}}",
-        "tag" : "Student Grouping {{index}}",
-        "name" : "group{{index}}Id",
+        "display" : "Agrupación estudiantil",
+        "tag" : "Agrupación estudiantil",
+        "name" : "studentGroupId",
         "options" : [
         ]
     }

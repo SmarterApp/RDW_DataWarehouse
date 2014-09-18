@@ -1,35 +1,35 @@
 {
-    "reportInfo": "<h4>Purpose:</h4><p>This report presents individual student assessment scores and provides guidance on how to interpret the results.</p><br/><h4>Uses:</h4><ul><li>Educators, parents or students may use this report to understand student achievement, progress toward mastery of the Common Core State Standards and attainment of the academic knowledge and skills required to be college content- and career-ready.</li></ul><br/><h4>Understanding your score:</h4><p>The Smarter Balanced assessment is different than other tests with which you may be familiar.</p><ul><li>First, the Smarter Balanced assessments are Computer Adaptive Tests and take advantage of technology to customize each test to the individual student. This means that when a student answers a question correctly, the next question they see will be slightly more difficult. Likewise, if an answer is incorrect, the next question will be somewhat less difficult. This procedure allows for more efficient and precise measurement of students' knowledge and skills.</li><li>Second, the assessment is a criterion-referenced test, meaning that it reports individual students’ understanding of a particular set of academic knowledge and skills. As a result, scores are not meant to compare students to each other, but rather to determine how well each student understands the content assessed. </li></ul><br/><h4>Important Information about Interim Assessments:</h4><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol><br/>",
+    "reportInfo": "<h4>Mục đích:</h4><p>Báo cáo này trình bày điểm đánh giá của học sinh và hướng dẫn cách hiểu các kết quả.</p><br/><h4>Sử dụng:</h4><ul><li>Các nhà giáo dục, phụ huynh hoặc học sinh có thể sử dụng báo cáo này để hiểu thêm về thành tích học tập của học sinh, sự tiến bộ trong việc tinh thông các Tiêu Chuẩn Cốt Lõi Chung của Tiểu Bang và khả năng đạt được kiến thức và các kỹ năng yêu cầu để sẵn sàng cho bậc đại học và nghề nghiệp.</li></ul><br/><h4>Cách hiểu điểm của bạn:</h4><p>Đánh giá Có Cân Nhắc về sự Thông Minh Hơn khác với các bài kiểm tra khác mà bạn có thể đã biết.</p><ul><li>Trước tiên, đánh giá Có Cân Nhắc về sự Thông Minh Hơn là Bài Thi Tương Tác Trên Máy Vi Tính và sử dụng công nghệ để tùy chỉnh từng bài kiểm tra cho phù hợp với từng cá nhân học sinh. Điều này có nghĩa là khi học sinh trả lời đúng câu hỏi, câu hỏi tiếp theo sẽ hơi khó hơn một chút. Tương tự như vậy, nếu câu trả lời không chính xác, câu hỏi tiếp theo sẽ phần nào ít khó hơn. Cách thức này cho phép đánh giá kiến thức và kỹ năng của học sinh hiệu quả và chính xác hơn.</li><li>Thứ hai, đánh giá là bài kiểm tra có tham khảo các tiêu chuẩn, nghĩa là bài đánh giá sẽ báo cáo hiểu biết của học sinh về một nhóm kiến thức và kỹ năng cụ thể. Do đó, điểm số không phải là phương tiện để so sánh các học sinh với nhau, mà là để xác xác định xem mỗi học sinh hiểu về nội dung đánh giá tốt như thế nào. </li></ul><br/><h4>Important Information about Interim Assessments:</h4><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol><br/>",
     "legendInfo": {
-        "report_info": "This report presents an <b>individual student's scores for a selected assessment</b>.",
-        "relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
-        "error_band": "Smarter Balanced tests provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The <b>error band</b> indicates the range of scores that a student would likely achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys.",
-        "note": "Data is for illustrative purposes only",
-        "achievement_level_scores": "Achievement Level Scores vary by subject and grade."
+        "report_info": "Báo cáo này trình bày <b>điểm số của từng cá nhân học sinh cho một lĩnh vực đánh giá được chọn</b>.",
+        "relative_strength_text": "Các mũi tên cho biết điểm số của bạn so với số điểm tổng kết của bạn. Mũi tên hướng lên nghĩa là khá mạnh, trong khi mũi tên hướng xuống có thể cho biết là khá yếu.",
+        "error_band": "Bài kiểm tra Có Cân Nhắc về sự Thông Minh Hơn cho điểm số chính xác nhất có thể trong thời hạn hợp lý, nhưng không có bài kiểm tra nào có thể chính xác 100 phần trăm. <b>Nhóm lỗi</b> cho biết phạm vi điểm mà học sinh có khả năng đạt được nếu các em làm bài kiểm tra nhiều lần. Điều này tương tự như \"giới hạn lỗi\" mà các tờ báo thường báo cáo cho các khảo sát tìm hiểu ý kiến của công chúng.",
+        "note": "Dữ liệu chỉ mang tinh minh họa",
+        "achievement_level_scores": "Điểm Trình Độ khác nhau tùy theo môn học & cấp lớp."
     },
     "accommodationMapping": {
-        "5": " used <strong>without prior registration:</strong>",
-        "6": " was eligible for, but <strong>availability and use are unknown:</strong>",
-        "7": " was eligible for, but <strong>was not available for use:</strong>",
-        "8": " was eligible for and had <strong>available, but use is unknown:</strong>",
-        "9": " was eligible for and had <strong>available, but did not use:</strong>",
-        "10": " was eligible for and had <strong>available, and used:</strong>"
+        "5": " được sử dụng <strong>mà không cần đăng ký trước:</strong>",
+        "6": " đủ điều kiện, nhưng <strong>tính có sẵn và sử dụng không biết:</strong>",
+        "7": " đủ điều kiện, nhưng <strong>không có sẵn để sử dụng:</strong>",
+        "8": " đủ điều kiện và <strong>có sẵn nhưng việc sử dụng không biết:</strong>",
+        "9": " đủ điều kiện và <strong>có sẵn nhưng không sử dụng:</strong>",
+        "10": " đủ điều kiện và <strong>có sẵn và được sử dụng:</strong>"
     },
     "accommodationColumns": {
-        "acc_asl_video_embed": "ASL Videos",
-        "acc_asl_human_nonembed": "Human ASL Signer",
-        "acc_braile_embed": "Fully Brailled",
-        "acc_closed_captioning_embed": "Closed Captioning: ELA/Literacy Listening Stimuli",
-        "acc_text_to_speech_embed": "Text-to-speech: ELA/Literacy Reading Passages",
-        "acc_abacus_nonembed": "Abacus",
-        "acc_alternate_response_options_nonembed": "Alternative Response Options",
-        "acc_calculator_nonembed": "Calculator",
-        "acc_multiplication_table_nonembed": "Multiplication Table",
-        "acc_print_on_demand_nonembed": "Printed Stimuli / Items",
-        "acc_read_aloud_nonembed": "Read-aloud: ELA/Literacy Reading Passages",
-        "acc_scribe_nonembed": "Scribe: ELA/Literacy Writing Items",
-        "acc_speech_to_text_nonembed": "Speech-to-text: ELA/Literacy Writing Items",
-        "acc_streamline_mode": "Streamline Mode"
+        "acc_asl_video_embed": "Video ASL",
+        "acc_asl_human_nonembed": "Người ký ASL",
+        "acc_braile_embed": "Được viết hoàn toàn bằng chữ Braille",
+        "acc_closed_captioning_embed": "Đầu đề kết thúc: ELA/Khuyến khích kỹ năng đọc viết, nghe",
+        "acc_text_to_speech_embed": "Chuyển văn bản thành giọng nói: ELA/Đoạn văn",
+        "acc_abacus_nonembed": "Bàn tính",
+        "acc_alternate_response_options_nonembed": "Nhiều lựa chọn trả lời khác nhau",
+        "acc_calculator_nonembed": "Máy tính",
+        "acc_multiplication_table_nonembed": "Bàn nhân",
+        "acc_print_on_demand_nonembed": "Khuyến khích / Hạng mục được in",
+        "acc_read_aloud_nonembed": "Đọc lớn: ELA/Đoạn văn",
+        "acc_scribe_nonembed": "Sao chép: ELA/Các mục đọc viết",
+        "acc_speech_to_text_nonembed": "Chuyển giọng nói thành văn bản: ELA/Các mục đọc viết",
+        "acc_streamline_mode": "Chế độ sắp xếp"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · Grade {{asmt_grade}} · {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}"
 }

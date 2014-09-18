@@ -187,10 +187,11 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
                 directories_to_archive.append(base_directory_to_archive)
                 archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
             archive_files.append(archive_file_name)
-            registration_id, download_url = register_file(user.get_uid())
+            registration_id, download_url, web_download_url = register_file(user.get_uid())
             registration_ids.append(registration_id)
-            extract_file['fileName'] = os.path.basename(archive_file_name)
-            extract_file['download_url'] = download_url
+            extract_file[Constants.FILENAME] = os.path.basename(archive_file_name)
+            extract_file[Constants.DOWNLOAD_URL] = download_url
+            extract_file[Constants.WEB_DOWNLOAD_URL] = web_download_url
             extract_files.append(extract_file)
 
         tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)

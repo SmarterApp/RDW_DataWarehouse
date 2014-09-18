@@ -50,6 +50,7 @@ employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 employeeType: ||AUDITXML||||||cat|NC|||||||||
 employeeType: ||IIRDEXTRACTS||||||cat|NC|||||||||
+employeeType: ||ASMTDATALOAD||||||cat|NC|||||||||
 givenName: Susan
 uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P
@@ -334,6 +335,7 @@ employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 employeeType: ||SUPER_USER|||SBAC|||||||||||||
 employeeType: ||AUDITXML|||SBAC|||||||||||||
 employeeType: ||IIRDEXTRACTS|||SBAC|||||||||||||
+employeeType: ||ASMTDATALOAD|||SBAC||||||||||||
 givenName: Guy
 uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P

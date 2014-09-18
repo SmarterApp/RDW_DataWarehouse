@@ -62,7 +62,7 @@ define [
       content = $('#HelpMenuModal .tab-content')
       $('#HelpMenuModal').css('height', height + 80 + 'px')
       content.css('height', height + 'px')
-      content.css('max-height', height + 'px')
+      content.css('max-height', height - 35 + 'px')
   
 
   create = (container, config) ->

@@ -75,7 +75,7 @@
 			$(document).ready(function() {
 				regId = $('#regId').data('value')
 				res = get("/validate/" + regId).done(function(data) {
-					window.location = window.location.protocol + "//" + window.location.host + "/download/" + regId
+					window.location = window.location.protocol + "//" + window.location.host + "/file/" + regId
 				})
 			});
 		</script>

@@ -41,7 +41,7 @@ class RegistrationTest(unittest.TestCase):
         self.assertTrue('url' in response_json)
         self.assertTrue('registration_id' in response_json)
         registration_id = response_json['registration_id']
-        self.assertEqual('http://blah/download/' + registration_id, response_json['url'])
+        self.assertEqual('http://blah/file/' + registration_id, response_json['url'])
         persist_patch.assert_called_with('1234')
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
@@ -64,7 +64,7 @@ class RegistrationTest(unittest.TestCase):
         self.assertTrue('url' in response_json)
         self.assertTrue('registration_id' in response_json)
         registration_id = response_json['registration_id']
-        self.assertEqual('http://blah/download/' + registration_id, response_json['url'])
+        self.assertEqual('http://blah/file/' + registration_id, response_json['url'])
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
     def test_registration_incorrect_payload(self, persist_patch):

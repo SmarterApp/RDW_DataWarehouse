@@ -10,10 +10,10 @@ def includeme(config):
     '''
     Routes to service endpoints
     '''
-    config.add_route('download', '/download/{reg_id}')
+    config.add_route('file_download', '/file/{reg_id}')
     config.add_route('error', 'error')
     config.add_route('validate', '/validate/{reg_id}')
-    config.add_route('web_download', '/web/{reg_id}')
+    config.add_route('web_download', '/download/{reg_id}')
 
     here = os.path.abspath(os.path.dirname(__file__))
     assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..', '..'), 'assets'))

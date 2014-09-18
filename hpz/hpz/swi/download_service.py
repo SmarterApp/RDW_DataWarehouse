@@ -12,7 +12,7 @@ __author__ = 'okrook'
 logger = logging.getLogger(__name__)
 
 
-@view_config(route_name='download', request_method='GET', permission='download')
+@view_config(route_name='file_download', request_method='GET', permission='download')
 def download_file(context, request):
     registration_info = FileRegistry.get_registration_info(request.matchdict['reg_id'])
     file_path = registration_info[HPZ.FILE_PATH] if registration_info is not None else None

@@ -130,7 +130,7 @@
         "unfiltered_total_assessed": "Total evaluado sin filtrar",
         "uses": "Usos",
         "viewing": "Vista",
-        "viewing_previous_year": "Usted está viendo un año académico anterior. <a href='#'>Regrese al <span class='último año'>{{latestYear}}</span></a>.",
+        "viewing_previous_year": "Usted está viendo un año académico anterior. <a href='#'>Regrese al <span class='latestYear'>{{latestYear}}</span></a>.",
         "viewing_default_year": {
             "state": "Los siguientes resultados son de las evaluaciones acumulativas del año pasado.",
             "district": "Los siguientes resultados son de las evaluaciones acumulativas del año pasado.",

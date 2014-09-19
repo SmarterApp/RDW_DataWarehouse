@@ -23,6 +23,7 @@ from edextract.celery import setup_celery as setup_extract_celery, PREFIX as ede
 from edcore.security.tenant import set_tenant_map
 from smarter.reports.student_administration import set_default_year_back
 from hpz_client.frs.config import initialize as initialize_hpz
+from edauth import configure
 
 
 logger = logging.getLogger(__name__)
@@ -154,10 +155,7 @@ def prepare_env(settings):
         # catch the kill signal
         signal.signal(signal.SIGTERM, sig_term_handler)
 
-    auth_idp_metadata = settings.get('auth.idp.metadata', None)
-    if auth_idp_metadata is not None:
-        if auth_idp_metadata.startswith('../'):
-            settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))
+    configure(settings)
 
 
 @atexit.register

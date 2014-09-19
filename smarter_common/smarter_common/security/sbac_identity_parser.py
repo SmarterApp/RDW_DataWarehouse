@@ -91,8 +91,15 @@ class SbacOauthIdentityParser(IdentityParser):
         Returns a list of role/relationship
         '''
         # We get a string with all the tenancy chain separated by a comma
-        chain = attributes.get("sbacTenancyChain").split(',') if attributes.get("sbacTenancyChain") else []
-        return _extract_role_relationship_chain(chain)
+        # Splitting by comma may risk into breaking up the chain, therefore split by |
+        splitted = attributes.get('sbacTenancyChain').split('|')
+        chains = []
+        while (len(splitted) > SbacIdentityParser.CHAIN_ITEMS_COUNT):
+            if len(splitted) > SbacIdentityParser.CHAIN_ITEMS_COUNT + 2:
+                splitted[SbacIdentityParser.CHAIN_ITEMS_COUNT + 1] = ''
+            chains.append('|'.join(splitted[0:SbacIdentityParser.CHAIN_ITEMS_COUNT + 2]))
+            del splitted[0:SbacIdentityParser.CHAIN_ITEMS_COUNT + 1]
+        return _extract_role_relationship_chain(chains)
 
     @staticmethod
     def create_session(name, session_index, attributes, last_access, expiration):

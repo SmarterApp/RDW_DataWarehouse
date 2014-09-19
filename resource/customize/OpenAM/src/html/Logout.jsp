@@ -44,14 +44,14 @@
             <link href="<%= ServiceURI%>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI %>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->
             <!--[if lte IE 7]> <link href="<%= ServiceURI %>/css/ie7.css" rel="stylesheet" type="text/css"> <![endif]-->
-            <link rel="stylesheet" type="text/css" href="<%= ServiceURI%>/config/auth/opensso/css/bootstrap.min.css" />
-            <link href="<%= ServiceURI%>/config/auth/opensso/css/edware.css" rel="stylesheet" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="<%= ServiceURI%>/config/auth/openam/css/bootstrap.min.css" />
+            <link href="<%= ServiceURI%>/config/auth/openam/css/edware.css" rel="stylesheet" type="text/css" />
         </head>
         <body>
             <div class="container_12">
                 <div id="header">
                     <div id="logo">
-                    	<img src="<%= ServiceURI%>/config/auth/opensso/images/smarterHeader_logo.png" alt="Edware logo" height="36" width="112">
+                    	<img src="<%= ServiceURI%>/config/auth/openam/images/smarterHeader_logo.png" alt="Edware logo" height="36" width="112">
                     </div>
 					<div id="headerTitle">Smarter Balanced Login</div>
                 </div>

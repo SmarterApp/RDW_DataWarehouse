@@ -14,6 +14,7 @@ import logging
 from apscheduler.scheduler import Scheduler
 from edauth.security.session_backend import ISessionBackend, SessionBackend
 from edcore.utils.utils import to_bool
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -69,3 +70,10 @@ def set_roles(roles):
     Sets the list of known roles for authentication. Roles is a list of tuples.
     '''
     Roles.set_roles(roles)
+
+
+def configure(settings):
+    auth_idp_metadata = settings.get('auth.idp.metadata', None)
+    if auth_idp_metadata is not None:
+        if auth_idp_metadata.startswith('../'):
+            settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))

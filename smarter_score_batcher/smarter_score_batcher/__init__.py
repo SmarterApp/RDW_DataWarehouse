@@ -7,6 +7,7 @@ import os
 from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
 from smarter_score_batcher import trigger
+from edauth import configure
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,11 @@ def main(global_config, **settings):
 
     # Set default permission
     config.set_default_permission('load')
+    
+    # Configure for environment
+    configure(settings)
+    if 'smarter_score_batcher.PATH' in settings:
+        os.environ['PATH'] += os.pathsep + settings['smarter_score_batcher.PATH']
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

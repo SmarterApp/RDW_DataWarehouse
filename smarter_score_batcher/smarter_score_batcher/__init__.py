@@ -35,7 +35,7 @@ def main(global_config, **settings):
 
     # Set default permission
     config.set_default_permission('load')
-    
+
     # Configure for environment
     configure(settings)
     if 'smarter_score_batcher.PATH' in settings:

@@ -34,7 +34,8 @@ def main(global_config, **settings):
     config.scan()
 
     # Set default permission
-    config.set_default_permission('load')
+    # TODO:  use load when we have in house oauth
+    config.set_default_permission('view')
 
     # Configure for environment
     configure(settings)

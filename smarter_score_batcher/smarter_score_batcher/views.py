@@ -5,9 +5,11 @@ Created on Aug 7, 2014
 '''
 from pyramid.httpexceptions import HTTPPreconditionFailed, HTTPNotFound
 from pyramid.view import view_config
+import pyramid
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 
 
-@view_config(context=HTTPPreconditionFailed)
+@view_config(context=EdApiHTTPPreconditionFailed, permission=pyramid.security.NO_PERMISSION_REQUIRED)
 def precondition_failed_redirect(request):
     '''
     Errors get redirected here

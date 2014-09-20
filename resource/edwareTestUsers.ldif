@@ -35,7 +35,7 @@ objectClass: top
 objectClass: organizationalUnit
 ou: groups
 
-dn: cn=Susan Hall,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=shall,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -56,7 +56,7 @@ uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P
  Q==
 
-dn: cn=Victor Lee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=vlee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -76,7 +76,7 @@ uid: vlee
 userPassword:: e1NTSEF9ZGo1YW9lM054Tm9QQzVQT2srbDZJa1N6U1FvQTEyUzJnTlU2Qmc9P
  Q==
 
-dn: cn=Sara Lee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=slee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -95,7 +95,7 @@ uid: slee
 userPassword:: e1NTSEF9QWJNTStib2FkTmJ0UnZTY2p3dkhPblBJeWdRVHFYS1N1YTd5ckE9P
  Q==
 
-dn: cn=Jamie Hine,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=jhine,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -114,7 +114,7 @@ uid: jhine
 userPassword:: e1NTSEF9WnhiL0dFTitGWFlXZWJLRm5seE9CcXNvMXErNlZwR2xZaWI1eXc9P
  Q==
 
-dn: cn=Chris Davis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=cdavis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -132,7 +132,7 @@ uid: cdavis
 userPassword:: e1NTSEF9NXc2ZVFSQ0llVzN0R25mRFRJZlZ1VDRCMWNSVkJSWHVtMENuc0E9P
  Q==
 
-dn: cn=Kelly Tidd,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=ktidd,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -150,7 +150,7 @@ uid: ktidd
 userPassword:: e1NTSEF9V1FwN0lzdTU5clRUNzg5YUU5WUJNekhJUnFyS1hPdHg5Q2lCZUE9P
  Q==
 
-dn: cn=Louisa Mui,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=lmui,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -168,7 +168,7 @@ uid: lmui
 userPassword:: e1NTSEF9cTVSWDJGM2FrYXFvYjNVMWhBZFJnTEtHUk5FT0gzdm1sWW9QWEE9P
  Q==
 
-dn: cn=Hugh Goree,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=hgoree,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -186,7 +186,7 @@ uid: hgoree
 userPassword:: e1NTSEF9eW5NakhCcTBXVUV6dGdzTUFiUHlxNjFNTWpDL0pEdmpYRVliSlE9P
  Q==
 
-dn: cn=Clare Seabaugh,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=cseabaugh,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -204,7 +204,7 @@ uid: cseabaugh
 userPassword:: e1NTSEF9QVpUYnhrV2VpSEFJeGJsN3NKR0s1UkwvR3RhZldsSHR4dWdsa1E9P
  Q==
 
-dn: cn=Katy Bester,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=kbester,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -222,7 +222,7 @@ uid: kbester
 userPassword:: e1NTSEF9VnN1YlR0RmxLVlM2dFBlM3oyTEluVFk4bjBVbmRqZUtnTjhsMnc9P
  Q==
 
-dn: cn=Erik Croker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=ecroker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -240,7 +240,7 @@ uid: ecroker
 userPassword:: e1NTSEF9bEZEK1NwcHVleFc5SldRZTdUVHk5V1kwSUh2RU1rbTk4NktZOGc9P
  Q==
 
-dn: cn=Matt Sollars,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=msollars,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -259,7 +259,7 @@ uid: msollars
 userPassword:: e1NTSEF9WXg1Wis0VGVzb0VvTjFmNWJ2eU4yMHp1cUFNTWtIUC80TzBnY1E9P
  Q==
 
-dn: cn=Clayton Croxton,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=ccroxton,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -278,7 +278,7 @@ uid: ccroxton
 userPassword:: e1NTSEF9MUdHMmVrVlgwN3JTUHdJMUpmZ0tDaFRQWHZyTXV6T3lOb24wMEE9P
  Q==
 
-dn: cn=Amie Stroop,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=astroop,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -298,7 +298,7 @@ uid: astroop
 userPassword:: e1NTSEF9Qm1GUkx5QUVPMDg5MmFwZklZVXRsSmhEZ3dnNmNHWEhZR1BISlE9P
  Q==
 
-dn: cn=Ted Lazaro,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=tlazaro,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -318,7 +318,7 @@ uid: tlazaro
 userPassword:: e1NTSEF9T2REUE11bVk1ZFQ5YXRQbGZ4Y3VkRW9Ba2g3M2tCR1FraXp0enc9P
  Q==
 
-dn: cn=Guy Man,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=gman,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -341,7 +341,7 @@ uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
  Q==
 
-dn: cn=Selena Magnusson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=smagnusson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -360,7 +360,7 @@ uid: smagnusson
 userPassword:: e1NTSEF9djNGYkVyS0MvWkt2NWlNUEFtWk96U2NyZGlsSWNJbnQ5Z2wwd1E9P
  Q==
 
-dn: cn=Jessie Mollica,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=jmollica,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -379,7 +379,7 @@ uid: jmollica
 userPassword:: e1NTSEF9QmtGOTdGZjRvRUhuTEw1eExaVnFnVUljWkwydytBVG5pdGY1UEE9P
  Q==
 
-dn: cn=Liza Bopp,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=lbopp,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -398,7 +398,7 @@ uid: lbopp
 userPassword:: e1NTSEF9U1ZmMTMrZExwcjdOb1VZelFJZFAwSUs5V0ZxcEFibFdVZVpyc1E9P
  Q==
 
-dn: cn=Clinton Degraw,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=cdegraw,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -417,7 +417,7 @@ uid: cdegraw
 userPassword:: e1NTSEF9ZnM4bWh0TkpQZUxjODZFb09TM2ltUFRIcmdDb3NjUmsyZVl3aGc9P
  Q==
 
-dn: cn=Mary Hill,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=mhill,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -432,7 +432,7 @@ uid: mhill
 userPassword:: e1NTSEF9dlBRMmFjRGJhL2d3MjlUNmhtVVI0M2s5Sno4Wll1SmhuRExubWc9P
  Q==
 
-dn: cn=Sam White,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=swhite,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -452,7 +452,7 @@ uid: swhite
 userPassword:: e1NTSEF9c1dqWm1pcVowcUZ2dVZCcyt5SkZnanJuRCtPVk82ZExuR1V1Y3c9P
  Q==
 
-dn: cn=Rachel Adams,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=radams,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -471,7 +471,7 @@ uid: radams
 userPassword:: e1NTSEF9WHRkRkM0Q0ZxdmxEazRGaDk3WEE2bWR1V2Y2NE1NancxajZ0dVE9P
  Q==
 
-dn: cn=Ted Baker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=tbaker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -487,7 +487,7 @@ uid: tbaker
 userPassword:: e1NTSEF9SmdqOUpMY2s4c1ptUFk5Rzh6TlE1SUM0b2xWWDhPRm9Fd3JKcnc9P
  Q==
 
-dn: cn=Perry Clark,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=pclark,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -508,7 +508,7 @@ uid: pclark
 userPassword:: e1NTSEF9UG9MZGQvZlUyNjhJK2tuWnhKYlVXZ2Z5YXFTTE5YY2tmSDE4YVE9P
  Q==
 
-dn: cn=Chris Miller,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=cmiller,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -526,7 +526,7 @@ uid: cmiller
 userPassword:: e1NTSEF9V0cvWnJxY1l2aTRVQm5za0d4SXpUbHkxZldKZ1RoelVYd3ovRHc9P
  Q==
 
-dn: cn=Austin Rice,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=arice,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -544,7 +544,7 @@ uid: arice
 userPassword:: e1NTSEF9V2FwMTJmRjYvZXNVbE1WQ2lralQ4WkJkK2EyWXJreHNPUVpRNFE9P
  Q==
 
-dn: cn=Charlie Rose,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=crose,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -558,7 +558,7 @@ uid: crose
 userPassword:: e1NTSEF9dERWVUhnQkFyVVNYMGI3ekJtVm0xTTh2d3VmdThCMDN5WVdNT1E9P
  Q==
 
-dn: cn=Terry Hunt,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=thunt,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -573,7 +573,7 @@ uid: thunt
 userPassword:: e1NTSEF9czJtMXMxZkNTMFFMQ016a0c4MmJBOEd1U3JobXhiOFhkR1JyMnc9P
  Q==
 
-dn: cn=Larry Price,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=lprice,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -590,7 +590,7 @@ uid: lprice
 userPassword:: e1NTSEF9dkZhcmZOUjFlUExtTlBqUDM2RFhGeE1TRjNYRmVrbnRqSmgvVlE9P
  Q==
 
-dn: cn=Liz Neil,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=lneil,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -606,7 +606,7 @@ uid: lneil
 userPassword:: e1NTSEF9a3U5bWZZYXRxVmk4Z1MvaHBEWWlpTzVlQ1JLYlBqcUhSTStQVVE9P
  Q==
 
-dn: cn=Kevin Scott,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=kscott,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -622,7 +622,7 @@ uid: kscott
 userPassword:: e1NTSEF9c1lTdVBmTzFPVEw5R1crazRGaEc3d2Z6MWNaNUg3TlpXdjVLcmc9P
  Q==
 
-dn: cn=Frank Bell,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=fbell,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -638,7 +638,7 @@ uid: fbell
 userPassword:: e1NTSEF9T2dMcVp6eHZYUkZ5UGRQc3VQT29NcUxCRngxUjNrTUtVODJFc0E9P
  Q==
 
-dn: cn=Jason Brown,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=jbrown,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -660,7 +660,7 @@ uid: jbrown
 userPassword:: e1NTSEF9anZCL1p6OW5TUjRIY2I1RnNlaGlRbktRc0hPZXp1YUVMeFAxOHc9P
  Q==
 
-dn: cn=Harry Charles,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=hcharles,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -678,7 +678,7 @@ uid: hcharles
 userPassword:: e1NTSEF9eC84bTBEUWtsa2dKYTdMbDUvVHRvcW1zb1ZNSkpMMHR3SFBueUE9P
  Q==
 
-dn: cn=Robert Wilson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=rwilson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -694,7 +694,7 @@ uid: rwilson
 userPassword:: e1NTSEF9a2tHRGhUSUhmYVA2WlpaRUpaSFFQVHNUWnp5ZlhkLzNDRUFFc2c9P
  Q==
 
-dn: cn=Molly Davis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=mdavis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -708,7 +708,7 @@ uid: mdavis
 userPassword:: e1NTSEF9dlo4N2hPek9ocCtNQVQyamM2bmowZGRtd1dIK2pxZVllTXMzWGc9P
  Q==
 
-dn: cn=Reid Field,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -724,7 +724,7 @@ uid: rfield
 userPassword:: e1NTSEF9V3ZwemZZVGdPaGZ2bTlLaDJmeVlBYUN6SXVmZVVYVnpSaTkwZ0E9P
  Q==
 
-dn: cn=Dan Carter,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=dcarter,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -739,7 +739,7 @@ uid: dcarter
 userPassword:: e1NTSEF9V29qVUtMOUtFTjE3M3oveG8za0dqcEs3SElNWGhGY29wZUlkcGc9P
  Q==
 
-dn: cn=Mike Turner,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=mturner,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -757,7 +757,7 @@ uid: mturner
 userPassword:: e1NTSEF9UndLZDlQM0NKS2ZiTmdLK2dZN1QyNk52S3UvOU1yMlluWHZCUnc9P
  Q==
 
-dn: cn=Austin Hope,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=ahope,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -775,7 +775,7 @@ uid: ahope
 userPassword:: e1NTSEF9czJEeEs3eExLZUxLS3crSGgzSW44K0hMMUhOZnlUMGlqMjFGYWc9P
  Q==
 
-dn: cn=Elnora Seinfeld,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=eseinfeld,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -794,7 +794,7 @@ uid: eseinfeld
 userPassword:: e1NTSEF9SDJIWGNXWTluVDM3UmFLTWgzWHQ2ekxNV08wQWxaaGV1Q1dCQmc9P
  Q==
 
-dn: cn=Mary Smith,ou=people,ou=dog,ou=environment,dc=edwdc,dc=net
+dn: uid=msmith,ou=people,ou=dog,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -816,155 +816,155 @@ dn: cn=Teacher,ou=groups,ou=dog,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Teacher
-member: cn=Mary Smith,ou=people,ou=dog,ou=environment,dc=edwdc,dc=net
+member: uid=msmith,ou=people,ou=dog,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Teacher,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Teacher
-member: cn=Susan Hall,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Victor Lee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Sara Lee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Mary Hill,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Sam White,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Rachel Adams,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Ted Baker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Perry Clark,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Chris Miller,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Austin Rice,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Charlie Rose,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Terry Hunt,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Larry Price,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Liz Neil,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Kevin Scott,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Frank Bell,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Jason Brown,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Harry Charles,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Robert Wilson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Molly Davis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Reid Field,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Dan Carter,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Mike Turner,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Austin Hope,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=shall,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=vlee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=slee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=mhill,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=swhite,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=radams,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=tbaker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=pclark,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=cmiller,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=arice,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=crose,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=thunt,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=lprice,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=lneil,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=kscott,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=fbell,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=jbrown,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=hcharles,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=rwilson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=mdavis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=dcarter,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=mturner,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=ahope,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Consortium_Education_Administrator_2,ou=groups,ou=cat,ou=environment,
  dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Consortium_Education_Administrator_2
-member: cn=Elnora Seinfeld,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=eseinfeld,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Consortium_Education_Administrator_1,ou=groups,ou=cat,ou=environment,
  dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Consortium_Education_Administrator_1
-member: cn=Clinton Degraw,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=cdegraw,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=State_Education_Administrator_2,ou=groups,ou=cat,ou=environment,dc=ed
  wdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: State_Education_Administrator_2
-member: cn=Chris Davis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=cdavis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=State_Education_Administrator_1,ou=groups,ou=cat,ou=environment,dc=ed
  wdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: State_Education_Administrator_1
-member: cn=Jessie Mollica,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=jmollica,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=District_Education_Administrator_2,ou=groups,ou=cat,ou=environment,dc
  =edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: District_Education_Administrator_2
-member: cn=Selena Magnusson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=smagnusson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=District_Education_Administrator_1,ou=groups,ou=cat,ou=environment,dc
  =edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: District_Education_Administrator_1
-member: cn=Guy Man,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=gman,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=School_Education_Administrator_2,ou=groups,ou=cat,ou=environment,dc=e
  dwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: School_Education_Administrator_2
-member: cn=Ted Lazaro,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=tlazaro,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=School_Education_Administrator_1,ou=groups,ou=cat,ou=environment,dc=e
  dwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: School_Education_Administrator_1
-member: cn=Amie Stroop,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=astroop,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Deployment_Administrator,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=
  net
 objectClass: top
 objectClass: groupOfNames
 cn: Deployment_Administrator
-member: cn=Jamie Hine,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=jhine,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=System_Administrator,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: System_Administrator
-member: cn=Chris Davis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: cn=Kelly Tidd,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=cdavis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=ktidd,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Data_Loader,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Data_Loader
-member: cn=Louisa Mui,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=lmui,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Higher_Education_Admissions_Officer,ou=groups,ou=cat,ou=environment,d
  c=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Higher_Education_Admissions_Officer
-member: cn=Erik Croker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=ecroker,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=State_Data_Extractor,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: State_Data_Extractor
-member: cn=Katy Bester,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=kbester,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Parent,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Parent
-member: cn=Clayton Croxton,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=ccroxton,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Student,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Student
-member: cn=Matt Sollars,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=msollars,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Data_Corrector,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Data_Corrector
-member: cn=Hugh Goree,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=hgoree,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Psychometrician,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Psychometrician
-member: cn=Clare Seabaugh,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=cseabaugh,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Super_User,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: groupOfNames
 cn: Super_User
-member: cn=Susan Hall,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=shall,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: ou=fish,ou=environment,dc=edwdc,dc=net
 objectClass: top
@@ -976,7 +976,7 @@ objectClass: top
 objectClass: organizationalUnit
 ou: people
 
-dn: cn=Javier Macey,ou=people,ou=fish,ou=environment,dc=edwdc,dc=net
+dn: uid=jmacey,ou=people,ou=fish,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -1004,5 +1004,5 @@ dn: cn=State_Education_Administrator_1,ou=groups,ou=fish,ou=environment,dc=e
 objectClass: top
 objectClass: groupOfNames
 cn: State_Education_Administrator_1
-member: cn=Javier Macey,ou=people,ou=fish,ou=environment,dc=edwdc,dc=net
+member: uid=jmacey,ou=people,ou=fish,ou=environment,dc=edwdc,dc=net
 

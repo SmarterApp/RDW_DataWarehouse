@@ -91,6 +91,10 @@ define [
         if grade
           if assessment.grade is "11"
             assessment.policy_content = grade[assessment.asmt_subject]
+            if @data.metadata.branding isnt null
+              if @data.metadata.branding.higherEdLink isnt null
+                new_link = '<a href="'.concat(@data.metadata.branding.higherEdLink, '">', @data.metadata.branding.higherEdLink, '</a>')
+                assessment.policy_content = assessment.policy_content.replace("<a href='#'>http://stateresources.link</a>", new_link)
 
         for claim in assessment.claims
           claim.subject = assessment.asmt_subject.toUpperCase()

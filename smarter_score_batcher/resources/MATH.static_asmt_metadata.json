@@ -1,0 +1,42 @@
+{
+    "Content": "assessment", 
+    "Identification": {
+        "Subject": "MATH"
+    }, 
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "Minimal Understanding"
+        }, 
+        "Level2": {
+            "Name": "Partial Understanding"
+        }, 
+        "Level3": {
+            "Name": "Adequate Understanding"
+        }, 
+        "Level4": {
+            "Name": "Thorough Understanding"
+        }
+    }, 
+    "Claims": {
+        "Claim1": {
+            "Name": "Concepts & Procedures"
+        }, 
+        "Claim2": {
+            "Name": "Problem Solving and Modeling & Data Analysis"
+        }, 
+        "Claim3": {
+            "Name": "Communicating Reasoning"
+        }
+    }, 
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": "Below Standard"
+        }, 
+        "Level2": {
+            "Name": "At/Near Standard"
+        }, 
+        "Level3": {
+            "Name": "Above Standard"
+        }
+    }
+}

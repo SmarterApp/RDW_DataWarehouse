@@ -5,6 +5,9 @@ Created on Aug 11, 2014
 '''
 from copy import deepcopy
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping
+from zope import component
+from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager
+from smarter_score_batcher.utils.merge import deep_merge
 
 
 class JSONHeaders:
@@ -48,8 +51,8 @@ class JSONHeaders:
                                           "Level3": {"Name": None}}
                }
 
-    def __init__(self):
-        self.values = deepcopy(JSONHeaders.lz_json)
+    def __init__(self, template={}):
+        self.values = deep_merge(self.lz_json, deepcopy(template))
 
     def get_values(self):
         return self.values
@@ -127,46 +130,6 @@ class JSONHeaders:
         self.values['Overall']['MaxScore'] = value
 
     @property
-    def level1_name(self):
-        return self.values['PerformanceLevels']['Level1']['Name']
-
-    @level1_name.setter
-    def level1_name(self, value):
-        self.values['PerformanceLevels']['Level1']['Name'] = value
-
-    @property
-    def level2_name(self):
-        return self.values['PerformanceLevels']['Level2']['Name']
-
-    @level2_name.setter
-    def level2_name(self, value):
-        self.values['PerformanceLevels']['Level2']['Name'] = value
-
-    @property
-    def level3_name(self):
-        return self.values['PerformanceLevels']['Level3']['Name']
-
-    @level3_name.setter
-    def level3_name(self, value):
-        self.values['PerformanceLevels']['Level3']['Name'] = value
-
-    @property
-    def level4_name(self):
-        return self.values['PerformanceLevels']['Level4']['Name']
-
-    @level4_name.setter
-    def level4_name(self, value):
-        self.values['PerformanceLevels']['Level4']['Name'] = value
-
-    @property
-    def level5_name(self):
-        return self.values['PerformanceLevels']['Level5']['Name']
-
-    @level5_name.setter
-    def level5_name(self, value):
-        self.values['PerformanceLevels']['Level5']['Name'] = value
-
-    @property
     def level2_cutpoint(self):
         return self.values['PerformanceLevels']['Level2']['Cutpoint']
 
@@ -199,14 +162,6 @@ class JSONHeaders:
         self.values['PerformanceLevels']['Level5']['Cutpoint'] = value
 
     @property
-    def claim1_name(self):
-        return self.values['Claims']['Claim1']['Name']
-
-    @claim1_name.setter
-    def claim1_name(self, value):
-        self.values['Claims']['Claim1']['Name'] = value
-
-    @property
     def claim1_min_score(self):
         return self.values['Claims']['Claim1']['MinScore']
 
@@ -221,14 +176,6 @@ class JSONHeaders:
     @claim1_max_score.setter
     def claim1_max_score(self, value):
         self.values['Claims']['Claim1']['MaxScore'] = value
-
-    @property
-    def claim2_name(self):
-        return self.values['Claims']['Claim2']['Name']
-
-    @claim2_name.setter
-    def claim2_name(self, value):
-        self.values['Claims']['Claim2']['Name'] = value
 
     @property
     def claim2_min_score(self):
@@ -247,14 +194,6 @@ class JSONHeaders:
         self.values['Claims']['Claim2']['MaxScore'] = value
 
     @property
-    def claim3_name(self):
-        return self.values['Claims']['Claim3']['Name']
-
-    @claim3_name.setter
-    def claim3_name(self, value):
-        self.values['Claims']['Claim3']['Name'] = value
-
-    @property
     def claim3_min_score(self):
         return self.values['Claims']['Claim3']['MinScore']
 
@@ -271,14 +210,6 @@ class JSONHeaders:
         self.values['Claims']['Claim3']['MaxScore'] = value
 
     @property
-    def claim4_name(self):
-        return self.values['Claims']['Claim4']['Name']
-
-    @claim4_name.setter
-    def claim4_name(self, value):
-        self.values['Claims']['Claim4']['Name'] = value
-
-    @property
     def claim4_min_score(self):
         return self.values['Claims']['Claim4']['MinScore']
 
@@ -293,30 +224,6 @@ class JSONHeaders:
     @claim4_max_score.setter
     def claim4_max_score(self, value):
         self.values['Claims']['Claim4']['MaxScore'] = value
-
-    @property
-    def claim_perf_level1_name(self):
-        return self.values['ClaimsPerformanceLevel']['Level1']['Name']
-
-    @claim_perf_level1_name.setter
-    def claim_perf_level1_name(self, value):
-        self.values['ClaimsPerformanceLevel']['Level1']['Name'] = value
-
-    @property
-    def claim_perf_level2_name(self):
-        return self.values['ClaimsPerformanceLevel']['Level2']['Name']
-
-    @claim_perf_level2_name.setter
-    def claim_perf_level2_name(self, value):
-        self.values['ClaimsPerformanceLevel']['Level2']['Name'] = value
-
-    @property
-    def claim_perf_level3_name(self):
-        return self.values['ClaimsPerformanceLevel']['Level3']['Name']
-
-    @claim_perf_level3_name.setter
-    def claim_perf_level3_name(self, value):
-        self.values['ClaimsPerformanceLevel']['Level3']['Name'] = value
 
 
 class JSONMapping(Mapping):
@@ -335,23 +242,16 @@ def get_assessment_metadata_mapping(root):
     '''
     Returns the json format needed for landing zone assessment file
     '''
-    json_output = JSONHeaders()
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")
+    subject = XMLMeta(test_node, ".", "subject")
+
+    meta_template_manager = component.queryUtility(IMetadataTemplateManager)
+    meta_template = meta_template_manager.get_template(subject.get_value())
+
+    json_output = JSONHeaders(meta_template)
 
     mappings = [JSONMapping(XMLMeta(test_node, ".", "testId"), json_output, 'asmt_guid'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim1'][@measureLabel='Text']", "value"), json_output, 'claim1_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim2'][@measureLabel='Text']", "value"), json_output, 'claim2_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim3'][@measureLabel='Text']", "value"), json_output, 'claim3_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='Text']", "value"), json_output, 'claim4_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level1']", "value"), json_output, 'level1_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level2']", "value"), json_output, 'level2_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level3']", "value"), json_output, 'level3_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='PerformanceLevel'][@measureLabel='Level4']", "value"), json_output, 'level4_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimPerformanceLevel'][@measureLabel='Level1']", "value"), json_output, 'claim_perf_level1_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimPerformanceLevel'][@measureLabel='Level2']", "value"), json_output, 'claim_perf_level2_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='ClaimPerformanceLevel'][@measureLabel='Level3']", "value"), json_output, 'claim_perf_level3_name'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim1'][@measureLabel='MaxScore']", "value"), json_output, 'claim1_max_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim1'][@measureLabel='MinScore']", "value"), json_output, 'claim1_min_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim2'][@measureLabel='MaxScore']", "value"), json_output, 'claim2_max_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim2'][@measureLabel='MinScore']", "value"), json_output, 'claim2_min_score'),
@@ -366,7 +266,7 @@ def get_assessment_metadata_mapping(root):
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MinScore']", "value"), json_output, 'min_score'),
                 JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MaxScore']", "value"), json_output, 'max_score'),
                 JSONMapping(XMLMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
-                JSONMapping(XMLMeta(test_node, ".", "subject"), json_output, 'subject'),
+                JSONMapping(subject, json_output, 'subject'),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentType"), json_output, 'asmt_type'),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
                 JSONMapping(XMLMeta(test_node, ".", "academicYear"), json_output, 'asmt_year')]

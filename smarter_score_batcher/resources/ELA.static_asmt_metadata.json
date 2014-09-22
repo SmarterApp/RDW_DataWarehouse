@@ -1,0 +1,45 @@
+{
+    "Content": "assessment", 
+    "Identification": {
+        "Subject": "ELA"
+    }, 
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "Minimal Understanding"
+        }, 
+        "Level2": {
+            "Name": "Partial Understanding"
+        }, 
+        "Level3": {
+            "Name": "Adequate Understanding"
+        }, 
+        "Level4": {
+            "Name": "Thorough Understanding"
+        }
+    }, 
+    "Claims": {
+        "Claim1": {
+            "Name": "Reading"
+        }, 
+        "Claim2": {
+            "Name": "Writing"
+        }, 
+        "Claim3": {
+            "Name": "Listening"
+        }, 
+        "Claim4": {
+            "Name": "Research & Inquiry"
+        }
+    }, 
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": "Below Standard"
+        }, 
+        "Level2": {
+            "Name": "At/Near Standard"
+        }, 
+        "Level3": {
+            "Name": "Above Standard"
+        }
+    }
+}

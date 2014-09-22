@@ -16,7 +16,7 @@ except ImportError:
 class TestJSONMetadata(unittest.TestCase):
 
     def test_JSONHeaders_obj(self):
-        out = JSONHeaders()
+        out = JSONHeaders({})
         values = out.get_values()
         self.assertIsNotNone(values)
         self.assertIsNone(values['Identification']['Guid'])
@@ -24,7 +24,7 @@ class TestJSONMetadata(unittest.TestCase):
         self.assertEqual(values['Identification']['Guid'], 'abc')
 
     def test_JSONMapping(self):
-        header = JSONHeaders()
+        header = JSONHeaders({})
         mapping = JSONMapping(DummyObj(), header, 'asmt_guid')
         mapping.evaluate()
         self.assertEqual(header.asmt_guid, 1)
@@ -37,9 +37,9 @@ class TestJSONMetadata(unittest.TestCase):
         self.assertEqual(mapping['Overall']['MinScore'], '1200')
         self.assertEqual(mapping['PerformanceLevels']['Level1']['Name'], 'Minimal Understanding')
         self.assertEqual(mapping['Claims']['Claim1']['MinScore'], '1200')
-        self.assertEqual(mapping['Identification']['Subject'], 'MATH')
         self.assertEqual(mapping['ClaimsPerformanceLevel']['Level2']['Name'], 'At/Near Standard')
         self.assertEqual(mapping['Identification']['EffectiveDate'], '2014-03-04')
+        self.assertEqual(mapping['Identification']['Subject'], 'MATH')
 
 if __name__ == "__main__":
     unittest.main()

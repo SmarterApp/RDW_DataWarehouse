@@ -9,7 +9,6 @@ import json
 from smarter_score_batcher.exceptions import MetadataException
 from zope import interface, component
 from zope.interface.declarations import implementer
-from pyramid.threadlocal import get_current_registry
 
 
 class MetadataTemplate:
@@ -36,17 +35,9 @@ class MetadataTemplateManager:
     '''
     Loads and manages asmt templates by asmt SUBJECT
     '''
-    def __init__(self):
+    def __init__(self, asmt_meta_rel_dir=None):
         self.templates = {}
-        # TODO: fix this
-        if conf is None or not conf:
-            # maybe service is eager mode. If so, read from registry
-            settings = get_current_registry().settings
-            if settings is not None:
-                global conf
-                conf = settings
-        here = os.path.abspath(os.path.dirname(__file__))
-        asmt_meta_location = os.path.join(here, conf.get('smarter_score_batcher.resources.path', '../../resources/'))
+        asmt_meta_location = self._get_template_location(asmt_meta_rel_dir)
         for file in os.listdir(asmt_meta_location):
             if file.endswith(".static_asmt_metadata.json"):
                 full_path = os.path.join(asmt_meta_location, file)
@@ -54,6 +45,12 @@ class MetadataTemplateManager:
                     sm = MetadataTemplate(json.load(f))
                     subject = sm.get_asmt_subject()
                     self.templates[subject.lower()] = sm
+
+    def _get_template_location(self, asmt_meta_location=None):
+        if not asmt_meta_location is None and os.path.isabs(asmt_meta_location):
+            return asmt_meta_location
+        here = os.path.abspath(os.path.dirname(__file__))
+        return os.path.join(here, conf.get('smarter_score_batcher.resources.path', '../../resources/') if asmt_meta_location is None else asmt_meta_location)
 
     def get_template(self, subject):
         sm = self.templates.get(subject.lower())

@@ -170,7 +170,7 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
-    	PATH: /usr/local/bin
+      PATH: /usr/local/bin
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: sbac_data_provider@sbac.com
       gpg.public_key.fish: sbac_data_provider@sbac.com
@@ -194,6 +194,8 @@ common:
         CELERY_DEFAULT_EXCHANGE_TYPE: direct
       xsd:
         path: ../resources/sample_xsd.xsd
+      resources:
+        path: ../resources/
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home

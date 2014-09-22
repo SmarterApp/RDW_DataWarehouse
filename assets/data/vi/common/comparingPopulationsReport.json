@@ -9,9 +9,9 @@
         "desc1": "Báo cáo này trình bày hiệu quả học tập của học sinh trong phần <b>đánh giá tổng hợp</b> cho <b>năm học được chọn</b>.",
         "desc2": "Rê chuột lên phía trên hoặc chạm vào thanh để biết số lượng học sinh trong từng Trình Độ.",
         "desc3": "Dữ liệu chỉ mang tinh minh họa.",
-        "percent_students":"% of students",
-        "number_students":"# of students",
-        "desc4":"in each Achievement Level",
+        "percent_students":"% học sinh",
+        "number_students":"# học sinh",
+        "desc4":"trong từng trình độ",
         "notes": ["Cuộn qua/Chạm vào thanh để biết thông tin phân tích về con số dân số", "Tỷ lệ phần trăm được làm tròn đến số nguyên gần nhất. Vì vậy, tỷ lệ phần trăm nhỏ nhất có thể được báo cáo là '0'."],
         "uses": [
             "Sử dụng báo cáo này để so sánh thành tích chung của trường học trong học khu.",

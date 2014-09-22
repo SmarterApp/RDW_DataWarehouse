@@ -63,7 +63,7 @@ define [
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
       # create align button
-      this.alignment = new Alignment('.align_button', @labels)
+      this.alignment = new Alignment('.alignmentCheckbox', @labels)
       # default sort
       this.sort = {
         name: 'name'
@@ -462,12 +462,8 @@ define [
       # Set population bar alignment on/off
       self = this
       $(document).on 'click', this.triggerClass, () ->
-        $alignButton = $(self.triggerClass)
-        self.aligned = not self.aligned
-        alignText = if self.aligned then self.labels.on else self.labels.off
-        # toggle component
-        $alignButton.toggleClass('align_on align_off')
-        $alignButton.find('span.alignText').text alignText
+        value = $(this).attr('value')
+        self.aligned = if value is "1" then true else false
         # update alignment
         self.update()
 

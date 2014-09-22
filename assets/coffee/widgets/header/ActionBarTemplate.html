@@ -26,20 +26,21 @@
         <!-- <span class="legendPopup" aria-hidden="true"></span> -->
         </div>
     </li>
-    <li class="alignmentItem">
-        <div class="divider">
-            <span id="aria-align-label" class='alignLabel' aria-hidden='true'>{{labels.align}}</span>
-            <span class='align_button_area'>
-                <a class="align_button align_off inherit" href="#" title="center align bar charts" aria-label="center align bar charts" aria-live="polite">
-                    <span class="alignText">{{labels.off}}</span>
-                </a>
-            </span>
-            <div>
-    </li>
     <li class="filterItem">
         <div class="divider">
             <a class="filterLabel inherit" href='#'>{{labels.filter}}</a>
         </div>
+    </li>
+    <li class="alignmentItem">
+    	<div class="divider">
+    		<span id="aria-align-label" class='alignLabel' aria-hidden='true'>{{labels.align}}</span>
+    		<label>
+    			<input type="radio" name="AlignmentOptions" class="alignmentCheckbox" value="1"></input>
+    		</label>
+    		<label>
+    			<input type="radio" name="AlignmentOptions" class="alignmentCheckbox" value="0" checked></input>
+    		</label>
+    	</div>
     </li>
     <li class="printItem">
         <div class="divider">

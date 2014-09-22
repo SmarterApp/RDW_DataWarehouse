@@ -84,8 +84,7 @@ def main():
                 sys_role = row[4]
             else:
                 sys_role = row[4]
-            
-            add_user_role(row[0], users_in_role)
+            add_user_role(row[2], users_in_role)
             dump_user(row[0], row[1], row[2], row[3], f_dest)
      
         dump_roles(sys_role, users_in_role, f_dest)
@@ -152,7 +151,7 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
     # generate unique employeeNumber as Guid
     employeeGuid = uuid4()
     
-    strInetOrgPerson =  "dn: cn="+ _user +",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n" + \
+    strInetOrgPerson =  "dn: uid="+ _email +",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \
                         "objectClass: top\n" + \
                         "cn: " + _user + "\n" + \
@@ -180,7 +179,7 @@ def format_groupOfNames(_group, _user_roles):
                       "cn: "+ _group + "\n"
     
     for user in _user_roles:
-        strGroupOfNames += "member: cn=" + user + ",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n"
+        strGroupOfNames += "member: uid=" + user + ",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n"
         
     return strGroupOfNames + "\n"
 

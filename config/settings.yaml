@@ -197,6 +197,11 @@ common:
       metadata:
         static: ../resources/meta/static
         performance: ../resources/meta/performance
+      cache:
+        regions: public.shortlived
+        type: memory
+        expire: 7200 # one 2 hours
+        lock_dir: /tmp/memcache
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home

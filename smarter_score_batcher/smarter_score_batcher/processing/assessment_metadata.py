@@ -53,7 +53,7 @@ class JSONHeaders:
                }
 
     def __init__(self, template={}):
-        self.values = deep_merge(self.lz_json, deepcopy(template))
+        self.values = deep_merge(self.lz_json, template)
 
     def get_values(self):
         return self.values

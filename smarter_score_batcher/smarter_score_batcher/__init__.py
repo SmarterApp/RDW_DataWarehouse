@@ -8,6 +8,8 @@ from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
 from smarter_score_batcher import trigger
 from edauth import configure
+from pyramid_beaker import set_cache_regions_from_settings
+from beaker.cache import CacheManager
 
 
 logger = logging.getLogger(__name__)
@@ -29,6 +31,8 @@ def main(global_config, **settings):
     # Set up celery. Important - This must happen before scan
     setup_xml_celery(settings, prefix=prefix)
 
+    set_cache_regions_from_settings(get_sub_settings_by_prefix(settings, 'smarter_score_batcher', True))
+
     config.add_route('xml', '/services/xml')
     config.add_route('error', '/error')
     config.scan()
@@ -44,3 +48,7 @@ def main(global_config, **settings):
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()
+
+
+def get_sub_settings_by_prefix(settings, prefix, delete_prefix=False):
+    return {k[len(prefix) + 1:] if delete_prefix else k: v for (k, v) in settings.items() if k.startswith(prefix)}

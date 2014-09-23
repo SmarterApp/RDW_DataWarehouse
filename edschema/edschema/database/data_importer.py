@@ -188,7 +188,7 @@ def load_fact_asmt_outcome(datasource_name=''):
                                "     asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, " +
                                "     asmt_claim_3_perf_lvl, asmt_claim_4_score, asmt_claim_4_score_range_min, " +
                                "     asmt_claim_4_score_range_max, asmt_claim_4_perf_lvl, acc_asl_video_embed, " +
-                               "     acc_asl_human_nonembed, acc_braile_embed, acc_closed_captioning_embed, " +
+                               "     acc_noise_buffer_nonembed, acc_print_on_demand_items_nonembed, acc_braile_embed, acc_closed_captioning_embed, " +
                                "     acc_text_to_speech_embed, acc_abacus_nonembed, " +
                                "     acc_alternate_response_options_nonembed, acc_calculator_nonembed, " +
                                "     acc_multiplication_table_nonembed, acc_print_on_demand_nonembed, " +

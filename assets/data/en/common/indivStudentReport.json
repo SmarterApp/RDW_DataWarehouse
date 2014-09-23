@@ -17,7 +17,8 @@
     },
     "accommodationColumns": {
         "acc_asl_video_embed": "ASL Videos",
-        "acc_asl_human_nonembed": "Human ASL Signer",
+        "acc_noise_buffer_nonembed": "acc_noise_buffer_nonembed",
+        "acc_print_on_demand_items_nonembed": "acc_print_on_demand_items_nonembed",
         "acc_braile_embed": "Fully Brailled",
         "acc_closed_captioning_embed": "Closed Captioning: ELA/Literacy Listening Stimuli",
         "acc_text_to_speech_embed": "Text-to-speech: ELA/Literacy Reading Passages",

@@ -125,7 +125,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual(4, len(result['accommodations'][0]))
         self.assertEqual(1, len(result['accommodations'][1]))
         self.assertEqual(2, len(result['accommodations'][3]))
-        self.assertEqual(4, len(result['accommodations'][4]))
+        self.assertEqual(5, len(result['accommodations'][4]))
         self.assertEqual(1, len(result['accommodations'][9]))
         self.assertEqual(2, len(result['accommodations'][10]))
 

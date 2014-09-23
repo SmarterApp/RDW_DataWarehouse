@@ -17,7 +17,8 @@
     },
     "accommodationColumns": {
         "acc_asl_video_embed": "Video ASL",
-        "acc_asl_human_nonembed": "Người ký ASL",
+        "acc_print_on_demand_items_nonembed": "acc_print_on_demand_items_nonembed",
+        "acc_noise_buffer_nonembed": "acc_noise_buffer_nonembed",
         "acc_braile_embed": "Được viết hoàn toàn bằng chữ Braille",
         "acc_closed_captioning_embed": "Đầu đề kết thúc: ELA/Khuyến khích kỹ năng đọc viết, nghe",
         "acc_text_to_speech_embed": "Chuyển văn bản thành giọng nói: ELA/Đoạn văn",

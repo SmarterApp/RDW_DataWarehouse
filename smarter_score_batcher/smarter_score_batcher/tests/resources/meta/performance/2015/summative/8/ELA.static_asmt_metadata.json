@@ -1,0 +1,42 @@
+{
+    "Identification": {
+        "Subject": "ALIEN"
+    }, 
+    "Overall": {
+        "MinScore": "1200", 
+        "MaxScore": "2400"
+    }, 
+    "PerformanceLevels": {
+        "Level1": {
+            "CutPoint": "1200"
+        }, 
+        "Level2": {
+            "CutPoint": "1400"
+        }, 
+        "Level3": {
+            "CutPoint": "1800"
+        }, 
+        "Level4": {
+            "CutPoint": "2100"
+        }
+    }, 
+    "Claims": {
+        "Claim1": {
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim2": {
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim3": {
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim4": {
+            "Name": "", 
+            "MinScore": "0", 
+            "MaxScore": "0"
+        }
+    }
+ }

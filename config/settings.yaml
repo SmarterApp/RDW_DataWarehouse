@@ -194,8 +194,9 @@ common:
         CELERY_DEFAULT_EXCHANGE_TYPE: direct
       xsd:
         path: ../resources/sample_xsd.xsd
-      resources:
-        path: ../resources/
+      metadata:
+        static: ../resources/meta/static
+        performance: ../resources/meta/performance
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home

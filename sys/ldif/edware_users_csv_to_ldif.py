@@ -148,23 +148,24 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
     
     #passwd = fname[0:1].lower() + lname.lower() + "1234"
     
-    # generate unique employeeNumber as Guid
-    employeeGuid = uuid4()
+    # generate unique sbacUUID as Guid
+    sbacUUID = uuid4()
     
     strInetOrgPerson =  "dn: uid="+ _email +",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \
+                        "objectClass: sbac\n" + \
                         "objectClass: top\n" + \
                         "cn: " + _user + "\n" + \
                         "sn: " + lname + "\n" + \
                         "givenName: " + fname + "\n" + \
-                        "employeeNumber: " + str(employeeGuid) + "\n" + \
-                        "employeeType: ||State_Administrator||||||es|ES|||||||||\n" + \
-                        "employeeType: ||PII||||||es|ES|||||||||\n" + \
-                        "employeeType: ||SAREXTRACTS||||||es|ES|||||||||\n" + \
-                        "employeeType: ||SRSEXTRACTS||||||es|ES|||||||||\n" + \
-                        "employeeType: ||SRCEXTRACTS||||||es|ES|||||||||\n" + \
-                        "employeeType: ||AUDITXML||||||es|ES|||||||||\n" + \
-                        "employeeType: ||IIRDEXTRACTS||||||es|ES|||||||||\n" + \
+                        "sbacUUID: " + str(sbacUUID) + "\n" + \
+                        "sbacTenancyChain: ||State_Administrator||||||es|ES|||||||||\n" + \
+                        "sbacTenancyChain: ||PII||||||es|ES|||||||||\n" + \
+                        "sbacTenancyChain: ||SAREXTRACTS||||||es|ES|||||||||\n" + \
+                        "sbacTenancyChain: ||SRSEXTRACTS||||||es|ES|||||||||\n" + \
+                        "sbacTenancyChain: ||SRCEXTRACTS||||||es|ES|||||||||\n" + \
+                        "sbacTenancyChain: ||AUDITXML||||||es|ES|||||||||\n" + \
+                        "sbacTenancyChain: ||IIRDEXTRACTS||||||es|ES|||||||||\n" + \
                         "uid: " + _email + "\n" + \
                         "mail: " + _email + "\n" + \
                         "userPassword: " + ssha_password(_passwd) + "\n"

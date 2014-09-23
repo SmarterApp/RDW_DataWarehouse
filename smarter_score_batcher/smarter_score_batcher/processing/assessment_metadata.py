@@ -6,7 +6,8 @@ Created on Aug 11, 2014
 from copy import deepcopy
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping
 from zope import component
-from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager
+from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
+    get_template_key
 from smarter_score_batcher.utils.merge import deep_merge
 
 
@@ -52,7 +53,7 @@ class JSONHeaders:
                }
 
     def __init__(self, template={}):
-        self.values = deep_merge(self.lz_json, deepcopy(template))
+        self.values = deep_merge(self.lz_json, template)
 
     def get_values(self):
         return self.values
@@ -245,31 +246,21 @@ def get_assessment_metadata_mapping(root):
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")
     subject = XMLMeta(test_node, ".", "subject")
+    grade = XMLMeta(test_node, ".", "grade")
+    asmt_type = XMLMeta(test_node, ".", "assessmentType")
+    year = XMLMeta(test_node, ".", "academicYear")
 
     meta_template_manager = component.queryUtility(IMetadataTemplateManager)
-    meta_template = meta_template_manager.get_template(subject.get_value())
+    meta_template = meta_template_manager.get_template(get_template_key(year.get_value(), asmt_type.get_value(), grade.get_value(), subject.get_value()))
 
     json_output = JSONHeaders(meta_template)
 
     mappings = [JSONMapping(XMLMeta(test_node, ".", "testId"), json_output, 'asmt_guid'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim1'][@measureLabel='MinScore']", "value"), json_output, 'claim1_min_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim2'][@measureLabel='MaxScore']", "value"), json_output, 'claim2_max_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim2'][@measureLabel='MinScore']", "value"), json_output, 'claim2_min_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim3'][@measureLabel='MaxScore']", "value"), json_output, 'claim3_max_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim3'][@measureLabel='MinScore']", "value"), json_output, 'claim3_min_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='MaxScore']", "value"), json_output, 'claim4_max_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Claim4'][@measureLabel='MinScore']", "value"), json_output, 'claim4_min_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint1']", "value"), json_output, 'level2_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint2']", "value"), json_output, 'level3_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint3']", "value"), json_output, 'level4_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='CutPoint4']", "value"), json_output, 'level5_cutpoint'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MinScore']", "value"), json_output, 'min_score'),
-                JSONMapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='MaxScore']", "value"), json_output, 'max_score'),
                 JSONMapping(XMLMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
                 JSONMapping(subject, json_output, 'subject'),
-                JSONMapping(XMLMeta(test_node, ".", "assessmentType"), json_output, 'asmt_type'),
+                JSONMapping(asmt_type, json_output, 'asmt_type'),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
-                JSONMapping(XMLMeta(test_node, ".", "academicYear"), json_output, 'asmt_year')]
+                JSONMapping(year, json_output, 'asmt_year')]
     for m in mappings:
         m.evaluate()
     return json_output.get_values()

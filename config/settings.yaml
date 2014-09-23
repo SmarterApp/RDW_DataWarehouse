@@ -194,8 +194,14 @@ common:
         CELERY_DEFAULT_EXCHANGE_TYPE: direct
       xsd:
         path: ../resources/sample_xsd.xsd
-      resources:
-        path: ../resources/
+      metadata:
+        static: ../resources/meta/static
+        performance: ../resources/meta/performance
+      cache:
+        regions: public.shortlived
+        type: memory
+        expire: 7200 # one 2 hours
+        lock_dir: /tmp/memcache
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home
@@ -410,8 +416,11 @@ qa:
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
-    smarter_score_batcher.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -497,9 +506,9 @@ qa:
       skip.verify: False
       saml:
         issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
-        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo
     hpz:
@@ -605,8 +614,11 @@ uat:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
-    smarter_score_batcher.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     extract:
       gpg:
         keyserver: hkp://celrydw1.dmo.som.edwdc.net
@@ -857,10 +869,10 @@ development:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: https://drc-dev-secure.opentestsystem.org/auth/oauth2/tokeninfo?realm=/sbac
 
@@ -930,10 +942,10 @@ test:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
     oauth2:
         idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: dev
@@ -986,10 +998,10 @@ integration:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: dev
@@ -1038,9 +1050,9 @@ jenkins_int:
       skip.verify: False
       saml:
         issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
-        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
+        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: test
@@ -1108,9 +1120,9 @@ jenkins_dev:
       skip.verify: False
       saml:
         issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
-        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
+        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
     mode: test

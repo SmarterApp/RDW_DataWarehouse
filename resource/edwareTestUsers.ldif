@@ -40,17 +40,18 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Susan Hall
 sn: Hall
-employeeNumber: 5e5ac3f1-df9d-48cd-8f25-b74f18dc1f9c
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
-employeeType: ||AUDITXML||||||cat|NC|||||||||
-employeeType: ||IIRDEXTRACTS||||||cat|NC|||||||||
-employeeType: ||ASMTDATALOAD||||||cat|NC|||||||||
+sbacUUID: 5e5ac3f1-df9d-48cd-8f25-b74f18dc1f9c
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||AUDITXML||||||cat|NC|||||||||
+sbacTenancyChain: ||IIRDEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||ASMTDATALOAD||||||cat|NC|||||||||
 givenName: Susan
 uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P
@@ -61,16 +62,17 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Victor Lee
 sn: Lee
-employeeNumber: 4765a55c-452c-4ed3-8018-4931f73b7554
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
-employeeType: ||AUDITXML||||||cat|NC|||||||||
-employeeType: ||IIRDEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 4765a55c-452c-4ed3-8018-4931f73b7554
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||AUDITXML||||||cat|NC|||||||||
+sbacTenancyChain: ||IIRDEXTRACTS||||||cat|NC|||||||||
 givenName: Victor
 uid: vlee
 userPassword:: e1NTSEF9ZGo1YW9lM054Tm9QQzVQT2srbDZJa1N6U1FvQTEyUzJnTlU2Qmc9P
@@ -81,15 +83,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Sara Lee
 sn: Lee
-employeeNumber: 8038a3ee-b822-43f3-bb14-c2c1bfc59860
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
-employeeType: ||IIRDEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 8038a3ee-b822-43f3-bb14-c2c1bfc59860
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||IIRDEXTRACTS||||||cat|NC|||||||||
 givenName: Sara
 uid: slee
 userPassword:: e1NTSEF9QWJNTStib2FkTmJ0UnZTY2p3dkhPblBJeWdRVHFYS1N1YTd5ckE9P
@@ -100,15 +103,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Jamie Hine
 sn: Hine
-employeeNumber: ca2762c3-050b-4150-a0de-6f03f45d2f50
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
-employeeType: ||AUDITXML||||||cat|NC|||||||||
+sbacUUID: ca2762c3-050b-4150-a0de-6f03f45d2f50
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||AUDITXML||||||cat|NC|||||||||
 givenName: Jamie
 uid: jhine
 userPassword:: e1NTSEF9WnhiL0dFTitGWFlXZWJLRm5seE9CcXNvMXErNlZwR2xZaWI1eXc9P
@@ -119,14 +123,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Chris Davis
 sn: Davis
-employeeNumber: 548f2795-206a-4c47-954c-c261546204b6
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 548f2795-206a-4c47-954c-c261546204b6
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Chris
 uid: cdavis
 userPassword:: e1NTSEF9NXc2ZVFSQ0llVzN0R25mRFRJZlZ1VDRCMWNSVkJSWHVtMENuc0E9P
@@ -137,14 +142,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Kelly Tidd
 sn: Tidd
-employeeNumber: f42466ef-21ff-41c6-9a57-00fc758ea2e0
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: f42466ef-21ff-41c6-9a57-00fc758ea2e0
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Kelly
 uid: ktidd
 userPassword:: e1NTSEF9V1FwN0lzdTU5clRUNzg5YUU5WUJNekhJUnFyS1hPdHg5Q2lCZUE9P
@@ -155,14 +161,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Louisa Mui
 sn: Mui
-employeeNumber: 9fc3013a-01e6-40aa-8d5e-798b9b8524c3
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 9fc3013a-01e6-40aa-8d5e-798b9b8524c3
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Louisa
 uid: lmui
 userPassword:: e1NTSEF9cTVSWDJGM2FrYXFvYjNVMWhBZFJnTEtHUk5FT0gzdm1sWW9QWEE9P
@@ -173,14 +180,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Hugh Goree
 sn: Goree
-employeeNumber: eaf5cadb-9ebb-484d-9a93-8a7077d89214
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: eaf5cadb-9ebb-484d-9a93-8a7077d89214
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Hugh
 uid: hgoree
 userPassword:: e1NTSEF9eW5NakhCcTBXVUV6dGdzTUFiUHlxNjFNTWpDL0pEdmpYRVliSlE9P
@@ -191,14 +199,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Clare Seabaugh
 sn: Seabaugh
-employeeNumber: cfc872c7-b9d7-4e0b-8632-e1ea643852ee
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: cfc872c7-b9d7-4e0b-8632-e1ea643852ee
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Clare
 uid: cseabaugh
 userPassword:: e1NTSEF9QVpUYnhrV2VpSEFJeGJsN3NKR0s1UkwvR3RhZldsSHR4dWdsa1E9P
@@ -209,14 +218,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Katy Bester
 sn: Bester
-employeeNumber: 0e2e5079-2969-4b47-ad8c-06610bbbacd5
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 0e2e5079-2969-4b47-ad8c-06610bbbacd5
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Katy
 uid: kbester
 userPassword:: e1NTSEF9VnN1YlR0RmxLVlM2dFBlM3oyTEluVFk4bjBVbmRqZUtnTjhsMnc9P
@@ -227,14 +237,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Erik Croker
 sn: Croker
-employeeNumber: 8d1df6d9-e05d-41dd-8909-b0289e1bc21a
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 8d1df6d9-e05d-41dd-8909-b0289e1bc21a
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Erik
 uid: ecroker
 userPassword:: e1NTSEF9bEZEK1NwcHVleFc5SldRZTdUVHk5V1kwSUh2RU1rbTk4NktZOGc9P
@@ -245,15 +256,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Matt Sollars
 sn: Sollars
-employeeNumber: 9d9c6409-8840-4fa0-ad6d-4b10d41453a5
-employeeType: ||State_Administrator||||||dog|CA|||||||||
-employeeType: ||PII||||||dog|CA|||||||||
-employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
-employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
-employeeType: ||SRCEXTRACTS||||||dog|CA|||||||||
-employeeType: ||IIRDEXTRACTS||||||dog|CA|||||||||
+sbacUUID: 9d9c6409-8840-4fa0-ad6d-4b10d41453a5
+sbacTenancyChain: ||State_Administrator||||||dog|CA|||||||||
+sbacTenancyChain: ||PII||||||dog|CA|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||IIRDEXTRACTS||||||dog|CA|||||||||
 givenName: Matt
 uid: msollars
 userPassword:: e1NTSEF9WXg1Wis0VGVzb0VvTjFmNWJ2eU4yMHp1cUFNTWtIUC80TzBnY1E9P
@@ -264,15 +276,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Clayton Croxton
 sn: Croxton
-employeeNumber: 27f4f5d6-3500-42db-873d-084356ce6fe2
-employeeType: ||State_Administrator||||||dog|CA|||||||||
-employeeType: ||PII||||||dog|CA|||||||||
-employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
-employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
-employeeType: ||SRCEXTRACTS||||||dog|CA|||||||||
-employeeType: ||AUDITXML||||||dog|CA|||||||||
+sbacUUID: 27f4f5d6-3500-42db-873d-084356ce6fe2
+sbacTenancyChain: ||State_Administrator||||||dog|CA|||||||||
+sbacTenancyChain: ||PII||||||dog|CA|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||AUDITXML||||||dog|CA|||||||||
 givenName: Clayton
 uid: ccroxton
 userPassword:: e1NTSEF9MUdHMmVrVlgwN3JTUHdJMUpmZ0tDaFRQWHZyTXV6T3lOb24wMEE9P
@@ -283,16 +296,17 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Amie Stroop
 sn: Stroop
-employeeNumber: 0c5de7a1-d2e1-4940-a26e-e72589967364
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
-employeeType: ||AUDITXML|||SBAC|||||||||||||
+sbacUUID: 0c5de7a1-d2e1-4940-a26e-e72589967364
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||AUDITXML|||SBAC|||||||||||||
 givenName: Amie
 uid: astroop
 userPassword:: e1NTSEF9Qm1GUkx5QUVPMDg5MmFwZklZVXRsSmhEZ3dnNmNHWEhZR1BISlE9P
@@ -303,16 +317,17 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Ted Lazaro
 sn: Lazaro
-employeeNumber: b32b071c-5621-4b52-afbb-c25a1886d754
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
-employeeType: ||IIRDEXTRACTS|||SBAC|||||||||||||
+sbacUUID: b32b071c-5621-4b52-afbb-c25a1886d754
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||IIRDEXTRACTS|||SBAC|||||||||||||
 givenName: Ted
 uid: tlazaro
 userPassword:: e1NTSEF9T2REUE11bVk1ZFQ5YXRQbGZ4Y3VkRW9Ba2g3M2tCR1FraXp0enc9P
@@ -323,19 +338,20 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Guy Man
 sn: Man
-employeeNumber: ed81c400-8874-4a96-b6fd-3573b3c3000a
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SUPER_USER|||SBAC|||||||||||||
-employeeType: ||AUDITXML|||SBAC|||||||||||||
-employeeType: ||IIRDEXTRACTS|||SBAC|||||||||||||
-employeeType: ||ASMTDATALOAD|||SBAC||||||||||||
+sbacUUID: ed81c400-8874-4a96-b6fd-3573b3c3000a
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SUPER_USER|||SBAC|||||||||||||
+sbacTenancyChain: ||AUDITXML|||SBAC|||||||||||||
+sbacTenancyChain: ||IIRDEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||ASMTDATALOAD|||SBAC||||||||||||
 givenName: Guy
 uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
@@ -346,15 +362,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Selena Magnusson
 sn: Magnusson
-employeeNumber: 95a9f7af-c4cc-46f8-9b26-97ba5b314fa9
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: 95a9f7af-c4cc-46f8-9b26-97ba5b314fa9
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Selena
 uid: smagnusson
 userPassword:: e1NTSEF9djNGYkVyS0MvWkt2NWlNUEFtWk96U2NyZGlsSWNJbnQ5Z2wwd1E9P
@@ -365,15 +382,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Jessie Mollica
 sn: Mollica
-employeeNumber: 26e3b1b0-b85f-4fc9-8276-55ea7b272724
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: 26e3b1b0-b85f-4fc9-8276-55ea7b272724
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Jessie
 uid: jmollica
 userPassword:: e1NTSEF9QmtGOTdGZjRvRUhuTEw1eExaVnFnVUljWkwydytBVG5pdGY1UEE9P
@@ -384,15 +402,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Liza Bopp
 sn: Bopp
-employeeNumber: 0c7affb9-5a22-459f-8a72-5dd3943f435e
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: 0c7affb9-5a22-459f-8a72-5dd3943f435e
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Liza
 uid: lbopp
 userPassword:: e1NTSEF9U1ZmMTMrZExwcjdOb1VZelFJZFAwSUs5V0ZxcEFibFdVZVpyc1E9P
@@ -403,15 +422,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Clinton Degraw
 sn: Degraw
-employeeNumber: f617275c-f949-4ade-bea8-6b1d6a19a7b9
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: f617275c-f949-4ade-bea8-6b1d6a19a7b9
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Clinton
 uid: cdegraw
 userPassword:: e1NTSEF9ZnM4bWh0TkpQZUxjODZFb09TM2ltUFRIcmdDb3NjUmsyZVl3aGc9P
@@ -422,11 +442,12 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Mary Hill
 sn: Hill
-employeeNumber: e733acb0-bf4c-11e3-b1b6-0800200c9a66
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
+sbacUUID: e733acb0-bf4c-11e3-b1b6-0800200c9a66
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
 givenName: Mary
 uid: mhill
 userPassword:: e1NTSEF9dlBRMmFjRGJhL2d3MjlUNmhtVVI0M2s5Sno4Wll1SmhuRExubWc9P
@@ -437,16 +458,17 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Sam White
 sn: White
-employeeNumber: 45ee19f0-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||dog|CA|||||||||
-employeeType: ||PII|||SBAC|||fish|VT|||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||dog|CA|||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||cat|NC||||||||
+sbacUUID: 45ee19f0-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||dog|CA|||||||||
+sbacTenancyChain: ||PII|||SBAC|||fish|VT|||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||dog|CA|||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||cat|NC||||||||
 givenName: Sam
 uid: swhite
 userPassword:: e1NTSEF9c1dqWm1pcVowcUZ2dVZCcyt5SkZnanJuRCtPVk82ZExuR1V1Y3c9P
@@ -457,15 +479,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Rachel Adams
 sn: Adams
-employeeNumber: 5ae401d0-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: 5ae401d0-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Rachel
 uid: radams
 userPassword:: e1NTSEF9WHRkRkM0Q0ZxdmxEazRGaDk3WEE2bWR1V2Y2NE1NancxajZ0dVE9P
@@ -476,12 +499,13 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Ted Baker
 sn: Baker
-employeeNumber: 631f6600-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
+sbacUUID: 631f6600-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
 givenName: Ted
 uid: tbaker
 userPassword:: e1NTSEF9SmdqOUpMY2s4c1ptUFk5Rzh6TlE1SUM0b2xWWDhPRm9Fd3JKcnc9P
@@ -492,17 +516,18 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Perry Clark
 sn: Clark
-employeeNumber: 6e59b250-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||PII|||SBAC|||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+sbacUUID: 6e59b250-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+sbacTenancyChain: ||PII|||SBAC|||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
 givenName: Perry
 uid: pclark
 userPassword:: e1NTSEF9UG9MZGQvZlUyNjhJK2tuWnhKYlVXZ2Z5YXFTTE5YY2tmSDE4YVE9P
@@ -513,14 +538,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Chris Miller
 sn: Miller
-employeeNumber: 7656adf0-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: 7656adf0-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Chris
 uid: cmiller
 userPassword:: e1NTSEF9V0cvWnJxY1l2aTRVQm5za0d4SXpUbHkxZldKZ1RoelVYd3ovRHc9P
@@ -531,14 +557,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Austin Rice
 sn: Rice
-employeeNumber: 7d0d1fd0-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||||||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
-employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
+sbacUUID: 7d0d1fd0-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||cat|NC|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Austin
 uid: arice
 userPassword:: e1NTSEF9V2FwMTJmRjYvZXNVbE1WQ2lralQ4WkJkK2EyWXJreHNPUVpRNFE9P
@@ -549,10 +576,11 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Charlie Rose
 sn: Rose
-employeeNumber: 84b01490-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|NC|||||||||
+sbacUUID: 84b01490-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
 givenName: Charlie
 uid: crose
 userPassword:: e1NTSEF9dERWVUhnQkFyVVNYMGI3ekJtVm0xTTh2d3VmdThCMDN5WVdNT1E9P
@@ -563,11 +591,12 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Terry Hunt
 sn: Hunt
-employeeNumber: 8de06010-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||dog|CA|||||||||
-employeeType: ||PII||||||dog|CA|||||||||
+sbacUUID: 8de06010-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||State_Administrator||||||dog|CA|||||||||
+sbacTenancyChain: ||PII||||||dog|CA|||||||||
 givenName: Terry
 uid: thunt
 userPassword:: e1NTSEF9czJtMXMxZkNTMFFMQ016a0c4MmJBOEd1U3JobXhiOFhkR1JyMnc9P
@@ -578,13 +607,14 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Larry Price
 sn: Price
-employeeNumber: 93d64110-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||dog|CA|||||||||
-employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
-employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
-employeeType: ||SRCEXTRACTS||||||dog|CA|||||||||
+sbacUUID: 93d64110-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||State_Administrator||||||dog|CA|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||dog|CA|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||dog|CA|||||||||
 givenName: Larry
 uid: lprice
 userPassword:: e1NTSEF9dkZhcmZOUjFlUExtTlBqUDM2RFhGeE1TRjNYRmVrbnRqSmgvVlE9P
@@ -595,12 +625,13 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Liz Neil
 sn: Neil
-employeeNumber: 9c313b30-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacUUID: 9c313b30-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
 givenName: Liz
 uid: lneil
 userPassword:: e1NTSEF9a3U5bWZZYXRxVmk4Z1MvaHBEWWlpTzVlQ1JLYlBqcUhSTStQVVE9P
@@ -611,12 +642,13 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Kevin Scott
 sn: Scott
-employeeNumber: a2b29350-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacUUID: a2b29350-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||State_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 givenName: Kevin
 uid: kscott
 userPassword:: e1NTSEF9c1lTdVBmTzFPVEw5R1crazRGaEc3d2Z6MWNaNUg3TlpXdjVLcmc9P
@@ -627,12 +659,13 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Frank Bell
 sn: Bell
-employeeNumber: aa55d630-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacUUID: aa55d630-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||District_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
 givenName: Frank
 uid: fbell
 userPassword:: e1NTSEF9T2dMcVp6eHZYUkZ5UGRQc3VQT29NcUxCRngxUjNrTUtVODJFc0E9P
@@ -643,18 +676,19 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Jason Brown
 sn: Brown
-employeeNumber: b2b7ae20-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
-employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
-employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+sbacUUID: b2b7ae20-bf5e-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||District_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
 givenName: Jason
 uid: jbrown
 userPassword:: e1NTSEF9anZCL1p6OW5TUjRIY2I1RnNlaGlRbktRc0hPZXp1YUVMeFAxOHc9P
@@ -665,14 +699,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Harry Charles
 sn: Charles
-employeeNumber: f43db880-bf63-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+sbacUUID: f43db880-bf63-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||District_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
 givenName: Harry
 uid: hcharles
 userPassword:: e1NTSEF9eC84bTBEUWtsa2dKYTdMbDUvVHRvcW1zb1ZNSkpMMHR3SFBueUE9P
@@ -683,12 +718,13 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Robert Wilson
 sn: Wilson
-employeeNumber: fb5499e0-bf63-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+sbacUUID: fb5499e0-bf63-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||District_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
 givenName: Robert
 uid: rwilson
 userPassword:: e1NTSEF9a2tHRGhUSUhmYVA2WlpaRUpaSFFQVHNUWnp5ZlhkLzNDRUFFc2c9P
@@ -699,10 +735,11 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Molly Davis
 sn: Davis
-employeeNumber: 03737560-bf64-11e3-8a33-0800200c9a66
-employeeType: ||District_Education_Administrator_2|||SBAC|||cat|NC|||||||||
+sbacUUID: 03737560-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||District_Education_Administrator_2|||SBAC|||cat|NC|||||||||
 givenName: Molly
 uid: mdavis
 userPassword:: e1NTSEF9dlo4N2hPek9ocCtNQVQyamM2bmowZGRtd1dIK2pxZVllTXMzWGc9P
@@ -713,12 +750,13 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Reid Field
 sn: Field
-employeeNumber: 0d9573e0-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Teacher||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 givenName: Reid
 uid: rfield
 userPassword:: e1NTSEF9V3ZwemZZVGdPaGZ2bTlLaDJmeVlBYUN6SXVmZVVYVnpSaTkwZ0E9P
@@ -729,11 +767,12 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Dan Carter
 sn: Carter
-employeeNumber: 172f7db0-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Teacher||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+sbacUUID: 172f7db0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
 givenName: Dan
 uid: dcarter
 userPassword:: e1NTSEF9V29qVUtMOUtFTjE3M3oveG8za0dqcEs3SElNWGhGY29wZUlkcGc9P
@@ -744,14 +783,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Mike Turner
 sn: Turner
-employeeNumber: 1e363270-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Teacher||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+sbacUUID: 1e363270-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
 givenName: Mike
 uid: mturner
 userPassword:: e1NTSEF9UndLZDlQM0NKS2ZiTmdLK2dZN1QyNk52S3UvOU1yMlluWHZCUnc9P
@@ -762,14 +802,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Austin Hope
 sn: Hope
-employeeNumber: 2569eaa0-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Building_Administrator||||||cat|NC|||||||||
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
-employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
-employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+sbacUUID: 2569eaa0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Building_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
 givenName: Austin
 uid: ahope
 userPassword:: e1NTSEF9czJEeEs3eExLZUxLS3crSGgzSW44K0hMMUhOZnlUMGlqMjFGYWc9P
@@ -780,15 +821,16 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Elnora Seinfeld
 sn: Seinfeld
-employeeNumber: 58d08269-4f03-484a-981c-7c13b3ba11aa
-employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
-employeeType: ||ALLSTATES|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||||||||||||
-employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacUUID: 58d08269-4f03-484a-981c-7c13b3ba11aa
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Elnora
 uid: eseinfeld
 userPassword:: e1NTSEF9SDJIWGNXWTluVDM3UmFLTWgzWHQ2ekxNV08wQWxaaGV1Q1dCQmc9P
@@ -799,14 +841,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Mary Smith
 sn: Smith
-employeeNumber: 1c06e4cf-1339-4f75-b0d1-c8b10e6e57fd
-employeeType: ||State_Administrator||||||fish|VT|||||||||
-employeeType: ||PII||||||fish|VT|||||||||
-employeeType: ||SAREXTRACTS||||||fish|VT|||||||||
-employeeType: ||SRSEXTRACTS||||||fish|VT|||||||||
-employeeType: ||SRCEXTRACTS||||||fish|VT|||||||||
+sbacUUID: 1c06e4cf-1339-4f75-b0d1-c8b10e6e57fd
+sbacTenancyChain: ||State_Administrator||||||fish|VT|||||||||
+sbacTenancyChain: ||PII||||||fish|VT|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||fish|VT|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||fish|VT|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||fish|VT|||||||||
 givenName: Mary
 uid: msmith
 userPassword:: e1NTSEF9SnZUMmNtVFE5TTNZbkRYODVWclZmVUlxZEVPSks2Yk5kWmdjY2c9P
@@ -981,14 +1024,15 @@ objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: sbac
 cn: Javier Macey
 sn: Macey
-employeeNumber: 1c06e4cf-1339-4f75-ffff-c8b10e6e57fd
-employeeType: ||State_Administrator||||||fish|VT|||||||||
-employeeType: ||PII||||||fish|VT|||||||||
-employeeType: ||SAREXTRACTS||||||fish|VT|||||||||
-employeeType: ||SRSEXTRACTS||||||fish|VT|||||||||
-employeeType: ||SRCEXTRACTS||||||fish|VT|||||||||
+sbacUUID: 1c06e4cf-1339-4f75-ffff-c8b10e6e57fd
+sbacTenancyChain: ||State_Administrator||||||fish|VT|||||||||
+sbacTenancyChain: ||PII||||||fish|VT|||||||||
+sbacTenancyChain: ||SAREXTRACTS||||||fish|VT|||||||||
+sbacTenancyChain: ||SRSEXTRACTS||||||fish|VT|||||||||
+sbacTenancyChain: ||SRCEXTRACTS||||||fish|VT|||||||||
 givenName: Javier
 uid: jmacey
 userPassword:: e1NTSEF9cm9Hcm5RYTB6UkR1MFIxNFlZNWMvZW1Za3A1UzVMZUdoR3ZLK2c9P

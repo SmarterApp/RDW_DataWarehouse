@@ -497,9 +497,9 @@ qa:
       skip.verify: False
       saml:
         issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
-        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo
     hpz:

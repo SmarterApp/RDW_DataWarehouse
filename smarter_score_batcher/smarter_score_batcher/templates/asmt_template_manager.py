@@ -59,6 +59,10 @@ class MetadataTemplateManager:
         return metadata_template.get_asmt_subject().lower()
 
     def _get_template_location(self, asmt_meta_location=None):
+        '''
+        Figure out location of the templates. If not provided, use default
+        @param asmt_meta_location: optional specified root location of the templates
+        '''
         if not asmt_meta_location is None and os.path.isabs(asmt_meta_location):
             return asmt_meta_location
         here = os.path.abspath(os.path.dirname(__file__))
@@ -68,13 +72,22 @@ class MetadataTemplateManager:
         return conf.get('smarter_score_batcher.metadata.static', '../../resources/meta/static')
 
     def _load_template(self, key, path=None):
+        '''
+        load individual static template
+        @param key: key of the template to load
+        @param path: optional relative path where to look for the template
+        '''
         templates = self._load_templates(self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path), pattern=key + '*.json')
         if len(templates) == 0:
             raise MetadataException("Unable to load metadata for key {0}".format(key))
         return list(templates.values()).pop()
 
-    @cache_region('public.shortlived', 'template')
+    @cache_region('public.shortlived', 'metadata.templates')
     def get_template(self, key):
+        '''
+        lazy load template
+        @param key: key to load template for
+        '''
         sm = self._load_template(key)
         if sm is None:
             raise MetadataException("Unable to load metadata for key {0}".format(key))
@@ -92,11 +105,19 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         self.meta_template_mgr = MetadataTemplateManager(asmt_meta_dir=static_asmt_meta_dir)
 
     def get_key(self, path, metadata_template):
-        key = path[len(self.asmt_meta_location) + 1:].replace(os.path.sep, '_')
+        '''
+        create key by provided path of the template file
+        @param path: path to the template, which will be included into the key
+        @param metadata_template: template to get the key for
+        '''
+        key = path[len(self.asmt_meta_location) + 1:].replace(os.path.sep, '_') if path.startswith(self.asmt_meta_location) else path
         key = key + '_' + metadata_template.get_asmt_subject()
         return key.lower()
 
     def _load_template(self, key):
+        '''
+        load individual template and merge it with static template
+        '''
         keys = key.split('_')
         subject = keys.pop()
         path = os.path.sep.join(keys)

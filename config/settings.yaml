@@ -416,8 +416,11 @@ qa:
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
-    smarter_score_batcher.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -611,8 +614,11 @@ uat:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
-    smarter_score_batcher.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     extract:
       gpg:
         keyserver: hkp://celrydw1.dmo.som.edwdc.net
@@ -1091,6 +1097,8 @@ jenkins_dev:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
         CELERYD_CONCURRENCY: 4
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     edware:
       db:
         cat:

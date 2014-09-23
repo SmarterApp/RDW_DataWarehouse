@@ -1097,8 +1097,6 @@ jenkins_dev:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
         CELERYD_CONCURRENCY: 4
-      metadata:
-        performance: /opt/edware/resources/meta/performance
     edware:
       db:
         cat:

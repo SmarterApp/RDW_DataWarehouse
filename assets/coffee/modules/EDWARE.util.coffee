@@ -195,10 +195,11 @@ define [
     defaultLogo = '/assets/images/smarterHeader_logo.png'
     if isPrint
       defaultLogo = if isGrayscale then '/assets/images/smarter_printlogo_gray.png' else '/assets/images/smarter_printlogo.png'
-    brandingData = {'tenantLogo': defaultLogo, 'tenantLabel': ''}
+    brandingData = {'tenantLogo': defaultLogo, 'tenantLabel': '', 'higherEdLink':''}
     if metadata and metadata.branding
       brandingData.tenantLogo = getAbsolutePathForBrandingResource metadata.branding.image if metadata.branding.image
       brandingData.tenantLabel = truncateContent metadata.branding.display, 50 if metadata.branding.display
+      brandingData.higherEdLink = metadata.branding.higherEdLink
     return brandingData
 
   getConstants: getConstants

@@ -31,5 +31,6 @@
         "acc_speech_to_text_nonembed": "Voz a texto: ELA/Alfabetización con artículos de escritura",
         "acc_streamline_mode": "Modo de optimizar"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
+    "higherEdLinkDefault":"<a href='#'>http://stateresources.link</a>"
 }

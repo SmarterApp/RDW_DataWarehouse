@@ -79,7 +79,7 @@ class MetadataTemplateManager:
         '''
         templates = self._load_templates(self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path), pattern=key + '*.json')
         if len(templates) == 0:
-            raise MetadataException("Unable to load metadata for key {0}".format(key))
+            raise MetadataException("Unable to load metadata for key {0} from location: {1}".format(key, self.asmt_meta_location))
         return list(templates.values()).pop()
 
     @cache_region('public.shortlived', 'metadata.templates')
@@ -90,7 +90,7 @@ class MetadataTemplateManager:
         '''
         sm = self._load_template(key)
         if sm is None:
-            raise MetadataException("Unable to load metadata for key {0}".format(key))
+            raise MetadataException("Unable to load metadata for key {0} from ".format(key))
         return sm.get_asmt_metadata_template().copy()
 
 

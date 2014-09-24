@@ -3,7 +3,6 @@ Created on Aug 11, 2014
 
 @author: dip
 '''
-from copy import deepcopy
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping
 from zope import component
 from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
@@ -53,7 +52,7 @@ class JSONHeaders:
                }
 
     def __init__(self, template={}):
-        self.values = deep_merge(self.lz_json, deepcopy(template))
+        self.values = deep_merge(self.lz_json, template)
 
     def get_values(self):
         return self.values

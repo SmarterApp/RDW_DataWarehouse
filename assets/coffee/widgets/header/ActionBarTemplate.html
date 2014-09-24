@@ -1,15 +1,15 @@
 <ul role="menubar">
-    <li class="asmtTypeItem">
+    <li class="asmtTypeItem actionBarDropDownLabel">
         <div class="asmtViewText" aria-hidden="true">{{labels.assessment}}:</div>
         <div class="asmtDropdown"></div>
         <a class="disclaimerInfo interimDisclaimerIcon inherit" href="#"></a>
     </li>
-   	<li class="academicYearArea">
+   	<li class="academicYearArea actionBarDropDownLabel">
         <ul class="nav nav-pills margin0">
-            <li aria-hidden="true">
+            <li aria-hidden="true" class="academicYearLabel">
                 <span class="academicYearText">{{labels.academic_year}}:</span>
             </li>
-            <li><div id="academicYearAnchor" class="pull-left"></div></li>
+            <li><div id="academicYearAnchor" class="pull-left actionBarDropDown"></div></li>
         </ul>
     </li>
     <li class="detailsItem">
@@ -19,29 +19,32 @@
     </li>
 </ul>
 <ul role="menubar">
-    <li class="legendItem" aria-live="polite">
+    <li class="legendItem actionItems" aria-live="polite">
         <div class="divider">
         <i class="edware-icon-legend"></i>
         <a class="legendLabel inherit" href="#">{{labels.legend}}</a>
         <!-- <span class="legendPopup" aria-hidden="true"></span> -->
         </div>
     </li>
-    <li class="alignmentItem">
-        <div class="divider">
-            <span id="aria-align-label" class='alignLabel' aria-hidden='true'>{{labels.align}}</span>
-            <span class='align_button_area'>
-                <a class="align_button align_off inherit" href="#" title="center align bar charts" aria-label="center align bar charts" aria-live="polite">
-                    <span class="alignText">{{labels.off}}</span>
-                </a>
-            </span>
-            <div>
-    </li>
-    <li class="filterItem">
+    <li class="filterItem actionItems">
         <div class="divider">
             <a class="filterLabel inherit" href='#'>{{labels.filter}}</a>
         </div>
     </li>
-    <li class="printItem">
+    <li class="alignmentItem">
+    	<div class="divider">
+    		<span id="aria-align-label" class='alignLabel' aria-hidden='true'>{{labels.align}}:</span>
+    		<ul>
+    		<label>
+    			<input type="radio" name="AlignmentOptions" class="alignmentCheckbox" value="1"><i class="edware-icon-align-off"/></input>
+    		</label>
+    		<label>
+    			<input type="radio" name="AlignmentOptions" class="alignmentCheckbox" value="0" checked><i class="edware-icon-align-on"/></input>
+    		</label>
+    		</ul>
+    	</div>
+    </li>
+    <li class="printItem actionItems">
         <div class="divider">
             <a class="printLabel inherit" href='#'>{{labels.print}}</a>
             <span class="printModal"></span>

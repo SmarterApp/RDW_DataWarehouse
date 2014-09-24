@@ -7,6 +7,12 @@ import unittest
 from smarter_score_batcher.processing.assessment_metadata import JSONHeaders, JSONMapping,\
     get_assessment_metadata_mapping
 from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
+import os
+from smarter_score_batcher.templates.asmt_template_manager import PerfMetadataTemplateManager,\
+    IMetadataTemplateManager
+from zope import component
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -14,6 +20,12 @@ except ImportError:
 
 
 class TestJSONMetadata(unittest.TestCase):
+
+    def setUp(self):
+        CacheManager(**parse_cache_config_options({'cache.regions': 'public.shortlived', 'cache.type': 'memory', 'cache.public.shortlived.expire': 7200}))
+        path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/performance')
+        static_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/static')
+        component.provideUtility(PerfMetadataTemplateManager(asmt_meta_dir=path, static_asmt_meta_dir=static_path), IMetadataTemplateManager)
 
     def test_JSONHeaders_obj(self):
         out = JSONHeaders({})

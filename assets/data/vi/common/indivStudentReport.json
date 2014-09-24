@@ -31,5 +31,6 @@
         "acc_speech_to_text_nonembed": "Chuyển giọng nói thành văn bản: ELA/Các mục đọc viết",
         "acc_streamline_mode": "Chế độ sắp xếp"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
+    "higherEdLinkDefault":"<a href='#'>http://stateresources.link</a>"
 }

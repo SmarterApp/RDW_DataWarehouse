@@ -10,6 +10,7 @@
 		<project>eddatabase</project>
 		<project>edextract</project>
 		<project>services</project>
+		<project>smarter_common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

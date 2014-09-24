@@ -106,10 +106,10 @@ development:
         download_base_url: http://localhost
     auth:
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:80/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
 
 jenkins_dev:
   '[app:main]':
@@ -122,9 +122,9 @@ jenkins_dev:
         download_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/
     auth:
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
         issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
 
 qa:

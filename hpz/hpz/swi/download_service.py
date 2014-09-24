@@ -6,13 +6,14 @@ from pyramid.response import Response
 from hpz.database.file_registry import FileRegistry
 from hpz.database.constants import HPZ
 from pyramid.renderers import render_to_response
+from smarter_common.security.root_factory import Permission
 
 __author__ = 'okrook'
 
 logger = logging.getLogger(__name__)
 
 
-@view_config(route_name='file_download', request_method='GET', permission='download')
+@view_config(route_name='file_download', request_method='GET', permission=Permission.DOWNLOAD)
 def download_file(context, request):
     registration_info = FileRegistry.get_registration_info(request.matchdict['reg_id'])
     file_path = registration_info[HPZ.FILE_PATH] if registration_info is not None else None
@@ -26,7 +27,7 @@ def download_file(context, request):
     return response
 
 
-@view_config(route_name='validate', request_method='GET', permission='download')
+@view_config(route_name='validate', request_method='GET', permission=Permission.DOWNLOAD)
 def is_file_exist(context, request):
     '''
     Returns 200 if file exists, else 404

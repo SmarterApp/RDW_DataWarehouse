@@ -197,6 +197,11 @@ common:
       metadata:
         static: ../resources/meta/static
         performance: ../resources/meta/performance
+      cache:
+        regions: public.shortlived
+        type: memory
+        expire: 7200 # one 2 hours
+        lock_dir: /tmp/memcache
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home
@@ -411,8 +416,11 @@ qa:
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
-    smarter_score_batcher.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -502,7 +510,7 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo
+        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo?realm=/
     hpz:
       file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
       file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
@@ -606,8 +614,11 @@ uat:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
-    smarter_score_batcher.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
     extract:
       gpg:
         keyserver: hkp://celrydw1.dmo.som.edwdc.net
@@ -691,7 +702,7 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
       oauth2:
-        idp_server_verify_url: https://betaauth.smarterbalancedreporting.org/auth/oauth2/tokeninfo
+        idp_server_verify_url: https://betaauth.smarterbalancedreporting.org/auth/oauth2/tokeninfo?realm=/
     hpz:
         file_registration_url: https://hpzweb0.dmo.som.edwdc.net:8443/registration
         file_upload_base_url: https://hpzweb0.dmo.som.edwdc.net:8443/files
@@ -780,7 +791,7 @@ localOpenAM:
         issuer_name: http://local.slidev.org:6543/sp.xml
         name_qualifier: http://local.slidev.org:8080/openam
       oauth2:
-        idp_server_verify_url: http://local.slidev.org:8080/auth/oauth2/tokeninfo
+        idp_server_verify_url: http://local.slidev.org:8080/auth/oauth2/tokeninfo?realm=/
     mode: dev
     hpz:
         file_registration_url: http://localhost/registration
@@ -863,7 +874,7 @@ development:
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: https://drc-dev-secure.opentestsystem.org/auth/oauth2/tokeninfo?realm=/sbac
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
 
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
@@ -936,7 +947,7 @@ test:
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
     oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     # Celery config
@@ -992,7 +1003,7 @@ integration:
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
@@ -1043,7 +1054,7 @@ jenkins_int:
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf
@@ -1113,7 +1124,7 @@ jenkins_dev:
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:18080/auth/oauth2/tokeninfo
+        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf

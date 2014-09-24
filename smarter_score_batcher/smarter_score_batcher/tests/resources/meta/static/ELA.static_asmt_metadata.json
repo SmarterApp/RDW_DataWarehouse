@@ -1,7 +1,7 @@
 {
     "Content": "assessment", 
     "Identification": {
-        "Subject": "MATH"
+        "Subject": "ELA"
     }, 
     "PerformanceLevels": {
         "Level1": {
@@ -19,13 +19,16 @@
     }, 
     "Claims": {
         "Claim1": {
-            "Name": "Concepts & Procedures"
+            "Name": "Reading"
         }, 
         "Claim2": {
-            "Name": "Problem Solving and Modeling & Data Analysis"
+            "Name": "Writing"
         }, 
         "Claim3": {
-            "Name": "Communicating Reasoning"
+            "Name": "Listening"
+        }, 
+        "Claim4": {
+            "Name": "Research & Inquiry"
         }
     }, 
     "ClaimsPerformanceLevel": {

@@ -1,0 +1,11 @@
+{
+    "Content": "assessment", 
+    "Identification": {
+        "Subject": "ALIEN"
+    },
+    "Claims": {
+        "Claim1": {
+            "Name": "Alien Name"
+        }
+    }
+}

@@ -34,7 +34,7 @@ class IMetadataTemplateManager(interface.Interface):
 
 
 def get_template_key(year, asmt_type, grade, subject):
-    return '_'.join([str(year), asmt_type, str(grade), subject])
+    return '_'.join([str(year), asmt_type, str(grade), subject]).lower()
 
 
 class MetadataTemplateManager:

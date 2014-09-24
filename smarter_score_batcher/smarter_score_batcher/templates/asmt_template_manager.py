@@ -57,7 +57,7 @@ class MetadataTemplateManager:
                 with open(full_path, 'r+') as f:
                     template = MetadataTemplate(json.load(f))
                     templates.append(template)
-        logger.info('Found {0} template(s) for path {1} and pattern {2}').format(len(templates), path, pattern)
+        logger.info('Found {0} template(s) for path {1} and pattern {2}'.format(len(templates), path, pattern))
         return templates
 
     def get_key(self, path, metadata_template):
@@ -84,9 +84,9 @@ class MetadataTemplateManager:
         '''
         location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path)
         templates = self._load_templates(location, pattern=key + '*.json')
-        logger.info('Loading template for key {0} and path {1}').format(key, location)
+        logger.info('Loading template for key {0} and path {1}'.format(key, location))
         if len(templates) == 0:
-            raise MetadataException("Unable to load metadata for key {0} from location {1}".format(key, location))
+            raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, location))
         return templates.pop()
 
     @cache_region('public.shortlived', 'metadata.templates')

@@ -46,13 +46,13 @@ class MetadataTemplateManager:
         self.asmt_meta_location = self._get_template_location(asmt_meta_dir)
 
     def _load_templates(self, path, pattern='.static_asmt_metadata.json'):
-        templates = {}
+        templates = []
         for root, _, filenames in os.walk(path.lower()):
             for file in fnmatch.filter(filenames, pattern):
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:
                     template = MetadataTemplate(json.load(f))
-                    templates[self.get_key(root, template)] = template
+                    templates.append(template)
         return templates
 
     def get_key(self, path, metadata_template):
@@ -81,7 +81,7 @@ class MetadataTemplateManager:
         templates = self._load_templates(location, pattern=key + '*.json')
         if len(templates) == 0:
             raise MetadataException("Unable to load metadata for key {0} from location {1}".format(key, location))
-        return list(templates.values()).pop()
+        return templates.pop()
 
     @cache_region('public.shortlived', 'metadata.templates')
     def get_template(self, key):

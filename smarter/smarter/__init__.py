@@ -24,6 +24,7 @@ from edcore.security.tenant import set_tenant_map
 from smarter.reports.student_administration import set_default_year_back
 from hpz_client.frs.config import initialize as initialize_hpz
 from edauth import configure
+from edcore.utils.utils import set_environment_path_variable
 
 
 logger = logging.getLogger(__name__)
@@ -46,8 +47,7 @@ def main(global_config, **settings):
         settings = get_remote_config(url)
 
     # Prepare for environment specific
-    if 'smarter.PATH' in settings:
-        os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
+    set_environment_path_variable(settings)
     prepare_env(settings)
 
     # set beaker cache region

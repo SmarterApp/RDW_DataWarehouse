@@ -106,8 +106,8 @@ def configure_celeryd(name, prefix='celery'):
         options = config.options(section_name)
         for option in options:
             conf[option] = config.get(section_name, option)
-        if 'smarter.path' in conf:
-            os.environ['PATH'] += os.pathsep + conf['smarter.path']
+        if 'environment.path' in conf:
+            os.environ['PATH'] += os.pathsep + conf['environment.path']
         setup_celery(celery, conf, prefix=prefix)
     return (celery, conf)
 

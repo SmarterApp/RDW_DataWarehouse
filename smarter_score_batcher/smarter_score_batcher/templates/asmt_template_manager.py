@@ -67,7 +67,7 @@ class MetadataTemplateManager:
         Figure out location of the templates. If not provided, use default
         @param asmt_meta_location: optional specified root location of the templates
         '''
-        if not asmt_meta_location is None and os.path.isabs(asmt_meta_location):
+        if asmt_meta_location is not None and os.path.isabs(asmt_meta_location):
             return asmt_meta_location
         here = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(here, self._get_configured_path() if asmt_meta_location is None else asmt_meta_location)

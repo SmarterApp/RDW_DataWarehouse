@@ -48,7 +48,7 @@ class MetadataTemplateManager:
     def _load_templates(self, path, pattern='.static_asmt_metadata.json'):
         templates = []
         for root, _, filenames in os.walk(path.lower()):
-            for file in fnmatch.filter(filenames, pattern):
+            for file in fnmatch.filter(filenames, pattern.lower()):
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:
                     template = MetadataTemplate(json.load(f))

@@ -113,7 +113,6 @@ class AssessmentHeaders:
     AssessmentSubtestClaim4MaximumValue = 'AssessmentSubtestClaim4MaximumValue'
     AssessmentClaim4PerformanceLevelIdentifier = 'AssessmentClaim4PerformanceLevelIdentifier'
     AccommodationAmericanSignLanguage = 'AccommodationAmericanSignLanguage'
-    AccommodationSignLanguageHumanIntervention = 'AccommodationSignLanguageHumanIntervention'
     AccommodationBraille = 'AccommodationBraille'
     AccommodationClosedCaptioning = 'AccommodationClosedCaptioning'
     AccommodationTextToSpeech = 'AccommodationTextToSpeech'
@@ -122,10 +121,12 @@ class AssessmentHeaders:
     AccommodationCalculator = 'AccommodationCalculator'
     AccommodationMultiplicationTable = 'AccommodationMultiplicationTable'
     AccommodationPrintOnDemand = 'AccommodationPrintOnDemand'
+    AccommodationPrintOnDemandItems = 'AccommodationPrintOnDemandItems'
     AccommodationReadAloud = 'AccommodationReadAloud'
     AccommodationScribe = 'AccommodationScribe'
     AccommodationSpeechToText = 'AccommodationSpeechToText'
     AccommodationStreamlineMode = 'AccommodationStreamlineMode'
+    AccommodationNoiseBuffer = 'AccommodationNoiseBuffer'
 
 
 class AssessmentData:

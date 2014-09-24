@@ -34,10 +34,10 @@ STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec
                                  'assessmentsubtestresultscoreclaim4value', 'assessmentsubtestclaim4minimumvalue',
                                  'assessmentsubtestclaim4maximumvalue', 'assessmentsubtestclaim4performancelevelidentifier',
                                  'assessmenttype', 'assessmentacademicsubject', 'assessmentyear', 'accommodationamericansignlanguage',
-                                 'accommodationsignlanguagehumanintervention', 'accommodationbraille', 'accommodationclosedcaptioning',
+                                 'accommodationbraille', 'accommodationclosedcaptioning',
                                  'accommodationtexttospeech', 'accommodationabacus', 'accommodationalternateresponseoptions',
-                                 'accommodationcalculator', 'accommodationmultiplicationtable', 'accommodationprintondemand',
-                                 'accommodationreadaloud', 'accommodationscribe', 'accommodationspeechtotext', 'accommodationstreamlinemode']
+                                 'accommodationcalculator', 'accommodationmultiplicationtable', 'accommodationprintondemand', 'accommodationprintondemanditems',
+                                 'accommodationreadaloud', 'accommodationscribe', 'accommodationspeechtotext', 'accommodationstreamlinemode', 'accommodationnoisebuffer']
 
 STG_SBAC_STU_REG_COLUMNS = ['record_sid', 'guid_batch', 'src_file_rec_num', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'guid_student',
                             'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last', 'sex_student', 'birthdate_student', 'grade_enrolled', 'dmg_eth_hsp',

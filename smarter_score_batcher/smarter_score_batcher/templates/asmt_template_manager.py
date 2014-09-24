@@ -34,7 +34,7 @@ class IMetadataTemplateManager(interface.Interface):
 
 
 def get_template_key(year, asmt_type, grade, subject):
-    return '_'.join([str(year), asmt_type, str(grade), subject]).lower()
+    return '_'.join([str(year), asmt_type, str(grade), subject])
 
 
 class MetadataTemplateManager:
@@ -47,7 +47,7 @@ class MetadataTemplateManager:
 
     def _load_templates(self, path, pattern='.static_asmt_metadata.json'):
         templates = {}
-        for root, _, filenames in os.walk(path):
+        for root, _, filenames in os.walk(path.lower()):
             for file in fnmatch.filter(filenames, pattern):
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:

@@ -121,12 +121,12 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
         error_msg = str(e)
         logger.error(error_msg)
         logger.error('this error may be caused because you have an old xsd?')
-        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_PARSE_ERROR, err_sorce=ErrorSource.GENERATE_CSV_FROM_XML)
+        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_PARSE_ERROR, err_source=ErrorSource.GENERATE_CSV_FROM_XML)
     except Exception as e:
         error_msg = str(e)
         logger.error(error_msg)
         if os.path.exists(csv_file_path):
             os.remove(csv_file_path)
-        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_GENERATE_ERROR, err_sorce=ErrorSource.GENERATE_CSV_FROM_XML)
+        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_GENERATE_ERROR, err_source=ErrorSource.GENERATE_CSV_FROM_XML)
 
     return written

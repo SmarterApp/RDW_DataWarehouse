@@ -36,7 +36,6 @@ class ErrorCode():
                CSV_GENERATE_ERROR: 'CSV_GENERATE_ERROR',
                CSV_PARSE_ERROR: 'CSV_PARSE_ERROR',
                UNABLE_TO_LOAD_METADATA_SUBJECT: 'UNABLE_TO_LOAD_METADATA_SUBJECT'}
-    
 
 
 class ErrorSource():

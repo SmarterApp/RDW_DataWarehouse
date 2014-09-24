@@ -6,6 +6,7 @@ Created on Aug 12, 2014
 import unittest
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter_score_batcher.utils.meta import extract_meta_names
+from smarter_score_batcher.error.exceptions import TSBException
 
 
 class Test(unittest.TestCase):
@@ -16,8 +17,7 @@ class Test(unittest.TestCase):
 
     def test_extract_meta_names_incomplete_xml(self):
         xml_string = '<xml></xml>'
-        meta = extract_meta_names(xml_string)
-        self.assertFalse(meta.valid_meta)
+        self.assertRaises(TSBException, extract_meta_names, xml_string)
 
     def test_extract_meta_names_valid_minimum_xml(self):
         xml_string = '''<TDSReport>

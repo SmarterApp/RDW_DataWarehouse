@@ -5,8 +5,9 @@ Created on Sep 23, 2014
 '''
 
 
-def handle_error(generateCSVException):
-    error_msg = str(generateCSVException)
+def handle_error(e_TSBException):
+    error_msg = str(e_TSBException)
+
 
 def create_error_json(error_msg):
     '''
@@ -17,3 +18,4 @@ def create_error_json(error_msg):
         "message": error_msg
     }
     '''
+    pass

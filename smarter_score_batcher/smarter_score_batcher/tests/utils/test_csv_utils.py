@@ -13,9 +13,10 @@ from edcore.utils.file_utils import generate_path_to_raw_xml, \
 from smarter_score_batcher.utils.meta import Meta
 from smarter_score_batcher.utils.file_lock import FileLock
 import json
-from smarter_score_batcher.processing.file_processor import generate_csv_from_xml,\
-    process_assessment_data, generate_assessment_file, lock_and_write,\
+from smarter_score_batcher.processing.file_processor import generate_csv_from_xml, \
+    process_assessment_data, generate_assessment_file, lock_and_write, \
     generate_assessment_metadata_file
+from smarter_score_batcher.error.exceptions import TSBException
 
 try:
     import xml.etree.cElementTree as ET
@@ -81,8 +82,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
-        self.assertRaises(ET.ParseError)
+        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir)
 
     @patch('smarter_score_batcher.processing.file_processor.process_assessment_data')
     def test_generate_csv_from_xml_parse_exception(self, mock_process_assessment_data):
@@ -106,8 +106,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
-        self.assertFalse(os.path.isfile(csv_file_path))
+        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir)
 
     @patch('smarter_score_batcher.processing.file_processor.metadata_generator_bottom_up')
     @patch('smarter_score_batcher.processing.file_processor.process_item_level_data')
@@ -133,8 +132,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
-        self.assertFalse(os.path.isfile(csv_file_path))
+        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir)
 
     def test_process_assessment_data(self):
         base_dir = os.path.join(self.__tempfolder.name, 'work')

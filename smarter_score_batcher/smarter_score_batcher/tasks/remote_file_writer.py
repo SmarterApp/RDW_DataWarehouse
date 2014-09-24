@@ -27,14 +27,14 @@ def remote_write(xml_data):
     written = False
     try:
         meta_names = extract_meta_names(xml_data)
-    
+
         if conf is None or not conf:
             # maybe service is eager mode. If so, read from registry
             settings = get_current_registry().settings
             if settings is not None:
                 global conf
                 conf = settings
-    
+
         root_dir_csv = conf.get("smarter_score_batcher.base_dir.csv")
         root_dir_xml = conf.get("smarter_score_batcher.base_dir.xml")
         timestamp = time.strftime('%Y%m%d%H%M%S', time.gmtime())
@@ -46,5 +46,6 @@ def remote_write(xml_data):
             csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
             remote_csv_generator.apply_async(args=(meta_names, csv_file_path, xml_file_path, work_dir), queue=queue_name)  # @UndefinedVariable
     except TSBException:
+        # ignore exception for error handling because this function is synchonous call
         pass
     return written

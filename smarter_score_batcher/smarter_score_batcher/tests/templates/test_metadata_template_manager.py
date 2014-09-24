@@ -7,7 +7,7 @@ import unittest
 from smarter_score_batcher.templates.asmt_template_manager import MetadataTemplateManager,\
     PerfMetadataTemplateManager, get_template_key
 import os
-from smarter_score_batcher.exceptions import MetadataException
+from smarter_score_batcher.error.exceptions import MetadataException
 
 
 class TestAsmtMetadata(unittest.TestCase):

@@ -6,12 +6,11 @@ Created on Aug 12, 2014
 from smarter_score_batcher.error.error_codes import ErrorCode, ErrorSource
 
 
-
 class TSBException(Exception):
     '''
     general TSB Exception
     '''
-    def __init__(self, msg, err_code=ErrorCode.GENERAL_TSB_ERROR, err_source=None, err_input=None):
+    def __init__(self, msg, err_code=ErrorCode.GENERAL_TSB_ERROR, err_source=ErrorSource.FROM_EXCEPTION_STACK, err_input=None):
         '''
         :param msg: the error message.
         '''
@@ -69,7 +68,7 @@ class MetadataDirNotExistException(MetadataException):
     '''
     a general Metadata error.
     '''
-    def __init__(self, msg='dir does not exist', err_source=None):
+    def __init__(self, msg='dir does not exist', err_source=None, err_input=None):
         MetadataException.__init__(self, msg, err_code=ErrorCode.DIRECTORY_NOT_EXIST_FOR_METADATA_GENERATOR, err_source=None, err_input=None)
 
 
@@ -82,6 +81,7 @@ class MetaNamesException(TSBException):
 
 
 class GenerateCSVException(TSBException):
+
     def __init__(self, msg, err_code=ErrorCode.GENERAL_METADATA_ERROR, err_source=None, err_input=None):
         TSBException.__init__(self, msg, err_code=err_code, err_source=err_source, err_input=err_input)
 

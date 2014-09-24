@@ -10,8 +10,8 @@
     },
 
     "overall_ald": {
-        "Math": "Resumen de la puntuación provisional: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} de una habilidad para aplicar</strong> el conocimiento y las destrezas matemáticas necesarias para el éxito en la universidad y en su profesión, como se especifica en los Estándares comunes para los estados.",
-        "ELA": "Resumen de la puntuación provisional: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} de y habilidad para aplicar</strong> el conocimiento y las destrezas en las artes del lenguaje en el idioma inglés necesarias para el éxito en la universidad y en su profesión, como se especifica en los Estándares comunes para los estados."
+        "Math": "Resumen de la puntuación provisional: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} y habilidad para aplicar</strong> el conocimiento y las detrezas matemáticas necesarias para el éxito en la universidad y en su profesión, como se especifica en los Estándares Estatales Esenciales Comunes.",
+        "ELA": "Resumen de la puntuación provisional: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} y habilidad para aplicar</strong> el conocimiento y las detrezas en las artes del lenguaje en el idioma inglés necesarias para el éxito en la universidad y en su profesión, como se especifica en los Estándares Estatales Esenciales Comunes."
     },
 
     "psychometric_implications": {
@@ -49,7 +49,7 @@
             "description": {
                 "1": "Los estudiantes pueden leer con atención y de manera analítica para comprender un rango de textos literarios e informativos de complejidad ascendente.",
                 "2": "Los estudiantes pueden producir escritos efectivos y bien fundamentados para un rango de propósitos y audiencias.",
-                "3": "Los estudiantes pueden emplear destrezas efectivas para hablar y escuchar para un rango de propósitos y audiencias.",
+                "3": "Los estudiantes pueden emplear destrezas efectivas del habla y auditivas para un rango de propósitos y audiencias.",
                 "4": "Los estudiantes pueden participar en estudios y búsquedas para investigar temas y para analizar, integrar y presentar información."
             },
             "scoreTooltip": {

@@ -14,24 +14,44 @@ class TSBException(Exception):
         '''
         :param msg: the error message.
         '''
-        self.msg = msg
-        self.err_code = err_code
-        self.err_source = err_source
-        self.err_input = err_input
+        self.__msg = msg
+        self.__err_code = err_code
+        self.__err_source = err_source
+        self.__err_input = err_input
 
-    def set_error_source(self, error_source):
-        self.err_source = error_source
+    @property
+    def err_source(self):
+        return self.__err_source
 
-    def set_error_input(self, err_input):
-        self.err_input = err_input
+    @err_source.setter
+    def err_source(self, error_source):
+        self.__err_source = error_source
 
-    def get_error_text(self):
-        if self.err_code is not None:
-            return ErrorCode.message.get(self.err_code)
+    @property
+    def err_input(self):
+        return self.__err_input
 
-    def get_errro_source_text(self):
-        if self.err_source is not None:
-            return ErrorSource.message.get(self.err_source)
+    @err_input.setter
+    def err_input(self, err_input):
+        self.__err_input = err_input
+
+    @property
+    def err_text(self):
+        if self.__err_code is not None:
+            return ErrorCode.message.get(self.__err_code)
+
+    @property
+    def err_source_text(self):
+        if self.__err_source is not None:
+            return ErrorSource.message.get(self.__err_source)
+
+    @property
+    def msg(self):
+        return self.__msg
+
+    @property
+    def err_code(self):
+        return self.__err_code
 
 
 class FileLockException(TSBException):
@@ -77,7 +97,7 @@ class MetaNamesException(TSBException):
         '''
         :param msg: the error message.
         '''
-        self.msg = msg
+        TSBException.__init__(self, msg)
 
 
 class GenerateCSVException(TSBException):

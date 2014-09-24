@@ -5,8 +5,13 @@ Created on Sep 23, 2014
 '''
 
 
-def handle_error(e_TSBException):
-    error_msg = str(e_TSBException)
+def handle_error(e_TSBException, err_file_path):
+    
+    err_code = e_TSBException.err_code
+    err_source = e_TSBException.err_source
+    err_code_text = e_TSBException.err_code_text
+    err_source_text = e_TSBException.err_source_text
+    err_input = e_TSBException.err_input
 
 
 def create_error_json(error_msg):

@@ -39,8 +39,8 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
                 fileMeatadata.write()
                 logger.info('generated metadata: [' + fileMeatadata.name + ']')
         except TSBException as e:
-            e.set_error_source(ErrorSource.METADATA_GENERATOR_TOP_DOWN)
-            e.set_error_input('metadata_filename: ' + metadata_filename)
+            e.err_source = ErrorSource.METADATA_GENERATOR_TOP_DOWN
+            e.err_input = 'metadata_filename: ' + metadata_filename
             raise e
     else:
         logger.info('[' + dir_path + '] is not directory')
@@ -68,8 +68,8 @@ def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA
                 fileMetadata.read_file(file_path)
                 fileMetadata.write()
         except TSBException as e:
-            e.set_error_source(ErrorSource.METADATA_GENERATOR_BOTTOM_UP)
-            e.set_error_input('metadata_filename: ' + metadata_filename)
+            e.err_source = ErrorSource.METADATA_GENERATOR_BOTTOM_UP
+            e.err_input = 'metadata_filename: ' + metadata_filename
             raise e
         if recursive:
             metadata_generator_bottom_up(dirname, metadata_filename=metadata_filename, recursive=recursive)

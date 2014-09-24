@@ -6,3 +6,4 @@ class Extensions:
     GPG = ".gpg"
     JSON = ".json"
     PARTIAL = ".partial"
+    ERR = '.err'

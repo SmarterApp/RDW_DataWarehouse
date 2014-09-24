@@ -16,5 +16,6 @@ def remote_csv_generator(meta, csv_file_path, xml_file_path, work_dir):
     try:
         rtn = generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir)
     except TSBException as e:
+        # all TSB exception should be caught in here
         handle_error(e)
     return rtn

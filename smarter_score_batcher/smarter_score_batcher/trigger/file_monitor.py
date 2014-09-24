@@ -155,6 +155,7 @@ class FileEncryption(FileLock):
         self.assessment_id = os.path.split(asmt_dir)[1]
         self.json_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
         self.csv_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
+        self.err_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.ERR)
         self.__success = False
         if not os.path.isfile(self.csv_file):
             raise FileNotFoundError()
@@ -222,6 +223,8 @@ class FileEncryption(FileLock):
             # delete JSON and CSV files to release the lock
             os.remove(self.json_file)
             os.remove(self.csv_file)
+            if os.path.exists(self.err_file):
+                os.remove(self.err_file)
 
     def copy_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
@@ -238,9 +241,9 @@ class FileEncryption(FileLock):
         tmp_dir = os.path.join(self.temp_dir, self.assessment_id)
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir, exist_ok=True)
-        # copy JSON and CSV files over
+        # copy JSON and CSV files over. If ERR file exist, then move the file too
         # move JSON file before moving CSV
-        for ext in [Extensions.JSON, Extensions.CSV]:
+        for ext in [Extensions.JSON, Extensions.CSV, Extensions.ERR]:
             for file in _list_file_with_ext(self.asmt_dir, ext):
                 shutil.copy(file, tmp_dir)
         return tmp_dir

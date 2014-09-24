@@ -2,7 +2,7 @@ from pyramid.config import Configurator
 import logging
 import edauth
 import edapi
-from smarter_common.security.root_factory import RootFactory
+from smarter_common.security.root_factory import RootFactory, Permission
 import os
 from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
@@ -38,8 +38,7 @@ def main(global_config, **settings):
     config.scan()
 
     # Set default permission
-    # TODO:  use load when we have in house oauth
-    config.set_default_permission('view')
+    config.set_default_permission(Permission.LOAD)
 
     # Configure for environment
     configure(settings)

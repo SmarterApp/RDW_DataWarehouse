@@ -12,7 +12,7 @@ from pyramid_beaker import set_cache_regions_from_settings
 
 import edauth
 import edapi
-from smarter_common.security.root_factory import RootFactory
+from smarter_common.security.root_factory import RootFactory, Permission
 from smarter import services, trigger
 from smarter.utils.remote_config import get_remote_config
 from edcore.database import initialize_db
@@ -111,7 +111,7 @@ def main(global_config, **settings):
     config.scan()
 
     # Set default permission on all views
-    config.set_default_permission('view')
+    config.set_default_permission(Permission.VIEW)
 
     logger.info("Smarter started")
 

@@ -53,6 +53,7 @@ class MetadataTemplateManager:
         templates = []
         for root, _, filenames in os.walk(path.lower()):
             for file in fnmatch.filter(filenames, pattern):
+                logger.info('Found matching file {0} at {1}'.format(file, root))
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:
                     template = MetadataTemplate(json.load(f))

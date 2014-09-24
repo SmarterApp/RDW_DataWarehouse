@@ -84,7 +84,6 @@ class MetadataTemplateManager:
         '''
         location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path)
         templates = self._load_templates(location, pattern=key + '*.json')
-        logger.info('Loading template for key {0} and path {1}'.format(key, location))
         if len(templates) == 0:
             raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, location))
         return templates.pop()
@@ -95,6 +94,7 @@ class MetadataTemplateManager:
         lazy load template
         @param key: key to load template for
         '''
+        logger.info('Loading template for key {0}'.format(key))
         sm = self._load_template(key)
         if sm is None:
             raise MetadataException("Unable to load metadata for key {0} from ".format(key))

@@ -6,11 +6,11 @@ Created on Sep 19, 2014
 from smarter_score_batcher.celery import conf
 import os
 import json
-from smarter_score_batcher.exceptions import MetadataException
 from zope import interface, component
 from zope.interface.declarations import implementer
 import fnmatch
 from smarter_score_batcher.utils.merge import deep_merge
+from smarter_score_batcher.error.exceptions import MetadataException
 
 
 class MetadataTemplate:
@@ -68,7 +68,7 @@ class MetadataTemplateManager:
     def get_template(self, key):
         sm = self.templates.get(key.lower())
         if sm is None:
-            raise MetadataException("Unable to load metadata for subject {0}".format(key))
+            raise MetadataException("Unable to load metadata for subject {0}".format(key), )
         return sm.get_asmt_metadata_template()
 
 

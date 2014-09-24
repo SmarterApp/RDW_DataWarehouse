@@ -7,6 +7,8 @@ from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_hel
 from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 import logging
+from smarter_score_batcher.exceptions import MetaNamesException
+import os
 
 try:
     import xml.etree.cElementTree as ET
@@ -94,22 +96,25 @@ def extract_meta_names(raw_xml_string):
         asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
         validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade and effective_date)
         if not validMeta:
+            error_msg = ''
             if not state_code:
-                logger.error('extract_meta_names: state_code is missing')
+                error_msg += os.linesep + 'extract_meta_names: state_code is missing'
             if not student_id:
-                logger.error('extract_meta_names: student_id is missing')
+                error_msg += os.linesep + 'extract_meta_names: student_id is missing'
             if not district_id:
-                logger.error('extract_meta_names: district_id is missing')
+                error_msg += os.linesep + 'extract_meta_names: district_id is missing'
             if not academic_year:
-                logger.error('extract_meta_names: academic_year is missing')
+                error_msg += os.linesep + 'extract_meta_names: academic_year is missing'
             if not asmt_type:
-                logger.error('extract_meta_names: asmt_type is missing')
+                error_msg += os.linesep + 'extract_meta_names: asmt_type is missing'
             if not subject:
-                logger.error('extract_meta_names: subject is missing')
+                error_msg += os.linesep + 'extract_meta_names: subject is missing'
             if not grade:
-                logger.error('extract_meta_names: grade is missing')
+                error_msg += os.linesep + 'extract_meta_names: grade is missing'
             if not effective_date:
-                logger.error('extract_meta_names: effective_date is missing')
+                error_msg += os.linesep + 'extract_meta_names: effective_date is missing'
+            logger.error(error_msg)
+            raise MetaNamesException(error_msg)
         return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

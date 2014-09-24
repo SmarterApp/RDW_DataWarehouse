@@ -10,8 +10,8 @@ from edapi.decorators import validate_xml
 from smarter_score_batcher.utils import xsd
 from pyramid.threadlocal import get_current_registry
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
-from smarter_score_batcher.exceptions import MetaNamesException
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from smarter_score_batcher.error.exceptions import MetaNamesException
 
 
 logger = logging.getLogger("smarter_score_batcher")

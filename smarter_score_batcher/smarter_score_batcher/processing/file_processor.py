@@ -13,6 +13,9 @@ from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 from smarter_score_batcher.utils.file_utils import csv_file_writer, \
     json_file_writer
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
+from smarter_score_batcher.error.exceptions import GenerateCSVException, \
+    TSBException
+from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 
 try:
     import xml.etree.cElementTree as ET
@@ -95,7 +98,7 @@ def lock_and_write(root, file_path, mode=0o700):
             # spin lock
             time.sleep(1)
         except Exception as e:
-            raise
+            raise TSBException(str(e), err_source=ErrorSource.LOCK_AND_WRITE)
 
 
 def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
@@ -115,10 +118,15 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
             metadata_generator_bottom_up(csv_file_path, generateMetadata=True)
     except ET.ParseError as e:
         # this should not be happened because we already validate against xsd
-        logger.error(str(e))
+        error_msg = str(e)
+        logger.error(error_msg)
         logger.error('this error may be caused because you have an old xsd?')
+        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_PARSE_ERROR, err_sorce=ErrorSource.GENERATE_CSV_FROM_XML)
     except Exception as e:
-        logger.error(str(e))
+        error_msg = str(e)
+        logger.error(error_msg)
         if os.path.exists(csv_file_path):
             os.remove(csv_file_path)
+        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_GENERATE_ERROR, err_sorce=ErrorSource.GENERATE_CSV_FROM_XML)
+
     return written

@@ -51,15 +51,12 @@ class MetadataTemplateManager:
 
     def _load_templates(self, path, pattern='.static_asmt_metadata.json'):
         templates = []
-        logger.info('Looking for templates at {0}'.format(path.lower()))
-        for root, _, filenames in os.walk(path.lower()):
-            logger.info('Found matching files {0} at {1}'.format(filenames, root))
+        for root, _, filenames in os.walk(path):
             for file in fnmatch.filter(filenames, pattern):
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:
                     template = MetadataTemplate(json.load(f))
                     templates.append(template)
-        logger.info('Found {0} template(s) for path {1} and pattern {2}'.format(len(templates), path, pattern))
         return templates
 
     def get_key(self, path, metadata_template):
@@ -84,7 +81,7 @@ class MetadataTemplateManager:
         @param key: key of the template to load
         @param path: optional relative path where to look for the template
         '''
-        location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path)
+        location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path.lower())
         templates = [template for template in self._load_templates(location, pattern='*.json') if template.get_asmt_subject().lower() == key.lower()]
         if len(templates) == 0:
             raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, location))

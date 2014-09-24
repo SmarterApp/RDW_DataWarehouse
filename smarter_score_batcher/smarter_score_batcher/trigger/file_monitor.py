@@ -11,6 +11,9 @@ from smarter_score_batcher.utils.file_lock import FileLock
 import time
 import uuid
 from argparse import ArgumentParser
+from smarter_score_batcher.error.exceptions import FileMonitorFileNotFoundException, \
+    FileMonitorException
+from smarter_score_batcher.error.error_codes import ErrorSource
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -75,15 +78,16 @@ def move_to_staging(settings):
                 time.sleep(1)
             except FileNotFoundError:
                 # if file not found, file might be already in process or
-                logger.debug("assessment %s data not found for tenant",
-                             assessment, tenant)
+                msg = "assessment %s data not found for tenant %s" % assessment, tenant
+                logger.debug(msg)
                 SPINLOCK = False
+                raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
             except Exception as e:
                 # pass to process next assessment data
-                logger.error("Error occurs during process assessment %s for tenant %s: %s",
-                             assessment, tenant, e)
+                msg = "Error occurs during process assessment %s for tenant %s: %s" % assessment, tenant, str(e)
+                logger.error(msg)
                 SPINLOCK = False
-                raise
+                raise FileMonitorException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
 
 
 def _clean_up(dir_path):

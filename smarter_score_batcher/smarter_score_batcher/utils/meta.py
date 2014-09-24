@@ -7,8 +7,8 @@ from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_hel
 from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 import logging
-from smarter_score_batcher.exceptions import MetaNamesException
 import os
+from smarter_score_batcher.error.exceptions import MetaNamesException
 
 try:
     import xml.etree.cElementTree as ET

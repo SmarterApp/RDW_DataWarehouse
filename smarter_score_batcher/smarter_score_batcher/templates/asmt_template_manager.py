@@ -11,6 +11,7 @@ from zope.interface.declarations import implementer
 import fnmatch
 from smarter_score_batcher.utils.merge import deep_merge
 from smarter_score_batcher.error.exceptions import MetadataException
+from smarter_score_batcher.error.error_codes import ErrorSource
 
 
 class MetadataTemplate:
@@ -68,7 +69,7 @@ class MetadataTemplateManager:
     def get_template(self, key):
         sm = self.templates.get(key.lower())
         if sm is None:
-            raise MetadataException("Unable to load metadata for subject {0}".format(key), )
+            raise MetadataException("Unable to load metadata for subject {0}".format(key), err_source=ErrorSource.METADATATEMPLATEMANAGER_GET_TEMPLATE)
         return sm.get_asmt_metadata_template()
 
 

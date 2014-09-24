@@ -1622,7 +1622,7 @@ th.ui-th-column div {
   background-repeat: no-repeat;
   position: absolute;;
   margin-top: -9px;
-  width: 22px;
+  width: 284px;
   right: 61px;
 }
 
@@ -2390,9 +2390,13 @@ th.ui-th-column div {
 
   background-color: @color-C11;
   border-top: solid 1px @color-B17;
+  
+  .academicYearLabel {
+    margin-top: 4px;
+  }
 
   #academicYearAnchor {
-    margin-top: 2px;
+    margin-top: 4px;
     ul {
       min-width: 127px;
       li {
@@ -2433,9 +2437,9 @@ th.ui-th-column div {
     &>li {
       display: inline-block;
       vertical-align: middle;
-      height: 35px;
+      height: 40px;
       font-weight: bold;
-      font-size: 12px;
+      font-size: 14px;
 
       .asmtViewText, .asmtDropdown, .divider, .disclaimerInfo, .subjectSelection {
         height: 20px;
@@ -2453,15 +2457,16 @@ th.ui-th-column div {
 
       .divider {
         border-left: solid 1px @color-B5;
-        padding: 3px 18px;
+        padding: 3px 29px;
       }
     }
 
     .detailsItem {
-      margin-left: 50px;
+      margin-left: 15px;
 
       .subjectSelection {
-        height:25px;
+        height:30px;
+        margin-top: -15px;
         padding:0 15px;
         border:1px solid #bbbbbb;
         border-left:1px solid #ffffff;
@@ -2510,94 +2515,72 @@ th.ui-th-column div {
         }
       }
     }
-
-    .legendItem.active {
-      color: @color-A1;
-
-      .edware-icon-legend {
-        background-position: -18px -72px;
+    
+    .actionBarDropDownLabel {
+      color: @color-C18;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .actionBarDropDown {
+      color: @color-B1;
+      font-size: 14px;
+      font-family: helvetica neue;
+      
+      button {
+        height: 30px;
       }
     }
 
-    .filterItem .divider {
-      border-right: solid 1px @color-B5;
-    }
-
-    .align_button_area {
-
-      padding-left: 10px;
-
-      .align_button {
-        display: inline-block;
-        background-color: @color-C12;
-        color: @color-white;
-        border-radius: 15px;
-        width: 47px;
-        height: 17px;
-        cursor: pointer;
-        vertical-align: text-bottom;
+    .alignmentItem {
+      .divider {
+        border-right: solid 1px @color-B5;
+        
+        span {
+          margin-right: 15px;
+          color: @color-C18;
+          
+        }
+        ul {
+          display: inline-block;
+          vertical-align: top;
+          margin-left: 0px;
+        }
+      
+        input {
+          margin: 0 7px 0 0;
+        }
       }
-    }
-
-    .align_off {
-
-      &:before {
-        content: "";
-        display: inline-block;
-        width: 15px;
-        height: 15px;
-        background-color: #e9e9e9;
-        border-radius: 15px;
-        margin: 1px;
-      }
-
-      .alignText {
-        position: relative;
-        top: -3px;
-        color: @color-C11;
-      }
-    }
-
-    .align_on {
-
-      &:before {
-        content: "";
-        display: inline-block;
-        width: 15px;
-        height: 15px;
-        background-color: #e9e9e9;
-        border-radius: 15px;
-        margin: 1px;
+      
+      label {
         float: right;
       }
-
-      .alignText {
-        position: relative;
-        left: 10px;
-        color: @color-C11;
+    }
+    
+    .printItem {
+      .divider {
+        border-right: solid 1px @color-B5;
       }
     }
 
     .alignLabel:before {
       display: inline-block;
       content: "";
-      background-image: url("../images/align_onoff.png");
-      background-position-x: -5px;
-      width: 23px;
-      height: 16px;
       vertical-align: text-bottom;
       margin-right: 5px;
     }
+    
+    .actionItems{
+      color: @color-A1;
+    }
 
     .filterLabel {
-
       &:before {
         content: "";
         display: inline-block;
-        background-image: url('../images/nav_icons.png');
-        background-position: 0px -123px;
-        width: 15px;
-        height: 15px;
+        background-image: url('../images/iconFilter.png');
+        width: 13px;
+        height: 12px;
         vertical-align: text-bottom;
         margin-right: 3px;
       }
@@ -2605,11 +2588,10 @@ th.ui-th-column div {
       &:after {
         content: "";
         display: inline-block;
-        background-image: url('../images/nav_icons.png');
-        background-position: 0 -54px;
-        width: 15px;
-        height: 10px;
-        vertical-align: text-bottom;
+        background-image: url('../images/downArrowBlue.png');
+        width: 11px;
+        height: 7px;
+        vertical-align: middle;
         margin-left: 15px;
       }
     }
@@ -2622,6 +2604,11 @@ th.ui-th-column div {
       }
 
       .asmtDropdown {
+        margin-top: -15px;
+        
+        button {
+          height: 30px;
+        }
 
         #asmtTypeDropdown {
           z-index: 9999;
@@ -2631,6 +2618,8 @@ th.ui-th-column div {
           border: solid 1px #e7e7e7;
           background-color: #fff;
           color: @color-B1;
+          font-size: 12px;
+          font-family: helvetica neue;
 
           &:after {
             content: "";
@@ -2669,14 +2658,13 @@ th.ui-th-column div {
             margin: 5px 10px -5px 10px;
             font-size: 11px;
             padding-top: 7px;
+            color: @color-B2;
           }
         }
 
         .asmtTypeText, .subjectText {
-          font-size: 12px;
           font-weight: normal;
           padding-left: 10px;
-          color: @color-B1;
         }
 
         .subjectText {
@@ -2687,6 +2675,7 @@ th.ui-th-column div {
 
         .asmtSelection, .asmtYearButton {
           margin: 0px;
+          font-size: 12px;
 
           &:hover, &:focus {
                      background-color: @color-A2;
@@ -2713,7 +2702,7 @@ th.ui-th-column div {
       &:before {
         content: "";
         display: inline-block;
-        background-image: url('../images/print_icons.png');
+        background-image: url('../images/iconPrint.png');
         background-repeat: no-repeat;
         width: 15px;
         height: 15px;
@@ -2768,6 +2757,7 @@ th.ui-th-column div {
   #PrintModal {
     width: 323px;
     left: 58%;
+    color: @color-B2;
 
     ul {
       margin: 0px;

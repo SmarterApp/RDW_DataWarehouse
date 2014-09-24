@@ -31,5 +31,6 @@
         "acc_speech_to_text_nonembed": "Speech-to-text: ELA/Literacy Writing Items",
         "acc_streamline_mode": "Streamline Mode"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · Grade {{asmt_grade}} · {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · Grade {{asmt_grade}} · {{asmt_type}}",
+    "higherEdLinkDefault":"<a href='#'>http://stateresources.link</a>"
 }

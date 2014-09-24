@@ -90,7 +90,12 @@ define [
         grade = @configData.policy_content[assessment.grade]
         if grade
           if assessment.grade is "11"
-            assessment.policy_content = grade[assessment.asmt_subject]
+            policy_content = grade[assessment.asmt_subject]
+            if @data.metadata?.branding?.higherEdLink
+                branding_url = @data.metadata.branding.higherEdLink
+                new_link = "<a href='#{branding_url}'>#{branding_url}</a>"
+                policy_content = policy_content.replace(@configData.higherEdLinkDefault, new_link)
+            assessment.policy_content = policy_content
 
         for claim in assessment.claims
           claim.subject = assessment.asmt_subject.toUpperCase()

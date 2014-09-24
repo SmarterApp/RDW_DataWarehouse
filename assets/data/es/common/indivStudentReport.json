@@ -8,12 +8,12 @@
         "achievement_level_scores": "Las puntuaciones del nivel de rendimiento varían por materia y grado."
     },
 	"accommodationMapping": {
-        "5": " usado <strong>sin registro previo:</strong>",
+        "5": " usó <strong>sin registro previo:</strong>",
         "6": " era elegible, pero <strong>se desconocen la disponibilidad y el uso:</strong>",
-        "7": " era elegible, pero <strong>no estaba disponible para uso:</strong>",
-        "8": " era elegible y tenía <strong>disponibilidad, pero se desconoce el uso:</strong>",
-        "9": " era elegible y tenía <strong>disponibilidad, pero no se usó:</strong>",
-        "10": " era elegible y estaba <strong>disponible y se usó:</strong>"
+        "7": " era elegible, pero <strong>lo siguiente no estaba disponible para usar:</strong>",
+        "8": " era elegible y tenía <strong>disponible lo siguiente, pero se desconoce si se usó:</strong>",
+        "9": " era elegible y tenía <strong>disponible lo siguiente pero no se usó:</strong>",
+        "10": " era elegible,  tenía <strong>disponible y usó lo siguiente:</strong>"
     },
     "accommodationColumns": {
         "acc_asl_video_embed": "Videos ASL",
@@ -31,5 +31,6 @@
         "acc_speech_to_text_nonembed": "Voz a texto: ELA/Alfabetización con artículos de escritura",
         "acc_streamline_mode": "Modo de optimizar"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}"
+    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
+    "higherEdLinkDefault":"<a href='#'>http://stateresources.link</a>"
 }

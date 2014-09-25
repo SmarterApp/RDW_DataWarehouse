@@ -36,7 +36,7 @@ class TSBException(Exception):
         self.__err_input = err_input
 
     @property
-    def err_text(self):
+    def err_code_text(self):
         if self.__err_code is not None:
             return ErrorCode.message.get(self.__err_code)
 

@@ -34,7 +34,8 @@ def generate_error_file(error_file_path, err_list):
 
 
 def build_error_info_header():
-    return {ErrorsConstants.CONTENT: ErrorsConstants.ERROR, ErrorsConstants.ERR_LIST:[]}
+    return {ErrorsConstants.CONTENT: ErrorsConstants.ERROR, ErrorsConstants.ERR_LIST: []}
+
 
 def build_err_list(err_code, err_source, err_code_text, err_source_text, err_input):
     err_list = {}

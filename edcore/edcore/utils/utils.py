@@ -29,6 +29,12 @@ def merge_dict(d1, d2):
     return combined
 
 
+def set_environment_path_variable(settings):
+    # Prepare for environment specific
+    if 'environment.PATH' in settings:
+        os.environ['PATH'] += os.pathsep + settings['environment.PATH']
+
+
 def delete_multiple_entries_from_dictionary_by_list_of_keys(dictionary, list_of_key_names):
     '''
     remove list of fields from any dictionary object

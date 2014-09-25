@@ -10,6 +10,7 @@ from smarter_score_batcher import trigger
 from edauth import configure
 from pyramid_beaker import set_cache_regions_from_settings
 from beaker.cache import CacheManager
+from edcore.utils.utils import set_environment_path_variable
 
 
 logger = logging.getLogger(__name__)
@@ -41,9 +42,8 @@ def main(global_config, **settings):
     config.set_default_permission(Permission.LOAD)
 
     # Configure for environment
+    set_environment_path_variable(settings)
     configure(settings)
-    if 'smarter_score_batcher.PATH' in settings:
-        os.environ['PATH'] += os.pathsep + settings['smarter_score_batcher.PATH']
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

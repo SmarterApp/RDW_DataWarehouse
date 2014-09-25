@@ -7,7 +7,7 @@ common:
   '[app:main]':
     use: egg:smarter
     disable_stack_trace: false
-    smarter.PATH: /usr/local/bin
+    environment.PATH: /usr/local/bin
     batch.user.session.timeout: 300000
     pyramid:
       reload_templates: true
@@ -170,7 +170,6 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
-      PATH: /usr/local/bin
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: sbac_data_provider@sbac.com
       gpg.public_key.fish: sbac_data_provider@sbac.com
@@ -408,7 +407,7 @@ common:
 qa:
   '[app:main]':
     mode: prod
-    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
+    environment.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
     migrate.celery:
@@ -607,7 +606,7 @@ jenkins_qa:
 uat:
   '[app:main]':
     mode: prod
-    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
+    environment.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
     migrate.celery:
@@ -1012,7 +1011,7 @@ integration:
 
 jenkins_int:
   '[app:main]':
-    smarter.PATH: /usr/local/bin:/opt/pdfunite/bin
+    environment.PATH: /usr/local/bin:/opt/pdfunite/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4
@@ -1074,7 +1073,7 @@ jenkins_int:
 
 jenkins_dev:
   '[app:main]':
-    smarter.PATH: /opt/pdfunite/bin/
+    environment.PATH: /opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4

@@ -19,6 +19,8 @@ def setup_celery(settings, prefix=PREFIX):
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
+    global conf
+    conf = settings
     setup_for_worker(celery, settings, prefix)
     run_cron_sync_file(settings)
 

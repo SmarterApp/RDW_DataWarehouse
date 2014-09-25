@@ -19,7 +19,12 @@ logger = logging.getLogger(__name__)
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    # Configure for environment
+    set_environment_path_variable(settings)
+    configure(settings)
+
     config = Configurator(settings=settings, root_factory=RootFactory)
+
     # Pass edauth the roles/permission mapping
     config.include(edauth)
     edauth.set_roles(RootFactory.__acl__)
@@ -40,10 +45,6 @@ def main(global_config, **settings):
 
     # Set default permission
     config.set_default_permission(Permission.LOAD)
-
-    # Configure for environment
-    set_environment_path_variable(settings)
-    configure(settings)
 
     logger.info("Smarter tsb started")
     return config.make_wsgi_app()

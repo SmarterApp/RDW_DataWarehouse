@@ -7,13 +7,24 @@
         "note": "Los datos solo tienen fines ilustrativos",
         "achievement_level_scores": "Las puntuaciones del nivel de rendimiento varían por materia y grado."
     },
-	"accommodationMapping": {
+	 "accommodationMapping": {
         "1": " used without prior registration:",
         "2": " used:",
         "3": " did not have access to:",
-        "4": " did not use:",
-        "5": " had access to:",
-        "6": " may have had access to:"
+        "4": " did not have access to:",
+        "6": " had access to:",
+        "7": " did not use:",
+        "8": " used:",
+        "11": " used without prior registration:",
+        "17": " used without prior registration:",
+        "18": " may have had access to:",
+        "19": " did not use:",
+        "20": " used:",
+        "21": " did not have access to:",
+        "22": " did not have access to:",
+        "24": " had access to:",
+        "25": " did not use:",
+        "26": " used:"
     },
     "accommodationColumns": {
         "acc_noise_buffer_nonembed": "Noise Buffers",

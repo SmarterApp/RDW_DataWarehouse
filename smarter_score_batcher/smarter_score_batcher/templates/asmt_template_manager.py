@@ -85,6 +85,8 @@ class MetadataTemplateManager:
         templates = [template for template in self._load_templates(location, pattern='*.json') if template.get_asmt_subject().lower() == key.lower()]
         if len(templates) == 0:
             raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, location))
+        if len(templates) > 1:
+            raise MetadataException('Too many templates for key {0} from location {1}'.format(key, location))
         return templates.pop()
 
     @cache_region('public.shortlived', 'metadata.templates')

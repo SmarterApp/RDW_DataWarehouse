@@ -9,6 +9,7 @@ Subpackages
     smarter_score_batcher.processing
     smarter_score_batcher.services
     smarter_score_batcher.tasks
+    smarter_score_batcher.templates
     smarter_score_batcher.tests
     smarter_score_batcher.trigger
     smarter_score_batcher.utils

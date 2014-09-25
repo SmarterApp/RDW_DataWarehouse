@@ -523,19 +523,19 @@
             "key": "extractType",
             "options": [
                 {
-                    "display": "Student Registration Statistics",
+                    "display": "Estadísticas de registro de estudiantes",
                     "value": "registrationStatistics"
                 },
                 {
-                    "display": "Assessment Completion Statistics",
+                    "display": "Estadísticas de finalización de evaluaciones",
                     "value": "completionStatistics"
                 },
                 {
-                    "display": "Audit XML",
+                    "display": "Revisión en XML",
                     "value": "rawXML"
                 },
                 {
-                    "display": "Individual Item Response Data",
+                    "display": "Datos individuales de respuestas a ítems",
                     "value": "itemLevel"
                 }
             ]
@@ -553,10 +553,10 @@
             "key": "asmtType",
             "options": [
                 {
-                    "display": "Summative",
+                    "display": "Acumulativa",
                     "value": "SUMMATIVE"
                 }, {
-                    "display": "Interim Comprehensive",
+                    "display": "Provisional amplia",
                     "value": "INTERIM COMPREHENSIVE"
                 }
             ]
@@ -566,10 +566,10 @@
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Mathematics",
+                    "display": "Matemáticas",
                     "value": "Math"
                 }, {
-                    "display": "ELA/Literacy",
+                    "display": "ELA/Alfabetización",
                     "value": "ELA"
                 }
             ]
@@ -579,35 +579,35 @@
             "key": "grade",
             "options": [
                 {
-                    "display": "Select",
+                    "display": "Seleccionar",
                     "value": ""
                 },
                 {
-                    "display": "Grade 3",
+                    "display": "Grado 3",
                     "value": "3"
                 },
                 {
-                    "display": "Grade 4",
+                    "display": "Grado 4",
                     "value": "4"
                 },
                 {
-                    "display": "Grade 5",
+                    "display": "Grado 5",
                     "value": "5"
                 },
                 {
-                    "display": "Grade 6",
+                    "display": "Grado 6",
                     "value": "6"
                 },
                 {
-                    "display": "Grade 7",
+                    "display": "Grado 7",
                     "value": "7"
                 },
                 {
-                    "display": "Grade 8",
+                    "display": "Grado 8",
                     "value": "8"
                 },
                 {
-                    "display": "Grade 11",
+                    "display": "Grado 11",
                     "value": "11"
                 }
             ]

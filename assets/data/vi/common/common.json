@@ -523,19 +523,19 @@
             "key": "extractType",
             "options": [
                 {
-                    "display": "Student Registration Statistics",
+                    "display": "Thông tin thống kê học sinh đăng ký",
                     "value": "registrationStatistics"
                 },
                 {
-                    "display": "Assessment Completion Statistics",
+                    "display": "Thông tin thống kê hoàn tất đánh giá",
                     "value": "completionStatistics"
                 },
                 {
-                    "display": "Audit XML",
+                    "display": "XML kiểm tra",
                     "value": "rawXML"
                 },
                 {
-                    "display": "Individual Item Response Data",
+                    "display": "Dữ liệu câu trả lời từng mục",
                     "value": "itemLevel"
                 }
             ]
@@ -553,10 +553,10 @@
             "key": "asmtType",
             "options": [
                 {
-                    "display": "Summative",
+                    "display": "Tổng hợp",
                     "value": "SUMMATIVE"
                 }, {
-                    "display": "Interim Comprehensive",
+                    "display": "Lĩnh hội tạm thời",
                     "value": "INTERIM COMPREHENSIVE"
                 }
             ]
@@ -566,10 +566,10 @@
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Mathematics",
+                    "display": "Toán",
                     "value": "Math"
                 }, {
-                    "display": "ELA/Literacy",
+                    "display": "ELA/Đọc viết",
                     "value": "ELA"
                 }
             ]
@@ -579,35 +579,35 @@
             "key": "grade",
             "options": [
                 {
-                    "display": "Select",
+                    "display": "Chọn",
                     "value": ""
                 },
                 {
-                    "display": "Grade 3",
+                    "display": "Lớp 3",
                     "value": "3"
                 },
                 {
-                    "display": "Grade 4",
+                    "display": "Lớp 4",
                     "value": "4"
                 },
                 {
-                    "display": "Grade 5",
+                    "display": "Lớp 5",
                     "value": "5"
                 },
                 {
-                    "display": "Grade 6",
+                    "display": "Lớp 6",
                     "value": "6"
                 },
                 {
-                    "display": "Grade 7",
+                    "display": "Lớp 7",
                     "value": "7"
                 },
                 {
-                    "display": "Grade 8",
+                    "display": "Lớp 8",
                     "value": "8"
                 },
                 {
-                    "display": "Grade 11",
+                    "display": "Lớp 11",
                     "value": "11"
                 }
             ]

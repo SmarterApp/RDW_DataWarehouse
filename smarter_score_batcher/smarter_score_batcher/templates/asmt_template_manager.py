@@ -50,6 +50,11 @@ class MetadataTemplateManager:
         self.asmt_meta_location = self._get_template_location(asmt_meta_dir)
 
     def _load_templates(self, path, pattern='.static_asmt_metadata.json'):
+        '''
+        Load templates for a specific path matching the pattern
+        :param path - root for the templates
+        :param pattern - pattern to match template names
+        '''
         templates = []
         for root, _, filenames in os.walk(path):
             for file in fnmatch.filter(filenames, pattern):
@@ -60,12 +65,16 @@ class MetadataTemplateManager:
         return templates
 
     def get_key(self, path, metadata_template):
+        '''
+        Get cache key for path and template
+        :return cache key
+        '''
         return metadata_template.get_asmt_subject().lower()
 
     def _get_template_location(self, asmt_meta_location=None):
         '''
         Figure out location of the templates. If not provided, use default
-        @param asmt_meta_location: optional specified root location of the templates
+        :param asmt_meta_location: optional specified root location of the templates
         '''
         if asmt_meta_location is not None and os.path.isabs(asmt_meta_location):
             return asmt_meta_location
@@ -78,8 +87,9 @@ class MetadataTemplateManager:
     def _load_template(self, key, path=None):
         '''
         load individual static template
-        @param key: key of the template to load
-        @param path: optional relative path where to look for the template
+        :param key: key of the template to load
+        :param path: optional relative path where to look for the template
+        :return template for the key
         '''
         location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path.lower())
         templates = [template for template in self._load_templates(location, pattern='*.json') if template.get_asmt_subject().lower() == key.lower()]
@@ -93,7 +103,8 @@ class MetadataTemplateManager:
     def get_template(self, key):
         '''
         lazy load template
-        @param key: key to load template for
+        :param key: key to load template for
+        :return template for the key
         '''
         logger.info('Loading template for key {0}'.format(key))
         sm = self._load_template(key)
@@ -115,8 +126,9 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
     def get_key(self, path, metadata_template):
         '''
         create key by provided path of the template file
-        @param path: path to the template, which will be included into the key
-        @param metadata_template: template to get the key for
+        :param path: path to the template, which will be included into the key
+        :param metadata_template: template to get the key for
+        :return cache key
         '''
         key = path[len(self.asmt_meta_location) + 1:].replace(os.path.sep, '_') if path.startswith(self.asmt_meta_location) else path
         key = key + '_' + metadata_template.get_asmt_subject()
@@ -125,6 +137,8 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
     def _load_template(self, key):
         '''
         load individual template and merge it with static template
+        :param key - key to load template for
+        :return combined static and perfomance templates
         '''
         keys = key.split('_')
         subject = keys.pop()

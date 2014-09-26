@@ -131,21 +131,17 @@ def read_ini(ini_file, header='app:main'):
     return config[header]
 
 
-def get_config_from_ini(config, config_prefix):
+def get_config_from_ini(config, config_prefix, delete_prefix=False):
     """Filters and returns the configs starting with the prefix specified.
     The key's in the returned config will exclude the prefix
 
     :param config: ini config
     :param config_prefix: prefix string to look for in the config key
+    :param delete_prefix: return filtered settings with prefix removed
 
     :returns dict: dictionary of configs starting with the prefix specified
     """
-    options = {}
-    config_prefix_len = len(config_prefix)
-    for key, val in config.items():
-        if key.startswith(config_prefix):
-            options[key[config_prefix_len:]] = val
-    return options
+    return {k[len(config_prefix) + 1:] if delete_prefix else k: v for (k, v) in config.items() if k.startswith(config_prefix)}
 
 
 def signal_handler(signal, frame):

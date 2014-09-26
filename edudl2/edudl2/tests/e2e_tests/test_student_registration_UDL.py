@@ -14,22 +14,23 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
 from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
     initialize_all_db
-from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.constants import Constants
-from edudl2.udl2 import message_keys as mk
 import json
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.e2e_tests import UDLE2ETestCase
+
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
 
 
-class FTestStudentRegistrationUDL(unittest.TestCase):
+class FTestStudentRegistrationUDL(UDLE2ETestCase):
 
     def setUp(self):
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "student_registration_data")
+        test_sample_student_reg = self.require_gpg_file('test_sample_student_reg')
+        test_sample_student_reg_2 = self.require_gpg_file('test_sample_student_reg_2')
         self.student_reg_files = {
             'original_data': {
-                'path': os.path.join(data_dir, 'test_sample_student_reg.tar.gz.gpg'),
+                'path': test_sample_student_reg,
                 'num_records_in_data_file': 10,
                 'num_records_in_json_file': 1,
                 'test_student': {
@@ -46,7 +47,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 }
             },
             'data_for_different_test_center_than_original_data': {
-                'path': os.path.join(data_dir, 'test_sample_student_reg_2.tar.gz.gpg'),
+                'path': test_sample_student_reg_2,
                 'num_records_in_data_file': 3,
                 'num_records_in_json_file': 1,
                 'test_student': {

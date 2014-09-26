@@ -16,7 +16,6 @@ class IntToStarFTest(UDLTestHelper):
 
     def setUp(self):
         super(IntToStarFTest, self).setUp()
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         self.phase_number = 4
         self.load_type = 'assessment'

@@ -5,26 +5,21 @@ Created on Feb 28, 2014
 '''
 import os
 import shutil
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
-    initialize_all_db
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, and_
 from time import sleep
 import subprocess
 from uuid import uuid4
-import unittest
 from edudl2.udl2.constants import Constants
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.e2e_tests import UDLE2ETestCase
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
-class Test_Update_Delete(unittest.TestCase):
+class Test_Update_Delete(UDLE2ETestCase):
 
     def setUp(self):
         self.guid_batch_id = str(uuid4())
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
-        self.archived_file = os.path.join(self.data_dir, 'test_update_delete_record.tar.gz.gpg')
-        initialize_all_db(udl2_conf, udl2_flat_conf)
+        self.archived_file = self.require_gpg_file('test_update_delete_record')
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -111,8 +106,3 @@ class Test_Update_Delete(unittest.TestCase):
         self.empty_table()
         self.run_udl_pipeline()
         self.validate_edware_database(schema_name=self.guid_batch_id)
-
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

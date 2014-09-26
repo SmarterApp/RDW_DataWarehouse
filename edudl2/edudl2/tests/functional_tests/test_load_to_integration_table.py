@@ -25,11 +25,10 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         initialize_db_udl(cls.udl2_conf)
 
     def load_file_to_stage(self, data_file, header_file, load_type, staging_table, guid):
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         # file contain 30 rows
         conf = {
-            mk.FILE_TO_LOAD: os.path.join(data_dir, data_file),
-            mk.HEADERS: os.path.join(data_dir, header_file),
+            mk.FILE_TO_LOAD: os.path.join(self.data_dir, data_file),
+            mk.HEADERS: os.path.join(self.data_dir, header_file),
             mk.CSV_TABLE: 'csv_table_for_file_loader',
             mk.CSV_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
             mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),

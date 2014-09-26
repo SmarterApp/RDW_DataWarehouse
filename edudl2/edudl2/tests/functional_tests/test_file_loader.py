@@ -250,5 +250,5 @@ class FileLoaderFTest(UDLTestHelper):
         return val
 
     def get_csv_file(self, filename):
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        return os.path.join(data_dir, filename)
+        # data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        return os.path.join(self.data_dir, filename)

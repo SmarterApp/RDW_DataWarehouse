@@ -2,20 +2,18 @@
 Created on Nov 1, 2013
 @author: bpatel
 '''
-import unittest
 import subprocess
 import os
 import shutil
 from uuid import uuid4
 import glob
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
-    initialize_all_db
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select
 from time import sleep
 from sqlalchemy.sql.expression import and_
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.constants import Constants
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.e2e_tests import UDLE2ETestCase
 
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
@@ -23,13 +21,12 @@ path = '/opt/edware/zones/landing/work/ca/landing/'
 FACT_TABLE = 'fact_asmt_outcome_vw'
 
 
-class ValidatePostUDLCleanup(unittest.TestCase):
+class ValidatePostUDLCleanup(UDLE2ETestCase):
+
     def setUp(self):
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_source_file_tar_gzipped')
         self.tenant_dir = TENANT_DIR
         self.batch_id = str(uuid4())
-        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -115,7 +112,3 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.validate_UDL_database()
         self.validate_edware_database(schema_name=self.batch_id)
         self.validate_workzone()
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

@@ -1,29 +1,19 @@
-import os
-import unittest
-from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.database.udl2_connector import initialize_db_target,\
     initialize_db_udl, initialize_db_prod, get_target_connection,\
-    get_udl_connection, initialize_all_db
+    get_udl_connection
 from sqlalchemy.sql.expression import select, func, true, cast
 from sqlalchemy.types import Integer
 from edcore.database.utils.utils import create_schema, drop_schema
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from edschema.metadata.util import get_tables_starting_with
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.functional_tests import UDLFunctionalTestCase
 
 
-class UDLTestHelper(unittest.TestCase):
+class UDLTestHelper(UDLFunctionalTestCase):
 
     @classmethod
     def setUpClass(cls):
-        config_path = dict(os.environ).get('UDL2_CONF', UDL2_DEFAULT_CONFIG_PATH_FILE)
-        conf_tup = read_ini_file(config_path)
-        cls.udl2_conf = conf_tup[0]
-        # initialize_db_udl(cls.udl2_conf)
-        # initialize_db_target(cls.udl2_conf)
-        # initialize_db_prod(cls.udl2_conf)
-        initialize_all_db(udl2_conf, udl2_flat_conf)
+        super().setUpClass()
         cls.truncate_udl_tables()
 
     @classmethod

@@ -7,11 +7,12 @@ import os
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.database.udl2_connector import initialize_all_db
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.unit_tests import UDLUnitTestCase
 
 
-class UnitTestSimpleFileValidator(unittest.TestCase):
+class UnitTestSimpleFileValidator(UDLUnitTestCase):
 
-    def setUp(self, ):
+    def setUp(self):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
@@ -19,11 +20,11 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         conf_tup = read_ini_file(config_path)
         self.conf = conf_tup[0]
         initialize_all_db(udl2_conf, udl2_flat_conf)
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        self.base_data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 
     def test_simple_file_validator_passes_for_valid_assmt_csv(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')
-        results = validator.execute(self.data_dir,
+        results = validator.execute(self.base_data_dir,
                                     'test_data_latest/'
                                     'REALDATA_ASMT_ID_76a9ab517e76402793d3f2339391f5.csv', 1)
         self.assertEqual(len(results), 0)
@@ -75,7 +76,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
     def test_for_source_file_with_matching_columns(self):
         test_csv_fields = ["StateAbbreviation", "ResponsibleDistrictIdentifier", "OrganizationName", "ResponsibleSchoolIdentifier", "NameOfInstitution", "StudentIdentifier", "ExternalSSID", "FirstName", "MiddleName", "LastOrSurname", "Sex", "Birthdate", "GradeLevelWhenAssessed", "HispanicOrLatinoEthnicity", "AmericanIndianOrAlaskaNative", "Asian", "BlackOrAfricanAmerican", "NativeHawaiianOrOtherPacificIslander", "White", "DemographicRaceTwoOrMoreRaces", "IDEAIndicator", "LEPStatus", "Section504Status", "EconomicDisadvantageStatus", "MigrantStatus", "Group1Id", "Group1Text", "Group2Id", "Group2Text", "Group3Id", "Group3Text", "Group4Id", "Group4Text", "Group5Id", "Group5Text", "Group6Id", "Group6Text", "Group7Id", "Group7Text", "Group8Id", "Group8Text", "Group9Id", "Group9Text", "Group10Id", "Group10Text", "AssessmentGuid", "AssessmentSessionLocationId", "AssessmentSessionLocation", "AssessmentAdministrationFinishDate", "AssessmentYear", "AssessmentType", "AssessmentAcademicSubject", "AssessmentLevelForWhichDesigned", "AssessmentSubtestResultScoreValue", "AssessmentSubtestMinimumValue", "AssessmentSubtestMaximumValue", "AssessmentPerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim1Value", "AssessmentSubtestClaim1MinimumValue", "AssessmentSubtestClaim1MaximumValue", "AssessmentClaim1PerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim2Value", "AssessmentSubtestClaim2MinimumValue", "AssessmentSubtestClaim2MaximumValue", "AssessmentClaim2PerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim3Value", "AssessmentSubtestClaim3MinimumValue", "AssessmentSubtestClaim3MaximumValue", "AssessmentClaim3PerformanceLevelIdentifier", "AssessmentSubtestResultScoreClaim4Value", "AssessmentSubtestClaim4MinimumValue", "AssessmentSubtestClaim4MaximumValue", "AssessmentClaim4PerformanceLevelIdentifier", "AccommodationAmericanSignLanguage", "AccommodationBraille", "AccommodationClosedCaptioning", "AccommodationTextToSpeech", "AccommodationAbacus", "AccommodationAlternateResponseOptions", "AccommodationCalculator", "AccommodationMultiplicationTable", "AccommodationPrintOnDemand", "AccommodationPrintOnDemandItems", "AccommodationReadAloud", "AccommodationScribe", "AccommodationSpeechToText", "AccommodationStreamlineMode", "AccommodationNoiseBuffer", "Op"]
         validator = csv_validator.DoesSourceFileInExpectedFormat('assessment', csv_fields=test_csv_fields)
-        results = [validator.execute(self.data_dir,
+        results = [validator.execute(self.base_data_dir,
                                      'test_data_latest/'
                                      'REALDATA_ASMT_ID_76a9ab517e76402793d3f2339391f5.csv', 1)]
         self.assertEqual(len(results), 1)

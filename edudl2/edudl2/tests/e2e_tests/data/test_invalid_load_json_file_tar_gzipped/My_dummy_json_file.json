@@ -1,0 +1,74 @@
+{
+  "content": "Shhh.. NotAnAssessment",
+  "identification": {
+    "guid": "f9988342-fdbf-47a0-8f93-bd20ba792338",
+    "type": "SUMMATIVE",
+    "year": "2015",
+    "period": "2015",
+    "version": "V1",
+    "subject": "Math"
+  },
+  "overall": {
+    "min_score": "1200",
+    "max_score": "2400"
+  },
+  "performance_levels": {
+    "level_1": {
+      "name": "Minimal Understanding",
+      "cut_point": "1200"
+    },
+    "level_2": {
+      "name": "Partial Understanding",
+      "cut_point": "1400"
+    },
+    "level_3": {
+      "name": "Adequate Understanding",
+      "cut_point": "1800"
+    },
+    "level_4": {
+      "name": "Thorough Understanding",
+      "cut_point": "2100"
+    },
+    "level_5": {
+      "name": "",
+      "cut_point": ""
+    }
+  },
+  "claims": {
+    "claim_1": {
+      "name": "Concepts & Procedures",
+      "min_score": "1200",
+      "max_score": "2400",
+      "weight": "0.4"
+    },
+    "claim_2": {
+      "name": "Problem Solving and Modeling & Data Analysis",
+      "min_score": "1200",
+      "max_score": "2400",
+      "weight": "0.45"
+    },
+    "claim_3": {
+      "name": "Communicating Reasoning",
+      "min_score": "1200",
+      "max_score": "2400",
+      "weight": "0.15"
+    },
+    "claim_4": {
+      "name": "",
+      "min_score": "0",
+      "max_score": "0",
+      "weight": "0"
+    }
+  },
+  "claim_performance_levels": {
+    "level_1": {
+      "name": "Below Standard"
+    },
+    "level_2": {
+      "name": "At/Near Standard"
+    },
+    "level_3": {
+      "name": "Above Standard"
+    }
+  }
+}

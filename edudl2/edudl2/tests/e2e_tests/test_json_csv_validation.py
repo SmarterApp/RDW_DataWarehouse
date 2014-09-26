@@ -14,34 +14,22 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from uuid import uuid4
 from time import sleep
 from multiprocessing import Process
-from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
+from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql.expression import and_, select
 from edudl2.udl2.constants import Constants
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.e2e_tests import UDLE2ETestCase
+
 
 FACT_TABLE = 'fact_asmt_outcome_vw'
-file_to_path = ''
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/test_user/filedrop/'
-FILE_DICT = {}
 
 
-class ValidateTableData(unittest.TestCase):
+class ValidateTableData(UDLE2ETestCase):
+
     @classmethod
     def setUpClass(self):
-        global file_to_path, FILE_DICT
-        file_to_path = os.path.join(os.path.dirname(__file__), "..", "data")
-        FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_miss_col.tar.gz.gpz'),
-                     'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),
-                     'corrupt_csv_extra_col': os.path.join(file_to_path, 'corrupt_csv_ext_col.tar.gz.gpz'),
-                     'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
-                     'corrupt_source_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
-                     'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
-                     'invalid_guid_json': os.path.join(file_to_path, 'test_asmt_guid_validation.tar.gz.gpg'),
-                     'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
-        self.archived_file = FILE_DICT
-        initialize_all_db(udl2_conf, udl2_flat_conf)
+        super().setUpClass()
         self.udl_connector = get_udl_connection()
-        self.tenant_dir = TENANT_DIR
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/test_user/filedrop/'
         here = os.path.dirname(__file__)
         self.driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
 
@@ -134,52 +122,60 @@ class ValidateTableData(unittest.TestCase):
 
     def test_run_udl_corrupt_guid(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['invalid_guid_json'])
+        gpg_file = self.require_gpg_file('test_asmt_guid_validation')
+        self.run_udl_with_file(self.guid_batch_id, gpg_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_asmt_guid(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_csv_extra_col'])
+        gpg_file = self.require_file('corrupt_csv_ext_col.tar.gz.gpz')
+        self.run_udl_with_file(self.guid_batch_id, gpg_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_miss_csv(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_csv_missing_col'])
+        gpg_file = self.require_file('corrupt_csv_ext_col.tar.gz.gpz')
+        self.run_udl_with_file(self.guid_batch_id, gpg_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_corrupt_json(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_json'])
+        gpg_file = self.require_file('corrupt_json.tar.gz.gpz')
+        self.run_udl_with_file(self.guid_batch_id, gpg_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_corrupt_source(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_source_file'])
+        corrupt_file = self.require_file('test_corrupted_source_file_tar_gzipped.tar.gz.gpg')
+        self.run_udl_with_file(self.guid_batch_id, corrupt_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_source(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_missing_json(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['missing_json'])
+        gpg_file = self.require_gpg_file('test_missing_json_file')
+        self.run_udl_with_file(self.guid_batch_id, gpg_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_missing_json(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_invalid_load_json(self):
         self.guid_batch_id = str(uuid4())
-        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['invalid_load_json'])
+        gpg_file = self.require_gpg_file('test_invalid_load_json_file_tar_gzipped')
+        self.run_udl_with_file(self.guid_batch_id, gpg_file)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_invalid_load(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_sr_csv_missing_column(self):
         self.guid_batch_id = str(uuid4())
+        sr_data = self.require_gpg_file('test_sr_csv_missing_column')
 
         # Start the http post server subprocess
         self.start_post_server()
 
         try:
-            self.run_udl_with_file(self.guid_batch_id, FILE_DICT['sr_csv_missing_column'])
+            self.run_udl_with_file(self.guid_batch_id, sr_data)
             self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
             self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
             self.verify_notification_success(self.udl_connector, self.guid_batch_id)

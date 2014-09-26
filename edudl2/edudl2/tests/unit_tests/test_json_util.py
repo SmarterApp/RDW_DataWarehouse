@@ -1,16 +1,15 @@
 import os
-import unittest
 import shutil
 import tempfile
 from edudl2.json_util.json_util import get_value_from_json
-
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
+from edudl2.tests.unit_tests import UDLUnitTestCase
 
 __author__ = 'tshewchuk'
 
 
-class TestJsonUtils(unittest.TestCase):
+class TestJsonUtils(UDLUnitTestCase):
 
     def setUp(self):
         try:
@@ -22,7 +21,7 @@ class TestJsonUtils(unittest.TestCase):
             self.conf = udl2_conf[0]
         else:
             self.conf = udl2_conf
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        # self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.test_expanded_dir = tempfile.mkdtemp()
 
     def tearDown(self):

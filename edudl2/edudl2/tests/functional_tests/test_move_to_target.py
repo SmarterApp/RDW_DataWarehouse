@@ -4,21 +4,13 @@ from celery.canvas import chain
 from edudl2.udl2.W_tasks_utils import handle_group_results
 __author__ = 'swimberly'
 
-import os
 import csv
 from sqlalchemy.sql import select, func
 from edudl2.tests.functional_tests.util import UDLTestHelper
-from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_target_connection, get_udl_connection
 from edudl2.udl2.W_load_sr_integration_to_target import task as load_student_registration_data_to_target
 from edudl2.udl2.constants import Constants
-
-data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-ASMT_OUTCOME_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')
-ASMT_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT.csv')
-SR_FILE = os.path.join(data_dir, 'student_registration_data', 'INT_SBAC_STU_REG.csv')
-SR_META_FILE = os.path.join(data_dir, 'student_registration_data', 'INT_SBAC_STU_REG_META.csv')
 
 
 class FTestMoveToTarget(UDLTestHelper):
@@ -46,6 +38,8 @@ class FTestMoveToTarget(UDLTestHelper):
         pass
 
     def test_multi_tenant_move_to_target_assessment_data(self):
+        ASMT_OUTCOME_FILE = self.require_file('INT_SBAC_ASMT_OUTCOME.csv')
+        ASMT_FILE = self.require_file('INT_SBAC_ASMT.csv')
         self.verify_target_assessment_schema(self.guid_batch_asmt, True)
         self.load_csv_data_to_integration(ASMT_OUTCOME_FILE, ASMT_FILE, 'int_sbac_asmt_outcome', 'int_sbac_asmt')
         msg = self.create_msg(Constants.LOAD_TYPE_ASSESSMENT, self.guid_batch_asmt)
@@ -58,6 +52,8 @@ class FTestMoveToTarget(UDLTestHelper):
 
     def test_multi_tenant_move_to_target_student_registration_data(self):
         self.verify_target_student_registration_schema(self.guid_batch_sr, True)
+        SR_FILE = self.require_file('student_registration_data/INT_SBAC_STU_REG.csv')
+        SR_META_FILE = self.require_file('student_registration_data/INT_SBAC_STU_REG_META.csv')
         self.load_csv_data_to_integration(SR_FILE, SR_META_FILE, 'int_sbac_stu_reg', 'int_sbac_stu_reg_meta')
         msg = self.create_msg(Constants.LOAD_TYPE_STUDENT_REGISTRATION, self.guid_batch_sr)
         load_student_registration_data_to_target(msg)

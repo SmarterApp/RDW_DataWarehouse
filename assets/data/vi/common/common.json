@@ -523,19 +523,19 @@
             "key": "extractType",
             "options": [
                 {
-                    "display": "Thông tin thống kê học sinh đăng ký",
+                    "display": "Thống kê ghi danh học sinh",
                     "value": "registrationStatistics"
                 },
                 {
-                    "display": "Thông tin thống kê hoàn tất đánh giá",
+                    "display": "Thống kê Hoàn tất Đánh giá",
                     "value": "completionStatistics"
                 },
                 {
-                    "display": "XML kiểm tra",
+                    "display": "XTM người lớn",
                     "value": "rawXML"
                 },
                 {
-                    "display": "Dữ liệu câu trả lời từng mục",
+                    "display": "Thông tin Trả lời theo Mục Cá nhân",
                     "value": "itemLevel"
                 }
             ]
@@ -556,7 +556,7 @@
                     "display": "Tổng hợp",
                     "value": "SUMMATIVE"
                 }, {
-                    "display": "Lĩnh hội tạm thời",
+                    "display": "Phổ quát tạm thời",
                     "value": "INTERIM COMPREHENSIVE"
                 }
             ]

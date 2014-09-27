@@ -2,6 +2,7 @@ from sqlalchemy.schema import MetaData, Sequence, Index
 from sqlalchemy import Table, Column, text
 from sqlalchemy.types import Text, Boolean, TIMESTAMP, Interval, TIME
 from sqlalchemy.types import BigInteger, SmallInteger, String
+from sqlalchemy import CheckConstraint
 
 
 def generate_udl2_metadata(schema_name=None, bind=None):
@@ -63,7 +64,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('guid_school', String(256), nullable=True),
                              Column('name_school', String(256), nullable=True),
                              Column('guid_student', String(256), nullable=True),
-                             Column('external_ssid_student', String(256), nullable=True),
+                             Column('external_ssid_student', String(256), CheckConstraint('external_ssid_student' != ''), nullable=False),
                              Column('name_student_first', String(256), nullable=True),
                              Column('name_student_middle', String(256), nullable=True),
                              Column('name_student_last', String(256), nullable=True),

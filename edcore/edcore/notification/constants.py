@@ -18,6 +18,7 @@ class Constants():
     NOTIFICATION_ERRORS = 'notification_errors'
     ACADEMIC_YEAR = 'academic_year'
     TOTAL_ROWS_LOADED = 'total_rows_loaded'
+    TOTAL_ROWS_NOT_LOADED = 'total_rows_not_loaded'
     GUID_BATCH = 'guid_batch'
     UDL2_BATCH_TABLE = 'udl_batch'
     BATCH_TABLE = 'batch_table'

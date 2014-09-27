@@ -95,6 +95,8 @@ def lock_and_write(root, file_path, mode=0o700):
         except BlockingIOError:
             # spin lock
             time.sleep(1)
+        except TSBException:
+            raise
         except Exception as e:
             raise TSBException(str(e), err_source=ErrorSource.LOCK_AND_WRITE)
 
@@ -120,6 +122,12 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o7
         logger.error(error_msg)
         logger.error('this error may be caused because you have an old xsd?')
         raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_PARSE_ERROR, err_source=ErrorSource.GENERATE_CSV_FROM_XML)
+    except TSBException as e:
+        error_msg = str(e)
+        logger.error(error_msg)
+        if os.path.exists(csv_file_path):
+            os.remove(csv_file_path)
+        raise
     except Exception as e:
         error_msg = str(e)
         logger.error(error_msg)

@@ -144,6 +144,9 @@ class DBConnection(ConnectionBase):
             results = self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)
         except (DatabaseError, InterfaceError) as err:
             logger.error(err)
+            # -1 means do not try
+            if tries is -1:
+                raise
             # Allow an one time retry
             if tries < 1:
                 time.sleep(10)

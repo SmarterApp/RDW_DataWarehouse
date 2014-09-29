@@ -25,7 +25,7 @@ def generate_error_file(error_file_path, err_list):
                     error_info = json.loads(data)
                 else:
                     error_info = build_error_info_header()
-                error_info[ErrorsConstants.ERR_LIST].append(err_list)
+                error_info[ErrorsConstants.TSB_ERROR].append(err_list)
                 data = json.dumps(error_info)
                 f.file_object.write(data)
                 SPIN = False
@@ -34,7 +34,7 @@ def generate_error_file(error_file_path, err_list):
 
 
 def build_error_info_header():
-    return {ErrorsConstants.CONTENT: ErrorsConstants.ERROR, ErrorsConstants.ERR_LIST: []}
+    return {ErrorsConstants.CONTENT: ErrorsConstants.ERROR, ErrorsConstants.TSB_ERROR: []}
 
 
 def build_err_list(err_code, err_source, err_code_text, err_source_text, err_input):

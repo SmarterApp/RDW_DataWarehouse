@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     def test_build_error_info_header(self):
         header = build_error_info_header()
         self.assertEqual(header[ErrorsConstants.CONTENT], ErrorsConstants.ERROR)
-        self.assertEqual(len(header[ErrorsConstants.ERR_LIST]), 0)
+        self.assertEqual(len(header[ErrorsConstants.TSB_ERROR]), 0)
 
     def test_generate_error_file_new(self):
         tested = False
@@ -49,12 +49,12 @@ class Test(unittest.TestCase):
                 data = f.read()
                 err_list_dict = json.loads(data)
                 self.assertEqual(err_list_dict[ErrorsConstants.CONTENT], ErrorsConstants.ERROR)
-                self.assertEqual(len(err_list_dict[ErrorsConstants.ERR_LIST]), 1)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_CODE], err_code)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_SOURCE], err_source)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_CODE_TEXT], err_code_text)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_SOURCE_TEXT], err_source_text)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_INPUT], err_input)
+                self.assertEqual(len(err_list_dict[ErrorsConstants.TSB_ERROR]), 1)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_CODE], err_code)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_SOURCE], err_source)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_CODE_TEXT], err_code_text)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_SOURCE_TEXT], err_source_text)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_INPUT], err_input)
                 tested = True
         self.assertTrue(tested)
 
@@ -81,17 +81,17 @@ class Test(unittest.TestCase):
                 data = f.read()
                 err_list_dict = json.loads(data)
                 self.assertEqual(err_list_dict[ErrorsConstants.CONTENT], ErrorsConstants.ERROR)
-                self.assertEqual(len(err_list_dict[ErrorsConstants.ERR_LIST]), 2)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_CODE], err_code1)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_SOURCE], err_source1)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_CODE_TEXT], err_code_text1)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_SOURCE_TEXT], err_source_text1)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][0][ErrorsConstants.ERR_INPUT], err_input1)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][1][ErrorsConstants.ERR_CODE], err_code2)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][1][ErrorsConstants.ERR_SOURCE], err_source2)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][1][ErrorsConstants.ERR_CODE_TEXT], err_code_text2)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][1][ErrorsConstants.ERR_SOURCE_TEXT], err_source_text2)
-                self.assertEqual(err_list_dict[ErrorsConstants.ERR_LIST][1][ErrorsConstants.ERR_INPUT], err_input2)
+                self.assertEqual(len(err_list_dict[ErrorsConstants.TSB_ERROR]), 2)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_CODE], err_code1)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_SOURCE], err_source1)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_CODE_TEXT], err_code_text1)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_SOURCE_TEXT], err_source_text1)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][0][ErrorsConstants.ERR_INPUT], err_input1)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][1][ErrorsConstants.ERR_CODE], err_code2)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][1][ErrorsConstants.ERR_SOURCE], err_source2)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][1][ErrorsConstants.ERR_CODE_TEXT], err_code_text2)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][1][ErrorsConstants.ERR_SOURCE_TEXT], err_source_text2)
+                self.assertEqual(err_list_dict[ErrorsConstants.TSB_ERROR][1][ErrorsConstants.ERR_INPUT], err_input2)
                 tested = True
         self.assertTrue(tested)
 

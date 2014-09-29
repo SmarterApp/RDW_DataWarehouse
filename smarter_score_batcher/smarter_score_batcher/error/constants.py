@@ -6,7 +6,7 @@ Created on Sep 25, 2014
 
 
 class ErrorsConstants():
-    ERR_LIST = 'err_list'
+    TSB_ERROR = 'tsb_error'
     ERROR = 'error'
     ERR_CODE = 'err_code'
     ERR_SOURCE = 'err_source'

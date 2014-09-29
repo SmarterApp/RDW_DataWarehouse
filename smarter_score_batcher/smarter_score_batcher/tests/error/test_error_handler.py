@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
         with open(error_file) as f:
             data = f.read()
         error_dict = json.loads(data)
-        err_list = error_dict[ErrorsConstants.ERR_LIST][0]
+        err_list = error_dict[ErrorsConstants.TSB_ERROR][0]
         self.assertTrue(err_list[ErrorsConstants.ERR_CODE], ErrorCode.GENERAL_FILELOCK_ERROR)
 
 

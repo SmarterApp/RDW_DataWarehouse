@@ -36,7 +36,7 @@ def move_data_from_staging_to_integration(conf):
 
 def move_data_from_staging_to_integration_at_once(source_table_name, target_table_name, err_list_table_name, guid_batch, target_columns, source_columns_with_tran_rule, record_sid=None):
     with get_udl_connection() as conn:
-        
+
         sql_query = create_migration_query(conn, source_table_name, target_table_name,
                                            err_list_table_name, guid_batch, target_columns,
                                            source_columns_with_tran_rule, record_sid=record_sid)
@@ -56,8 +56,8 @@ def move_data_from_staging_to_integration_one_by_one(source_table_name, target_t
             try:
                 record_sid = result.get('record_sid')
                 query_result = move_data_from_staging_to_integration_at_once(source_table_name, target_table_name, err_list_table_name,
-                                                              guid_batch, target_columns, source_columns_with_tran_rule,
-                                                              record_sid=record_sid)
+                                                                             guid_batch, target_columns, source_columns_with_tran_rule,
+                                                                             record_sid=record_sid)
                 success += query_result
             except:
                 fail += 1

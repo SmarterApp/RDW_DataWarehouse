@@ -54,7 +54,13 @@ def _verify_tar_file_contents(tar_file_member_names):
     :return: false if verification fails
     """
     file_extensions = [os.path.splitext(file)[1][1:].strip().lower() for file in tar_file_member_names]
-    if len(file_extensions) != 2 or 'csv' not in file_extensions or 'json' not in file_extensions:
+    if len(file_extensions) is 1:
+        if 'err' not in file_extensions:
+            return False
+    elif len(file_extensions) is 3:
+        if 'csv' not in file_extensions or 'json' not in file_extensions or 'err' not in file_extensions:
+            return False
+    elif len(file_extensions) != 2 or 'csv' not in file_extensions or 'json' not in file_extensions:
         return False
     return True
 
@@ -70,7 +76,7 @@ def _extract_tar_file_contents(file_to_expand, expanded_dir):
     tar = tarfile.open(file_to_expand, "r:gz")
     # verify tar file contents and throw exception if csv/json file is missing
     if not _verify_tar_file_contents(tar.getnames()):
-        raise Exception('Expected 2 files not found in the tar archive')
+        raise Exception('Expected files not found in the tar archive')
 
     # Go over each file in the tar and extract the file alone to the desired destination directory
     for member in tar.getmembers():

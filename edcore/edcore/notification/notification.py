@@ -106,4 +106,7 @@ def create_notification_body(load_type, guid_batch, batch_table, id, test_regist
     if udl_load_status == UdlStatsConstants.MIGRATE_INGESTED:
         notification_body['rowCount'] = row_count
 
+    tsb_error = notification_body.get('tsb_error')
+    if tsb_error is not None:
+        notification_body['tsb_error'] = tsb_error
     return notification_body

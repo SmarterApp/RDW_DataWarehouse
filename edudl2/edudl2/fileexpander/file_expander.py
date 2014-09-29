@@ -56,7 +56,7 @@ def _verify_tar_file_contents(tar_file_member_names):
     file_extensions = [os.path.splitext(file)[1][1:].strip().lower() for file in tar_file_member_names]
     if len(file_extensions) is 3:
         if 'csv' in file_extensions and 'json' in file_extensions and 'err' in file_extensions:
-            return False
+            return True
     elif len(file_extensions) is 2:
         if 'json' in file_extensions:
             return True

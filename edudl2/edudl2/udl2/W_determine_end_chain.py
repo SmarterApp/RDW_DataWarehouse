@@ -16,22 +16,28 @@ def task(msg):
     logger.info(task.name)
     load_type = msg[mk.LOAD_TYPE]
     logger.info('DETERMINE END ROUTE: Determining end route by %s' % load_type)
+    split_file_tuple_list = msg[mk.SPLIT_FILE_LIST]
 
-    common_tasks = [W_parallel_csv_load.get_load_from_csv_tasks(msg),
-                    W_load_json_to_integration.task.s(),
-                    W_file_content_validator.task.s(),
-                    W_load_to_integration_table.task.s(),
-                    W_load_from_integration_to_star.prepare_target_schema.s()]
+    if split_file_tuple_list:
+        common_tasks = [W_parallel_csv_load.get_load_from_csv_tasks(msg),
+                        W_load_json_to_integration.task.s(),
+                        W_file_content_validator.task.s(),
+                        W_load_to_integration_table.task.s(),
+                        W_load_from_integration_to_star.prepare_target_schema.s()]
 
-    target_tasks = {"assessment": [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
-                                   W_tasks_utils.handle_group_results.s(),
-                                   W_load_from_integration_to_star.handle_record_upsert.s(),
-                                   W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact'),
-                                   W_tasks_utils.handle_group_results.s(),
-                                   W_load_from_integration_to_star.handle_deletions.s()
-                                   ],
-                    "studentregistration": [W_load_sr_integration_to_target.task.s()]}
+        target_tasks = {"assessment": [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
+                                       W_tasks_utils.handle_group_results.s(),
+                                       W_load_from_integration_to_star.handle_record_upsert.s(),
+                                       W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact'),
+                                       W_tasks_utils.handle_group_results.s(),
+                                       W_load_from_integration_to_star.handle_deletions.s()
+                                       ],
+                        "studentregistration": [W_load_sr_integration_to_target.task.s()]}
 
-    post_etl_tasks = [W_post_etl.task.s(), W_all_done.task.s()]
+        post_etl_tasks = [W_post_etl.task.s(), W_all_done.task.s()]
 
-    chain(common_tasks + target_tasks[load_type] + post_etl_tasks).delay()
+        chain(common_tasks + target_tasks[load_type] + post_etl_tasks).delay()
+    else:
+        # because we process .err file, so, it's error
+        msg[mk.PIPELINE_STATE] = 'error'
+        W_all_done.task.subtask(args=[msg]).delay()

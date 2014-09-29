@@ -1,15 +1,12 @@
 from __future__ import absolute_import
 from celery.utils.log import get_task_logger
-import datetime
 from edudl2.udl2.celery import celery
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
-from edudl2.fileexpander.file_expander import expand_file
-from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2_util import file_util
 import json
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
-import os
+from edcore.notification.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -35,6 +32,7 @@ def task(incoming_msg):
                 tsb_error = error_json['tsb_error']
                 outgoing_msg['tsb_error'] = tsb_error
                 notification_data = {'tsb_error': tsb_error}
+                notification_data[Constants.ERROR_DESC] = 'tsb error'
                 merge_to_udl2stat_notification(guid_batch, notification_data)
 
     return outgoing_msg

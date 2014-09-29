@@ -55,7 +55,7 @@ def main():
     file = args.ini_file
     logging.config.fileConfig(file)
     settings = read_ini(file)
-    sftp_conf = get_config_from_ini(config=settings, config_prefix='sftp.')
+    sftp_conf = get_config_from_ini(config=settings, config_prefix='sftp')
 
     if args.driver_init_action:
         sftp_zone_init(sftp_conf)

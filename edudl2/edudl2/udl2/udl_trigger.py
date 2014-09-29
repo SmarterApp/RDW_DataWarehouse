@@ -34,7 +34,7 @@ def udl_trigger(config, loop_once=False):
     :pram loop_once: Runs the loop only once if set to True (Needed for testing)
     """
     # get the settings needed for the udl trigger alone
-    config = get_config_from_ini(config=config, config_prefix='udl2_trigger.')
+    config = get_config_from_ini(config=config, config_prefix='udl2_trigger.', delete_prefix=True)
     file_watcher = FileWatcher(config, append_logs_to='edudl2')
     logger.info('Starting UDL2 trigger loop. Looking at directory => {source_dir}'.format(
                 source_dir=config.get(Const.SOURCE_DIR)))

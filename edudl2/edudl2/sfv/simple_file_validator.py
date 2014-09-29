@@ -12,7 +12,7 @@ b) Checking the file has data and the application has permissions to access it
 import os
 
 from edudl2.exceptions.errorcodes import ErrorCode
-from edudl2.sfv import csv_validator
+from edudl2.sfv import csv_validator, err_validator
 from edudl2.sfv import json_validator
 
 
@@ -23,6 +23,7 @@ class SimpleFileValidator():
         """Constructor"""
         self.validators = {'.csv': csv_validator.CsvValidator(load_type),
                            '.json': json_validator.JsonValidator(load_type),
+                           '.err': err_validator.ErrorValidator(),
                            }
 
     def execute(self, dir_path, file_name, guid_batch):

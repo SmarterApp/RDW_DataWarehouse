@@ -27,12 +27,14 @@ def task(incoming_msg):
     expanded_dir = tenant_directory_paths.get(mk.EXPANDED)
     err_file = file_util.get_file_type_from_dir('.err', expanded_dir)
     if err_file is not None:
-        error_json = json.loads(err_file)
-        content = error_json['content']
-        if content is 'error':
-            tsb_error = error_json['tsb_error']
-            outgoing_msg['tsb_error'] = tsb_error
-            notification_data = {'tsb_error': tsb_error}
-            merge_to_udl2stat_notification(guid_batch, notification_data)
+        with open(err_file) as f:
+            json_data = f.read()
+            error_json = json.loads(json_data)
+            content = error_json['content']
+            if content == 'error':
+                tsb_error = error_json['tsb_error']
+                outgoing_msg['tsb_error'] = tsb_error
+                notification_data = {'tsb_error': tsb_error}
+                merge_to_udl2stat_notification(guid_batch, notification_data)
 
     return outgoing_msg

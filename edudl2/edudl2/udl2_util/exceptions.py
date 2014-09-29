@@ -54,3 +54,11 @@ class InvalidTenantNameException(UDL2DataValidationException):
     """
     def __init__(self, msg='UDL2 tenant name invalid'):
         super().__init__(msg)
+
+
+class UDL2DataLoadingException(UDL2Exception):
+    '''
+    Loading data exception
+    '''
+    def __init__(self, msg='failed to load all data'):
+        super().__init__(msg)

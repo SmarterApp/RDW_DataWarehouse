@@ -72,8 +72,6 @@ class Udl2BaseTask(Task):
 
         # Write to udl stats table on exceptions
         update_udl_stats_by_batch_guid(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
-        # update udl_stat for notification
-        merge_to_udl2stat_notification(batch_guid, {Constants.UDL_PHASE_STEP_STATUS: Constants.FAILURE, Constants.ERROR_DESC: str(exc)})
 
         # Write to ERR_LIST
         try:

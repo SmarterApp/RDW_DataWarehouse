@@ -24,11 +24,11 @@
             "key": "Math_ELA"
         },
         {
-            "display": "Mathematics",
+            "display": "Toán",
             "key": "Math"
         },
         {
-            "display": "ELA/Literacy",
+            "display": "ELA/Đọc viết",
             "key": "ELA"
         }
     ],

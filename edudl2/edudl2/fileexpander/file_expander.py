@@ -54,15 +54,15 @@ def _verify_tar_file_contents(tar_file_member_names):
     :return: false if verification fails
     """
     file_extensions = [os.path.splitext(file)[1][1:].strip().lower() for file in tar_file_member_names]
-    if len(file_extensions) is 1:
-        if 'err' not in file_extensions:
+    if len(file_extensions) is 3:
+        if 'csv' in file_extensions and 'json' in file_extensions and 'err' in file_extensions:
             return False
-    elif len(file_extensions) is 3:
-        if 'csv' not in file_extensions or 'json' not in file_extensions or 'err' not in file_extensions:
-            return False
-    elif len(file_extensions) != 2 or 'csv' not in file_extensions or 'json' not in file_extensions:
-        return False
-    return True
+    elif len(file_extensions) is 2:
+        if 'json' in file_extensions:
+            return True
+        elif 'csv' in file_extensions or 'err' in file_extensions:
+            return True
+    return False
 
 
 def _extract_tar_file_contents(file_to_expand, expanded_dir):

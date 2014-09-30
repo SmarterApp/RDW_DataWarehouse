@@ -6,12 +6,13 @@ Created on Sep 19, 2014
 from smarter_score_batcher.celery import conf
 import os
 import json
-from smarter_score_batcher.exceptions import MetadataException
 from zope import interface, component
 from zope.interface.declarations import implementer
 import fnmatch
 from beaker.cache import cache_region
 from smarter_score_batcher.utils.merge import deep_merge
+from smarter_score_batcher.error.exceptions import MetadataException
+from smarter_score_batcher.error.error_codes import ErrorSource
 import logging
 
 
@@ -109,7 +110,7 @@ class MetadataTemplateManager:
         logger.info('Loading template for key {0}'.format(key))
         sm = self._load_template(key)
         if sm is None:
-            raise MetadataException("Unable to load metadata for key {0} from ".format(key))
+            raise MetadataException("Unable to load metadata for key {0} from ".format(key), err_source=ErrorSource.METADATATEMPLATEMANAGER_GET_TEMPLATE)
         return sm.get_asmt_metadata_template().copy()
 
 

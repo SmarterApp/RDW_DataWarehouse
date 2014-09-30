@@ -6,10 +6,12 @@ Created on Jul 21, 2014
 import os
 import fcntl
 import logging
-from smarter_score_batcher.exceptions import MetadataDirNotExistException
 from smarter_score_batcher.utils.constants import Constants
 import argparse
 from smarter_score_batcher.utils.file_lock import FileLock
+from smarter_score_batcher.error.exceptions import TSBException, \
+    MetadataDirNotExistException
+from smarter_score_batcher.error.error_codes import ErrorSource
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -31,13 +33,18 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
             for directory in directories:
                 if os.path.isdir(directory):
                     metadata_generator_top_down(directory, metadata_filename=metadata_filename, recursive=recursive, force=force)
-        with FileMetadata(dir_path, metadata_filename=metadata_filename) as fileMeatadata:
-            fileMeatadata.read_files()
-            fileMeatadata.write()
-            logger.info('generated metadata: [' + fileMeatadata.name + ']')
+        try:
+            with FileMetadata(dir_path, metadata_filename=metadata_filename) as fileMeatadata:
+                fileMeatadata.read_files()
+                fileMeatadata.write()
+                logger.info('generated metadata: [' + fileMeatadata.name + ']')
+        except TSBException as e:
+            e.err_source = ErrorSource.METADATA_GENERATOR_TOP_DOWN
+            e.err_input = 'metadata_filename: ' + metadata_filename
+            raise e
     else:
         logger.info('[' + dir_path + '] is not directory')
-        raise MetadataDirNotExistException('[' + dir_path + '] is not directory')
+        raise MetadataDirNotExistException('[' + dir_path + '] is not directory', err_source=ErrorSource.METADATA_GENERATOR_TOP_DOWN, err_input='metadata_filename: ' + metadata_filename)
 
 
 def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True, generateMetadata=False):
@@ -55,10 +62,15 @@ def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA
         open(updating_metadata, 'a').close()
     if os.path.isfile(updating_metadata):
         dir_path = os.path.dirname(file_path)
-        with FileMetadata(dir_path, metadata_filename=metadata_filename) as fileMetadata:
-            fileMetadata.load_metadata()
-            fileMetadata.read_file(file_path)
-            fileMetadata.write()
+        try:
+            with FileMetadata(dir_path, metadata_filename=metadata_filename) as fileMetadata:
+                fileMetadata.load_metadata()
+                fileMetadata.read_file(file_path)
+                fileMetadata.write()
+        except TSBException as e:
+            e.err_source = ErrorSource.METADATA_GENERATOR_BOTTOM_UP
+            e.err_input = 'metadata_filename: ' + metadata_filename
+            raise e
         if recursive:
             metadata_generator_bottom_up(dirname, metadata_filename=metadata_filename, recursive=recursive)
 

@@ -14,18 +14,54 @@ def move_data_from_staging_to_integration(conf):
     @param conf: configration dictionary, the format is defined in W_load_to_integration_table.py
            note: udl2_conf is the udl2_conf dictionary that stores all configuration settings
     '''
+    source_table_name = conf[mk.SOURCE_DB_TABLE]
+    target_table_name = conf[mk.TARGET_DB_TABLE]
+    err_list_table_name = conf[mk.ERR_LIST_TABLE]
+    guid_batch = conf[mk.GUID_BATCH]
+    ref_table = conf[mk.REF_TABLE]
     with get_udl_connection() as conn:
         # get the column mapping from ref table
         target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
-                                                                                           conf[mk.REF_TABLE],
-                                                                                           conf[mk.SOURCE_DB_TABLE],
-                                                                                           conf[mk.TARGET_DB_TABLE])
-        sql_query = create_migration_query(conn, conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_TABLE],
-                                           conf[mk.ERR_LIST_TABLE], conf[mk.GUID_BATCH], target_columns,
-                                           source_columns_with_tran_rule)
+                                                                                           ref_table,
+                                                                                           source_table_name,
+                                                                                           target_table_name)
+    try:
+        success = move_data_from_staging_to_integration_all(source_table_name, target_table_name, err_list_table_name,
+                                                            guid_batch, target_columns, source_columns_with_tran_rule)
+        return success, 0
+    except:
+        return move_data_from_staging_to_integration_one_by_one(source_table_name, target_table_name, err_list_table_name,
+                                                                guid_batch, target_columns, source_columns_with_tran_rule)
+
+
+def move_data_from_staging_to_integration_all(source_table_name, target_table_name, err_list_table_name, guid_batch, target_columns, source_columns_with_tran_rule, record_sid=None):
+    with get_udl_connection() as conn:
+
+        sql_query = create_migration_query(conn, source_table_name, target_table_name,
+                                           err_list_table_name, guid_batch, target_columns,
+                                           source_columns_with_tran_rule, record_sid=record_sid)
         except_msg = "problem when load data from staging table to integration table"
-        query_result = execute_udl_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
+        query_result = execute_udl_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration', tries=-1)
     return query_result[0]
+
+
+def move_data_from_staging_to_integration_one_by_one(source_table_name, target_table_name, err_list_table_name, guid_batch, target_columns, source_columns_with_tran_rule):
+    success = 0
+    fail = 0
+    with get_udl_connection() as conn:
+        source_table = conn.get_table(source_table_name)
+        select_source_table = select([source_table.c.record_sid.label('record_sid')], from_obj=[source_table]).where(source_table.c.guid_batch == guid_batch)
+        results = conn.get_result(select_source_table)
+        for result in results:
+            try:
+                record_sid = result.get('record_sid')
+                query_result = move_data_from_staging_to_integration_all(source_table_name, target_table_name, err_list_table_name,
+                                                                         guid_batch, target_columns, source_columns_with_tran_rule,
+                                                                         record_sid=record_sid)
+                success += query_result
+            except:
+                fail += 1
+    return success, fail
 
 
 def get_column_mapping_from_stg_to_int(conn, ref_table_name, staging_table, integration_table_name):
@@ -91,7 +127,7 @@ def get_varchar_column_name_and_length(conn, integration_table):
 
 
 def create_migration_query(conn, source_table_name, target_table_name, error_table_name,
-                           guid_batch, target_columns, source_columns_with_tran_rule):
+                           guid_batch, target_columns, source_columns_with_tran_rule, record_sid=None):
     '''
     Create migration script in SQL text template. It will be a tech debt to migrate it to SQLAlchemy
     equivalent. Also the code may require updates after metadata definition are finalized
@@ -113,5 +149,7 @@ def create_migration_query(conn, source_table_name, target_table_name, error_tab
                                                and_(error_table.c.record_sid == staging_table.c.record_sid))])
     select_query = select_query.where(and_(staging_table.c.guid_batch == guid_batch,
                                            error_table.c.record_sid.is_(None)))
+    if record_sid is not None:
+        select_query = select_query.where(and_(staging_table.c.record_sid == record_sid))
     query = integration_table.insert(inline=True).from_select(target_columns, select_query)
     return query

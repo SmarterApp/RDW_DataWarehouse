@@ -93,6 +93,7 @@ MOVE_TO_TARGET = 'move_to_target'
 TENANT_NAME = 'tenant_name'
 
 TOTAL_ROWS_LOADED = Constants.TOTAL_ROWS_LOADED
+TOTAL_ROWS_NOT_LOADED = Constants.TOTAL_ROWS_NOT_LOADED
 
 # for benchmarking
 UDL_PHASE = 'udl_phase'

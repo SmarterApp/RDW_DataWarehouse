@@ -14,6 +14,7 @@ from edudl2.move_to_integration.move_to_integration import move_data_from_stagin
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.constants import Constants
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
+from edudl2.udl2_util.exceptions import UDL2DataLoadingException
 
 logger = get_task_logger(__name__)
 
@@ -24,20 +25,23 @@ def task(msg):
     logger.info("LOAD_FROM_STAGING_TO_INT: Migrating data from staging to integration.")
     guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf(guid_batch, msg[mk.LOAD_TYPE])
-    affected_rows = move_data_from_staging_to_integration(conf)
+    success_rows, fail_rows = move_data_from_staging_to_integration(conf)
     end_time = datetime.datetime.now()
 
+    notification_data = {mk.TOTAL_ROWS_LOADED: success_rows, mk.TOTAL_ROWS_NOT_LOADED: fail_rows}
+    merge_to_udl2stat_notification(guid_batch, notification_data)
+    if success_rows is 0:
+        raise UDL2DataLoadingException()
+
     # benchmark
-    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, size_records=affected_rows,
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, size_records=success_rows,
                                     task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA], tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
-    notification_data = {mk.TOTAL_ROWS_LOADED: affected_rows}
-    merge_to_udl2stat_notification(guid_batch, notification_data)
     # Outgoing message to be piped to the file expander
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.PHASE: 4, mk.TOTAL_ROWS_LOADED: affected_rows})
+    outgoing_msg.update({mk.PHASE: 4, mk.TOTAL_ROWS_LOADED: success_rows, mk.TOTAL_ROWS_NOT_LOADED: fail_rows})
     return outgoing_msg
 
 

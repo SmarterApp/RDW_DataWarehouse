@@ -1,7 +1,7 @@
 import datetime
 from celery import chain
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import message_keys as mk, W_load_err_file
 from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_get_load_type, W_get_params,
                          W_simple_file_validator, W_file_splitter, W_determine_end_chain)
 from edcore.utils.utils import merge_dict
@@ -32,6 +32,7 @@ def get_pipeline_chain(archive_file, load_type='Unknown', file_parts=4, guid_bat
                            W_get_load_type.task.s(),
                            W_get_params.task.s(),
                            W_simple_file_validator.task.s(),
+                           W_load_err_file.task.s(),
                            W_file_splitter.task.s(),
                            # The end tasks are in the W_determine_end_chain.py file until we resolve the awkward 3 way dependency
                            W_determine_end_chain.task.s())

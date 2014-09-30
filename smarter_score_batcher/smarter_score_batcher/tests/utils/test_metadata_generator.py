@@ -8,8 +8,8 @@ import tempfile
 import os
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_top_down, \
     metadata_generator_bottom_up, FileMetadata
-from smarter_score_batcher.exceptions import MetadataDirNotExistException
 import uuid
+from smarter_score_batcher.error.exceptions import MetadataDirNotExistException
 
 
 class Test(unittest.TestCase):

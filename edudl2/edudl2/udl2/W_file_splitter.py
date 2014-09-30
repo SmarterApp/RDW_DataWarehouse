@@ -45,8 +45,6 @@ def task(incoming_msg):
                                     size_records=totalrows, size_units=filesize, udl_phase_step_status=NotificationConstants.SUCCESS,
                                     task_id=str(task.request.id), tenant=incoming_msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
-    # update udl_stat for notification
-    merge_to_udl2stat_notification(guid_batch, {Constants.UDL_PHASE_STEP_STATUS: NotificationConstants.SUCCESS})
     # Outgoing message to be piped to the parallel file loader
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)

@@ -11,6 +11,9 @@ from smarter_score_batcher.utils.file_lock import FileLock
 import time
 import uuid
 from argparse import ArgumentParser
+from smarter_score_batcher.error.exceptions import FileMonitorFileNotFoundException, \
+    FileMonitorException
+from smarter_score_batcher.error.error_codes import ErrorSource
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -75,15 +78,16 @@ def move_to_staging(settings):
                 time.sleep(1)
             except FileNotFoundError:
                 # if file not found, file might be already in process or
-                logger.debug("assessment %s data not found for tenant",
-                             assessment, tenant)
+                msg = "assessment %s data not found for tenant %s" % assessment, tenant
+                logger.debug(msg)
                 SPINLOCK = False
+                raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
             except Exception as e:
                 # pass to process next assessment data
-                logger.error("Error occurs during process assessment %s for tenant %s: %s",
-                             assessment, tenant, e)
+                msg = "Error occurs during process assessment %s for tenant %s: %s" % assessment, tenant, str(e)
+                logger.error(msg)
                 SPINLOCK = False
-                raise
+                raise FileMonitorException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
 
 
 def _clean_up(dir_path):
@@ -151,6 +155,7 @@ class FileEncryption(FileLock):
         self.assessment_id = os.path.split(asmt_dir)[1]
         self.json_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
         self.csv_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
+        self.err_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.ERR)
         self.__success = False
         if not os.path.isfile(self.csv_file):
             raise FileNotFoundError()
@@ -218,6 +223,8 @@ class FileEncryption(FileLock):
             # delete JSON and CSV files to release the lock
             os.remove(self.json_file)
             os.remove(self.csv_file)
+            if os.path.exists(self.err_file):
+                os.remove(self.err_file)
 
     def copy_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
@@ -234,9 +241,9 @@ class FileEncryption(FileLock):
         tmp_dir = os.path.join(self.temp_dir, self.assessment_id)
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir, exist_ok=True)
-        # copy JSON and CSV files over
+        # copy JSON and CSV files over. If ERR file exist, then move the file too
         # move JSON file before moving CSV
-        for ext in [Extensions.JSON, Extensions.CSV]:
+        for ext in [Extensions.JSON, Extensions.CSV, Extensions.ERR]:
             for file in _list_file_with_ext(self.asmt_dir, ext):
                 shutil.copy(file, tmp_dir)
         return tmp_dir

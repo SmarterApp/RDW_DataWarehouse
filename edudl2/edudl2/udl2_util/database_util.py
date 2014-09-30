@@ -46,7 +46,7 @@ def print_get_affected_rows(result, action, module, function):
     return {'amount': result.rowcount, 'action': action, 'unit': 'rows', 'module': module, 'function': function}
 
 
-def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
+def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None, tries=0):
     """
     This should be used when celery is running and db engines have been registered with zope
     :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
@@ -59,7 +59,7 @@ def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, c
     try:
         row_affected_list = []
         for query in list_of_queries:
-            result = conn.execute(query)
+            result = conn.execute(query, tries=tries)
             count = result.rowcount
             row_affected_list.append(count)
         trans.commit()

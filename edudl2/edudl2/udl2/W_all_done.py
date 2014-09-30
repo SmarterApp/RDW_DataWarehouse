@@ -77,5 +77,6 @@ def task(msg):
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time, pipeline_status)
     # update udl_stat for notification
-    merge_to_udl2stat_notification(guid_batch, {NotificationConstants.UDL_PHASE_STEP_STATUS: pipeline_status, NotificationConstants.UDL_PHASE: 'UDL_COMPLETE'})
+    if pipeline_status == NotificationConstants.SUCCESS:
+        merge_to_udl2stat_notification(guid_batch, {NotificationConstants.UDL_PHASE_STEP_STATUS: pipeline_status, NotificationConstants.UDL_PHASE: 'UDL_COMPLETE'})
     return msg

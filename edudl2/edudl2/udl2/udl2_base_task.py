@@ -6,6 +6,7 @@ from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
 from edcore.notification.constants import Constants
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
+import traceback
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -72,7 +73,6 @@ class Udl2BaseTask(Task):
 
         # Write to udl stats table on exceptions
         update_udl_stats_by_batch_guid(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
-        # update udl_stat for notification
         merge_to_udl2stat_notification(batch_guid, {Constants.UDL_PHASE_STEP_STATUS: Constants.FAILURE, Constants.ERROR_DESC: str(exc)})
 
         # Write to ERR_LIST

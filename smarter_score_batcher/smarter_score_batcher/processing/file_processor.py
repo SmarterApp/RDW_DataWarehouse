@@ -13,6 +13,9 @@ from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 from smarter_score_batcher.utils.file_utils import csv_file_writer, \
     json_file_writer
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
+from smarter_score_batcher.error.exceptions import GenerateCSVException, \
+    TSBException
+from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 
 try:
     import xml.etree.cElementTree as ET
@@ -23,15 +26,13 @@ except ImportError:
 logger = logging.getLogger("smarter_score_batcher")
 
 
-def process_assessment_data(root, meta, base_dir):
+def process_assessment_data(root, meta, base_dir, mode=0o700):
     '''
     process assessment data
     :param root: xml root document
     '''
     # Create dir name based on state code and file name from asmt id
-    mode = 0o700
-    directory = os.path.join(base_dir, meta.state_code, meta.asmt_id)
-    os.makedirs(directory, mode=mode, exist_ok=True)
+    directory = prepare_assessment_dir(base_dir, meta.state_code, meta.asmt_id, mode=mode)
     lock_and_write(root, os.path.join(directory, meta.asmt_id), mode=mode)
 
 
@@ -94,11 +95,13 @@ def lock_and_write(root, file_path, mode=0o700):
         except BlockingIOError:
             # spin lock
             time.sleep(1)
-        except Exception as e:
+        except TSBException:
             raise
+        except Exception as e:
+            raise TSBException(str(e), err_source=ErrorSource.LOCK_AND_WRITE)
 
 
-def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
+def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o700):
     '''
     Creates a csv in the given csv file path by reading from the xml file path
     :param csv_file_path: csv file path
@@ -109,16 +112,33 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir):
     try:
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
-        process_assessment_data(root, meta, work_dir)
+        process_assessment_data(root, meta, work_dir, mode=mode)
         written = process_item_level_data(root, meta, csv_file_path)
         if written:
             metadata_generator_bottom_up(csv_file_path, generateMetadata=True)
     except ET.ParseError as e:
         # this should not be happened because we already validate against xsd
-        logger.error(str(e))
+        error_msg = str(e)
+        logger.error(error_msg)
         logger.error('this error may be caused because you have an old xsd?')
-    except Exception as e:
-        logger.error(str(e))
+        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_PARSE_ERROR, err_source=ErrorSource.GENERATE_CSV_FROM_XML)
+    except TSBException as e:
+        error_msg = str(e)
+        logger.error(error_msg)
         if os.path.exists(csv_file_path):
             os.remove(csv_file_path)
+        raise
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(error_msg)
+        if os.path.exists(csv_file_path):
+            os.remove(csv_file_path)
+        raise GenerateCSVException(error_msg, err_code=ErrorCode.CSV_GENERATE_ERROR, err_source=ErrorSource.GENERATE_CSV_FROM_XML)
+
     return written
+
+
+def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
+    directory = os.path.join(base_dir, state_code, asmt_id)
+    os.makedirs(directory, mode=mode, exist_ok=True)
+    return directory

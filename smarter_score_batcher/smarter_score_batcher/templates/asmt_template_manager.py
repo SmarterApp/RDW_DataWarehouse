@@ -148,13 +148,10 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         return MetadataTemplate(deep_merge(standard_template, custom_template))
 
     def _load_custom_template(self, subject, path):
-        try:
-            tmpl = super()._load_template(subject, path=path)
-            return tmpl.get_asmt_metadata_template()
-        except MetadataException:
-            return {}
+        tmpl = super()._load_template(subject, path=path)
+        return tmpl.get_asmt_metadata_template()
 
     def _get_configured_path(self):
-        return conf.get('smarter_score_batcher.metadata.static', '../../resources/meta/performance')
+        return conf.get('smarter_score_batcher.metadata.performance', '../../resources/meta/performance')
 
 component.provideUtility(PerfMetadataTemplateManager(), IMetadataTemplateManager)

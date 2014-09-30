@@ -194,8 +194,8 @@ common:
       xsd:
         path: ../resources/sample_xsd.xsd
       metadata:
-        static: ../resources/meta/static
-        performance: ../resources/meta/performance
+        static: ../../resources/meta/static
+        performance: ../../resources/meta/performance
       cache:
         regions: public.shortlived
         type: memory

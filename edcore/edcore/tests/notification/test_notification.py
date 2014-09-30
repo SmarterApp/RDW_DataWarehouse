@@ -51,7 +51,8 @@ class Test(unittest.TestCase):
         udl_load_status = UdlStatsConstants.MIGRATE_INGESTED
         udl_phase = 'W.hello'
         error_desc = 'error has occured'
-        body = create_notification_body(load_type, guid_batch, batch_table, id, test_registration_id, row_count, udl_load_status, udl_phase, error_desc)
+        tsb_error = []
+        body = create_notification_body(load_type, guid_batch, batch_table, id, test_registration_id, row_count, udl_load_status, udl_phase, error_desc, tsb_error)
         self.assertEqual(body['testRegistrationId'], test_registration_id)
         self.assertEqual(body['rowCount'], 100)
         self.assertEqual(body['status'], 'Success')
@@ -111,7 +112,7 @@ class Test(unittest.TestCase):
 
     def test_create_notification_body_success(self):
 
-        body = create_notification_body(LoadType.STUDENT_REGISTRATION, "guid_batch", "batch_table", "id", "test_reg_id", 100, UdlStatsConstants.MIGRATE_INGESTED, None, None)
+        body = create_notification_body(LoadType.STUDENT_REGISTRATION, "guid_batch", "batch_table", "id", "test_reg_id", 100, UdlStatsConstants.MIGRATE_INGESTED, None, None, None)
 
         self.assertEquals(body['rowCount'], 100)
         self.assertEquals(body['id'], 'id')
@@ -121,7 +122,7 @@ class Test(unittest.TestCase):
 
     def test_create_notification_body_failure(self):
 
-        body = create_notification_body(LoadType.STUDENT_REGISTRATION, "guid_batch", "batch_table", "id", "test_reg_id", 100, UdlStatsConstants.UDL_STATUS_FAILED, None, 'ERROR 3000')
+        body = create_notification_body(LoadType.STUDENT_REGISTRATION, "guid_batch", "batch_table", "id", "test_reg_id", 100, UdlStatsConstants.UDL_STATUS_FAILED, None, 'ERROR 3000', None)
 
         self.assertTrue('rowCount' not in body)
         self.assertEquals(body['id'], 'id')

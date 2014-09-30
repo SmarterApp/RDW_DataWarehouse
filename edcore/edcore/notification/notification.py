@@ -44,7 +44,8 @@ def send_notification(conf):
                                                      notification.get(Constants.TOTAL_ROWS_LOADED, 0),
                                                      load_status,
                                                      notification.get(Constants.UDL_PHASE),
-                                                     notification.get(Constants.ERROR_DESC))
+                                                     notification.get(Constants.ERROR_DESC),
+                                                     notification.get('tsb_error'))
 
         notification_status = {}
         call_back_timestamp = ''
@@ -73,7 +74,7 @@ def send_notification(conf):
         update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.NOTIFICATION_STATUS: json.dumps(notification_status)})
 
 
-def create_notification_body(load_type, guid_batch, batch_table, id, test_registration_id, row_count, udl_load_status, udl_phase, error_desc):
+def create_notification_body(load_type, guid_batch, batch_table, id, test_registration_id, row_count, udl_load_status, udl_phase, error_desc, tsb_error):
     '''
     Create the notification request body for the job referenced by guid_batch.
 
@@ -106,7 +107,6 @@ def create_notification_body(load_type, guid_batch, batch_table, id, test_regist
     if udl_load_status == UdlStatsConstants.MIGRATE_INGESTED:
         notification_body['rowCount'] = row_count
 
-    tsb_error = notification_body.get('tsb_error')
     if tsb_error is not None:
         notification_body['tsb_error'] = tsb_error
     return notification_body

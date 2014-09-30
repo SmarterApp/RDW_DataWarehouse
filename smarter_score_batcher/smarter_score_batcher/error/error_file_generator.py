@@ -11,6 +11,9 @@ from smarter_score_batcher.error.constants import ErrorsConstants
 
 
 def generate_error_file(error_file_path, err_list):
+    '''
+    generate error file.
+    '''
     SPIN = True
     directory = os.path.dirname(error_file_path)
     while SPIN:
@@ -34,10 +37,16 @@ def generate_error_file(error_file_path, err_list):
 
 
 def build_error_info_header():
+    '''
+    error file template
+    '''
     return {ErrorsConstants.CONTENT: ErrorsConstants.ERROR, ErrorsConstants.TSB_ERROR: []}
 
 
 def build_err_list(err_code, err_source, err_code_text, err_source_text, err_input):
+    '''
+    error file body
+    '''
     err_list = {}
     err_list[ErrorsConstants.ERR_CODE] = err_code
     err_list[ErrorsConstants.ERR_SOURCE] = err_source

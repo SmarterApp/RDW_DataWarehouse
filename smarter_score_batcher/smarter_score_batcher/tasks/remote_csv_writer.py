@@ -21,6 +21,7 @@ def remote_csv_generator(meta, csv_file_path, xml_file_path, work_dir):
         rtn = generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=mode)
     except TSBException as e:
         # all TSB exception should be caught in here
+        e.err_input = 'student_guid: ' + meta.student_id
         state_code = meta.state_code
         asmt_id = meta.asmt_id
         directory = prepare_assessment_dir(work_dir, state_code, asmt_id, mode=0o700)

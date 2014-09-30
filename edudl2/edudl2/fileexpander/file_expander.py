@@ -58,9 +58,9 @@ def _verify_tar_file_contents(tar_file_member_names):
         if 'csv' in file_extensions and 'json' in file_extensions and 'err' in file_extensions:
             return True
     elif len(file_extensions) is 2:
-        if 'json' in file_extensions:
+        if 'json' in file_extensions and 'err' in file_extensions:
             return True
-        elif 'csv' in file_extensions or 'err' in file_extensions:
+        elif 'csv' in file_extensions and 'json' in file_extensions:
             return True
     return False
 

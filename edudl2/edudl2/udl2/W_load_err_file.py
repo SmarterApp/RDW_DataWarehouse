@@ -13,9 +13,9 @@ logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_load_err_file.task", base=Udl2BaseTask)
 def task(incoming_msg):
-    """
+    '''
     This is the celery task to load err file
-    """
+    '''
     guid_batch = incoming_msg.get(mk.GUID_BATCH)
     # Outgoing message to be piped to the file expander
     outgoing_msg = {}

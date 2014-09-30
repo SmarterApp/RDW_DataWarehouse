@@ -1,6 +1,5 @@
 import logging
 from edudl2.json_util.json_util import get_value_from_json
-from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
 
 __author__ = 'tshewchuk'

@@ -60,6 +60,7 @@ def move_data_from_staging_to_integration_one_by_one(source_table_name, target_t
                                                                          record_sid=record_sid)
                 success += query_result
             except:
+                logger.error('Failed to integrate record: batch_guid[' + guid_batch + '] record_sid[' + record_sid + ']')
                 fail += 1
     return success, fail
 

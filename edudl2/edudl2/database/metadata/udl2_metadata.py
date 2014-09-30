@@ -175,7 +175,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('assessmentyear', String(256), nullable=True),
                                   Column('created_date', TIMESTAMP, nullable=False, server_default=text('NOW()')),
                                   Column('accommodationamericansignlanguage', String(256), CheckConstraint('accommodationamericansignlanguage' != ''), nullable=False),
-                                  Column('accommodationsignlanguagehumanintervention', String(256), CheckConstraint('accommodationsignlanguagehumanintervention' != ''), nullable=False),
                                   Column('accommodationbraille', String(256), CheckConstraint('accommodationbraille' != ''), nullable=False),
                                   Column('accommodationclosedcaptioning', String(256), CheckConstraint('accommodationclosedcaptioning' != ''), nullable=False),
                                   Column('accommodationtexttospeech', String(256), CheckConstraint('accommodationtexttospeech' != ''), nullable=False),
@@ -184,10 +183,12 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('accommodationcalculator', String(256), CheckConstraint('accommodationcalculator' != ''), nullable=False),
                                   Column('accommodationmultiplicationtable', String(256), CheckConstraint('accommodationmultiplicationtable' != ''), nullable=False),
                                   Column('accommodationprintondemand', String(256), CheckConstraint('accommodationprintondemand' != ''), nullable=False),
+                                  Column('accommodationprintondemanditems', String(256), CheckConstraint('accommodationprintondemanditems' != ''), nullable=False),
                                   Column('accommodationreadaloud', String(256), CheckConstraint('accommodationreadaloud' != ''), nullable=False),
                                   Column('accommodationscribe', String(256), CheckConstraint('accommodationscribe' != ''), nullable=False),
                                   Column('accommodationspeechtotext', String(256), CheckConstraint('accommodationspeechtotext' != ''), nullable=False),
                                   Column('accommodationstreamlinemode', String(256), CheckConstraint('accommodationstreamlinemode' != ''), nullable=False),
+                                  Column('accommodationnoisebuffer', String(256), CheckConstraint('accommodationnoisebuffer' != ''), nullable=False),
                                   Column('guid_batch', String(256), CheckConstraint('guid_batch' != ''), nullable=False),
                                   )
 
@@ -323,7 +324,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('asmt_year', SmallInteger, nullable=False),
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                                   Column('acc_asl_video_embed', SmallInteger, nullable=False),
-                                  Column('acc_asl_human_nonembed', SmallInteger, nullable=False),
                                   Column('acc_braile_embed', SmallInteger, nullable=False),
                                   Column('acc_closed_captioning_embed', SmallInteger, nullable=False),
                                   Column('acc_text_to_speech_embed', SmallInteger, nullable=False),
@@ -332,10 +332,12 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_calculator_nonembed', SmallInteger, nullable=False),
                                   Column('acc_multiplication_table_nonembed', SmallInteger, nullable=False),
                                   Column('acc_print_on_demand_nonembed', SmallInteger, nullable=False),
+                                  Column('acc_print_on_demand_items_nonembed', SmallInteger, nullable=False),
                                   Column('acc_read_aloud_nonembed', SmallInteger, nullable=False),
                                   Column('acc_scribe_nonembed', SmallInteger, nullable=False),
                                   Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
+                                  Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
                                   Column('guid_batch', String(36), CheckConstraint('guid_batch' != ''), nullable=False),
                                   )
 

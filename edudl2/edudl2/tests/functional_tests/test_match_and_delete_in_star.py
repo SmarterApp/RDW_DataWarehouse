@@ -27,7 +27,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
 
     def setUp(self):
         super(MatchAndDeleteFTest, self).setUp()
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        # self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.phase_number = 4
         self.load_type = 'assessment'
         self.conf = move_to_target_setup.generate_conf(self.guid_batch, self.phase_number,

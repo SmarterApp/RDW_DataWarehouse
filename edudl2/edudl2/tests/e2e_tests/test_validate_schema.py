@@ -3,35 +3,30 @@ Created on Jan 31, 2014
 
 @author: bpatel
 '''
-import unittest
 import subprocess
 import os
 import shutil
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_target_connection, get_udl_connection,\
-    initialize_all_db
+from edudl2.database.udl2_connector import get_target_connection, get_udl_connection
 from sqlalchemy.sql import select
 from time import sleep
 from sqlalchemy.sql.expression import and_
 from edudl2.udl2.constants import Constants
-from edudl2.udl2.celery import udl2_flat_conf, udl2_conf
+from edudl2.tests.e2e_tests import UDLE2ETestCase
 
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 path = '/opt/edware/zones/landing/work/ca'
 FACT_TABLE = 'fact_asmt_outcome_vw'
-#DIM_STUDENT = 'dim_student'
 
 
-class ValidateSchemaChange(unittest.TestCase):
+class ValidateSchemaChange(UDLE2ETestCase):
 
     def setUp(self):
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_source_file_tar_gzipped')
         self.tenant_dir = TENANT_DIR
         self.guid_batch_id = str(uuid4())
-        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -89,8 +84,3 @@ class ValidateSchemaChange(unittest.TestCase):
     def test_schema_change(self):
         self.run_udl_pipeline()
         self.validate_edware_database()
-
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

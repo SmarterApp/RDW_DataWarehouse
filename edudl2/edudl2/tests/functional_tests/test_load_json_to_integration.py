@@ -53,9 +53,8 @@ class FunctionalTestLoadJsonToIntegrationTable(UDLTestHelper):
                 self.assertTrue(row[column], 'Expected column does not have data')
 
     def test_sr_json_load_to_int(self):
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         batch_guid = str(uuid4())
-        json_file = os.path.join(data_dir, 'student_registration_data', 'test_sample_student_reg.json')
+        json_file = os.path.join(self.data_dir, 'student_registration_data', 'test_sample_student_reg.json')
         load_type = Constants.LOAD_TYPE_STUDENT_REGISTRATION
         conf = self.generate_config(load_type, json_file, batch_guid)
 

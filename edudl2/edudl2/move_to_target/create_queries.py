@@ -259,6 +259,7 @@ def get_column_mapping(schema_name, ref_table, target_table, source_table=None):
         query = query.where(table.c.target_table == target_table)
         if source_table:
             query = query.where(and_(table.c.source_table == source_table))
+        query = query.order_by(table.c.column_map_key)
         return conn.get_result(query)
 
 

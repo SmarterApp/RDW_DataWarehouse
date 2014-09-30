@@ -36,20 +36,20 @@
 		<ExamineeRelationship context="FINAL" name="StateCode" value="CA" contextDate="2014-04-14T11:13:41.803"/>
 	</Examinee>
 	<Opportunity server="562299-SBASQL8" effectiveDate="2014-03-04" database="CASBAC_SHARD_2013sp" clientName="California" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="1855629" startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2014-04-14T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
-		<Accommodation type="AmericanSignLanguage" value="0" context="INITIAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="AmericanSignLanguage" value="4" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="AmericanSignLanguageInterpreter" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433" />
-		<Accommodation type="Braile" value="8" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="ClosedCaptioning" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="TTS" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="Abacus" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="AlternateResponseOptions" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="Calculator" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433" />
-		<Accommodation type="MultiplicationTable" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="PrintOnRequest" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="ReadAloud" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="Scribe" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
-		<Accommodation type="SpeechToText" value="0" context="FINAL" code="ENU" segment="0" contextDate="2014-04-14T10:48:43.433"/>
+        <Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="4" />
+        <Score measureOf="Braile" measureLabel="Accommodation" value="8" />
+        <Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="0" />
+        <Score measureOf="TTS" measureLabel="Accommodation" value="0" />
+        <Score measureOf="Abacus" measureLabel="Accommodation" value="0" />
+        <Score measureOf="AlternateResponseOptions" measureLabel="Accommodation" value="0" />
+        <Score measureOf="Calculator" measureLabel="Accommodation" value="0" />
+        <Score measureOf="MultiplicationTable" measureLabel="Accommodation" value="0" />
+        <Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="0" />
+        <Score measureOf="PrintOnDemandItem" measureLabel="Accommodation" value="0" />
+        <Score measureOf="ReadAloud" measureLabel="Accommodation" value="0" />
+        <Score measureOf="Scribe" measureLabel="Accommodation" value="0" />
+        <Score measureOf="SpeechToText" measureLabel="Accommodation" value="0" />
+        <Score measureOf="Noisebuffer" measureLabel="Accommodation" value="0" />
 		<Score measureOf="Overall" measureLabel="ScaleScore" value="1295" standardError="19" />
 		<Score measureOf="Overall" measureLabel="PerformanceLevel" value="1" />
 		<Score measureOf="Overall" measureLabel="MinScore" value="1200" />

@@ -1,44 +1,23 @@
-import unittest
 import os
 import shutil
-from edudl2.filedecrypter import file_decrypter
-from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from edudl2.udl2_util.config_reader import read_ini_file
 import tempfile
+from edudl2.filedecrypter import file_decrypter
+from edudl2.tests.functional_tests import UDLFunctionalTestCase
 
 
-class TestFileDecrypter(unittest.TestCase):
+class TestFileDecrypter(UDLFunctionalTestCase):
 
     def setUp(self):
-        try:
-            config_path = dict(os.environ)['UDL2_CONF']
-        except Exception:
-            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-
-        conf_tup = read_ini_file(config_path)
-        self.conf = conf_tup[0]
-        # test source files
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.test_source_file_1 = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
-        self.test_source_file_2 = os.path.join(data_dir, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg')
         # temp directory for testing decrypter
         self.decrypter_test_dir = tempfile.mkdtemp()
-        # test files in tests zone
-        self.test_valid_file = os.path.join(self.decrypter_test_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
-        self.test_invalid_file = os.path.join(self.decrypter_test_dir, 'test_non_existing_file_tar_gzipped.tar.gz.gpg')
-        self.test_corrupted_file = os.path.join(self.decrypter_test_dir, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg')
-        # copy files to tests zone
-        shutil.copyfile(self.test_source_file_1, self.test_valid_file)
-        shutil.copyfile(self.test_source_file_2, self.test_corrupted_file)
-        # set the gpg key home
-        self.gpg_test_home = os.path.join(data_dir, 'keys')
 
     def tearDown(self):
         shutil.rmtree(self.decrypter_test_dir, ignore_errors=True)
 
     def test_decrypter_for_valid_file(self):
-        self.assertTrue(os.path.isfile(self.test_valid_file))
-        status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
+        gpg_file = self.require_gpg_file('test_source_file_tar_gzipped')
+        self.assertTrue(os.path.isfile(gpg_file))
+        status, decrypted_file = file_decrypter.decrypt_file(gpg_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_home)
         self.assertTrue(os.path.isfile(decrypted_file))
         self.assertTrue(status.ok)
         self.assertEqual(status.trust_level, 4)
@@ -47,16 +26,16 @@ class TestFileDecrypter(unittest.TestCase):
         self.assertEqual(status.fingerprint, '398AE2A8E54D810502E4B115DD87CFFF75C7BEC2')
 
     def test_decrypter_for_invalid_file(self):
-        self.assertFalse(os.path.isfile(self.test_invalid_file))
-        with self.assertRaises(Exception):
-            file_decrypter.decrypt_file(self.test_invalid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
+        test_invalid_data = os.path.join(self.data_dir, 'test_non_existing_file_tar_gzipped.tar.gz.gpg')
+        self.assertFalse(os.path.isfile(test_invalid_data))
+        self.assertRaises(Exception, file_decrypter.decrypt_file, test_invalid_data, self.decrypter_test_dir, 'sbac udl2', self.gpg_home)
 
     def test_decrypter_for_corrupted_file(self):
-        self.assertTrue(os.path.isfile(self.test_corrupted_file))
-        with self.assertRaises(Exception):
-            file_decrypter.decrypt_file(self.test_corrupted_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
+        test_corrupted_file = os.path.join(self.data_dir, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg')
+        self.assertTrue(os.path.isfile(test_corrupted_file))
+        self.assertRaises(Exception, file_decrypter.decrypt_file, test_corrupted_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_home)
 
     def test_decrypter_with_wrong_passphrase(self):
-        self.assertTrue(os.path.isfile(self.test_valid_file))
-        with self.assertRaises(Exception):
-            file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'wrong passphrase', self.gpg_test_home)
+        gpg_file = self.require_gpg_file('test_source_file_tar_gzipped')
+        self.assertTrue(os.path.isfile(gpg_file))
+        self.assertRaises(Exception, file_decrypter.decrypt_file, gpg_file, self.decrypter_test_dir, 'wrong passphrase', self.gpg_home)

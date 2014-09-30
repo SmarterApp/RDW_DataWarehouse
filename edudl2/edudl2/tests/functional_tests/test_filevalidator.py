@@ -1,26 +1,12 @@
-import unittest
+import os
 from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.sfv import simple_file_validator
 from edudl2.sfv import csv_validator
 from edudl2.sfv import json_validator
-import os
-from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from edudl2.udl2_util.config_reader import read_ini_file
-
-__location__ = '../data'
+from edudl2.tests.functional_tests import UDLFunctionalTestCase
 
 
-class DataValidationErrorCode(unittest.TestCase):
-
-    def setUp(self, ):
-        try:
-            config_path = dict(os.environ)['UDL2_CONF']
-        except Exception:
-            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-
-        conf_tup = read_ini_file(config_path)
-        self.conf = conf_tup[0]
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+class DataValidationErrorCode(UDLFunctionalTestCase):
 
     # For bad CSVFiles
     def test_sourcefolder_errorcode(self):

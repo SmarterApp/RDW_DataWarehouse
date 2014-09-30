@@ -1,0 +1,70 @@
+{
+    "content": "assessment", 
+    "Identification": {
+        "Guid": "aa85755f-22f4-4727-adce-17a381ed5617", 
+        "Type": "SUMMATIVE", 
+        "Year": "2015", 
+        "Period": "Spring 2015", 
+        "Version": "V1", 
+        "Subject": "ELA", 
+        "EffectiveDate": "20150404"
+    }, 
+    "Overall": {
+        "MinScore": "1200", 
+        "MaxScore": "2400"
+    }, 
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "Minimal Understanding"
+        }, 
+        "Level2": {
+            "Name": "Partial Understanding", 
+            "CutPoint": "1400"
+        }, 
+        "Level3": {
+            "Name": "Adequate Understanding", 
+            "CutPoint": "1800"
+        }, 
+        "Level4": {
+            "Name": "Thorough Understanding", 
+            "CutPoint": "2100"
+        }, 
+        "Level5": {
+            "Name": "", 
+            "CutPoint": ""
+        }
+    }, 
+    "Claims": {
+        "Claim1": {
+            "Name": "Reading", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim2": {
+            "Name": "Writing", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim3": {
+            "Name": "Listening", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim4": {
+            "Name": "Research & Inquiry", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }
+    }, 
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": "Below Standard"
+        }, 
+        "Level2": {
+            "Name": "At/Near Standard"
+        }, 
+        "Level3": {
+            "Name": "Above Standard"
+        }
+    }
+}

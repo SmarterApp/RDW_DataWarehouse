@@ -13,21 +13,17 @@ from sqlalchemy.sql import select, and_
 from time import sleep
 import subprocess
 from uuid import uuid4
-import unittest
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
-from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
+from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.constants import Constants
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.tests.e2e_tests import UDLE2ETestCase
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
-class Test_Err_Handling_Scenario(unittest.TestCase):
+class Test_Err_Handling_Scenario(UDLE2ETestCase):
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
         self.err_list = 'err_list'
-        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -130,19 +126,15 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     def test_rec_not_found_prod(self):
         self.empty_table()
         self.guid_batch_id = str(uuid4())
-        self.archived_file = os.path.join(self.data_dir, 'test_rec_not_in_prod.tar.gz.gpg')
-        self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
+        archived_file = self.require_gpg_file('test_rec_not_in_prod')
+        self.run_udl_pipeline(self.guid_batch_id, archived_file)
         self.validate_udl_stats(self.guid_batch_id)
         self.validate_err_list(self.guid_batch_id)
 
     def test_del_rec_twice_same_batch(self):
         self.empty_table()
         self.guid_batch_id = str(uuid4())
-        self.archived_file = os.path.join(self.data_dir, 'test_del_twice_same_batch.tar.gz.gpg')
-        self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
+        archived_file = self.require_gpg_file('test_del_twice_same_batch')
+        self.run_udl_pipeline(self.guid_batch_id, archived_file)
         self.validate_err_table(self.guid_batch_id)
         self.validate_udl_stats(self.guid_batch_id)
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

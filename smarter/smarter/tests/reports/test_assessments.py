@@ -207,7 +207,6 @@ class TestAssessments(unittest.TestCase):
             "acc_streamline_mode": 2,
             "acc_closed_captioning_embed": 4,
             "acc_text_to_speech_embed": 2,
-            "acc_asl_human_nonembed": 1,
             "acc_read_aloud_nonembed": 0,
             "some_garbage": 11}
         grouped_sections = get_accommodations(result)
@@ -217,7 +216,7 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(group0, ['acc_asl_video_embed', 'acc_print_on_demand_nonembed', 'acc_read_aloud_nonembed'])
         group1 = grouped_sections.get(1)
         group1.sort()
-        self.assertEqual(group1, ['acc_asl_human_nonembed', 'acc_braile_embed', 'acc_speech_to_text_nonembed'])
+        self.assertEqual(group1, ['acc_braile_embed', 'acc_speech_to_text_nonembed'])
         self.assertEqual(result, {'some_garbage': 11})
 
     def test_get_accommodations_empty_input(self):

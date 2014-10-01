@@ -12,7 +12,7 @@ b) Checking the file has data and the application has permissions to access it
 import os
 
 from edudl2.exceptions.errorcodes import ErrorCode
-from edudl2.sfv import csv_validator, err_validator
+from edudl2.sfv import csv_validator
 from edudl2.sfv import json_validator
 
 

@@ -43,5 +43,5 @@
         "acc_streamline_mode": "Dạng dòng chảy"
     },
     "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
-    "higherEdLinkDefault":"<a href='#'>http://stateresources.link</a>"
+    "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
 }

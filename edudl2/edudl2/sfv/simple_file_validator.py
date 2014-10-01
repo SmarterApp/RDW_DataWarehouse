@@ -23,6 +23,7 @@ class SimpleFileValidator():
         """Constructor"""
         self.validators = {'.csv': csv_validator.CsvValidator(load_type),
                            '.json': json_validator.JsonValidator(load_type),
+                           '.err': err_validator.ErrorValidator(),
                            }
 
     def execute(self, dir_path, file_name, guid_batch):

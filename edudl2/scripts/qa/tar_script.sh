@@ -4,7 +4,7 @@ if [ -n "$1" ]
 then
     work_dir=$1
 else
-    work_dir=/Users/nparoha/Desktop/sds_28_data_extracts/
+    work_dir=~/Downloads/test/
 fi
 
 # exit if work_dir doesn't exist

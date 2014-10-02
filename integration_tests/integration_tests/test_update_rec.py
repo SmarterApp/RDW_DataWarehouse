@@ -8,21 +8,20 @@ from integration_tests.udl_helper import empty_batch_table, empty_stats_table, r
 import os
 import shutil
 import time
-from time import sleep
 from uuid import uuid4
 from edudl2.database.udl2_connector import get_prod_connection,\
     initialize_all_db
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from integration_tests import IntegrationTestCase
 
 
-class Test(unittest.TestCase):
+class Test(IntegrationTestCase):
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "data")
-        self.archived_file = os.path.join(self.data_dir, 'test_update_record.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_update_record')
         initialize_all_db(udl2_conf, udl2_flat_conf)
         empty_stats_table(self)
         empty_batch_table(self)
@@ -89,5 +88,4 @@ class Test(unittest.TestCase):
             print(len(inactive_result))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

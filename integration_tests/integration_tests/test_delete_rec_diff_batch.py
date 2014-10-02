@@ -16,21 +16,17 @@ from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql.expression import bindparam, text
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
     validate_edware_stats_table_before_mig
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from integration_tests import IntegrationTestCase
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
-class Test_Error_In_Migration(unittest.TestCase):
-
-    def __init__(self, *args, **kwargs):
-        unittest.TestCase.__init__(self, *args, **kwargs)
+class Test_Error_In_Migration(IntegrationTestCase):
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "data")
-        self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
+        # self.data_dir = os.path.join(os.path.dirname(__file__), "data")
+        # self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_delete_record')
         self.tenant = 'cat'
-        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def test_migration_error_validation(self):
         '''
@@ -93,9 +89,9 @@ class Test_Error_In_Migration(unittest.TestCase):
             query = select([table.c.load_status])
             result = conn.execute(query).fetchall()
             expected_result = [('migrate.ingested',), ('migrate.failed',)]
-            #Validate that one migration batch is failed and one is successful.
+            # Validate that one migration batch is failed and one is successful.
             self.assertEquals(result, expected_result)
-            #Validate that schema clean up is successful for both the scenario: Migration.ingested and migration.failed
+            # Validate that schema clean up is successful for both the scenario: Migration.ingested and migration.failed
             schema_name = select([table.c.batch_guid])
             schema_name_result = conn.execute(schema_name).fetchall()
             tpl_schema_name_1 = schema_name_result[0]
@@ -109,7 +105,7 @@ class Test_Error_In_Migration(unittest.TestCase):
                     result = connector.execute(new_query).fetchall()
                     self.assertEqual(len(result), 0, "Schema clean up after migration is unsuccessful")
 
-    #Validate edware_prod table for given student status has change to D for first batch.
+    # Validate edware_prod table for given student status has change to D for first batch.
     def validate_prod(self):
         with get_prod_connection(self.tenant) as conn:
             fact_table = conn.get_table('fact_asmt_outcome_vw')
@@ -128,5 +124,4 @@ class Test_Error_In_Migration(unittest.TestCase):
             shutil.rmtree(self.tenant_dir)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

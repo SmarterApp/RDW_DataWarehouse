@@ -27,8 +27,8 @@
 
     "policy_content": {
         "11": {
-            "Math": "Los colegios y las universidades pueden usar las puntuaciones de Smarter Balanced como evidencia de la preparación del estudiante para los cursos de nivel de entrada que tienen crédito. Para mayor información, visite <a href='#'>http://stateresources.link</a>",
-            "ELA": "Los colegios y las universidades pueden usar las puntuaciones de Smarter Balanced como evidencia de la preparación del estudiante para los cursos de nivel de entrada que tienen crédito. Para mayor información, visite <a href='#'>http://stateresources.link</a>"
+            "Math": "Los colegios y las universidades pueden usar las puntuaciones de Smarter Balanced como evidencia de la preparación del estudiante para los cursos de nivel de entrada que tienen crédito. Para mayor información, visite <a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>",
+            "ELA": "Los colegios y las universidades pueden usar las puntuaciones de Smarter Balanced como evidencia de la preparación del estudiante para los cursos de nivel de entrada que tienen crédito. Para mayor información, visite <a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
         }
     },
 

@@ -27,8 +27,8 @@
 
     "policy_content": {
         "11": {
-            "Math": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>",
-            "ELA": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>"
+            "Math": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>",
+            "ELA": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
         }
     },
 

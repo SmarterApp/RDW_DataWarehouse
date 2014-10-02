@@ -35,7 +35,14 @@ define [
 
     buildAccommodations: (accommodations) ->
       # mapping accommodation code and column name to meaningful description text
+      accommodations_enhanced = {}
       for code, columns of accommodations
+        bucket = @configData.accomodationCodeBuckets[code]
+        accommodation_codes = accommodations_enhanced[bucket] || []
+        accommodation_codes = accommodation_codes.concat accommodations[code]
+        accommodations_enhanced[bucket] = accommodation_codes
+
+      for code, columns of accommodations_enhanced
         section = {}
         description = @configData.accommodationMapping[code]
         continue if not description
@@ -44,6 +51,19 @@ define [
           @configData.accommodationColumns[column]
         section["accommodation"] = accommodation.sort()
         section
+
+    getEnhancedAccomodationBucketOrder: (code) ->
+      # place accommodations into correct buckets
+      #bucket = "1" if code is "11" or code is "17"
+      #bucket = "2" if code is "2" or code is "8" or code is "20" or code is "26"
+      #bucket = "3" if code is "3" or code is "4" or code is "21" or code is "22"
+      #bucket = "4" if code is "7" or code is "19" or code is "25"
+      #bucket = "5" if code is "6" or code is "24"
+      #bucket = "6" if code is "18" 
+      #if(@configData.accomodationCodeBuckets.hasOwnProperty(code))
+      bucket = @configData.accomodationCodeBuckets[code]
+      bucket
+
 
     processData: () ->
       # TODO: below code should be made prettier someday

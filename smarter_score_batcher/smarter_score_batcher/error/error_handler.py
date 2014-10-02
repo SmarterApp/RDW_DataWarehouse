@@ -5,8 +5,11 @@ Created on Sep 23, 2014
 '''
 from smarter_score_batcher.error.error_file_generator import build_err_list,\
     generate_error_file
-from test.test_xml_etree import ET
 from smarter_score_batcher.processing.file_processor import generate_assessment_metadata_file
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 
 def handle_error(e_TSBException, err_file_path, xml_file_path, json_file_path):

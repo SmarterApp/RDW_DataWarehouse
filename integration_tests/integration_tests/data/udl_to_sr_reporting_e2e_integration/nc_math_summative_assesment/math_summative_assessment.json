@@ -1,0 +1,74 @@
+{
+    "content": "assessment", 
+    "Identification": {
+        "Guid": "00000000-0000-0000-0000-000000000000", 
+        "Type": "SUMMATIVE", 
+        "Year": "2000", 
+        "Period": "2000", 
+        "Version": "V1", 
+        "Subject": "Math",
+        "EffectiveDate": "20000101"
+    }, 
+    "Overall": {
+        "MinScore": "1200", 
+        "MaxScore": "2400"
+    }, 
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "Minimal Understanding", 
+            "CutPoint": "1200"
+        }, 
+        "Level2": {
+            "Name": "Partial Understanding", 
+            "CutPoint": "1400"
+        }, 
+        "Level3": {
+            "Name": "Adequate Understanding", 
+            "CutPoint": "1800"
+        }, 
+        "Level4": {
+            "Name": "Thorough Understanding", 
+            "CutPoint": "2100"
+        }, 
+        "Level5": {
+            "Name": "", 
+            "CutPoint": ""
+        }
+    }, 
+    "Claims": {
+        "Claim1": {
+            "Name": "Concepts & Procedures", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim2": {
+            "Name": "Problem Solving and Modeling & Data Analysis", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim3": {
+            "Name": "Communicating Reasoning", 
+            "MinScore": "1200", 
+            "MaxScore": "2400"
+        }, 
+        "Claim4": {
+            "Name": "", 
+            "MinScore": "0", 
+            "MaxScore": "0"
+        }
+    }, 
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": "Below Standard"
+        }, 
+        "Level2": {
+            "Name": "At or Near Standard"
+        }, 
+        "Level3": {
+            "Name": "Above Standard"
+        }
+    },
+    "Source": {
+        "CallbackURL": "http://127.0.0.1:50473"
+    }
+}

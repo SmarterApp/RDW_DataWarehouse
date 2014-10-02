@@ -4,7 +4,7 @@ Created on Mar 7, 2014
 @author: bpatel
 This test will validate intelligent insert to dim tables and forign key validation.
 Test Scenario: 1) Test file contains one record that is not exist in production.
-               2) This test also verify that foregn keys into fact_asmt table is match to dim_tables 
+               2) This test also verify that foregn keys into fact_asmt table is match to dim_tables
                2) In second udl run, it will verify that duplicate records in fact_table is inactive. also in preprod dim tables status of duplicate record is S
 '''
 import unittest
@@ -13,25 +13,21 @@ import shutil
 from sqlalchemy.sql import select
 import time
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_target_connection, get_prod_connection,\
-    initialize_all_db
+from edudl2.database.udl2_connector import get_target_connection, get_prod_connection
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
     migrate_data, validate_udl_stats_before_mig, validate_udl_stats_after_mig
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from integration_tests import IntegrationTestCase
 
 
-#@unittest.skip("skipping this test till till ready for jenkins")
-class Test_Intelligent_Insert(unittest.TestCase):
+class Test_Intelligent_Insert(IntegrationTestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "data")
-        self.archived_file = os.path.join(self.data_dir, 'test_intelligent_insert.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_intelligent_insert')
         self.tenant = 'cat'
-        initialize_all_db(udl2_conf, udl2_flat_conf)
         empty_batch_table(self)
         empty_stats_table(self)
 
@@ -68,7 +64,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
         time.sleep(5)
         self.validate_edware_database(schema_name=self.guid_batch_id)
 
-        #this method will verify that for duplicate record ,status change to S in dim tables
+        # this method will verify that for duplicate record ,status change to S in dim tables
         self.validate_prepod_tables(schema_name=self.guid_batch_id)
         validate_udl_stats_before_mig(self)
         migrate_data(self)
@@ -179,5 +175,4 @@ class Test_Intelligent_Insert(unittest.TestCase):
                 self.assertEquals(len(actual_dim_table_rows), expected_rows_in_dim_tables, "Error: Data has been loaded to dim_tables")
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

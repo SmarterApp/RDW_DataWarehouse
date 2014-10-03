@@ -25,12 +25,15 @@ class Test(unittest.TestCase):
 
     def test_handle_error_with_FileLockException(self):
         ex = None
+        here = os.path.abspath(os.path.dirname(__file__))
+        json_path = os.path.join(here, '..', 'resources', 'meta', 'performance', '2014', 'summative', '3', 'ELA.static_asmt_metadata.json')
+        xml_path = os.path.join(here, '..', 'resources', 'assessment.xml')
         try:
             raise FileLockException('hello')
         except TSBException as e:
             ex = e
         error_file = os.path.join(self.tmp.name, str(uuid.uuid4()))
-        handle_error(ex, error_file)
+        handle_error(ex, error_file, xml_path, json_path)
         self.assertTrue(os.path.isfile(error_file))
         with open(error_file) as f:
             data = f.read()

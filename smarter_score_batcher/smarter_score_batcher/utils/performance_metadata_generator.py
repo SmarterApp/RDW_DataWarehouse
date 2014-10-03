@@ -4,7 +4,6 @@ Created on Oct 2, 2014
 @author: tosako
 '''
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstatns
-import json
 from smarter_score_batcher.error.exceptions import MetadataException
 from smarter_score_batcher.error.error_codes import ErrorSource
 import logging
@@ -32,6 +31,8 @@ def generate_performance_metadata(xml_string):
                 performanceMedadata.set_subject(value)
                 break
         performancelevels = list(root.find('./reporting/performancelevels').iter('performancelevel'))
+        min_value = None
+        max_value = None
         for performancelevel in performancelevels:
             plevel = performancelevel.attrib['plevel']
             scaledlo = performancelevel.attrib['scaledlo']
@@ -40,8 +41,12 @@ def generate_performance_metadata(xml_string):
             int_scaledhi = int(scaledhi) if type(scaledhi) is str else scaledhi
             cutpoint = 'set_level' + plevel + '_cutPoint'
             getattr(performanceMedadata, cutpoint)(int_scaledlo)
-            performanceMedadata.set_overall_minScore(int_scaledlo)
-            performanceMedadata.set_overall_maxScore(int_scaledhi)
+            if min_value is None or min_value > int_scaledlo:
+                min_value = int_scaledlo
+            if max_value is None or max_value < int_scaledhi:
+                max_value = int_scaledhi
+        performanceMedadata.set_overall_minScore(min_value)
+        performanceMedadata.set_overall_maxScore(max_value)
         return _format_performance_metadata(performanceMedadata)
     except Exception as e:
         logging.error('error while loading metadata from xml: ' + str(e))
@@ -109,22 +114,22 @@ class PerformanceMetadata():
         return self.__level4_cutPoint
 
     def get_claim1_minScore(self):
-        return self.get_overall_minScore()
+        return 0
 
     def get_claim1_maxScore(self):
-        return self.get_overall_maxScore()
+        return 0
 
     def get_claim2_minScore(self):
-        return self.get_overall_minScore()
+        return 0
 
     def get_claim2_maxScore(self):
-        return self.get_overall_maxScore()
+        return 0
 
     def get_claim3_minScore(self):
-        return self.get_overall_minScore()
+        return 0
 
     def get_claim3_maxScore(self):
-        return self.get_overall_maxScore()
+        return 0
 
     def get_claim4_minScore(self):
         return 0

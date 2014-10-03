@@ -56,7 +56,7 @@ def generate_assessment_metadata_file(root, file_path):
         with open(file_path, 'x') as f:
             data = get_assessment_metadata_mapping(root)
             json_file_writer(f, data)
-    except:
+    except Exception as e:
         # most likely file already exist
         pass
 

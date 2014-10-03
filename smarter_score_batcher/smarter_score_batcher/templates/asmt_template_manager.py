@@ -51,7 +51,7 @@ class MetadataTemplateManager:
         self.templates = {}
         self.asmt_meta_location = self._get_template_location(asmt_meta_dir)
 
-    def _load_templates(self, path, pattern='*.static_asmt_metadata.json', conversion_func=json.loads):
+    def _load_templates(self, path, pattern='*.static_asmt_metadata.json'):
         '''
         Load templates for a specific path matching the pattern
         :param path - root for the templates
@@ -63,7 +63,7 @@ class MetadataTemplateManager:
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:
                     data = f.read()
-                    template = MetadataTemplate(conversion_func(data))
+                    template = MetadataTemplate(self._get_conversion_func()(data))
                     templates.append(template)
         return templates
 
@@ -87,7 +87,7 @@ class MetadataTemplateManager:
     def _get_configured_path(self):
         return conf.get('smarter_score_batcher.metadata.static', '../../resources/meta/static')
 
-    def _load_template(self, key, path=None):
+    def _load_template(self, key, path=None, pattern='*.json'):
         '''
         load individual static template
         :param key: key of the template to load
@@ -95,7 +95,7 @@ class MetadataTemplateManager:
         :return template for the key
         '''
         location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path.lower())
-        templates = [template for template in self._load_templates(location) if template.get_asmt_subject().lower() == key.lower()]
+        templates = [template for template in self._load_templates(location, pattern=pattern) if template.get_asmt_subject().lower() == key.lower()]
         if len(templates) == 0:
             raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, location))
         if len(templates) > 1:
@@ -114,6 +114,9 @@ class MetadataTemplateManager:
         if sm is None:
             raise MetadataException("Unable to load metadata for key {0} from ".format(key), err_source=ErrorSource.METADATATEMPLATEMANAGER_GET_TEMPLATE)
         return sm.get_asmt_metadata_template().copy()
+
+    def _get_conversion_func(self):
+        return json.loads
 
 
 @implementer(IMetadataTemplateManager)
@@ -136,7 +139,7 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         key = key + '_' + metadata_template.get_asmt_subject()
         return key.lower()
 
-    def _load_template(self, key):
+    def _load_template(self, key, pattern='*.xml'):
         '''
         load individual template and merge it with static template
         :param key - key to load template for
@@ -145,20 +148,15 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         keys = key.split('_')
         subject = keys.pop()
         path = os.path.sep.join(keys)
-        custom_template = self._load_custom_template(subject, path, pattern='*.xml', conversion_func=generate_performance_metadata)
+        custom_template = super()._load_template(subject, path, pattern='*.xml').get_asmt_metadata_template()
         standard_template = self.meta_template_mgr.get_template(subject)
         return MetadataTemplate(deep_merge(standard_template, custom_template))
 
-    def _load_custom_template(self, subject, path, pattern='.static_asmt_metadata.json', conversion_func=json.loads):
-        location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path.lower())
-        templates = [template for template in self._load_templates(path=location, pattern=pattern, conversion_func=conversion_func) if template.get_asmt_subject().lower() == subject.lower()]
-        if len(templates) == 0:
-            raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(subject, location))
-        if len(templates) > 1:
-            raise MetadataException('Too many templates for key {0} from location {1}'.format(subject, location))
-        return templates.pop().get_asmt_metadata_template()
-
     def _get_configured_path(self):
         return conf.get('smarter_score_batcher.metadata.performance', '../../resources/meta/performance')
+
+    def _get_conversion_func(self):
+        return generate_performance_metadata
+
 
 component.provideUtility(PerfMetadataTemplateManager(), IMetadataTemplateManager)

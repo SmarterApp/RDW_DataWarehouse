@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TDSReport>
+	<Test name="(SBAC)SBAC-FT-SomeDescription-ELA-5-Fall-2013-2014" subject="ELA" mode="online" testId="ee6aa050-037b-4adf-8329-8df4bbc05514" grade="5" contract="SBAC" assessmentType="SUMMATIVE" academicYear="2016" assessmentVersion="V1"/>
+	<Examinee key="cb436fdd-2bc7-4155-8065-c2e8ca2ae4a6">
+		<ExamineeAttribute context="FINAL" name="DOB" value="2005-03-19" contextDate="2014-04-14T11:13:41.803" />
+		<ExamineeAttribute context="FINAL" name="HispanicOrLatinoEthnicity" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="AmericanIndianOrAlaskaNative" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="Asian" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="BlackOrAfricanAmerican" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="White" value="Yes" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="NativeHawaiianOrOtherPacificIslander" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="DemographicRaceTwoOrMoreRaces" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="FirstName" value="John" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="MiddleName" value="" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="LastName" value="Smith" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="Sex" value="M" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="GradeLevelWhenAssessed" value="5" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="ExternalSSID" value="5" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="IDEAIndicator" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="LEPStatus" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="Section504Status" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="EconomicDisadvantageStatus" value="Yes" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="MigrantStatus" value="No" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="ConfirmationCode" value="John" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="LanguageCode" value="ger" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="EnglishLanguageProficiencLevel" value="Moderate" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="FirstEntryDateIntoUSSchool" value="2010-09-01" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="LimitedEnglishProficiencyEntryDate" value="2010-09-01" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="LEPExitDate" value="" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="TitleIIILanguageInstructionProgramType" value="SDAIE" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="PrimaryDisabilityType" value="" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeRelationship context="FINAL" name="DistrictID" value="0513ba44-e8ec-4186-9a0e-8481e9c16206" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeRelationship context="FINAL" name="DistrictName" value="Unified School District" contextDate="2014-04-14T11:13:41.803" />
+		<ExamineeRelationship context="FINAL" name="SchoolID" value="52a84cfa-4cc6-46db-8b59-5938fd1daf12" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeRelationship context="FINAL" name="SchoolName" value="My Elementary School" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeRelationship context="FINAL" name="StateCode" value="NC" contextDate="2014-04-14T11:13:41.803"/>
+	</Examinee>
+	<Opportunity server="Sandpiper Peccary Elementary" effectiveDate="2016-04-04T11:13:40.900" database="CASBAC_SHARD_2013sp" clientName="North Carolina" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="52a84cfa-4cc6-46db-8b59-5938fd1daf12" startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2016-04-11T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
+		<Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="18"/>
+		<Score measureOf="NoiseBuffer" measureLabel="Accommodation" value="12"/>
+		<Score measureOf="PrintOnDemandItem" measureLabel="Accommodation" value="12"/>
+		<Score measureOf="Braile" measureLabel="Score" value="21"/>
+		<Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="26"/>
+		<Score measureOf="TTS" measureLabel="Accommodation" value="24"/>
+		<Score measureOf="Abacus" measureLabel="Accommodation" value="0"/>
+		<Score measureOf="AlternateResponseOptions" measureLabel="Accommodation" value="25"/>
+		<Score measureOf="Calculator" measureLabel="Accommodation" value="0"/>
+		<Score measureOf="MultiplicationTable" measureLabel="Accommodation" value="0"/>
+		<Score measureOf="PrintOnRequest" measureLabel="Accommodation" value="9"/>
+		<Score measureOf="ReadAloud" measureLabel="Accommodation" value="17"/>
+		<Score measureOf="Scribe" measureLabel="Accommodation" value="12"/>
+		<Score measureOf="SpeechToText" measureLabel="Accommodation" value="21"/>
+		<Score measureOf="AccommodationStreamlineMode" measureLabel="Accommodation" value="16"/>
+		<Score measureOf="Overall" measureLabel="ScaleScore" value="1441" standardError="19" />
+		<Score measureOf="Overall" measureLabel="PerformanceLevel" value="2" />
+		<Score measureOf="Overall" measureLabel="MinScore" value="1337" />
+		<Score measureOf="Overall" measureLabel="MaxScore" value="1545" />
+		<Score measureOf="Overall" measureLabel="CutPoint1" value="1400" />
+		<Score measureOf="Overall" measureLabel="CutPoint2" value="1800" />
+		<Score measureOf="Overall" measureLabel="CutPoint3" value="2100" />
+		<Score measureOf="PerformanceLevel" measureLabel="Level1" value="Minimal Understanding" />
+		<Score measureOf="PerformanceLevel" measureLabel="Level2" value="Partial Understanding" />
+		<Score measureOf="PerformanceLevel" measureLabel="Level3" value="Adequate Understanding" />
+		<Score measureOf="PerformanceLevel" measureLabel="Level4" value="Thorough Understanding" />
+		<Score measureOf="Claim1" measureLabel="ScaleScore" value="1346" standardError="13" />
+		<Score measureOf="Claim1" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="Claim1" measureLabel="MinScore" value="1214" />
+		<Score measureOf="Claim1" measureLabel="MaxScore" value="1478" />
+		<Score measureOf="Claim1" measureLabel="Text" value="Communicating Reasoning" />
+		<Score measureOf="Claim2" measureLabel="ScaleScore" value="1397" standardError="13" />
+		<Score measureOf="Claim2" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="Claim2" measureLabel="MinScore" value="1280" />
+		<Score measureOf="Claim2" measureLabel="MaxScore" value="1514" />
+		<Score measureOf="Claim2" measureLabel="Text" value="Problem Solving and Modeling and Data Analysis" />
+		<Score measureOf="Claim3" measureLabel="ScaleScore" value="1509" standardError="13" />
+		<Score measureOf="Claim3" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="Claim3" measureLabel="MinScore" value="1405" />
+		<Score measureOf="Claim3" measureLabel="MaxScore" value="1613" />
+		<Score measureOf="Claim3" measureLabel="Text" value="Concepts and Procedures" />
+		<Score measureOf="Claim4" measureLabel="ScaleScore" value="1484" standardError="13" />
+		<Score measureOf="Claim4" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="Claim4" measureLabel="MinScore" value="1383" />
+		<Score measureOf="Claim4" measureLabel="MaxScore" value="1585" />
+		<Score measureOf="Claim4" measureLabel="Text" value="Concepts and Procedures" />
+		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level1" value="Below Standard" />
+		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level2" value="At/Near Standard" />
+		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level3" value="Above Standard" />
+		<Item position="2" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15566" operational="0" isSelected="1" format="MC" score="0" scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="3" contentLevel="3|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="1" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15558" operational="0" isSelected="1" format="EQ" score="0" scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="2" contentLevel="2|G|NA|C" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="5" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15560" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="2" contentLevel="2|EE|NA|A" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="4" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15562" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="3" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15570" operational="0" isSelected="1" format="SA" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="3" contentLevel="3|RP|NA|B" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="6" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" key="15573" operational="0" isSelected="1" format="GI" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="7" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" key="22489" operational="1" isSelected="1" format="ER" score="3" scoreStatus="SCORED" adminDate="2014-03-25T14:10:36.853" pageNumber="2" pageTime="0" pageVisits="0" numberVisits="15" dropped="0" strand="W" contentLevel="W|W.11-12.2a" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="9" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" key="4609" operational="1" isSelected="1" format="MS" score="0" scoreStatus="SCORED" adminDate="2014-04-24T12:27:26.203" numberVisits="1" strand="SC-ES" contentLevel="SC-ES|4.I|1|d" pageNumber="3" pageVisits="1" pageTime="0" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+		<Item position="8" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" key="645" operational="1" isSelected="1" format="SIM" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-24T12:01:14.983" numberVisits="1" strand="SC-LS" contentLevel="SC-LS|4.V|4|b" pageNumber="4" pageVisits="1" pageTime="0" dropped="0" mimeType="text/plain" bankKey="200"></Item>
+	</Opportunity>
+</TDSReport>

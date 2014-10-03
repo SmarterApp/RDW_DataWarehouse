@@ -14,6 +14,7 @@ from smarter_score_batcher.utils.merge import deep_merge
 from smarter_score_batcher.error.exceptions import MetadataException
 from smarter_score_batcher.error.error_codes import ErrorSource
 import logging
+from smarter_score_batcher.utils.performance_metadata_generator import generate_performance_metadata
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -50,7 +51,7 @@ class MetadataTemplateManager:
         self.templates = {}
         self.asmt_meta_location = self._get_template_location(asmt_meta_dir)
 
-    def _load_templates(self, path, pattern='.static_asmt_metadata.json'):
+    def _load_templates(self, path, pattern='*.static_asmt_metadata.json', conversion_func=json.loads):
         '''
         Load templates for a specific path matching the pattern
         :param path - root for the templates
@@ -61,7 +62,8 @@ class MetadataTemplateManager:
             for file in fnmatch.filter(filenames, pattern):
                 full_path = os.path.join(root, file)
                 with open(full_path, 'r+') as f:
-                    template = MetadataTemplate(json.load(f))
+                    data = f.read()
+                    template = MetadataTemplate(conversion_func(data))
                     templates.append(template)
         return templates
 
@@ -93,7 +95,7 @@ class MetadataTemplateManager:
         :return template for the key
         '''
         location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path.lower())
-        templates = [template for template in self._load_templates(location, pattern='*.json') if template.get_asmt_subject().lower() == key.lower()]
+        templates = [template for template in self._load_templates(location) if template.get_asmt_subject().lower() == key.lower()]
         if len(templates) == 0:
             raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, location))
         if len(templates) > 1:
@@ -120,8 +122,7 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
     Loads and manages performance templates by academic year, asmt type, grade, and subject
     '''
     def __init__(self, asmt_meta_dir=None, static_asmt_meta_dir=None):
-        self.templates = {}
-        self.asmt_meta_location = self._get_template_location(asmt_meta_dir)
+        super().__init__(asmt_meta_dir)
         self.meta_template_mgr = MetadataTemplateManager(asmt_meta_dir=static_asmt_meta_dir)
 
     def get_key(self, path, metadata_template):
@@ -144,13 +145,18 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         keys = key.split('_')
         subject = keys.pop()
         path = os.path.sep.join(keys)
-        custom_template = self._load_custom_template(subject, path)
+        custom_template = self._load_custom_template(subject, path, pattern='*.xml', conversion_func=generate_performance_metadata)
         standard_template = self.meta_template_mgr.get_template(subject)
         return MetadataTemplate(deep_merge(standard_template, custom_template))
 
-    def _load_custom_template(self, subject, path):
-        tmpl = super()._load_template(subject, path=path)
-        return tmpl.get_asmt_metadata_template()
+    def _load_custom_template(self, subject, path, pattern='.static_asmt_metadata.json', conversion_func=json.loads):
+        location = self.asmt_meta_location if path is None else os.path.join(self.asmt_meta_location, path.lower())
+        templates = [template for template in self._load_templates(path=location, pattern=pattern, conversion_func=conversion_func) if template.get_asmt_subject().lower() == subject.lower()]
+        if len(templates) == 0:
+            raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(subject, location))
+        if len(templates) > 1:
+            raise MetadataException('Too many templates for key {0} from location {1}'.format(subject, location))
+        return templates.pop().get_asmt_metadata_template()
 
     def _get_configured_path(self):
         return conf.get('smarter_score_batcher.metadata.performance', '../../resources/meta/performance')

@@ -31,7 +31,7 @@ class TestAsmtMetadata(unittest.TestCase):
         self.assertIsNotNone(mdm.get_template(get_template_key(2015, 'summative', 3, 'ALIEN')), 'It should find ALIEN template for 3rd grade')
         tmpl = mdm.get_template(get_template_key(2015, 'summative', 8, 'ALIEN'))
         self.assertIsNotNone(tmpl, 'It should find ALIEN template for 8th grade')
-        self.assertEqual(tmpl['Overall']['MinScore'], '1200')
+        self.assertEqual(tmpl['Overall']['MinScore'], '1000')
         self.assertEqual(tmpl['Claims']['Claim1']['Name'], 'Alien Name')
         with self.assertRaises(MetadataException):
             mdm.get_template(get_template_key(2015, 'summative', 11, 'MATH'))

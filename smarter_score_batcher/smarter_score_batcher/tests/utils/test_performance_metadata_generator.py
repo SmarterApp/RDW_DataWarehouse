@@ -100,7 +100,7 @@ class Test(unittest.TestCase):
 
     def test_generate_performance_metadata_invalid_value(self):
         here = os.path.abspath(os.path.dirname(__file__))
-        xml_path = os.path.join(here, '..', 'resources', 'meta', 'performance', '2014', 'summative', '3', 'ELA.asmt_metadata.invalid_value_in_performance.xml')
+        xml_path = os.path.join(here, '..', 'resources', 'bad_meta', 'ELA.asmt_metadata.invalid_value_in_performance.xml')
         self.assertTrue(os.path.exists(xml_path))
         self.assertRaises(MetadataException, generate_performance_metadata, xml_path)
 
@@ -108,8 +108,9 @@ class Test(unittest.TestCase):
         here = os.path.abspath(os.path.dirname(__file__))
         xml_path = os.path.join(here, '..', 'resources', 'meta', 'performance', '2014', 'summative', '3', 'ELA.asmt_metadata.xml')
         self.assertTrue(os.path.exists(xml_path))
-        meta_json = generate_performance_metadata(xml_path)
-        meta = json.loads(meta_json)
+        with open(xml_path) as f:
+            j = f.read()
+        meta = generate_performance_metadata(j)
         self.assertEqual('ELA', meta[PerformanceMetadataConstatns.IDENTIFICATION][PerformanceMetadataConstatns.SUBJECT])
         self.assertEqual('2400', meta[PerformanceMetadataConstatns.CLAIMS][PerformanceMetadataConstatns.CLAIM2][PerformanceMetadataConstatns.MAXSCORE])
         self.assertEqual('1000', meta[PerformanceMetadataConstatns.CLAIMS][PerformanceMetadataConstatns.CLAIM2][PerformanceMetadataConstatns.MINSCORE])

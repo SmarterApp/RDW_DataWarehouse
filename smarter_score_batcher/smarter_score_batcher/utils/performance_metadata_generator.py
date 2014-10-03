@@ -17,14 +17,13 @@ except ImportError:
 logger = logging.getLogger("smarter_score_batcher")
 
 
-def generate_performance_metadata(xml_file_path):
+def generate_performance_metadata(xml_string):
     '''
     generating performance metadata by given xml file path
     '''
     try:
         performanceMedadata = PerformanceMetadata()
-        tree = ET.parse(xml_file_path)
-        root = tree.getroot()
+        root = ET.fromstring(xml_string)
         properties = list(root.iter('property'))
         for _property in properties:
             name = _property.attrib['name']
@@ -43,9 +42,7 @@ def generate_performance_metadata(xml_file_path):
             getattr(performanceMedadata, cutpoint)(int_scaledlo)
             performanceMedadata.set_overall_minScore(int_scaledlo)
             performanceMedadata.set_overall_maxScore(int_scaledhi)
-        metadata = _format_performance_metadata(performanceMedadata)
-        matadata_json = json.dumps(metadata)
-        return matadata_json
+        return _format_performance_metadata(performanceMedadata)
     except Exception as e:
         logging.error('error while loading metadata from xml: ' + str(e))
         raise MetadataException('error while loading metadata from xml: ' + str(e), err_source=ErrorSource.GENERATE_PERFORMANCE_METADATA)

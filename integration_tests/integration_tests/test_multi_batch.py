@@ -12,22 +12,18 @@ from time import sleep
 from edudl2.database.udl2_connector import get_udl_connection
 from uuid import uuid4
 import subprocess
-from edcore.database.stats_connector import StatsDBConnection
-from sqlalchemy.sql import select, and_
-from edudl2.database.udl2_connector import get_target_connection, get_prod_connection,\
-    initialize_all_db
+from sqlalchemy.sql import and_
+from edudl2.database.udl2_connector import get_prod_connection
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, migrate_data, validate_edware_stats_table_before_mig, validate_edware_stats_table_after_mig
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 from edudl2.udl2.constants import Constants
+from integration_tests import IntegrationTestCase
 
 
-class TestMultiUdlBatch(unittest.TestCase):
+class TestMultiUdlBatch(IntegrationTestCase):
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "data", "test_multi_udl_batch")
         self.tenant = 'cat'
-        initialize_all_db(udl2_conf, udl2_flat_conf)
         empty_batch_table(self)
         empty_stats_table(self)
         self.expected_unique_batch_guids = 2
@@ -39,7 +35,7 @@ class TestMultiUdlBatch(unittest.TestCase):
     def test_multi_udl_batch(self):
         self.guid_batch_id = str(uuid4())
         self.guid = self.guid_batch_id
-        self.archived_file = os.path.join(self.data_dir, 'test_data.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_multi_udl_batch/test_data')
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
         self.run_udl_with_second_file()
         validate_edware_stats_table_before_mig(self)
@@ -50,7 +46,7 @@ class TestMultiUdlBatch(unittest.TestCase):
 
     def run_udl_with_second_file(self):
         self.guid_batch_id = str(uuid4())
-        self.archived_file = os.path.join(self.data_dir, 'ASMT_ID_76a9ab517e76402793d3f2339391f5.tar.gz.gpg')
+        self.archived_file = self.require_gpg_file('test_multi_udl_batch/ASMT_ID_76a9ab517e76402793d3f2339391f5')
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
         self.check_job_completion()
 
@@ -72,7 +68,7 @@ class TestMultiUdlBatch(unittest.TestCase):
             self.assertEquals(result, [('C',)])
             self.assertEquals(result_new, [('I',)])
 
-    #Copy file to tenant folder
+    # Copy file to tenant folder
     def copy_file_to_tmp(self, file_to_copy):
         if not os.path.exists(self.tenant_dir):
             os.makedirs(self.tenant_dir)
@@ -91,5 +87,4 @@ class TestMultiUdlBatch(unittest.TestCase):
             self.assertEqual(len(result), 1, "UDL pipeline fils")
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

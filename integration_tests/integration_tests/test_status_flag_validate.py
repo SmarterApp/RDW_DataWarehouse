@@ -9,19 +9,16 @@ from integration_tests.udl_helper import empty_batch_table, empty_stats_table, r
 import os
 import shutil
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_prod_connection,\
-    initialize_all_db
+from edudl2.database.udl2_connector import get_prod_connection
 from sqlalchemy.sql import select
-from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from integration_tests import IntegrationTestCase
 
 
-class Test_Validate_Status_Flag(unittest.TestCase):
+class Test_Validate_Status_Flag(IntegrationTestCase):
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "data")
-        self.archived_file = os.path.join(self.data_dir, 'test_status_flag.tar.gz.gpg')
-        initialize_all_db(udl2_conf, udl2_flat_conf)
+        self.archived_file = self.require_gpg_file('test_status_flag')
         empty_stats_table(self)
         self.status_validation()
         self.first_guid = self.guid
@@ -50,7 +47,7 @@ class Test_Validate_Status_Flag(unittest.TestCase):
         second_guid = self.guid
         with get_prod_connection(self.tenant) as connection:
             fact_asmt_outcome_vw = connection.get_table('fact_asmt_outcome_vw')
-            dim_inst_hier = connection.get_table('dim_inst_hier')
+            connection.get_table('dim_inst_hier')
             dim_student = connection.get_table('dim_student')
             tables = [fact_asmt_outcome_vw, dim_student]
             for table in tables:
@@ -62,8 +59,6 @@ class Test_Validate_Status_Flag(unittest.TestCase):
                 active_rec_result = connection.execute(active_rec).fetchall()
                 expected_active_rec_result = [('C',), ('C',), ('C',)]
                 self.assertEqual(active_rec_result, expected_active_rec_result, "Duplicate record inserted into dim tables")
-            #TODO add verifications for dim_asmt and dim_inst_hier
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

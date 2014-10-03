@@ -35,7 +35,14 @@ define [
 
     buildAccommodations: (accommodations) ->
       # mapping accommodation code and column name to meaningful description text
+      accommodations_enhanced = {}
       for code, columns of accommodations
+        bucket = @configData.accomodationCodeBuckets[code]
+        accommodation_codes = accommodations_enhanced[bucket] || []
+        accommodation_codes = accommodation_codes.concat accommodations[code]
+        accommodations_enhanced[bucket] = accommodation_codes
+
+      for code, columns of accommodations_enhanced
         section = {}
         description = @configData.accommodationMapping[code]
         continue if not description

@@ -50,13 +50,13 @@
 							</xs:element>
 						</xs:choice>
             <!-- negative values are used by TDS for testing. -->
-						<xs:attribute name="key" type="xs:long" />
+						<xs:attribute name="key"/>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="Opportunity" minOccurs="1" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
-              <!-- note: DTD has minOccurs=1, but we could get an invalidation for a joined but 
+              <!-- note: DTD has minOccurs=1, but we could get an invalidation for a joined but
               not-started test; no seg will have been initialized in this case -->
 							<xs:element name="Segment" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
@@ -323,4 +323,3 @@
     </xs:union>
   </xs:simpleType>
 </xs:schema>
-

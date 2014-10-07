@@ -19,16 +19,20 @@
     }, 
     "Claims": {
         "Claim1": {
-            "Name": "Reading"
+            "Name": "Reading",
+            "Mapping": "Claim1Reading"
         }, 
         "Claim2": {
-            "Name": "Writing"
+            "Name": "Writing",
+            "Mapping": "Claim2Writing"
         }, 
         "Claim3": {
-            "Name": "Listening"
+            "Name": "Listening",
+            "Mapping": "Claim3Listening"
         }, 
         "Claim4": {
-            "Name": "Research & Inquiry"
+            "Name": "Research & Inquiry",
+            "Mapping": "Claim4ReadingResearch & Inquiry"
         }
     }, 
     "ClaimsPerformanceLevel": {

@@ -36,14 +36,14 @@ def process_assessment_data(root, meta, base_dir, mode=0o700):
     lock_and_write(root, os.path.join(directory, meta.asmt_id), mode=mode)
 
 
-def generate_assessment_file(file_object, root, header=False):
+def generate_assessment_file(file_object, root, metadata_file_path, header=False):
     '''
     lock file then write
     non-block lock, if the file is already locked, then raise IOError instead of waiting.
     :param file_path: file path
     :param data: data
     '''
-    data = get_assessment_mapping(root)
+    data = get_assessment_mapping(root, metadata_file_path)
     csv_file_writer(file_object, [data.values], header=data.header if header else None)
 
 
@@ -58,7 +58,7 @@ def generate_assessment_metadata_file(root, file_path):
             json_file_writer(f, data)
     except Exception as e:
         # most likely file already exist
-        pass
+        raise
 
 
 def process_item_level_data(root, meta, csv_file_path):
@@ -89,9 +89,9 @@ def lock_and_write(root, file_path, mode=0o700):
         try:
             with FileLock(csv_file_path, mode='a', no_block_lock=True) as fl:
                 SPIN_LOCK = False
-                generate_assessment_file(fl.file_object, root, header=fl.new_file)
                 if not os.path.isfile(json_file_path):
                     generate_assessment_metadata_file(root, json_file_path)
+                generate_assessment_file(fl.file_object, root, json_file_path, header=fl.new_file)
         except BlockingIOError:
             # spin lock
             time.sleep(1)

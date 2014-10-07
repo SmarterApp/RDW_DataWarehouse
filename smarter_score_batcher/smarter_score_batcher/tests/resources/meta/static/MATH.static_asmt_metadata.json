@@ -19,13 +19,16 @@
     }, 
     "Claims": {
         "Claim1": {
-            "Name": "Concepts & Procedures"
+            "Name": "Concepts & Procedures",
+            "Mapping": "Claim1Concepts & Procedures"
         }, 
         "Claim2": {
-            "Name": "Problem Solving and Modeling & Data Analysis"
+            "Name": "Problem Solving and Modeling & Data Analysis",
+            "Mapping": "Claim2Problem Solving and Modeling & Data Analysis"
         }, 
         "Claim3": {
-            "Name": "Communicating Reasoning"
+            "Name": "Communicating Reasoning",
+            "Mapping": "Claim3Communicating Reasoning"
         }
     }, 
     "ClaimsPerformanceLevel": {

@@ -40,3 +40,4 @@ class PerformanceMetadataConstatns():
     CLAIM2 = 'Claim2'
     CLAIM3 = 'Claim3'
     CLAIM4 = 'Claim4'
+    MAPPING = 'Mapping'

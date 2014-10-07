@@ -11,6 +11,9 @@ from smarter_score_batcher.celery import setup_celery
 import uuid
 from edcore.utils.file_utils import generate_path_to_raw_xml,\
     generate_path_to_item_csv
+from zope import component
+from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
+    PerfMetadataTemplateManager
 
 
 class Test(unittest.TestCase):
@@ -26,6 +29,11 @@ class Test(unittest.TestCase):
         reg.settings = settings
         self.__config = testing.setUp(registry=reg)
         setup_celery(settings)
+        path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/performance')
+        static_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/static')
+        component.provideUtility(PerfMetadataTemplateManager(asmt_meta_dir=path, static_asmt_meta_dir=static_path), IMetadataTemplateManager)
+        foo = component.queryUtility(IMetadataTemplateManager)
+        pass
 
     def tearDown(self):
         self.__tempfolder.cleanup()

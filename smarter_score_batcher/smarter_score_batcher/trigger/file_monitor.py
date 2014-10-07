@@ -84,7 +84,7 @@ def move_to_staging(settings):
                 raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
             except Exception as e:
                 # pass to process next assessment data
-                msg = "Error occurs during process assessment %s for tenant %s: %s" % assessment, tenant, str(e)
+                msg = "Error occurs during process assessment %s for tenant %s: %s" % (assessment, tenant, str(e))
                 logger.error(msg)
                 SPINLOCK = False
                 raise FileMonitorException(msg, err_source=ErrorSource.MOVE_TO_STAGE)

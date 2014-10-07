@@ -170,9 +170,9 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
-      gpg.homedir: ~/.gnupg
-      gpg.public_key.cat: sbac_data_provider@sbac.com
-      gpg.public_key.fish: sbac_data_provider@sbac.com
+      gpg.homedir: ../../edware/config/gpg
+      gpg.public_key.nc: sbac_data_provider@sbac.com
+      gpg.public_key.vt: sbac_data_provider@sbac.com
       gpg.public_key.ca: sbac_data_provider@sbac.com
       #gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       base_dir:
@@ -874,7 +874,6 @@ development:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
-
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system

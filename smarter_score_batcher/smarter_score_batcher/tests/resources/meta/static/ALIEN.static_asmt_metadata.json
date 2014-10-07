@@ -5,7 +5,8 @@
     },
     "Claims": {
         "Claim1": {
-            "Name": "Alien Name"
+            "Name": "Alien Name",
+            "Mapping": "Claim1 Alien Name"
         }
     }
 }

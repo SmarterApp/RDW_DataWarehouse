@@ -13,11 +13,17 @@ import uuid
 import json
 from smarter_score_batcher.error.constants import ErrorsConstants
 from smarter_score_batcher.error.error_codes import ErrorCode
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
+        cache_opts = {'cache.type': 'memory',
+                      'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+                      }
+        CacheManager(**parse_cache_config_options(cache_opts))
         self.tmp = tempfile.TemporaryDirectory()
 
     def tearDown(self):
@@ -26,7 +32,7 @@ class Test(unittest.TestCase):
     def test_handle_error_with_FileLockException(self):
         ex = None
         here = os.path.abspath(os.path.dirname(__file__))
-        json_path = os.path.join(here, '..', 'resources', 'meta', 'performance', '2014', 'summative', '3', 'ELA.static_asmt_metadata.json')
+        json_path = os.path.join(here, '..', 'resources', 'meta', 'performance', '2014', 'summative', '3', 'ELA.asmt_metadata.json')
         xml_path = os.path.join(here, '..', 'resources', 'assessment.xml')
         try:
             raise FileLockException('hello')

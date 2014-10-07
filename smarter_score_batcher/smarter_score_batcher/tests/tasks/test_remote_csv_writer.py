@@ -11,12 +11,17 @@ from smarter_score_batcher.celery import setup_celery
 import uuid
 from edcore.utils.file_utils import generate_path_to_raw_xml,\
     generate_path_to_item_csv
+from zope import component
+from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
+    PerfMetadataTemplateManager
+from zope.component.globalregistry import base
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 
 
 class Test(unittest.TestCase):
     def setUp(self):
         self.__tempfolder = tempfile.TemporaryDirectory()
-        # setup registry
         settings = {
             'smarter_score_batcher.celery_timeout': 30,
             'smarter_score_batcher.celery.celery_always_eager': True,
@@ -24,8 +29,13 @@ class Test(unittest.TestCase):
         }
         reg = Registry()
         reg.settings = settings
+        reg.utilities = base.utilities
+        CacheManager(**parse_cache_config_options({'cache.regions': 'public.shortlived', 'cache.type': 'memory', 'cache.public.shortlived.expire': 7200}))
         self.__config = testing.setUp(registry=reg)
         setup_celery(settings)
+        path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/performance')
+        static_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/static')
+        component.provideUtility(PerfMetadataTemplateManager(asmt_meta_dir=path, static_asmt_meta_dir=static_path), IMetadataTemplateManager)
 
     def tearDown(self):
         self.__tempfolder.cleanup()
@@ -36,7 +46,7 @@ class Test(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, 'work_dir')
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="12"></Examinee>
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"

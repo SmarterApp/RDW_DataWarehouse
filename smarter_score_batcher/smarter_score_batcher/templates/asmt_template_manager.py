@@ -40,7 +40,7 @@ class IMetadataTemplateManager(interface.Interface):
 
 
 def get_template_key(year, asmt_type, grade, subject):
-    return '_'.join([str(year), asmt_type, str(grade), subject])
+    return ':'.join([str(year), asmt_type, str(grade), subject])
 
 
 class MetadataTemplateManager:
@@ -145,7 +145,7 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         :param key - key to load template for
         :return combined static and perfomance templates
         '''
-        keys = key.split('_')
+        keys = key.split(':')
         subject = keys.pop()
         path = os.path.sep.join(keys)
         custom_template = super()._load_template(subject, path, pattern='*.xml').get_asmt_metadata_template()

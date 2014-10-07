@@ -23,7 +23,7 @@ class Constants():
     STUDENT_ID = 'student_id'
 
 
-class PerformanceMetadataConstatns():
+class PerformanceMetadataConstants():
     IDENTIFICATION = 'Identification'
     SUBJECT = 'Subject'
     OVERALL = 'Overall'
@@ -40,3 +40,4 @@ class PerformanceMetadataConstatns():
     CLAIM2 = 'Claim2'
     CLAIM3 = 'Claim3'
     CLAIM4 = 'Claim4'
+    MAPPING = 'Mapping'

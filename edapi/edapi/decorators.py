@@ -166,7 +166,7 @@ def validate_xml(xsd):
                             xml_doc = etree.parse(xml_f)
                             if xmlschema.validate(xml_doc):
                                 valid = True
-                    except:
+                    except Exception as e:
                         raise EdApiHTTPPreconditionFailed('Invalid XML by xsd')
                     if not valid:
                         raise EdApiHTTPPreconditionFailed('Invalid XML by xsd')

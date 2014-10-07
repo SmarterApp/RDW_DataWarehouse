@@ -5,8 +5,12 @@ Created on Aug 12, 2014
 '''
 import unittest
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping,\
-    get_assessment_mapping, AssessmentHeaders, AssessmentData
+    get_assessment_mapping, AssessmentHeaders, AssessmentData,\
+    getClaimMappingName
 from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
+import os
+import json
+from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -39,9 +43,11 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEquals(val, 1)
 
     def test_get_csv_mapping(self):
+        here = os.path.abspath(os.path.dirname(__file__))
+        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'static', 'MATH.static_asmt_metadata.json')
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
-        data = get_assessment_mapping(root)
+        data = get_assessment_mapping(root, static_metadata)
         header = data.header
         values = data.values
         self.assertEqual(len(header), len(values))
@@ -62,6 +68,19 @@ class TestCSVMetadata(unittest.TestCase):
         data.evaluate()
         self.assertListEqual(data.header, ['test_header'])
         self.assertListEqual(data.values, [1])
+
+    def test_getClaimMappingName(self):
+        here = os.path.abspath(os.path.dirname(__file__))
+        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'static', 'MATH.static_asmt_metadata.json')
+        with open(static_metadata) as f:
+            metadata_string = f.read()
+            metadata = json.loads(metadata_string)
+        mapping = getClaimMappingName(metadata, 'hello', 'world')
+        self.assertEqual(mapping, 'world')
+        mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, 'world')
+        self.assertEqual(mapping, 'Claim2Problem Solving and Modeling & Data Analysis')
+        mapping = getClaimMappingName(None, PerformanceMetadataConstants.CLAIM2, 'world')
+        self.assertEqual(mapping, 'world')
 
 if __name__ == "__main__":
     unittest.main()

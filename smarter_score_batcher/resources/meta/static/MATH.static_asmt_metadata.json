@@ -20,15 +20,15 @@
     "Claims": {
         "Claim1": {
             "Name": "Concepts & Procedures",
-            "Mapping": "Claim1"
+            "Mapping": "myClaim1"
         }, 
         "Claim2": {
             "Name": "Problem Solving and Modeling & Data Analysis",
-            "Mapping": "Claim2"
+            "Mapping": "Claim2Problem Solving and Modeling and Data Analysis"
         }, 
         "Claim3": {
             "Name": "Communicating Reasoning",
-            "Mapping": "Claim3"
+            "Mapping": "Claim3Communicating Reasoning"
         }
     }, 
     "ClaimsPerformanceLevel": {

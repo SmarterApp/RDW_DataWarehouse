@@ -53,9 +53,10 @@ def generate_assessment_metadata_file(root, file_path):
     '''
     try:
         # create file only when file does not eixst
-        with open(file_path, 'x') as f:
-            data = get_assessment_metadata_mapping(root)
-            json_file_writer(f, data)
+        if not os.path.exists(file_path):
+            with open(file_path, 'x') as f:
+                data = get_assessment_metadata_mapping(root)
+                json_file_writer(f, data)
     except Exception as e:
         # most likely file already exist
         raise

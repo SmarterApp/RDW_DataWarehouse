@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, 'work_dir')
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="12"></Examinee>
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"

@@ -10,7 +10,7 @@ from smarter_score_batcher.processing.assessment import XMLMeta, Mapping,\
 from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 import os
 import json
-from smarter_score_batcher.utils.constants import PerformanceMetadataConstatns
+from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -77,9 +77,9 @@ class TestCSVMetadata(unittest.TestCase):
             metadata = json.loads(metadata_string)
         mapping = getClaimMappingName(metadata, 'hello', 'world')
         self.assertEqual(mapping, 'world')
-        mapping = getClaimMappingName(metadata, PerformanceMetadataConstatns.CLAIM2, 'world')
+        mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, 'world')
         self.assertEqual(mapping, 'Claim2Problem Solving and Modeling & Data Analysis')
-        mapping = getClaimMappingName(None, PerformanceMetadataConstatns.CLAIM2, 'world')
+        mapping = getClaimMappingName(None, PerformanceMetadataConstants.CLAIM2, 'world')
         self.assertEqual(mapping, 'world')
 
 if __name__ == "__main__":

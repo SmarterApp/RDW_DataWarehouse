@@ -23,7 +23,7 @@ class Constants():
     STUDENT_ID = 'student_id'
 
 
-class PerformanceMetadataConstatns():
+class PerformanceMetadataConstants():
     IDENTIFICATION = 'Identification'
     SUBJECT = 'Subject'
     OVERALL = 'Overall'

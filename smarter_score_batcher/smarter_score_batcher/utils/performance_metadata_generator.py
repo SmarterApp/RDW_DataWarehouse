@@ -3,10 +3,10 @@ Created on Oct 2, 2014
 
 @author: tosako
 '''
-from smarter_score_batcher.utils.constants import PerformanceMetadataConstatns
 from smarter_score_batcher.error.exceptions import MetadataException
 from smarter_score_batcher.error.error_codes import ErrorSource
 import logging
+from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -58,23 +58,23 @@ def _format_performance_metadata(performancelevel):
     compose performance metadata
     '''
     meta = {}
-    meta[PerformanceMetadataConstatns.IDENTIFICATION] = {PerformanceMetadataConstatns.SUBJECT: performancelevel.get_subject()}
-    meta[PerformanceMetadataConstatns.OVERALL] = {PerformanceMetadataConstatns.MINSCORE: str(performancelevel.get_overall_minScore()),
-                                                  PerformanceMetadataConstatns.MAXSCORE: str(performancelevel.get_overall_maxScore())
+    meta[PerformanceMetadataConstants.IDENTIFICATION] = {PerformanceMetadataConstants.SUBJECT: performancelevel.get_subject()}
+    meta[PerformanceMetadataConstants.OVERALL] = {PerformanceMetadataConstants.MINSCORE: str(performancelevel.get_overall_minScore()),
+                                                  PerformanceMetadataConstants.MAXSCORE: str(performancelevel.get_overall_maxScore())
                                                   }
-    meta[PerformanceMetadataConstatns.PERFORMANCELEVELS] = {PerformanceMetadataConstatns.LEVEL1: {PerformanceMetadataConstatns.CUTPOINT: str(performancelevel.get_level1_cutPoint())},
-                                                            PerformanceMetadataConstatns.LEVEL2: {PerformanceMetadataConstatns.CUTPOINT: str(performancelevel.get_level2_cutPoint())},
-                                                            PerformanceMetadataConstatns.LEVEL3: {PerformanceMetadataConstatns.CUTPOINT: str(performancelevel.get_level3_cutPoint())},
-                                                            PerformanceMetadataConstatns.LEVEL4: {PerformanceMetadataConstatns.CUTPOINT: str(performancelevel.get_level4_cutPoint())},
+    meta[PerformanceMetadataConstants.PERFORMANCELEVELS] = {PerformanceMetadataConstants.LEVEL1: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level1_cutPoint())},
+                                                            PerformanceMetadataConstants.LEVEL2: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level2_cutPoint())},
+                                                            PerformanceMetadataConstants.LEVEL3: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level3_cutPoint())},
+                                                            PerformanceMetadataConstants.LEVEL4: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level4_cutPoint())},
                                                             }
-    meta[PerformanceMetadataConstatns.CLAIMS] = {PerformanceMetadataConstatns.CLAIM1: {PerformanceMetadataConstatns.MINSCORE: str(performancelevel.get_claim1_minScore()),
-                                                                                       PerformanceMetadataConstatns.MAXSCORE: str(performancelevel.get_claim1_maxScore())},
-                                                 PerformanceMetadataConstatns.CLAIM2: {PerformanceMetadataConstatns.MINSCORE: str(performancelevel.get_claim2_minScore()),
-                                                                                       PerformanceMetadataConstatns.MAXSCORE: str(performancelevel.get_claim2_maxScore())},
-                                                 PerformanceMetadataConstatns.CLAIM3: {PerformanceMetadataConstatns.MINSCORE: str(performancelevel.get_claim3_minScore()),
-                                                                                       PerformanceMetadataConstatns.MAXSCORE: str(performancelevel.get_claim3_maxScore())},
-                                                 PerformanceMetadataConstatns.CLAIM4: {PerformanceMetadataConstatns.MINSCORE: str(performancelevel.get_claim4_minScore()),
-                                                                                       PerformanceMetadataConstatns.MAXSCORE: str(performancelevel.get_claim4_maxScore())}
+    meta[PerformanceMetadataConstants.CLAIMS] = {PerformanceMetadataConstants.CLAIM1: {PerformanceMetadataConstants.MINSCORE: str(performancelevel.get_claim1_minScore()),
+                                                                                       PerformanceMetadataConstants.MAXSCORE: str(performancelevel.get_claim1_maxScore())},
+                                                 PerformanceMetadataConstants.CLAIM2: {PerformanceMetadataConstants.MINSCORE: str(performancelevel.get_claim2_minScore()),
+                                                                                       PerformanceMetadataConstants.MAXSCORE: str(performancelevel.get_claim2_maxScore())},
+                                                 PerformanceMetadataConstants.CLAIM3: {PerformanceMetadataConstants.MINSCORE: str(performancelevel.get_claim3_minScore()),
+                                                                                       PerformanceMetadataConstants.MAXSCORE: str(performancelevel.get_claim3_maxScore())},
+                                                 PerformanceMetadataConstants.CLAIM4: {PerformanceMetadataConstants.MINSCORE: str(performancelevel.get_claim4_minScore()),
+                                                                                       PerformanceMetadataConstants.MAXSCORE: str(performancelevel.get_claim4_maxScore())}
                                                  }
     return meta
 

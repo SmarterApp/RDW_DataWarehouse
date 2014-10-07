@@ -29,7 +29,8 @@
         "acc_read_aloud_nonembed": "Đọc to",
         "acc_scribe_nonembed": "Giải thích",
         "acc_speech_to_text_nonembed": "Từ Văn nói-đến-văn viết",
-        "acc_streamline_mode": "Dạng dòng chảy"
+        "acc_streamline_mode": "Dạng dòng chảy",
+        "acc_asl_video_embed" : "Ngôn Ngữ Ký Hiệu Hoa Kỳ"
     },
     "accomodationCodeBuckets": {
         "11": "1",

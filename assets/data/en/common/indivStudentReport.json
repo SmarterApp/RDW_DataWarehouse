@@ -29,7 +29,8 @@
         "acc_read_aloud_nonembed": "Read aloud",
         "acc_scribe_nonembed": "Scribe",
         "acc_speech_to_text_nonembed": "Speech-to-text",
-        "acc_streamline_mode": "Streamline Mode"
+        "acc_streamline_mode": "Streamline Mode",
+        "acc_asl_video_embed" : "American Sign Language"
     },
     "accomodationCodeBuckets": {
         "11": "1",

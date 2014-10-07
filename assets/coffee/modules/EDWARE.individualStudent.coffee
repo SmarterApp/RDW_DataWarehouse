@@ -42,7 +42,9 @@ define [
         accommodation_codes = accommodation_codes.concat accommodations[code]
         accommodations_enhanced[bucket] = accommodation_codes
 
-      for code, columns of accommodations_enhanced
+      keys = Object.keys(accommodations_enhanced).sort() 
+      for code in keys
+        columns = accommodations_enhanced[code]
         section = {}
         description = @configData.accommodationMapping[code]
         continue if not description

@@ -43,6 +43,12 @@ class LoadType():
     STUDENT_REGISTRATION = 'studentregistration'
 
 
+class AssessmentType():
+    SUMMATIVE = 'SUMMATIVE'
+    INTERIM_COMPREHENSIVE = 'INTERIM COMPREHENSIVE'
+    INTERIM_ASSESSMENTS_BLOCKS = 'INTERIM ASSESSMENT BLOCKS'
+
+
 class Constants():
     STATUS_CURRENT = 'C'
     STATUS_SHADOW = 'S'

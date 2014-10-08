@@ -55,8 +55,7 @@ def get_assessment_type(json_file_dir):
     @rtype: string
     """
     assessment_types = Constants.ASSESSMENT_TYPES()
-    assessment_type = get_value_from_json(json_file_dir, Constants.ASSESSMENT_TYPE_KEY).lower()
-
+    assessment_type = get_value_from_json(json_file_dir, Constants.ASSESSMENT_TYPE_KEY)
     if assessment_type not in assessment_types:
         raise ValueError('No valid load type specified in json file --')
     return assessment_type

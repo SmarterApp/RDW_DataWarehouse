@@ -7,7 +7,7 @@ from edudl2.udl2 import message_keys as mk, W_load_from_integration_to_star,\
     W_parallel_csv_load, W_file_content_validator, W_load_json_to_integration,\
     W_load_to_integration_table
 from celery.canvas import chain
-from edudl2.udl2.W_load_from_integration_to_star import get_tasks_by_type
+from edudl2.udl2.udl2_task_generator import get_tasks_by_type
 
 logger = get_task_logger(__name__)
 

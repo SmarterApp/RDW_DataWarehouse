@@ -28,7 +28,8 @@ def task(msg):
         target_tasks = {"assessment": [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
                                        W_tasks_utils.handle_group_results.s(),
                                        W_load_from_integration_to_star.handle_record_upsert.s(),
-                                       W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact'),
+                                       W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact_asmt'),
+                                       #W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact_block'),
                                        W_tasks_utils.handle_group_results.s(),
                                        W_load_from_integration_to_star.handle_deletions.s()
                                        ],

@@ -122,3 +122,6 @@ TENANT_SEARCH_PATHS = 'tenant_search_paths'
 
 # for udl stats
 UDL_STATS_REC_ID = 'udl_stats_rec_id'
+
+# for distinguishing between assessment types
+ASSESSMENT_TYPE = 'assessment_type'

@@ -578,6 +578,167 @@ qa.pdf_generator:
     cache:
       session.expire: 1200 # 20 minutes
 
+dev:
+  '[app:main]':
+    mode: prod
+    environment.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
+    services.celery:
+      BROKER_URL: amqp://edware:edware1234@celrydw0.dev.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
+    extract.work_zone_base_dir: /opt/edware/extraction
+    extract.celery:
+      BROKER_URL: amqp://edware:edware1234@celrydw1.dev.dum.edwdc.net/edextract
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
+        static: /opt/edware/resources/meta/static
+      xsd.path: /opt/edware/resources/sample_xsd.xsd
+    extract:
+      gpg:
+        homedir : /opt/edware/conf/gpg
+        keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
+    cache:
+      public.shortlived.url: dwcache0.dev.dum.edwdc.net:11211
+      public.data.url: dwcache0.dev.dum.edwdc.net:11211
+      session.url: dwcache0.dev.dum.edwdc.net:11211
+      public.filtered_data.url: dwcache0.dev.dum.edwdc.net:11211
+    pdf:
+      base.url: https://pyweb1.qa.dum.edwdc.net/assets/html/
+      report_base_dir: /opt/edware/pdf
+      generate_timeout: 30
+      health_check.job.queue: health_check
+    pickup.sftp:
+      hostname: lzsftpudl0.dev.dum.edwdc.net
+      private_key_file: /opt/edware/ssh/.ssh/id_rsa
+    sftp:
+        file_stat_watch_interval: 5
+        file_stat_watch_period: 30
+        file_system_scan_delay: 60
+        remote:
+            landing_zone_hostname: rbtmqudl0.dev.dum.edwdc.net
+    file-grabber:
+      lz:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: root
+          remote_host: lzsftpudl0.qa.dum.edwdc.net
+          remote_dir: /sftp/opt/edware/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
+      tsb:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: celery
+          remote_host: tsb.qa.dum.edwdc.net
+          remote_dir: /opt/edware/assessment/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
+    edware:
+      db:
+        cat:
+          state_code: NC
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
+    edware_stats:
+      db:
+        schema_name: edware_es_1_7
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware_stats
+    edware_rep:
+      db:
+        schema_name: repmgr_edware_pg_cluster
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+    migrate:
+      pgpool.hostname: 'dwrouter0.dev.dum.edwdc.net'
+      timeout: 6
+    migrate_dest:
+      db:
+        cat:
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+        sc:
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+    migrate_source:
+      db:
+        cat:
+          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dev.dum.edwdc.net:5432/edware
+        sc:
+          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dev.dum.edwdc.net:5432/edware
+    auth:
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
+      policy:
+        secure: true
+      skip.verify: False
+      saml:
+        issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
+      oauth2:
+        idp_server_verify_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+    hpz:
+      file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
+      file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
+      ignore_certificate: True
+  '[handlers]':
+    keys: audit, syslog, security_event
+  '[logger_root]':
+    level: INFO
+    handlers: syslog
+  '[handler_syslog]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
+    level: WARN
+    formatter: generic
+  '[handler_audit]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
+    level: WARN
+    formatter: json
+  '[handler_security_event]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
+    level: INFO
+    formatter: json
+  '[logger_smarter]':
+    level: WARN
+    handlers: syslog
+    qualname: smarter
+  '[logger_edauth]':
+    level: WARN
+    handlers: syslog
+    qualname: edauth
+  '[logger_sqlalchemy]':
+    level: WARN
+    handlers: syslog
+    qualname: sqlalchemy
+  '[logger_exc_logger]':
+    level: ERROR
+    handlers: syslog
+    qualname: exc_logger
+  '[logger_edmigrate]':
+    level: WARN
+    handlers: syslog
+    qualname: edmigrate
+  '[logger_edsftp]':
+    level: WARN
+    handlers: syslog
+    qualname: edsftp
+  '[logger_edudl2]':
+    level: WARN
+    handlers: syslog
+    qualname: edudl2
+
 jenkins_qa:
   '[app:main]':
     mode: test

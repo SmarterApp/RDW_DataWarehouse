@@ -11,7 +11,7 @@ Created on May 10, 2013
 '''
 from sqlalchemy.schema import CreateSequence, DropSequence, DropSchema
 import argparse
-from config import ref_table_data, sr_ref_table_data
+from config import ref_table_data, sr_ref_table_data, iab_ref_table_data
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.database.metadata.udl2_metadata import generate_udl2_sequences
@@ -121,6 +121,9 @@ def load_reference_data():
 
     sr_ref_table_info = sr_ref_table_data.ref_table_conf
     populate_ref_column_map(sr_ref_table_info, Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION))
+
+    iab_ref_table_info = iab_ref_table_data.ref_table_conf
+    populate_ref_column_map(iab_ref_table_info, Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_ASSESSMENT))
 
 
 def load_stored_proc():

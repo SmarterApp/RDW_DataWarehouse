@@ -596,6 +596,11 @@ dev:
         performance: /opt/edware/resources/meta/performance
         static: /opt/edware/resources/meta/static
       xsd.path: /opt/edware/resources/sample_xsd.xsd
+      gpg:
+        homedir: /opt/edware/keys
+        passphrase: sbac udl2
+        sign: ca_user@ca.com
+        keyserver: None
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg

@@ -78,7 +78,7 @@ def move_to_staging(settings):
                 time.sleep(1)
             except FileNotFoundError:
                 # if file not found, file might be already in process or
-                msg = "assessment %s data not found for tenant %s" % assessment, tenant
+                msg = "assessment %s data not found for tenant %s" % (assessment, tenant)
                 logger.debug(msg)
                 SPINLOCK = False
                 raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)

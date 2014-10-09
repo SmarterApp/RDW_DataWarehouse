@@ -123,10 +123,15 @@ dev:
     target_db_conn:
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
+        nc:
+            url: postgresql://edware:edware2013@localhost:5432/edware
         cat:
             url: postgresql://edware:edware2013@localhost:5432/edware
     prod_db_conn:
         ca:
+            url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+            db_schema: edware_es_1_7
+        nc:
             url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
             db_schema: edware_es_1_7
         cat:

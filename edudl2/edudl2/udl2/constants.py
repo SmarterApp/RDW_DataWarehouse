@@ -39,7 +39,7 @@ class Constants():
     STG_GUID_ASMT = 'assessmentguid'
 
     # load types
-    LOAD_TYPE_KEY = 'content'
+    LOAD_TYPE_KEY = 'Content'
     LOAD_TYPE_ASSESSMENT = LoadType.ASSESSMENT
     LOAD_TYPE_STUDENT_REGISTRATION = LoadType.STUDENT_REGISTRATION
 

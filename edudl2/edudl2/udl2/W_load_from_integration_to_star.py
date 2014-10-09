@@ -11,8 +11,9 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
     explode_data_to_fact_table, handle_duplicates_in_dimensions, create_target_schema_for_batch, handle_updates_and_deletes
+from celery.canvas import chord
+from edudl2.udl2.W_tasks_utils import handle_group_results
 from edudl2.udl2.constants import Constants
-
 logger = get_task_logger(__name__)
 
 

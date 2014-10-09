@@ -91,3 +91,6 @@ class Constants():
     IDENTIFICATION_ACADEMICYEAR = 'identification.academicyear'
     EMAIL_NOTIFICATION = 'source.emailnotification'
     SOURCE_CALLBACKURL = 'source.callbackurl'
+
+    # for determing fact table per assessment
+    FACT_TABLE_PREFIX = {"SUMMATIVE": "fact_asmt", "INTERIM COMPREHENSIVE": "fact_asmt", "INTERIM ASSESSMENT BLOCKS": "fact_block"}

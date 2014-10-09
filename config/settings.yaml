@@ -599,7 +599,6 @@ dev:
       gpg:
         homedir: /opt/edware/keys
         passphrase: sbac udl2
-        sign: ca_user@ca.com
         keyserver: None
     extract:
       gpg:

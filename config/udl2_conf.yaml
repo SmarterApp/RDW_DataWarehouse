@@ -44,6 +44,7 @@ common:
         output_path: .                      # where the newly generated split file located
         keep_headers: True                  # preserve csv header for importing
     quiet_mode: False
+    gpg_home: /opt/edware/keys
     passphrase: sbac udl2
     db_defaults:
       echo: False
@@ -95,7 +96,6 @@ qa:
         cat:
             url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
             db_schema: edware_es_1_7
-    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_7
@@ -132,7 +132,6 @@ dev:
         cat:
             url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
             db_schema: edware_es_1_7
-    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_7
@@ -155,7 +154,6 @@ uat:
         ca:
             url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
-    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_6
@@ -189,7 +187,6 @@ development:
         nc:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
-    gpg_home: ~/.gnupg
     notification_max_attempts: 5
     notification_retry_interval: 1
     notification_timeout_interval: 1
@@ -217,4 +214,3 @@ jenksins_dev:
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_12_dog
-    gpg_home: ~/.gnupg

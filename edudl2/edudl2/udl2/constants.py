@@ -93,4 +93,4 @@ class Constants():
     SOURCE_CALLBACKURL = 'source.callbackurl'
 
     # for determing fact table per assessment
-    FACT_TABLE_PREFIX = {"SUMMATIVE": "fact_asmt", "INTERIM COMPREHENSIVE": "fact_asmt", "INTERIM ASSESSMENT BLOCKS": "fact_block"}
+    FACT_TABLE_PREFIX = {ASSESSMENT_TYPE_SUMMATIVE: "fact_asmt", ASSESSMENT_TYPE_INTERIM_COMPREHENSIVE: "fact_asmt", ASSESSMENT_TYPE_INTERIM_ASSESSMENT_BLOCKS: "fact_block"}

@@ -42,9 +42,12 @@ def get_explode_to_tables_tasks(msg, prefix):
     '''
     Returns a chord of tasks to migrate to pre-prod tables
     '''
+    if prefix is None:
+        return []
     task_map = {'dim': explode_data_to_dim_table_task,
                 'fact_asmt': explode_data_to_fact_table_task,
-                'fact_block': explode_data_to_fact_table_task}
+                'fact_block': explode_data_to_fact_table_task
+                }
     task_name = task_map.get(prefix)
     conf = _get_conf(msg)
     table_map, column_map = get_table_and_column_mapping(conf, 'explode to ' + prefix, prefix + '_')

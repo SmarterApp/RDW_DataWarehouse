@@ -17,6 +17,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     load_type = msg[mk.LOAD_TYPE]
+    assessment_type = None
     if load_type == LoadType.ASSESSMENT:
         assessment_type = msg[mk.ASSESSMENT_TYPE]
     logger.info('DETERMINE END ROUTE: Determining end route by %s' % load_type)

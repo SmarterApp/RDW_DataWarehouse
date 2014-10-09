@@ -31,12 +31,11 @@ def task(msg):
                         W_load_from_integration_to_star.prepare_target_schema.s()]
 
         target_tasks = {LoadType.ASSESSMENT: [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
-                                       W_tasks_utils.handle_group_results.s(),
-                                       W_load_from_integration_to_star.handle_record_upsert.s(),
-                                       W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, Constants.FACT_TABLE_PREFIX[assessment_type]),
-                                       W_tasks_utils.handle_group_results.s(),
-                                       W_load_from_integration_to_star.handle_deletions.s()
-                                       ],
+                                              W_tasks_utils.handle_group_results.s(),
+                                              W_load_from_integration_to_star.handle_record_upsert.s(),
+                                              W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, Constants.FACT_TABLE_PREFIX.get(assessment_type)),
+                                              W_tasks_utils.handle_group_results.s(),
+                                              W_load_from_integration_to_star.handle_deletions.s()],
                         LoadType.STUDENT_REGISTRATION: [W_load_sr_integration_to_target.task.s()]}
 
         post_etl_tasks = [W_post_etl.task.s(), W_all_done.task.s()]

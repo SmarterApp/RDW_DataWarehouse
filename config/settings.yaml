@@ -142,8 +142,8 @@ common:
           average.xml: 300000
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
-      gpg.public_key.cat: kswimberly@amplify.com
-      gpg.public_key.fish: kswimberly@amplify.com
+      gpg.public_key.cat: sbac_data_provider@sbac.com
+      gpg.public_key.fish: sbac_data_provider@sbac.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
@@ -585,7 +585,7 @@ dev:
     services.celery:
       BROKER_URL: amqp://edware:edware1234@celrydw0.dev.dum.edwdc.net/services
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.dev.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@celrydw1.dev.dum.edwdc.net/edextract
@@ -603,14 +603,14 @@ dev:
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
-        keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
+        keyserver: None
     cache:
       public.shortlived.url: dwcache0.dev.dum.edwdc.net:11211
       public.data.url: dwcache0.dev.dum.edwdc.net:11211
       session.url: dwcache0.dev.dum.edwdc.net:11211
       public.filtered_data.url: dwcache0.dev.dum.edwdc.net:11211
     pdf:
-      base.url: https://pyweb1.qa.dum.edwdc.net/assets/html/
+      base.url: https://pyweb1.dev.dum.edwdc.net/assets/html/
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
@@ -631,7 +631,7 @@ dev:
               minute: '*/1'
         args:
           remote_user: root
-          remote_host: lzsftpudl0.qa.dum.edwdc.net
+          remote_host: lzsftpudl0.dev.dum.edwdc.net
           remote_dir: /sftp/opt/edware/staging/
           landing: /opt/edware/zones/landing/arrivals/
           private_key: /home/udl2/.ssh/id_rsa
@@ -642,7 +642,7 @@ dev:
               minute: '*/1'
         args:
           remote_user: celery
-          remote_host: tsb.qa.dum.edwdc.net
+          remote_host: tsb.dev.dum.edwdc.net
           remote_dir: /opt/edware/assessment/staging/
           landing: /opt/edware/zones/landing/arrivals/
           private_key: /home/udl2/.ssh/id_rsa
@@ -684,15 +684,15 @@ dev:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
-        idp_server_login_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
+        issuer_name: https://ha-int-pyweb0.dev.dum.edwdc.net
+        idp_server_login_url: https://auth1.dev.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.dev.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.dev.dum.edwdc.net/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     hpz:
-      file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
-      file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
+      file_registration_url: https://hpzweb0.dev.dum.edwdc.net:8443/registration
+      file_upload_base_url: https://hpzweb0.dev.dum.edwdc.net:8443/files
       ignore_certificate: True
   '[handlers]':
     keys: audit, syslog, security_event

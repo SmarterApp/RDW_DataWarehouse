@@ -15,7 +15,7 @@
 		<ExamineeAttribute context="FINAL" name="LastName" value="Smith" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="Sex" value="{{sex}}" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="GradeLevelWhenAssessed" value="{{GradeLevelWhenAssessed}}" contextDate="2014-04-14T11:13:41.803"/>
-		<ExamineeAttribute context="FINAL" name="ExternalSSID" value="{{ExternalSSID}}" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="AlternateSSID" value="{{ExternalSSID}}" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="IDEAIndicator" value="{{IDEAIndicator}}" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="LEPStatus" value="{{LEPStatus}}" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="Section504Status" value="{{Section504Status}}" contextDate="2014-04-14T11:13:41.803"/>
@@ -35,22 +35,22 @@
 		<ExamineeRelationship context="FINAL" name="SchoolName" value="My Elementary School" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeRelationship context="FINAL" name="StateCode" value="{{StateCode}}" contextDate="2014-04-14T11:13:41.803"/>
 	</Examinee>
-	<Opportunity server="{{where_taken_name}}" effectiveDate="{{effective_date}}" database="CASBAC_SHARD_2013sp" clientName="{{clientName}}" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="{{oppId}}" startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="{{date_taken}}" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
+	<Opportunity server="{{where_taken_name}}" effectiveDate="{{effective_date}}" database="CASBAC_SHARD_2013sp" clientName="{{clientName}}" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="{{oppId}}" startDate="20140414" status="completed" opportunity="1" statusDate="20140414" dateCompleted="{{date_taken}}" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
 		<Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="{{acc_asl_video_embed}}"/>
 		<Score measureOf="NoiseBuffer" measureLabel="Accommodation" value="{{acc_noise_buffer_nonembed}}"/>
 		<Score measureOf="PrintOnDemandItem" measureLabel="Accommodation" value="{{acc_print_on_demand_items_nonembed}}"/>
-		<Score measureOf="Braile" measureLabel="Score" value="{{acc_braile_embed}}"/>
+		<Score measureOf="Braile" measureLabel="Accommodation" value="{{acc_braile_embed}}"/>
 		<Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="{{acc_closed_captioning_embed}}"/>
 		<Score measureOf="TTS" measureLabel="Accommodation" value="{{acc_text_to_speech_embed}}"/>
 		<Score measureOf="Abacus" measureLabel="Accommodation" value="{{acc_abacus_nonembed}}"/>
 		<Score measureOf="AlternateResponseOptions" measureLabel="Accommodation" value="{{acc_alternate_response_options_nonembed}}"/>
 		<Score measureOf="Calculator" measureLabel="Accommodation" value="{{acc_calculator_nonembed}}"/>
 		<Score measureOf="MultiplicationTable" measureLabel="Accommodation" value="{{acc_multiplication_table_nonembed}}"/>
-		<Score measureOf="PrintOnRequest" measureLabel="Accommodation" value="{{acc_print_on_demand_nonembed}}"/>
+		<Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="{{acc_print_on_demand_nonembed}}"/>
 		<Score measureOf="ReadAloud" measureLabel="Accommodation" value="{{acc_read_aloud_nonembed}}"/>
 		<Score measureOf="Scribe" measureLabel="Accommodation" value="{{acc_scribe_nonembed}}"/>
 		<Score measureOf="SpeechToText" measureLabel="Accommodation" value="{{acc_speech_to_text_nonembed}}"/>
-		<Score measureOf="AccommodationStreamlineMode" measureLabel="Accommodation" value="{{acc_streamline_mode}}"/>
+		<Score measureOf="StreamlineMode" measureLabel="Accommodation" value="{{acc_streamline_mode}}"/>
 		<Score measureOf="Overall" measureLabel="ScaleScore" value="{{asmt_score}}" standardError="19" />
 		<Score measureOf="Overall" measureLabel="PerformanceLevel" value="{{asmt_perf_lvl}}" />
 		<Score measureOf="Overall" measureLabel="MinScore" value="{{asmt_score_range_min}}" />

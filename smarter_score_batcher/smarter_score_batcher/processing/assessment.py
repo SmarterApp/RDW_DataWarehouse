@@ -84,6 +84,22 @@ class AssessmentHeaders:
     Group1Text = 'Group1Text'
     Group2Id = 'Group2Id'
     Group2Text = 'Group2Text'
+    Group3Id = 'Group3Id'
+    Group3Text = 'Group3Text'
+    Group4Id = 'Group4Id'
+    Group4Text = 'Group4Text'
+    Group5Id = 'Group5Id'
+    Group5Text = 'Group5Text'
+    Group6Id = 'Group6Id'
+    Group6Text = 'Group6Text'
+    Group7Id = 'Group7Id'
+    Group7Text = 'Group7Text'
+    Group8Id = 'Group8Id'
+    Group8Text = 'Group8Text'
+    Group9Id = 'Group9Id'
+    Group9Text = 'Group9Text'
+    Group10Id = 'Group10Id'
+    Group10Text = 'Group10Text'
     AssessmentGuid = 'AssessmentGuid'
     AssessmentSessionLocationId = 'AssessmentSessionLocationId'
     AssessmentSessionLocation = 'AssessmentSessionLocation'
@@ -163,7 +179,7 @@ def get_assessment_mapping(root):
 
     # In the order of the LZ mapping for easier maintenance
     mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateCode']", "value", "context"), AssessmentHeaders.StateAbbreviation),
-                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
+                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleDistrictIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolName']", "value", "context"), AssessmentHeaders.NameOfInstitution),
@@ -192,6 +208,22 @@ def get_assessment_mapping(root):
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group1Text']", "value", "context"), AssessmentHeaders.Group1Text),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Id']", "value", "context"), AssessmentHeaders.Group2Id),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Text']", "value", "context"), AssessmentHeaders.Group2Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group3Id']", "value", "context"), AssessmentHeaders.Group3Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group3Text']", "value", "context"), AssessmentHeaders.Group3Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group4Id']", "value", "context"), AssessmentHeaders.Group4Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group4Text']", "value", "context"), AssessmentHeaders.Group4Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group5Id']", "value", "context"), AssessmentHeaders.Group5Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group5Text']", "value", "context"), AssessmentHeaders.Group5Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group6Id']", "value", "context"), AssessmentHeaders.Group6Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group6Text']", "value", "context"), AssessmentHeaders.Group6Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group7Id']", "value", "context"), AssessmentHeaders.Group7Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group7Text']", "value", "context"), AssessmentHeaders.Group7Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group8Id']", "value", "context"), AssessmentHeaders.Group8Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group8Text']", "value", "context"), AssessmentHeaders.Group8Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group9Id']", "value", "context"), AssessmentHeaders.Group9Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group9Text']", "value", "context"), AssessmentHeaders.Group9Text),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group10Id']", "value", "context"), AssessmentHeaders.Group10Id),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group10Text']", "value", "context"), AssessmentHeaders.Group10Text),
 
                                Mapping(XMLMeta(test_node, ".", "testId"), AssessmentHeaders.AssessmentGuid),
                                Mapping(XMLMeta(opportunity, ".", "oppId"), AssessmentHeaders.AssessmentSessionLocationId),

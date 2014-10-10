@@ -15,7 +15,7 @@
 		<ExamineeAttribute context="FINAL" name="LastName" value="Smith" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="Sex" value="M" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="GradeLevelWhenAssessed" value="6" contextDate="2014-04-14T11:13:41.803"/>
-		<ExamineeAttribute context="FINAL" name="ExternalSSID" value="6" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeAttribute context="FINAL" name="AlternateSSID" value="6" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="IDEAIndicator" value="No" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="LEPStatus" value="No" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeAttribute context="FINAL" name="Section504Status" value="No" contextDate="2014-04-14T11:13:41.803"/>
@@ -33,24 +33,24 @@
 		<ExamineeRelationship context="FINAL" name="DistrictName" value="Unified School District" contextDate="2014-04-14T11:13:41.803" />
 		<ExamineeRelationship context="FINAL" name="SchoolID" value="9f033bff-7d5b-4800-8ad4-67f063b0ccd4" contextDate="2014-04-14T11:13:41.803"/>
 		<ExamineeRelationship context="FINAL" name="SchoolName" value="My Elementary School" contextDate="2014-04-14T11:13:41.803"/>
-		<ExamineeRelationship context="FINAL" name="StateCode" value="NC" contextDate="2014-04-14T11:13:41.803"/>
+		<ExamineeRelationship context="FINAL" name="StateCode" value="nc" contextDate="2014-04-14T11:13:41.803"/>
 	</Examinee>
-	<Opportunity server="Mountainash Serrano Jr Middle" effectiveDate="2015-04-04T11:13:40.900" database="CASBAC_SHARD_2013sp" clientName="North Carolina" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="9f033bff-7d5b-4800-8ad4-67f063b0ccd4" startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2015-04-16T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
+	<Opportunity server="Mountainash Serrano Jr Middle" effectiveDate="20150404" database="CASBAC_SHARD_2013sp" clientName="Hello World" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="9f033bff-7d5b-4800-8ad4-67f063b0ccd4" startDate="20140414" status="completed" opportunity="1" statusDate="20140414" dateCompleted="20150416" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
 		<Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="9"/>
 		<Score measureOf="NoiseBuffer" measureLabel="Accommodation" value="18"/>
 		<Score measureOf="PrintOnDemandItem" measureLabel="Accommodation" value="18"/>
-		<Score measureOf="Braile" measureLabel="Score" value="0"/>
+		<Score measureOf="Braile" measureLabel="Accommodation" value="0"/>
 		<Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="0"/>
 		<Score measureOf="TTS" measureLabel="Accommodation" value="0"/>
 		<Score measureOf="Abacus" measureLabel="Accommodation" value="9"/>
 		<Score measureOf="AlternateResponseOptions" measureLabel="Accommodation" value="16"/>
 		<Score measureOf="Calculator" measureLabel="Accommodation" value="21"/>
 		<Score measureOf="MultiplicationTable" measureLabel="Accommodation" value="17"/>
-		<Score measureOf="PrintOnRequest" measureLabel="Accommodation" value="26"/>
+		<Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="26"/>
 		<Score measureOf="ReadAloud" measureLabel="Accommodation" value="0"/>
 		<Score measureOf="Scribe" measureLabel="Accommodation" value="0"/>
 		<Score measureOf="SpeechToText" measureLabel="Accommodation" value="0"/>
-		<Score measureOf="AccommodationStreamlineMode" measureLabel="Accommodation" value="0"/>
+		<Score measureOf="StreamlineMode" measureLabel="Accommodation" value="0"/>
 		<Score measureOf="Overall" measureLabel="ScaleScore" value="2170" standardError="19" />
 		<Score measureOf="Overall" measureLabel="PerformanceLevel" value="4" />
 		<Score measureOf="Overall" measureLabel="MinScore" value="2056" />

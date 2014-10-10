@@ -160,7 +160,7 @@
 						<xs:attribute name="key" use="required" />
 						<xs:attribute name="oppId" use="required" />
                         <!-- note: DTD says required, but may get invalidation for joined, not-started test -->
-						<xs:attribute name="startDate" type="NullableDateTime" />
+						<xs:attribute name="startDate" type="xs:string" />
 						<xs:attribute name="status" use="required">
 							<xs:simpleType>
 								<xs:restriction base="xs:token">
@@ -179,8 +179,8 @@
 							</xs:simpleType>
 						</xs:attribute>
 						<xs:attribute name="opportunity" use="required" type="xs:unsignedInt" />
-						<xs:attribute name="statusDate" use="required" type="xs:dateTime" />
-						<xs:attribute name="dateCompleted" type="NullableDateTime" />
+						<xs:attribute name="statusDate" use="required" type="xs:string" />
+						<xs:attribute name="dateCompleted" type="xs:string" />
 						<xs:attribute name="pauseCount" use="required" type="xs:unsignedInt" />
 						<xs:attribute name="itemCount" use="required" type="xs:unsignedInt" />
 						<xs:attribute name="ftCount" use="required" type="xs:unsignedInt" />

@@ -74,16 +74,16 @@ def convert_to_xml(l):
             return ""
 
     def _state_name(state_code):
-        if state_code == 'CA':
+        if state_code == 'ca':
             return 'California'
-        elif state_code == 'NC':
+        elif state_code == 'nc':
             return 'North Carolina'
         return 'Hello World'
 
     def _date(date):
         if date == "":
             return ""
-        return "{yyyy}-{mm}-{dd}T11:13:40.900".format(
+        return "{yyyy}{mm}{dd}".format(
             yyyy=date[0:4],
             mm=date[4:6],
             dd=date[6:8]
@@ -113,7 +113,7 @@ def convert_to_xml(l):
     data['MigrantStatus'] = _bool(l[53])
     data['DistrictID'] = l[7]
     data['SchoolID'] = l[8]
-    data['StateCode'] = l[6]
+    data['StateCode'] = l[6].lower()
     data['effective_date'] = _date(effective_date_mapping.get(l[1]))
     data['clientName'] = _state_name(l[6])
     data['asmt_guid'] = l[4]
@@ -146,21 +146,21 @@ def convert_to_xml(l):
     data['asmt_claim_4_score_range_min'] = l[37]
     data['asmt_claim_4_score_range_max'] = l[38]
 
-    data['acc_asl_video_embed'] = l[54]
-    data['acc_noise_buffer_nonembed'] = l[55]
-    data['acc_print_on_demand_items_nonembed'] = l[56]
-    data['acc_braile_embed'] = l[57]
-    data['acc_closed_captioning_embed'] = l[58]
-    data['acc_text_to_speech_embed'] = l[59]
-    data['acc_abacus_nonembed'] = l[60]
-    data['acc_alternate_response_options_nonembed'] = l[61]
-    data['acc_calculator_nonembed'] = l[62]
-    data['acc_multiplication_table_nonembed'] = l[63]
-    data['acc_print_on_demand_nonembed'] = l[64]
-    data['acc_read_aloud_nonembed'] = l[65]
-    data['acc_scribe_nonembed'] = l[66]
-    data['acc_speech_to_text_nonembed'] = l[67]
-    data['acc_streamline_mode'] = l[68]
+    data['acc_asl_video_embed'] = l[54] or 0
+    data['acc_noise_buffer_nonembed'] = l[55] or 0
+    data['acc_print_on_demand_items_nonembed'] = l[56] or 0
+    data['acc_braile_embed'] = l[57] or 0
+    data['acc_closed_captioning_embed'] = l[58] or 0
+    data['acc_text_to_speech_embed'] = l[59] or 0
+    data['acc_abacus_nonembed'] = l[60] or 0
+    data['acc_alternate_response_options_nonembed'] = l[61] or 0
+    data['acc_calculator_nonembed'] = l[62] or 0
+    data['acc_multiplication_table_nonembed'] = l[63] or 0
+    data['acc_print_on_demand_nonembed'] = l[64] or 0
+    data['acc_read_aloud_nonembed'] = l[65] or 0
+    data['acc_scribe_nonembed'] = l[66] or 0
+    data['acc_speech_to_text_nonembed'] = l[67] or 0
+    data['acc_streamline_mode'] = l[68] or 0
 
     xml = pystache.render(template, data)
     return l[0], xml

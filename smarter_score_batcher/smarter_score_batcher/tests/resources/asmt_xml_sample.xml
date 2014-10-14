@@ -50,7 +50,8 @@
   	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="2014-04-02">
     <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
     <Accommodation type="AmericanSignLanguage" value="Do not show ASL videos" code="TDS_ASL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
+    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810" />
+    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD_Stim&TDS_PoD_Item" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="ClosedCaptioning" value="CC1" code="TDS_ClosedCap0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="Language" value="Braille" code="ENU-Braille" segment="0" context="INITIAL"  contextDate="2014-04-14T11:13:41.803"/>
     <Accommodation type="StreamlinedInterface" value="Standard Test Shell" code="TDS_TS_Modern" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />

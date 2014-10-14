@@ -3,6 +3,45 @@ import os
 import pystache
 import argparse
 
+schools = {
+    "242": "Sunset - Eastern Elementary",
+    "245": "Sunset - Western Middle",
+    "248": "Sunset Central High",
+    "939": "Daybreak - Western Middle",
+    "942": "Daybreak Central High",
+    "936": "Daybreak - Western Elementary",
+    "9f033bff-7d5b-4800-8ad4-67f063b0ccd4": "Mountainash Serrano Jr Middle",
+    "18283a0a-a139-4233-b8c0-f5c5aeea51d2": "Nyala Aurochs High School",
+    "ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4": "Serotine Planetree Elementary School",
+    "0eab62f5-6c97-4302-abff-7bfdc61f527c": "Dolphin Razorfish Sch",
+    "fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41": "Hickory Cornetfish Jr Middle",
+    "1cc294ff-7b3f-4531-b9fc-9526138e4141": "Nunbird Manefish HS",
+    "52a84cfa-4cc6-46db-8b59-5938fd1daf12": "Sandpiper Peccary Elementary",
+    "e70e2681-ada0-4b21-9871-d747358297f0": "Kangaroo Hippopotamus Community Middle",
+    "f7de5f75-b5ff-441a-9ed0-cd0e965f7719": "Serval Spearfish Middle",
+    "fc85bac1-f471-4425-8848-c6cb28058614": "Gorilla Tapiti High School",
+    "429804d2-50db-4e0e-aa94-96ed8a36d7d5": "Blobfish Pintail Sch"
+}
+
+districts = {
+    "228": "Sunset School District",
+    "228": "Sunset School District",
+    "228": "Sunset School District",
+    "229": "Daybreak School District",
+    "229": "Daybreak School District",
+    "229": "Daybreak School District",
+    "2ce72d77-1de2-4137-a083-77935831b817": "Dealfish Pademelon SD",
+    "2ce72d77-1de2-4137-a083-77935831b817": "Dealfish Pademelon SD",
+    "2ce72d77-1de2-4137-a083-77935831b817": "Dealfish Pademelon SD",
+    "2ce72d77-1de2-4137-a083-77935831b817": "Dealfish Pademelon SD",
+    "0513ba44-e8ec-4186-9a0e-8481e9c16206": "Ropefish Lynx Public Schools",
+    "0513ba44-e8ec-4186-9a0e-8481e9c16206": "Ropefish Lynx Public Schools",
+    "0513ba44-e8ec-4186-9a0e-8481e9c16206": "Ropefish Lynx Public Schools",
+    "0513ba44-e8ec-4186-9a0e-8481e9c16206": "Ropefish Lynx Public Schools",
+    "c912df4b-acdf-40ac-9a91-f66aefac7851": "Swallow Harrier District",
+    "c912df4b-acdf-40ac-9a91-f66aefac7851": "Swallow Harrier District",
+    "c912df4b-acdf-40ac-9a91-f66aefac7851": "Swallow Harrier District"
+}
 
 effective_date_mapping = {
     "1000000020": "20160404",
@@ -45,7 +84,20 @@ with open('template.xml') as f:
     template = f.read()
 
 
+students = {}
+
+
+def prepare_student_data():
+    with open('./data/dim_student.csv') as f:
+        csv_reader = csv.reader(f, delimiter=',')
+        next(csv_reader)
+        for s in csv_reader:
+            student_id = s[1]
+            students[student_id] = s
+
+
 def convert(input_path, output_path):
+    prepare_student_data()
     with open(input_path) as f:
         csv_reader = csv.reader(f, delimiter=',')
         # first row contains header
@@ -95,6 +147,9 @@ def convert_to_xml(l):
     data['asmt_type'] = l[11]
     data['grade'] = l[14]
     data['studentId'] = l[5]
+    data['firstName'] = students[l[5]][3]
+    data['middleName'] = students[l[5]][4]
+    data['lastName'] = students[l[5]][5]
     data['HispanicOrLatinoEthnicity'] = _bool(l[42])
     data['AmericanIndianOrAlaskaNative'] = _bool(l[43])
     data['Asian'] = _bool(l[44])
@@ -112,7 +167,9 @@ def convert_to_xml(l):
     data['EconomicDisadvantageStatus'] = _bool(l[52])
     data['MigrantStatus'] = _bool(l[53])
     data['DistrictID'] = l[7]
+    data['DistrictName'] = districts[l[7]]
     data['SchoolID'] = l[8]
+    data['SchoolName'] = schools[l[8]]
     data['StateCode'] = l[6].lower()
     data['effective_date'] = _date(effective_date_mapping.get(l[1]))
     data['clientName'] = _state_name(l[6])

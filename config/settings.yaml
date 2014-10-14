@@ -583,12 +583,12 @@ dev:
     mode: prod
     environment.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@celrydw0.dev.dum.edwdc.net/services
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/services
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.dev.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
-      BROKER_URL: amqp://edware:edware1234@celrydw1.dev.dum.edwdc.net/edextract
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/edextract
     smarter_score_batcher:
       celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/smarter_score_batcher
@@ -652,6 +652,14 @@ dev:
           state_code: NC
           schema_name: edware_es_1_7
           url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
+        dog:
+          state_code: CA
+          schema_name: edware_es_1_7_dog
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
+        fish:
+          state_code: VT
+          schema_name: edware_es_1_7_fish
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
     edware_stats:
       db:
         schema_name: edware_es_1_7
@@ -668,15 +676,20 @@ dev:
         cat:
           schema_name: edware_es_1_7
           url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+        nc:
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
         sc:
           schema_name: edware_es_1_7
           url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
     migrate_source:
       db:
         cat:
-          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dev.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@celrytsb0.dev.dum.edwdc.net:5432/edware
+        nc:
+          url: postgresql+psycopg2://edware:edware2013@celrytsb0.dev.dum.edwdc.net:5432/edware
         sc:
-          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dev.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@celrytsb0.dev.dum.edwdc.net:5432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -684,10 +697,10 @@ dev:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: https://ha-int-pyweb0.dev.dum.edwdc.net
-        idp_server_login_url: https://auth1.dev.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.dev.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.dev.dum.edwdc.net/OpenAM-11.0.0
+        issuer_name: https://pyweb1.dev.dum.edwdc.net
+        idp_server_login_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     hpz:

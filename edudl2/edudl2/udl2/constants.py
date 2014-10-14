@@ -1,4 +1,5 @@
 from edcore.database.utils.constants import LoadType
+from edcore.database.utils.constants import AssessmentType
 __author__ = 'sravi'
 
 
@@ -43,6 +44,12 @@ class Constants():
     LOAD_TYPE_ASSESSMENT = LoadType.ASSESSMENT
     LOAD_TYPE_STUDENT_REGISTRATION = LoadType.STUDENT_REGISTRATION
 
+    # assessment types
+    ASSESSMENT_TYPE_KEY = 'Identification.Type'
+    ASSESSMENT_TYPE_SUMMATIVE = AssessmentType.SUMMATIVE
+    ASSESSMENT_TYPE_INTERIM_COMPREHENSIVE = AssessmentType.INTERIM_COMPREHENSIVE
+    ASSESSMENT_TYPE_INTERIM_ASSESSMENT_BLOCKS = AssessmentType.INTERIM_ASSESSMENTS_BLOCKS
+
     # global sequence name
     SEQUENCE_NAME = 'global_rec_seq'
 
@@ -58,6 +65,7 @@ class Constants():
     # lambdas for returning list of constants or constants based on some condition
     # TODO: in future this will be replaced with dynamic udl schema based on load being processed
     LOAD_TYPES = lambda: [Constants.LOAD_TYPE_ASSESSMENT, Constants.LOAD_TYPE_STUDENT_REGISTRATION]
+    ASSESSMENT_TYPES = lambda: [Constants.ASSESSMENT_TYPE_SUMMATIVE, Constants.ASSESSMENT_TYPE_INTERIM_COMPREHENSIVE, Constants.ASSESSMENT_TYPE_INTERIM_ASSESSMENT_BLOCKS]
     UDL2_STAGING_TABLE = lambda load_type: {Constants.LOAD_TYPE_ASSESSMENT:
                                             Constants.STG_ASMT_OUT_TABLE,
                                             Constants.LOAD_TYPE_STUDENT_REGISTRATION:
@@ -83,3 +91,6 @@ class Constants():
     IDENTIFICATION_ACADEMICYEAR = 'identification.academicyear'
     EMAIL_NOTIFICATION = 'source.emailnotification'
     SOURCE_CALLBACKURL = 'source.callbackurl'
+
+    # for determing fact table per assessment
+    FACT_TABLE_PREFIX = {ASSESSMENT_TYPE_SUMMATIVE: "fact_asmt", ASSESSMENT_TYPE_INTERIM_COMPREHENSIVE: "fact_asmt", ASSESSMENT_TYPE_INTERIM_ASSESSMENT_BLOCKS: "fact_block"}

@@ -36,11 +36,19 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(Constants.LOAD_TYPE_ASSESSMENT, 'assessment')
         self.assertEqual(Constants.LOAD_TYPE_STUDENT_REGISTRATION, 'studentregistration')
 
+        # assessment types
+        self.assertEqual(Constants.ASSESSMENT_TYPE_KEY, 'Identification.Type')
+        self.assertEqual(Constants.ASSESSMENT_TYPE_SUMMATIVE, 'SUMMATIVE')
+        self.assertEqual(Constants.ASSESSMENT_TYPE_INTERIM_COMPREHENSIVE, 'INTERIM COMPREHENSIVE')
+        self.assertEqual(Constants.ASSESSMENT_TYPE_INTERIM_ASSESSMENT_BLOCKS, 'INTERIM ASSESSMENT BLOCKS')
+
         self.assertEqual(Constants.SEQUENCE_NAME, 'global_rec_seq')
 
     def test_all_lambda_constants(self):
         self.assertEqual(len(Constants.LOAD_TYPES()), 2)
         self.assertEqual(Constants.LOAD_TYPES(), [Constants.LOAD_TYPE_ASSESSMENT, Constants.LOAD_TYPE_STUDENT_REGISTRATION])
+        self.assertEqual(len(Constants.ASSESSMENT_TYPES()), 3)
+        self.assertEqual(Constants.ASSESSMENT_TYPES(), [Constants.ASSESSMENT_TYPE_SUMMATIVE, Constants.ASSESSMENT_TYPE_INTERIM_COMPREHENSIVE, Constants.ASSESSMENT_TYPE_INTERIM_ASSESSMENT_BLOCKS])
         self.assertEqual(Constants.UDL2_STAGING_TABLE(Constants.LOAD_TYPE_ASSESSMENT), Constants.STG_ASMT_OUT_TABLE)
         self.assertEqual(Constants.UDL2_STAGING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION), Constants.STG_SR_TABLE)
         self.assertEqual(Constants.UDL2_INTEGRATION_TABLE(Constants.LOAD_TYPE_ASSESSMENT), Constants.INT_ASMT_OUT_TABLE)

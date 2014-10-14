@@ -14,7 +14,6 @@ from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calc
 from celery.canvas import chord
 from edudl2.udl2.W_tasks_utils import handle_group_results
 from edudl2.udl2.constants import Constants
-
 logger = get_task_logger(__name__)
 
 
@@ -43,8 +42,12 @@ def get_explode_to_tables_tasks(msg, prefix):
     '''
     Returns a chord of tasks to migrate to pre-prod tables
     '''
+    if prefix is None:
+        return []
     task_map = {'dim': explode_data_to_dim_table_task,
-                'fact': explode_data_to_fact_table_task}
+                'fact_asmt': explode_data_to_fact_table_task,
+                'fact_block': explode_data_to_fact_table_task
+                }
     task_name = task_map.get(prefix)
     conf = _get_conf(msg)
     table_map, column_map = get_table_and_column_mapping(conf, 'explode to ' + prefix, prefix + '_')

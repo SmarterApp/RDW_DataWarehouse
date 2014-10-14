@@ -1,8 +1,10 @@
 __author__ = 'sravi'
 
 import unittest
+import os
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2_util.util import get_tenant_name
+from edudl2.udl2_util.util import get_assessment_type
 
 
 class TestUtil(unittest.TestCase):
@@ -19,3 +21,14 @@ class TestUtil(unittest.TestCase):
         dir_name = '/ri/some_user/file_drop/some_file.tgz'
         result = get_tenant_name(dir_name)
         self.assertIsNone(result)
+
+    def test_get_assessment_type(self):
+        valid_json_dir = '../tests/unit_tests/data/valid_assessment_json'
+        absolute_path = os.path.abspath(valid_json_dir)
+        result = get_assessment_type(absolute_path)
+        expected = 'SUMMATIVE'
+        self.assertEqual(result, expected)
+
+if __name__ == "__main__":
+    # import sys;sys.argv = ['', 'Test.testName']
+    unittest.main()

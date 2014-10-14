@@ -23,9 +23,9 @@ class TestUtil(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_get_assessment_type(self):
-        valid_json_dir = '../tests/unit_tests/data/valid_assessment_json'
-        absolute_path = os.path.abspath(valid_json_dir)
-        result = get_assessment_type(absolute_path)
+        here = os.path.abspath(os.path.dirname(__file__))
+        valid_json_dir = os.path.abspath(os.path.join(os.path.join(here, '..'), 'data', 'valid_assessment_json'))
+        result = get_assessment_type(valid_json_dir)
         expected = 'SUMMATIVE'
         self.assertEqual(result, expected)
 

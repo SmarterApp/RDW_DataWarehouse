@@ -7,52 +7,15 @@ from smarter_score_batcher.processing.assessment import XMLMeta, Mapping
 from zope import component
 from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
     get_template_key
-from smarter_score_batcher.utils.merge import deep_merge
 
 
 class JSONHeaders:
     '''
     Data Structure used to store json landing zone file
     '''
-    lz_json = {"Content": "assessment",
-               "Identification": {"Guid": None,
-                                  "Type": None,
-                                  "Year": None,
-                                  "Period": None,
-                                  "Version": None,
-                                  "Subject": None,
-                                  "EffectiveDate": None
-                                  },
-               "Overall": {"MinScore": None,
-                           "MaxScore": None},
-               "PerformanceLevels": {"Level1": {"Name": None},
-                                     "Level2": {"Name": None,
-                                                "CutPoint": None},
-                                     "Level3": {"Name": None,
-                                                "CutPoint": None},
-                                     "Level4": {"Name": None,
-                                                "CutPoint": None},
-                                     "Level5": {"Name": None,
-                                                "CutPoint": None}},
-               "Claims": {"Claim1": {"Name": None,
-                                     "MinScore": None,
-                                     "MaxScore": None},
-                          "Claim2": {"Name": None,
-                                     "MinScore": None,
-                                     "MaxScore": None},
-                          "Claim3": {"Name": None,
-                                     "MinScore": None,
-                                     "MaxScore": None},
-                          "Claim4": {"Name": None,
-                                     "MinScore": None,
-                                     "MaxScore": None}},
-               "ClaimsPerformanceLevel": {"Level1": {"Name": None},
-                                          "Level2": {"Name": None},
-                                          "Level3": {"Name": None}}
-               }
 
-    def __init__(self, template={}):
-        self.values = deep_merge(self.lz_json, template)
+    def __init__(self, template):
+        self.values = template
 
     def get_values(self):
         return self.values

@@ -13,6 +13,7 @@ import os
 from smarter_score_batcher.templates.asmt_template_manager import PerfMetadataTemplateManager,\
     IMetadataTemplateManager
 from zope import component
+import json
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -26,17 +27,20 @@ class TestJSONMetadata(unittest.TestCase):
         path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/performance')
         static_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/static')
         component.provideUtility(PerfMetadataTemplateManager(asmt_meta_dir=path, static_asmt_meta_dir=static_path), IMetadataTemplateManager)
+        static_json = os.path.join(static_path, 'ELA.static_asmt_metadata.json')
+        with open(static_json) as f:
+            self.__metadata = json.loads(f.read())
 
     def test_JSONHeaders_obj(self):
-        out = JSONHeaders({})
+        out = JSONHeaders(self.__metadata)
         values = out.get_values()
         self.assertIsNotNone(values)
-        self.assertIsNone(values['Identification']['Guid'])
+        self.assertIsNone(values['Identification'].get('Guid'))
         out.asmt_guid = 'abc'
         self.assertEqual(values['Identification']['Guid'], 'abc')
 
     def test_JSONMapping(self):
-        header = JSONHeaders({})
+        header = JSONHeaders(self.__metadata)
         mapping = JSONMapping(DummyObj(), header, 'asmt_guid')
         mapping.evaluate()
         self.assertEqual(header.asmt_guid, 1)

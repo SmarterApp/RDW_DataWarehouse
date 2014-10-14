@@ -60,6 +60,9 @@
                         "question": "How can I support my child based on his or her scores?",
                         "answer": "These reports are designed to provide parents and educators with a common understanding of student progress and achievement. Discuss your child’s report with their teachers and work together to develop appropriate supports for your child."}]}
     ],
+    "user_guide_content": [
+        {"display_text":"Download the User Guide", "link": "../data/smarter_balanced_reporting_user_guide.pdf"}
+    ],
     "glossary_content": [
         {"alphabet": "#",
          "has_data": true,

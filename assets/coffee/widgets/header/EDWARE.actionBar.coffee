@@ -74,7 +74,7 @@ define [
       @updateDisclaimer()
 
     updateDisclaimer: (asmtType) ->
-      currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()
+      currentAsmtType = asmtType?.asmt_type || edwarePreferences.getAsmtType() || {}
       @disclaimer.update currentAsmtType
 
     prepareSubjects: () ->

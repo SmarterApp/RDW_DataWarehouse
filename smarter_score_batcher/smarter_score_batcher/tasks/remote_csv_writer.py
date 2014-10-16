@@ -26,5 +26,6 @@ def remote_csv_generator(meta, csv_file_path, xml_file_path, work_dir):
         asmt_id = meta.asmt_id
         directory = prepare_assessment_dir(work_dir, state_code, asmt_id, mode=0o700)
         err_file_path = os.path.join(directory, asmt_id + Extensions.ERR)
-        handle_error(e, err_file_path)
+        json_file_path = os.path.join(directory, asmt_id + Extensions.JSON)
+        handle_error(e, err_file_path, xml_file_path, json_file_path)
     return rtn

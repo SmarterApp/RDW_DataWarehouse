@@ -11,20 +11,9 @@
         "1": " được sử dụng mà không đăng ký:",
         "2": " được sử dụng:",
         "3": " không truy cập:",
-        "4": " không truy cập:",
-        "6": " đã truy cập:",
-        "7": " không sử dụng:",
-        "8": " được sử dụng:",
-        "11": " được sử dụng mà không đăng ký:",
-        "17": " được sử dụng mà không đăng ký:",
-        "18": " có thể truy cập:",
-        "19": " không sử dụng:",
-        "20": " được sử dụng:",
-        "21": " không truy cập:",
-        "22": " không truy cập:",
-        "24": " đã truy cập:",
-        "25": " không sử dụng:",
-        "26": " được sử dụng:"
+        "4": " không sử dụng:",
+        "5": " đã truy cập:",
+        "6": " có thể truy cập:"
     },
     "accommodationColumns": {
         "acc_noise_buffer_nonembed": "Tấm ngăn âm thanh",
@@ -40,7 +29,26 @@
         "acc_read_aloud_nonembed": "Đọc to",
         "acc_scribe_nonembed": "Giải thích",
         "acc_speech_to_text_nonembed": "Từ Văn nói-đến-văn viết",
-        "acc_streamline_mode": "Dạng dòng chảy"
+        "acc_streamline_mode": "Dạng dòng chảy",
+        "acc_asl_video_embed" : "Ngôn Ngữ Ký Hiệu Hoa Kỳ"
+    },
+    "accomodationCodeBuckets": {
+        "11": "1",
+        "17": "1",
+        "2": "2",
+        "8": "2",
+        "20": "2",
+        "26": "2",
+        "3": "3",
+        "4": "3",
+        "21": "3",
+        "23": "3",
+        "7": "4",
+        "19": "4",
+        "25": "4",
+        "6":"5",
+        "24":"5",
+        "18": "6"
     },
     "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
     "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"

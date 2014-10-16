@@ -36,46 +36,34 @@
 		<ExamineeRelationship context="FINAL" name="StateCode" value="CA" contextDate="2014-04-14T11:13:41.803"/>
 	</Examinee>
 	<Opportunity server="562299-SBASQL8" effectiveDate="2014-03-04" database="CASBAC_SHARD_2013sp" clientName="California" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="1855629" startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2014-04-14T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0" gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405">
-        <Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="4" />
-        <Score measureOf="Braile" measureLabel="Accommodation" value="8" />
-        <Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="0" />
-        <Score measureOf="TTS" measureLabel="Accommodation" value="0" />
-        <Score measureOf="Abacus" measureLabel="Accommodation" value="0" />
-        <Score measureOf="AlternateResponseOptions" measureLabel="Accommodation" value="0" />
-        <Score measureOf="Calculator" measureLabel="Accommodation" value="0" />
-        <Score measureOf="MultiplicationTable" measureLabel="Accommodation" value="0" />
-        <Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="0" />
-        <Score measureOf="PrintOnDemandItem" measureLabel="Accommodation" value="0" />
-        <Score measureOf="ReadAloud" measureLabel="Accommodation" value="0" />
-        <Score measureOf="Scribe" measureLabel="Accommodation" value="0" />
-        <Score measureOf="SpeechToText" measureLabel="Accommodation" value="0" />
-        <Score measureOf="Noisebuffer" measureLabel="Accommodation" value="0" />
-		<Score measureOf="Overall" measureLabel="ScaleScore" value="1295" standardError="19" />
-		<Score measureOf="Overall" measureLabel="PerformanceLevel" value="1" />
-		<Score measureOf="Overall" measureLabel="MinScore" value="1200" />
-		<Score measureOf="Overall" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Overall" measureLabel="CutPoint1" value="1400" />
-		<Score measureOf="Overall" measureLabel="CutPoint2" value="1800" />
-		<Score measureOf="Overall" measureLabel="CutPoint3" value="2100" />
+		<Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="4" />
+		<Score measureOf="Braile" measureLabel="Accommodation" value="8" />
+		<Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="0" />
+		<Score measureOf="TTS" measureLabel="Accommodation" value="0" />
+		<Score measureOf="Abacus" measureLabel="Accommodation" value="0" />
+		<Score measureOf="AlternateResponseOptions" measureLabel="Accommodation" value="0" />
+		<Score measureOf="Calculator" measureLabel="Accommodation" value="0" />
+		<Score measureOf="MultiplicationTable" measureLabel="Accommodation" value="0" />
+		<Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="0" />
+		<Score measureOf="PrintOnDemandItem" measureLabel="Accommodation" value="0" />
+		<Score measureOf="ReadAloud" measureLabel="Accommodation" value="0" />
+		<Score measureOf="Scribe" measureLabel="Accommodation" value="0" />
+		<Score measureOf="SpeechToText" measureLabel="Accommodation" value="0" />
+		<Score measureOf="Noisebuffer" measureLabel="Accommodation" value="0" />
 		<Score measureOf="PerformanceLevel" measureLabel="Level1" value="Minimal Understanding" />
 		<Score measureOf="PerformanceLevel" measureLabel="Level2" value="Partial Understanding" />
 		<Score measureOf="PerformanceLevel" measureLabel="Level3" value="Adequate Understanding" />
 		<Score measureOf="PerformanceLevel" measureLabel="Level4" value="Thorough Understanding" />
-		<Score measureOf="Claim1" measureLabel="ScaleScore" value="1285" standardError="13" />
-		<Score measureOf="Claim1" measureLabel="PerformanceLevel" value="1" />
-		<Score measureOf="Claim1" measureLabel="MinScore" value="1200" />
-		<Score measureOf="Claim1" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Claim1" measureLabel="Text" value="Communicating Reasoning" />
-		<Score measureOf="Claim2" measureLabel="ScaleScore" value="1505" standardError="13" />
-		<Score measureOf="Claim2" measureLabel="PerformanceLevel" value="1" />
-		<Score measureOf="Claim2" measureLabel="MinScore" value="1200" />
-		<Score measureOf="Claim2" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Claim2" measureLabel="Text" value="Problem Solving and Modeling and Data Analysis" />
-		<Score measureOf="Claim3" measureLabel="ScaleScore" value="1684" standardError="13" />
-		<Score measureOf="Claim3" measureLabel="PerformanceLevel" value="2" />
-		<Score measureOf="Claim3" measureLabel="MinScore" value="1200" />
-		<Score measureOf="Claim3" measureLabel="MaxScore" value="2400" />
-		<Score measureOf="Claim3" measureLabel="Text" value="Concepts and Procedures" />
+		
+		<Score measureOf="Overall" measureLabel="ScaleScore" value="1295" standardError="19" />
+		<Score measureOf="Overall" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="myClaim1" measureLabel="ScaleScore" value="1285" standardError="13" />
+		<Score measureOf="myClaim1" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="Claim2Problem Solving and Modeling and Data Analysis" measureLabel="ScaleScore" value="1505" standardError="13" />
+		<Score measureOf="Claim2Problem Solving and Modeling and Data Analysis" measureLabel="PerformanceLevel" value="1" />
+		<Score measureOf="Claim3Communicating Reasoning" measureLabel="ScaleScore" value="1684" standardError="204.982" />
+		<Score measureOf="Claim3Communicating Reasoning" measureLabel="PerformanceLevel" value="2" />
+		
 		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level1" value="Below Standard" />
 		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level2" value="At/Near Standard" />
 		<Score measureOf="ClaimPerformanceLevel" measureLabel="Level3" value="Above Standard" />

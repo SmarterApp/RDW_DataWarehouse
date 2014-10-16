@@ -7,6 +7,8 @@ from edudl2.udl2 import message_keys as mk, W_load_from_integration_to_star,\
     W_parallel_csv_load, W_file_content_validator, W_load_json_to_integration,\
     W_load_to_integration_table, W_tasks_utils
 from celery.canvas import chain
+from edudl2.udl2.constants import Constants
+from edcore.database.utils.constants import LoadType
 
 logger = get_task_logger(__name__)
 
@@ -15,6 +17,9 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     load_type = msg[mk.LOAD_TYPE]
+    assessment_type = None
+    if load_type == LoadType.ASSESSMENT:
+        assessment_type = msg[mk.ASSESSMENT_TYPE]
     logger.info('DETERMINE END ROUTE: Determining end route by %s' % load_type)
     split_file_tuple_list = msg[mk.SPLIT_FILE_LIST]
 
@@ -25,14 +30,13 @@ def task(msg):
                         W_load_to_integration_table.task.s(),
                         W_load_from_integration_to_star.prepare_target_schema.s()]
 
-        target_tasks = {"assessment": [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
-                                       W_tasks_utils.handle_group_results.s(),
-                                       W_load_from_integration_to_star.handle_record_upsert.s(),
-                                       W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact'),
-                                       W_tasks_utils.handle_group_results.s(),
-                                       W_load_from_integration_to_star.handle_deletions.s()
-                                       ],
-                        "studentregistration": [W_load_sr_integration_to_target.task.s()]}
+        target_tasks = {LoadType.ASSESSMENT: [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
+                                              W_tasks_utils.handle_group_results.s(),
+                                              W_load_from_integration_to_star.handle_record_upsert.s(),
+                                              W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, Constants.FACT_TABLE_PREFIX.get(assessment_type)),
+                                              W_tasks_utils.handle_group_results.s(),
+                                              W_load_from_integration_to_star.handle_deletions.s()],
+                        LoadType.STUDENT_REGISTRATION: [W_load_sr_integration_to_target.task.s()]}
 
         post_etl_tasks = [W_post_etl.task.s(), W_all_done.task.s()]
 

@@ -1,6 +1,7 @@
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from sqlalchemy.sql.expression import select
+from edudl2.json_util.json_util import get_value_from_json
 import json
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 __author__ = 'sravi'
@@ -44,3 +45,17 @@ def merge_to_udl2stat_notification(batch_id, notification_data):
         notification_dict = json.loads(notification if notification is not None else '{}')
         notification_dict.update(notification_data)
         update_udl_stats_by_batch_guid(batch_id, {UdlStatsConstants.NOTIFICATION: json.dumps(notification_dict)})
+
+
+def get_assessment_type(json_file_dir):
+    """
+    Get the assessment type for the UDL job from the json file
+    @param json_file_dir: A directory that houses the json file
+    @return: UDL job assessment type
+    @rtype: string
+    """
+    assessment_types = Constants.ASSESSMENT_TYPES()
+    assessment_type = get_value_from_json(json_file_dir, Constants.ASSESSMENT_TYPE_KEY)
+    if assessment_type not in assessment_types:
+        raise ValueError('No valid load type specified in json file --')
+    return assessment_type

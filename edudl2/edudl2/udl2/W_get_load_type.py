@@ -6,7 +6,9 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.get_load_type.get_load_type import get_load_type
 from edudl2.udl2_util.measurement import BatchTableBenchmark
+from edudl2.udl2_util.util import get_assessment_type
 from edcore.database.utils.constants import UdlStatsConstants
+from edudl2.udl2.constants import Constants
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 __author__ = 'tshewchuk'
 
@@ -34,6 +36,9 @@ def task(incoming_msg):
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
     outgoing_msg.update({mk.LOAD_TYPE: load_type})
+    if load_type == Constants.LOAD_TYPE_ASSESSMENT:
+        assessment_type = get_assessment_type(expanded_dir)
+        outgoing_msg.update({mk.ASSESSMENT_TYPE: assessment_type})
     # Update UDL stats
     update_udl_stats_by_batch_guid(guid_batch, {UdlStatsConstants.LOAD_TYPE: load_type})
     return outgoing_msg

@@ -22,6 +22,7 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
+from zope.component.globalregistry import base
 
 
 class TestCSVUtils(unittest.TestCase):
@@ -34,6 +35,7 @@ class TestCSVUtils(unittest.TestCase):
             'smarter_score_batcher.base_dir': self.__tempfolder.name
         }
         reg = Registry()
+        reg.utilities = base.utilities
         reg.settings = settings
         self.__config = testing.setUp(registry=reg)
         setup_celery(settings)
@@ -47,7 +49,7 @@ class TestCSVUtils(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="12">
         </Examinee>
         <Opportunity>
@@ -91,7 +93,7 @@ class TestCSVUtils(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="12">
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"
@@ -117,7 +119,7 @@ class TestCSVUtils(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="12">
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"
@@ -137,7 +139,7 @@ class TestCSVUtils(unittest.TestCase):
     def test_process_assessment_data(self):
         base_dir = os.path.join(self.__tempfolder.name, 'work')
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="12" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="134"/>
         <Opportunity>
         </Opportunity>
@@ -149,9 +151,11 @@ class TestCSVUtils(unittest.TestCase):
         self.assertTrue(os.path.isfile(os.path.join(base_dir, 'state_code', 'asmt_id', 'asmt_id.json')))
 
     def test_generate_assessment_file_when_file_exists(self):
+        here = os.path.abspath(os.path.dirname(__file__))
+        json = os.path.join(here, '..', 'resources', 'meta', 'static', 'MATH.static_asmt_metadata.json')
         file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
         xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
+        <Test subject="MATh" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="134"/>
         <Opportunity>
         </Opportunity>
@@ -159,7 +163,7 @@ class TestCSVUtils(unittest.TestCase):
         root = ET.fromstring(xml_string)
         # Test that the file has 3 lines (1 header + 2 data)
         with open(file_path, 'a') as f:
-            generate_assessment_file(f, root, header=True)
+            generate_assessment_file(f, root, json, header=True)
         self.assertTrue(os.path.isfile(file_path))
         rows = []
         with open(file_path, 'r') as f:
@@ -168,7 +172,7 @@ class TestCSVUtils(unittest.TestCase):
                 rows.append(row)
         self.assertTrue(len(rows), 2)
         with open(file_path, 'a') as f:
-            generate_assessment_file(f, root, header=True)
+            generate_assessment_file(f, root, json, header=True)
         rows = []
         with open(file_path, 'r') as f:
             csv_reader = csv.reader(f, delimiter=',')

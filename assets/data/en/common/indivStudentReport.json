@@ -11,20 +11,9 @@
         "1": " used without prior registration:",
         "2": " used:",
         "3": " did not have access to:",
-        "4": " did not have access to:",
-        "6": " had access to:",
-        "7": " did not use:",
-        "8": " used:",
-        "11": " used without prior registration:",
-        "17": " used without prior registration:",
-        "18": " may have had access to:",
-        "19": " did not use:",
-        "20": " used:",
-        "21": " did not have access to:",
-        "22": " did not have access to:",
-        "24": " had access to:",
-        "25": " did not use:",
-        "26": " used:"
+        "4": " did not use:",
+        "5": " had access to:",
+        "6": " may have had access to:"
     },
     "accommodationColumns": {
         "acc_noise_buffer_nonembed": "Noise Buffers",
@@ -40,7 +29,26 @@
         "acc_read_aloud_nonembed": "Read aloud",
         "acc_scribe_nonembed": "Scribe",
         "acc_speech_to_text_nonembed": "Speech-to-text",
-        "acc_streamline_mode": "Streamline Mode"
+        "acc_streamline_mode": "Streamline Mode",
+        "acc_asl_video_embed" : "American Sign Language"
+    },
+    "accomodationCodeBuckets": {
+        "11": "1",
+        "17": "1",
+        "2": "2",
+        "8": "2",
+        "20": "2",
+        "26": "2",
+        "3": "3",
+        "4": "3",
+        "21": "3",
+        "23": "3",
+        "7": "4",
+        "19": "4",
+        "25": "4",
+        "6":"5",
+        "24":"5",
+        "18": "6"
     },
     "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · Grade {{asmt_grade}} · {{asmt_type}}",
     "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"

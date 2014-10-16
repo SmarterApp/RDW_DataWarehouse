@@ -1,6 +1,6 @@
 from pyramid.config import Configurator
 import logging
-from hpz import frs, swi
+from hpz import frs, swi, services
 from hpz.database.hpz_connector import initialize_db
 import edauth
 from pyramid_beaker import set_cache_regions_from_settings
@@ -30,6 +30,7 @@ def main(global_config, **settings):
     # include add routes from frs. Calls includeme
     config.include(frs)
     config.include(swi)
+    config.include(services)
 
     config.scan()
 

@@ -299,8 +299,8 @@ def __get_asmt_data(asmtSubject, stateCode):
                         dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
                         dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name')],
                        from_obj=[dim_asmt])
-
-        query.where(dim_asmt.c.rec_status == Constants.CURRENT)
+        query = query.where(dim_asmt.c.rec_status == Constants.CURRENT)
+        query = query.where(dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]))
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
 

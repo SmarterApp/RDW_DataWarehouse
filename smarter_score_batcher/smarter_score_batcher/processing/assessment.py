@@ -5,8 +5,10 @@ Created on Aug 8, 2014
 '''
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper, \
     extract_meta_without_fallback_helper
+import itertools
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
+from smarter_score_batcher.utils.xml_utils import convert_date_format
 
 
 class XMLMeta:
@@ -25,6 +27,20 @@ class XMLMeta:
         else:
             val = extract_meta_without_fallback_helper(self.root, self.path, self.attribute)
         return val
+
+
+class DateMeta(XMLMeta):
+
+    def get_value(self):
+        date = super().get_value()
+        return convert_date_format(date)
+
+
+class IntegerMeta(XMLMeta):
+
+    def get_value(self):
+        date = super().get_value()
+        return str(int(date))
 
 
 class XMLClaimScore:
@@ -222,8 +238,10 @@ def get_assessment_mapping(root, metadata_file_path):
     claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
 
+    groups = _get_groups_mapping(examinee)
+
     # In the order of the LZ mapping for easier maintenance
-    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateCode']", "value", "context"), AssessmentHeaders.StateAbbreviation),
+    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context"), AssessmentHeaders.StateAbbreviation),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleDistrictIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
@@ -235,8 +253,8 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='MiddleName']", "value", "context"), AssessmentHeaders.MiddleName),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='LastOrSurname']", "value", "context"), AssessmentHeaders.LastOrSurname),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Sex']", "value", "context"), AssessmentHeaders.Sex),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Birthdate']", "value", "context"), AssessmentHeaders.Birthdate),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='GradeLevelWhenAssessed']", "value", "context"), AssessmentHeaders.GradeLevelWhenAssessed),
+                               Mapping(DateMeta(examinee, "./ExamineeAttribute/[@name='Birthdate']", "value", "context"), AssessmentHeaders.Birthdate),
+                               Mapping(IntegerMeta(examinee, "./ExamineeAttribute/[@name='GradeLevelWhenAssessed']", "value", "context"), AssessmentHeaders.GradeLevelWhenAssessed),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='HispanicOrLatinoEthnicity']", "value", "context"), AssessmentHeaders.HispanicOrLatinoEthnicity),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='AmericanIndianOrAlaskaNative']", "value", "context"), AssessmentHeaders.AmericanIndianOrAlaskaNative),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Asian']", "value", "context"), AssessmentHeaders.Asian),
@@ -249,27 +267,6 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Section504Status']", "value", "context"), AssessmentHeaders.Section504Status),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='EconomicDisadvantageStatus']", "value", "context"), AssessmentHeaders.EconomicDisadvantageStatus),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='MigrantStatus']", "value", "context"), AssessmentHeaders.MigrantStatus),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group1Id']", "value", "context"), AssessmentHeaders.Group1Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group1Text']", "value", "context"), AssessmentHeaders.Group1Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Id']", "value", "context"), AssessmentHeaders.Group2Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Text']", "value", "context"), AssessmentHeaders.Group2Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group3Id']", "value", "context"), AssessmentHeaders.Group3Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group3Text']", "value", "context"), AssessmentHeaders.Group3Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group4Id']", "value", "context"), AssessmentHeaders.Group4Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group4Text']", "value", "context"), AssessmentHeaders.Group4Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group5Id']", "value", "context"), AssessmentHeaders.Group5Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group5Text']", "value", "context"), AssessmentHeaders.Group5Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group6Id']", "value", "context"), AssessmentHeaders.Group6Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group6Text']", "value", "context"), AssessmentHeaders.Group6Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group7Id']", "value", "context"), AssessmentHeaders.Group7Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group7Text']", "value", "context"), AssessmentHeaders.Group7Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group8Id']", "value", "context"), AssessmentHeaders.Group8Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group8Text']", "value", "context"), AssessmentHeaders.Group8Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group9Id']", "value", "context"), AssessmentHeaders.Group9Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group9Text']", "value", "context"), AssessmentHeaders.Group9Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group10Id']", "value", "context"), AssessmentHeaders.Group10Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group10Text']", "value", "context"), AssessmentHeaders.Group10Text),
-
                                Mapping(XMLMeta(test_node, ".", "testId"), AssessmentHeaders.AssessmentGuid),
                                Mapping(XMLMeta(opportunity, ".", "oppId"), AssessmentHeaders.AssessmentSessionLocationId),
                                Mapping(XMLMeta(opportunity, ".", "server"), AssessmentHeaders.AssessmentSessionLocation),
@@ -299,7 +296,6 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(claim4_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim1MinimumValue),
                                Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier),
-
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='AmericanSignLanguage'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAmericanSignLanguage),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Braile'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationBraille),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='ClosedCaptioning'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationClosedCaptioning),
@@ -314,6 +310,17 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Scribe'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationScribe),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='SpeechToText'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationSpeechToText),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='StreamlineMode'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationStreamlineMode),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='NoiseBuffer'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationNoiseBuffer)])
+                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='NoiseBuffer'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationNoiseBuffer)] +
+                              groups)
     mappings.evaluate()
+    return mappings
+
+
+def _get_groups_mapping(examinee):
+    # map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
+    mappings = []
+    groups = examinee.findall("./ExamineeRelationship[@name='StudentGroupName']")[:10]
+    for i, group in enumerate(groups, start=1):
+        mappings.append(Mapping(XMLMeta(group, '.', 'value'), 'Group%dId' % i))
+        mappings.append(Mapping(XMLMeta(group, '.', 'value'), 'Group%dText' % i))
     return mappings

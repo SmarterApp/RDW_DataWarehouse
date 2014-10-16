@@ -1,5 +1,6 @@
 import logging
 from smarter_score_batcher.utils.constants import Constants
+from datetime import datetime
 
 
 def get_all_elements(root, xpath_of_element):
@@ -51,3 +52,9 @@ def extract_meta_without_fallback_helper(root, element_xpath, attribute_to_get):
         if(root.find(element_xpath).get(attribute_to_get)) is not None:
             element = root.find(element_xpath).get(attribute_to_get, Constants.DEFAULT_VALUE)
     return element
+
+
+def convert_date_format(date):
+    if not date:
+        return date
+    return datetime.strptime(date, '%Y-%m-%d').strftime('%Y%m%d')

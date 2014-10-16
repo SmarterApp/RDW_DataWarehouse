@@ -1,798 +1,331 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" >
- 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" >
     <xs:element name="TDSReport" >
- 
         <xs:complexType>
- 
         	<xs:sequence>
- 
-            	<xs:element
-                    name="Test"
-                    maxOccurs="1"
-                    minOccurs="1" >
- 
+            	<xs:element name="Test" maxOccurs="1" minOccurs="1" >
                 	<xs:complexType>
- 
-                    	<xs:attribute
-                        	name="name"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="subject"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="testId"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="bankKey"
-                        	type="xs:unsignedInt" />
- 
-                    	<xs:attribute
-                        	name="contract"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="mode"
-                        	use="required" >
- 
+                    	<xs:attribute name="name" use="required" />
+                    	<xs:attribute name="subject" use="required" />
+                    	<xs:attribute name="testId" use="required" />
+                    	<xs:attribute name="bankKey" type="xs:unsignedInt" />
+                    	<xs:attribute name="contract" use="required" />
+                    	<xs:attribute name="mode" use="required" >
                         	<xs:simpleType>
- 
                             	<xs:restriction base="xs:token" >
- 
                                 	<xs:enumeration value="online" />
- 
                                 	<xs:enumeration value="paper" />
- 
                             	    <xs:enumeration value="scanned" />
                             	</xs:restriction>
                         	</xs:simpleType>
                     	</xs:attribute>
- 
-                    	<xs:attribute
-                        	name="grade"
-                        	use="required" />
+                    	<xs:attribute name="grade" use="required" />
                     	<!-- not expected to be used for open source, but may be needed for internal purposes -->
- 
-                    	<xs:attribute
-                        	name="handScoreProject"
- 	                       type="xs:unsignedInt" />
+                    	<xs:attribute name="handScoreProject" type="xs:unsignedInt" />
                     	<!-- new fields requested for open source -->
- 
-                    	<xs:attribute
-                        	name="assessmentType"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="academicYear"
-                        	type="xs:unsignedInt"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="assessmentVersion"
-                        	use="required" />
+                    	<xs:attribute name="assessmentType" use="required" />
+                    	<xs:attribute name="academicYear" type="xs:unsignedInt" use="required" />
+                    	<xs:attribute name="assessmentVersion" use="required" />
                 	</xs:complexType>
             	</xs:element>
- 
-            	<xs:element
-                    name="Examinee"
-                    maxOccurs="1"
-                    minOccurs="1" >
- 
+            	<xs:element name="Examinee" maxOccurs="1" minOccurs="1" >
                 	<xs:complexType>
- 
-                    	<xs:choice
-                        	maxOccurs="unbounded"
-                        	minOccurs="0" >
- 
-                        	<xs:element name="ExamineeAttribute" >
- 
-                            	<xs:complexType>
- 
-                                	<xs:attribute
-                                    	name="context"
-                                    	type="Context"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="name"
-                                    	use="required" />
- 
-                                	<xs:attribute name="value" />
- 
-                                	<xs:attribute
-                                    	name="contextDate"
-                                    	type="xs:dateTime"
-                                    	use="required" />
-                          	  </xs:complexType>
+                    	<xs:choice maxOccurs="unbounded" minOccurs="0" >
+                        	<xs:element name="ExamineeAttribute" > <xs:complexType>
+                                <xs:attribute name="context" type="Context" use="required" />
+                                <xs:attribute name="name" use="required" />
+                                <xs:attribute name="value" />
+                                <xs:attribute name="contextDate" type="xs:dateTime" use="required" />
+                          	</xs:complexType>
                         	</xs:element>
- 
                         	<xs:element name="ExamineeRelationship" >
- 
                             	<xs:complexType>
- 
-                                	<xs:attribute
-                                    	name="context"
-                                    	type="Context"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                 	   name="name"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="entityKey"
-                                    	type="xs:unsignedLong" />
- 
+                                	<xs:attribute name="context" type="Context" use="required" />
+                                	<xs:attribute name="name" use="required" />
+                                	<xs:attribute name="entityKey" type="xs:unsignedLong" />
                                 	<xs:attribute name="value" />
- 
-                                	<xs:attribute
-                                    	name="contextDate"
-                                    	type="xs:dateTime"
-                 	                   use="required" />
+                                	<xs:attribute name="contextDate" type="xs:dateTime" use="required" />
                             	</xs:complexType>
                         	</xs:element>
                     	</xs:choice>
                     	<!-- negative values are used by TDS for testing. -->
- 
-                    	<xs:attribute
-                        	name="key"
-                        	type="xs:long" />
+                    	<xs:attribute name="key" type="xs:long" />
                 	</xs:complexType>
             	</xs:element>
- 
-            	<xs:element
-                    name="Opportunity"
-                    maxOccurs="1"
-                    minOccurs="1" >
- 
+            	<xs:element name="Opportunity" maxOccurs="1" minOccurs="1" >
                 	<xs:complexType>
- 
                     	<xs:sequence>
- 
                         	<!--
-          	note: DTD has minOccurs=1, but we could get an invalidation for a joined but
-          	not-started test; no seg will have been initialized in this case
+          	                    note: DTD has minOccurs=1, but we could get an invalidation for a joined but
+          	                    not-started test; no seg will have been initialized in this case
                         	-->
- 
-                        	<xs:element
-                            	name="Segment"
-                            	maxOccurs="unbounded"
-                            	minOccurs="0" >
- 
+                        	<xs:element name="Segment" maxOccurs="unbounded" minOccurs="0" >
                             	<xs:complexType>
- 
-                                	<xs:attribute
-                                    	name="id"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="position"
-                                    	use="required" >
- 
+                                	<xs:attribute name="id" use="required" />
+                                	<xs:attribute name="position" use="required" >
                                     	<xs:simpleType>
- 
                                         	<xs:restriction base="xs:unsignedByte" >
- 
                                                 <xs:minInclusive value="1" />
-                               	         </xs:restriction>
+                               	            </xs:restriction>
                                     	</xs:simpleType>
                                 	</xs:attribute>
- 
                                 	<xs:attribute name="formId" />
- 
                                 	<xs:attribute name="formKey" />
- 
-                                	<xs:attribute
-                                    	name="algorithm"
-                                    	use="required" />
+                                	<xs:attribute name="algorithm" use="required" />
                                 	<!-- new field requested for open source -->
- 
-                                	<xs:attribute
-                                    	name="algorithmVersion"
-                                    	use="required" />
+                                	<xs:attribute name="algorithmVersion" use="required" />
                             	</xs:complexType>
                         	</xs:element>
- 
-                        	<xs:element
-                            	name="Accommodation"
-                            	maxOccurs="unbounded"
-                            	minOccurs="0" >
- 
+                        	<xs:element name="Accommodation" maxOccurs="unbounded" minOccurs="0" >
                             	<xs:complexType>
- 
-                                	<xs:attribute
-                                    	name="type"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="value"
-                                    	use="required" />
+                                	<xs:attribute name="type" use="required" />
+                                	<xs:attribute name="value" use="required" />
                                 	<!-- DTD says implied, but this cannot be null -->
- 
-                                	<xs:attribute
-                                    	name="code"
-                                    	use="required" />
+                                	<xs:attribute name="code" use="required" />
                                 	<!-- DTD says implied, but this will always be populated; 0 if not segment-oriented -->
- 
-                 	               <xs:attribute
-                                    	name="segment"
-                                    	use="required" >
- 
+                 	                <xs:attribute name="segment" use="required" >
                                     	<xs:simpleType>
- 
                                         	<xs:restriction base="xs:unsignedInt" >
- 
                                                 <xs:minInclusive value="0" />
                                         	</xs:restriction>
                                     	</xs:simpleType>
                                 	</xs:attribute>
- 
-                                	<xs:attribute
-                                    	name="context"
-                                    	type="Context"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="contextDate"
-                                    	type="xs:dateTime"
-                                    	use="required" />
-          	                  </xs:complexType>
+                                	<xs:attribute name="context" type="Context" use="required" />
+                                	<xs:attribute name="contextDate" type="xs:dateTime" use="required" />
+          	                    </xs:complexType>
                         	</xs:element>
- 
-                        	<xs:element
-                            	name="Score"
-                            	maxOccurs="unbounded"
-                            	minOccurs="0" >
- 
+                        	<xs:element name="Score" maxOccurs="unbounded" minOccurs="0" >
                             	<xs:complexType>
- 
-                                	<xs:attribute
-                                    	name="measureOf"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="measureLabel"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="value"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="standardError"
-                             	       type="NullableFloat" />
+                                	<xs:attribute name="measureOf" use="required" />
+                                	<xs:attribute name="measureLabel" use="required" />
+                                	<xs:attribute name="value" use="required" />
+                                	<xs:attribute name="standardError" type="NullableFloat" />
                             	</xs:complexType>
                         	</xs:element>
- 
-                        	<xs:element
-                            	name="GenericVariable"
-                            	maxOccurs="unbounded"
-                            	minOccurs="0" >
- 
+                        	<xs:element name="GenericVariable" maxOccurs="unbounded" minOccurs="0" >
                             	<xs:complexType>
- 
-                                	<xs:attribute
-                                    	name="context"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="name"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="value"
-                                    	use="required" />
+                                	<xs:attribute name="context" use="required" />
+                                	<xs:attribute name="name" use="required" />
+                                	<xs:attribute name="value" use="required" />
                             	</xs:complexType>
                         	</xs:element>
- 
-                        	<xs:element
-                            	name="Item"
-                            	maxOccurs="unbounded"
-                            	minOccurs="0" >
- 
+                        	<xs:element name="Item" maxOccurs="unbounded" minOccurs="0" >
                             	<xs:complexType>
- 
                                 	<xs:sequence>
- 
-                                    	<xs:element
-                                        	name="Response"
-                                        	maxOccurs="1"
-                                        	minOccurs="0" >
- 
-                  	                      <xs:complexType mixed="true" >
- 
-                                                <xs:attribute
-                                                    name="date"
-                                                    type="xs:dateTime" />
- 
+                                    	<xs:element name="Response" maxOccurs="1" minOccurs="0" >
+                  	                        <xs:complexType mixed="true" >
+                                                <xs:attribute name="date" type="xs:dateTime" />
                                                 <xs:attribute name="type" >
- 
                                                     <xs:simpleType>
- 
                                                         <xs:restriction base="xs:token" >
- 
-               	                                         <xs:enumeration value="value" />
- 
+               	                                            <xs:enumeration value="value" />
                                                             <xs:enumeration value="reference" />
- 
                                                             <xs:enumeration value="" />
                                                         </xs:restriction>
                                                     </xs:simpleType>
                                                 </xs:attribute>
-                                       	 </xs:complexType>
+                                       	    </xs:complexType>
                                     	</xs:element>
- 
-                                    	<xs:element
-                                        	name="ScoreInfo"
-                                        	maxOccurs="1"
-       	                                 minOccurs="0"
-                                        	type="ScoreInfoType" />
+                                    	<xs:element name="ScoreInfo" maxOccurs="1" minOccurs="0" type="ScoreInfoType" />
                                 	</xs:sequence>
- 
-                                	<xs:attribute
-                                    	name="position"
-                                    	type="xs:unsignedInt"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                         	           name="segmentId"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="bankKey"
-                                    	type="xs:unsignedInt"
-                                        use="required" />
- 
-                                	<xs:attribute
-                                    	name="key"
-                                    	type="xs:unsignedInt"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="operational"
-                                    	type="Bit"
-                                 	   use="required" />
- 
-                                	<xs:attribute
-                                    	name="isSelected"
-                                    	type="Bit"
-                                    	use="required" />
- 
-                                    <xs:attribute
-                                    	name="format"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="score"
-                                    	type="UFloatAllowNegativeOne"
-                                    	use="required" />
+                                	<xs:attribute name="position" type="xs:unsignedInt" use="required" />
+                                	<xs:attribute name="segmentId" use="required" />
+                                	<xs:attribute name="bankKey" type="xs:unsignedInt" use="required" />
+                                	<xs:attribute name="key" type="xs:unsignedInt" use="required" />
+                                	<xs:attribute name="operational" type="Bit" use="required" />
+                                	<xs:attribute name="isSelected" type="Bit" use="required" />
+                                    <xs:attribute name="format" use="required" />
+                                	<xs:attribute name="score" type="UFloatAllowNegativeOne" use="required" />
                                 	<!-- may not be set for unselected items, or may be set to NOTSCORED -->
- 
-      	                          <xs:attribute name="scoreStatus" >
- 
+      	                            <xs:attribute name="scoreStatus" >
                                     	<xs:simpleType>
- 
                                         	<xs:restriction base="xs:token" >
- 
                                                 <xs:enumeration value="NOTSCORED" />
- 
                                                 <xs:enumeration value="SCORED" />
- 
                                                 <xs:enumeration value="WAITINGFORMACHINESCORE" />
- 
-                                 	           <xs:enumeration value="SCORINGERROR" />
+                                 	            <xs:enumeration value="SCORINGERROR" />
                                                 <!-- future -->
- 
                                                 <xs:enumeration value="APPEALED" />
                                         	</xs:restriction>
                                     	</xs:simpleType>
                                 	</xs:attribute>
- 
-                                	<xs:attribute
-                                    	name="adminDate"
-                                    	type="xs:dateTime"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="numberVisits"
-                        	            type="xs:unsignedInt"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="mimeType"
-                                    	use="required" >
- 
+                                	<xs:attribute name="adminDate" type="xs:dateTime" use="required" />
+                                	<xs:attribute name="numberVisits" type="xs:unsignedInt" use="required" />
+                                	<xs:attribute name="mimeType" use="required" >
                                     	<xs:simpleType>
- 
                                         	<xs:restriction base="xs:token" >
- 
                                                 <xs:enumeration value="text/plain" />
- 
                             	                <xs:enumeration value="text/xml" />
- 
                                                 <xs:enumeration value="text/html" />
- 
                                                 <xs:enumeration value="audio/ogg" />
                                         	</xs:restriction>
                                     	</xs:simpleType>
                                 	</xs:attribute>
- 
                                 	<xs:attribute name="clientId" />
- 
-          	                      <xs:attribute
-                                    	name="strand"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="contentLevel"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="pageNumber"
-                                    	type="xs:unsignedInt"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="pageVisits"
-                                    	type="xs:unsignedInt"
-                       	             use="required" />
+          	                        <xs:attribute name="strand" use="required" />
+                                	<xs:attribute name="contentLevel" use="required" />
+                                	<xs:attribute name="pageNumber" type="xs:unsignedInt" use="required" />
+                                	<xs:attribute name="pageVisits" type="xs:unsignedInt" use="required" />
                                 	<!--
-              	this should really be unsignedInt, but there are rare occassions
-              	where it cannot be calculated correctly and we get a negative value.
-          	                      -->
- 
-                                	<xs:attribute
-                                    	name="pageTime"
-                                    	type="xs:int"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="dropped"
-                                    	type="Bit"
-                                    	use="required" />
+              	                        this should really be unsignedInt, but there are rare occassions
+              	                        where it cannot be calculated correctly and we get a negative value.
+          	                        -->
+                                	<xs:attribute name="pageTime" type="xs:int" use="required" />
+                                	<xs:attribute name="dropped" type="Bit" use="required" />
                             	</xs:complexType>
                         	</xs:element>
                     	</xs:sequence>
- 
-                    	<xs:attribute
-                        	name="server"
-                        	use="required" />
- 
+                    	<xs:attribute name="server" use="required" />
                     	<xs:attribute name="database" />
- 
-                    	<xs:attribute
-                        	name="clientName"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="key"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="oppId"
-                        	use="required" />
+                    	<xs:attribute name="clientName" use="required" />
+                    	<xs:attribute name="key" use="required" />
+                    	<xs:attribute name="oppId" use="required" />
                     	<!-- note: DTD says required, but may get invalidation for joined, not-started test -->
- 
-                    	<xs:attribute
-                        	name="startDate"
-                        	type="NullableDateTime" />
- 
-                    	<xs:attribute
-                        	name="status"
-                        	use="required" >
- 
+                    	<xs:attribute name="startDate" type="NullableDateTime" />
+                    	<xs:attribute name="status" use="required" >
                         	<xs:simpleType>
- 
                             	<xs:restriction base="xs:token" >
- 
                                 	<xs:enumeration value="appeal" />
- 
                                 	<xs:enumeration value="completed" />
- 
                                 	<xs:enumeration value="expired" />
- 
                                 	<xs:enumeration value="handscoring" />
- 
                                 	<xs:enumeration value="invalidated" />
- 
             	                    <xs:enumeration value="paused" />
- 
                                 	<xs:enumeration value="reported" />
- 
                                 	<xs:enumeration value="reset" />
- 
                                 	<xs:enumeration value="scored" />
- 
                                 	<xs:enumeration value="submitted" />
- 
                                 	<xs:enumeration value="pending" />
                             	</xs:restriction>
                         	</xs:simpleType>
                         </xs:attribute>
- 
-                    	<xs:attribute
-                        	name="opportunity"
-                        	type="xs:unsignedInt"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="statusDate"
-                        	type="xs:dateTime"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="dateCompleted"
-                            type="NullableDateTime" />
- 
-                    	<xs:attribute
-                        	name="pauseCount"
-                        	type="xs:unsignedInt"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="itemCount"
-                        	type="xs:unsignedInt"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="ftCount"
-                            type="xs:unsignedInt"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="abnormalStarts"
-                        	type="xs:unsignedInt"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="gracePeriodRestarts"
-                        	type="xs:unsignedInt"
-                        	use="required" />
- 
+                    	<xs:attribute name="opportunity" type="xs:unsignedInt" use="required" />
+                    	<xs:attribute name="statusDate" type="xs:dateTime" use="required" />
+                    	<xs:attribute name="dateCompleted" type="NullableDateTime" />
+                    	<xs:attribute name="pauseCount" type="xs:unsignedInt" use="required" />
+                    	<xs:attribute name="itemCount" type="xs:unsignedInt" use="required" />
+                    	<xs:attribute name="ftCount" type="xs:unsignedInt" use="required" />
+                    	<xs:attribute name="abnormalStarts" type="xs:unsignedInt" use="required" />
+                    	<xs:attribute name="gracePeriodRestarts" type="xs:unsignedInt" use="required" />
                     	<xs:attribute name="taId" />
- 
                     	<xs:attribute name="taName" />
- 
                     	<xs:attribute name="sessionId" />
- 
-                    	<xs:attribute
-                        	name="windowId"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="windowOpportunity"
-                        	type="NullableUInt" />
- 
-                    	<xs:attribute
-                        	name="dateForceCompleted"
-                 	       type="NullableDateTime" />
- 
+                    	<xs:attribute name="windowId" use="required" />
+                    	<xs:attribute name="windowOpportunity" type="NullableUInt" />
+                    	<xs:attribute name="dateForceCompleted" type="NullableDateTime" />
                     	<xs:attribute name="qaLevel" />
                     	<!-- new field requested for open source -->
- 
-                    	<xs:attribute
-                        	name="assessmentParticipantSessionPlatformUserAgent"
-                        	use="required" />
+                    	<xs:attribute name="assessmentParticipantSessionPlatformUserAgent" use="required" />
                     	<!-- the first date of the first window for a given assessment.  Format = YYYY-MM-DD -->
- 
-                    	<xs:attribute
-      	                  name="effectiveDate"
-                        	use="required" />
+                    	<xs:attribute name="effectiveDate" use="required" />
                 	</xs:complexType>
             	</xs:element>
- 
-            	<xs:element
-                    name="Comment"
-                    maxOccurs="unbounded"
-                    minOccurs="0" >
- 
+            	<xs:element name="Comment" maxOccurs="unbounded" minOccurs="0" >
                 	<xs:complexType mixed="true" >
- 
                     	<!-- TODO: domain values; I've seen GlobalNotes and TESTITEM, but I'm not sure how rigid this is. -->
- 
-                    	<xs:attribute
-                        	name="context"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="itemPosition"
-                        	type="NullableUInt" />
- 
-              	      <xs:attribute
-                        	name="date"
-                        	type="xs:dateTime"
-                        	use="required" />
+                    	<xs:attribute name="context" use="required" />
+                    	<xs:attribute name="itemPosition" type="NullableUInt" />
+              	        <xs:attribute name="date" type="xs:dateTime" use="required" />
                 	</xs:complexType>
             	</xs:element>
- 
-            	<xs:element
-                    name="ToolUsage"
-                    maxOccurs="unbounded"
-                    minOccurs="0" >
- 
+            	<xs:element name="ToolUsage" maxOccurs="unbounded" minOccurs="0" >
                 	<xs:complexType>
- 
                     	<xs:sequence>
- 
-                        	<xs:element
-                            	name="ToolPage"
-                            	maxOccurs="unbounded"
-                            	minOccurs="1" >
- 
+                        	<xs:element name="ToolPage" maxOccurs="unbounded" minOccurs="1" >
                             	<xs:complexType>
- 
-                                	<xs:attribute
- 	                                   name="page"
-                                    	type="xs:unsignedInt"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                  	  name="groupId"
-                                    	use="required" />
- 
-                                	<xs:attribute
-                                    	name="count"
-                                    	type="xs:unsignedInt"
-                                    	use="required" />
+                                	<xs:attribute name="page" type="xs:unsignedInt" use="required" />
+                                	<xs:attribute name="groupId" use="required" />
+                                	<xs:attribute name="count" type="xs:unsignedInt" use="required" />
                             	</xs:complexType>
                         	</xs:element>
                     	</xs:sequence>
- 
-                    	<xs:attribute
-                        	name="type"
-                        	use="required" />
- 
-                    	<xs:attribute
-                        	name="code"
-                        	use="required" />
+                    	<xs:attribute name="type" use="required" />
+                    	<xs:attribute name="code" use="required" />
                 	</xs:complexType>
             	</xs:element>
         	</xs:sequence>
         </xs:complexType>
     </xs:element>
     <!-- recursive node requires global type so that it can be named -->
- 
     <xs:complexType name="ScoreInfoType" >
- 
         <xs:sequence>
- 
-        	<xs:element
-                name="ScoreRationale"
-                maxOccurs="1"
-                minOccurs="0" />
- 
-        	<xs:element
-                name="SubScoreList"
-                maxOccurs="1"
-                minOccurs="0" >
- 
+        	<xs:element name="ScoreRationale" maxOccurs="1" minOccurs="0" />
+        	<xs:element name="SubScoreList" maxOccurs="1" minOccurs="0" >
             	<xs:complexType>
- 
                 	<xs:sequence>
- 
-                    	<xs:element
-                        	name="ScoreInfo"
-                        	maxOccurs="unbounded"
-                        	minOccurs="0"
-                        	type="ScoreInfoType" />
+                    	<xs:element name="ScoreInfo" maxOccurs="unbounded" minOccurs="0" type="ScoreInfoType" />
                 	</xs:sequence>
             	</xs:complexType>
         	</xs:element>
         </xs:sequence>
         <!-- same constaints as item/@score -->
- 
-        <xs:attribute
-        	name="scorePoint"
-        	type="UFloatAllowNegativeOne" />
+        <xs:attribute name="scorePoint" type="UFloatAllowNegativeOne" />
         <!--
-    top level will always be "overall" (if not null); this represents the item score.  Nested ScoreInfo nodes will have dimention level scores
-    if applicable, so this will be the dimension name.
+            top level will always be "overall" (if not null); this represents the item score.  Nested ScoreInfo nodes will have dimention level scores
+            if applicable, so this will be the dimension name.
     	-->
- 
         <xs:attribute name="scoreDimension" />
- 
         <xs:attribute name="scoreStatus" >
- 
         	<xs:simpleType>
- 
             	<xs:restriction base="xs:token" >
- 
                 	<xs:enumeration value="Scored" />
- 
                 	<xs:enumeration value="NotScored" />
- 
                 	<xs:enumeration value="WaitingForMachineScore" />
- 
                 	<xs:enumeration value="ScoringError" />
             	</xs:restriction>
         	</xs:simpleType>
         </xs:attribute>
- 
         <xs:attribute name="conditionCode" >
- 
         	<xs:simpleType>
- 
             	<xs:restriction base="xs:string" >
- 
                 	<xs:pattern value="(|[A-Z])" />
- 
                 	<xs:maxLength value="1" />
             	</xs:restriction>
         	</xs:simpleType>
         </xs:attribute>
     </xs:complexType>
     <!-- some reusable types -->
- 
     <xs:simpleType name="Bit" >
- 
         <xs:restriction base="xs:unsignedByte" >
- 
         	<xs:minInclusive value="0" />
- 
         	<xs:maxInclusive value="1" />
         </xs:restriction>
     </xs:simpleType>
- 
     <xs:simpleType name="Empty" >
- 
         <xs:restriction base="xs:string" >
- 
         	<xs:enumeration value="" />
         </xs:restriction>
     </xs:simpleType>
- 
     <xs:simpleType name="NegativeOne" >
- 
         <xs:restriction base="xs:string" >
- 
         	<xs:enumeration value="-1" />
         </xs:restriction>
     </xs:simpleType>
- 
     <xs:simpleType name="NullableDateTime" >
- 
         <xs:union memberTypes="xs:dateTime Empty  " >
         </xs:union>
     </xs:simpleType>
- 
     <xs:simpleType name="NullableUInt" >
- 
         <xs:union memberTypes="xs:unsignedInt Empty  " >
         </xs:union>
     </xs:simpleType>
- 
     <xs:simpleType name="NullableFloat" >
- 
         <xs:union memberTypes="xs:float Empty  " >
         </xs:union>
     </xs:simpleType>
- 
     <xs:simpleType name="Context" >
- 
         <xs:restriction base="xs:token" >
- 
         	<xs:enumeration value="INITIAL" />
- 
         	<xs:enumeration value="FINAL" />
         </xs:restriction>
     </xs:simpleType>
- 
     <xs:simpleType name="UFloat" >
- 
         <xs:restriction base="xs:float" >
- 
         	<xs:minInclusive value="0" />
         </xs:restriction>
     </xs:simpleType>
- 
     <xs:simpleType name="UFloatAllowNegativeOne" >
- 
         <xs:union memberTypes="UFloat NegativeOne  " >
         </xs:union>
     </xs:simpleType>
- 
 </xs:schema>

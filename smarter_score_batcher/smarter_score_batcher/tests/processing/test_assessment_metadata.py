@@ -49,13 +49,13 @@ class TestJSONMetadata(unittest.TestCase):
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
         mapping = get_assessment_metadata_mapping(root)
-        self.assertEqual(mapping['Identification']['Guid'], 'SBAC-FT-SomeDescription-MATH-7')
+        self.assertEqual(mapping['Identification']['Guid'], 'SBAC-FT-SomeDescription-ELA-7')
         self.assertEqual(mapping['Overall']['MinScore'], '1000')
         self.assertEqual(mapping['PerformanceLevels']['Level1']['Name'], 'Minimal Understanding')
         self.assertEqual(mapping['Claims']['Claim1']['MinScore'], '0')
         self.assertEqual(mapping['ClaimsPerformanceLevel']['Level2']['Name'], 'At/Near Standard')
         self.assertEqual(mapping['Identification']['EffectiveDate'], '20140304')
-        self.assertEqual(mapping['Identification']['Subject'], 'MATH')
+        self.assertEqual(mapping['Identification']['Subject'], 'ELA')
 
 if __name__ == "__main__":
     unittest.main()

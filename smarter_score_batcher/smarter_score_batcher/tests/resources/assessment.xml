@@ -1,5 +1,5 @@
 <TDSReport>
-  <Test name="(SBAC)SBAC-FT-SomeDescription-MATH-7-Fall-2013-2014" subject="MATH" testId="SBAC-FT-SomeDescription-MATH-7" bankKey="200" contract="SBAC" mode="online" grade="03"
+  <Test name="(SBAC)SBAC-FT-SomeDescription-ELA-7-Fall-2013-2014" subject="ELA" testId="SBAC-FT-SomeDescription-ELA-7" bankKey="200" contract="SBAC" mode="online" grade="03"
   	assessmentType="Summative" academicYear="2014" assessmentVersion="SomeNewVersion" />
   <Examinee key="922171">
     <ExamineeAttribute context="FINAL" name="Birthdate" value="2013-08-31" contextDate="2014-04-14T11:13:41.803"/>
@@ -48,7 +48,7 @@
   	startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2014-04-14T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0"
   	gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1"
   	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="2014-03-04">
-    <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
+    <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
     <Accommodation type="AmericanSignLanguage" value="Do not show ASL videos" code="TDS_ASL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD_Stim&amp;TDS_PoD_Item" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
@@ -77,14 +77,14 @@
     <Accommodation type="Word List" value="No Glossary" code="TDS_WL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Score measureOf="Overall" measureLabel="ScaleScore" value="245.174914080214" standardError="19.3617008392283" />
     <Score measureOf="Overall" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="Claim1" measureLabel="ScaleScore" value="352.897" standardError="619.751" />
-    <Score measureOf="Claim1" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="Claim2" measureLabel="ScaleScore" value="185.002" standardError="78.321" />
-    <Score measureOf="Claim2" measureLabel="PerformanceLevel" value="1" />
-    <Score measureOf="Claim3" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
-    <Score measureOf="Claim3" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="Claim4" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
-    <Score measureOf="Claim4" measureLabel="PerformanceLevel" value="2" />
+    <Score measureOf="Claim1Reading" measureLabel="ScaleScore" value="352.897" standardError="619.751" />
+    <Score measureOf="Claim1Reading" measureLabel="PerformanceLevel" value="2" />
+    <Score measureOf="Claim2Writing" measureLabel="ScaleScore" value="185.002" standardError="78.321" />
+    <Score measureOf="Claim2Writing" measureLabel="PerformanceLevel" value="1" />
+    <Score measureOf="Claim3Listening" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
+    <Score measureOf="Claim3Listening" measureLabel="PerformanceLevel" value="2" />
+    <Score measureOf="Claim4ReadingResearch and Inquiry" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
+    <Score measureOf="Claim4ReadingResearch and Inquiry" measureLabel="PerformanceLevel" value="2" />
     <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="6" />
     <Score measureOf="TextToSpeech" measureLabel="Accommodation" value="4" />
     <Score measureOf="StreamlinedInterface" measureLabel="Accommodation" value="4" />
@@ -94,11 +94,11 @@
     <Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="6" />
     <Score measureOf="Calculator" measureLabel="Accommodation" value="6" />
     <Score measureOf="Overall" measureLabel="Attempted" value="1" standardError="0" />
-    <Item position="2" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15566" operational="0" isSelected="1" format="MC" score="0"
+    <Item position="2" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15566" operational="0" isSelected="1" format="MC" score="0"
     	scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="3" contentLevel="3|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T10:56:01.077">D</Response>
     </Item>
-    <Item position="1" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15558" operational="0" isSelected="1" format="EQ" score="0"
+    <Item position="1" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15558" operational="0" isSelected="1" format="EQ" score="0"
     	scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="2" contentLevel="2|G|NA|C" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:09:27.457">
         &lt;response&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
@@ -111,7 +111,7 @@
         &lt;/math&gt;&lt;/response&gt;
       </Response>
     </Item>
-    <Item position="5" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15560" operational="0" isSelected="1" format="EQ" score="-1"
+    <Item position="5" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15560" operational="0" isSelected="1" format="EQ" score="-1"
     	scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="2" contentLevel="2|EE|NA|A" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:09:27.423">
         &lt;response&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
@@ -121,7 +121,7 @@
         &lt;/math&gt;&lt;/response&gt;
       </Response>
     </Item>
-    <Item position="4" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15562" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
+    <Item position="4" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15562" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:13:25.493" >
         &lt;response&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
         &lt;mstyle displaystyle="true"&gt;
@@ -147,12 +147,12 @@
         &lt;/math&gt;&lt;/response&gt;
       </Response>
     </Item>
-    <Item position="3" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15570" operational="0" isSelected="1" format="SA" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/html" strand="3" contentLevel="3|RP|NA|B" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
+    <Item position="3" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15570" operational="0" isSelected="1" format="SA" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/html" strand="3" contentLevel="3|RP|NA|B" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:03:10.913">
         &lt;p&gt;2 miles away from the beginning&lt;/p&gt;
       </Response>
     </Item>
-    <Item position="6" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15573" operational="0" isSelected="1" format="GI" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/xml" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
+    <Item position="6" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15573" operational="0" isSelected="1" format="GI" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/xml" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:13:25.480">
         &lt;?xml version="1.0" encoding="utf-16"?&gt;
         &lt;!-- MACHINE GENERATED 4/14/14  8:18 AM. DO NOT EDIT --&gt;
@@ -175,7 +175,7 @@
         &lt;AnswerSet&gt;&lt;Question id=""&gt;&lt;QuestionPart id="1"&gt;&lt;ObjectSet&gt;&lt;Object&gt;&lt;PointVector&gt;{(390,290)(390,200)(180,290)(300,110)(180,200)(210,110)}&lt;/PointVector&gt;&lt;EdgeVector&gt;{ {(390,290),(390,200)} {(390,290),(180,290)} {(390,200),(300,110)} {(180,290),(180,200)} {(180,200),(210,110)}}&lt;/EdgeVector&gt;&lt;LabelList&gt; {} &lt;/LabelList&gt;&lt;ValueList&gt; {} &lt;/ValueList&gt;&lt;/Object&gt;&lt;AtomicObject&gt;{bench(180,170)}&lt;/AtomicObject&gt;&lt;AtomicObject&gt;{bench(390,170)}&lt;/AtomicObject&gt;&lt;/ObjectSet&gt;&lt;SnapPoint&gt;&lt;/SnapPoint&gt;&lt;Lines&gt;&lt;Line sourceX="390" sourceY="120" targetX="390" targetY="210" dir="none" style="solid"/&gt;&lt;Line sourceX="390" sourceY="120" targetX="180" targetY="120" dir="none" style="solid"/&gt;&lt;Line sourceX="390" sourceY="210" targetX="300" targetY="300" dir="none" style="solid"/&gt;&lt;Line sourceX="180" sourceY="120" targetX="180" targetY="210" dir="none" style="solid"/&gt;&lt;Line sourceX="180" sourceY="210" targetX="210" targetY="300" dir="none" style="solid"/&gt;&lt;/Lines&gt;&lt;/QuestionPart&gt;&lt;/Question&gt;&lt;/AnswerSet&gt;
       </Response>
     </Item>
-    <Item position="7" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" bankKey="200" key="22489" operational="1" isSelected="1" format="ER" score="3" scoreStatus="SCORED" adminDate="2014-03-25T14:10:36.853" pageNumber="2" pageTime="0" pageVisits="0" numberVisits="15" mimeType="text/html" dropped="0" strand="W" contentLevel="W|W.11-12.2a">
+    <Item position="7" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="22489" operational="1" isSelected="1" format="ER" score="3" scoreStatus="SCORED" adminDate="2014-03-25T14:10:36.853" pageNumber="2" pageTime="0" pageVisits="0" numberVisits="15" mimeType="text/html" dropped="0" strand="W" contentLevel="W|W.11-12.2a">
       <Response date="2014-03-25T15:53:17.637" >
         &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; For historical reasons, the word &amp;quot;algebra&amp;quot; has several related meanings in mathematics, as a single word or with qualifiers. Such a situation, where a single word has many meanings in the same area of mathematics, may be confusing. However the distinction is easier if one recalls that the name of a scientific area is usually singular and without an article and the name of a specific structure requires an article or the plural.&lt;/p&gt;
 
@@ -199,14 +199,14 @@
         </SubScoreList>
       </ScoreInfo>
     </Item>
-    <Item position="9" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" bankKey="200" key="4609" operational="1" isSelected="1" format="MS" score="0" scoreStatus="SCORED" adminDate="2014-04-24T12:27:26.203" numberVisits="1" mimeType="text/plain" strand="SC-ES" contentLevel="SC-ES|4.I|1|d" pageNumber="3" pageVisits="1" pageTime="0" dropped="0">
+    <Item position="9" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="4609" operational="1" isSelected="1" format="MS" score="0" scoreStatus="SCORED" adminDate="2014-04-24T12:27:26.203" numberVisits="1" mimeType="text/plain" strand="SC-ES" contentLevel="SC-ES|4.I|1|d" pageNumber="3" pageVisits="1" pageTime="0" dropped="0">
       <Response date="2014-04-24T12:32:46.377">A,B,C,F</Response>
       <ScoreInfo scorePoint="0" scoreDimension="overall" scoreStatus="Scored">
         <ScoreRationale>A,F</ScoreRationale>
         <SubScoreList />
       </ScoreInfo>
     </Item>
-    <Item position="8" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" bankKey="200" key="645" operational="1" isSelected="1" format="SIM" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-24T12:01:14.983" numberVisits="1" mimeType="text/plain" strand="SC-LS" contentLevel="SC-LS|4.V|4|b" pageNumber="4" pageVisits="1" pageTime="0" dropped="0">
+    <Item position="8" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="645" operational="1" isSelected="1" format="SIM" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-24T12:01:14.983" numberVisits="1" mimeType="text/plain" strand="SC-LS" contentLevel="SC-LS|4.V|4|b" pageNumber="4" pageVisits="1" pageTime="0" dropped="0">
       <Response date="2014-04-24T12:09:46.940">
         &lt;responseSpec&gt;
         &lt;responseTable&gt;

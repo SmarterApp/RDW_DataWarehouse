@@ -25,8 +25,8 @@ class TestFileMonitor(unittest.TestCase):
         self.settings = {
             'smarter_score_batcher.gpg.keyserver': None,
             'smarter_score_batcher.gpg.homedir': self.gpg_home,
-            'smarter_score_batcher.gpg.public_key.cat': 'kswimberly@amplify.com',
-            'smarter_score_batcher.gpg.public_key.fish': 'kswimberly@amplify.com',
+            'smarter_score_batcher.gpg.public_key.cat': 'sbac_data_provider@sbac.com',
+            'smarter_score_batcher.gpg.public_key.fish': 'sbac_data_provider@sbac.com',
             'smarter_score_batcher.gpg.path': 'gpg',
             'smarter_score_batcher.base_dir.working': self.__workspace,
             'smarter_score_batcher.base_dir.staging': self.__staging

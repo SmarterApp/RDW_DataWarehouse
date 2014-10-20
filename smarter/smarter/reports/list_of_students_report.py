@@ -25,7 +25,7 @@ from smarter.reports.helpers.filters import apply_filter_to_query, \
 from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.reports.student_administration import get_student_list_asmt_administration,\
+from smarter.reports.student_administration import get_asmt_administration_years, \
     get_asmt_academic_years, get_default_asmt_academic_year
 from smarter.security.tenant import validate_user_tenant
 from smarter_common.security.constants import RolesConstants
@@ -109,7 +109,7 @@ def get_list_of_students_report(params):
     los_results[Constants.SUBJECTS] = __reverse_map(subjects_map)
 
     # Additional queries for LOS report
-    los_results[Constants.ASMT_ADMINISTRATION] = get_student_list_asmt_administration(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
+    los_results[Constants.ASMT_ADMINISTRATION] = get_asmt_administration_years(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
 

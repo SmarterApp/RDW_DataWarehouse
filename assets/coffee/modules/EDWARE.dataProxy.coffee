@@ -19,10 +19,15 @@ define [
     helpContent: "../data/#{language}/content/helpContent.json"
     pdf: "/services/pdf/indivStudentReport.html"
 
+  # Additional data files used by specific reports
+  REPORT_DATA =
+    ISR: ["../data/interimAssessmentBlocks.json"]
+
   # setup URLs for report's specific JSON
   for reportName, fileName of Constants.REPORT_JSON_NAME
-    URLs[fileName] = "../data/#{language}/common/#{fileName}.json"
-
+    URLs[fileName] = ["../data/#{language}/common/#{fileName}.json"]
+    URLs[fileName] = URLs[fileName].concat(REPORT_DATA[reportName]) if REPORT_DATA[reportName]
+      
   DEFAULT_SETTING =
     type: 'GET'
     data: ''
@@ -82,7 +87,7 @@ define [
 
 
   getDataForReport = (reportName) ->
-    reportUrl = [URLs[reportName]]
+    reportUrl = URLs[reportName]
     reportUrl = [] if not reportUrl
     resources = [URLs.content, URLs.common, URLs.labels].concat(reportUrl)
     defer = $.Deferred()

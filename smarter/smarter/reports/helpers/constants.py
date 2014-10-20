@@ -11,6 +11,7 @@ class AssessmentType():
     '''
     SUMMATIVE = 'SUMMATIVE'
     INTERIM_COMPREHENSIVE = 'INTERIM COMPREHENSIVE'
+    INTERIM_ASSESSMENT_BLOCKS = 'INTERIM ASSESSMENT BLOCKS'
 
 
 class Constants():
@@ -70,6 +71,7 @@ class Constants():
     DIM_ASMT = 'dim_asmt'
     DIM_STUDENT = 'dim_student'
     FACT_ASMT_OUTCOME_VW = 'fact_asmt_outcome_vw'
+    FACT_BLOCK_ASMT_OUTCOME = 'fact_block_asmt_outcome'
     CUSTOM_METADATA = 'custom_metadata'
     ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'
     ASMT_ADMINISTRATION = 'asmt_administration'

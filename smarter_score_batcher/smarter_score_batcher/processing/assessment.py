@@ -8,7 +8,6 @@ from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_hel
 import itertools
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
-import itertools
 
 
 class XMLMeta:
@@ -41,6 +40,15 @@ class IntegerMeta(XMLMeta):
     def get_value(self):
         data = super().get_value()
         return str(int(data)) if data else data
+
+
+class AccommodationMeta():
+
+    def __init__(self, score):
+        self.score = score
+
+    def get_value(self):
+        return self.score
 
 
 class XMLClaimScore:
@@ -238,7 +246,8 @@ def get_assessment_mapping(root, metadata_file_path):
     claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
 
-    groups = _get_groups_mapping(examinee)
+    groups = _get_groups(examinee)
+    accommodations = _get_accommodations(opportunity)
 
     # In the order of the LZ mapping for easier maintenance
     mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context"), AssessmentHeaders.StateAbbreviation),
@@ -296,29 +305,13 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim4Value),
                                Mapping(claim4_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim4MinimumValue),
                                Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim4MaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier),
-
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='AmericanSignLanguage'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAmericanSignLanguage),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Braile'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationBraille),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='ClosedCaptioning'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationClosedCaptioning),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='TTS'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationTextToSpeech),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Abacus'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAbacus),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='AlternateResponseOptions'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAlternateResponseOptions),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Calculator'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationCalculator),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='MultiplicationTable'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationMultiplicationTable),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='PrintOnDemand'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationPrintOnDemand),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='PrintOnDemandItem'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationPrintOnDemandItems),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='ReadAloud'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationReadAloud),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Scribe'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationScribe),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='SpeechToText'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationSpeechToText),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='StreamlineMode'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationStreamlineMode),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='NoiseBuffer'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationNoiseBuffer)],
-                              groups)
+                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier)],
+                              groups, accommodations)
     mappings.evaluate()
     return mappings
 
 
-def _get_groups_mapping(examinee):
+def _get_groups(examinee):
     # map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
     mappings = []
     groups = examinee.findall("./ExamineeRelationship[@name='StudentGroupName']")[:10]
@@ -326,3 +319,50 @@ def _get_groups_mapping(examinee):
         mappings.append(Mapping(XMLMeta(group, '.', 'value'), 'Group%dId' % i))
         mappings.append(Mapping(XMLMeta(group, '.', 'value'), 'Group%dText' % i))
     return mappings
+
+
+ACCOMMODATION_CONFIGS = [
+    {'type': 'AmericanSignLanguage', 'target': AssessmentHeaders.AccommodationAmericanSignLanguage},
+    {'type': 'ClosedCaptioning', 'target': AssessmentHeaders.AccommodationClosedCaptioning},
+    {'type': 'Language', 'target': AssessmentHeaders.AccommodationBraille},
+    {'type': 'TextToSpeech', 'target': AssessmentHeaders.AccommodationTextToSpeech},
+    {'type': 'StreamlinedInterface', 'target': AssessmentHeaders.AccommodationStreamlineMode},
+    {'type': 'PrintOnDemand', 'code': 'TDS_PoD0', 'target': AssessmentHeaders.AccommodationPrintOnDemand},
+    {'type': 'PrintOnDemand', 'code': 'TDS_PoD_Stim&TDS_PoD_Item', 'target': AssessmentHeaders.AccommodationPrintOnDemandItems},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_Abacus', 'target': AssessmentHeaders.AccommodationAbacus},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_AR', 'target': AssessmentHeaders.AccommodationAlternateResponseOptions},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_RA_Stimuli', 'target': AssessmentHeaders.AccommodationReadAloud},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_Calc', 'target': AssessmentHeaders.AccommodationCalculator},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_MT', 'target': AssessmentHeaders.AccommodationMultiplicationTable},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_SC_Writitems', 'target': AssessmentHeaders.AccommodationScribe},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_STT', 'target': AssessmentHeaders.AccommodationSpeechToText},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_NoiseBuf', 'target': AssessmentHeaders.AccommodationNoiseBuffer}]
+
+
+def _get_accommodations(opportunity):
+
+    def _format_XPath(config):
+        score_xpath = "./Score/[@measureOf='%s'][@measureLabel='Accommodation']" % config['type']
+        acc_xpath = "./Accommodation/[@type='%s'][@context='FINAL']" % config['type']
+        if 'code' in config:
+            acc_xpath += "[@code='%s']" % config['code']
+        return acc_xpath, score_xpath
+
+    def _has_NEA0(opportunity):
+        acc_xpath, _ = _format_XPath({'type': 'NonEmbeddedAccommodations', 'code': 'NEA0'})
+        return opportunity.find(acc_xpath) is not None
+
+    def _is_non_embbed(config):
+        return config['type'] == 'NonEmbeddedAccommodations'
+
+    accommodations = []
+    hasNEA0 = _has_NEA0(opportunity)
+    for config in ACCOMMODATION_CONFIGS:
+        if _is_non_embbed(config) and hasNEA0:
+            use_code = 4
+        else:
+            acc_xpath, score_xpath = _format_XPath(config)
+            score = opportunity.find(score_xpath) if opportunity.find(acc_xpath) is not None else None
+            use_code = score.get('value') if score is not None else 0
+        accommodations.append(Mapping(AccommodationMeta(use_code), config['target']))
+    return accommodations

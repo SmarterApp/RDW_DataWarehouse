@@ -246,8 +246,8 @@ def get_assessment_mapping(root, metadata_file_path):
     claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
 
-    groups = _get_groups(examinee)
-    accommodations = _get_accommodations(opportunity)
+    groups = get_groups(examinee)
+    accommodations = get_accommodations(opportunity)
 
     # In the order of the LZ mapping for easier maintenance
     mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context"), AssessmentHeaders.StateAbbreviation),
@@ -311,7 +311,7 @@ def get_assessment_mapping(root, metadata_file_path):
     return mappings
 
 
-def _get_groups(examinee):
+def get_groups(examinee):
     # map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
     # only display first 10 groups
     TOTAL_GROUPS = 10
@@ -345,7 +345,7 @@ ACCOMMODATION_CONFIGS = [
     {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_NoiseBuf', 'target': AssessmentHeaders.AccommodationNoiseBuffer}]
 
 
-def _get_accommodations(opportunity):
+def get_accommodations(opportunity):
 
     def _format_XPath(config):
         score_xpath = "./Score/[@measureOf='%s'][@measureLabel='Accommodation']" % config['type']
@@ -365,10 +365,10 @@ def _get_accommodations(opportunity):
     hasNEA0 = _has_NEA0(opportunity)
     for config in ACCOMMODATION_CONFIGS:
         if _is_non_embbed(config) and hasNEA0:
-            use_code = 4
+            use_code = '4'
         else:
             acc_xpath, score_xpath = _format_XPath(config)
             score = opportunity.find(score_xpath) if opportunity.find(acc_xpath) is not None else None
-            use_code = score.get('value') if score is not None else 0
+            use_code = score.get('value') if score is not None else '0'
         accommodations.append(Mapping(DummyMeta(use_code), config['target']))
     return accommodations

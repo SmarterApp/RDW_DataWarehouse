@@ -6,7 +6,7 @@ Created on Aug 12, 2014
 import unittest
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping,\
     get_assessment_mapping, AssessmentHeaders, AssessmentData,\
-    getClaimMappingName
+    getClaimMappingName, get_groups, get_accommodations
 from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 import os
 import json
@@ -54,7 +54,7 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertTrue(len(header) > 0)
         mapping = dict(zip(header, values))
         self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-ELA-7')
-        self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], None)
+        self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '6')
         self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '922171')
         self.assertEqual(mapping[AssessmentHeaders.Asian], 'No')
         self.assertEqual(mapping[AssessmentHeaders.ResponsibleSchoolIdentifier], 'CA_9999827_9999928')
@@ -133,6 +133,41 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(mapping, 'Claim2Problem Solving and Modeling & Data Analysis')
         mapping = getClaimMappingName(None, PerformanceMetadataConstants.CLAIM2, 'world')
         self.assertEqual(mapping, 'world')
+
+    def test_get_groups(self):
+        data = read_data("assessment.xml")
+        examinee = ET.fromstring(data).find("./Examinee")
+        group_mappings = get_groups(examinee)
+        self.assertEqual(len(group_mappings), 20)
+        self.assertEqual(group_mappings[0].evaluate(), 'Brennan Math')
+        self.assertEqual(group_mappings[1].evaluate(), 'Brennan Math')
+        self.assertEqual(group_mappings[2].evaluate(), 'Tuesday Science')
+        self.assertEqual(group_mappings[3].evaluate(), 'Tuesday Science')
+        self.assertEqual(group_mappings[4].evaluate(), 'Smith Research')
+        self.assertEqual(group_mappings[5].evaluate(), 'Smith Research')
+        self.assertEqual(group_mappings[6].evaluate(), '')
+        self.assertEqual(group_mappings[7].evaluate(), '')
+
+    def test_get_accommodations(self):
+        data = read_data("assessment.xml")
+        opportunity = ET.fromstring(data).find("./Opportunity")
+        accommodations = get_accommodations(opportunity)
+        self.assertEqual(len(accommodations), 15)
+        self.assertEqual(accommodations[0].evaluate(), '6')
+        self.assertEqual(accommodations[1].evaluate(), '6')
+        self.assertEqual(accommodations[2].evaluate(), '6')
+        self.assertEqual(accommodations[3].evaluate(), '4')
+        self.assertEqual(accommodations[4].evaluate(), '4')
+        self.assertEqual(accommodations[5].evaluate(), '0')
+        self.assertEqual(accommodations[6].evaluate(), '6')
+        self.assertEqual(accommodations[7].evaluate(), '6')
+        self.assertEqual(accommodations[8].evaluate(), '6')
+        self.assertEqual(accommodations[9].evaluate(), '6')
+        self.assertEqual(accommodations[10].evaluate(), '0')
+        self.assertEqual(accommodations[11].evaluate(), '0')
+        self.assertEqual(accommodations[12].evaluate(), '0')
+        self.assertEqual(accommodations[13].evaluate(), '0')
+        self.assertEqual(accommodations[14].evaluate(), '0')
 
 if __name__ == "__main__":
     unittest.main()

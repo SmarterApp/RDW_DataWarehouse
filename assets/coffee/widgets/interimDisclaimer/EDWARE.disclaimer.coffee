@@ -41,7 +41,7 @@ define [
       edwarePreferences.saveInterimInfo()
 
     update: (asmt) ->
-      if asmt.asmt_type is "Interim Comprehensive"
+      if asmt is "Interim Comprehensive"
         @interimDisclaimerIcon.show()
         @displayPopover()
         # show on print version

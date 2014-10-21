@@ -88,6 +88,10 @@ define [
         overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
         assessment.overall_ald = overallALD
 
+        # update assessment_period to be in 'year-year' format instead of 'period year' format
+        asmt_year = assessment.asmt_period_year
+        assessment.asmt_period = "#{asmt_year-1} - #{asmt_year}"
+
         # set psychometric_implications content
         psychometricContent = Mustache.render(this.configData.psychometric_implications[assessment.asmt_type][assessment.asmt_subject], assessment)
 

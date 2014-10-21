@@ -30,7 +30,7 @@ REPORT_NAME = 'individual_student_report'
 INTERIM_ASSESSMENT_BLOCKS = AssessmentType.INTERIM_ASSESSMENT_BLOCKS.replace(" ", "")
 
 
-def __prepare_query(connector, state_code, student_id, assessment_guid):
+def __prepare_query(connector, state_code, student_id, assessment_guid, academic_year):
     '''
     Returns query for individual student report
     '''
@@ -125,7 +125,7 @@ def __prepare_query(connector, state_code, student_id, assessment_guid):
     return query
 
 
-def __prepare_query_iab(connector, state_code, student_id, assessment_guid):
+def __prepare_query_iab(connector, state_code, student_id, assessment_guid, academic_year):
     '''
     Returns query for individual student report for IAB
     '''
@@ -183,9 +183,11 @@ def __prepare_query_iab(connector, state_code, student_id, assessment_guid):
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
-    query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
+    query = query.where(fact_block_asmt_outcome.c.student_id == student_id)
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
+    if academic_year is not None:
+        query = query.where(fact_block_asmt_outcome.c.asmt_year == academic_year)
     query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
     return query
 
@@ -320,7 +322,7 @@ def get_student_report(params):
         query_function = {INTERIM_ASSESSMENT_BLOCKS: __prepare_query_iab, None: __prepare_query}
         # choose arrange results for the client IAB or other assessment
         arrange_function = {INTERIM_ASSESSMENT_BLOCKS: __arrange_results_iab, None: __arrange_results}
-        query = query_function[asmt_type](connection, state_code, student_id, assessment_guid)
+        query = query_function[asmt_type](connection, state_code, student_id, assessment_guid, academic_year)
         result = connection.get_result(query)
         if not result:
             raise NotFoundException("There are no results for student id {0}".format(student_id))

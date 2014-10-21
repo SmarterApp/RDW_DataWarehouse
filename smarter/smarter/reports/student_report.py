@@ -179,22 +179,7 @@ def __prepare_query_iab(connector, state_code, student_id, assessment_guid):
                                 fact_block_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
-                                fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
-                                fact_block_asmt_outcome.c.acc_asl_video_embed.label('acc_asl_video_embed'),
-                                fact_block_asmt_outcome.c.acc_noise_buffer_nonembed.label('acc_noise_buffer_nonembed'),
-                                fact_block_asmt_outcome.c.acc_print_on_demand_items_nonembed.label('acc_print_on_demand_items_nonembed'),
-                                fact_block_asmt_outcome.c.acc_braile_embed.label('acc_braile_embed'),
-                                fact_block_asmt_outcome.c.acc_closed_captioning_embed.label('acc_closed_captioning_embed'),
-                                fact_block_asmt_outcome.c.acc_text_to_speech_embed.label('acc_text_to_speech_embed'),
-                                fact_block_asmt_outcome.c.acc_abacus_nonembed.label('acc_abacus_nonembed'),
-                                fact_block_asmt_outcome.c.acc_alternate_response_options_nonembed.label('acc_alternate_response_options_nonembed'),
-                                fact_block_asmt_outcome.c.acc_calculator_nonembed.label('acc_calculator_nonembed'),
-                                fact_block_asmt_outcome.c.acc_multiplication_table_nonembed.label('acc_multiplication_table_nonembed'),
-                                fact_block_asmt_outcome.c.acc_print_on_demand_nonembed.label('acc_print_on_demand_nonembed'),
-                                fact_block_asmt_outcome.c.acc_read_aloud_nonembed.label('acc_read_aloud_nonembed'),
-                                fact_block_asmt_outcome.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
-                                fact_block_asmt_outcome.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
-                                fact_block_asmt_outcome.c.acc_streamline_mode.label('acc_streamline_mode')],
+                                fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl')],
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
@@ -331,14 +316,14 @@ def get_student_report(params):
     asmt_type = params.get(Constants.ASMT_TYPE)
 
     with EdCoreDBConnection(state_code=state_code) as connection:
-        if asmt_type == INTERIM_ASSESSMENT_BLOCKS:
-            query = __prepare_query_iab(connection, state_code, student_id, assessment_guid)
-        else:
-            query = __prepare_query(connection, state_code, student_id, assessment_guid)
+        # choose query IAB or other assessment
+        query_function = {INTERIM_ASSESSMENT_BLOCKS: __prepare_query_iab, None: __prepare_query}
+        # choose arrange results for the client IAB or other assessment
+        arrange_function = {INTERIM_ASSESSMENT_BLOCKS: __arrange_results_iab, None: __arrange_results}
+        query = query_function[asmt_type](connection, state_code, student_id, assessment_guid)
         result = connection.get_result(query)
         if not result:
             raise NotFoundException("There are no results for student id {0}".format(student_id))
-
         records = [record for record in result if record['asmt_period_year'] == academic_year]
         first_student = records[0] if len(records) > 0 else result[0]
         state_code = first_student[Constants.STATE_CODE]
@@ -353,11 +338,7 @@ def get_student_report(params):
         custom_metadata_map = get_custom_metadata(result[0].get(Constants.STATE_CODE), None)
         # subjects map
         subjects_map = get_subjects_map()
-        # prepare the result for the client
-        if asmt_type == INTERIM_ASSESSMENT_BLOCKS:
-            result = __arrange_results_iab(result, subjects_map, custom_metadata_map)
-        else:
-            result = __arrange_results(result, subjects_map, custom_metadata_map)
+        result = arrange_function[asmt_type](result, subjects_map, custom_metadata_map)
 
         result['context'] = context
         result[Constants.METADATA] = {Constants.BRANDING: custom_metadata_map.get(Constants.BRANDING)}

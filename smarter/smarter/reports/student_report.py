@@ -17,6 +17,7 @@ from smarter.reports.helpers.assessments import get_cut_points, \
 from smarter.security.context import select_with_context,\
     get_current_request_context
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import AssessmentType
 from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
@@ -26,6 +27,7 @@ from smarter_common.security.constants import RolesConstants
 
 
 REPORT_NAME = 'individual_student_report'
+INTERIM_ASSESSMENT_BLOCKS = AssessmentType.INTERIM_ASSESSMENT_BLOCKS.replace(" ", "")
 
 
 def __prepare_query(connector, state_code, student_id, assessment_guid):
@@ -123,6 +125,86 @@ def __prepare_query(connector, state_code, student_id, assessment_guid):
     return query
 
 
+def __prepare_query_iab(connector, state_code, student_id, assessment_guid):
+    '''
+    Returns query for individual student report for IAB
+    '''
+    fact_block_asmt_outcome = connector.get_table('fact_block_asmt_outcome')
+    dim_student = connector.get_table('dim_student')
+    dim_asmt = connector.get_table('dim_asmt')
+    query = select_with_context([fact_block_asmt_outcome.c.student_id,
+                                dim_student.c.first_name.label('first_name'),
+                                dim_student.c.middle_name.label('middle_name'),
+                                dim_student.c.last_name.label('last_name'),
+                                fact_block_asmt_outcome.c.enrl_grade.label('grade'),
+                                fact_block_asmt_outcome.c.district_id.label('district_id'),
+                                fact_block_asmt_outcome.c.school_id.label('school_id'),
+                                fact_block_asmt_outcome.c.state_code.label('state_code'),
+                                dim_asmt.c.asmt_subject.label('asmt_subject'),
+                                dim_asmt.c.asmt_period.label('asmt_period'),
+                                dim_asmt.c.asmt_period_year.label('asmt_period_year'),
+                                dim_asmt.c.effective_date.label('effective_date'),
+                                dim_asmt.c.asmt_type.label('asmt_type'),
+                                dim_asmt.c.asmt_score_min.label('asmt_score_min'),
+                                dim_asmt.c.asmt_score_max.label('asmt_score_max'),
+                                dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
+                                dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
+                                dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
+                                dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
+                                dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
+                                dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
+                                dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
+                                dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
+                                dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                                dim_asmt.c.asmt_claim_perf_lvl_name_1.label("asmt_claim_perf_lvl_name_1"),
+                                dim_asmt.c.asmt_claim_perf_lvl_name_2.label("asmt_claim_perf_lvl_name_2"),
+                                dim_asmt.c.asmt_claim_perf_lvl_name_3.label("asmt_claim_perf_lvl_name_3"),
+                                fact_block_asmt_outcome.c.asmt_grade.label('asmt_grade'),
+                                fact_block_asmt_outcome.c.date_taken_day.label('date_taken_day'),
+                                fact_block_asmt_outcome.c.date_taken_month.label('date_taken_month'),
+                                fact_block_asmt_outcome.c.date_taken_year.label('date_taken_year'),
+                                fact_block_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                                dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
+                                dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
+                                dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
+                                dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
+                                dim_asmt.c.asmt_claim_1_score_min.label('asmt_claim_1_score_min'),
+                                dim_asmt.c.asmt_claim_2_score_min.label('asmt_claim_2_score_min'),
+                                dim_asmt.c.asmt_claim_3_score_min.label('asmt_claim_3_score_min'),
+                                dim_asmt.c.asmt_claim_4_score_min.label('asmt_claim_4_score_min'),
+                                dim_asmt.c.asmt_claim_1_score_max.label('asmt_claim_1_score_max'),
+                                dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
+                                dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
+                                dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max'),
+                                fact_block_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
+                                fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
+                                fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
+                                fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                fact_block_asmt_outcome.c.acc_asl_video_embed.label('acc_asl_video_embed'),
+                                fact_block_asmt_outcome.c.acc_noise_buffer_nonembed.label('acc_noise_buffer_nonembed'),
+                                fact_block_asmt_outcome.c.acc_print_on_demand_items_nonembed.label('acc_print_on_demand_items_nonembed'),
+                                fact_block_asmt_outcome.c.acc_braile_embed.label('acc_braile_embed'),
+                                fact_block_asmt_outcome.c.acc_closed_captioning_embed.label('acc_closed_captioning_embed'),
+                                fact_block_asmt_outcome.c.acc_text_to_speech_embed.label('acc_text_to_speech_embed'),
+                                fact_block_asmt_outcome.c.acc_abacus_nonembed.label('acc_abacus_nonembed'),
+                                fact_block_asmt_outcome.c.acc_alternate_response_options_nonembed.label('acc_alternate_response_options_nonembed'),
+                                fact_block_asmt_outcome.c.acc_calculator_nonembed.label('acc_calculator_nonembed'),
+                                fact_block_asmt_outcome.c.acc_multiplication_table_nonembed.label('acc_multiplication_table_nonembed'),
+                                fact_block_asmt_outcome.c.acc_print_on_demand_nonembed.label('acc_print_on_demand_nonembed'),
+                                fact_block_asmt_outcome.c.acc_read_aloud_nonembed.label('acc_read_aloud_nonembed'),
+                                fact_block_asmt_outcome.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
+                                fact_block_asmt_outcome.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
+                                fact_block_asmt_outcome.c.acc_streamline_mode.label('acc_streamline_mode')],
+                                from_obj=[fact_block_asmt_outcome
+                                          .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
+                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
+    query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
+    if assessment_guid is not None:
+        query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
+    query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
+    return query
+
+
 def __calculateClaimScoreRelativeDifference(item):
     '''
     calcluate relative difference for each claims
@@ -177,6 +259,38 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
     return {"all_results": new_results}
 
 
+def __arrange_results_iab(results, subjects_map, custom_metadata_map):
+    '''
+    This method arranges the data retrieved from the db to make it easier to consume by the client
+    '''
+    iab_results = {}
+    if results is None:
+        return iab_results
+    iab_results['first_name'] = results[0].get('first_name')
+    iab_results['middle_name'] = results[0].get('middle_name')
+    iab_results['last_name'] = results[0].get('last_name')
+    # asmt_type is an enum, so we would to capitalize it to make it presentable
+    iab_results['asmt_type'] = capwords(results[0].get('asmt_type'), ' ')
+    iab_results['asmt_period_year'] = results[0].get('asmt_period_year')
+    iab_results['student_id'] = results[0].get('student_id')
+
+    # Go through each of the different subjects ELA, Math etc.
+    for subject in subjects_map.keys():
+        subject_data = []
+        # Check each DB result against the subject
+        for result in results:
+            if subject == result["asmt_subject"]:
+                subject_list = {}
+                subject_name = subjects_map.get(subject)
+                subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
+                subject_list['grade'] = result.get('grade')
+                subject_list['effective_date'] = result.get('effective_date')
+                subject_data.append(subject_list)
+        # Create map from subject to all value for it's type
+        iab_results[subject_name] = subject_data
+    return {"all_results": iab_results}
+
+
 @report_config(name=REPORT_NAME,
                params={
                    Constants.STATECODE: {
@@ -190,12 +304,16 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                    Constants.ASSESSMENTGUID: {
                        "type": "string",
                        "required": False,
-                       "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-                   },
+                       "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
                    Constants.ASMTYEAR: {
                        "type": "integer",
                        "required": False,
-                       "pattern": "^[1-9][0-9]{3}$"
+                       "pattern": "^[1-9][0-9]{3}$",
+                  },
+                   Constants.ASMT_TYPE: {
+                       "type": "string",
+                       "required": False,
+                       "pattern": "^[a-zA-Z]{0,50}$"
                    }
                })
 @validate_user_tenant
@@ -210,9 +328,13 @@ def get_student_report(params):
     state_code = params[Constants.STATECODE]
     assessment_guid = params.get(Constants.ASSESSMENTGUID)
     academic_year = params.get(Constants.ASMTYEAR)
+    asmt_type = params.get(Constants.ASMT_TYPE)
 
     with EdCoreDBConnection(state_code=state_code) as connection:
-        query = __prepare_query(connection, state_code, student_id, assessment_guid)
+        if asmt_type == INTERIM_ASSESSMENT_BLOCKS:
+            query = __prepare_query_iab(connection, state_code, student_id, assessment_guid)
+        else:
+            query = __prepare_query(connection, state_code, student_id, assessment_guid)
         result = connection.get_result(query)
         if not result:
             raise NotFoundException("There are no results for student id {0}".format(student_id))
@@ -232,7 +354,10 @@ def get_student_report(params):
         # subjects map
         subjects_map = get_subjects_map()
         # prepare the result for the client
-        result = __arrange_results(result, subjects_map, custom_metadata_map)
+        if asmt_type == INTERIM_ASSESSMENT_BLOCKS:
+            result = __arrange_results_iab(result, subjects_map, custom_metadata_map)
+        else:
+            result = __arrange_results(result, subjects_map, custom_metadata_map)
 
         result['context'] = context
         result[Constants.METADATA] = {Constants.BRANDING: custom_metadata_map.get(Constants.BRANDING)}

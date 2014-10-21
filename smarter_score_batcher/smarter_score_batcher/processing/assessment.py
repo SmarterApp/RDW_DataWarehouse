@@ -42,13 +42,13 @@ class IntegerMeta(XMLMeta):
         return str(int(data)) if data else data
 
 
-class AccommodationMeta():
+class DummyMeta():
 
-    def __init__(self, score):
-        self.score = score
+    def __init__(self, value):
+        self.value = value
 
     def get_value(self):
-        return self.score
+        return self.value
 
 
 class XMLClaimScore:
@@ -313,11 +313,17 @@ def get_assessment_mapping(root, metadata_file_path):
 
 def _get_groups(examinee):
     # map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
+    # only display first 10 groups
+    TOTAL_GROUPS = 10
     mappings = []
-    groups = examinee.findall("./ExamineeRelationship[@name='StudentGroupName']")[:10]
-    for i, group in enumerate(groups, start=1):
-        mappings.append(Mapping(XMLMeta(group, '.', 'value'), 'Group%dId' % i))
-        mappings.append(Mapping(XMLMeta(group, '.', 'value'), 'Group%dText' % i))
+    groups = examinee.findall("./ExamineeRelationship[@name='StudentGroupName']")[:TOTAL_GROUPS]
+    for i in range(TOTAL_GROUPS):
+        if i < len(groups):
+            meta = XMLMeta(groups[i], '.', 'value')
+        else:
+            meta = DummyMeta('')
+        mappings.append(Mapping(meta, 'Group%dId' % (i + 1)))
+        mappings.append(Mapping(meta, 'Group%dText' % (i + 1)))
     return mappings
 
 
@@ -364,5 +370,5 @@ def _get_accommodations(opportunity):
             acc_xpath, score_xpath = _format_XPath(config)
             score = opportunity.find(score_xpath) if opportunity.find(acc_xpath) is not None else None
             use_code = score.get('value') if score is not None else 0
-        accommodations.append(Mapping(AccommodationMeta(use_code), config['target']))
+        accommodations.append(Mapping(DummyMeta(use_code), config['target']))
     return accommodations

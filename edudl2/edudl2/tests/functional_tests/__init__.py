@@ -12,4 +12,3 @@ class UDLFunctionalTestCase(UDLTestCase):
         data_dir = os.path.join(os.path.dirname(__file__), "data")
         initialize_all_db(udl2_conf, udl2_flat_conf)
         super().setUpClass(data_dir=data_dir)
-        cls.gpg_home = cls.settings.get('gpg_home')

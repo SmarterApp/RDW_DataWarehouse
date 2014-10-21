@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
@@ -17,6 +18,11 @@ class UDLTestCase(unittest.TestCase):
         cls.udl2_conf, cls.settings = read_ini_file(config_path_file)
         cls.encrypt_helper = EncryptHelper(cls.settings)
         cls.data_dir = data_dir
+        cls.gpg_home = cls.settings.get('gpg_home', None)
+        # prepare gpg keys for tests
+        if cls.gpg_home and not os.path.exists(cls.gpg_home):
+            config_gpg = os.path.join(os.path.dirname(__file__), "../../../../config/gpg")
+            shutil.copytree(config_gpg, cls.gpg_home)
 
     @classmethod
     def tearDownClass(cls):

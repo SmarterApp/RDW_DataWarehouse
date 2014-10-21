@@ -66,6 +66,13 @@ class TestEdMetadata(Unittest_with_sqlite):
         column = Column('test_column', String(50))
         self.assertEquals(getattr(column, "col_type", "Column"), "Column")
 
+    def test_fact_block_outcome(self):
+        self.assertTrue('fact_block_asmt_outcome' in self.get_Metadata().tables, "missing fact_block_asmt_outcome")
+        with DBConnection() as connector:
+            fact_student_reg = connector.get_table("fact_block_asmt_outcome")
+            # Check number of fields in the table
+            self.assertEqual(58, len(fact_student_reg.c), "Number of fields in fact_block_asmt_outcome")
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

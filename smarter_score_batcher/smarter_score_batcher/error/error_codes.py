@@ -48,11 +48,13 @@ class ErrorSource():
     GENERATE_CSV_FROM_XML = 4004
     METADATATEMPLATEMANAGER_GET_TEMPLATE = 4005
     MOVE_TO_STAGE = 4006
+    GENERATE_PERFORMANCE_METADATA = 4007
 
     message = {METADATA_GENERATOR_TOP_DOWN: 'metadata_generator_top_down',
                METADATA_GENERATOR_BOTTOM_UP: 'metadata_generator_bottom_up',
                LOCK_AND_WRITE: 'lock_and_write',
                GENERATE_CSV_FROM_XML: 'generate_csv_from_xml',
                METADATATEMPLATEMANAGER_GET_TEMPLATE: 'MetadataTemplateManager.get_template',
-               MOVE_TO_STAGE: 'move_to_stage'
+               MOVE_TO_STAGE: 'move_to_stage',
+               GENERATE_PERFORMANCE_METADATA: 'generate_performance_metadata'
                }

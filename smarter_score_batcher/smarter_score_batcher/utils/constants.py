@@ -21,3 +21,23 @@ class Constants():
     ASMT_GRADE = 'asmt_grade'
     DISTRICT_ID = 'district_id'
     STUDENT_ID = 'student_id'
+
+
+class PerformanceMetadataConstants():
+    IDENTIFICATION = 'Identification'
+    SUBJECT = 'Subject'
+    OVERALL = 'Overall'
+    MINSCORE = 'MinScore'
+    MAXSCORE = 'MaxScore'
+    PERFORMANCELEVELS = 'PerformanceLevels'
+    LEVEL1 = 'Level1'
+    LEVEL2 = 'Level2'
+    LEVEL3 = 'Level3'
+    LEVEL4 = 'Level4'
+    CUTPOINT = 'CutPoint'
+    CLAIMS = 'Claims'
+    CLAIM1 = 'Claim1'
+    CLAIM2 = 'Claim2'
+    CLAIM3 = 'Claim3'
+    CLAIM4 = 'Claim4'
+    MAPPING = 'Mapping'

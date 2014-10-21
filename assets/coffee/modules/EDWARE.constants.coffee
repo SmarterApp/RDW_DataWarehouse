@@ -28,6 +28,7 @@ define [], () ->
     SUMMATIVE: 'Summative'
     INTERIM: 'Interim Comprehensive'
     'INTERIM COMPREHENSIVE': 'Interim Comprehensive'
+    'INTERIM ASSESSMENT BLOCKS': 'Interim Assessment Blocks'
   }
 
   EVENTS: {

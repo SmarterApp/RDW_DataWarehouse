@@ -44,7 +44,7 @@ class FTestMoveToTarget(UDLTestHelper):
         self.load_csv_data_to_integration(ASMT_OUTCOME_FILE, ASMT_FILE, 'int_sbac_asmt_outcome', 'int_sbac_asmt')
         msg = self.create_msg(Constants.LOAD_TYPE_ASSESSMENT, self.guid_batch_asmt)
         dim_tasks = get_explode_to_tables_tasks(msg, 'dim')
-        fact_tasks = get_explode_to_tables_tasks(msg, 'fact')
+        fact_tasks = get_explode_to_tables_tasks(msg, 'fact_asmt')
         tasks = chain(prepare_target_schema.s(msg), dim_tasks, handle_group_results.s(), fact_tasks, handle_group_results.s())
         results = tasks.delay()
         results.get()

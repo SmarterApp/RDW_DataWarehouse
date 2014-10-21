@@ -10,7 +10,12 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 DEFAULT_YEAR_BACK = 1
 
 
-def get_student_list_asmt_administration(state_code, district_id, school_id, asmt_grade=None, student_ids=None, asmt_year=None):
+def get_asmt_administration_years(state_code, district_id=None, school_id=None, asmt_grade=None, student_ids=None, asmt_year=None):
+    return get_asmt_administration(state_code, district_id, school_id, asmt_grade, student_ids, asmt_year) +\
+        get_block_asmt_administration(state_code, district_id, school_id, asmt_grade, student_ids, asmt_year)
+
+
+def get_asmt_administration(state_code, district_id=None, school_id=None, asmt_grade=None, student_ids=None, asmt_year=None):
     '''
     Get asmt administration for a list of students. There is no PII in the results and it can be stored in shortlived cache
     '''
@@ -21,38 +26,49 @@ def get_student_list_asmt_administration(state_code, district_id, school_id, asm
                        from_obj=[fact_asmt_outcome_vw, dim_asmt])
         query = query.where(fact_asmt_outcome_vw.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome_vw.c.state_code == state_code).\
-            where(and_(fact_asmt_outcome_vw.c.school_id == school_id)).\
-            where(and_(fact_asmt_outcome_vw.c.district_id == district_id)).\
             where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)).\
             where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]))).\
             group_by(dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
             order_by(fact_asmt_outcome_vw.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
+        if district_id:
+            query = query.where(and_(fact_asmt_outcome_vw.c.district_id == district_id))
+        if school_id:
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_id == school_id))
         if asmt_grade:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
         if student_ids:
-            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_ids)))
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_ids))) if isinstance(student_ids, list) else query.where(and_(fact_asmt_outcome_vw.c.student_id == student_ids))
         if asmt_year:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
         results = connection.get_result(query)
     return results
 
 
-def get_student_report_asmt_administration(state_code, student_id):
+def get_block_asmt_administration(state_code, district_id=None, school_id=None, asmt_grade=None, student_ids=None, asmt_year=None):
     '''
-    Get asmt administration for an individual student report. There is no PII in the results and it can be stored in
-    shortlived cache
+    Block assessment administration years
     '''
     with EdCoreDBConnection(state_code=state_code) as connection:
-        fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        fact_block_asmt = connection.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        query = select([dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw .c.asmt_grade],
-                       from_obj=[fact_asmt_outcome_vw, dim_asmt])
-        query = query.where(fact_asmt_outcome_vw.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
-            where(fact_asmt_outcome_vw.c.state_code == state_code).\
-            where(and_(fact_asmt_outcome_vw.c.student_id == student_id)).\
-            where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT)).\
-            group_by(dim_asmt.c.effective_date, dim_asmt.c.asmt_period_year, fact_asmt_outcome_vw.c.asmt_type, fact_asmt_outcome_vw.c.asmt_grade,).\
-            order_by(fact_asmt_outcome_vw.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
+        query = select([dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type, fact_block_asmt.c.asmt_grade],
+                       from_obj=[fact_block_asmt, dim_asmt])
+        query = query.where(fact_block_asmt.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
+            where(fact_block_asmt.c.state_code == state_code).\
+            where(and_(fact_block_asmt.c.rec_status == Constants.CURRENT)).\
+            where(and_(fact_block_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS)).\
+            group_by(dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type, fact_block_asmt.c.asmt_grade,).\
+            order_by(fact_block_asmt.c.asmt_type.desc())
+        if district_id:
+            query = query.where(and_(fact_block_asmt.c.district_id == district_id))
+        if school_id:
+            query = query.where(and_(fact_block_asmt.c.school_id == school_id))
+        if asmt_grade:
+            query = query.where(and_(fact_block_asmt.c.asmt_grade == asmt_grade))
+        if student_ids:
+            query = query.where(and_(fact_block_asmt.c.student_id.in_(student_ids))) if isinstance(student_ids, list) else query.where(and_(fact_block_asmt.c.student_id == student_ids))
+        if asmt_year:
+            query = query.where(and_(fact_block_asmt.c.asmt_year == asmt_year))
         results = connection.get_result(query)
     return results
 

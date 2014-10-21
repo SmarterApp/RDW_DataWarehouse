@@ -1,0 +1,93 @@
+<h2 class="title printContent">{{student_full_name}} | {{labels.grade}} {{asmt_grade}}</h2>
+<div class="innerBox clearfix">
+    <div class="isrInterimBlockHeader">
+        <span class="subject">{{asmt_subject_text}}</span>
+        <span class="info"> {{asmt_type}} {{asmt_period}}</span>
+    </div>
+    <!-- TODO - Figure this out for Print PDF-->
+    <div class="printHeader printContent">
+        <div class="logo">
+            <img src="{{branding.tenantLogo}}"/> 
+            <span>{{branding.tenantLabel}}</span>
+        </div>
+        <div class="summary">
+            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{asmt_grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
+        </div>
+    </div>
+    <!-- End of TODO-->
+    <div class="contentBlocksWrapper">
+    	{{#grade}}
+    	<hr>
+        <div class="blocksSection clearfix">
+        	{{#blocks}}
+            <div class="row-fluid">
+            	{{#block}}
+                <div id="blocks{{indexer}}" class="span4 claims blocks">
+                    <div class="title">{{grade}}: <span class="blockName">{{name}}</span></div>
+                    <div class="content">
+                    	<div class="level{{level}}">
+	                    	<i class="edware-icon-large-perf-level-{{level}}"></i>
+	                    	<div style="display:inline-block">
+	                    		<div class="effectiveDate">{{effective_date}}</div>
+	                        {{desc}}
+	                       </div>
+	                    </div>
+                    </div>
+                	<!-- TODO put into labels -->
+                	<span class="previousResults">PREVIOUS RESULTS</span>
+                	<table class="table">
+                		<tbody>
+                    		<tr>
+                    			<td>None</td>
+                    			<td></td>
+                    			<td></td>
+                    		</tr>
+                    	</tbody>
+                	</table>
+               </div>
+               {{/block}}
+            </div>
+            {{/blocks}}
+        </div>
+        {{/grade}}
+    </div>
+    <!-- TODO - Figure this out for Print PDF-->
+    <div class="assessmentOtherInfoHeader printHeader">
+        <div class="logo">
+            <img src="../images/smarter_printlogo.png" width="150" height="47" />
+        </div>
+        <div class="summary">
+            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
+        </div>
+    </div>
+    <!-- End of TODO-->
+</div>
+<div class="pageBreak"></div>
+<!-- TODO - Figure this out for Print PDF-->
+<div id="print_reportInfoContent" class="printContent clearfix">
+    <div class="printHeader">
+        <div class="logo">
+            <img src="{{branding.tenantLogo}}" width="{{branding.tenantLogoWidth}}" height="{{branding.tenantLogoHeight}}"/> 
+            <span>{{branding.tenantLabel}}</span>
+        </div>
+        <div class="summary">
+            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
+        </div>
+    </div>
+    <div class="aboutReportPopup">
+        <div class="reportInfoWrapper">
+            <h3>{{labels.report_info}}:</h3>
+        </div>
+    </div>
+    <div class="legendPopup"></div>
+</div>
+<!-- End of TODO-->

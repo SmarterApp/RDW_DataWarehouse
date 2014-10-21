@@ -29,7 +29,15 @@
 	           	{{/helpContent.faq_content}}
 	            <p>{{{helpContent.faq_footer}}}</p>
             </div>
-            <div class="tab-pane" id="userGuide"></div>
+            <div class="tab-pane" id="userGuide">
+                <ul>
+                {{#helpContent.user_guide_content}}
+                <li>
+                <i class="edware-icon-pdf"></i><a href="{{{link}}}" target="_blank">{{display_text}}</a>
+                </li>
+                {{/helpContent.user_guide_content}}
+                </ul>
+            </div>
             <div class="tab-pane" id="glossary">
                 <div class="alphabetList">
                     {{#helpContent.glossary_content}}

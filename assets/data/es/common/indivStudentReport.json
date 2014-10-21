@@ -29,7 +29,8 @@
         "acc_read_aloud_nonembed": "Read aloud",
         "acc_scribe_nonembed": "Scribe",
         "acc_speech_to_text_nonembed": "Speech-to-text",
-        "acc_streamline_mode": "Streamline Mode"
+        "acc_streamline_mode": "Streamline Mode",
+        "acc_asl_video_embed" : "American Sign Language"
     },
     "accomodationCodeBuckets": {
         "11": "1",
@@ -49,6 +50,17 @@
         "24":"5",
         "18": "6"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
+    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
+                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
+    "detailsSelection": [
+        {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
+    ],                                                                                                                                                                                                                            
     "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
 }

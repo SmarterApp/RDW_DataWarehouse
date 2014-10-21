@@ -6,6 +6,7 @@ define [
   "edwareDataProxy"
   "edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
+  "text!templates/individualStudent_report/individual_student_interim_blocks_template.html"
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareHeader"
@@ -13,7 +14,7 @@ define [
   "edwareConstants"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
 
   class DataProcessor
 
@@ -42,7 +43,9 @@ define [
         accommodation_codes = accommodation_codes.concat accommodations[code]
         accommodations_enhanced[bucket] = accommodation_codes
 
-      for code, columns of accommodations_enhanced
+      keys = Object.keys(accommodations_enhanced).sort() 
+      for code in keys
+        columns = accommodations_enhanced[code]
         section = {}
         description = @configData.accommodationMapping[code]
         continue if not description
@@ -85,6 +88,10 @@ define [
         overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject], assessment)
         overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
         assessment.overall_ald = overallALD
+
+        # update assessment_period to be in 'year-year' format instead of 'period year' format
+        asmt_year = assessment.asmt_period_year
+        assessment.asmt_period = "#{asmt_year-1} - #{asmt_year}"
 
         # set psychometric_implications content
         psychometricContent = Mustache.render(this.configData.psychometric_implications[assessment.asmt_type][assessment.asmt_subject], assessment)
@@ -208,69 +215,99 @@ define [
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
         if @params['effectiveDate']
-          return @params['effectiveDate'] + asmtType
+          return {"key": @params['effectiveDate'] + asmtType}
         else
-          return @params['asmtYear'] + asmtType
+          return {"key": @params['asmtYear'] + asmtType}
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt
-          return asmt['effective_date'] + asmt['asmt_type']
+          if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
+            return {"key": asmt['effective_date'] + asmt['asmt_type']} 
+          else
+            # Special case for Interim blocks as we need to lazy load from server
+            return {"isInterimBlock": true, "asmt_period_year": asmt['asmt_period_year'], "asmt_type": asmt['asmt_type']}
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
-          return asmt['effective_date'] + asmtType
+          return {"key": asmt['effective_date'] + asmtType}
 
     render: () ->
-      key = @getCacheKey()
-      @data.current = @data[key]
-      # Get tenant level branding
-      @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
-      # use mustache template to display the json data
-      output = Mustache.to_html indivStudentReportTemplate, @data
-      $("#individualStudentContent").html output
-
-      @updateClaimsHeight()
-
-      # Generate Confidence Level bar for each assessment
-      i = 0
-      for item, i in @data.current
-        barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
-        edwareConfidenceLevelBar.create item, 640, barContainer
-
-        # Set the layout for practical implications and policy content section on print version
-        printAssessmentInfoContentLength = 0
-        printAssessmentOtherInfo = "#assessmentSection" + i + " li.inline"
-        printAssessmentOtherInfoLength = $(printAssessmentOtherInfo).length
-
-        $(printAssessmentOtherInfo).each (index) ->
-          printAssessmentInfoContentLength = printAssessmentInfoContentLength + $(this).html().length
-
-        charLimits = 702
-        if printAssessmentOtherInfoLength < 2 or printAssessmentInfoContentLength > charLimits
-          $(printAssessmentOtherInfo).removeClass "inline"
-
-        if printAssessmentInfoContentLength > charLimits
-          assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
-          $(assessmentInfo + " h1").css("display", "block")
-          $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
-          $(assessmentInfo + " li:first-child").addClass("bottomLine")
-
-        i++
-
-      # Show tooltip for claims on mouseover
-      $(".arrowBox").popover
-        html: true
-        container: "#content"
-        trigger: "hover"
-        placement: (tip, element) ->
-          edwareUtil.popupPlacement(element, 400, 276)
-        title: ->
-          e = $(this)
-          e.parent().parent().find(".header").find("h4").html()
-        template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-        content: ->
-          e = $(this)
-          e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
+      cacheKey = @getCacheKey()
+      if not cacheKey['isInterimBlock']
+        @data.current = @data[cacheKey['key']]
+      else
+        # For interim blocks, we need to lazy load from BE
+        newParams = $.extend(true, {'asmtPeriodYear': cacheKey['asmt_period_year']}, @params)
+        # TODO: Fetch data from server
+        # TEMP - we need to get the data for legend (action bar)
+        @data.current = @data['20160106Interim Comprehensive']
+        @sortInterimBlocksData("Math", 3)
+        tmpData = {"student_full_name": "Matt Sollars", 
+        "asmt_grade": "Grade 5",
+        "asmt_subject": "Mathematics", 
+        "asmt_subject_text": "Mathematics",
+        "asmt_type": "Interim Assessment Blocks",
+        "asmt_period": "2014 - 2015", 
+        "grade": [ {"blocks": [
+          {"block": [{"indexer": "0", "grade": "Grade 7", "name": "Ratio and Proportional Relationships", "level": "1", "desc": "Above Standard", "effective_date": "2014.05.05"}, 
+                      {"indexer": "1", "grade": "Grade 7", "name": "Number System", "level": "3","desc": "Above Standard", "effective_date": "2014.05.05"}, 
+                      {"indexer": "2", "grade": "Grade 7", "name": "Expressions and Equations", "level": "2","desc": "Above Standard", "effective_date": "2014.05.05"}]},
+          {"block": [{"indexer": "3", "grade": "Grade 7", "name": "Statistics and Probability", "level": "1","desc": "Above Standard", "effective_date": "2014.05.05"},
+          {"indexer": "4", "grade": "Grade 7", "name": "Mathematics Performance", "level": "1","desc": "Above Standard", "effective_date": "2014.05.05"}]}]},
+          {"blocks": [{"block": [{"indexer": "8", "grade": "Grade 6", "name": "Ratio and Proportional Relationships", "level": "1","desc": "Above Standard", "effective_date": "2014.05.05"}]}]}]}
+        output = Mustache.to_html isrInterimBlocksTemplate, tmpData
+        $("#individualStudentContent").html output
+        
+      # TEMP ... this needs to be updated
+      if not cacheKey['isInterimBlock']
+        # Get tenant level branding
+        @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
+        # use mustache template to display the json data
+        output = Mustache.to_html isrTemplate, @data
+        $("#individualStudentContent").html output
+  
+        @updateClaimsHeight()
+  
+        # Generate Confidence Level bar for each assessment
+        i = 0
+        for item, i in @data.current
+          barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
+          edwareConfidenceLevelBar.create item, 640, barContainer
+  
+          # Set the layout for practical implications and policy content section on print version
+          printAssessmentInfoContentLength = 0
+          printAssessmentOtherInfo = "#assessmentSection" + i + " li.inline"
+          printAssessmentOtherInfoLength = $(printAssessmentOtherInfo).length
+  
+          $(printAssessmentOtherInfo).each (index) ->
+            printAssessmentInfoContentLength = printAssessmentInfoContentLength + $(this).html().length
+  
+          charLimits = 702
+          if printAssessmentOtherInfoLength < 2 or printAssessmentInfoContentLength > charLimits
+            $(printAssessmentOtherInfo).removeClass "inline"
+  
+          if printAssessmentInfoContentLength > charLimits
+            assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
+            $(assessmentInfo + " h1").css("display", "block")
+            $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
+            $(assessmentInfo + " li:first-child").addClass("bottomLine")
+  
+          i++
+  
+        # Show tooltip for claims on mouseover
+        $(".arrowBox").popover
+          html: true
+          container: "#content"
+          trigger: "hover"
+          placement: (tip, element) ->
+            edwareUtil.popupPlacement(element, 400, 276)
+          title: ->
+            e = $(this)
+            e.parent().parent().find(".header").find("h4").html()
+          template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+          content: ->
+            e = $(this)
+            e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
 
       this.isrHeader = edwareHeader.create(this.data, this.configData) unless this.isrHeader
 
@@ -289,4 +326,24 @@ define [
       # the return value will be used to generate legend html page
       subject = $.extend(true, {}, subject, sample_interval)
 
+    sortInterimBlocksData : (asmtSubject, asmtGrade)->
+      # Given a particular grade's blocks, sort it
+      
+      # Save this per report
+      ordering = {}
+      for k, v of @subjectsData
+        if asmtSubject is v
+          ordering[v] = @configData.interimAssessmentBlocksOrdering[k]
+      
+      data = [{"name": "Doris"}, {"name": "Fractions"}, {"name": "Functions"}, {"name": "Operations and Algebraic Thinking"}, {"name": "Probability"}]
+      for i in data
+        order = ordering[asmtSubject][asmtGrade].indexOf(i["name"])
+        i['order'] = if order is -1 then ordering[asmtSubject][asmtGrade].length else order
+      data.sort (x, y) ->
+        return -1 if x.order < y.order
+        return 1 if x.order > y.order
+        0
+      data
+     
+     
   EdwareISR: EdwareISR

@@ -1,0 +1,74 @@
+{
+    "Overall": {
+        "MaxScore": "2400", 
+        "MinScore": "1200"
+    }, 
+    "Content": "assessment", 
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "Minimal Understanding", 
+            "CutPoint": "1200"
+        }, 
+        "Level2": {
+            "Name": "Partial Understanding", 
+            "CutPoint": "1400"
+        }, 
+        "Level3": {
+            "Name": "Adequate Understanding", 
+            "CutPoint": "1800"
+        }, 
+        "Level4": {
+            "Name": "Thorough Understanding", 
+            "CutPoint": "2100"
+        }, 
+        "Level5": {
+            "Name": null, 
+            "CutPoint": null
+        }
+    }, 
+    "Identification": {
+        "Type": "Summative", 
+        "Subject": "MATH", 
+        "Guid": "SBAC-FT-SomeDescription-MATH-7", 
+        "Version": "SomeNewVersion", 
+        "EffectiveDate": "2014-03-04", 
+        "Year": "2014", 
+        "Period": null
+    }, 
+    "Claims": {
+        "Claim4": {
+            "MaxScore": "0", 
+            "Name": null, 
+            "MinScore": "0"
+        }, 
+        "Claim2": {
+            "MaxScore": "0", 
+            "Name": "Problem Solving and Modeling & Data Analysis", 
+            "MinScore": "0", 
+            "Mapping": "Claim2Problem Solving and Modeling & Data Analysis"
+        }, 
+        "Claim3": {
+            "MaxScore": "0", 
+            "Name": "Communicating Reasoning", 
+            "MinScore": "0", 
+            "Mapping": "Claim3Communicating Reasoning"
+        }, 
+        "Claim1": {
+            "MaxScore": "0", 
+            "Name": "Concepts & Procedures", 
+            "MinScore": "0", 
+            "Mapping": "myClaim1"
+        }
+    }, 
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": "Below Standard"
+        }, 
+        "Level2": {
+            "Name": "At/Near Standard"
+        }, 
+        "Level3": {
+            "Name": "Above Standard"
+        }
+    }
+}

@@ -44,11 +44,7 @@ def get_explode_to_tables_tasks(msg, prefix):
     '''
     if prefix is None:
         return []
-    task_map = {'dim': explode_data_to_dim_table_task,
-                'fact_asmt': explode_data_to_fact_table_task,
-                'fact_block': explode_data_to_fact_table_task
-                }
-    task_name = task_map.get(prefix)
+    task_name = explode_data_to_dim_table_task if prefix.startswith('dim') else explode_data_to_fact_table_task
     conf = _get_conf(msg)
     table_map, column_map = get_table_and_column_mapping(conf, 'explode to ' + prefix, prefix + '_')
     grouped_tasks = []

@@ -29,7 +29,8 @@
         "acc_read_aloud_nonembed": "Đọc to",
         "acc_scribe_nonembed": "Giải thích",
         "acc_speech_to_text_nonembed": "Từ Văn nói-đến-văn viết",
-        "acc_streamline_mode": "Dạng dòng chảy"
+        "acc_streamline_mode": "Dạng dòng chảy",
+        "acc_asl_video_embed" : "Ngôn Ngữ Ký Hiệu Hoa Kỳ"
     },
     "accomodationCodeBuckets": {
         "11": "1",
@@ -49,6 +50,17 @@
         "24":"5",
         "18": "6"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
+    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
+                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
+    "detailsSelection": [
+        {
+            "display": "Toán",
+            "key": "Math"
+        },
+        {
+            "display": "ELA/Đọc viết",
+            "key": "ELA"
+        }
+    ],
     "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
 }

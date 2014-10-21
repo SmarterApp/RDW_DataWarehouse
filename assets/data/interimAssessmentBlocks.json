@@ -1,0 +1,22 @@
+{
+    "interimAssessmentBlocksOrdering": {
+        "subject1": {
+            "3": ["Operations and Algebraic Thinking", "Numbers and Operations in Base 10", "Fractions", "Measurement and Data", "Mathematics Performance Task"],
+            "4": ["Operations and Algebraic Thinking", "Numbers and Operations in Base 10", "Fractions", "Geometry", "Measurement and Data", "Mathematics Performance Task"],
+            "5": ["Operations and Algebraic Thinking", "Numbers and Operations in Base 10", "Fractions", "Geometry", "Measurement and Data", "Mathematics Performance Task"],
+            "6": ["Ratio and Proportional Relationships", "Number System", "Expressions and Equations", "Geometry", "Statistics and Probability", "Mathematics Performance Task"],
+            "7": ["Ratio and Proportional Relationships", "Number System", "Expressions and Equations", "Geometry", "Statistics and Probability", "Mathematics Performance Task"],
+            "8": ["Expressions & Equations I (and Proportionality)", "Expressions & Equations II", "Functions", "Geometry", "Mathematics Performance Task"],
+            "11": ["Algebra and Functions - Linear Functions", "Algebra and Functions - Quadratic Functions", "Algebra and Functions - Exponential Functions", "Algebra and Functions - Polynomials Functions", "Algebra and Functions - Radicals Functions", "Algebra and Functions - Rational Functions", "Algebra and Functions - Trigonometric Functions", "Geometry - Transformations in Geometry", "Geometry - Right Triangle Ratios in Geometry", "Geometry - Three - Dimensional Geometry", "Geometry - Proofs", "Geometry - Circles", "Geometry - Applications", "Interpreting Categorical and Quantitative Data", "Probability", "Making Inferences and Justifying Conclusions", "Mathematics Performance Task"]
+        },
+        "subject2": {
+            "3": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Informational Performance Task", "Opinion Performance Task"],
+            "4": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Informational Performance Task", "Opinion Performance Task"],
+            "5": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Informational Performance Task", "Opinion Performance Task"],
+            "6": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Explanatory Performance Task", "Argument Performance Task"],
+            "7": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Explanatory Performance Task", "Argument Performance Task"],
+            "8": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Explanatory Performance Task", "Argument Performance Task"],
+            "11": ["Read Literary Texts", "Read Informational Texts", "Edit/Revise", "Brief Writes", "Listen/Interpret", "Research", "Narrative Performance Task", "Explanatory Performance Task", "Argument Performance Task"]
+        }
+    }
+}

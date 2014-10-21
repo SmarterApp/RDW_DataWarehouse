@@ -42,7 +42,7 @@ class IntegerMeta(XMLMeta):
         return str(int(data)) if data else data
 
 
-class DummyMeta():
+class ValueMeta():
 
     def __init__(self, value):
         self.value = value
@@ -312,8 +312,13 @@ def get_assessment_mapping(root, metadata_file_path):
 
 
 def get_groups(examinee):
-    # map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
-    # only display first 10 groups
+    '''
+    Get groupings from XML <ExamineeRelationship> elements.
+    Assign element of list of group to group1, group2, .., group10 according to its order in the list
+
+    map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
+    only display first 10 groups
+    '''
     TOTAL_GROUPS = 10
     mappings = []
     groups = examinee.findall("./ExamineeRelationship[@name='StudentGroupName']")[:TOTAL_GROUPS]
@@ -321,7 +326,7 @@ def get_groups(examinee):
         if i < len(groups):
             meta = XMLMeta(groups[i], '.', 'value')
         else:
-            meta = DummyMeta('')
+            meta = ValueMeta('')
         mappings.append(Mapping(meta, 'Group%dId' % (i + 1)))
         mappings.append(Mapping(meta, 'Group%dText' % (i + 1)))
     return mappings
@@ -346,6 +351,21 @@ ACCOMMODATION_CONFIGS = [
 
 
 def get_accommodations(opportunity):
+    '''
+     Get accommodations from XML.
+
+     We have two categories of accommodations: Embbed and NonEmbbedded
+
+     Embbed accommodations include AmericanSignLanguage, ClosedCaptioning, Language, TextToSpeech, StreamlinedInterface, PrintOnDemand(PrintOnDemand + TDS_PoD0), PrintOnDemandItem(PrintOnDemand + TDS_PoD_Stim&TDS_PoD_Item). If any of the above accommodations appears in XML with `context` of value 'FINAL', we look up use code in element <Score measureLabel="Accommodation"/> according to corresponding accommodation type, otherwise use 0 as fallback use code
+
+     Non-Embbed accommodations include Abacus, AlternativeResponse, Calculator, MultiplicationTable, ReadAloud, Scribe, SpeechToText, NoiseBuffer. Each of the above corresponds to a unique code, as in <Accommodation /> 'code' attribute, respectively: NEA_Abacus, NEA_AR, NEA_Calc, NEA_MT, NEA_RA_Stimuli, NEA_SC_WritItems, NEA_STT, NEA_NoiseBuf.
+     We look up below element for use code and assign to all Non-Embbed accommodation that show in XML.
+         <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="6" />
+     All presented Non-Embbed Accommodations will have the same use code, otherwise use 0 as fallback use code
+     However, there's a special Non-Embbed code 'NEA0', which is mutually exclusive with the others. In case of its presence, all Non-Embbed accommodations should be assigned with value 0 in database.
+    '''
+    USE_CODE_NO_ACCESS = '4'
+    USE_CODE_NO_MESSAGE = '0'
 
     def _format_XPath(config):
         score_xpath = "./Score/[@measureOf='%s'][@measureLabel='Accommodation']" % config['type']
@@ -365,10 +385,10 @@ def get_accommodations(opportunity):
     hasNEA0 = _has_NEA0(opportunity)
     for config in ACCOMMODATION_CONFIGS:
         if _is_non_embbed(config) and hasNEA0:
-            use_code = '4'
+            use_code = USE_CODE_NO_ACCESS
         else:
             acc_xpath, score_xpath = _format_XPath(config)
             score = opportunity.find(score_xpath) if opportunity.find(acc_xpath) is not None else None
-            use_code = score.get('value') if score is not None else '0'
-        accommodations.append(Mapping(DummyMeta(use_code), config['target']))
+            use_code = score.get('value') if score is not None else USE_CODE_NO_MESSAGE
+        accommodations.append(Mapping(ValueMeta(use_code), config['target']))
     return accommodations

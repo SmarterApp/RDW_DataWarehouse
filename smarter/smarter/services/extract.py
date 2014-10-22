@@ -184,7 +184,7 @@ def send_extraction_request(params):
         results = process_extraction_request(params, is_async=is_async)
         if is_async:
             # TODO: we should validate the type when we refactor the endpoint
-            #if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
+            # if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
             response = Response(body=json.dumps(results), content_type='application/json')
         else:
             zip_file_name = generate_zip_file_name(params.get(Constants.ASMTYEAR, [None])[0],

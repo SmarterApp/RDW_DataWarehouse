@@ -12,8 +12,6 @@ from beaker.util import parse_cache_config_options
 from pyramid.security import Allow
 from pyramid.httpexceptions import HTTPForbidden
 
-from smarter.reports.list_of_students_report import get_list_of_students_report,\
-    get_group_filters
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from edauth.tests.test_helper.create_session import create_test_session
 import edauth
@@ -21,6 +19,8 @@ from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.reports.list_of_students_report import get_list_of_students_report
+from smarter.reports.list_of_students_report_utils import get_group_filters
 
 
 class TestLOS(Unittest_with_edcore_sqlite):

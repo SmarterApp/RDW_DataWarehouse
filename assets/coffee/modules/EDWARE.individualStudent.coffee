@@ -62,19 +62,6 @@ define [
         section["accommodation"] = accommodation.sort()
         section
 
-    sortInterimBlocksData : (asmtSubject, data)->
-      # Given a particular grade's blocks, sort it
-      for grade, gradeData of data
-        for block in gradeData
-          order = @interimAsmtBlocksOrdering[asmtSubject][grade]?.indexOf(block["name"]) || 0 # We don't know about this grade, use 0
-          block['displayOrder'] = if order is -1 then @interimAsmtBlocksOrdering[asmtSubject][grade].length else order
-        # Custom sorting based on order number assigned
-        gradeData.sort (x, y) ->
-          return -1 if x.displayOrder < y.displayOrder
-          return 1 if x.displayOrder > y.displayOrder
-          0
-      data
-    
     divideInterimBlocksData: (data) ->
       # Divide into blocks of 3s for display purposes
       value = {"row": []}
@@ -89,9 +76,45 @@ define [
       value["row"] = dividedBlocks
       value
 
-    convertToTwoDigitStr: (num) ->
-      if num < 10 then return "0" + String(num) else return String(num)
-
+    splitByPerfBlockByName: (asmtSubject, data) ->
+      dataByName = {}
+      for grade, gradeData of data
+        dataByName[grade] ?= {}
+        for block in gradeData
+          name = block['name']
+          dataByName[grade][name]?= {}
+          # Get the order in which this block is suppose to be displayed in
+          order = @interimAsmtBlocksOrdering[asmtSubject][grade]?.indexOf(block["name"]) || 0 # We don't know about this grade, use 0
+          dataByName[grade][name]['displayOrder'] = if order is -1 then @interimAsmtBlocksOrdering[asmtSubject][grade].length else order
+          # If a most recent value is not present, set it to the current block
+          if not dataByName[grade][name]['mostRecent']
+            dataByName[grade][name]['mostRecent'] = block
+          else
+            placeholder = {'placeholder': true}
+            dataByName[grade][name]['previous'] ?= [placeholder, placeholder, placeholder]
+            dataByName[grade][name]['previousCounter'] ?= 0
+            prevCounter = dataByName[grade][name]['previousCounter']
+            if prevCounter < 3
+                dataByName[grade][name]['previous'][prevCounter] = block
+                dataByName[grade][name]['previousCounter'] +=1
+            else
+              dataByName[grade][name]['hasOlder'] = true
+              dataByName[grade][name]['older'] ?= []
+              dataByName[grade][name]['older'].push block
+          
+      # Group them back to a list and sort them
+      returnData = {}
+      for grade, gradeData of dataByName
+        returnData[grade] = []
+        for k, v of gradeData
+          returnData[grade].push(v)
+        returnData[grade].sort (x, y) ->
+          return -1 if x.displayOrder < y.displayOrder
+          return 1 if x.displayOrder > y.displayOrder
+          0
+        # After Sorting, divide it for display purposes
+        data[grade] = @divideInterimBlocksData returnData[grade]
+      
     processInterimBlocksData: () ->
       @data['views'] ?= {}
       for subjectAlias, subjectName of @data.subjects
@@ -107,15 +130,12 @@ define [
           'effective_date': assessment['effective_date'], 
           'name': assessment['claims'][0]['name'], 
           'desc': assessment['claims'][0]['perf_lvl_name'], 
-          'level': assessment['claims'][0]['perf_lvl'],
-          'date_taken_day': @convertToTwoDigitStr(assessment['claims'][0]['date_taken_day']),
-          'date_taken_month': @convertToTwoDigitStr(assessment['claims'][0]['date_taken_month']),
-          'date_taken_year': assessment['claims'][0]['date_taken_year']}
+          'level': assessment['claims'][0]['perf_lvl']}
           dataByGrade[asmt_grade].push(block_info)
-        @sortInterimBlocksData(subjectName, dataByGrade)
+        @splitByPerfBlockByName(subjectName, dataByGrade)
         subjectData['grades'] = []
         for grade in grades.sort().reverse()
-          subjectData['grades'].push @divideInterimBlocksData(dataByGrade[grade])
+          subjectData['grades'].push dataByGrade[grade]
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
         @data['views'][subjectName] = subjectData
   

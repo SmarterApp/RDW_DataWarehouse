@@ -135,7 +135,7 @@ def convert_to_xml(l):
     def _date(date):
         if date == "":
             return ""
-        return "{yyyy}{mm}{dd}".format(
+        return "{yyyy}-{mm}-{dd}T10:49:08.437".format(
             yyyy=date[0:4],
             mm=date[4:6],
             dd=date[6:8]
@@ -147,6 +147,7 @@ def convert_to_xml(l):
     data['asmt_type'] = l[11]
     data['grade'] = l[14]
     data['studentId'] = l[5]
+    data['birthdate'] = _date(students[l[5]][6])
     data['firstName'] = students[l[5]][3]
     data['middleName'] = students[l[5]][4]
     data['lastName'] = students[l[5]][5]

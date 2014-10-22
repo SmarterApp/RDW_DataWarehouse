@@ -141,14 +141,14 @@ def __prepare_query_iab(connector, params):
     student_id = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
 
-    fact_block_asmt_outcome = connector.get_table('fact_block_asmt_outcome')
-    dim_student = connector.get_table('dim_student')
-    dim_asmt = connector.get_table('dim_asmt')
+    fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
+    dim_student = connector.get_table(Constants.DIM_STUDENT)
+    dim_asmt = connector.get_table(Constants.DIM_ASMT)
     query = select_with_context([fact_block_asmt_outcome.c.student_id,
                                 dim_student.c.first_name.label('first_name'),
                                 dim_student.c.middle_name.label('middle_name'),
                                 dim_student.c.last_name.label('last_name'),
-                                fact_block_asmt_outcome.c.enrl_grade.label('grade'),
+                                fact_block_asmt_outcome.c.enrl_grade.label('enrl_grade'),
                                 fact_block_asmt_outcome.c.district_id.label('district_id'),
                                 fact_block_asmt_outcome.c.school_id.label('school_id'),
                                 fact_block_asmt_outcome.c.state_code.label('state_code'),
@@ -200,7 +200,7 @@ def __prepare_query_iab(connector, params):
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if asmt_year is not None:
         query = query.where(fact_block_asmt_outcome.c.asmt_year == asmt_year)
-    query = query.order_by(dim_asmt.c.asmt_subject.desc(), fact_block_asmt_outcome.c.asmt_grade.desc())
+    query = query.order_by(dim_asmt.c.asmt_subject.desc(), fact_block_asmt_outcome.c.asmt_grade.desc(), dim_asmt.c.effective_date.desc())
     return query
 
 
@@ -238,7 +238,6 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
         result['student_full_name'] = format_full_name(result['first_name'], result['middle_name'], result['last_name'])
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
-
         result['asmt_score_interval'] = get_overall_asmt_interval(result)
 
         # custom metadata
@@ -265,16 +264,15 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
     iab_results = {}
     if len(results) is 0:
         return iab_results
-    iab_results['student_full_name'] = format_full_name(results[0]['first_name'], results[0]['middle_name'], results[0]['last_name'])
-    iab_results['first_name'] = results[0].get('first_name')
-    iab_results['middle_name'] = results[0].get('middle_name')
-    iab_results['last_name'] = results[0].get('last_name')
-    # This is the enrollment grade
-    iab_results['grade'] = results[0].get('grade')
-    # asmt_type is an enum, so we would to capitalize it to make it presentable
-    iab_results['asmt_type'] = capwords(results[0].get('asmt_type'), ' ')
-    iab_results['asmt_period_year'] = results[0].get('asmt_period_year')
-    iab_results['student_id'] = results[0].get('student_id')
+    first_result = results[0]
+    iab_results['student_full_name'] = format_full_name(first_result['first_name'], first_result['middle_name'], first_result['last_name'])
+    iab_results['first_name'] = first_result.get('first_name')
+    iab_results['middle_name'] = first_result.get('middle_name')
+    iab_results['last_name'] = first_result.get('last_name')
+    iab_results['enrl_grade'] = first_result.get('enrl_grade')
+    iab_results['asmt_type'] = capwords(first_result.get('asmt_type'), ' ')
+    iab_results['asmt_period_year'] = first_result.get('asmt_period_year')
+    iab_results['student_id'] = first_result.get('student_id')
 
     # Go through each of the different subjects ELA, Math etc.
     subject_data = {}

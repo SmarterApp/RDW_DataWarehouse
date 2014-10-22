@@ -1,8 +1,8 @@
-<h2 class="title printContent">{{student_full_name}} | {{labels.grade}} {{asmt_grade}}</h2>
+<h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.grade}}</h2>
 <div class="innerBox clearfix">
     <div class="isrInterimBlockHeader">
-        <span class="subject">{{asmt_subject_text}}</span>
-        <span class="info"> {{asmt_type}} {{asmt_period}}</span>
+        <span class="subject">{{all_results.asmt_subject_text}}</span>
+        <span class="info"> {{all_results.asmt_type}} {{all_results.asmt_period}}</span>
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="printHeader printContent">
@@ -19,40 +19,39 @@
     </div>
     <!-- End of TODO-->
     <div class="contentBlocksWrapper">
-    	{{#grade}}
+    	{{#current.grades}}
     	<hr>
         <div class="blocksSection clearfix">
-        	{{#blocks}}
+        	{{#row}}
             <div class="row-fluid">
-            	{{#block}}
-                <div id="blocks{{indexer}}" class="span4 claims blocks">
+            	{{#blocks}}
+                <div class="span4 claims blocks">
                     <div class="title">{{grade}}: <span class="blockName">{{name}}</span></div>
                     <div class="content">
                     	<div class="level{{level}}">
 	                    	<i class="edware-icon-large-perf-level-{{level}}"></i>
 	                    	<div style="display:inline-block">
-	                    		<div class="effectiveDate">{{effective_date}}</div>
+	                    		<div class="takenDate">{{date_taken_year}}.{{date_taken_month}}.{{date_taken_day}}</div>
 	                        {{desc}}
 	                       </div>
 	                    </div>
                     </div>
-                	<!-- TODO put into labels -->
-                	<span class="previousResults">PREVIOUS RESULTS</span>
+                	<span class="previousResults">{{labels.previous_results}}</span>
                 	<table class="table">
                 		<tbody>
                     		<tr>
-                    			<td>None</td>
+                    			<td>{{labels.none}}</td>
                     			<td></td>
                     			<td></td>
                     		</tr>
                     	</tbody>
                 	</table>
                </div>
-               {{/block}}
+               {{/blocks}}
             </div>
-            {{/blocks}}
+            {{/row}}
         </div>
-        {{/grade}}
+        {{/current.grades}}
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="assessmentOtherInfoHeader printHeader">

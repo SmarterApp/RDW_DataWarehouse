@@ -51,14 +51,12 @@ def get_block_asmt_administration(state_code, district_id=None, school_id=None, 
     with EdCoreDBConnection(state_code=state_code) as connection:
         fact_block_asmt = connection.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        query = select([dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type, fact_block_asmt.c.asmt_grade],
+        query = select([dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type],
                        from_obj=[fact_block_asmt, dim_asmt])
         query = query.where(fact_block_asmt.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_block_asmt.c.state_code == state_code).\
-            where(and_(fact_block_asmt.c.rec_status == Constants.CURRENT)).\
             where(and_(fact_block_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS)).\
-            group_by(dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type, fact_block_asmt.c.asmt_grade,).\
-            order_by(fact_block_asmt.c.asmt_type.desc())
+            group_by(dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type)
         if district_id:
             query = query.where(and_(fact_block_asmt.c.district_id == district_id))
         if school_id:

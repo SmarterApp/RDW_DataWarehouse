@@ -66,7 +66,7 @@ define [
       # Given a particular grade's blocks, sort it
       for grade, gradeData of data
         for block in gradeData
-          order = @interimAsmtBlocksOrdering[asmtSubject][grade].indexOf(block["name"])
+          order = @interimAsmtBlocksOrdering[asmtSubject][grade]?.indexOf(block["name"]) || 0 # We don't know about this grade, use 0
           block['displayOrder'] = if order is -1 then @interimAsmtBlocksOrdering[asmtSubject][grade].length else order
         # Custom sorting based on order number assigned
         gradeData.sort (x, y) ->

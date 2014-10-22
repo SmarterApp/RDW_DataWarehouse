@@ -265,20 +265,21 @@ def test_generate_assessment_outcome_accommodations_ela():
     asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Tests
-    assert 4 <= asmt_out.acc_asl_video_embed <= 10
-    assert 4 <= asmt_out.acc_asl_human_nonembed <= 10
-    assert 4 <= asmt_out.acc_braile_embed <= 10
-    assert 4 <= asmt_out.acc_closed_captioning_embed <= 10
-    assert 4 <= asmt_out.acc_text_to_speech_embed <= 10
+    assert 4 <= asmt_out.acc_asl_video_embed <= 26
+    assert 4 <= asmt_out.acc_print_on_demand_items_nonembed <= 26
+    assert 4 <= asmt_out.acc_noise_buffer_nonembed <= 26
+    assert 4 <= asmt_out.acc_braile_embed <= 26
+    assert 4 <= asmt_out.acc_closed_captioning_embed <= 26
+    assert 4 <= asmt_out.acc_text_to_speech_embed <= 26
     assert asmt_out.acc_abacus_nonembed == 0
-    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 26
     assert asmt_out.acc_calculator_nonembed == 0
     assert asmt_out.acc_multiplication_table_nonembed == 0
-    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
-    assert 4 <= asmt_out.acc_read_aloud_nonembed <= 10
-    assert 4 <= asmt_out.acc_scribe_nonembed <= 10
-    assert 4 <= asmt_out.acc_speech_to_text_nonembed <= 10
-    assert 4 <= asmt_out.acc_streamline_mode <= 10
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 26
+    assert 4 <= asmt_out.acc_read_aloud_nonembed <= 26
+    assert 4 <= asmt_out.acc_scribe_nonembed <= 26
+    assert 4 <= asmt_out.acc_speech_to_text_nonembed <= 26
+    assert 4 <= asmt_out.acc_streamline_mode <= 26
 
 
 def test_generate_assessment_outcome_accommodations_math():
@@ -292,20 +293,21 @@ def test_generate_assessment_outcome_accommodations_math():
     asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Tests
-    assert 4 <= asmt_out.acc_asl_video_embed <= 10
-    assert 4 <= asmt_out.acc_asl_human_nonembed <= 10
-    assert 4 <= asmt_out.acc_braile_embed <= 10
+    assert 4 <= asmt_out.acc_asl_video_embed <= 26
+    assert 4 <= asmt_out.acc_print_on_demand_items_nonembed <= 26
+    assert 4 <= asmt_out.acc_noise_buffer_nonembed <= 26
+    assert 4 <= asmt_out.acc_braile_embed <= 26
     assert asmt_out.acc_closed_captioning_embed == 0
     assert asmt_out.acc_text_to_speech_embed == 0
-    assert 4 <= asmt_out.acc_abacus_nonembed <= 10
-    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
-    assert 4 <= asmt_out.acc_calculator_nonembed <= 10
-    assert 4 <= asmt_out.acc_multiplication_table_nonembed <= 10
-    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
+    assert 4 <= asmt_out.acc_abacus_nonembed <= 26
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 26
+    assert 4 <= asmt_out.acc_calculator_nonembed <= 26
+    assert 4 <= asmt_out.acc_multiplication_table_nonembed <= 26
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 26
     assert asmt_out.acc_read_aloud_nonembed == 0
     assert asmt_out.acc_scribe_nonembed == 0
     assert asmt_out.acc_speech_to_text_nonembed == 0
-    assert 4 <= asmt_out.acc_streamline_mode <= 10
+    assert 4 <= asmt_out.acc_streamline_mode <= 26
 
 
 def test_pick_performance_levels():
@@ -337,4 +339,4 @@ def test_pick_default_accommodation_code_0():
 
 
 def test_pick_default_accommodation_code_four():
-    assert 4 <= asmt_gen._pick_default_accommodation_code(4) <= 10
+    assert 4 <= asmt_gen._pick_default_accommodation_code(4) <= 26

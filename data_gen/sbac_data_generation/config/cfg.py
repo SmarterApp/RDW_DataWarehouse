@@ -91,21 +91,23 @@ CLAIM_DEFINITIONS = {'Math': [{'name': 'Concepts & Procedures', 'weight': .4},
                              {'name': 'Research & Inquiry', 'weight': .30}]
                      }
 
-ACCOMODATIONS = {'acc_asl_video_embed': {'ELA': 4, 'Math': 4},
-                 'acc_asl_human_nonembed': {'ELA': 4, 'Math': 4},
-                 'acc_braile_embed': {'ELA': 4, 'Math': 4},
-                 'acc_closed_captioning_embed': {'ELA': 4, 'Math': 0},
-                 'acc_text_to_speech_embed': {'ELA': 4, 'Math': 0},
-                 'acc_abacus_nonembed': {'ELA': 0, 'Math': 4},
-                 'acc_alternate_response_options_nonembed': {'ELA': 4, 'Math': 4},
-                 'acc_calculator_nonembed': {'ELA': 0, 'Math': 4},
-                 'acc_multiplication_table_nonembed': {'ELA': 0, 'Math': 4},
-                 'acc_print_on_demand_nonembed': {'ELA': 4, 'Math': 4},
-                 'acc_read_aloud_nonembed': {'ELA': 4, 'Math': 0},
-                 'acc_scribe_nonembed': {'ELA': 4, 'Math': 0},
-                 'acc_speech_to_text_nonembed': {'ELA': 4, 'Math': 0},
-                 'acc_streamline_mode': {'ELA': 4, 'Math': 4}
-                 }
+ACCOMMODATIONS = {
+                  'acc_abacus_nonembed': {'ELA': 0, 'Math': 4},
+                  'acc_alternate_response_options_nonembed': {'ELA': 4, 'Math': 4},
+                  'acc_asl_video_embed': {'ELA': 4, 'Math': 4},
+                  'acc_braile_embed': {'ELA': 4, 'Math': 4},
+                  'acc_calculator_nonembed': {'ELA': 0, 'Math': 4},
+                  'acc_closed_captioning_embed': {'ELA': 4, 'Math': 0},
+                  'acc_multiplication_table_nonembed': {'ELA': 0, 'Math': 4},
+                  'acc_noise_buffer_nonembed': {'ELA': 4, 'Math': 4},
+                  'acc_print_on_demand_items_nonembed': {'ELA': 4, 'Math': 4},
+                  'acc_print_on_demand_nonembed': {'ELA': 4, 'Math': 4},
+                  'acc_read_aloud_nonembed': {'ELA': 4, 'Math': 0},
+                  'acc_scribe_nonembed': {'ELA': 4, 'Math': 0},
+                  'acc_speech_to_text_nonembed': {'ELA': 4, 'Math': 0},
+                  'acc_streamline_mode': {'ELA': 4, 'Math': 4},
+                  'acc_text_to_speech_embed': {'ELA': 4, 'Math': 0},
+                  }
 
 
 DEMOGRAPHICS_BY_GRADE = {

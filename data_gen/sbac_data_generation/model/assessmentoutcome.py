@@ -42,7 +42,8 @@ class SBACAssessmentOutcome(AssessmentOutcome):
         self.claim_4_score_range_max = None
         self.claim_4_perf_lvl = None
         self.acc_asl_video_embed = 0
-        self.acc_asl_human_nonembed = 0
+        self.acc_print_on_demand_items_nonembed = 0
+        self.acc_noise_buffer_nonembed = 0
         self.acc_braile_embed = 0
         self.acc_closed_captioning_embed = 0
         self.acc_text_to_speech_embed = 0

@@ -236,6 +236,7 @@ define [
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
+      @bindEvents()
 
     initialize: () ->
       @prepareParams()
@@ -259,6 +260,27 @@ define [
       loadingData.done (data) ->
         self.loadPage data
 
+    bindEvents: () ->
+      $(document).on
+        'mouseenter focus': ->
+          elem = $(this)
+          elem.popover
+            html: true
+            trigger: "manual"
+            container: '#iabPopoverContent'
+            placement: (tip, element) ->
+              edwareUtil.popupPlacement(element, 400, 200)
+            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"></div></div></div>'
+            content: ->
+              elem.parent().find(".oldResultsContent").html()
+          .popover("show")
+        click: (e) ->
+          e.preventDefault()
+        'mouseleave focusout': ->
+          elem = $(this)
+          elem.popover("hide")
+      , ".olderResults"
+   
     loadPrintMedia: () ->
       # Show grayscale
       edwareUtil.showGrayScale() if @isGrayscale

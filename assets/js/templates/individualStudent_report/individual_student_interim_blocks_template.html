@@ -38,6 +38,21 @@
                     </div>
                 	<span class="previousResults">{{labels.previous_results}}</span>
                 	{{#hasOlder}}<a class="olderResults pull-right">{{labels.older}}</a>
+                	<div class="oldResultsContent hide">
+                		<span class="previousResults">{{labels.previous_results_contd}}</span>
+                		<table class="table">
+                		<tbody>
+                    		<tr>
+		                		{{#older}}
+		                			<td>
+				        			<div class="takenDate">{{effective_date}}</div>
+                    				<i class="edware-icon-small-perf-level-{{level}}"></i>
+                    				</td>
+				        		{{/older}}
+				        	</tr>
+				        </tbody>
+				        </table>
+		        		</div>
                 	{{/hasOlder}}
                 	<table class="table">
                 		<tbody>
@@ -82,6 +97,8 @@
     </div>
     <!-- End of TODO-->
 </div>
+<!-- Used for popover in iab -->
+<div id="iabPopoverContent" class="blocks"></div>
 <div class="pageBreak"></div>
 <!-- TODO - Figure this out for Print PDF-->
 <div id="print_reportInfoContent" class="printContent clearfix">

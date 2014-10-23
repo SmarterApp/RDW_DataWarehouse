@@ -40,7 +40,7 @@ def get_list_of_students_report_iab(params):
     los_results[Constants.ASMT_ADMINISTRATION] = get_asmt_administration_years(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
-    los_results[Constants.CLAIMS] = get_IAB_claims(los_results[Constants.ASSESSMENTS], los_results[Constants.SUBJECTS])
+    los_results[Constants.INTERIM_ASSESSMENT_BLOCKS] = get_IAB_claims(los_results[Constants.ASSESSMENTS], los_results[Constants.SUBJECTS])
 
     return los_results
 
@@ -132,7 +132,7 @@ def get_IAB_claims(assessments, subjects):
             for subject_name in subjects.keys():
                 subject = iab[student_guid].get(subject_name)
                 if subject is not None:
-                    claims = subject[Constants.CLAIMS]
+                    claims = subject['claims']
                     for claim in claims:
                         name = claim['name']
                         claim_name.add(name)

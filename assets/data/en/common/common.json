@@ -412,6 +412,538 @@
             }
         }
     },
+    
+    "students_iab": {
+        "{{subject1}}": [ 
+        	{
+        		"grade_3_8" : {
+                	"items": [
+               			{
+                        	"name": "Students",
+                        	"displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        	"index": "student_full_name",
+                        	"field": "student_full_name",
+                        	"width": 330,
+                        	"style": "ui-ellipsis bold",
+                        	"formatter": "showlink",
+                        	"options": {
+                        		"linkUrl": "indivStudentReport.html"
+                        	},
+                        	"hidden": true,
+                     		"sortorder": "asc",
+                        	"export": true
+                    	},
+                       	{
+                       		"name": "{{claims.subject1.0.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+                        	"index": "subject1.claims.0.perf_lvl",
+                        	"field": "subject1.claims.0.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.1.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+                        	"index": "subject1.claims.1.perf_lvl",
+                        	"field": "subject1.claims.1.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.2.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+                        	"index": "subject1.claims.2.perf_lvl",
+                        	"field": "subject1.claims.2.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.3.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.3.name}}</a>",
+                        	"index": "subject1.claims.3.perf_lvl",
+                        	"field": "subject1.claims.3.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.4.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.4.name}}</a>",
+                        	"index": "subject1.claims.4.perf_lvl",
+                        	"field": "subject1.claims.4.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	}     		
+                   	]
+                },
+           		"grade_4_5_6_7" : {
+               		"items": [
+               			{
+                        	"name": "Students",
+                        	"displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        	"index": "student_full_name",
+                        	"field": "student_full_name",
+                        	"width": 330,
+                        	"style": "ui-ellipsis bold",
+                        	"formatter": "showlink",
+                        	"options": {
+                        		"linkUrl": "indivStudentReport.html"
+                        	},
+                        	"hidden": true,
+                     		"sortorder": "asc",
+                        	"export": true
+                    	},
+                       	{
+                       		"name": "{{claims.subject1.0.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+                        	"index": "subject1.claims.0.perf_lvl",
+                        	"field": "subject1.claims.0.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.1.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+                        	"index": "subject1.claims.1.perf_lvl",
+                        	"field": "subject1.claims.1.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.2.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+                        	"index": "subject1.claims.2.perf_lvl",
+                        	"field": "subject1.claims.2.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.3.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.3.name}}</a>",
+                        	"index": "subject1.claims.3.perf_lvl",
+                        	"field": "subject1.claims.3.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.4.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.4.name}}</a>",
+                        	"index": "subject1.claims.4.perf_lvl",
+                        	"field": "subject1.claims.4.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.5.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.5.name}}</a>",
+                        	"index": "subject1.claims.5.perf_lvl",
+                        	"field": "subject1.claims.5.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	}                    	
+                   	]
+                },
+                "high_school" : {
+               		"items": [
+               			{
+                        	"name": "Students",
+                        	"displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        	"index": "student_full_name",
+                        	"field": "student_full_name",
+                        	"width": 330,
+                        	"style": "ui-ellipsis bold",
+                        	"formatter": "showlink",
+                        	"options": {
+                        		"linkUrl": "indivStudentReport.html"
+                        	},
+                        	"hidden": true,
+                     		"sortorder": "asc",
+                        	"export": true
+                    	},
+                       	{
+                       		"name": "{{claims.subject1.0.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+                        	"index": "subject1.claims.0.perf_lvl",
+                        	"field": "subject1.claims.0.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.1.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+                        	"index": "subject1.claims.1.perf_lvl",
+                        	"field": "subject1.claims.1.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.2.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+                        	"index": "subject1.claims.2.perf_lvl",
+                        	"field": "subject1.claims.2.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.3.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.3.name}}</a>",
+                        	"index": "subject1.claims.3.perf_lvl",
+                        	"field": "subject1.claims.3.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.4.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.4.name}}</a>",
+                        	"index": "subject1.claims.4.perf_lvl",
+                        	"field": "subject1.claims.4.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.5.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.5.name}}</a>",
+                        	"index": "subject1.claims.5.perf_lvl",
+                        	"field": "subject1.claims.5.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.6.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.6.name}}</a>",
+                        	"index": "subject1.claims.6.perf_lvl",
+                        	"field": "subject1.claims.6.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.7.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.7.name}}</a>",
+                        	"index": "subject1.claims.7.perf_lvl",
+                        	"field": "subject1.claims.7.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.8.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.8.name}}</a>",
+                        	"index": "subject1.claims.8.perf_lvl",
+                        	"field": "subject1.claims.8.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.9.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.9.name}}</a>",
+                        	"index": "subject1.claims.9.perf_lvl",
+                        	"field": "subject1.claims.9.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.10.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.10.name}}</a>",
+                        	"index": "subject1.claims.10.perf_lvl",
+                        	"field": "subject1.claims.10.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.11.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.11.name}}</a>",
+                        	"index": "subject1.claims.11.perf_lvl",
+                        	"field": "subject1.claims.11.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.12.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.12.name}}</a>",
+                        	"index": "subject1.claims.12.perf_lvl",
+                        	"field": "subject1.claims.12.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.13.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.13.name}}</a>",
+                        	"index": "subject1.claims.13.perf_lvl",
+                        	"field": "subject1.claims.13.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.14.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.14.name}}</a>",
+                        	"index": "subject1.claims.14.perf_lvl",
+                        	"field": "subject1.claims.14.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.15.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.15.name}}</a>",
+                        	"index": "subject1.claims.15.perf_lvl",
+                        	"field": "subject1.claims.15.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject1.16.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.16.name}}</a>",
+                        	"index": "subject1.claims.16.perf_lvl",
+                        	"field": "subject1.claims.16.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	}                     	
+                   	]
+               	}
+            }
+        ],
+        "{{subject2}}": [ 
+        	{
+        		"grade_all" : {
+                	"items": [
+                		{
+                        	"name": "Students",
+                        	"displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        	"index": "student_full_name",
+                        	"field": "student_full_name",
+                        	"width": 330,
+                        	"style": "ui-ellipsis bold",
+                        	"formatter": "showlink",
+                        	"options": {
+                        		"linkUrl": "indivStudentReport.html"
+                        	},
+                        	"hidden": true,
+                     		"sortorder": "asc",
+                        	"export": true
+                    	},
+                       	{
+                       		"name": "{{claims.subject2.0.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
+                        	"index": "subject2.claims.0.perf_lvl",
+                        	"field": "subject2.claims.0.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.1.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
+                        	"index": "subject2.claims.1.perf_lvl",
+                        	"field": "subject2.claims.1.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.2.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
+                        	"index": "subject2.claims.2.perf_lvl",
+                        	"field": "subject2.claims.2.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.3.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
+                        	"index": "subject2.claims.3.perf_lvl",
+                        	"field": "subject2.claims.3.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.4.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.4.name}}</a>",
+                        	"index": "subject2.claims.4.perf_lvl",
+                        	"field": "subject2.claims.4.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.5.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.5.name}}</a>",
+                        	"index": "subject2.claims.5.perf_lvl",
+                        	"field": "subject2.claims.5.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.6.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.6.name}}</a>",
+                        	"index": "subject2.claims.6.perf_lvl",
+                        	"field": "subject2.claims.6.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.7.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.7.name}}</a>",
+                        	"index": "subject2.claims.7.perf_lvl",
+                        	"field": "subject2.claims.7.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	},
+                       	{
+                       		"name": "{{claims.subject2.8.name}}",
+                        	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.8.name}}</a>",
+                        	"index": "subject2.claims.8.perf_lvl",
+                        	"field": "subject2.claims.8.perf_lvl",
+                        	"width": 160,
+                        	"formatter": "showPerfLevel",
+                        	"sorttype": "int",
+                        	"align": "center",
+                        	"title": false,
+                        	"export": true
+                       	}	
+                   	]
+               	}
+
+            }
+        ]
+    },
 
     "comparingPopulations": {
         "grid": [

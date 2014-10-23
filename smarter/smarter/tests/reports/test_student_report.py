@@ -62,11 +62,11 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual('Research & Inquiry', result[0]['claims'][3]['name'], 'asmt_claim_4_name Spelling')
 
     def test_student_report_iab(self):
-        params = {"studentId": '34b99412-fd5b-48f0-8ce8-f8ca3788634a', 'asmt_type': 'INTERIMASSESSMENTBLOCKS', 'stateCode': 'NC'}
+        params = {"studentId": '34b99412-fd5b-48f0-8ce8-f8ca3788634a', 'asmtType': 'INTERIM ASSESSMENT BLOCKS', 'stateCode': 'NC'}
         result = get_student_report(params)['all_results']
         self.assertEqual('Interim Assessment Blocks', result['asmt_type'], 'asmt_type')
         self.assertEqual('34b99412-fd5b-48f0-8ce8-f8ca3788634a', result['student_id'], 'student_id')
-        self.assertEqual(8, len(result), "IAB result for this studentId should have 8 objects")
+        self.assertEqual(10, len(result), "IAB result for this studentId should have 8 objects")
 
     def test_assessment_header_info(self):
         params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}

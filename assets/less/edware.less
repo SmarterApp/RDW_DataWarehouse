@@ -287,7 +287,7 @@ table {
   }
 }
 .contentBlocksWrapper {
-  width: 910px;
+  width: 900px;
   margin: 20px 20px 0px;
   hr{
     margin: 0px 10px 20px 0px;
@@ -296,52 +296,59 @@ table {
     .row-fluid{
       margin-bottom: 20px;
     }
-    .blocks{
-      height: 228px;
-      .title{
-        height: 45px;
-        font-size: 13px;
-        font-weight: bold;
-        color: @color-C18;
-        .blockName{
-          color: @color-black;
-        }
+  }
+}
+
+.blocks{
+    height: 228px;
+    .title{
+      height: 45px;
+      font-size: 13px;
+      font-weight: bold;
+      color: @color-C18;
+      .blockName{
+        color: @color-black;
       }
-      .previousResults {
-         font-family: Arial;
-         font-size: 10px;
-         color: @color-B2;
-         font-weight: bold;
-      }
-      .effectiveDate {
-        font-family: Arial;
+    }
+    .previousResults {
+       font-family: Arial;
+       font-size: 10px;
+       color: @color-B2;
+       font-weight: bold;
+    }
+    .olderResults {
+      font-family: Arial;
+      font-size: 10px;
+      font-weight: bold;
+      color: @color-A2;
+    }
+    .takenDate {
+      font-family: Arial;
+      font-size: 11px;
+      color: @color-C18;
+    }
+    table {
+      background-color: @color-A7;
+      color: @color-C18;
+      font-family: Arial;
+      font-size: 11px;
+      border-collapse: collapse;
+      margin-bottom: 0px;
+      td {
+        width: 82px;
+        height: 60px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid @color-B5;
+        border-bottom: none;
+        border-left: none;
         font-size: 11px;
-        color: @color-C18;
       }
-      table {
-        background-color: @color-A7;
-        color: @color-C18;
-        font-family: Arial;
-        font-size: 11px;
-        border-collapse: collapse;
-        margin-bottom: 0px;
-        td {
-          width: 82px;
-          height: 60px;
-          text-align: center;
-          vertical-align: middle;
-          border: 1px solid @color-B5;
-          border-bottom: none;
-          border-left: none;
-          font-size: 11px;
-        }
-        td:last-child {
-            border-right: none;
-        }
+      td:last-child {
+          border-right: none;
       }
     }
   }
-}
 .placeholder {
     background: @color-B5;
     margin: 20px 3% 20px 0;

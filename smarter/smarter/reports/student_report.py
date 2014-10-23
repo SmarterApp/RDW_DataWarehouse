@@ -4,9 +4,7 @@ Created on Jan 13, 2013
 @author: tosako
 '''
 from string import capwords
-
 from sqlalchemy.sql.expression import and_
-
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from edapi.exceptions import NotFoundException
@@ -29,10 +27,16 @@ from smarter_common.security.constants import RolesConstants
 REPORT_NAME = 'individual_student_report'
 
 
-def __prepare_query(connector, state_code, student_id, assessment_guid, academic_year):
+def __prepare_query(connector, params):
     '''
     Returns query for individual student report
     '''
+    assessment_guid = params.get(Constants.ASSESSMENTGUID)
+    student_id = params.get(Constants.STUDENTGUID)
+    state_code = params.get(Constants.STATECODE)
+    effective_date = params.get(Constants.EFFECTIVEDATE)
+    asmt_type = params.get(Constants.ASMTTYPE)
+
     fact_asmt_outcome_vw = connector.get_table('fact_asmt_outcome_vw')
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
@@ -120,22 +124,31 @@ def __prepare_query(connector, state_code, student_id, assessment_guid, academic
     query = query.where(and_(fact_asmt_outcome_vw.c.student_id == student_id, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
+    if effective_date is not None:
+        query = query.where(dim_asmt.c.effective_date == str(effective_date))
+    if asmt_type is not None:
+        query = query.where(dim_asmt.c.asmt_type == asmt_type)
     query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
     return query
 
 
-def __prepare_query_iab(connector, state_code, student_id, assessment_guid, academic_year):
+def __prepare_query_iab(connector, params):
     '''
     Returns query for individual student report for IAB
     '''
-    fact_block_asmt_outcome = connector.get_table('fact_block_asmt_outcome')
-    dim_student = connector.get_table('dim_student')
-    dim_asmt = connector.get_table('dim_asmt')
+    assessment_guid = params.get(Constants.ASSESSMENTGUID)
+    asmt_year = params.get(Constants.ASMTYEAR)
+    student_id = params.get(Constants.STUDENTGUID)
+    state_code = params.get(Constants.STATECODE)
+
+    fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
+    dim_student = connector.get_table(Constants.DIM_STUDENT)
+    dim_asmt = connector.get_table(Constants.DIM_ASMT)
     query = select_with_context([fact_block_asmt_outcome.c.student_id,
                                 dim_student.c.first_name.label('first_name'),
                                 dim_student.c.middle_name.label('middle_name'),
                                 dim_student.c.last_name.label('last_name'),
-                                fact_block_asmt_outcome.c.enrl_grade.label('grade'),
+                                fact_block_asmt_outcome.c.enrl_grade.label('enrl_grade'),
                                 fact_block_asmt_outcome.c.district_id.label('district_id'),
                                 fact_block_asmt_outcome.c.school_id.label('school_id'),
                                 fact_block_asmt_outcome.c.state_code.label('state_code'),
@@ -185,9 +198,9 @@ def __prepare_query_iab(connector, state_code, student_id, assessment_guid, acad
     query = query.where(fact_block_asmt_outcome.c.student_id == student_id)
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
-    if academic_year is not None:
-        query = query.where(fact_block_asmt_outcome.c.asmt_year == academic_year)
-    query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
+    if asmt_year is not None:
+        query = query.where(fact_block_asmt_outcome.c.asmt_year == asmt_year)
+    query = query.order_by(dim_asmt.c.asmt_subject.desc(), fact_block_asmt_outcome.c.asmt_grade.desc(), dim_asmt.c.effective_date.desc())
     return query
 
 
@@ -225,7 +238,6 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
         result['student_full_name'] = format_full_name(result['first_name'], result['middle_name'], result['last_name'])
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
-
         result['asmt_score_interval'] = get_overall_asmt_interval(result)
 
         # custom metadata
@@ -250,30 +262,36 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
     This method arranges the data retrieved from the db to make it easier to consume by the client
     '''
     iab_results = {}
-    if results is None:
+    if len(results) is 0:
         return iab_results
-    iab_results['first_name'] = results[0].get('first_name')
-    iab_results['middle_name'] = results[0].get('middle_name')
-    iab_results['last_name'] = results[0].get('last_name')
-    # asmt_type is an enum, so we would to capitalize it to make it presentable
-    iab_results['asmt_type'] = capwords(results[0].get('asmt_type'), ' ')
-    iab_results['asmt_period_year'] = results[0].get('asmt_period_year')
-    iab_results['student_id'] = results[0].get('student_id')
+    first_result = results[0]
+    iab_results['student_full_name'] = format_full_name(first_result['first_name'], first_result['middle_name'], first_result['last_name'])
+    iab_results['first_name'] = first_result.get('first_name')
+    iab_results['middle_name'] = first_result.get('middle_name')
+    iab_results['last_name'] = first_result.get('last_name')
+    iab_results['enrl_grade'] = first_result.get('enrl_grade')
+    iab_results['asmt_type'] = capwords(first_result.get('asmt_type'), ' ')
+    iab_results['asmt_period_year'] = first_result.get('asmt_period_year')
+    iab_results['student_id'] = first_result.get('student_id')
 
     # Go through each of the different subjects ELA, Math etc.
-    for subject in subjects_map.keys():
-        subject_data = []
-        # Check each DB result against the subject
-        for result in results:
-            if subject == result["asmt_subject"]:
-                subject_list = {}
-                subject_name = subjects_map.get(subject)
-                subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
-                subject_list['grade'] = result.get('grade')
-                subject_list['effective_date'] = result.get('effective_date')
-                subject_data.append(subject_list)
-        # Create map from subject to all value for it's type
-        iab_results[subject_name] = subject_data
+    subject_data = {}
+    for alias in subjects_map.values():
+        subject_data[alias] = []
+    # Check each DB result against the subject
+    for result in results:
+        subject_list = {}
+        subject = result['asmt_subject']
+        subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=True, include_min_max_scores=False, include_indexer=False)
+        subject_list['claims'][0]['date_taken_day'] = result['date_taken_day']
+        subject_list['claims'][0]['date_taken_month'] = result['date_taken_month']
+        subject_list['claims'][0]['date_taken_year'] = result['date_taken_year']
+        subject_list['grade'] = result.get('asmt_grade')
+        subject_list['effective_date'] = result.get('effective_date')
+        subject_data[subjects_map.get(subject)].append(subject_list)
+    # Create map from subject to all value for it's type
+    for k, v in subject_data.items():
+        iab_results[k] = v
     return {"all_results": iab_results}
 
 
@@ -295,11 +313,14 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
                        "type": "integer",
                        "required": False,
                        "pattern": "^[1-9][0-9]{3}$"},
+                   Constants.EFFECTIVEDATE: {
+                       "type": "integer",
+                       "required": False,
+                       "pattern": "^[1-9]{8}$"},
                    Constants.ASMTTYPE: {
                        "type": "string",
                        "required": False,
-                       "pattern": "^(" + capwords(AssessmentType.INTERIM_ASSESSMENT_BLOCKS) + "|" + capwords(AssessmentType.SUMMATIVE) + "|" + capwords(AssessmentType.INTERIM_COMPREHENSIVE) + ")$",
-                   }
+                       "pattern": "^(" + AssessmentType.INTERIM_ASSESSMENT_BLOCKS + "|" + AssessmentType.SUMMATIVE + "|" + AssessmentType.INTERIM_COMPREHENSIVE + ")$"}
                })
 @validate_user_tenant
 @user_info
@@ -311,17 +332,16 @@ def get_student_report(params):
     '''
     student_id = params[Constants.STUDENTGUID]
     state_code = params[Constants.STATECODE]
-    assessment_guid = params.get(Constants.ASSESSMENTGUID)
     academic_year = params.get(Constants.ASMTYEAR)
     asmt_type = params.get(Constants.ASMTTYPE)
-    asmt_type = asmt_type.upper() if asmt_type else None
+    asmt_type = asmt_type if asmt_type and asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS else None
 
     with EdCoreDBConnection(state_code=state_code) as connection:
         # choose query IAB or other assessment
         query_function = {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: __prepare_query_iab, None: __prepare_query}
         # choose arrange results for the client IAB or other assessment
         arrange_function = {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: __arrange_results_iab, None: __arrange_results}
-        query = query_function[asmt_type](connection, state_code, student_id, assessment_guid, academic_year)
+        query = query_function[asmt_type](connection, params)
         result = connection.get_result(query)
         if not result:
             raise NotFoundException("There are no results for student id {0}".format(student_id))

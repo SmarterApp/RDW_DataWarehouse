@@ -1,8 +1,8 @@
-<h2 class="title printContent">{{student_full_name}} | {{labels.grade}} {{asmt_grade}}</h2>
+<h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
 <div class="innerBox clearfix">
     <div class="isrInterimBlockHeader">
-        <span class="subject">{{asmt_subject_text}}</span>
-        <span class="info"> {{asmt_type}} {{asmt_period}}</span>
+        <span class="subject">{{all_results.asmt_subject_text}}</span>
+        <span class="info"> {{all_results.asmt_type}} {{all_results.asmt_period}}</span>
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="printHeader printContent">
@@ -19,40 +19,69 @@
     </div>
     <!-- End of TODO-->
     <div class="contentBlocksWrapper">
-    	{{#grade}}
+    	{{#current.grades}}
     	<hr>
         <div class="blocksSection clearfix">
-        	{{#blocks}}
+        	{{#row}}
             <div class="row-fluid">
-            	{{#block}}
-                <div id="blocks{{indexer}}" class="span4 claims blocks">
-                    <div class="title">{{grade}}: <span class="blockName">{{name}}</span></div>
+            	{{#blocks}}
+                <div class="span4 claims blocks">
+                    <div class="title">{{mostRecent.grade}}: <span class="blockName">{{mostRecent.name}}</span></div>
                     <div class="content">
-                    	<div class="level{{level}}">
-	                    	<i class="edware-icon-large-perf-level-{{level}}"></i>
+                    	<div class="level{{mostRecent.level}}">
+	                    	<i class="edware-icon-large-perf-level-{{mostRecent.level}}"></i>
 	                    	<div style="display:inline-block">
-	                    		<div class="effectiveDate">{{effective_date}}</div>
-	                        {{desc}}
+	                    		<div class="takenDate">{{mostRecent.effective_date}}</div>
+	                        {{mostRecent.desc}}
 	                       </div>
 	                    </div>
                     </div>
-                	<!-- TODO put into labels -->
-                	<span class="previousResults">PREVIOUS RESULTS</span>
+                	<span class="previousResults">{{labels.previous_results}}</span>
+                	{{#hasOlder}}<a class="olderResults pull-right">{{labels.older}}</a>
+                	<div class="oldResultsContent hide">
+                		<span class="previousResults">{{labels.previous_results_contd}}</span>
+                		<table class="table">
+                		<tbody>
+                    		<tr>
+		                		{{#older}}
+		                			<td>
+				        			<div class="takenDate">{{effective_date}}</div>
+                    				<i class="edware-icon-small-perf-level-{{level}}"></i>
+                    				</td>
+				        		{{/older}}
+				        	</tr>
+				        </tbody>
+				        </table>
+		        		</div>
+                	{{/hasOlder}}
                 	<table class="table">
                 		<tbody>
                     		<tr>
-                    			<td>None</td>
+                    			{{#previous}}
+                    			{{#placeholder}}
+                    			<td></td>
+                    			{{/placeholder}}
+                    			{{^placeholder}}
+                    			<td>
+                    			<div class="takenDate">{{effective_date}}</div>
+                    			<i class="edware-icon-small-perf-level-{{level}}"></i>
+                    			</td>
+                    			{{/placeholder}}
+                    			{{/previous}}
+                    			{{^previous}}
+                    			<td>{{labels.none}}</td>
                     			<td></td>
                     			<td></td>
+                    			{{/previous}}
                     		</tr>
                     	</tbody>
                 	</table>
                </div>
-               {{/block}}
+               {{/blocks}}
             </div>
-            {{/blocks}}
+            {{/row}}
         </div>
-        {{/grade}}
+        {{/current.grades}}
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="assessmentOtherInfoHeader printHeader">
@@ -68,6 +97,8 @@
     </div>
     <!-- End of TODO-->
 </div>
+<!-- Used for popover in iab -->
+<div id="iabPopoverContent" class="blocks"></div>
 <div class="pageBreak"></div>
 <!-- TODO - Figure this out for Print PDF-->
 <div id="print_reportInfoContent" class="printContent clearfix">

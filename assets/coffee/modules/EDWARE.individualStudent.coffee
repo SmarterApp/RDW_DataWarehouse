@@ -273,7 +273,7 @@ define [
             container: '#iabPopoverContent'
             placement: (tip, element) ->
               edwareUtil.popupPlacement(element, 400, 200)
-            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"></div></div></div>'
+            template: '<div class="popover"><div class="arrow"/><div class="popover-inner"><div class="popover-content iabPopover-content"></div></div></div>'
             content: ->
               elem.parent().find(".oldResultsContent").html()
           .popover("show")
@@ -331,7 +331,7 @@ define [
           return @params['asmtYear'] + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
-        if asmt
+        if asmt and asmt['asmt_type']
           if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
             return asmt['effective_date'] + asmt['asmt_type']
           else

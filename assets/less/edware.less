@@ -321,6 +321,7 @@ table {
       font-size: 10px;
       font-weight: bold;
       color: @color-A2;
+      cursor: pointer;
     }
     .takenDate {
       font-family: Arial;
@@ -338,7 +339,7 @@ table {
       border-collapse: collapse;
       margin-bottom: 0px;
       td {
-        width: 100px;
+        width: 82px;
         height: 60px;
         text-align: center;
         vertical-align: middle;
@@ -352,10 +353,16 @@ table {
       }
     }
   }
-.popover-content {
-  padding: 20px  
-} 
-
+.iabPopover-content {
+  padding: 20px;
+  max-width: 250px;
+  overflow-x: auto;
+}
+#iabPopoverContent{
+  table {
+    width: auto;
+  }
+}
 .placeholder {
     background: @color-B5;
     margin: 20px 3% 20px 0;

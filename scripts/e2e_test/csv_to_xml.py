@@ -145,7 +145,7 @@ def convert_to_xml(l):
     data['subject'] = l[13].upper()
     data['asmt_year'] = l[12]
     data['asmt_type'] = l[11]
-    data['grade'] = l[14]
+    data['grade'] = "%02d" % int(l[14])
     data['studentId'] = l[5]
     data['birthdate'] = _date(students[l[5]][6])
     data['firstName'] = students[l[5]][3]
@@ -159,7 +159,7 @@ def convert_to_xml(l):
     data['White'] = _bool(l[47])
     data['DemographicRaceTwoOrMoreRaces'] = _bool(l[48])
     data['sex'] = 'M' if l[40] == 'male' else 'F'
-    data['GradeLevelWhenAssessed'] = l[15]
+    data['GradeLevelWhenAssessed'] = "%02d" % int(l[15])
     # external ssid is empty in dim_student table, so I made it up here
     data['ExternalSSID'] = l[15]
     data['IDEAIndicator'] = _bool(l[49])

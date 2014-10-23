@@ -6,7 +6,7 @@
     <ExamineeAttribute context="FINAL" name="FirstName" value="{{firstName}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="Sex" value="{{sex}}" contextDate="2014-04-14T11:13:41.803" />
     <ExamineeAttribute context="FINAL" name="LastOrSurname" value="{{lastName}}"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="77043c80-4b0a-11e4-916c-0800200c9a66"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="{{studentId}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="AlternateSSID" value="{{ExternalSSID}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="HispanicOrLatinoEthnicity" value="{{HispanicOrLatinoEthnicity}}"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="AmericanIndianOrAlaskaNative" value="{{AmericanIndianOrAlaskaNative}}"  contextDate="2014-04-14T11:13:41.803" />
@@ -29,11 +29,11 @@
     <ExamineeAttribute context="FINAL" name="PrimaryDisabilityType" value="EMN"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="INITIAL" name="GradeLevelWhenAssessed" value="{{GradeLevelWhenAssessed}}" contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="77043c80-4b0a-11e4-916c-0800200c9a66"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="DistrictID" entityKey="709" value="DistrictID"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="INITIAL" name="Birthdate" value="{{birthdate}}" contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="FINAL" name="DistrictID" entityKey="709" value="{{DistrictID}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="FINAL" name="DistrictName" entityKey="709" value="{{DistrictName}}" contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="FINAL" name="SchoolID" entityKey="9426" value="{{SchoolID}}" contextDate="2014-04-14T11:13:41.810" />
     <ExamineeRelationship context="FINAL" name="SchoolName" entityKey="9426" value="{{SchoolName}}" contextDate="2014-04-14T11:13:41.810" />
-    <ExamineeAttribute context="INITIAL" name="Birthdate" value="" contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="INITIAL" name="DistrictID" entityKey="709" value="{{DistrictID}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="INITIAL" name="DistrictName" entityKey="709" value="{{DistrictName}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="INITIAL" name="SchoolID" entityKey="9426" value="{{SchoolID}}" contextDate="2014-04-14T10:48:43.433" />

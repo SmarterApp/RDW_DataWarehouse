@@ -441,6 +441,7 @@ define [
 
     getAsmtViewSelection: () ->
       viewName = edwarePreferences.getAsmtView()
+      viewName = @subjectsData['subject1'] if viewName not in Constants.SUBJECTS  # In ISR, we only have two views
       $("#subjectSelection#{viewName}").addClass('selected')
 
       # TODO: remove this css change after we fix ISR for summative/interim to have subject buttons

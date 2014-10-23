@@ -1,8 +1,13 @@
 <h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
 <div class="innerBox clearfix">
     <div class="isrInterimBlockHeader">
+    	{{#current.grades}}
         <span class="subject">{{all_results.asmt_subject_text}}</span>
         <span class="info"> {{all_results.asmt_type}} {{all_results.asmt_period}}</span>
+        {{/current.grades}}
+        {{^current.grades}}
+        {{labels.no_results}}
+        {{/current.grades}}
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="printHeader printContent">
@@ -98,7 +103,9 @@
     <!-- End of TODO-->
 </div>
 <!-- Used for popover in iab -->
+{{#current.grades}}
 <div id="iabPopoverContent" class="blocks"></div>
+{{/current.grades}}
 <div class="pageBreak"></div>
 <!-- TODO - Figure this out for Print PDF-->
 <div id="print_reportInfoContent" class="printContent clearfix">

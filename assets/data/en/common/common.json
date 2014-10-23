@@ -432,7 +432,7 @@
                         	"hidden": true,
                      		"sortorder": "asc",
                         	"export": true
-                    	},
+                        },
                        	{
                        		"name": "{{claims.subject1.0.name}}",
                         	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
@@ -511,7 +511,7 @@
                         	"hidden": true,
                      		"sortorder": "asc",
                         	"export": true
-                    	},
+                        },
                        	{
                        		"name": "{{claims.subject1.0.name}}",
                         	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
@@ -602,7 +602,7 @@
                         	"hidden": true,
                      		"sortorder": "asc",
                         	"export": true
-                    	},
+                        },
                        	{
                        		"name": "{{claims.subject1.0.name}}",
                         	"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
@@ -806,9 +806,9 @@
                         	"align": "center",
                         	"title": false,
                         	"export": true
-                       	}                     	
-                   	]
-               	}
+                       	}
+                    ]
+                }
             }
         ],
         "{{subject2}}": [ 
@@ -829,7 +829,7 @@
                         	"hidden": true,
                      		"sortorder": "asc",
                         	"export": true
-                    	},
+                        },
                        	{
                        		"name": "{{claims.subject2.0.name}}",
                         	"displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
@@ -937,10 +937,9 @@
                         	"align": "center",
                         	"title": false,
                         	"export": true
-                       	}	
-                   	]
-               	}
-
+                       	}
+                    ]
+                }
             }
         ]
     },

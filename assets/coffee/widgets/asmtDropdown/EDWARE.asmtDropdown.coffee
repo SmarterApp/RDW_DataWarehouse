@@ -10,7 +10,7 @@ define [
   class EdwareAsmtDropdown
 
     constructor: (@container, @config, @getAsmtPreference, @callbacks) ->
-      @optionTemplate = @config.asmtSelectorTemplate
+      @displayTemplate = @config.asmtSelectorTemplate
       @dropdownValues = @getAsmtTypes()
       @initialize()
       @setDefaultOption()
@@ -43,7 +43,7 @@ define [
     getAsmtTypes: () ->
       asmtTypes = []
       for idx, asmt of @config.asmtTypes
-        asmt.asmt_year = asmt.effective_date.substr(0, 4)
+        asmt.asmt_year = asmt.effective_date.substr(0, 4) if asmt.effective_date
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.display = @getAsmtDisplayText(asmt)
         asmtTypes.push asmt
@@ -84,17 +84,23 @@ define [
       asmt_guid: $option.data('asmtguid')?.toString()
       effective_date: $option.data('effectivedate')
       asmt_grade: $option.data('grade')
+      asmt_period_year: $option.data('asmtperiodyear')
 
     setSelectedValue: (value) ->
       $('#selectedAsmtType').html value
 
     getAsmtDisplayText: (asmt)->
+      # Format for interim blocks is different
+      if asmt.asmt_type is Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
+        asmt.asmt_from_year = asmt.asmt_period_year - 1
+        asmt.asmt_to_year = asmt.asmt_period_year
+        return Mustache.to_html @displayTemplate[asmt.asmt_type], asmt
       return "" if not asmt.effective_date
       effective_date = asmt.effective_date.toString()
       asmt.asmt_year = effective_date.substr(0, 4)
       asmt.asmt_month = effective_date.substr(4, 2)
       asmt.asmt_day = effective_date.substr(6, 2)
-      Mustache.to_html @optionTemplate, asmt
+      Mustache.to_html @displayTemplate['default'], asmt
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->

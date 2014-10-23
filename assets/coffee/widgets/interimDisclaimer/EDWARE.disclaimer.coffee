@@ -3,7 +3,8 @@ define [
   "mustache"
   "edwarePreferences"
   "edwarePopover"
-], ($, Mustache, edwarePreferences, edwarePopover) ->
+  "edwareConstants"
+], ($, Mustache, edwarePreferences, edwarePopover, Constants) ->
 
 
   class EdwareDisclaimer
@@ -41,7 +42,7 @@ define [
       edwarePreferences.saveInterimInfo()
 
     update: (asmt) ->
-      if asmt is "Interim Comprehensive"
+      if asmt in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'], Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']]
         @interimDisclaimerIcon.show()
         @displayPopover()
         # show on print version

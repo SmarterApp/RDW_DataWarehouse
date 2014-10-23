@@ -63,5 +63,5 @@ class TestMetadata(Unittest_with_edcore_sqlite):
         self.assertIn('dim_asmt.asmt_guid', str(query._whereclause))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

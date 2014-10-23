@@ -61,8 +61,8 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(fact['acc_print_on_demand_nonembed'], 'AccommodationPrintOnDemand')
         self.assertEqual(fact['acc_streamline_mode'], 'AccommodationStreamlineMode')
 
-#TODO: add more tests
+# TODO: add more tests
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

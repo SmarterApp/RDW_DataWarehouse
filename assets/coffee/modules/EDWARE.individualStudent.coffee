@@ -70,7 +70,7 @@ define [
         blocks.push i
       size = data.length / 3
       dividedBlocks = []
-      for j in [0..size]
+      for j in [0..size-1]
         b = blocks.slice(3 * j, 3 * (j+1))
         dividedBlocks.push({"blocks": b})
       value["row"] = dividedBlocks
@@ -114,7 +114,10 @@ define [
           0
         # After Sorting, divide it for display purposes
         data[grade] = @divideInterimBlocksData returnData[grade]
-      
+    
+    formatDate: (date) ->
+      date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
+       
     processInterimBlocksData: () ->
       @data['views'] ?= {}
       for subjectAlias, subjectName of @data.subjects
@@ -127,7 +130,7 @@ define [
           dataByGrade[asmt_grade] ?= [] 
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade, 
-          'effective_date': assessment['effective_date'], 
+          'effective_date': @formatDate(assessment['effective_date']), 
           'name': assessment['claims'][0]['name'], 
           'desc': assessment['claims'][0]['perf_lvl_name'], 
           'level': assessment['claims'][0]['perf_lvl']}

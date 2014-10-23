@@ -1,13 +1,13 @@
 <h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
 <div class="innerBox clearfix">
     <div class="isrInterimBlockHeader">
-    	{{#current.grades}}
+    	{{#current.has_data}}
         <span class="subject">{{all_results.asmt_subject_text}}</span>
         <span class="info"> {{all_results.asmt_type}} {{all_results.asmt_period}}</span>
-        {{/current.grades}}
-        {{^current.grades}}
+        {{/current.has_data}}
+        {{^current.has_data}}
         {{labels.no_results}}
-        {{/current.grades}}
+        {{/current.has_data}}
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="printHeader printContent">

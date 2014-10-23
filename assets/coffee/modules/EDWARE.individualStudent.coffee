@@ -456,6 +456,7 @@ define [
       # Update subject text and asmt period year that is unique according to the view
       @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[viewName]
       @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
+      @data.current.has_data = true if @data.current.grades.length > 0
       output = Mustache.to_html isrInterimBlocksTemplate, @data
       $("#individualStudentContent").html output
         

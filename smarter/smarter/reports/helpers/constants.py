@@ -129,3 +129,5 @@ class Constants():
     REPORT = 'report'
     GRAY = 'gray'
     BRANDING = 'branding'
+    CLAIMS = 'claims'
+    ASSESSMENTS = 'assessments'

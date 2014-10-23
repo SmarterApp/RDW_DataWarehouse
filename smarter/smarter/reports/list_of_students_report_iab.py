@@ -16,7 +16,7 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.student_administration import get_asmt_administration_years,\
     get_asmt_academic_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
-from smarter.reports.helpers.assessments import get_claims
+from string import capwords
 
 
 def get_list_of_students_report_iab(params):
@@ -29,7 +29,7 @@ def get_list_of_students_report_iab(params):
     results = get_list_of_students_iab(params)
     subjects_map = get_subjects_map(asmtSubject)
     los_results = {}
-    los_results['assessments'] = format_assessments(results, subjects_map, iab=True)
+    los_results[Constants.ASSESSMENTS] = format_assessments(results, subjects_map, iab=True)
     los_results['groups'] = get_group_filters(results)
 
     # color metadata
@@ -40,6 +40,7 @@ def get_list_of_students_report_iab(params):
     los_results[Constants.ASMT_ADMINISTRATION] = get_asmt_administration_years(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
+    los_results[Constants.CLAIMS] = get_IAB_claims(los_results[Constants.ASSESSMENTS], los_results[Constants.SUBJECTS])
 
     return los_results
 
@@ -121,3 +122,18 @@ def get_list_of_students_iab(params):
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
         return connector.get_result(query)
+
+
+def get_IAB_claims(assessments, subjects):
+    claim_name = set()
+    for effective_date in assessments.keys():
+        iab = assessments[effective_date][capwords(AssessmentType.INTERIM_ASSESSMENT_BLOCKS)]
+        for student_guid in iab.keys():
+            for subject_name in subjects.keys():
+                subject = iab[student_guid].get(subject_name)
+                if subject is not None:
+                    claims = subject[Constants.CLAIMS]
+                    for claim in claims:
+                        name = claim['name']
+                        claim_name.add(name)
+    return sorted(claim_name)

@@ -66,8 +66,8 @@ class Test(Unittest_with_edcore_sqlite):
         subject1 = data['subject1']
         claims = subject1['claims']
         self.assertEqual(2, len(IAB))
-        self.assertEqual(1, len(claims))
-        self.assertEqual('Mathematics Performance Task', claims[0]['name'])
+        self.assertEqual(5, len(claims))
+        self.assertEqual(5, len(los_results[Constants.CLAIMS]))
 
 
 if __name__ == "__main__":

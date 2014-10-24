@@ -63,16 +63,15 @@ def format_assessments(results, subjects_map, iab=False):
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
         if iab:
-            number_of_claims = 1
-            include_names = True
+            claims = assessment.get('claims', [])
+            claims.append(get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0])
+            assessment['claims'] = claims
         else:
-            number_of_claims = 4
-            include_names = False
             assessment['asmt_score'] = result['asmt_score']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
             assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
-        assessment['claims'] = get_claims(number_of_claims=number_of_claims, result=result, include_scores=True, include_names=include_names)
+            assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
 
         student[subject] = assessment
         asmtList[studentId] = student

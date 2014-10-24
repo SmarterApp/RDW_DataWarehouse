@@ -3,7 +3,7 @@ Created on Aug 11, 2014
 
 @author: dip
 '''
-from smarter_score_batcher.processing.assessment import XMLMeta, Mapping
+from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, DateMeta, IntegerMeta
 from zope import component
 from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
     get_template_key
@@ -66,6 +66,7 @@ class JSONHeaders:
 
     @subject.setter
     def subject(self, value):
+        value = value
         self.values['Identification']['Subject'] = value
 
     @property
@@ -208,7 +209,7 @@ def get_assessment_metadata_mapping(root):
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")
     subject = XMLMeta(test_node, ".", "subject")
-    grade = XMLMeta(test_node, ".", "grade")
+    grade = IntegerMeta(test_node, ".", "grade")
     asmt_type = XMLMeta(test_node, ".", "assessmentType")
     year = XMLMeta(test_node, ".", "academicYear")
 
@@ -218,7 +219,7 @@ def get_assessment_metadata_mapping(root):
     json_output = JSONHeaders(meta_template)
 
     mappings = [JSONMapping(XMLMeta(test_node, ".", "testId"), json_output, 'asmt_guid'),
-                JSONMapping(XMLMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
+                JSONMapping(DateMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
                 JSONMapping(subject, json_output, 'subject'),
                 JSONMapping(asmt_type, json_output, 'asmt_type'),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),

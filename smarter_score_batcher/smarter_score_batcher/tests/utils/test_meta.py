@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
         <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
         <ExamineeRelationship context="FINAL" name="StateName" value="California" />
         <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
-        <ExamineeRelationship context="INITIAL" name="StateCode" value="California" />
+        <ExamineeRelationship context="INITIAL" name="StateAbbreviation" value="California" />
         </Examinee>
         <Opportunity effectiveDate="2014-02-02" />
         </TDSReport>'''

@@ -12,8 +12,6 @@ def _get_gpg_settings_by_tenant(settings):
     ''' fetches gpg encryption settings. '''
     recipients = 'sbac_data_provider@sbac.com'
     homedir = settings.get('gpg_home', None)
-    if homedir:
-        homedir = os.path.expanduser(homedir)
     kw_settings = {
         "homedir": homedir,
         "gpgbinary": 'gpg',

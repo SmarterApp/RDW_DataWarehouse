@@ -1,57 +1,57 @@
 <TDSReport>
-  <Test name="(SBAC)SBAC-FT-SomeDescription-ELA-7-Fall-2013-2014" subject="ELA" testId="SBAC-FT-SomeDescription-ELA-7" bankKey="200" contract="SBAC" mode="online" grade="03"
-  	assessmentType="Formative" academicYear="2014" assessmentVersion="SomeNewVersion" />
-  <Examinee key="922171">
-    <ExamineeAttribute context="FINAL" name="Birthdate" value="2013-08-31" contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="FirstName" value="John"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="Sex" value="Male" contextDate="2014-04-14T11:13:41.803" />
-    <ExamineeAttribute context="FINAL" name="LastOrSurname" value="Smith"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="77043c80-4b0a-11e4-916c-0800200c9a66"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="AlternateSSID" value="CA-9999999598"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="HispanicOrLatinoEthnicity" value="No"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="AmericanIndianOrAlaskaNative" value="No"  contextDate="2014-04-14T11:13:41.803" />
-    <ExamineeAttribute context="FINAL" name="Asian" value="No"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="BlackOrAfricanAmerican" value="Yes"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="White" value="No"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="NativeHawaiianOrOtherPacificIslander" value="No"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="DemographicRaceTwoOrMoreRaces" value="No"  contextDate="2014-04-14T11:13:41.803" />
-    <ExamineeAttribute context="FINAL" name="IDEAIndicator" value="No"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="LEPStatus" value="Yes"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="Section504Status" value="No"  contextDate="2014-04-14T11:13:41.803" />
-    <ExamineeAttribute context="FINAL" name="EconomicDisadvantageStatus" value="No"   contextDate="2014-04-14T11:13:41.803"/>
+  <Test name="(SBAC)SBAC-FT-SomeDescription-{{subject}}-{{grade}}-Fall-2013-2014" subject="{{subject}}" testId="{{asmt_guid}}" bankKey="200" contract="SBAC" mode="online" grade="{{grade}}"
+  	assessmentType="{{asmt_type}}" academicYear="{{asmt_year}}" assessmentVersion="V1" />
+  <Examinee key="{{studentId}}">
+    <ExamineeAttribute context="FINAL" name="Birthdate" value="{{birthdate}}" contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="FirstName" value="{{firstName}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="Sex" value="{{sex}}" contextDate="2014-04-14T11:13:41.803" />
+    <ExamineeAttribute context="FINAL" name="LastOrSurname" value="{{lastName}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="StudentIdentifier" value="{{studentId}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="AlternateSSID" value="{{ExternalSSID}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="HispanicOrLatinoEthnicity" value="{{HispanicOrLatinoEthnicity}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="AmericanIndianOrAlaskaNative" value="{{AmericanIndianOrAlaskaNative}}"  contextDate="2014-04-14T11:13:41.803" />
+    <ExamineeAttribute context="FINAL" name="Asian" value="{{Asian}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="BlackOrAfricanAmerican" value="{{BlackOrAfricanAmerican}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="White" value="{{White}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="NativeHawaiianOrOtherPacificIslander" value="{{NativeHawaiianOrOtherPacificIslander}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="DemographicRaceTwoOrMoreRaces" value="{{DemographicRaceTwoOrMoreRaces}}"  contextDate="2014-04-14T11:13:41.803" />
+    <ExamineeAttribute context="FINAL" name="IDEAIndicator" value="{{IDEAIndicator}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="LEPStatus" value="{{LEPStatus}}"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="Section504Status" value="{{Section504Status}}"  contextDate="2014-04-14T11:13:41.803" />
+    <ExamineeAttribute context="FINAL" name="EconomicDisadvantageStatus" value="{{EconomicDisadvantageStatus}}"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="LanguageCode" value="flu"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="EnglishLanguageProficiencyLevel" value="PROGRESS"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="FINAL" name="MigrantStatus" value="Yes"   contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="FINAL" name="MigrantStatus" value="{{MigrantStatus}}"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="FirstEntryDateIntoUSSchool" value="2013-08-31"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="LimitedEnglishProficiencyEntryDate" value="2013-08-31"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="LEPExitDate" value="2013-08-31"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="TitleIIILanguageInstructionProgramType" value="HeritageLanguage"   contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="FINAL" name="PrimaryDisabilityType" value="EMN"   contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="INITIAL" name="Birthdate" value="" contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeAttribute context="INITIAL" name="GradeLevelWhenAssessed" value="03" contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="INITIAL" name="GradeLevelWhenAssessed" value="{{GradeLevelWhenAssessed}}" contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="77043c80-4b0a-11e4-916c-0800200c9a66"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="DistrictID" entityKey="709" value="CA_9999827"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="DistrictName" entityKey="709" value="This Elementary School District" contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="SchoolID" entityKey="9426" value="CA_9999827_9999928" contextDate="2014-04-14T11:13:41.810" />
-    <ExamineeRelationship context="FINAL" name="SchoolName" entityKey="9426" value="My Elementary School" contextDate="2014-04-14T11:13:41.810" />
-    <ExamineeRelationship context="INITIAL" name="DistrictID" entityKey="709" value="CA_9999827"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="INITIAL" name="DistrictName" entityKey="709" value="This Elementary School District"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="INITIAL" name="SchoolID" entityKey="9426" value="CA_999927_9999928" contextDate="2014-04-14T10:48:43.433" />
-    <ExamineeRelationship context="INITIAL" name="SchoolName" entityKey="9426" value="My Elementary School" contextDate="2014-04-14T10:48:43.433" />
-    <ExamineeRelationship context="INITIAL" name="StateAbbreviation" entityKey="3" value="CA"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="INITIAL" name="StateName" entityKey="3" value="California"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeAttribute context="INITIAL" name="Birthdate" value="{{birthdate}}" contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="FINAL" name="DistrictID" entityKey="709" value="{{DistrictID}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="FINAL" name="DistrictName" entityKey="709" value="{{DistrictName}}" contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="FINAL" name="SchoolID" entityKey="9426" value="{{SchoolID}}" contextDate="2014-04-14T11:13:41.810" />
+    <ExamineeRelationship context="FINAL" name="SchoolName" entityKey="9426" value="{{SchoolName}}" contextDate="2014-04-14T11:13:41.810" />
+    <ExamineeRelationship context="INITIAL" name="DistrictID" entityKey="709" value="{{DistrictID}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="INITIAL" name="DistrictName" entityKey="709" value="{{DistrictName}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="INITIAL" name="SchoolID" entityKey="9426" value="{{SchoolID}}" contextDate="2014-04-14T10:48:43.433" />
+    <ExamineeRelationship context="INITIAL" name="SchoolName" entityKey="9426" value="{{SchoolName}}" contextDate="2014-04-14T10:48:43.433" />
+    <ExamineeRelationship context="INITIAL" name="StateAbbreviation" entityKey="3" value="{{StateCode}}"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="INITIAL" name="StateName" entityKey="3" value="{{clientName}}"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="INITIAL" name="StudentGroupName" value="Brennan Math" contextDate="2014-09-14T10:48:43.433" />
     <ExamineeRelationship context="INITIAL" name="StudentGroupName" value="Tuesday Science" contextDate="2014-09-14T10:48:43.433" />
     <ExamineeRelationship context="INITIAL" name="StudentGroupName" value="Smith Research" contextDate="2014-09-14T10:48:43.433" />
   </Examinee>
-  <Opportunity server="562299-SBASQL8" database="CASBAC_SHARD_2013sp" clientName="California" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="1855629"
-  	startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2014-04-14T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0"
+  <Opportunity server="{{where_taken_name}}" database="CASBAC_SHARD_2013sp" clientName="{{clientName}}" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="{{oppId}}"
+  	startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="{{date_taken}}" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0"
   	gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1"
-  	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="2014-04-02">
-    <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
+  	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="2014-03-04">
+    <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
     <Accommodation type="AmericanSignLanguage" value="Do not show ASL videos" code="TDS_ASL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD_Stim&TDS_PoD_Item" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
+    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD_Stim&amp;TDS_PoD_Item" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="ClosedCaptioning" value="CC1" code="TDS_ClosedCap0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="Language" value="Braille" code="ENU-Braille" segment="0" context="INITIAL"  contextDate="2014-04-14T11:13:41.803"/>
     <Accommodation type="StreamlinedInterface" value="Standard Test Shell" code="TDS_TS_Modern" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
@@ -75,30 +75,30 @@
     <Accommodation type="TTS Pausing" value="TTS Pausing On" code="TDS_TTSPause1" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="TTX Business Rules" value="A203" code="TDS_TTX_A203" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="Word List" value="No Glossary" code="TDS_WL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Score measureOf="Overall" measureLabel="ScaleScore" value="245.174914080214" standardError="19.3617008392283" />
-    <Score measureOf="Overall" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="Claim1" measureLabel="ScaleScore" value="352.897" standardError="619.751" />
-    <Score measureOf="Claim1" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="Claim2" measureLabel="ScaleScore" value="185.002" standardError="78.321" />
-    <Score measureOf="Claim2" measureLabel="PerformanceLevel" value="1" />
-    <Score measureOf="Claim3" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
-    <Score measureOf="Claim3" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="Claim4" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
-    <Score measureOf="Claim4" measureLabel="PerformanceLevel" value="2" />
-    <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="6" />
-    <Score measureOf="TextToSpeech" measureLabel="Accommodation" value="4" />
-    <Score measureOf="StreamlinedInterface" measureLabel="Accommodation" value="4" />
-    <Score measureOf="Language" measureLabel="Accommodation" value="6" />
-    <Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="6" />
-    <Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="6" />
-    <Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="6" />
-    <Score measureOf="Calculator" measureLabel="Accommodation" value="6" />
+    <Score measureOf="Overall" measureLabel="ScaleScore" value="{{asmt_score}}" standardError="19.3617008392283" />
+    <Score measureOf="Overall" measureLabel="PerformanceLevel" value="{{asmt_perf_lvl}}" />
+    <Score measureOf="Claim1Reading" measureLabel="ScaleScore" value="{{asmt_claim_1_score}}" standardError="619.751" />
+    <Score measureOf="Claim1Reading" measureLabel="PerformanceLevel" value="{{asmt_claim_1_perf_lvl}}" />
+    <Score measureOf="Claim2Writing" measureLabel="ScaleScore" value="{{asmt_claim_2_score}}" standardError="78.321" />
+    <Score measureOf="Claim2Writing" measureLabel="PerformanceLevel" value="{{asmt_claim_2_perf_lvl}}" />
+    <Score measureOf="Claim3Listening" measureLabel="ScaleScore" value="{{asmt_claim_3_score}}" standardError="204.982" />
+    <Score measureOf="Claim3Listening" measureLabel="PerformanceLevel" value="{{asmt_claim_3_perf_lvl}}" />
+    <Score measureOf="Claim4ReadingResearch and Inquiry" measureLabel="ScaleScore" value="{{asmt_claim_4_score}}" standardError="204.982" />
+    <Score measureOf="Claim4ReadingResearch and Inquiry" measureLabel="PerformanceLevel" value="{{asmt_claim_4_perf_lvl}}" />
+    <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="{{acc_abacus_nonembed}}" />
+    <Score measureOf="TextToSpeech" measureLabel="Accommodation" value="{{acc_text_to_speech_embed}}" />
+    <Score measureOf="StreamlinedInterface" measureLabel="Accommodation" value="{{acc_streamline_mode}}" />
+    <Score measureOf="Language" measureLabel="Accommodation" value="{{acc_braile_embed}}" />
+    <Score measureOf="ClosedCaptioning" measureLabel="Accommodation" value="{{acc_closed_captioning_embed}}" />
+    <Score measureOf="PrintOnDemand" measureLabel="Accommodation" value="{{acc_print_on_demand_items_nonembed}}" />
+    <Score measureOf="AmericanSignLanguage" measureLabel="Accommodation" value="{{acc_asl_video_embed}}" />
+    <Score measureOf="Calculator" measureLabel="Accommodation" value="{{acc_calculator_nonembed}}" />
     <Score measureOf="Overall" measureLabel="Attempted" value="1" standardError="0" />
-    <Item position="2" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15566" operational="0" isSelected="1" format="MC" score="0"
+    <Item position="2" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15566" operational="0" isSelected="1" format="MC" score="0"
     	scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="3" contentLevel="3|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T10:56:01.077">D</Response>
     </Item>
-    <Item position="1" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15558" operational="0" isSelected="1" format="EQ" score="0"
+    <Item position="1" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15558" operational="0" isSelected="1" format="EQ" score="0"
     	scoreStatus="SCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="2" contentLevel="2|G|NA|C" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:09:27.457">
         &lt;response&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
@@ -111,7 +111,7 @@
         &lt;/math&gt;&lt;/response&gt;
       </Response>
     </Item>
-    <Item position="5" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15560" operational="0" isSelected="1" format="EQ" score="-1"
+    <Item position="5" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15560" operational="0" isSelected="1" format="EQ" score="-1"
     	scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="2" contentLevel="2|EE|NA|A" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:09:27.423">
         &lt;response&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
@@ -121,7 +121,7 @@
         &lt;/math&gt;&lt;/response&gt;
       </Response>
     </Item>
-    <Item position="4" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15562" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
+    <Item position="4" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15562" operational="0" isSelected="1" format="EQ" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/plain" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:13:25.493" >
         &lt;response&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
         &lt;mstyle displaystyle="true"&gt;
@@ -147,12 +147,12 @@
         &lt;/math&gt;&lt;/response&gt;
       </Response>
     </Item>
-    <Item position="3" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15570" operational="0" isSelected="1" format="SA" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/html" strand="3" contentLevel="3|RP|NA|B" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
+    <Item position="3" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15570" operational="0" isSelected="1" format="SA" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/html" strand="3" contentLevel="3|RP|NA|B" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:03:10.913">
         &lt;p&gt;2 miles away from the beginning&lt;/p&gt;
       </Response>
     </Item>
-    <Item position="6" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-MATH-7-Fall-2013-2014" bankKey="200" key="15573" operational="0" isSelected="1" format="GI" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/xml" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
+    <Item position="6" segmentId="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" bankKey="200" key="15573" operational="0" isSelected="1" format="GI" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-14T10:49:10.327" numberVisits="1" mimeType="text/xml" strand="4" contentLevel="4|EE|NA|E" pageNumber="1" pageVisits="1" pageTime="69834" dropped="0">
       <Response date="2014-04-14T11:13:25.480">
         &lt;?xml version="1.0" encoding="utf-16"?&gt;
         &lt;!-- MACHINE GENERATED 4/14/14  8:18 AM. DO NOT EDIT --&gt;
@@ -175,12 +175,12 @@
         &lt;AnswerSet&gt;&lt;Question id=""&gt;&lt;QuestionPart id="1"&gt;&lt;ObjectSet&gt;&lt;Object&gt;&lt;PointVector&gt;{(390,290)(390,200)(180,290)(300,110)(180,200)(210,110)}&lt;/PointVector&gt;&lt;EdgeVector&gt;{ {(390,290),(390,200)} {(390,290),(180,290)} {(390,200),(300,110)} {(180,290),(180,200)} {(180,200),(210,110)}}&lt;/EdgeVector&gt;&lt;LabelList&gt; {} &lt;/LabelList&gt;&lt;ValueList&gt; {} &lt;/ValueList&gt;&lt;/Object&gt;&lt;AtomicObject&gt;{bench(180,170)}&lt;/AtomicObject&gt;&lt;AtomicObject&gt;{bench(390,170)}&lt;/AtomicObject&gt;&lt;/ObjectSet&gt;&lt;SnapPoint&gt;&lt;/SnapPoint&gt;&lt;Lines&gt;&lt;Line sourceX="390" sourceY="120" targetX="390" targetY="210" dir="none" style="solid"/&gt;&lt;Line sourceX="390" sourceY="120" targetX="180" targetY="120" dir="none" style="solid"/&gt;&lt;Line sourceX="390" sourceY="210" targetX="300" targetY="300" dir="none" style="solid"/&gt;&lt;Line sourceX="180" sourceY="120" targetX="180" targetY="210" dir="none" style="solid"/&gt;&lt;Line sourceX="180" sourceY="210" targetX="210" targetY="300" dir="none" style="solid"/&gt;&lt;/Lines&gt;&lt;/QuestionPart&gt;&lt;/Question&gt;&lt;/AnswerSet&gt;
       </Response>
     </Item>
-    <Item position="7" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" bankKey="200" key="22489" operational="1" isSelected="1" format="ER" score="3" scoreStatus="SCORED" adminDate="2014-03-25T14:10:36.853" pageNumber="2" pageTime="0" pageVisits="0" numberVisits="15" mimeType="text/html" dropped="0" strand="W" contentLevel="W|W.11-12.2a">
+    <Item position="7" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="22489" operational="1" isSelected="1" format="ER" score="3" scoreStatus="SCORED" adminDate="2014-03-25T14:10:36.853" pageNumber="2" pageTime="0" pageVisits="0" numberVisits="15" mimeType="text/html" dropped="0" strand="W" contentLevel="W|W.11-12.2a">
       <Response date="2014-03-25T15:53:17.637" >
         &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; For historical reasons, the word &amp;quot;algebra&amp;quot; has several related meanings in mathematics, as a single word or with qualifiers. Such a situation, where a single word has many meanings in the same area of mathematics, may be confusing. However the distinction is easier if one recalls that the name of a scientific area is usually singular and without an article and the name of a specific structure requires an article or the plural.&lt;/p&gt;
- 
+
         &lt;p&gt;&amp;nbsp;&lt;/p&gt;
- 
+
         &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/p&gt;
       </Response>
       <ScoreInfo scorePoint="4" scoreDimension="overall" scoreStatus="Scored">
@@ -199,14 +199,14 @@
         </SubScoreList>
       </ScoreInfo>
     </Item>
-    <Item position="9" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" bankKey="200" key="4609" operational="1" isSelected="1" format="MS" score="0" scoreStatus="SCORED" adminDate="2014-04-24T12:27:26.203" numberVisits="1" mimeType="text/plain" strand="SC-ES" contentLevel="SC-ES|4.I|1|d" pageNumber="3" pageVisits="1" pageTime="0" dropped="0">
+    <Item position="9" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="4609" operational="1" isSelected="1" format="MS" score="0" scoreStatus="SCORED" adminDate="2014-04-24T12:27:26.203" numberVisits="1" mimeType="text/plain" strand="SC-ES" contentLevel="SC-ES|4.I|1|d" pageNumber="3" pageVisits="1" pageTime="0" dropped="0">
       <Response date="2014-04-24T12:32:46.377">A,B,C,F</Response>
       <ScoreInfo scorePoint="0" scoreDimension="overall" scoreStatus="Scored">
         <ScoreRationale>A,F</ScoreRationale>
         <SubScoreList />
       </ScoreInfo>
     </Item>
-    <Item position="8" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-MATH-7-Fall-2013-2014" bankKey="200" key="645" operational="1" isSelected="1" format="SIM" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-24T12:01:14.983" numberVisits="1" mimeType="text/plain" strand="SC-LS" contentLevel="SC-LS|4.V|4|b" pageNumber="4" pageVisits="1" pageTime="0" dropped="0">
+    <Item position="8" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="645" operational="1" isSelected="1" format="SIM" score="-1" scoreStatus="NOTSCORED" adminDate="2014-04-24T12:01:14.983" numberVisits="1" mimeType="text/plain" strand="SC-LS" contentLevel="SC-LS|4.V|4|b" pageNumber="4" pageVisits="1" pageTime="0" dropped="0">
       <Response date="2014-04-24T12:09:46.940">
         &lt;responseSpec&gt;
         &lt;responseTable&gt;
@@ -259,7 +259,7 @@
         &lt;td&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;/responseTable&gt;
- 
+
         &lt;state&gt;
         &lt;stateSpec element="deleteQueue" value="" /&gt;
         &lt;stateSpec element="trialNumStack" value="5,4,3,2,1,0" /&gt;
@@ -302,7 +302,7 @@
         &lt;/stateTable&gt;
         &lt;/stateTableSpec&gt;
         &lt;/state&gt;
- 
+
         &lt;/responseSpec&gt;
       </Response>
       <ScoreInfo />

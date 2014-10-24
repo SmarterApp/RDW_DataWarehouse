@@ -102,7 +102,6 @@ class MetadataTemplateManager:
             raise MetadataException('Too many templates for key {0} from location {1}'.format(key, location))
         return templates.pop()
 
-    @cache_region('public.shortlived', 'metadata.templates')
     def get_template(self, key):
         '''
         lazy load template

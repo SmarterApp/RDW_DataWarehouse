@@ -58,10 +58,10 @@ class Test_FileUtils(unittest.TestCase):
 
     def test_import_recipient_keys(self):
         settings = {
-            'extract.gpg.public_key.cat': 'kswimberly@amplify.com'
+            'extract.gpg.public_key.cat': 'sbac_data_provider@sbac.com'
         }
         gpg = MockGnuPG()
-        keyserver = MockKeyserver('kswimberly@amplify.com', 'fake key')
+        keyserver = MockKeyserver('sbac_data_provider@sbac.com', 'fake key')
         recipients = settings['extract.gpg.public_key.cat']
         import_recipient_keys(gpg, recipients, keyserver)
         self.assertEqual(len(gpg.list_keys()), 1)
@@ -94,7 +94,7 @@ class Test_FileUtils(unittest.TestCase):
         settings = {
             'extract.gpg.keyserver': 'hello',
             'extract.gpg.homedir': gpg_home,
-            'extract.gpg.public_key.cat': 'kswimberly@amplify.com'
+            'extract.gpg.public_key.cat': 'sbac_data_provider@sbac.com'
         }
         files = ['test_0.csv', 'test_1.csv', 'test.json']
         with tempfile.TemporaryDirectory() as dir:
@@ -114,7 +114,7 @@ class Test_FileUtils(unittest.TestCase):
         settings = {
             'extract.gpg.keyserver': 'hello',
             'extract.gpg.homedir': gpg_home,
-            'extract.gpg.public_key.cat': 'kswimberly@amplify.com'
+            'extract.gpg.public_key.cat': 'sbac_data_provider@sbac.com'
         }
         files = ['test_0.csv', 'test_1.csv', 'test.json']
         with tempfile.TemporaryDirectory() as dir:
@@ -134,7 +134,7 @@ class Test_FileUtils(unittest.TestCase):
         settings = {
             'extract.gpg.keyserver': None,
             'extract.gpg.homedir': gpg_home,
-            'extract.gpg.public_key.cat': 'kswimberly@amplify.com'
+            'extract.gpg.public_key.cat': 'sbac_data_provider@sbac.com'
         }
         files = ['test_0.csv', 'test_1.csv', 'test.json']
         with tempfile.TemporaryDirectory() as dir:

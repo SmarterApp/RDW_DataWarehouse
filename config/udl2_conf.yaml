@@ -44,6 +44,7 @@ common:
         output_path: .                      # where the newly generated split file located
         keep_headers: True                  # preserve csv header for importing
     quiet_mode: False
+    gpg_home: /opt/edware/keys
     passphrase: sbac udl2
     db_defaults:
       echo: False
@@ -67,7 +68,7 @@ common:
         file_stat_watch_period: 10
         file_checksum_threshold_wait_period: 30
         file_system_scan_delay: 10
-        
+
 qa:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -95,11 +96,51 @@ qa:
         cat:
             url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
             db_schema: edware_es_1_7
-    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_7
             url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
+
+dev:
+  '[app]':
+    celery:
+        root: udl2.celery
+        broker: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/edudl2
+        backend: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/edudl2
+    zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
+        landing: /opt/edware/zones/landing/             # this is for where the uploaded files are located, it may be an url in the long run to get data
+        arrivals: /opt/edware/zones/landing/arrivals/   # this is where the file arrives.
+        work: /opt/edware/zones/landing/work/           # this is the where the file are use for work. this should always be local for speed
+        history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
+    udl2_trigger:
+        file_stat_watch_interval: 10
+        file_stat_watch_period: 120
+        file_checksum_threshold_wait_period: 60
+        file_system_scan_delay: 60
+    udl2_db_conn:
+        url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
+        db_schema: udl2
+    target_db_conn:
+        ca:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+        nc:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+        cat:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+    prod_db_conn:
+        ca:
+            url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+            db_schema: edware_es_1_7
+        nc:
+            url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+            db_schema: edware_es_1_7
+        cat:
+            url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+            db_schema: edware_es_1_7
+    edware_stats:
+        db:
+            schema_name: edware_es_1_7
+            url: postgresql://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware_stats
 
 uat:
   '[app]':
@@ -118,7 +159,6 @@ uat:
         ca:
             url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
-    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_6
@@ -152,7 +192,6 @@ development:
         nc:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
-    gpg_home: ~/.gnupg
     notification_max_attempts: 5
     notification_retry_interval: 1
     notification_timeout_interval: 1
@@ -180,4 +219,3 @@ jenksins_dev:
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_12_dog
-    gpg_home: ~/.gnupg

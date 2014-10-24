@@ -1,5 +1,6 @@
 import logging
 from smarter_score_batcher.utils.constants import Constants
+from datetime import datetime
 
 
 def get_all_elements(root, xpath_of_element):

@@ -141,9 +141,9 @@ common:
           average.csv: 30000
           average.xml: 300000
       work_zone_base_dir: /tmp
-      gpg.homedir: ~/.gnupg
-      gpg.public_key.cat: kswimberly@amplify.com
-      gpg.public_key.fish: kswimberly@amplify.com
+      gpg.homedir: /opt/edware/keys
+      gpg.public_key.cat: sbac_data_provider@sbac.com
+      gpg.public_key.fish: sbac_data_provider@sbac.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
@@ -170,9 +170,9 @@ common:
               exchange: direct
               key: extract_sync
     smarter_score_batcher:
-      gpg.homedir: ~/.gnupg
-      gpg.public_key.cat: sbac_data_provider@sbac.com
-      gpg.public_key.fish: sbac_data_provider@sbac.com
+      gpg.homedir: ../../edware/config/gpg
+      gpg.public_key.nc: sbac_data_provider@sbac.com
+      gpg.public_key.vt: sbac_data_provider@sbac.com
       gpg.public_key.ca: sbac_data_provider@sbac.com
       #gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       base_dir:
@@ -578,6 +578,184 @@ qa.pdf_generator:
     cache:
       session.expire: 1200 # 20 minutes
 
+dev:
+  '[app:main]':
+    mode: prod
+    environment.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
+    services.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/edmigrate
+    extract.work_zone_base_dir: /opt/edware/extraction
+    extract.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/edextract
+    smarter_score_batcher:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dev.dum.edwdc.net/smarter_score_batcher
+      metadata:
+        performance: /opt/edware/resources/meta/performance
+        static: /opt/edware/resources/meta/static
+      xsd.path: /opt/edware/resources/sample_xsd.xsd
+      gpg:
+        homedir: /opt/edware/keys
+        passphrase: sbac udl2
+        keyserver: None
+    extract:
+      gpg:
+        homedir : /opt/edware/conf/gpg
+        keyserver: None
+    cache:
+      public.shortlived.url: dwcache0.dev.dum.edwdc.net:11211
+      public.data.url: dwcache0.dev.dum.edwdc.net:11211
+      session.url: dwcache0.dev.dum.edwdc.net:11211
+      public.filtered_data.url: dwcache0.dev.dum.edwdc.net:11211
+    pdf:
+      base.url: https://pyweb1.dev.dum.edwdc.net/assets/html/
+      report_base_dir: /opt/edware/pdf
+      generate_timeout: 30
+      health_check.job.queue: health_check
+    pickup.sftp:
+      hostname: lzsftpudl0.dev.dum.edwdc.net
+      private_key_file: /opt/edware/ssh/.ssh/id_rsa
+    sftp:
+        file_stat_watch_interval: 5
+        file_stat_watch_period: 30
+        file_system_scan_delay: 60
+        remote:
+            landing_zone_hostname: rbtmqudl0.dev.dum.edwdc.net
+    file-grabber:
+      lz:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: root
+          remote_host: lzsftpudl0.dev.dum.edwdc.net
+          remote_dir: /sftp/opt/edware/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
+      tsb:
+        enable: True
+        schedule:
+            cron:
+              minute: '*/1'
+        args:
+          remote_user: celery
+          remote_host: tsb.dev.dum.edwdc.net
+          remote_dir: /opt/edware/assessment/staging/
+          landing: /opt/edware/zones/landing/arrivals/
+          private_key: /home/udl2/.ssh/id_rsa
+    edware:
+      db:
+        cat:
+          state_code: NC
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
+        dog:
+          state_code: CA
+          schema_name: edware_es_1_7_dog
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
+        fish:
+          state_code: VT
+          schema_name: edware_es_1_7_fish
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.dev.dum.edwdc.net:6432/edware
+    edware_stats:
+      db:
+        schema_name: edware_es_1_7
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware_stats
+    edware_rep:
+      db:
+        schema_name: repmgr_edware_pg_cluster
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+    migrate:
+      pgpool.hostname: 'dwrouter0.dev.dum.edwdc.net'
+      timeout: 6
+    migrate_dest:
+      db:
+        cat:
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+        nc:
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+        sc:
+          schema_name: edware_es_1_7
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dev.dum.edwdc.net:5432/edware
+    migrate_source:
+      db:
+        cat:
+          url: postgresql+psycopg2://edware:edware2013@celrytsb0.dev.dum.edwdc.net:5432/edware
+        nc:
+          url: postgresql+psycopg2://edware:edware2013@celrytsb0.dev.dum.edwdc.net:5432/edware
+        sc:
+          url: postgresql+psycopg2://edware:edware2013@celrytsb0.dev.dum.edwdc.net:5432/edware
+    auth:
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
+      policy:
+        secure: true
+      skip.verify: False
+      saml:
+        issuer_name: https://pyweb1.dev.dum.edwdc.net
+        idp_server_login_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0
+      oauth2:
+        idp_server_verify_url: http://auth0.dev.dum.edwdc.net:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+    hpz:
+      file_registration_url: https://hpzweb0.dev.dum.edwdc.net:8443/registration
+      file_upload_base_url: https://hpzweb0.dev.dum.edwdc.net:8443/files
+      ignore_certificate: True
+  '[handlers]':
+    keys: audit, syslog, security_event
+  '[logger_root]':
+    level: INFO
+    handlers: syslog
+  '[handler_syslog]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
+    level: WARN
+    formatter: generic
+  '[handler_audit]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
+    level: WARN
+    formatter: json
+  '[handler_security_event]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
+    level: INFO
+    formatter: json
+  '[logger_smarter]':
+    level: WARN
+    handlers: syslog
+    qualname: smarter
+  '[logger_edauth]':
+    level: WARN
+    handlers: syslog
+    qualname: edauth
+  '[logger_sqlalchemy]':
+    level: WARN
+    handlers: syslog
+    qualname: sqlalchemy
+  '[logger_exc_logger]':
+    level: ERROR
+    handlers: syslog
+    qualname: exc_logger
+  '[logger_edmigrate]':
+    level: WARN
+    handlers: syslog
+    qualname: edmigrate
+  '[logger_edsftp]':
+    level: WARN
+    handlers: syslog
+    qualname: edsftp
+  '[logger_edudl2]':
+    level: WARN
+    handlers: syslog
+    qualname: edudl2
+
 jenkins_qa:
   '[app:main]':
     mode: test
@@ -817,15 +995,15 @@ development:
         max_overflow: 10
         cat:
           state_code: NC
-          schema_name: edware_sds_1_30
+          schema_name: edware_sds_1_31
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
           state_code: CA
-          schema_name: edware_sds_1_30_dog
+          schema_name: edware_sds_1_31_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         fish:
           state_code: VT
-          schema_name: edware_sds_1_30_fish
+          schema_name: edware_sds_1_31_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
@@ -874,7 +1052,6 @@ development:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
-
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
@@ -913,19 +1090,19 @@ test:
       db:
         cat:
           state_code: NC
-          schema_name: edware_sds_1_30
+          schema_name: edware_sds_1_31
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           state_code: CA
-          schema_name: edware_sds_1_30_dog
+          schema_name: edware_sds_1_31_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
           state_code: VT
-          schema_name: edware_sds_1_30_fish
+          schema_name: edware_sds_1_31_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_30
+        schema_name: edware_sds_1_31
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     extract:
       gpg.homedir: ../../edware/config/gpg
@@ -986,7 +1163,7 @@ integration:
         schema_name: edware_stats
         url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
     extract:
-      gpg.homedir: ../../edware/config/gpg
+      gpg.homedir: /opt/edware/keys
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
@@ -1021,7 +1198,7 @@ jenkins_int:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
         CELERYD_CONCURRENCY: 4
-      gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     smarter_score_batcher:
       celery:
@@ -1083,7 +1260,7 @@ jenkins_dev:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
         CELERYD_CONCURRENCY: 4
-      gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       item_level_base_dir: /opt/edware/item_level
       raw_data_base_dir: /opt/edware/raw_data
@@ -1100,19 +1277,19 @@ jenkins_dev:
       db:
         cat:
           state_code: NC
-          schema_name: edware_sds_1_30
+          schema_name: edware_sds_1_31
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           state_code: CA
-          schema_name: edware_sds_1_30_dog
+          schema_name: edware_sds_1_31_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
           state_code: VT
-          schema_name: edware_sds_1_30_fish
+          schema_name: edware_sds_1_31_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_30
+        schema_name: edware_sds_1_31
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     auth:
       policy.secure: False

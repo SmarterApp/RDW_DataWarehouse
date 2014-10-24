@@ -110,7 +110,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        Column('asmt_rec_id', BigInteger, primary_key=True),
                        Column('asmt_guid', String(36), nullable=False, info={'natural_key': True}),
                        Column('asmt_type', String(32), nullable=False),
-                       Column('asmt_period', String(32), nullable=False),
+                       Column('asmt_period', String(32), nullable=True),
                        Column('asmt_period_year', SmallInteger, nullable=False),
                        Column('asmt_version', String(40), nullable=False),
                        Column('asmt_subject', String(64), nullable=False),

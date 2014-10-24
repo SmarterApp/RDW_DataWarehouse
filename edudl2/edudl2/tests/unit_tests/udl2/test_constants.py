@@ -32,7 +32,7 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(Constants.OP_COLUMN_NAME, 'op')
 
         # load types
-        self.assertEqual(Constants.LOAD_TYPE_KEY, 'content')
+        self.assertEqual(Constants.LOAD_TYPE_KEY, 'Content')
         self.assertEqual(Constants.LOAD_TYPE_ASSESSMENT, 'assessment')
         self.assertEqual(Constants.LOAD_TYPE_STUDENT_REGISTRATION, 'studentregistration')
 

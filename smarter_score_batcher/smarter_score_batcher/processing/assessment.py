@@ -5,6 +5,7 @@ Created on Aug 8, 2014
 '''
 from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_helper, \
     extract_meta_without_fallback_helper
+import itertools
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 
@@ -25,6 +26,29 @@ class XMLMeta:
         else:
             val = extract_meta_without_fallback_helper(self.root, self.path, self.attribute)
         return val
+
+
+class DateMeta(XMLMeta):
+
+    def get_value(self):
+        date = super().get_value()
+        return date[:10].replace('-', '') if date else date
+
+
+class IntegerMeta(XMLMeta):
+
+    def get_value(self):
+        data = super().get_value()
+        return str(int(data)) if data else data
+
+
+class ValueMeta():
+
+    def __init__(self, value):
+        self.value = value
+
+    def get_value(self):
+        return self.value
 
 
 class XMLClaimScore:
@@ -99,6 +123,22 @@ class AssessmentHeaders:
     Group1Text = 'Group1Text'
     Group2Id = 'Group2Id'
     Group2Text = 'Group2Text'
+    Group3Id = 'Group3Id'
+    Group3Text = 'Group3Text'
+    Group4Id = 'Group4Id'
+    Group4Text = 'Group4Text'
+    Group5Id = 'Group5Id'
+    Group5Text = 'Group5Text'
+    Group6Id = 'Group6Id'
+    Group6Text = 'Group6Text'
+    Group7Id = 'Group7Id'
+    Group7Text = 'Group7Text'
+    Group8Id = 'Group8Id'
+    Group8Text = 'Group8Text'
+    Group9Id = 'Group9Id'
+    Group9Text = 'Group9Text'
+    Group10Id = 'Group10Id'
+    Group10Text = 'Group10Text'
     AssessmentGuid = 'AssessmentGuid'
     AssessmentSessionLocationId = 'AssessmentSessionLocationId'
     AssessmentSessionLocation = 'AssessmentSessionLocation'
@@ -145,8 +185,8 @@ class AssessmentHeaders:
 
 
 class AssessmentData:
-    def __init__(self, mappings):
-        self.__mappings = mappings
+    def __init__(self, *mappings):
+        self.__mappings = itertools.chain(*mappings)
         self.__header = []
         self.__values = []
 
@@ -206,9 +246,12 @@ def get_assessment_mapping(root, metadata_file_path):
     claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
 
+    groups = get_groups(examinee)
+    accommodations = get_accommodations(opportunity)
+
     # In the order of the LZ mapping for easier maintenance
-    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateCode']", "value", "context"), AssessmentHeaders.StateAbbreviation),
-                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
+    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context"), AssessmentHeaders.StateAbbreviation),
+                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleDistrictIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolName']", "value", "context"), AssessmentHeaders.NameOfInstitution),
@@ -219,8 +262,8 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='MiddleName']", "value", "context"), AssessmentHeaders.MiddleName),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='LastOrSurname']", "value", "context"), AssessmentHeaders.LastOrSurname),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Sex']", "value", "context"), AssessmentHeaders.Sex),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Birthdate']", "value", "context"), AssessmentHeaders.Birthdate),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='GradeLevelWhenAssessed']", "value", "context"), AssessmentHeaders.GradeLevelWhenAssessed),
+                               Mapping(DateMeta(examinee, "./ExamineeAttribute/[@name='Birthdate']", "value", "context"), AssessmentHeaders.Birthdate),
+                               Mapping(IntegerMeta(examinee, "./ExamineeAttribute/[@name='GradeLevelWhenAssessed']", "value", "context"), AssessmentHeaders.GradeLevelWhenAssessed),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='HispanicOrLatinoEthnicity']", "value", "context"), AssessmentHeaders.HispanicOrLatinoEthnicity),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='AmericanIndianOrAlaskaNative']", "value", "context"), AssessmentHeaders.AmericanIndianOrAlaskaNative),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Asian']", "value", "context"), AssessmentHeaders.Asian),
@@ -233,19 +276,15 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Section504Status']", "value", "context"), AssessmentHeaders.Section504Status),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='EconomicDisadvantageStatus']", "value", "context"), AssessmentHeaders.EconomicDisadvantageStatus),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='MigrantStatus']", "value", "context"), AssessmentHeaders.MigrantStatus),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group1Id']", "value", "context"), AssessmentHeaders.Group1Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group1Text']", "value", "context"), AssessmentHeaders.Group1Text),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Id']", "value", "context"), AssessmentHeaders.Group2Id),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Group2Text']", "value", "context"), AssessmentHeaders.Group2Text),
 
                                Mapping(XMLMeta(test_node, ".", "testId"), AssessmentHeaders.AssessmentGuid),
                                Mapping(XMLMeta(opportunity, ".", "oppId"), AssessmentHeaders.AssessmentSessionLocationId),
                                Mapping(XMLMeta(opportunity, ".", "server"), AssessmentHeaders.AssessmentSessionLocation),
-                               Mapping(XMLMeta(opportunity, ".", "dateCompleted"), AssessmentHeaders.AssessmentAdministrationFinishDate),
+                               Mapping(DateMeta(opportunity, ".", "dateCompleted"), AssessmentHeaders.AssessmentAdministrationFinishDate),
                                Mapping(XMLMeta(test_node, ".", "academicYear"), AssessmentHeaders.AssessmentYear),
                                Mapping(XMLMeta(test_node, ".", "assessmentType"), AssessmentHeaders.AssessmentType),
                                Mapping(XMLMeta(test_node, ".", "subject"), AssessmentHeaders.AssessmentAcademicSubject),
-                               Mapping(XMLMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned),
+                               Mapping(IntegerMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned),
 
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreValue),
                                Mapping(overall_score.get_min(), AssessmentHeaders.AssessmentSubtestMinimumValue),
@@ -256,32 +295,100 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(claim1_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim1PerformanceLevelIdentifier),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim2Value),
-                               Mapping(claim2_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim1MinimumValue),
-                               Mapping(claim2_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
+                               Mapping(claim2_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim2MinimumValue),
+                               Mapping(claim2_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim2MaximumValue),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim2PerformanceLevelIdentifier),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim3Value),
-                               Mapping(claim3_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim1MinimumValue),
-                               Mapping(claim3_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
+                               Mapping(claim3_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim3MinimumValue),
+                               Mapping(claim3_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim3MaximumValue),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim3PerformanceLevelIdentifier),
                                Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim4Value),
-                               Mapping(claim4_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim1MinimumValue),
-                               Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier),
-
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='AmericanSignLanguage'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAmericanSignLanguage),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Braile'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationBraille),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='ClosedCaptioning'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationClosedCaptioning),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='TTS'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationTextToSpeech),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Abacus'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAbacus),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='AlternateResponseOptions'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationAlternateResponseOptions),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Calculator'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationCalculator),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='MultiplicationTable'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationMultiplicationTable),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='PrintOnDemand'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationPrintOnDemand),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='PrintOnDemandItem'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationPrintOnDemandItems),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='ReadAloud'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationReadAloud),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Scribe'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationScribe),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='SpeechToText'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationSpeechToText),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='StreamlineMode'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationStreamlineMode),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='NoiseBuffer'][@measureLabel='Accommodation']", "value"), AssessmentHeaders.AccommodationNoiseBuffer)])
+                               Mapping(claim4_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim4MinimumValue),
+                               Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim4MaximumValue),
+                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier)],
+                              groups, accommodations)
     mappings.evaluate()
     return mappings
+
+
+def get_groups(examinee):
+    '''
+    Get groupings from XML <ExamineeRelationship> elements.
+    Assign element of list of group to group1, group2, .., group10 according to its order in the list
+
+    map element with attribute 'StudentGroupName' to groups based on their order displaying in XML
+    only display first 10 groups
+    '''
+    TOTAL_GROUPS = 10
+    mappings = []
+    groups = examinee.findall("./ExamineeRelationship[@name='StudentGroupName']")[:TOTAL_GROUPS]
+    for i in range(TOTAL_GROUPS):
+        if i < len(groups):
+            meta = XMLMeta(groups[i], '.', 'value')
+        else:
+            meta = ValueMeta('')
+        mappings.append(Mapping(meta, 'Group%dId' % (i + 1)))
+        mappings.append(Mapping(meta, 'Group%dText' % (i + 1)))
+    return mappings
+
+
+ACCOMMODATION_CONFIGS = [
+    {'type': 'AmericanSignLanguage', 'target': AssessmentHeaders.AccommodationAmericanSignLanguage},
+    {'type': 'ClosedCaptioning', 'target': AssessmentHeaders.AccommodationClosedCaptioning},
+    {'type': 'Language', 'target': AssessmentHeaders.AccommodationBraille},
+    {'type': 'TextToSpeech', 'target': AssessmentHeaders.AccommodationTextToSpeech},
+    {'type': 'StreamlinedInterface', 'target': AssessmentHeaders.AccommodationStreamlineMode},
+    {'type': 'PrintOnDemand', 'code': 'TDS_PoD0', 'target': AssessmentHeaders.AccommodationPrintOnDemand},
+    {'type': 'PrintOnDemand', 'code': 'TDS_PoD_Stim&TDS_PoD_Item', 'target': AssessmentHeaders.AccommodationPrintOnDemandItems},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_Abacus', 'target': AssessmentHeaders.AccommodationAbacus},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_AR', 'target': AssessmentHeaders.AccommodationAlternateResponseOptions},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_RA_Stimuli', 'target': AssessmentHeaders.AccommodationReadAloud},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_Calc', 'target': AssessmentHeaders.AccommodationCalculator},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_MT', 'target': AssessmentHeaders.AccommodationMultiplicationTable},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_SC_Writitems', 'target': AssessmentHeaders.AccommodationScribe},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_STT', 'target': AssessmentHeaders.AccommodationSpeechToText},
+    {'type': 'NonEmbeddedAccommodations', 'code': 'NEA_NoiseBuf', 'target': AssessmentHeaders.AccommodationNoiseBuffer}]
+
+
+def get_accommodations(opportunity):
+    '''
+     Get accommodations from XML.
+
+     We have two categories of accommodations: Embbed and NonEmbbedded
+
+     Embbed accommodations include AmericanSignLanguage, ClosedCaptioning, Language, TextToSpeech, StreamlinedInterface, PrintOnDemand(PrintOnDemand + TDS_PoD0), PrintOnDemandItem(PrintOnDemand + TDS_PoD_Stim&TDS_PoD_Item). If any of the above accommodations appears in XML with `context` of value 'FINAL', we look up use code in element <Score measureLabel="Accommodation"/> according to corresponding accommodation type, otherwise use 0 as fallback use code
+
+     Non-Embbed accommodations include Abacus, AlternativeResponse, Calculator, MultiplicationTable, ReadAloud, Scribe, SpeechToText, NoiseBuffer. Each of the above corresponds to a unique code, as in <Accommodation /> 'code' attribute, respectively: NEA_Abacus, NEA_AR, NEA_Calc, NEA_MT, NEA_RA_Stimuli, NEA_SC_WritItems, NEA_STT, NEA_NoiseBuf.
+     We look up below element for use code and assign to all Non-Embbed accommodation that show in XML.
+         <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="6" />
+     All presented Non-Embbed Accommodations will have the same use code, otherwise use 0 as fallback use code
+     However, there's a special Non-Embbed code 'NEA0', which is mutually exclusive with the others. In case of its presence, all Non-Embbed accommodations should be assigned with value 0 in database.
+    '''
+    USE_CODE_NO_ACCESS = '4'
+    USE_CODE_NO_MESSAGE = '0'
+
+    def _format_XPath(config):
+        score_xpath = "./Score/[@measureOf='%s'][@measureLabel='Accommodation']" % config['type']
+        acc_xpath = "./Accommodation/[@type='%s'][@context='FINAL']" % config['type']
+        if 'code' in config:
+            acc_xpath += "[@code='%s']" % config['code']
+        return acc_xpath, score_xpath
+
+    def _has_NEA0(opportunity):
+        acc_xpath, _ = _format_XPath({'type': 'NonEmbeddedAccommodations', 'code': 'NEA0'})
+        return opportunity.find(acc_xpath) is not None
+
+    def _is_non_embbed(config):
+        return config['type'] == 'NonEmbeddedAccommodations'
+
+    accommodations = []
+    hasNEA0 = _has_NEA0(opportunity)
+    for config in ACCOMMODATION_CONFIGS:
+        if _is_non_embbed(config) and hasNEA0:
+            use_code = USE_CODE_NO_ACCESS
+        else:
+            acc_xpath, score_xpath = _format_XPath(config)
+            score = opportunity.find(score_xpath) if opportunity.find(acc_xpath) is not None else None
+            use_code = score.get('value') if score is not None else USE_CODE_NO_MESSAGE
+        accommodations.append(Mapping(ValueMeta(use_code), config['target']))
+    return accommodations

@@ -14,7 +14,8 @@ define [
   "edwareConstants"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
+  "edwarePopover"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
   class DataProcessor
 
@@ -70,7 +71,7 @@ define [
         blocks.push i
       size = data.length / 3
       dividedBlocks = []
-      for j in [0..size]
+      for j in [0..size-1]
         b = blocks.slice(3 * j, 3 * (j+1))
         dividedBlocks.push({"blocks": b})
       value["row"] = dividedBlocks
@@ -114,7 +115,10 @@ define [
           0
         # After Sorting, divide it for display purposes
         data[grade] = @divideInterimBlocksData returnData[grade]
-      
+    
+    formatDate: (date) ->
+      date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
+       
     processInterimBlocksData: () ->
       @data['views'] ?= {}
       for subjectAlias, subjectName of @data.subjects
@@ -127,7 +131,7 @@ define [
           dataByGrade[asmt_grade] ?= [] 
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade, 
-          'effective_date': assessment['effective_date'], 
+          'effective_date': @formatDate(assessment['effective_date']), 
           'name': assessment['claims'][0]['name'], 
           'desc': assessment['claims'][0]['perf_lvl_name'], 
           'level': assessment['claims'][0]['perf_lvl']}
@@ -236,7 +240,6 @@ define [
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
-      @bindEvents()
 
     initialize: () ->
       @prepareParams()
@@ -260,27 +263,6 @@ define [
       loadingData.done (data) ->
         self.loadPage data
 
-    bindEvents: () ->
-      $(document).on
-        'mouseenter focus': ->
-          elem = $(this)
-          elem.popover
-            html: true
-            trigger: "manual"
-            container: '#iabPopoverContent'
-            placement: (tip, element) ->
-              edwareUtil.popupPlacement(element, 400, 200)
-            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"></div></div></div>'
-            content: ->
-              elem.parent().find(".oldResultsContent").html()
-          .popover("show")
-        click: (e) ->
-          e.preventDefault()
-        'mouseleave focusout': ->
-          elem = $(this)
-          elem.popover("hide")
-      , ".olderResults"
-   
     loadPrintMedia: () ->
       # Show grayscale
       edwareUtil.showGrayScale() if @isGrayscale
@@ -328,7 +310,7 @@ define [
           return @params['asmtYear'] + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
-        if asmt
+        if asmt and asmt['asmt_type']
           if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
             return asmt['effective_date'] + asmt['asmt_type']
           else
@@ -438,6 +420,7 @@ define [
 
     getAsmtViewSelection: () ->
       viewName = edwarePreferences.getAsmtView()
+      viewName = @subjectsData['subject1'] if viewName not in Constants.SUBJECTS  # In ISR, we only have two views
       $("#subjectSelection#{viewName}").addClass('selected')
 
       # TODO: remove this css change after we fix ISR for summative/interim to have subject buttons
@@ -452,8 +435,20 @@ define [
       # Update subject text and asmt period year that is unique according to the view
       @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[viewName]
       @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
+      @data.current.has_data = true if @data.current.grades.length > 0
       output = Mustache.to_html isrInterimBlocksTemplate, @data
       $("#individualStudentContent").html output
-        
+      @createPopovers()
+
+    createPopovers: () ->
+      # Creates popovers for interim blocks
+      $(".olderResults").each ->
+        $(this).edwarePopover
+          class: 'iabPopoverContent'
+          content: $(this).parent().find(".oldResultsContent").html()
+          tabindex: 0
+          placement: 'top'
+      .click ->
+        $(this).mouseover()   
      
   EdwareISR: EdwareISR

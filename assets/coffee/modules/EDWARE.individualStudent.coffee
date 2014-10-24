@@ -14,7 +14,8 @@ define [
   "edwareConstants"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
+  "edwarePopover"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
   class DataProcessor
 
@@ -239,7 +240,6 @@ define [
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
-      @bindEvents()
 
     initialize: () ->
       @prepareParams()
@@ -263,27 +263,6 @@ define [
       loadingData.done (data) ->
         self.loadPage data
 
-    bindEvents: () ->
-      $(document).on
-        'mouseenter focus': ->
-          elem = $(this)
-          elem.popover
-            html: true
-            trigger: "manual"
-            container: '#iabPopoverContent'
-            placement: (tip, element) ->
-              edwareUtil.popupPlacement(element, 400, 200)
-            template: '<div class="popover"><div class="arrow"/><div class="popover-inner"><div class="popover-content iabPopover-content"></div></div></div>'
-            content: ->
-              elem.parent().find(".oldResultsContent").html()
-          .popover("show")
-        click: (e) ->
-          e.preventDefault()
-        'mouseleave focusout': ->
-          elem = $(this)
-          elem.popover("hide")
-      , ".olderResults"
-   
     loadPrintMedia: () ->
       # Show grayscale
       edwareUtil.showGrayScale() if @isGrayscale
@@ -459,6 +438,17 @@ define [
       @data.current.has_data = true if @data.current.grades.length > 0
       output = Mustache.to_html isrInterimBlocksTemplate, @data
       $("#individualStudentContent").html output
-        
+      @createPopovers()
+
+    createPopovers: () ->
+      # Creates popovers for interim blocks
+      $(".olderResults").each ->
+        $(this).edwarePopover
+          class: 'iabPopoverContent'
+          content: $(this).parent().find(".oldResultsContent").html()
+          tabindex: 0
+          placement: 'top'
+      .click ->
+        $(this).mouseover()   
      
   EdwareISR: EdwareISR

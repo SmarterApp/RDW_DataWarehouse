@@ -194,7 +194,6 @@ define [
       this.grid.render()
 
       # trigger gridComplete event
-      options.gridComplete() if options.gridComplete
       return this.grid
 
     $.fn.eagerLoad = () ->

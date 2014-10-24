@@ -335,7 +335,8 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
-                        "export": true
+                        "export": true,
+                        "frozen": true
                     },
                     {
                         "name": "{{subject2}}",

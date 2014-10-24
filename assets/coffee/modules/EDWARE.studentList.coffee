@@ -169,6 +169,7 @@ define [
   class StudentGrid
 
     constructor: (@config) ->
+      @isLoaded = true
       @studentsDataSet = new StudentDataSet(config)
       @reportInfo = config.reportInfo
       @studentsConfig = config.students
@@ -338,6 +339,9 @@ define [
         self.loadPage JSON.parse compiled
 
     afterGridLoadComplete: () ->
+      if window.gridTable_isLoaded is `undefined` or window.gridTable_isLoaded is false
+        $('#gridTable').jqGrid('setFrozenColumns') 
+        window.gridTable_isLoaded = true
       this.stickyCompare.update()
       this.infoBar.update()
       # Remove second row header as that counts as a column in setLabel function

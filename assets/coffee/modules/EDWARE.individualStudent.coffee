@@ -19,8 +19,6 @@ define [
 
   class DataProcessor
     
-    NUM_BLOCKS_PER_ROW = 3
-
     constructor: (@data, @configData, @isGrayscale, @isBlock) ->
 
     process: () ->
@@ -65,20 +63,6 @@ define [
         section["accommodation"] = accommodation.sort()
         section
 
-    divideInterimBlocksData: (data) ->
-      # Divide into blocks of 3s for display purposes
-      value = {"row": []}
-      blocks = []
-      for i in data
-        blocks.push i
-      size = Math.round(data.length / NUM_BLOCKS_PER_ROW)
-      dividedBlocks = []
-      for j in [0..size-1]
-        b = blocks.slice(NUM_BLOCKS_PER_ROW * j, NUM_BLOCKS_PER_ROW * (j+1))
-        dividedBlocks.push({"blocks": b})
-      value["row"] = dividedBlocks
-      value
-
     splitByPerfBlockByName: (asmtSubject, data) ->
       dataByName = {}
       for grade, gradeData of data
@@ -97,7 +81,7 @@ define [
             dataByName[grade][name]['previous'] ?= [placeholder, placeholder, placeholder]
             dataByName[grade][name]['previousCounter'] ?= 0
             prevCounter = dataByName[grade][name]['previousCounter']
-            if prevCounter < NUM_BLOCKS_PER_ROW
+            if prevCounter < 3
                 dataByName[grade][name]['previous'][prevCounter] = block
                 dataByName[grade][name]['previousCounter'] +=1
             else
@@ -115,8 +99,7 @@ define [
           return -1 if x.displayOrder < y.displayOrder
           return 1 if x.displayOrder > y.displayOrder
           0
-        # After Sorting, divide it for display purposes
-        data[grade] = @divideInterimBlocksData returnData[grade]
+        data[grade] = {"blocks": returnData[grade]}
     
     formatDate: (date) ->
       date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)

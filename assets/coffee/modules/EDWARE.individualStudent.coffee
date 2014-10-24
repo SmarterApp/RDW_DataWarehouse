@@ -18,6 +18,8 @@ define [
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
   class DataProcessor
+    
+    NUM_BLOCKS_PER_ROW = 3
 
     constructor: (@data, @configData, @isGrayscale, @isBlock) ->
 
@@ -69,10 +71,10 @@ define [
       blocks = []
       for i in data
         blocks.push i
-      size = data.length / 3
+      size = Math.round(data.length / NUM_BLOCKS_PER_ROW)
       dividedBlocks = []
       for j in [0..size-1]
-        b = blocks.slice(3 * j, 3 * (j+1))
+        b = blocks.slice(NUM_BLOCKS_PER_ROW * j, NUM_BLOCKS_PER_ROW * (j+1))
         dividedBlocks.push({"blocks": b})
       value["row"] = dividedBlocks
       value
@@ -95,7 +97,7 @@ define [
             dataByName[grade][name]['previous'] ?= [placeholder, placeholder, placeholder]
             dataByName[grade][name]['previousCounter'] ?= 0
             prevCounter = dataByName[grade][name]['previousCounter']
-            if prevCounter < 3
+            if prevCounter < NUM_BLOCKS_PER_ROW
                 dataByName[grade][name]['previous'][prevCounter] = block
                 dataByName[grade][name]['previousCounter'] +=1
             else

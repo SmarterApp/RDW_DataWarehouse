@@ -199,8 +199,8 @@ def convert_to_xml(l):
     data['asmt_claim_3_score_range_min'] = l[33]
     data['asmt_claim_3_score_range_max'] = l[34]
 
-    data['asmt_claim_4_score'] = l[36]
-    data['asmt_claim_4_perf_lvl'] = l[39]
+    data['asmt_claim_4_score'] = l[36] if l[36] else 0
+    data['asmt_claim_4_perf_lvl'] = l[39] if l[39] else 0
     data['asmt_claim_4_score_range_min'] = l[37]
     data['asmt_claim_4_score_range_max'] = l[38]
 

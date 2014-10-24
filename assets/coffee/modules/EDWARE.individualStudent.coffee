@@ -106,6 +106,7 @@ define [
        
     processInterimBlocksData: () ->
       @data['views'] ?= {}
+      asmt_year = @data.all_results.asmt_period_year
       for subjectAlias, subjectName of @data.subjects
         subjectData = {}
         dataByGrade = {}
@@ -126,7 +127,7 @@ define [
         for grade in grades.sort().reverse()
           subjectData['grades'].push dataByGrade[grade]
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
-        @data['views'][subjectName] = subjectData
+        @data['views'][asmt_year + subjectName] = subjectData
   
     processData: () ->
       # TODO: below code should be made prettier someday
@@ -299,7 +300,7 @@ define [
           if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
             return asmt['effective_date'] + asmt['asmt_type']
           else
-            return @getAsmtViewSelection()
+            return asmt['asmt_period_year'] + @getAsmtViewSelection()
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
@@ -310,12 +311,15 @@ define [
       @isPdf = params['pdf']
       if not @isPdf
         isrAsmt = edwarePreferences.getAsmtForISR()
+        # We need to read from storage since the user might have changed selection from dropdown
         if isrAsmt
           asmtType = isrAsmt['asmt_type']
           effectiveDate = isrAsmt['effective_date']
+          asmtYear = isrAsmt['asmt_period_year']
         params['asmtType'] = asmtType.toUpperCase() if asmtType
         @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
         params['effectiveDate'] = effectiveDate if effectiveDate
+        params['asmtYear'] = asmtYear if asmtYear
       else
         params['asmtType'] = params['asmtType'].toUpperCase() if params['asmtType']
       @params = params

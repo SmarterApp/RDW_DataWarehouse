@@ -63,6 +63,7 @@ define [
       self = this
       $(@container).onClickAndEnterKey '.asmtSelection', ->
         asmt = self.parseAsmtInfo $(this)
+        edwarePreferences.saveAsmtForISR(asmt)
         displayText = self.getAsmtDisplayText(asmt)
         self.setSelectedValue displayText
         # additional parameters

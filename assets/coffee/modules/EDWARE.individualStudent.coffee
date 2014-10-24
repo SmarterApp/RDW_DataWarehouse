@@ -193,13 +193,14 @@ define [
           claim.perf_lvl_name = @configData.labels.asmt[claim.perf_lvl_name]
 
         key = assessment.effective_date + assessment.asmt_type
-        @data[key] ?= []
-        @data[key].push assessment if @data[key].length < 2
+        @data['views'] ?= {}
+        @data['views'][key] ?= []
+        @data['views'][key].push assessment if @data['views'][key].length < 2
         #TODO: temporary workaround for bulk pdf generation
         if assessment.asmt_type is 'Summative'
           default_key = assessment.asmt_period_year + 'Summative'
-          @data[default_key] ?= []
-          @data[default_key].push assessment if @data[default_key].length < 2
+          @data['views'][default_key] ?= []
+          @data['views'][default_key].push assessment if @data['views'][default_key].length < 2
 
 
   class EdwareISR
@@ -215,13 +216,12 @@ define [
 
     loadPage: (template) ->
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
-      @isBlock = if @params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
       @data = new DataProcessor(data, @configData, @isGrayscale, @isBlock).process()
       @data.labels = @configData.labels
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
-      @render()
+      @updateView()
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
@@ -299,8 +299,7 @@ define [
           if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
             return asmt['effective_date'] + asmt['asmt_type']
           else
-            # TODO: read it from somewhere else
-            return edwarePreferences.getAsmtView()
+            return @getAsmtViewSelection()
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
@@ -315,30 +314,29 @@ define [
           asmtType = isrAsmt['asmt_type']
           effectiveDate = isrAsmt['effective_date']
         params['asmtType'] = asmtType.toUpperCase() if asmtType
+        @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
         params['effectiveDate'] = effectiveDate if effectiveDate
       else
         params['asmtType'] = params['asmtType'].toUpperCase() if params['asmtType']
       @params = params
     
     updateView: () ->
+      # Decides whether we need to render or retrieve data from server
       cacheKey = @getCacheKey()
       if not @data['views']?[cacheKey]
         this.prepareParams()
         this.fetchData()
       else
+        @data.current = @data['views'][cacheKey]
         this.render()
       
     render: () ->
       # Get tenant level branding
       @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
-
       # The template for Interim Block is different
       if @isBlock
         @renderInterimBlockView()
       else
-        cacheKey = @getCacheKey()
-        @data.current = @data[cacheKey]
-
         # use mustache template to display the json data
         output = Mustache.to_html isrTemplate, @data
         $("#individualStudentContent").html output
@@ -416,7 +414,6 @@ define [
 
     renderInterimBlockView: () ->
       viewName = @getAsmtViewSelection()
-      @data.current = @data['views'][viewName]
       # Update subject text and asmt period year that is unique according to the view
       @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[viewName]
       @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']

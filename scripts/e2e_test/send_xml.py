@@ -3,10 +3,10 @@ import argparse
 import requests
 
 
-idp_oauth = "http://edwappsrv4.poc.dum.edwdc.net:28080"
-# idp_oauth = "http://auth0.dev.dum.edwdc.net:8080"
-tsb_end_point = "http://localhost:6543/services/xml"
-# tsb_end_point = "http://tsbweb0.dev.dum.edwdc.net/services/xml"
+# idp_oauth = "http://edwappsrv4.poc.dum.edwdc.net:28080"
+idp_oauth = "http://auth0.dev.dum.edwdc.net:8080"
+# tsb_end_point = "http://localhost:6543/services/xml"
+tsb_end_point = "http://tsbweb0.dev.dum.edwdc.net/services/xml"
 
 
 def send_post(self, url, data=None):

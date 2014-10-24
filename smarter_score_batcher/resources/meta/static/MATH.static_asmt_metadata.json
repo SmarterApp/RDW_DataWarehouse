@@ -1,43 +1,53 @@
 {
-    "Content": "assessment", 
+    "Content": "assessment",
     "Identification": {
-        "Subject": "MATH"
-    }, 
+        "Subject": "MATH",
+        "Period": ""
+    },
     "PerformanceLevels": {
         "Level1": {
             "Name": "Minimal Understanding"
-        }, 
+        },
         "Level2": {
             "Name": "Partial Understanding"
-        }, 
+        },
         "Level3": {
             "Name": "Adequate Understanding"
-        }, 
+        },
         "Level4": {
             "Name": "Thorough Understanding"
+        },
+        "Level5": {
+            "Name": "Dummy Understanding",
+            "CutPoint": "2900"
         }
-    }, 
+    },
     "Claims": {
         "Claim1": {
             "Name": "Concepts & Procedures",
             "Mapping": "myClaim1"
-        }, 
+        },
         "Claim2": {
             "Name": "Problem Solving and Modeling & Data Analysis",
             "Mapping": "Claim2Problem Solving and Modeling and Data Analysis"
-        }, 
+        },
         "Claim3": {
             "Name": "Communicating Reasoning",
             "Mapping": "Claim3Communicating Reasoning"
+        },
+        "Claim4": {
+            "Name": "Should not exist claim",
+            "Mapping": "Claim4"
         }
-    }, 
+
+    },
     "ClaimsPerformanceLevel": {
         "Level1": {
             "Name": "Below Standard"
-        }, 
+        },
         "Level2": {
             "Name": "At/Near Standard"
-        }, 
+        },
         "Level3": {
             "Name": "Above Standard"
         }

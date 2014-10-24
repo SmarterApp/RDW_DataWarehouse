@@ -141,7 +141,7 @@ common:
           average.csv: 30000
           average.xml: 300000
       work_zone_base_dir: /tmp
-      gpg.homedir: ~/.gnupg
+      gpg.homedir: /opt/edware/keys
       gpg.public_key.cat: sbac_data_provider@sbac.com
       gpg.public_key.fish: sbac_data_provider@sbac.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
@@ -1163,7 +1163,7 @@ integration:
         schema_name: edware_stats
         url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
     extract:
-      gpg.homedir: ../../edware/config/gpg
+      gpg.homedir: /opt/edware/keys
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
@@ -1198,7 +1198,7 @@ jenkins_int:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
         CELERYD_CONCURRENCY: 4
-      gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     smarter_score_batcher:
       celery:
@@ -1260,7 +1260,7 @@ jenkins_dev:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
         CELERYD_CONCURRENCY: 4
-      gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       item_level_base_dir: /opt/edware/item_level
       raw_data_base_dir: /opt/edware/raw_data

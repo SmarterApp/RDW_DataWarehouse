@@ -1,47 +1,52 @@
 {
-    "Content": "assessment", 
+    "Content": "assessment",
     "Identification": {
-        "Subject": "ELA"
-    }, 
+        "Subject": "ELA",
+        "Period": ""
+    },
     "PerformanceLevels": {
         "Level1": {
             "Name": "Minimal Understanding"
-        }, 
+        },
         "Level2": {
             "Name": "Partial Understanding"
-        }, 
+        },
         "Level3": {
             "Name": "Adequate Understanding"
-        }, 
+        },
         "Level4": {
             "Name": "Thorough Understanding"
+        },
+        "Level5": {
+            "Name": "Dummy Understanding",
+            "CutPoint": "2900"
         }
-    }, 
+    },
     "Claims": {
         "Claim1": {
             "Name": "Reading",
             "Mapping": "Claim1"
-        }, 
+        },
         "Claim2": {
             "Name": "Writing",
             "Mapping": "Claim2"
-        }, 
+        },
         "Claim3": {
             "Name": "Listening",
             "Mapping": "Claim3"
-        }, 
+        },
         "Claim4": {
             "Name": "Research & Inquiry",
             "Mapping": "Claim4"
         }
-    }, 
+    },
     "ClaimsPerformanceLevel": {
         "Level1": {
             "Name": "Below Standard"
-        }, 
+        },
         "Level2": {
             "Name": "At/Near Standard"
-        }, 
+        },
         "Level3": {
             "Name": "Above Standard"
         }

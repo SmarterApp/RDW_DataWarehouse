@@ -207,7 +207,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('record_sid', BigInteger, primary_key=True),
                           Column('guid_asmt', String(36), CheckConstraint('guid_asmt' != ''), nullable=False),
                           Column('type', String(32), CheckConstraint('type' != ''), nullable=False),
-                          Column('period', String(32), CheckConstraint('period' != ''), nullable=False),
+                          Column('period', String(32), CheckConstraint('period' != ''), nullable=True),
                           Column('year', SmallInteger, nullable=False),
                           Column('version', String(40), CheckConstraint('version' != ''), nullable=False),
                           Column('subject', String(64), nullable=True),

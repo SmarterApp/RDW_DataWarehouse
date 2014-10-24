@@ -284,6 +284,7 @@ table {
   .info {
     color: @color-B2;
     font-size: 20px;
+    margin-left: 3px;
   }
 }
 .contentBlocksWrapper {
@@ -300,7 +301,7 @@ table {
 }
 
 .blocks{
-    height: 228px;
+    height: 245px;
     .title{
       height: 45px;
       font-size: 13px;
@@ -321,11 +322,15 @@ table {
       font-size: 10px;
       font-weight: bold;
       color: @color-A2;
+      cursor: pointer;
     }
     .takenDate {
       font-family: Arial;
       font-size: 11px;
       color: @color-C18;
+    }
+    .oldDateResults {
+      margin-bottom: 10px;
     }
     table {
       background-color: @color-A7;
@@ -349,6 +354,19 @@ table {
       }
     }
   }
+.iabPopover-content {
+  padding: 20px;
+}
+#iabPopoverContent{
+  table {
+    width: auto;
+  }
+  min-width: 50px;
+  max-width: 500px;
+  .edwareScrollable {
+    overflow-x: auto;
+  }
+}
 .placeholder {
     background: @color-B5;
     margin: 20px 3% 20px 0;

@@ -88,10 +88,15 @@ define [
         columnData = @createColumnsSummativeInterim()
 
     createColumnsIAB: () ->
-      columns = JSON.parse(Mustache.render(JSON.stringify(this.data.interim_assessment_blocks), this.data))
       combinedData = $.extend(true, {}, this.data.subjects)
-      #combinedData.columns = columns
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab), combinedData))
+
+      columns = this.data.interim_assessment_blocks
+      for idx, column of columns
+        iab_column_details = { subject : column}
+        column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
+        columnData.ELA[0].items.push column
+        columnData.Math[0].items.push column
       columnData
 
     createColumnsSummativeInterim: () ->

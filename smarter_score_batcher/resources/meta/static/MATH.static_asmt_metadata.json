@@ -16,10 +16,6 @@
         },
         "Level4": {
             "Name": "Thorough Understanding"
-        },
-        "Level5": {
-            "Name": "Dummy Understanding",
-            "CutPoint": "2900"
         }
     },
     "Claims": {
@@ -34,12 +30,7 @@
         "Claim3": {
             "Name": "Communicating Reasoning",
             "Mapping": "Claim3Communicating Reasoning"
-        },
-        "Claim4": {
-            "Name": "Should not exist claim",
-            "Mapping": "Claim4"
         }
-
     },
     "ClaimsPerformanceLevel": {
         "Level1": {

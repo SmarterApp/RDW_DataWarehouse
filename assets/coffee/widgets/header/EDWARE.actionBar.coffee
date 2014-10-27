@@ -26,8 +26,8 @@ define [
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
         detailsSelection: @config.detailsSelection
-      #@legend ?= @createLegend()
-      #@printer ?= @createPrint()
+      @legend ?= @createLegend()
+      @printer ?= @createPrint()
       years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
       @asmtDropdown = @createAsmtDropdown(years)

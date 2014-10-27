@@ -195,7 +195,7 @@ def __prepare_query_iab(connector, params):
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
-    query = query.where(fact_block_asmt_outcome.c.student_id == student_id)
+    query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if asmt_year is not None:
@@ -283,9 +283,6 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
         subject_list = {}
         subject = result['asmt_subject']
         subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=True, include_min_max_scores=False, include_indexer=False)
-        subject_list['claims'][0]['date_taken_day'] = result['date_taken_day']
-        subject_list['claims'][0]['date_taken_month'] = result['date_taken_month']
-        subject_list['claims'][0]['date_taken_year'] = result['date_taken_year']
         subject_list['grade'] = result.get('asmt_grade')
         subject_list['effective_date'] = result.get('effective_date')
         subject_data[subjects_map.get(subject)].append(subject_list)

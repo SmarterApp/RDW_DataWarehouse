@@ -17,20 +17,19 @@ define [
   "edwarePopover"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
+  DataFactory = ->
+  
+  DataFactory::createDataProcessor = (data, configData, isGrayscale, isBlock) ->
+    @dataClass = if isBlock then InterimBlocksDataProcessor else DataProcessor
+    new @dataClass data, configData, isGrayscale
+    
   class DataProcessor
-
-    constructor: (@data, @configData, @isGrayscale, @isBlock) ->
+    
+    constructor: (@data, @configData, @isGrayscale) ->
 
     process: () ->
-      if not @isBlock
-        @processData()
-        @processAccommodations()
-      else
-        # Ordering of interim assessment blocks
-        @interimAsmtBlocksOrdering = {}
-        for k, v of @data.subjects
-            @interimAsmtBlocksOrdering[v] = @configData.interimAssessmentBlocksOrdering[k]
-        @processInterimBlocksData()
+      @processData()
+      @processAccommodations()
       @data
 
     processAccommodations: () ->
@@ -63,86 +62,6 @@ define [
         section["accommodation"] = accommodation.sort()
         section
 
-    divideInterimBlocksData: (data) ->
-      # Divide into blocks of 3s for display purposes
-      value = {"row": []}
-      blocks = []
-      for i in data
-        blocks.push i
-      size = data.length / 3
-      dividedBlocks = []
-      for j in [0..size-1]
-        b = blocks.slice(3 * j, 3 * (j+1))
-        dividedBlocks.push({"blocks": b})
-      value["row"] = dividedBlocks
-      value
-
-    splitByPerfBlockByName: (asmtSubject, data) ->
-      dataByName = {}
-      for grade, gradeData of data
-        dataByName[grade] ?= {}
-        for block in gradeData
-          name = block['name']
-          dataByName[grade][name]?= {}
-          # Get the order in which this block is suppose to be displayed in
-          order = @interimAsmtBlocksOrdering[asmtSubject][grade]?.indexOf(block["name"]) || 0 # We don't know about this grade, use 0
-          dataByName[grade][name]['displayOrder'] = if order is -1 then @interimAsmtBlocksOrdering[asmtSubject][grade].length else order
-          # If a most recent value is not present, set it to the current block
-          if not dataByName[grade][name]['mostRecent']
-            dataByName[grade][name]['mostRecent'] = block
-          else
-            placeholder = {'placeholder': true}
-            dataByName[grade][name]['previous'] ?= [placeholder, placeholder, placeholder]
-            dataByName[grade][name]['previousCounter'] ?= 0
-            prevCounter = dataByName[grade][name]['previousCounter']
-            if prevCounter < 3
-                dataByName[grade][name]['previous'][prevCounter] = block
-                dataByName[grade][name]['previousCounter'] +=1
-            else
-              dataByName[grade][name]['hasOlder'] = true
-              dataByName[grade][name]['older'] ?= []
-              dataByName[grade][name]['older'].push block
-          
-      # Group them back to a list and sort them
-      returnData = {}
-      for grade, gradeData of dataByName
-        returnData[grade] = []
-        for k, v of gradeData
-          returnData[grade].push(v)
-        returnData[grade].sort (x, y) ->
-          return -1 if x.displayOrder < y.displayOrder
-          return 1 if x.displayOrder > y.displayOrder
-          0
-        # After Sorting, divide it for display purposes
-        data[grade] = @divideInterimBlocksData returnData[grade]
-    
-    formatDate: (date) ->
-      date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
-       
-    processInterimBlocksData: () ->
-      @data['views'] ?= {}
-      for subjectAlias, subjectName of @data.subjects
-        subjectData = {}
-        dataByGrade = {}
-        grades = []
-        # Separate all the interim blocks by asmt_grades
-        for assessment in @data.all_results[subjectAlias]
-          asmt_grade = assessment['grade']
-          dataByGrade[asmt_grade] ?= [] 
-          grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
-          block_info = {'grade': @configData.labels.grade + " " + asmt_grade, 
-          'effective_date': @formatDate(assessment['effective_date']), 
-          'name': assessment['claims'][0]['name'], 
-          'desc': assessment['claims'][0]['perf_lvl_name'], 
-          'level': assessment['claims'][0]['perf_lvl']}
-          dataByGrade[asmt_grade].push(block_info)
-        @splitByPerfBlockByName(subjectName, dataByGrade)
-        subjectData['grades'] = []
-        for grade in grades.sort().reverse()
-          subjectData['grades'].push dataByGrade[grade]
-        # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
-        @data['views'][subjectName] = subjectData
-  
     processData: () ->
       # TODO: below code should be made prettier someday
       for assessment, idx in @data.all_results
@@ -208,14 +127,91 @@ define [
           claim.perf_lvl_name = @configData.labels.asmt[claim.perf_lvl_name]
 
         key = assessment.effective_date + assessment.asmt_type
-        @data[key] ?= []
-        @data[key].push assessment if @data[key].length < 2
+        @data['views'] ?= {}
+        @data['views'][key] ?= []
+        @data['views'][key].push assessment if @data['views'][key].length < 2
         #TODO: temporary workaround for bulk pdf generation
         if assessment.asmt_type is 'Summative'
           default_key = assessment.asmt_period_year + 'Summative'
-          @data[default_key] ?= []
-          @data[default_key].push assessment if @data[default_key].length < 2
+          @data['views'][default_key] ?= []
+          @data['views'][default_key].push assessment if @data['views'][default_key].length < 2
 
+  class InterimBlocksDataProcessor extends DataProcessor
+    
+    process: () ->
+      # Ordering of interim assessment blocks
+      @interimAsmtBlocksOrdering = {}
+      for k, v of @data.subjects
+        @interimAsmtBlocksOrdering[v] = @configData.interimAssessmentBlocksOrdering[k]
+      @processData()
+      @data
+
+    splitByPerfBlockByName: (asmtSubject, data) ->
+      dataByName = {}
+      for grade, gradeData of data
+        dataByName[grade] ?= {}
+        for block in gradeData
+          name = block['name']
+          dataByName[grade][name]?= {}
+          # Get the order in which this block is suppose to be displayed in
+          order = @interimAsmtBlocksOrdering[asmtSubject][grade]?.indexOf(block["name"]) || 0 # We don't know about this grade, use 0
+          dataByName[grade][name]['displayOrder'] = if order is -1 then @interimAsmtBlocksOrdering[asmtSubject][grade].length else order
+          # If a most recent value is not present, set it to the current block
+          if not dataByName[grade][name]['mostRecent']
+            dataByName[grade][name]['mostRecent'] = block
+          else
+            placeholder = {'placeholder': true}
+            dataByName[grade][name]['previous'] ?= [placeholder, placeholder, placeholder]
+            dataByName[grade][name]['previousCounter'] ?= 0
+            prevCounter = dataByName[grade][name]['previousCounter']
+            if prevCounter < 3
+                dataByName[grade][name]['previous'][prevCounter] = block
+                dataByName[grade][name]['previousCounter'] +=1
+            else
+              dataByName[grade][name]['hasOlder'] = true
+              dataByName[grade][name]['older'] ?= []
+              dataByName[grade][name]['older'].push block
+          
+      # Group them back to a list and sort them
+      returnData = {}
+      for grade, gradeData of dataByName
+        returnData[grade] = []
+        for k, v of gradeData
+          returnData[grade].push(v)
+        returnData[grade].sort (x, y) ->
+          return -1 if x.displayOrder < y.displayOrder
+          return 1 if x.displayOrder > y.displayOrder
+          0
+        data[grade] = {"blocks": returnData[grade]}
+    
+    formatDate: (date) ->
+      date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
+       
+    processData: () ->
+      @data['views'] ?= {}
+      asmt_year = @data.all_results.asmt_period_year
+      for subjectAlias, subjectName of @data.subjects
+        subjectData = {}
+        dataByGrade = {}
+        grades = []
+        # Separate all the interim blocks by asmt_grades
+        for assessment in @data.all_results[subjectAlias]
+          asmt_grade = assessment['grade']
+          dataByGrade[asmt_grade] ?= [] 
+          grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
+          block_info = {'grade': @configData.labels.grade + " " + asmt_grade, 
+          'effective_date': @formatDate(assessment['effective_date']), 
+          'name': assessment['claims'][0]['name'], 
+          'desc': assessment['claims'][0]['perf_lvl_name'], 
+          'level': assessment['claims'][0]['perf_lvl']}
+          dataByGrade[asmt_grade].push(block_info)
+        @splitByPerfBlockByName(subjectName, dataByGrade)
+        subjectData['grades'] = []
+        for grade in grades.sort().reverse()
+          subjectData['grades'].push dataByGrade[grade]
+        # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
+        @data['views'][asmt_year + subjectName] = subjectData
+      
 
   class EdwareISR
 
@@ -230,13 +226,13 @@ define [
 
     loadPage: (template) ->
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
-      @isBlock = if @params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
-      @data = new DataProcessor(data, @configData, @isGrayscale, @isBlock).process()
+      @dataFactory ?= new DataFactory()
+      @data = @dataFactory.createDataProcessor(data, @configData, @isGrayscale, @isBlock).process()
       @data.labels = @configData.labels
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
-      @render()
+      @updateView()
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
@@ -314,8 +310,7 @@ define [
           if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
             return asmt['effective_date'] + asmt['asmt_type']
           else
-            # TODO: read it from somewhere else
-            return edwarePreferences.getAsmtView()
+            return asmt['asmt_period_year'] + @getAsmtViewSelection()
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
@@ -326,34 +321,36 @@ define [
       @isPdf = params['pdf']
       if not @isPdf
         isrAsmt = edwarePreferences.getAsmtForISR()
+        # We need to read from storage since the user might have changed selection from dropdown
         if isrAsmt
           asmtType = isrAsmt['asmt_type']
           effectiveDate = isrAsmt['effective_date']
+          asmtYear = isrAsmt['asmt_period_year']
         params['asmtType'] = asmtType.toUpperCase() if asmtType
+        @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
         params['effectiveDate'] = effectiveDate if effectiveDate
+        params['asmtYear'] = asmtYear if asmtYear
       else
         params['asmtType'] = params['asmtType'].toUpperCase() if params['asmtType']
       @params = params
     
     updateView: () ->
+      # Decides whether we need to render or retrieve data from server
       cacheKey = @getCacheKey()
       if not @data['views']?[cacheKey]
         this.prepareParams()
         this.fetchData()
       else
+        @data.current = @data['views'][cacheKey]
         this.render()
       
     render: () ->
       # Get tenant level branding
       @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
-
       # The template for Interim Block is different
       if @isBlock
         @renderInterimBlockView()
       else
-        cacheKey = @getCacheKey()
-        @data.current = @data[cacheKey]
-
         # use mustache template to display the json data
         output = Mustache.to_html isrTemplate, @data
         $("#individualStudentContent").html output
@@ -431,7 +428,6 @@ define [
 
     renderInterimBlockView: () ->
       viewName = @getAsmtViewSelection()
-      @data.current = @data['views'][viewName]
       # Update subject text and asmt period year that is unique according to the view
       @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[viewName]
       @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']

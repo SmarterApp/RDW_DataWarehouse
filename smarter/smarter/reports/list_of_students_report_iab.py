@@ -113,6 +113,7 @@ def get_list_of_students_iab(params):
         query = query.where(and_(fact_block_asmt_outcome.c.school_id == schoolId))
         query = query.where(and_(fact_block_asmt_outcome.c.district_id == districtId))
         query = query.where(and_(fact_block_asmt_outcome.c.asmt_year == asmtYear))
+        query = query.where(and_(fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_block_asmt_outcome.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
         query = apply_filter_to_query(query, fact_block_asmt_outcome, dim_student, params)
         if asmtSubject is not None:
@@ -125,15 +126,20 @@ def get_list_of_students_iab(params):
 
 
 def get_IAB_claims(assessments, subjects):
-    claim_name = set()
+    claim_name = {}
     for effective_date in assessments.keys():
         iab = assessments[effective_date][capwords(AssessmentType.INTERIM_ASSESSMENT_BLOCKS)]
         for student_guid in iab.keys():
             for subject_name in subjects.keys():
                 subject = iab[student_guid].get(subject_name)
                 if subject is not None:
+                    claim_name_by_subject = claim_name.get(subject_name, set())
                     claims = subject['claims']
                     for claim in claims:
                         name = claim['name']
-                        claim_name.add(name)
-    return sorted(claim_name)
+                        claim_name_by_subject.add(name)
+                    claim_name[subject_name] = claim_name_by_subject
+    for subject in claim_name.keys():
+        sorted(claim_name[subject])
+        claim_name[subject] = list(claim_name[subject])
+    return claim_name

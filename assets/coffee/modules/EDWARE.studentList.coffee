@@ -149,7 +149,7 @@ define [
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type
       if asmtType is Constants.ASMT_TYPE.IAB
-        return @getIAB(params, viewName)
+        return @getIAB(params)
       else
         return @getSummativeAndInterim(asmt, viewName)
 

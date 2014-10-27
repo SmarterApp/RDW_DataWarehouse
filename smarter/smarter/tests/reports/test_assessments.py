@@ -68,9 +68,10 @@ class TestAssessments(unittest.TestCase):
                   'asmt_score_max': 500,
                   'asmt_claim_1_score': 2,
                   'asmt_claim_1_name': 'name',
-                  'asmt_subject': 'ELA'}
+                  'asmt_subject': 'ELA',
+                  'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)
-        self.assertEqual(len(result), 3)
+        self.assertEqual(len(result), 4)
         self.assertTrue(len(claims), 1)
         self.assertEqual(claims[0]['name2'], '{{labels.claim}} 1')
 
@@ -91,9 +92,10 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_2_score_max': 5,
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
-                  'asmt_claim_2_name': 'Two'}
+                  'asmt_claim_2_name': 'Two',
+                  'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_names=True, include_scores=True)
-        self.assertEqual(len(result), 4)
+        self.assertEqual(len(result), 5)
         self.assertTrue(len(claims), 2)
         self.assertEqual(claims[1]['name2'], '{{labels.claims}} 2 & 4')
 
@@ -114,9 +116,10 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_2_score_max': 5,
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
-                  'asmt_claim_2_name': 'Two'}
+                  'asmt_claim_2_name': 'Two',
+                  'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_names=True)
-        self.assertEqual(len(result), 4)
+        self.assertEqual(len(result), 5)
         self.assertTrue(len(claims), 2)
         self.assertEqual(claims[1]['name2'], '{{labels.claim}} 2')
         self.assertEqual(len(claims[0]), 2)
@@ -141,7 +144,8 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_2_score_max': 5,
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
-                  'asmt_claim_2_name': 'Two'}
+                  'asmt_claim_2_name': 'Two',
+                  'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_scores=True)
         self.assertEqual(len(claims), 2)
         self.assertEqual(len(claims[0]), 6)
@@ -166,7 +170,8 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_2_score_max': 5,
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
-                  'asmt_claim_2_name': 'Two'}
+                  'asmt_claim_2_name': 'Two',
+                  'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_indexer=True)
         self.assertEqual(len(claims), 2)
         self.assertEqual(len(claims[0]), 1)
@@ -190,7 +195,8 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_2_score_max': 5,
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
-                  'asmt_claim_2_name': 'Two'}
+                  'asmt_claim_2_name': 'Two',
+                  'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_min_max_scores=True)
         self.assertEqual(len(claims), 2)
         self.assertEqual(len(claims[0]), 2)
@@ -225,5 +231,4 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(grouped_sections, {})
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

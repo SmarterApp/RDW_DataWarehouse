@@ -57,14 +57,13 @@ define [
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
         edwarePreferences.saveAsmtForISR asmt
-      @setSelectedValue @getAsmtDisplayText(asmt)
+      @setSelectedValue asmt
 
     bindEvents: () ->
       self = this
       $(@container).onClickAndEnterKey '.asmtSelection', ->
         asmt = self.parseAsmtInfo $(this)
-        displayText = self.getAsmtDisplayText(asmt)
-        self.setSelectedValue displayText
+        self.setSelectedValue asmt
         # additional parameters
         self.callbacks.onAsmtYearSelected(asmt)
 
@@ -77,7 +76,6 @@ define [
       $('.btn-group', @container).focuslost ->
         $(this).removeClass('open')
 
-
     parseAsmtInfo: ($option) ->
       display: $option.data('display')
       asmt_type: $option.data('asmttype')
@@ -86,8 +84,17 @@ define [
       asmt_grade: $option.data('grade')
       asmt_period_year: $option.data('asmtperiodyear')
 
-    setSelectedValue: (value) ->
-      $('#selectedAsmtType').html value
+    setSelectedValue: (asmt) ->
+      displayText = @getAsmtDisplayText(asmt)
+      $('#selectedAsmtType').html displayText
+      # show iab message
+      $IABMessage =  $(".IABMessage")
+      grade = @config.grade
+      if asmt?.asmt_type is Constants.ASMT_TYPE.IAB and grade
+        $('.grade', ".IABMessage").html grade
+        $IABMessage.show()
+      else
+        $IABMessage.hide()
 
     getAsmtDisplayText: (asmt)->
       # Format for interim blocks is different

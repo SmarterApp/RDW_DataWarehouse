@@ -173,7 +173,7 @@ define [
       @subjectsData = data.subjects
       @userData = data.user_info
       @academicYears = data.asmt_period_year
-      @grade = @contextData['items'][4]
+      @config.grade = @contextData['items'][4]
       @renderBreadcrumbs(@labels)
       @renderReportInfo()
       @renderReportActionBar()

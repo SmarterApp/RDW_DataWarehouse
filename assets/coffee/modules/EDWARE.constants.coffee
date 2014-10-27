@@ -27,6 +27,7 @@ define [], () ->
   ASMT_TYPE: {
     SUMMATIVE: 'Summative'
     INTERIM: 'Interim Comprehensive'
+    IAB: 'Interim Assessment Blocks'
     'INTERIM COMPREHENSIVE': 'Interim Comprehensive'
     'INTERIM ASSESSMENT BLOCKS': 'Interim Assessment Blocks'
   }

@@ -16,10 +16,6 @@
         },
         "Level4": {
             "Name": "Thorough Understanding"
-        },
-        "Level5": {
-            "Name": "Dummy Understanding",
-            "CutPoint": "2900"
         }
     },
     "Claims": {
@@ -34,10 +30,6 @@
         "Claim3": {
             "Name": "Listening",
             "Mapping": "Claim3"
-        },
-        "Claim4": {
-            "Name": "Research & Inquiry",
-            "Mapping": "Claim4"
         }
     },
     "ClaimsPerformanceLevel": {

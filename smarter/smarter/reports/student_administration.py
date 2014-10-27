@@ -56,6 +56,7 @@ def get_block_asmt_administration(state_code, district_id=None, school_id=None, 
         query = query.where(fact_block_asmt.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_block_asmt.c.state_code == state_code).\
             where(and_(fact_block_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS)).\
+            where(and_(fact_block_asmt.c.rec_status == Constants.CURRENT)).\
             group_by(dim_asmt.c.asmt_period_year, fact_block_asmt.c.asmt_type)
         if district_id:
             query = query.where(and_(fact_block_asmt.c.district_id == district_id))

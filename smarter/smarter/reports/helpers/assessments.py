@@ -6,6 +6,7 @@ Created on Mar 20, 2013
 @author: dip
 '''
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import AssessmentType
 
 
 def get_overall_asmt_interval(result):
@@ -78,9 +79,11 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
             if include_names:
                 # TODO: refactor, process by subject
                 claim_object['name'] = claim_name
-                claim_object['name2'] = '{{labels.claim}} ' + str(index)
-                if result['asmt_subject'] == 'Math' and index == 2:
-                    claim_object['name2'] = '{{labels.claims}} 2 & 4'
+                # For Interim Blocks, we don't care about the name alias
+                if result.get('asmt_type') != AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
+                    claim_object['name2'] = '{{labels.claim}} ' + str(index)
+                    if result['asmt_subject'] == 'Math' and index == 2:
+                        claim_object['name2'] = '{{labels.claims}} 2 & 4'
 
             claims.append(claim_object)
 

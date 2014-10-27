@@ -7,18 +7,21 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_, select
-from smarter.reports.helpers.filters import apply_filter_to_query
-from smarter.reports.helpers.assessments import get_claims, get_cut_points
+from smarter.reports.helpers.filters import apply_filter_to_query,\
+    get_student_demographic
+from smarter.reports.helpers.assessments import get_claims, get_cut_points,\
+    get_overall_asmt_interval
 from edapi.cache import cache_region
 from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from smarter.reports.list_of_students_report_utils import get_group_filters, \
-    __reverse_map, format_assessments
+    __reverse_map
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.student_administration import get_asmt_administration_years, \
     get_asmt_academic_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from smarter_common.security.constants import RolesConstants
+from string import capwords
 
 
 def get_list_of_students_report_fao(params):
@@ -31,7 +34,7 @@ def get_list_of_students_report_fao(params):
     results = get_list_of_students_fao(params)
     subjects_map = get_subjects_map(asmtSubject)
     los_results = {}
-    los_results['assessments'] = format_assessments(results, subjects_map)
+    los_results['assessments'] = format_assessments_fao(results, subjects_map)
     los_results['groups'] = get_group_filters(results)
 
     # query dim_asmt to get cutpoints
@@ -200,3 +203,49 @@ def __format_cut_points(results, subjects_map, custom_metadata_map):
         # Remove unnecessary data
         del(cutpoint['asmt_subject'])
     return {'cutpoints': cutpoints, 'claims': claims, Constants.BRANDING: custom_metadata_map.get(Constants.BRANDING)}
+
+
+def format_assessments_fao(results, subjects_map):
+    '''
+    Format student assessments.
+    '''
+
+    assessments = {}
+    # Formatting data for Front End
+    for result in results:
+        effectiveDate = result['effective_date']  # e.g. 20140401
+        asmtDict = assessments.get(effectiveDate, {})
+        asmtType = capwords(result['asmt_type'], ' ')  # Summative, Interim
+        asmtList = asmtDict.get(asmtType, {})
+        studentId = result['student_id']  # e.g. student_1
+
+        student = asmtList.get(studentId, {})
+        student['student_id'] = studentId
+        student['student_first_name'] = result['first_name']
+        student['student_middle_name'] = result['middle_name']
+        student['student_last_name'] = result['last_name']
+        student['enrollment_grade'] = result['enrollment_grade']
+        student['state_code'] = result['state_code']
+        student['demographic'] = get_student_demographic(result)
+        student[Constants.ROWID] = result['student_id']
+
+        subject = subjects_map[result['asmt_subject']]
+        assessment = student.get(subject, {})
+        assessment['group'] = []  # for student group filter
+        for i in range(1, 11):
+            if result['group_{count}_id'.format(count=i)] is not None:
+                assessment['group'].append(result['group_{count}_id'.format(count=i)])
+        assessment['asmt_grade'] = result['asmt_grade']
+        assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
+
+        assessment['asmt_score'] = result['asmt_score']
+        assessment['asmt_score_range_min'] = result['asmt_score_range_min']
+        assessment['asmt_score_range_max'] = result['asmt_score_range_max']
+        assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
+        assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
+
+        student[subject] = assessment
+        asmtList[studentId] = student
+        asmtDict[asmtType] = asmtList
+        assessments[effectiveDate] = asmtDict
+    return assessments

@@ -8,15 +8,17 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
 from smarter_common.security.constants import RolesConstants
-from smarter.reports.helpers.filters import apply_filter_to_query
+from smarter.reports.helpers.filters import apply_filter_to_query, \
+    get_student_demographic
 from smarter.reports.helpers.metadata import get_subjects_map
-from smarter.reports.list_of_students_report_utils import get_group_filters,\
-    __reverse_map, format_assessments
+from smarter.reports.list_of_students_report_utils import get_group_filters, \
+    __reverse_map
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from smarter.reports.student_administration import get_asmt_administration_years,\
+from smarter.reports.student_administration import get_asmt_administration_years, \
     get_asmt_academic_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
+from smarter.reports.helpers.assessments import get_claims
 
 
 def get_list_of_students_report_iab(params):
@@ -29,7 +31,7 @@ def get_list_of_students_report_iab(params):
     results = get_list_of_students_iab(params)
     subjects_map = get_subjects_map(asmtSubject)
     los_results = {}
-    los_results[Constants.ASSESSMENTS] = format_assessments(results, subjects_map, iab=True)
+    los_results[Constants.ASSESSMENTS] = format_assessments_iab(results, subjects_map)
     los_results['groups'] = get_group_filters(results)
 
     # color metadata
@@ -40,7 +42,7 @@ def get_list_of_students_report_iab(params):
     los_results[Constants.ASMT_ADMINISTRATION] = get_asmt_administration_years(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
-    los_results[Constants.INTERIM_ASSESSMENT_BLOCKS] = get_IAB_claims(los_results[Constants.ASSESSMENTS], los_results[Constants.SUBJECTS])
+    los_results[Constants.INTERIM_ASSESSMENT_BLOCKS] = get_IAB_claims(los_results[Constants.ASSESSMENTS][AssessmentType.INTERIM_ASSESSMENT_BLOCKS], los_results[Constants.SUBJECTS])
 
     return los_results
 
@@ -127,19 +129,69 @@ def get_list_of_students_iab(params):
 
 def get_IAB_claims(assessments, subjects):
     claim_name = {}
-    for effective_date in assessments.keys():
-        iab = assessments[effective_date][capwords(AssessmentType.INTERIM_ASSESSMENT_BLOCKS)]
-        for student_guid in iab.keys():
+    for studentId in assessments.keys():
+        effective_date_dict = assessments[studentId][Constants.EFFECTIVE_DATE]
+        for effective_date in effective_date_dict.keys():
             for subject_name in subjects.keys():
-                subject = iab[student_guid].get(subject_name)
-                if subject is not None:
-                    claim_name_by_subject = claim_name.get(subject_name, set())
-                    claims = subject['claims']
-                    for claim in claims:
-                        name = claim['name']
-                        claim_name_by_subject.add(name)
-                    claim_name[subject_name] = claim_name_by_subject
+                subject_list = effective_date_dict[effective_date].get(subject_name)
+                if subject_list is not None:
+                    for subject in subject_list:
+                        claims = subject['claims']
+                        claim_name_by_subject = claim_name.get(subject_name, set())
+                        for claim in claims:
+                            name = claim['name']
+                            claim_name_by_subject.add(name)
+                        claim_name[subject_name] = claim_name_by_subject
     for subject in claim_name.keys():
         sorted(claim_name[subject])
         claim_name[subject] = list(claim_name[subject])
     return claim_name
+
+
+def format_assessments_iab(results, subjects_map):
+    '''
+    Format student assessments.
+    '''
+
+    assessments = {}
+    # Formatting data for Front End
+    for result in results:
+        effectiveDate = result['effective_date']  # e.g. 20140401
+        studentId = result['student_id']  # e.g. student_1
+        student = assessments.get(studentId, {})
+        if not student:
+            student['student_id'] = studentId
+            student['student_first_name'] = result['first_name']
+            student['student_middle_name'] = result['middle_name']
+            student['student_last_name'] = result['last_name']
+            student['enrollment_grade'] = result['enrollment_grade']
+            student['state_code'] = result['state_code']
+            student['demographic'] = get_student_demographic(result)
+            student[Constants.ROWID] = result['student_id']
+            
+        subject = subjects_map[result['asmt_subject']]
+        effectiveDate_dict = student.get(Constants.EFFECTIVE_DATE, {})
+        effectiveDate_data = effectiveDate_dict.get(effectiveDate, {})
+        effectiveDate_data_subject = effectiveDate_data.get(subject, [])
+
+        assessment = {}
+        assessment['group'] = []  # for student group filter
+        for i in range(1, 11):
+            if result['group_{count}_id'.format(count=i)] is not None:
+                assessment['group'].append(result['group_{count}_id'.format(count=i)])
+        assessment['asmt_grade'] = result['asmt_grade']
+        assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
+        claims = assessment.get('claims', [])
+        claims.append(get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0])
+        assessment['claims'] = claims
+
+        effectiveDate_data_subject.append(assessment)
+        # student[subject] = assessment
+        # asmtList[studentId] = student
+        # asmtDict[asmtType] = asmtList
+        # assessments[effectiveDate] = asmtDict
+        effectiveDate_data[subject] = effectiveDate_data_subject
+        effectiveDate_dict[effectiveDate] = effectiveDate_data
+        student[Constants.EFFECTIVE_DATE] = effectiveDate_dict
+        assessments[studentId] = student
+    return {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: assessments}

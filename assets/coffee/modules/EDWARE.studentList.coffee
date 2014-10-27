@@ -71,6 +71,13 @@ define [
       @columnData = @createColumns()
       @formatAssessmentsData()
 
+    getColumnData: (viewName) ->
+      asmtType = edwarePreferences.getAsmtType()
+      if asmtType is "Interim Assessment Blocks"
+        return @columnData[asmtType]
+      else
+        return @columnData[viewName][0]["items"][0]["field"]
+
     createColumns: () ->
       # Use mustache template to replace text in json config
       # Add assessments data there so we can get column names and translate column names
@@ -122,9 +129,29 @@ define [
             allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
             allsubjects.push row  if row not in allsubjects
 
-    getAsmtData: (viewName)->
+    getAsmtData: (viewName, params)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
+      asmtType = asmt.asmt_type
+      if asmtType is Constants.ASMT_TYPE.IAB
+        return @getIAB(params)
+      else
+        return @getSummativeAndInterim(asmt, viewName)
+
+    getIAB: (params) ->
+      if not @cache[Constants.ASMT_TYPE.IAB]
+        # load IAB data from server
+        params['asmtType'] = "INTERIM ASSESSMENT BLOCKS"
+        loadingData = edwareDataProxy.getDatafromSource "/data/list_of_students",
+          method: "POST"
+          async: false
+          params: params
+        self = this
+        loadingData.done (data)->
+          compiled = Mustache.render JSON.stringify(data), "labels": self.labels
+          return compiled
+
+    getSummativeAndInterim: (asmt, viewName) ->
       effectiveDate = asmt.effective_date
       asmtType = asmt.asmt_type
       data = @cache[effectiveDate]?[asmtType]?[viewName]
@@ -289,10 +316,6 @@ define [
       edwarePreferences.saveSubjectPreference subjects
 
     updateView: () ->
-      asmtType = edwarePreferences.getAsmtType()
-      if asmtType is "Interim Assessment Blocks" 
-        @params['asmtType'] = "INTERIM ASSESSMENT BLOCKS"
-        @reload @params
       viewName = edwarePreferences.getAsmtView()
       viewName = viewName || @studentsDataSet.allSubjects
       # Add dark border color between Math and ELA section
@@ -317,11 +340,11 @@ define [
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
-      asmtData = @studentsDataSet.getAsmtData(viewName)
-      filedName = @studentsDataSet.columnData[viewName][0]["items"][0]["field"]
+      asmtData = @studentsDataSet.getAsmtData(viewName, @params)
+      fieldName = @studentsDataSet.getColumnData(viewName)
       # get filtered data and we pass in the first columns' config
       # field name for sticky chain list
-      filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, filedName)
+      filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, fieldName)
 
       self = this
       edwareGrid.create {

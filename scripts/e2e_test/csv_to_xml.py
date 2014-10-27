@@ -199,10 +199,10 @@ def convert_to_xml(l):
     data['asmt_claim_3_score_range_min'] = l[33]
     data['asmt_claim_3_score_range_max'] = l[34]
 
-    data['asmt_claim_4_score'] = l[36]
-    data['asmt_claim_4_perf_lvl'] = l[39]
-    data['asmt_claim_4_score_range_min'] = l[37]
-    data['asmt_claim_4_score_range_max'] = l[38]
+    data['asmt_claim_4_score'] = l[36] or 0
+    data['asmt_claim_4_perf_lvl'] = l[39] or 0
+    data['asmt_claim_4_score_range_min'] = l[37] or 0
+    data['asmt_claim_4_score_range_max'] = l[38] or 0
 
     data['acc_asl_video_embed'] = l[54] or 0
     data['acc_noise_buffer_nonembed'] = l[55] or 0

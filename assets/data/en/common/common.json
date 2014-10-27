@@ -412,7 +412,6 @@
             }
         }
     },
-
     "column_for_iab": {
         "name": "{{subject}}",
         "displayTpl": "<a href='#' class='inherit'>{{subject}}</a>",
@@ -425,9 +424,8 @@
         "title": false,
         "export": true
     },
-    
     "students_iab": {
-        "ELA": [ 
+        "ELA": [
             {
                 "items": [
                     {
@@ -444,11 +442,11 @@
                         "hidden": true,
                         "sortorder": "asc",
                         "export": true
-                    }          
+                    }
                 ]
             }
         ],
-        "Math": [ 
+        "Math": [
             {
                 "items": [
                     {
@@ -465,7 +463,7 @@
                         "hidden": true,
                         "sortorder": "asc",
                         "export": true
-                    }        
+                    }
                 ]
             }
         ]

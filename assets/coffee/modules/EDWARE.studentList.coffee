@@ -73,25 +73,22 @@ define [
 
     getColumnData: (viewName) ->
       asmtType = edwarePreferences.getAsmtType()
-      if asmtType is "Interim Assessment Blocks"
-        return @createColumnsIAB()
-      else
-        return @columnData[viewName][0]["items"][0]["field"]
+      if asmtType is Constants.ASMT_TYPE.IAB and viewName is @allSubjects
+        viewName = 'Math'  #TODO:
+      return @columnData[asmtType][viewName][0]["items"][0]["field"]
 
-    createColumns: () ->
-      # Use mustache template to replace text in json config
-      # Add assessments data there so we can get column names and translate column names
-      asmtType = edwarePreferences.getAsmtType()
-      if asmtType is "Interim Assessment Blocks"
-        @columnData = @createColumnsIAB()
-      else
-        columnData = @createColumnsSummativeInterim()
+    createColumns: (Type) ->
+      columnData = {}
+      SummativeInterim = @createColumnsSummativeInterim()
+      columnData[Constants.ASMT_TYPE.SUMMATIVE] = SummativeInterim
+      columnData[Constants.ASMT_TYPE.INTERIM] = SummativeInterim
+      columnData
 
-    createColumnsIAB: () ->
-      combinedData = $.extend(true, {}, this.data.subjects)
+    createColumnsIAB: (data) ->
+      combinedData = $.extend(true, {}, data.subjects)
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
 
-      columns = this.data.interim_assessment_blocks
+      columns = data.interim_assessment_blocks
       for idx, column of columns
         iab_column_details = { subject : column}
         column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
@@ -134,6 +131,19 @@ define [
             allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
             allsubjects.push row  if row not in allsubjects
 
+    formatIABData: (assessmentsData) ->
+      @cache[Constants.ASMT_TYPE.IAB] ?= {}
+      for effectiveDate, assessments of assessmentsData
+        for asmtType, studentList of assessments
+          for studentId, assessment of studentList
+            continue if assessment.hide
+            row = new StudentModel(effectiveDate, this).init assessment
+            # push to each subject view
+            for subjectName, subjectType of @subjectsData
+              continue if not row[subjectName] or row[subjectName].hide
+              @cache[Constants.ASMT_TYPE.IAB][subjectType] ?= []
+              @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
+
     getAsmtData: (viewName, params)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
@@ -144,20 +154,30 @@ define [
         return @getSummativeAndInterim(asmt, viewName)
 
     getIAB: (params, viewName) ->
+      #TODO: this function looks so ugly, refactor this function
+      defer = $.Deferred()
+      if viewName is @allSubjects
+        viewName = 'Math'
       if not @cache[Constants.ASMT_TYPE.IAB]
         # load IAB data from server
         params['asmtType'] = "INTERIM ASSESSMENT BLOCKS"
         loadingData = edwareDataProxy.getDatafromSource "/data/list_of_students",
           method: "POST"
-          async: false
           params: params
         self = this
-        defer = $.Deferred()
         loadingData.done (data)->
           compiled = Mustache.render JSON.stringify(data), "labels": self.labels
-          fieldName = self.getColumnData(viewName)
-          defer.resolve data, fieldName
-        defer.promise()
+          self.formatIABData(data.assessments)
+          #TODO:
+          self.columnData[Constants.ASMT_TYPE.IAB] = self.createColumnsIAB(data)
+          data = self.cache[Constants.ASMT_TYPE.IAB][viewName]
+          columns = self.columnData[Constants.ASMT_TYPE.IAB][viewName]
+          defer.resolve data, columns
+      else
+        data = @cache[Constants.ASMT_TYPE.IAB][viewName]
+        columns = @columnData[Constants.ASMT_TYPE.IAB][viewName]
+        defer.resolve data, columns
+      defer.promise()
 
     getSummativeAndInterim: (asmt, viewName) ->
       effectiveDate = asmt.effective_date
@@ -166,9 +186,8 @@ define [
       if data
         for item in data
           item.assessments = item[asmtType]
-      fieldName = @getColumnData(viewName)
       defer = $.Deferred()
-      defer.resolve data, fieldName
+      defer.resolve data, @columnData[asmtType][viewName]
       defer.promise()
 
 
@@ -348,7 +367,7 @@ define [
 
     afterGridLoadComplete: () ->
       if window.gridTable_isLoaded is `undefined` or window.gridTable_isLoaded is false
-        $('#gridTable').jqGrid('setFrozenColumns') 
+        $('#gridTable').jqGrid('setFrozenColumns')
         window.gridTable_isLoaded = true
       this.stickyCompare.update()
       this.infoBar.update()
@@ -359,17 +378,15 @@ define [
       self = this
       $('#gridTable').jqGrid('GridUnload')
       loadData = @studentsDataSet.getAsmtData(viewName, @params)
-      
-      loadData.done (asmtData, fieldName) ->
-        alert(asmtData)
+      loadData.done (asmtData, columns) ->
         # get filtered data and we pass in the first columns' config
         # field name for sticky chain list
-
+        fieldName = self.studentsDataSet.getColumnData(viewName)
         filteredInfo = self.stickyCompare.getFilteredInfo(asmtData, fieldName)
 
         edwareGrid.create {
           data: filteredInfo.data
-          columns: self.studentsDataSet.columnData[viewName]
+          columns: columns
           options:
             labels: self.labels
             stickyCompareEnabled: filteredInfo.enabled

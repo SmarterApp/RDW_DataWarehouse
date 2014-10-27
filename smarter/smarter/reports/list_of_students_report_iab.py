@@ -168,7 +168,7 @@ def format_assessments_iab(results, subjects_map):
             student['state_code'] = result['state_code']
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
-            
+
         subject = subjects_map[result['asmt_subject']]
         effectiveDate_dict = student.get(Constants.EFFECTIVE_DATE, {})
         effectiveDate_data = effectiveDate_dict.get(effectiveDate, {})

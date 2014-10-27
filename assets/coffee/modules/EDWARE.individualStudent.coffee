@@ -24,7 +24,7 @@ define [
     new @dataClass data, configData, isGrayscale
     
   class DataProcessor
-    
+    # This is the Data Processor for Summative and Interim Comprehensive
     constructor: (@data, @configData, @isGrayscale) ->
 
     process: () ->
@@ -137,7 +137,7 @@ define [
           @data['views'][default_key].push assessment if @data['views'][default_key].length < 2
 
   class InterimBlocksDataProcessor extends DataProcessor
-    
+    # This is the Data Processor for Interim Assessment Blocks
     process: () ->
       # Ordering of interim assessment blocks
       @interimAsmtBlocksOrdering = {}

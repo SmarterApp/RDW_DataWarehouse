@@ -139,8 +139,10 @@ define [
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type
       if asmtType is Constants.ASMT_TYPE.IAB
+        $("#subjectSelectionMath_ELA").hide()
         return @getIAB(params)
       else
+        $("#subjectSelectionMath_ELA").show()
         return @getSummativeAndInterim(asmt, viewName)
 
     getIAB: (params, viewName) ->

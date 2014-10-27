@@ -327,6 +327,8 @@ define [
       # Add dark border color between Math and ELA section
       $('#gridWrapper').removeClass().addClass(viewName)
       $("#subjectSelection#{viewName}").addClass('selected')
+      if window.gridTable_isLoaded is `undefined` or window.gridTable_isLoaded is true
+        window.gridTable_isLoaded = false
       this.renderGrid viewName
 
     fetchData: (params) ->

@@ -163,7 +163,9 @@ define [
       if data
         for item in data
           item.assessments = item[asmtType]
-      data
+      defer = $.Deferred()
+      defer.resolve data
+      defer.promise()
 
 
   class StudentGrid
@@ -350,26 +352,28 @@ define [
       $('.jqg-second-row-header').remove()
 
     renderGrid: (viewName) ->
-      $('#gridTable').jqGrid('GridUnload')
-      asmtData = @studentsDataSet.getAsmtData(viewName, @params)
-      fieldName = @studentsDataSet.getColumnData(viewName)
-      # get filtered data and we pass in the first columns' config
-      # field name for sticky chain list
-      filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, fieldName)
-
       self = this
-      edwareGrid.create {
-        data: filteredInfo.data
-        columns: @studentsDataSet.columnData[viewName]
-        options:
-          labels: this.labels
-          stickyCompareEnabled: filteredInfo.enabled
-          gridComplete: () ->
-            self.afterGridLoadComplete()
-      }
-      @updateTotalNumber(filteredInfo.data?.length)
-      this.renderHeaderPerfBar()
-      $(document).trigger Constants.EVENTS.SORT_COLUMNS
+      $('#gridTable').jqGrid('GridUnload')
+      loadData = @studentsDataSet.getAsmtData(viewName, @params)
+      fieldName = @studentsDataSet.getColumnData(viewName)
+      loadData.done (asmtData) ->
+        alert(asmtData)
+        # get filtered data and we pass in the first columns' config
+        # field name for sticky chain list
+        filteredInfo = self.stickyCompare.getFilteredInfo(asmtData, fieldName)
+
+        edwareGrid.create {
+          data: filteredInfo.data
+          columns: self.studentsDataSet.columnData[viewName]
+          options:
+            labels: self.labels
+            stickyCompareEnabled: filteredInfo.enabled
+            gridComplete: () ->
+              self.afterGridLoadComplete()
+        }
+        self.updateTotalNumber(filteredInfo.data?.length)
+        self.renderHeaderPerfBar()
+        $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateTotalNumber: (total) ->
       reportType = Constants.REPORT_TYPE.GRADE

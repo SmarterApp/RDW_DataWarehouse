@@ -74,7 +74,7 @@ define [
     getColumnData: (viewName) ->
       asmtType = edwarePreferences.getAsmtType()
       if asmtType is "Interim Assessment Blocks"
-        return @columnData[asmtType]
+        return @createColumnsIAB()
       else
         return @columnData[viewName][0]["items"][0]["field"]
 
@@ -89,7 +89,7 @@ define [
 
     createColumnsIAB: () ->
       combinedData = $.extend(true, {}, this.data.subjects)
-      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab), combinedData))
+      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
 
       columns = this.data.interim_assessment_blocks
       for idx, column of columns
@@ -143,7 +143,7 @@ define [
       else
         return @getSummativeAndInterim(asmt, viewName)
 
-    getIAB: (params) ->
+    getIAB: (params, viewName) ->
       if not @cache[Constants.ASMT_TYPE.IAB]
         # load IAB data from server
         params['asmtType'] = "INTERIM ASSESSMENT BLOCKS"
@@ -152,9 +152,12 @@ define [
           async: false
           params: params
         self = this
+        defer = $.Deferred()
         loadingData.done (data)->
           compiled = Mustache.render JSON.stringify(data), "labels": self.labels
-          return compiled
+          fieldName = self.getColumnData(viewName)
+          defer.resolve data, fieldName
+        defer.promise()
 
     getSummativeAndInterim: (asmt, viewName) ->
       effectiveDate = asmt.effective_date
@@ -163,8 +166,9 @@ define [
       if data
         for item in data
           item.assessments = item[asmtType]
+      fieldName = @getColumnData(viewName)
       defer = $.Deferred()
-      defer.resolve data
+      defer.resolve data, fieldName
       defer.promise()
 
 
@@ -355,11 +359,12 @@ define [
       self = this
       $('#gridTable').jqGrid('GridUnload')
       loadData = @studentsDataSet.getAsmtData(viewName, @params)
-      fieldName = @studentsDataSet.getColumnData(viewName)
-      loadData.done (asmtData) ->
+      
+      loadData.done (asmtData, fieldName) ->
         alert(asmtData)
         # get filtered data and we pass in the first columns' config
         # field name for sticky chain list
+
         filteredInfo = self.stickyCompare.getFilteredInfo(asmtData, fieldName)
 
         edwareGrid.create {

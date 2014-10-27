@@ -17,8 +17,8 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.student_administration import get_asmt_administration_years, \
     get_asmt_academic_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
-from string import capwords
 from smarter.reports.helpers.assessments import get_claims
+import collections
 
 
 def get_list_of_students_report_iab(params):
@@ -123,28 +123,27 @@ def get_list_of_students_iab(params):
         if asmtGrade is not None:
             query = query.where(and_(fact_block_asmt_outcome.c.asmt_grade == asmtGrade))
 
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
+        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(dim_asmt.c.effective_date)
         return connector.get_result(query)
 
 
 def get_IAB_claims(assessments, subjects):
     claim_name = {}
     for studentId in assessments.keys():
-        effective_date_dict = assessments[studentId][Constants.EFFECTIVE_DATE]
-        for effective_date in effective_date_dict.keys():
-            for subject_name in subjects.keys():
-                subject_list = effective_date_dict[effective_date].get(subject_name)
-                if subject_list is not None:
-                    for subject in subject_list:
-                        claims = subject['claims']
+        for subject_name in subjects.keys():
+            subject_list = assessments[studentId].get(subject_name)
+            if subject_list is not None:
+                for date in subject_list.keys():
+                    effective_date = subject_list[date]
+                    for effective_date_data in effective_date:
+                        claims = effective_date_data['claims']
                         claim_name_by_subject = claim_name.get(subject_name, set())
                         for claim in claims:
                             name = claim['name']
                             claim_name_by_subject.add(name)
                         claim_name[subject_name] = claim_name_by_subject
     for subject in claim_name.keys():
-        sorted(claim_name[subject])
-        claim_name[subject] = list(claim_name[subject])
+        claim_name[subject] = list(sorted(claim_name[subject]))
     return claim_name
 
 
@@ -170,9 +169,8 @@ def format_assessments_iab(results, subjects_map):
             student[Constants.ROWID] = result['student_id']
 
         subject = subjects_map[result['asmt_subject']]
-        effectiveDate_dict = student.get(Constants.EFFECTIVE_DATE, {})
-        effectiveDate_data = effectiveDate_dict.get(effectiveDate, {})
-        effectiveDate_data_subject = effectiveDate_data.get(subject, [])
+        subject_dict = student.get(subject, collections.OrderedDict())
+        effectiveDate_data = subject_dict.get(effectiveDate, [])
 
         assessment = {}
         assessment['group'] = []  # for student group filter
@@ -185,13 +183,8 @@ def format_assessments_iab(results, subjects_map):
         claims.append(get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0])
         assessment['claims'] = claims
 
-        effectiveDate_data_subject.append(assessment)
-        # student[subject] = assessment
-        # asmtList[studentId] = student
-        # asmtDict[asmtType] = asmtList
-        # assessments[effectiveDate] = asmtDict
-        effectiveDate_data[subject] = effectiveDate_data_subject
-        effectiveDate_dict[effectiveDate] = effectiveDate_data
-        student[Constants.EFFECTIVE_DATE] = effectiveDate_dict
+        effectiveDate_data.append(assessment)
+        subject_dict[effectiveDate] = effectiveDate_data
+        student[subject] = subject_dict
         assessments[studentId] = student
     return {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: assessments}

@@ -133,12 +133,13 @@ def get_IAB_claims(assessments, subjects):
             for subject_name in subjects.keys():
                 subject = iab[student_guid].get(subject_name)
                 if subject is not None:
-                    claim_name_by_subject = claim_name.get(subject, set())
+                    claim_name_by_subject = claim_name.get(subject_name, set())
                     claims = subject['claims']
                     for claim in claims:
                         name = claim['name']
                         claim_name_by_subject.add(name)
-                    claim_name[subject] = claim_name_by_subject
+                    claim_name[subject_name] = claim_name_by_subject
     for subject in claim_name.keys():
         sorted(claim_name[subject])
+        claim_name[subject] = list(claim_name[subject])
     return claim_name

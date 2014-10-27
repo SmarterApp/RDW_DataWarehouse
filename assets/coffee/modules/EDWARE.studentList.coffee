@@ -74,6 +74,20 @@ define [
     createColumns: () ->
       # Use mustache template to replace text in json config
       # Add assessments data there so we can get column names and translate column names
+      asmtType = edwarePreferences.getAsmtType()
+      if asmtType is "Interim Assessment Blocks"
+        @columnData = @createColumnsIAB()
+      else
+        columnData = @createColumnsSummativeInterim()
+
+    createColumnsIAB: () ->
+      columns = JSON.parse(Mustache.render(JSON.stringify(this.data.interim_assessment_blocks), this.data))
+      combinedData = $.extend(true, {}, this.data.subjects)
+      #combinedData.columns = columns
+      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab), combinedData))
+      columnData
+
+    createColumnsSummativeInterim: () ->
       claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
       for idx, claim of claimsData.subject1
         claim.name = @labels.asmt[claim.name]
@@ -176,8 +190,8 @@ define [
       contextSecurity.apply()
 
     createCutPoints: () ->
-      cutPointsData = @data.metadata.cutpoints
-      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data))
+      cutPointsData = @data.metadata?.cutpoints
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data)) if cutPointsData
       #if cut points don't have background colors, then it will use default background colors
       for key, items of cutPointsData
         for interval, i in items.cut_point_intervals
@@ -275,6 +289,10 @@ define [
       edwarePreferences.saveSubjectPreference subjects
 
     updateView: () ->
+      asmtType = edwarePreferences.getAsmtType()
+      if asmtType is "Interim Assessment Blocks" 
+        @params['asmtType'] = "INTERIM ASSESSMENT BLOCKS"
+        @reload @params
       viewName = edwarePreferences.getAsmtView()
       viewName = viewName || @studentsDataSet.allSubjects
       # Add dark border color between Math and ELA section

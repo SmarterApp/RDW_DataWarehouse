@@ -88,8 +88,11 @@ define [
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
       for subject, columns of data.interim_assessment_blocks
         subjectName = data.subjects[subject]
-        for column in columns
-          iab_column_details = {subject: column}
+        for claim in columns
+          iab_column_details = {
+            subject: subject
+            claim: claim
+          }
           column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
           columnData[subjectName][0].items.push column
       columnData

@@ -413,10 +413,10 @@
         }
     },
     "column_for_iab": {
-        "name": "{{subject}}",
-        "displayTpl": "<a href='#' class='inherit'>{{subject}}</a>",
-        "index": "subject1.claims.0.perf_lvl",
-        "field": "subject1.claims.0.perf_lvl",
+        "name": "{{claim}}",
+        "displayTpl": "<a href='#' class='inherit'>{{claim}}</a>",
+        "index": "{{subject}}.claims.0.perf_lvl",
+        "field": "{{subject}}.claims.0.perf_lvl",
         "width": 160,
         "formatter": "showPerfLevel",
         "sorttype": "int",

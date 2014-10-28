@@ -91,7 +91,7 @@ define [
       $IABMessage =  $(".IABMessage")
       grade = @config.grade
       if asmt?.asmt_type is Constants.ASMT_TYPE.IAB and grade
-        $('.grade', ".IABMessage").html grade
+        $('.grade', ".IABMessage").html grade?.id
         $IABMessage.show()
       else
         $IABMessage.hide()

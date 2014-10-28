@@ -2494,6 +2494,19 @@ th.ui-th-column div {
     .detailsItem {
       margin-left: 15px;
 
+      &.iab_display {
+        .subjectSelection {
+          &:first-child {
+            display : none;
+          }
+
+          &:nth-child(2){
+            border-radius:3px 0 0 3px;
+            border-left:1px solid #bbbbbb;
+          }          
+        }
+      }
+
       .subjectSelection {
         height:30px;
         margin-top: -15px;

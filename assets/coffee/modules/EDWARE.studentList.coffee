@@ -146,8 +146,10 @@ define [
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type
       if asmtType is Constants.ASMT_TYPE.IAB
+        $(".detailsItem").addClass("iab_display")
         return @getIAB(params, viewName)
       else
+        $(".detailsItem").removeClass("iab_display")
         return @getSummativeAndInterim(asmt, viewName)
 
     getIAB: (params, viewName) ->

@@ -161,6 +161,7 @@ define [
           $("#subjectSelectionMath_ELA").addClass('btn btn-small subjectSelection selected')
           $("#subjectSelectionMath").removeClass('selected')
         $(".detailsItem").removeClass("iab_display")
+        viewName = "Math_ELA" if viewName is undefined
         return @getSummativeAndInterim(asmt, viewName)
 
     getIAB: (params, viewName) ->

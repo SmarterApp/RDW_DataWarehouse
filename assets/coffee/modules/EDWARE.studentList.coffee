@@ -386,6 +386,7 @@ define [
           columns: columns
           options:
             labels: self.labels
+            scroll: false
             stickyCompareEnabled: filteredInfo.enabled
             gridComplete: () ->
               self.afterGridLoadComplete()

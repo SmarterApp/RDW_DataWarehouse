@@ -148,7 +148,7 @@ define [
       colModelItem =
         name: column.field
         label: column.name
-        parentLabel: column.parent.name
+        parentLabel: column.parent?.name
         index: column.index
         width: column.width
         resizable: false # prevent the user from manually resizing the columns

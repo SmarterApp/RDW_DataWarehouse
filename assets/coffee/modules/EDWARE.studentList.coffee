@@ -23,7 +23,7 @@ define [
 
   class StudentModel
 
-    constructor: (@effectiveDate, @dataSet) ->
+    constructor: (@dataSet) ->
 
     init: (row) ->
       @appendColors row
@@ -44,8 +44,8 @@ define [
           value.score_bg_color = "#D0D0D0"
           value.score_text_color = "#000000"
         else
-          value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].bg_color
-          value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].text_color
+          value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.bg_color
+          value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.text_color
 
     appendExtraInfo: (row) ->
       # Format student name
@@ -85,15 +85,13 @@ define [
       columnData
 
     createColumnsIAB: (data) ->
-      combinedData = $.extend(true, {}, data.subjects)
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
-
-      columns = data.interim_assessment_blocks
-      for idx, column of columns
-        iab_column_details = { subject : column}
-        column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
-        columnData.ELA[0].items.push column
-        columnData.Math[0].items.push column
+      for subject, columns of data.interim_assessment_blocks
+        subjectName = data.subjects[subject]
+        for column in columns
+          iab_column_details = {subject: column}
+          column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
+          columnData[subjectName][0].items.push column
       columnData
 
     createColumnsSummativeInterim: () ->
@@ -116,7 +114,7 @@ define [
           @cache[effectiveDate][asmtType] ?= {}
           for studentId, assessment of studentList
             continue if assessment.hide
-            row = new StudentModel(effectiveDate, this).init assessment
+            row = new StudentModel(this).init assessment
             showAllSubjects = false
             # push to each subject view
             for subjectName, subjectType of @subjectsData
@@ -133,23 +131,22 @@ define [
 
     formatIABData: (assessmentsData) ->
       @cache[Constants.ASMT_TYPE.IAB] ?= {}
-      for effectiveDate, assessments of assessmentsData
-        for asmtType, studentList of assessments
-          for studentId, assessment of studentList
-            continue if assessment.hide
-            row = new StudentModel(effectiveDate, this).init assessment
-            # push to each subject view
-            for subjectName, subjectType of @subjectsData
-              continue if not row[subjectName] or row[subjectName].hide
-              @cache[Constants.ASMT_TYPE.IAB][subjectType] ?= []
-              @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
+      for asmtType, studentList of assessmentsData
+        for studentId, assessment of studentList
+          continue if assessment.hide
+          row = new StudentModel(this).init assessment
+          # push to each subject view
+          for subjectName, subjectType of @subjectsData
+            continue if not row[subjectName] or row[subjectName].hide
+            @cache[Constants.ASMT_TYPE.IAB][subjectType] ?= []
+            @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
 
     getAsmtData: (viewName, params)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type
       if asmtType is Constants.ASMT_TYPE.IAB
-        return @getIAB(params)
+        return @getIAB(params, viewName)
       else
         return @getSummativeAndInterim(asmt, viewName)
 

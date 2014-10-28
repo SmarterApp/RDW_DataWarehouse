@@ -441,7 +441,8 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
-                        "export": true
+                        "export": true,
+                        "frozen": true
                     }
                 ]
             }
@@ -462,7 +463,8 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
-                        "export": true
+                        "export": true,
+                        "frozen": true
                     }
                 ]
             }

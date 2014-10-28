@@ -134,6 +134,9 @@ def get_IAB_claims(assessments, subjects):
             subject_list = assessments[studentId].get(subject_name)
             if subject_list is not None:
                 for date in subject_list.keys():
+                    # TODO: daniel's hack
+                    if date == 'claims':
+                        continue
                     effective_date = subject_list[date]
                     for effective_date_data in effective_date:
                         claims = effective_date_data['claims']
@@ -185,6 +188,8 @@ def format_assessments_iab(results, subjects_map):
 
         effectiveDate_data.append(assessment)
         subject_dict[effectiveDate] = effectiveDate_data
+        # TODO: daniel's hack
+        subject_dict['claims'] = claims
         student[subject] = subject_dict
         assessments[studentId] = student
     return {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: assessments}

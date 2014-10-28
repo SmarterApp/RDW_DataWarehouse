@@ -20,7 +20,7 @@ define [
       autoencode: true
       rowNum: 100
       gridview: true
-      scroll: false
+      scroll: 1
       shrinkToFit: false
       defaultWidth: 980
       loadComplete: () ->

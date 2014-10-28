@@ -134,9 +134,6 @@ def get_IAB_claims(assessments, subjects):
             subject_list = assessments[studentId].get(subject_name)
             if subject_list is not None:
                 for date in subject_list.keys():
-                    # TODO: daniel's hack
-                    if date == 'claims':
-                        continue
                     effective_date = subject_list[date]
                     for effective_date_data in effective_date:
                         claims = effective_date_data['claims']
@@ -171,9 +168,6 @@ def format_assessments_iab(results, subjects_map):
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
 
-        subject = subjects_map[result['asmt_subject']]
-        subject_dict = student.get(subject, collections.OrderedDict())
-        effectiveDate_data = subject_dict.get(effectiveDate, [])
 
         assessment = {}
         assessment['group'] = []  # for student group filter
@@ -183,13 +177,19 @@ def format_assessments_iab(results, subjects_map):
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
         claims = assessment.get('claims', [])
-        claims.append(get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0])
+        claim = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0]
+        claims.append(claim)
         assessment['claims'] = claims
+        claim_name = claims['name']
+        
 
-        effectiveDate_data.append(assessment)
-        subject_dict[effectiveDate] = effectiveDate_data
-        # TODO: daniel's hack
-        subject_dict['claims'] = claims
-        student[subject] = subject_dict
+        subject = subjects_map[result['asmt_subject']]
+        subject_dict = student.get(subject, {})
+        claim_dict = subject_dict.get(claim_name, collections.OrderedDict())
+        effectiveDate_data = claim_dict.get(effectiveDate, {})
+
+        effectiveDate_data[effectiveDate] = assessment
+        claim_dict[claim_name] = effectiveDate_data
+        student[subject] = claim_dict
         assessments[studentId] = student
     return {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: assessments}

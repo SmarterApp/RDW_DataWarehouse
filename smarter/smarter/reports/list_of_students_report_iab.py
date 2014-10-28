@@ -128,14 +128,15 @@ def get_list_of_students_iab(params):
 
 
 def get_IAB_claims(assessments, subjects):
-    claim_name = collections.defaultdict(list)
+    claim_names = {}
     for studentId in assessments.keys():
         for subject_name in subjects.keys():
             claim_list = assessments[studentId].get(subject_name)
-            if claim_list is not None:
-                for claim in claim_list.keys():
-                    claim_name[subject_name].append(claim)
-    return claim_name
+            claim_name = claim_names.get(subject_name, set())
+            for claim in claim_list.keys():
+                claim_name[subject_name].append(claim)
+            claim_names[subject_name] = claim_name
+    return claim_names
 
 
 def format_assessments_iab(results, subjects_map):

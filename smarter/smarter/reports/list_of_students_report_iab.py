@@ -42,6 +42,7 @@ def get_list_of_students_report_iab(params):
     los_results[Constants.ASMT_ADMINISTRATION] = get_asmt_administration_years(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
+    los_results[Constants.INTERIM_ASSESSMENT_BLOCKS] = get_IAB_claims(los_results[Constants.ASSESSMENTS][AssessmentType.INTERIM_ASSESSMENT_BLOCKS], los_results[Constants.SUBJECTS])
 
     return los_results
 
@@ -126,6 +127,17 @@ def get_list_of_students_iab(params):
         return connector.get_result(query)
 
 
+def get_IAB_claims(assessments, subjects):
+    claim_name = collections.defaultdict(list)
+    for studentId in assessments.keys():
+        for subject_name in subjects.keys():
+            claim_list = assessments[studentId].get(subject_name)
+            if claim_list is not None:
+                for claim in claim_list.keys():
+                    claim_name[subject_name].append(claim)
+    return claim_name
+
+
 def format_assessments_iab(results, subjects_map):
     '''
     Format student assessments.
@@ -147,7 +159,6 @@ def format_assessments_iab(results, subjects_map):
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
 
-
         assessment = {}
         assessment['group'] = []  # for student group filter
         for i in range(1, 11):
@@ -160,7 +171,6 @@ def format_assessments_iab(results, subjects_map):
         claims.append(claim)
         assessment['claims'] = claims
         claim_name = claims[0]['name']
-        
 
         subject = subjects_map[result['asmt_subject']]
         claim_dict = student.get(subject, {})

@@ -14,7 +14,7 @@ from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.roles.pii import PII  # @UnusedImport
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.list_of_students_report_iab import get_list_of_students_iab, \
     get_list_of_students_report_iab
 from beaker.cache import CacheManager
@@ -61,13 +61,11 @@ class Test(Unittest_with_edcore_sqlite):
         params[Constants.ASMTSUBJECT] = ['Math']
         params[Constants.ASMTYEAR] = 2015
         los_results = get_list_of_students_report_iab(params)
-        IAB = los_results['assessments']['20150106']['Interim Assessment Blocks']
-        data = IAB['34b99412-fd5b-48f0-8ce8-f8ca3788634a']
+        data = los_results['assessments'][AssessmentType.INTERIM_ASSESSMENT_BLOCKS]['34b99412-fd5b-48f0-8ce8-f8ca3788634a']
         subject1 = data['subject1']
-        claims = subject1['claims']
-        self.assertEqual(2, len(IAB))
-        self.assertEqual(5, len(claims))
-        self.assertEqual(5, len(los_results[Constants.INTERIM_ASSESSMENT_BLOCKS]))
+        claim = subject1['Fractions']
+        self.assertEqual(5, len(subject1))
+        self.assertEqual(1, len(claim))
 
 
 if __name__ == "__main__":

@@ -148,10 +148,18 @@ define [
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type
+      viewName = edwarePreferences.getAsmtView()
       if asmtType is Constants.ASMT_TYPE.IAB
+        $(".detailsItem").addClass("iab_display")
+        if viewName is "Math_ELA"
+          $("#subjectSelectionMath").addClass('btn btn-small subjectSelection selected')
+          $("#subjectSelectionMath_ELA").removeClass('selected')
         $(".detailsItem").addClass("iab_display")
         return @getIAB(params, viewName)
       else
+        if viewName is "Math_ELA"
+          $("#subjectSelectionMath_ELA").addClass('btn btn-small subjectSelection selected')
+          $("#subjectSelectionMath").removeClass('selected')
         $(".detailsItem").removeClass("iab_display")
         return @getSummativeAndInterim(asmt, viewName)
 

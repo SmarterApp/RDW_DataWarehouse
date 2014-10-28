@@ -184,6 +184,7 @@ define [
           data = self.cache[Constants.ASMT_TYPE.IAB][viewName]
           columns = self.columnData[Constants.ASMT_TYPE.IAB][viewName]
           defer.resolve data, columns
+          #$('#gview_gridTable > .ui-jqgrid-bdiv').css('height','')
       else
         data = @cache[Constants.ASMT_TYPE.IAB][viewName]
         columns = @columnData[Constants.ASMT_TYPE.IAB][viewName]

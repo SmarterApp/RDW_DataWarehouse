@@ -163,7 +163,7 @@ def format_assessments_iab(results, subjects_map):
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
 
-        assessment = {}
+        assessment = {Constants.EFFECTIVE_DATE: effectiveDate}
         assessment['group'] = []  # for student group filter
         for i in range(1, 11):
             if result['group_{count}_id'.format(count=i)] is not None:
@@ -178,9 +178,9 @@ def format_assessments_iab(results, subjects_map):
 
         subject = subjects_map[result['asmt_subject']]
         claim_dict = student.get(subject, {})
-        effectiveDate_data = claim_dict.get(effectiveDate, collections.OrderedDict())
+        effectiveDate_data = claim_dict.get(claim_name, [])
 
-        effectiveDate_data[effectiveDate] = assessment
+        effectiveDate_data.append(assessment)
         claim_dict[claim_name] = effectiveDate_data
         student[subject] = claim_dict
         assessments[studentId] = student

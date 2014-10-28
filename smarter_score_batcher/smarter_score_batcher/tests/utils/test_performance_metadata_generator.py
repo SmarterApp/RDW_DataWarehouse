@@ -77,12 +77,12 @@ class Test(unittest.TestCase):
 
         performancelevels = meta[PerformanceMetadataConstants.PERFORMANCELEVELS]
         keys = performancelevels.keys()
-        self.assertEqual(4, len(performancelevels))
+        self.assertEqual(5, len(performancelevels))
         self.assertIn(PerformanceMetadataConstants.LEVEL1, keys)
         self.assertIn(PerformanceMetadataConstants.LEVEL2, keys)
         self.assertIn(PerformanceMetadataConstants.LEVEL3, keys)
         self.assertIn(PerformanceMetadataConstants.LEVEL4, keys)
-        for i in range(1, len(performancelevels) + 1):
+        for i in range(1, len(performancelevels)):
             cutpoint = performancelevels['Level' + str(i)]
             keys = cutpoint.keys()
             self.assertEqual(1, len(cutpoint))

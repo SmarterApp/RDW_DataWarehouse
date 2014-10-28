@@ -42,7 +42,6 @@ def get_list_of_students_report_iab(params):
     los_results[Constants.ASMT_ADMINISTRATION] = get_asmt_administration_years(stateCode, districtId, schoolId, asmtGrade, asmt_year=asmtYear)
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
-    los_results[Constants.INTERIM_ASSESSMENT_BLOCKS] = get_IAB_claims(los_results[Constants.ASSESSMENTS][AssessmentType.INTERIM_ASSESSMENT_BLOCKS], los_results[Constants.SUBJECTS])
 
     return los_results
 
@@ -127,26 +126,6 @@ def get_list_of_students_iab(params):
         return connector.get_result(query)
 
 
-def get_IAB_claims(assessments, subjects):
-    claim_name = {}
-    for studentId in assessments.keys():
-        for subject_name in subjects.keys():
-            subject_list = assessments[studentId].get(subject_name)
-            if subject_list is not None:
-                for date in subject_list.keys():
-                    effective_date = subject_list[date]
-                    for effective_date_data in effective_date:
-                        claims = effective_date_data['claims']
-                        claim_name_by_subject = claim_name.get(subject_name, set())
-                        for claim in claims:
-                            name = claim['name']
-                            claim_name_by_subject.add(name)
-                        claim_name[subject_name] = claim_name_by_subject
-    for subject in claim_name.keys():
-        claim_name[subject] = list(sorted(claim_name[subject]))
-    return claim_name
-
-
 def format_assessments_iab(results, subjects_map):
     '''
     Format student assessments.
@@ -180,13 +159,12 @@ def format_assessments_iab(results, subjects_map):
         claim = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0]
         claims.append(claim)
         assessment['claims'] = claims
-        claim_name = claims['name']
+        claim_name = claims[0]['name']
         
 
         subject = subjects_map[result['asmt_subject']]
-        subject_dict = student.get(subject, {})
-        claim_dict = subject_dict.get(claim_name, collections.OrderedDict())
-        effectiveDate_data = claim_dict.get(effectiveDate, {})
+        claim_dict = student.get(subject, {})
+        effectiveDate_data = claim_dict.get(effectiveDate, collections.OrderedDict())
 
         effectiveDate_data[effectiveDate] = assessment
         claim_dict[claim_name] = effectiveDate_data

@@ -326,12 +326,16 @@ define [
           asmtType = isrAsmt['asmt_type']
           effectiveDate = isrAsmt['effective_date']
           asmtYear = isrAsmt['asmt_period_year']
-        params['asmtType'] = asmtType.toUpperCase() if asmtType
+          params['asmtType'] = asmtType.toUpperCase() if asmtType
+          params['effectiveDate'] = effectiveDate if effectiveDate
+          params['asmtYear'] = asmtYear if asmtYear
+        else
+          # We save the params into storage in the case it's found in query params but not in storage
+          edwarePreferences.saveAsmtForISR
+            asmt_type: Constants.ASMT_TYPE[params['asmtType']]
+            effective_date: params['effectiveDate']
+            asmt_period_year: params['asmtYear']
         @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
-        params['effectiveDate'] = effectiveDate if effectiveDate
-        params['asmtYear'] = asmtYear if asmtYear
-      else
-        params['asmtType'] = params['asmtType'].toUpperCase() if params['asmtType']
       @params = params
     
     updateView: () ->

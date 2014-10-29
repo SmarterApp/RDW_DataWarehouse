@@ -23,7 +23,7 @@ define [
 
   class StudentModel
 
-    constructor: (@dataSet) ->
+    constructor: (@asmtType, @effectiveDate, @dataSet) ->
 
     init: (row) ->
       @appendColors row
@@ -54,8 +54,10 @@ define [
       row['params'] = {
         "studentId": row['student_id'],
         "stateCode": row['state_code'],
-        "asmtYear": edwarePreferences.getAsmtYearPreference()
+        "asmtYear": edwarePreferences.getAsmtYearPreference(),
+        'asmtType': encodeURI(@asmtType.toUpperCase()),
       }
+      row['effectiveDate'] ?= @effectiveDate
       row
 
   class StudentDataSet
@@ -117,7 +119,7 @@ define [
           @cache[effectiveDate][asmtType] ?= {}
           for studentId, assessment of studentList
             continue if assessment.hide
-            row = new StudentModel(this).init assessment
+            row = new StudentModel(asmtType, effectiveDate, this).init assessment
             showAllSubjects = false
             # push to each subject view
             for subjectName, subjectType of @subjectsData
@@ -137,7 +139,7 @@ define [
       for asmtType, studentList of assessmentsData
         for studentId, assessment of studentList
           continue if assessment.hide
-          row = new StudentModel(this).init assessment
+          row = new StudentModel(Constants.ASMT_TYPE.IAB, null, this).init assessment
           # push to each subject view
           for subjectName, subjectType of @subjectsData
             continue if not row[subjectName] or row[subjectName].hide

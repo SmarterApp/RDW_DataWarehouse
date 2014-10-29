@@ -415,8 +415,8 @@
     "column_for_iab": {
         "name": "{{claim}}",
         "displayTpl": "<a href='#' class='inherit'>{{claim}}</a>",
-        "index": "{{subject}}.{{claim}}.0.claims.0.perf_lvl",
-        "field": "{{subject}}.{{claim}}.0.claims.0.perf_lvl",
+        "index": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
+        "field": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
         "width": 160,
         "formatter": "showPerfLevelIAB",
         "sorttype": "int",

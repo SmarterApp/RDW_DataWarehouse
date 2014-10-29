@@ -56,8 +56,8 @@ define [
         "stateCode": row['state_code'],
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
         'asmtType': encodeURI(@asmtType.toUpperCase()),
-        'effectiveDate': @effectiveDate
       }
+      row['effectiveDate'] ?= @effectiveDate
       row
 
   class StudentDataSet
@@ -139,7 +139,7 @@ define [
       for asmtType, studentList of assessmentsData
         for studentId, assessment of studentList
           continue if assessment.hide
-          row = new StudentModel(this).init assessment
+          row = new StudentModel(Constants.ASMT_TYPE.IAB, null, this).init assessment
           # push to each subject view
           for subjectName, subjectType of @subjectsData
             continue if not row[subjectName] or row[subjectName].hide

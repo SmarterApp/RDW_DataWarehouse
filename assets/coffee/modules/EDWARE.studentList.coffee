@@ -383,7 +383,10 @@ define [
         window.gridTable_isLoaded = true
       this.stickyCompare.update()
       this.infoBar.update()
-      # Remove second row header as that counts as a column in setLabel function
+      #update top row height
+      frozen_row_height = $('.frozen-div').height()
+      $('.ELA .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
+      $('.Math .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
       $('.jqg-second-row-header').remove()
 
     renderGrid: (viewName) ->

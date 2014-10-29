@@ -273,9 +273,14 @@ common:
       db:
         cat:
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        nc:
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     migrate_dest:
       db:
         cat:
+          schema_name: edware_prod
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        nc:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     sftp.jail.base_path: /sftp
@@ -1024,7 +1029,7 @@ development:
           average.csv: 30000
           average.xml: 30000
     smarter_score_batcher:
-      gpg.homedir: ../../edware/config/gpg
+      gpg.homedir: ../edware/config/gpg
       gpg.keyserver: None
       gpg.passphrase: sbac udl2
       gpg.sign: ca_user@ca.com

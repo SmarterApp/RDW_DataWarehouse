@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testpackage purpose="reporting" publisher="Delaware" publishdate="Apr 10 2013  2:01PM" version="1.0">
+	<identifier uniqueid="(Delaware)DCAS-Reading-4-Fall-2012-2013" name="DCAS-Reading-4" label="Grade 4 Reading" version="3613"/>
+	<property name="subject" value="MATH" label="MATH"/>
+	<property name="grade" value="3" label="grade 3"/>
+	<reporting>
+		<testblueprint>
+			<bpelement elementtype="test" minopitems="50" maxopitems="50" minftitems="4" maxftitems="6" opitemcount="836" ftitemcount="53">
+				<identifier uniqueid="(Delaware)DCAS-Reading-4-Fall-2012-2013" name="DCAS-Reading-4" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="segment" minopitems="50" maxopitems="50" minftitems="4" maxftitems="6" opitemcount="836" ftitemcount="53">
+				<identifier uniqueid="(Delaware)DCAS-Reading-4-Fall-2012-2013" name="DCAS-Reading-4" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="strand" minopitems="30" maxopitems="40" opitemcount="638" ftitemcount="45">
+				<identifier uniqueid="Delaware-ELA-2" name="ELA-2" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="8" opitemcount="88" ftitemcount="4">
+				<identifier uniqueid="Delaware-ELA-2|2.2a" name="ELA-2|2.2a" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="32" ftitemcount="2">
+				<identifier uniqueid="Delaware-ELA-2|2.4a" name="ELA-2|2.4a" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="11" ftitemcount="1">
+				<identifier uniqueid="Delaware-ELA-2|2.4bI/T" name="ELA-2|2.4bI/T" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="20" ftitemcount="0">
+				<identifier uniqueid="Delaware-ELA-2|2.4bL" name="ELA-2|2.4bL" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="41" ftitemcount="5">
+				<identifier uniqueid="Delaware-ELA-2|2.4c" name="ELA-2|2.4c" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="10" opitemcount="173" ftitemcount="1">
+				<identifier uniqueid="Delaware-ELA-2|2.4d" name="ELA-2|2.4d" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="11" ftitemcount="0">
+				<identifier uniqueid="Delaware-ELA-2|2.4e" name="ELA-2|2.4e" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="5" opitemcount="49" ftitemcount="1">
+				<identifier uniqueid="Delaware-ELA-2|2.4f" name="ELA-2|2.4f" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="17" ftitemcount="6">
+				<identifier uniqueid="Delaware-ELA-2|2.4g" name="ELA-2|2.4g" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="6" ftitemcount="2">
+				<identifier uniqueid="Delaware-ELA-2|2.4h" name="ELA-2|2.4h" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="10" opitemcount="110" ftitemcount="16">
+				<identifier uniqueid="Delaware-ELA-2|2.4i" name="ELA-2|2.4i" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="15" ftitemcount="0">
+				<identifier uniqueid="Delaware-ELA-2|2.4k" name="ELA-2|2.4k" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="3" ftitemcount="0">
+				<identifier uniqueid="Delaware-ELA-2|2.5a" name="ELA-2|2.5a" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="55" ftitemcount="4">
+				<identifier uniqueid="Delaware-ELA-2|2.5d" name="ELA-2|2.5d" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="3" ftitemcount="0">
+				<identifier uniqueid="Delaware-ELA-2|2.5e" name="ELA-2|2.5e" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="4" ftitemcount="2">
+				<identifier uniqueid="Delaware-ELA-2|2.5f" name="ELA-2|2.5f" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-2" minopitems="0" maxopitems="3" opitemcount="0" ftitemcount="1">
+				<identifier uniqueid="Delaware-ELA-2|2.5i" name="ELA-2|2.5i" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="strand" minopitems="10" maxopitems="20" opitemcount="198" ftitemcount="8">
+				<identifier uniqueid="Delaware-ELA-4" name="ELA-4" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-4" minopitems="0" maxopitems="3" opitemcount="22" ftitemcount="2">
+				<identifier uniqueid="Delaware-ELA-4|4.1a" name="ELA-4|4.1a" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-4" minopitems="0" maxopitems="10" opitemcount="157" ftitemcount="2">
+				<identifier uniqueid="Delaware-ELA-4|4.2a" name="ELA-4|4.2a" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-4" minopitems="0" maxopitems="3" opitemcount="5" ftitemcount="0">
+				<identifier uniqueid="Delaware-ELA-4|4.2b" name="ELA-4|4.2b" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-4" minopitems="0" maxopitems="3" opitemcount="8" ftitemcount="3">
+				<identifier uniqueid="Delaware-ELA-4|4.2c" name="ELA-4|4.2c" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="contentlevel" parentid="Delaware-ELA-4" minopitems="0" maxopitems="3" opitemcount="6" ftitemcount="1">
+				<identifier uniqueid="Delaware-ELA-4|4.2f" name="ELA-4|4.2f" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="11" maxopitems="18" opitemcount="203" ftitemcount="0">
+				<identifier uniqueid="ELA4 Cognitive Level 1" name="ELA4 Cognitive Level 1" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="1" maxopitems="3" opitemcount="65" ftitemcount="0">
+				<identifier uniqueid="ELA4 Cognitive Level 3" name="ELA4 Cognitive Level 3" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="28" maxopitems="34" opitemcount="568" ftitemcount="0">
+				<identifier uniqueid="ELA4 Cognitive Level2" name="ELA4 Cognitive Level2" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="20" maxopitems="30" opitemcount="395" ftitemcount="0">
+				<identifier uniqueid="ELA4 Informational" name="ELA4 Informational" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="20" maxopitems="30" opitemcount="441" ftitemcount="0">
+				<identifier uniqueid="ELA4 Literary" name="ELA4 Literary" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="0" maxopitems="1" opitemcount="41" ftitemcount="0">
+				<identifier uniqueid="ELA4 MSCR" name="ELA4 MSCR" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="0" maxopitems="10" opitemcount="379" ftitemcount="0">
+				<identifier uniqueid="ELA4 Off Grade" name="ELA4 Off Grade" version="3613"/>
+			</bpelement>
+			<bpelement elementtype="affinitygroup" minopitems="40" maxopitems="50" opitemcount="457" ftitemcount="0">
+				<identifier uniqueid="ELA4 On Grade" name="ELA4 On Grade" version="3613"/>
+			</bpelement>
+		</testblueprint>
+		<performancelevels>
+			<performancelevel bpelementid="(Delaware)DCAS-Reading-4-Fall-2012-2013" plevel="1" scaledlo="1200" scaledhi="1200"/>
+			<performancelevel bpelementid="(Delaware)DCAS-Reading-4-Fall-2012-2013" plevel="2" scaledlo="1400" scaledhi="1500"/>
+			<performancelevel bpelementid="(Delaware)DCAS-Reading-4-Fall-2012-2013" plevel="3" scaledlo="1800" scaledhi="2000"/>
+			<performancelevel bpelementid="(Delaware)DCAS-Reading-4-Fall-2012-2013" plevel="4" scaledlo="2100" scaledhi="2400"/>
+		</performancelevels>
+		<reportingmeasures>
+			<reportingmeasure bpelementid="Delaware-ELA-2">
+				<scoretype scorename="DelawareThetaScore" scorelabel="ThetaScore"/>
+				<scoretype scorename="ItemCount" scorelabel="ItemCount"/>
+				<scoretype scorename="RawScore" scorelabel="RawScore"/>
+				<scoretype scorename="ItemCountScored" scorelabel="ItemCountScored"/>
+				<scoretype scorename="OnGradeRawScore" scorelabel="OnGradeRawScore"/>
+				<scoretype scorename="ScaleScore" scorelabel="InstructionalScore"/>
+				<scoretype scorename="OnGradeItemCountScored" scorelabel="OnGradeItemCountScored"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.1">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.2a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.3a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.3c">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4bI/T">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4bL">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4c">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4d">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4e">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4f">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4g">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4h">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4i">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.4k">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5b">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5d">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5e">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5f">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5i">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.5l">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.6a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.6b">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-2|2.7b">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4">
+				<scoretype scorename="OnGradeItemCountScored" scorelabel="OnGradeItemCountScored"/>
+				<scoretype scorename="DelawareThetaScore" scorelabel="ThetaScore"/>
+				<scoretype scorename="OnGradeRawScore" scorelabel="OnGradeRawScore"/>
+				<scoretype scorename="RawScore" scorelabel="RawScore"/>
+				<scoretype scorename="ScaleScore" scorelabel="InstructionalScore"/>
+				<scoretype scorename="ItemCount" scorelabel="ItemCount"/>
+				<scoretype scorename="ItemCountScored" scorelabel="ItemCountScored"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.1a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.1b">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.1c">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.1e">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.2a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.2b">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.2c">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.2f">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.3a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="Delaware-ELA-4|4.4a">
+				<scoretype scorename="DelawareGLEDelta" scorelabel="BenchmarkScore"/>
+			</reportingmeasure>
+			<reportingmeasure bpelementid="(Delaware)DCAS-Reading-4-Fall-2012-2013">
+				<scoretype scorename="DelawareTestPerformanceLevelWithInput" scorelabel="PerformanceLevel"/>
+				<scoretype scorename="ItemCount" scorelabel="ItemCount"/>
+				<scoretype scorename="RawScore" scorelabel="RawScore"/>
+				<scoretype scorename="OnGradeItemCountScored" scorelabel="OnGradeItemCountScored"/>
+				<scoretype scorename="ScaleScore" scorelabel="InstructionalScore"/>
+				<scoretype scorename="ScaleScoreWithInput" scorelabel="AccountabilityScore"/>
+				<scoretype scorename="DelawarePerformanceLevels" scorelabel="DSTPProficiency"/>
+				<scoretype scorename="OnGradeRawScore" scorelabel="OnGradeRawScore"/>
+				<scoretype scorename="DelawareThetaScore" scorelabel="ThetaScore"/>
+				<scoretype scorename="OnGradeThetaScorePartials" scorelabel="OnGradeThetaScore"/>
+				<scoretype scorename="DelawareLexileScores" scorelabel="LexileScore"/>
+				<scoretype scorename="StandardizedLogLikelihood" scorelabel="lz"/>
+				<scoretype scorename="ItemCountScored" scorelabel="ItemCountScored"/>
+			</reportingmeasure>
+		</reportingmeasures>
+	</reporting>
+</testpackage>

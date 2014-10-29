@@ -412,6 +412,64 @@
             }
         }
     },
+    "column_for_iab": {
+        "name": "{{claim}}",
+        "displayTpl": "<a href='#' class='inherit'>{{claim}}</a>",
+        "index": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
+        "field": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
+        "width": 160,
+        "formatter": "showPerfLevelIAB",
+        "sorttype": "int",
+        "align": "center",
+        "title": false,
+        "export": true
+    },
+    "students_iab": {
+        "ELA": [
+            {
+                "items": [
+                    {
+                        "name": "Học sinh",
+                        "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true,
+                        "frozen": true
+                    }
+                ]
+            }
+        ],
+        "Math": [
+            {
+                "items": [
+                    {
+                        "name": "Học sinh",
+                        "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true,
+                        "frozen": true
+                    }
+                ]
+            }
+        ]
+    },
 
     "comparingPopulations": {
         "grid": [

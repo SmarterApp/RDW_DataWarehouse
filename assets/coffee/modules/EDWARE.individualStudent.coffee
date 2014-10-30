@@ -354,7 +354,17 @@ define [
         # use mustache template to display the json data
         output = Mustache.to_html isrTemplate, @data
         $("#individualStudentContent").html output
-  
+
+        # toggle between ELA and Math
+        i = 0
+        for item, i in @data.current
+          assessmentSection = "#assessmentSection" + item.count
+          viewName = edwarePreferences.getAsmtView()
+          viewName = viewName || "Math"
+          subject = $(assessmentSection).attr('class')
+          contains_subject = subject.indexOf(viewName)
+          $(assessmentSection).addClass("toggle_hide") if contains_subject < 0
+
         @updateClaimsHeight()
   
         # Generate Confidence Level bar for each assessment
@@ -419,11 +429,6 @@ define [
       viewName = edwarePreferences.getAsmtView()
       viewName = @subjectsData['subject1'] if viewName not in Constants.SUBJECTS  # In ISR, we only have two views
       $("#subjectSelection#{viewName}").addClass('selected')
-
-      # TODO: remove this css change after we fix ISR for summative/interim to have subject buttons
-      style = if not @isBlock then 'none' else 'inline-block'
-      $('.detailsItem').css('display', style)
-
       viewName
 
     renderInterimBlockView: () ->

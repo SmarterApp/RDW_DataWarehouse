@@ -363,8 +363,8 @@ define [
           viewName = viewName || "Math"
           subject = $(assessmentSection).attr('class')
           contains_subject = subject.indexOf(viewName)
-          no_results_message = '<div class="no_data"><p>'+this.data.labels.no_results+'</p></div>'
-          $(assessmentSection).addClass("toggle_hide") and $("#individualStudentContent").append(no_results_message) if contains_subject < 0
+          no_results_message = '<div class="no_data screenContent"><p>'+this.data.labels.no_results+'</p></div>'
+          $(assessmentSection).addClass("printContent") and  $("#individualStudentContent").append(no_results_message) if contains_subject < 0
 
         @updateClaimsHeight()
   

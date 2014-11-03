@@ -83,14 +83,14 @@ define [
         @formatAssessmentsData()
 
     getColumnData: (viewName) ->
-      asmtType = edwarePreferences.getAsmtType()
+      asmtType = edwarePreferences.getAsmtType() || Constants.ASMT_TYPE.SUMMATIVE
       if asmtType is Constants.ASMT_TYPE.IAB and viewName is @allSubjects
         viewName = 'Math'  #TODO:
       return @columnData[asmtType][viewName][0]["items"][0]["field"]
 
     getColumns: (viewName) ->
       asmt = edwarePreferences.getAsmtPreference()
-      asmtType = asmt.asmt_type
+      asmtType = asmt.asmt_type || Constants.ASMT_TYPE.SUMMATIVE
       @columnData[asmtType][viewName]
 
     createColumns: () ->

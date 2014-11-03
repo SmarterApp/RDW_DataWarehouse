@@ -404,7 +404,7 @@
             }
         ],
         "customViews": {
-            "asmtTypes": [{"name": "Summative", "display": "Tổng hợp"}, {"name": "Interim Comprehensive", "display": "Provisional completa"}],
+            "asmtTypes": [{"name": "Summative", "display": "Tổng hợp"}, {"name": "Interim Comprehensive", "display": "Provisional completa"}, {"name": "Interim Assessment Blocks", "display": "Interim Assessment Blocks"}],
             "items": {
                 "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
                 "{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -429,8 +429,8 @@
             {
                 "items": [
                     {
-                        "name": "Học sinh",
-                        "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -451,8 +451,8 @@
             {
                 "items": [
                     {
-                        "name": "Học sinh",
-                        "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -470,7 +470,6 @@
             }
         ]
     },
-
     "comparingPopulations": {
         "grid": [
             {
@@ -728,5 +727,19 @@
         "export_pdf_files": "Tạo báo cáo",
         "generate_reports": "Tạo báo cáo đã yêu cầu",
         "note": "<b>Lưu ý:</b> Các mục tải về nói trên sẽ phản ánh những chọn lựa của bạn, bao gồm năm học, đánh giá, và thông tin lọc."
+    },
+    "detailsButtons": {
+        "Overview": {
+            "display": "Overview",
+            "key": "Math_ELA"
+        },
+        "Math": {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        "ELA": {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
     }
 }

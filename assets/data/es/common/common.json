@@ -404,7 +404,7 @@
             }
         ],
         "customViews": {
-            "asmtTypes": [{"name": "Summative", "display": "Acumulativa"}, {"name": "Interim Comprehensive", "display": "Provisional completa"}],
+            "asmtTypes": [{"name": "Summative", "display": "Acumulativa"}, {"name": "Interim Comprehensive", "display": "Provisional completa"}, {"name": "Interim Assessment Blocks", "display": "Interim Assessment Blocks"}],
             "items": {
                 "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
                 "{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -412,7 +412,6 @@
             }
         }
     },
-
     "column_for_iab": {
         "name": "{{claim}}",
         "displayTpl": "<a href='#' class='inherit'>{{claim}}</a>",
@@ -430,8 +429,8 @@
             {
                 "items": [
                     {
-                        "name": "Estudiantes",
-                        "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -452,8 +451,8 @@
             {
                 "items": [
                     {
-                        "name": "Estudiantes",
-                        "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -471,7 +470,6 @@
             }
         ]
     },
-    
     "comparingPopulations": {
         "grid": [
             {
@@ -729,5 +727,19 @@
         "export_pdf_files": "Generar reportes",
         "generate_reports": "Generar los reportes requeridos",
         "note": "<b>Nota:</b> Las descargas de arriba reflejarán cualquier selección que haya hecho, incluyendo el año académico, evaluaciones y filtros."
+    },
+    "detailsButtons": {
+        "Overview": {
+            "display": "Overview",
+            "key": "Math_ELA"
+        },
+        "Math": {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        "ELA": {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
     }
 }

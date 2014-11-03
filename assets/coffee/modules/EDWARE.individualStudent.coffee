@@ -348,6 +348,8 @@ define [
       # Get tenant level branding
       @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
       # The template for Interim Block is different
+      viewName = edwarePreferences.getAsmtView()
+      $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
       if @isBlock
         @renderInterimBlockView()
       else
@@ -359,13 +361,12 @@ define [
         i = 0
         for item, i in @data.current
           assessmentSection = "#assessmentSection" + item.count
-          viewName = edwarePreferences.getAsmtView()
-          viewName = viewName || "Math"
-          subject = $(assessmentSection).attr('class')
-          contains_subject = subject.indexOf(viewName)
           no_results_message = '<div class="no_data screenContent"><p>'+this.data.labels.no_results+'</p></div>'
-          $(assessmentSection).addClass("printContent") and  $("#individualStudentContent").append(no_results_message) if contains_subject < 0
-
+          subject_math = $("#individualStudentContent > .Math").attr('class')
+          subject_ela = $("#individualStudentContent > .ELA").attr('class')
+          $("#individualStudentContent").append(no_results_message) and $('.no_data').addClass("Math") if subject_math is undefined
+          $("#individualStudentContent").append(no_results_message) and $('.no_data').addClass("ELA") if subject_ela is undefined
+          
         @updateClaimsHeight()
   
         # Generate Confidence Level bar for each assessment
@@ -433,13 +434,18 @@ define [
       viewName
 
     renderInterimBlockView: () ->
-      viewName = @getAsmtViewSelection()
-      # Update subject text and asmt period year that is unique according to the view
-      @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[viewName]
-      @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
-      @data.current.has_data = true if @data.current.grades.length > 0
-      output = Mustache.to_html isrInterimBlocksTemplate, @data
-      $("#individualStudentContent").html output
+      final_output = ""
+      for key, view of this.data.views
+        @data.current = @data['views'][key]
+        # Update subject text and asmt period year that is unique according to the view
+        subject_text = key.replace(/\d+/g, '')
+        @data.all_results.asmt_subject = subject_text
+        @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[subject_text]
+        @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
+        @data.current.has_data = true if @data.current.grades.length > 0
+        output = Mustache.to_html isrInterimBlocksTemplate, @data
+        final_output = final_output + output
+      $("#individualStudentContent").html final_output
       @createPopovers()
 
     createPopovers: () ->

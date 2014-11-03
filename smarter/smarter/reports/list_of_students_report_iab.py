@@ -162,12 +162,13 @@ def format_assessments_iab(results, subjects_map):
             student['state_code'] = result['state_code']
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
+            student['group'] = set()  # for student group filter
 
-        assessment = {Constants.EFFECTIVE_DATE: effectiveDate}
-        assessment['group'] = []  # for student group filter
         for i in range(1, 11):
             if result['group_{count}_id'.format(count=i)] is not None:
-                assessment['group'].append(result['group_{count}_id'.format(count=i)])
+                student['group'].add(result['group_{count}_id'.format(count=i)])
+
+        assessment = {Constants.EFFECTIVE_DATE: effectiveDate}
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
         claims = assessment.get('claims', [])
@@ -184,4 +185,8 @@ def format_assessments_iab(results, subjects_map):
         claim_dict[claim_name] = effectiveDate_data
         student[subject] = claim_dict
         assessments[studentId] = student
+
+    for student in assessments.values():
+        student['group'] = list(student['group'])
+
     return {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: assessments}

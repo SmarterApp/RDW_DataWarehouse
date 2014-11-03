@@ -18,6 +18,7 @@ define [
       height: "auto"
       viewrecords: true
       autoencode: true
+      frozenColumns: false
       rowNum: 100
       gridview: true
       scroll: 1
@@ -113,6 +114,8 @@ define [
       this.table.jqGrid options
       this.table.jqGrid "hideCol", "rn"
       this.table.setGridWidth options.defaultWidth, false
+      if options.frozenColumns
+        this.table.jqGrid('setFrozenColumns').trigger("reloadGrid")
 
     renderFooter: () ->
       # Add footer row to the grid
@@ -192,8 +195,6 @@ define [
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
-
-      # trigger gridComplete event
       return this.grid
 
     $.fn.eagerLoad = () ->

@@ -42,7 +42,7 @@ define [
 
     getAsmtTypes: () ->
       asmtTypes = []
-      for idx, asmt of @config.asmtTypes
+      for idx, asmt of @config.asmtTypes?.options
         asmt.asmt_year = asmt.effective_date.substr(0, 4) if asmt.effective_date
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.display = @getAsmtDisplayText(asmt)
@@ -65,7 +65,7 @@ define [
         asmt = self.parseAsmtInfo $(this)
         self.setSelectedValue asmt
         # additional parameters
-        self.callbacks.onAsmtYearSelected(asmt)
+        self.callbacks.onAsmtTypeSelected(asmt)
 
       $(@container).onClickAndEnterKey '.asmtYearButton', ->
         value = $(this).data('value')
@@ -92,6 +92,7 @@ define [
       grade = @config.grade
       if asmt?.asmt_type is Constants.ASMT_TYPE.IAB and grade
         $('.grade', ".IABMessage").html grade?.id
+        edwarePreferences.saveAsmtView Constants.ASMT_VIEW.MATH
         $IABMessage.show()
       else
         $IABMessage.hide()

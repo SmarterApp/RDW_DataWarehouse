@@ -728,5 +728,19 @@
         "export_pdf_files": "Generate Reports",
         "generate_reports": "Generating Requested Reports",
         "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
+    },
+    "detailsButtons": {
+        "Overview": {
+            "display": "Overview",
+            "key": "Math_ELA"
+        },
+        "Math": {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        "ELA": {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
     }
 }

@@ -27,7 +27,7 @@ define [
   for reportName, fileName of Constants.REPORT_JSON_NAME
     URLs[fileName] = ["../data/#{language}/common/#{fileName}.json"]
     URLs[fileName] = URLs[fileName].concat(REPORT_DATA[reportName]) if REPORT_DATA[reportName]
-      
+
   DEFAULT_SETTING =
     type: 'GET'
     data: ''

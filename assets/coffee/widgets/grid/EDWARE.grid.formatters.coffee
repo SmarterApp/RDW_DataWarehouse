@@ -46,6 +46,7 @@ define [
     params = for k, v of rowObject.params
       k = options.colModel.formatoptions.id_name if k == "id"
       k + "=" + v
+    # params.push "asmtType=#{options.colModel.formatoptions.asmtType}"
     params.join "&"
 
   # draw name columns

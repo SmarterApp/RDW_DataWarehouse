@@ -22,5 +22,5 @@ require [
     asmt = edwarePreferences.getAsmtPreference()
     # save preference for ISR
     edwarePreferences.saveAsmtForISR(asmt)
-    params.asmtType = asmt?.asmtType
+    params.asmtType = asmt?.asmt_type?.toUpperCase()
     params

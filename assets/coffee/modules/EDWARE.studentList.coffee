@@ -31,6 +31,10 @@ define [
       row
 
     appendColors: (assessment) ->
+      # do not process if not cut point data available
+      if not @dataSet.cutPointsData
+        return
+      # display asssessment type in the tooltip title
       for key, value of @dataSet.subjectsData
         value = assessment[key]
         continue if not value
@@ -70,8 +74,13 @@ define [
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
+
       @columnData = @createColumns()
-      @formatAssessmentsData()
+      asmtType = edwarePreferences.getAsmtType()
+      if asmtType is Constants.ASMT_TYPE.IAB
+        @formatIABData()
+      else
+        @formatAssessmentsData()
 
     getColumnData: (viewName) ->
       asmtType = edwarePreferences.getAsmtType()
@@ -79,17 +88,24 @@ define [
         viewName = 'Math'  #TODO:
       return @columnData[asmtType][viewName][0]["items"][0]["field"]
 
-    createColumns: (Type) ->
+    getColumns: (viewName) ->
+      asmt = edwarePreferences.getAsmtPreference()
+      asmtType = asmt.asmt_type
+      @columnData[asmtType][viewName]
+
+    createColumns: () ->
       columnData = {}
       SummativeInterim = @createColumnsSummativeInterim()
       columnData[Constants.ASMT_TYPE.SUMMATIVE] = SummativeInterim
       columnData[Constants.ASMT_TYPE.INTERIM] = SummativeInterim
+      IAB = @createColumnsIAB()
+      columnData[Constants.ASMT_TYPE.IAB] = IAB
       columnData
 
-    createColumnsIAB: (data) ->
+    createColumnsIAB: () ->
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
-      for subject, columns of data.interim_assessment_blocks
-        subjectName = data.subjects[subject]
+      for subject, columns of @data.interim_assessment_blocks
+        subjectName = @data.subjects[subject]
         for claim in columns
           iab_column_details = {
             subject: subject
@@ -100,7 +116,9 @@ define [
       columnData
 
     createColumnsSummativeInterim: () ->
-      claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
+      if not @data.metadata
+        return
+      claimsData = JSON.parse(Mustache.render(JSON.stringify(@data.metadata.claims), @data))
       for idx, claim of claimsData.subject1
         claim.name = @labels.asmt[claim.name]
       for idx, claim of claimsData.subject2
@@ -134,9 +152,9 @@ define [
             allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
             allsubjects.push row  if row not in allsubjects
 
-    formatIABData: (assessmentsData) ->
+    formatIABData: () ->
       @cache[Constants.ASMT_TYPE.IAB] ?= {}
-      for asmtType, studentList of assessmentsData
+      for asmtType, studentList of @assessmentsData
         for studentId, assessment of studentList
           continue if assessment.hide
           row = new StudentModel(Constants.ASMT_TYPE.IAB, null, this).init assessment
@@ -147,62 +165,27 @@ define [
             @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
 
     getAsmtData: (viewName, params)->
-      # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type
-      viewName = edwarePreferences.getAsmtView()
       if asmtType is Constants.ASMT_TYPE.IAB
-        $(".detailsItem").addClass("iab_display")
-        if viewName is "Math_ELA"
-          $("#subjectSelectionMath").addClass('btn btn-small subjectSelection selected')
-          $("#subjectSelectionMath_ELA").removeClass('selected')
-        $(".detailsItem").addClass("iab_display")
         return @getIAB(params, viewName)
       else
-        if viewName is "Math_ELA"
-          $("#subjectSelectionMath_ELA").addClass('btn btn-small subjectSelection selected')
-          $("#subjectSelectionMath").removeClass('selected')
-        $(".detailsItem").removeClass("iab_display")
-        viewName = "Math_ELA" if viewName is undefined
         return @getSummativeAndInterim(asmt, viewName)
 
     getIAB: (params, viewName) ->
-      #TODO: this function looks so ugly, refactor this function
-      defer = $.Deferred()
-      if viewName is @allSubjects
-        viewName = 'Math'
-      if not @cache[Constants.ASMT_TYPE.IAB]
-        # load IAB data from server
-        params['asmtType'] = "INTERIM ASSESSMENT BLOCKS"
-        loadingData = edwareDataProxy.getDatafromSource "/data/list_of_students",
-          method: "POST"
-          params: params
-        self = this
-        loadingData.done (data)->
-          compiled = Mustache.render JSON.stringify(data), "labels": self.labels
-          self.formatIABData(data.assessments)
-          #TODO:
-          self.columnData[Constants.ASMT_TYPE.IAB] = self.createColumnsIAB(data)
-          data = self.cache[Constants.ASMT_TYPE.IAB][viewName]
-          columns = self.columnData[Constants.ASMT_TYPE.IAB][viewName]
-          defer.resolve data, columns
-          #$('#gview_gridTable > .ui-jqgrid-bdiv').css('height','')
-      else
-        data = @cache[Constants.ASMT_TYPE.IAB][viewName]
-        columns = @columnData[Constants.ASMT_TYPE.IAB][viewName]
-        defer.resolve data, columns
-      defer.promise()
+      viewName = viewName || Constants.ASMT_VIEW.MATH
+      data = @cache[Constants.ASMT_TYPE.IAB][viewName]
+      data
 
     getSummativeAndInterim: (asmt, viewName) ->
+      viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       effectiveDate = asmt.effective_date
       asmtType = asmt.asmt_type
       data = @cache[effectiveDate]?[asmtType]?[viewName]
       if data
         for item in data
           item.assessments = item[asmtType]
-      defer = $.Deferred()
-      defer.resolve data, @columnData[asmtType][viewName]
-      defer.promise()
+      data
 
 
   class StudentGrid
@@ -252,7 +235,6 @@ define [
       @renderFilter()
       @createHeaderAndFooter()
 
-      # @createGrid()
       @bindEvents()
       @applyContextSecurity()
 
@@ -335,23 +317,32 @@ define [
     onAcademicYearSelected: (year) ->
       edwarePreferences.clearAsmtPreference()
       @params['asmtYear'] = year
+      @params['asmtType'] = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
+      @reload @params
+
+    onAsmtTypeSelected: (asmt) ->
+      edwarePreferences.saveAsmtForISR(asmt)
+      edwarePreferences.saveAsmtPreference asmt
+      @params['asmtType'] = asmt.asmt_type.toUpperCase()
       @reload @params
 
     renderReportActionBar: () ->
       self = this
       @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      @config.asmtTypes = @data.asmt_administration
       @config.academicYears =
         options: @academicYears
         callback: @onAcademicYearSelected.bind(this)
-      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
-        edwarePreferences.saveAsmtForISR(asmt)
-        edwarePreferences.saveAsmtPreference asmt
-        self.updateView()
+      @config.asmtTypes =
+        options: @data.asmt_administration
+        callback: @onAsmtTypeSelected.bind(this)
+      @config.switchView = @updateView.bind(this)
+      @actionBar = edwareReportActionBar.create '#actionBar', @config
 
     createGrid: (filters) ->
-      data = edwareFilter.filterData(@data, filters)
+      asmtType = edwarePreferences.getAsmtType()
+      filterFunc = edwareFilter.createFilter(filters)(asmtType)
+      data = filterFunc(@data)
       @studentsDataSet.build data, @cutPointsData, @labels
       @updateView()
       #TODO: Set asmt Subject
@@ -362,13 +353,11 @@ define [
 
     updateView: () ->
       viewName = edwarePreferences.getAsmtView()
-      viewName = viewName || @studentsDataSet.allSubjects
+      viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       # Add dark border color between Math and ELA section
       $('#gridWrapper').removeClass().addClass(viewName)
       $("#subjectSelection#{viewName}").addClass('selected')
-      if window.gridTable_isLoaded is `undefined` or window.gridTable_isLoaded is true
-        window.gridTable_isLoaded = false
-      this.renderGrid viewName
+      @renderGrid viewName
 
     fetchData: (params) ->
       self = this
@@ -380,9 +369,6 @@ define [
         self.loadPage JSON.parse compiled
 
     afterGridLoadComplete: () ->
-      if window.gridTable_isLoaded is `undefined` or window.gridTable_isLoaded is false
-        $('#gridTable').jqGrid('setFrozenColumns')
-        window.gridTable_isLoaded = true
       this.stickyCompare.update()
       this.infoBar.update()
       #update top row height
@@ -393,28 +379,27 @@ define [
       $('.jqg-second-row-header').remove()
 
     renderGrid: (viewName) ->
-      self = this
       $('#gridTable').jqGrid('GridUnload')
-      loadData = @studentsDataSet.getAsmtData(viewName, @params)
-      loadData.done (asmtData, columns) ->
-        # get filtered data and we pass in the first columns' config
-        # field name for sticky chain list
-        fieldName = self.studentsDataSet.getColumnData(viewName)
-        filteredInfo = self.stickyCompare.getFilteredInfo(asmtData, fieldName)
+      asmtData = @studentsDataSet.getAsmtData(viewName, @params)
+      columns = @studentsDataSet.getColumns(viewName)
+      fieldName = @studentsDataSet.getColumnData(viewName)
+      filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
 
-        edwareGrid.create {
-          data: filteredInfo.data
-          columns: columns
-          options:
-            labels: self.labels
-            scroll: false
-            stickyCompareEnabled: filteredInfo.enabled
-            gridComplete: () ->
-              self.afterGridLoadComplete()
-        }
-        self.updateTotalNumber(filteredInfo.data?.length)
-        self.renderHeaderPerfBar()
-        $(document).trigger Constants.EVENTS.SORT_COLUMNS
+      self = this
+      edwareGrid.create {
+        data: filteredInfo.data
+        columns: columns
+        options:
+          labels: self.labels
+          scroll: false
+          frozenColumns: true
+          stickyCompareEnabled: filteredInfo.enabled
+          gridComplete: () ->
+            self.afterGridLoadComplete()
+      }
+      @updateTotalNumber(filteredInfo.data?.length)
+      @renderHeaderPerfBar()
+      $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateTotalNumber: (total) ->
       reportType = Constants.REPORT_TYPE.GRADE

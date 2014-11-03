@@ -32,6 +32,12 @@ define [], () ->
     'INTERIM ASSESSMENT BLOCKS': 'Interim Assessment Blocks'
   }
 
+  ASMT_VIEW: {
+    OVERVIEW: "Math_ELA",
+    MATH: "Math",
+    ELA: "ELA"
+  }
+
   EVENTS: {
     SORT_COLUMNS: 'edwareOnSortColumns'
   }

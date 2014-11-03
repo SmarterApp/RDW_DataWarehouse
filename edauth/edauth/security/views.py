@@ -96,11 +96,9 @@ def _handle_OAUTH2_Implicit_login_flow(request):
             response = get(verify_url, params={"access_token": bearer}, timeout=timeout, headers=headers)
             response.raise_for_status()
             session_id = create_session(request, response.json(), None, None, identity_parser_class)
-        except NotAuthorized as _:
-            write_security_event('No Tenant was found.  Rejecting User', SECURITY_EVENT_TYPE.WARN, session_id)
-            return HTTPForbidden()
         except Exception as _:
-            return HTTPForbidden()
+            write_security_event("OAuth verification failed with exception {exception}".format(exception=_), SECURITY_EVENT_TYPE.WARN)
+            return HTTPUnauthorized(body=json.dumps({'Error': 'User Validation Fails'}), content_type='application/json')
         session_headers = remember(request, session_id)
         write_security_event("Login processed successfully", SECURITY_EVENT_TYPE.INFO, session_id=session_id)
         headers = session_headers.copy()

@@ -271,7 +271,7 @@ define [
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
-        reportTitle: $('#individualStudentContent h2.title').text()
+        reportTitle: $('#individualStudentContent h2').first().text()
         reportName: Constants.REPORT_NAME.ISR
         reportInfoText: @configData.reportInfo
         breadcrumb: @data.context
@@ -358,7 +358,6 @@ define [
         $("#individualStudentContent").html output
 
         # toggle between ELA and Math
-        i = 0
         for item, i in @data.current
           assessmentSection = "#assessmentSection" + item.count
           no_results_message = '<div class="no_data screenContent"><p>'+this.data.labels.no_results+'</p></div>'
@@ -366,11 +365,10 @@ define [
           subject_ela = $("#individualStudentContent > .ELA").attr('class')
           $("#individualStudentContent").append(no_results_message) and $('.no_data').addClass("Math") if subject_math is undefined
           $("#individualStudentContent").append(no_results_message) and $('.no_data').addClass("ELA") if subject_ela is undefined
-          
+
         @updateClaimsHeight()
   
         # Generate Confidence Level bar for each assessment
-        i = 0
         for item, i in @data.current
           barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer
@@ -392,8 +390,6 @@ define [
             $(assessmentInfo + " h1").css("display", "block")
             $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
             $(assessmentInfo + " li:first-child").addClass("bottomLine")
-  
-          i++
   
         # Show tooltip for claims on mouseover
         $(".arrowBox").popover

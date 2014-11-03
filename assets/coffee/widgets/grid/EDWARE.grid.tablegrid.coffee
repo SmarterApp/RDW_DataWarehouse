@@ -224,7 +224,7 @@ define [
     # adjust grid height based on visible region
     $("#gview_gridTable > .ui-jqgrid-bdiv").css {
       'min-height': 100
-      # 'height': calculateHeight()
+      'max-height': calculateHeight()
     }
 
   calculateHeight = () ->

@@ -156,13 +156,13 @@ define [
       return if not @keyword
       id = $('#gridTable').jqGrid('getGridParam', 'data')?[@offset]?['rowId']
       @lastHighlightedElement = $("#link_#{id}", "#gridTable")
-      @frozenElement = $("#link_#{id}", "#gridTable_frozen")
+      @frozenElement = "#gridTable_frozen #link_#{id}"
       text = @lastHighlightedElement.data('value')
       if text
         idx = text.toLowerCase().indexOf(@keyword.toLowerCase())
         textWithHightlight = text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length)
         @lastHighlightedElement.html(textWithHightlight)
-        @frozenElement.html(textWithHightlight)
+        $(@frozenElement).html(textWithHightlight)
 
     removeHighlight: () ->
       if @lastHighlightedElement
@@ -170,7 +170,7 @@ define [
         @lastHighlightedElement.html value
         @lastHighlightedElement = null
         if @frozenElement
-          @frozenElement.html value
+          $(@frozenElement).html value
           @frozenElement = null
 
     getRowHeight: () ->

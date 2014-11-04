@@ -404,7 +404,7 @@
             }
         ],
         "customViews": {
-            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
+            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}, {"name": "Interim Assessment Blocks", "display": "Interim Assessment Blocks"}],
             "items": {
                 "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
                 "{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -412,7 +412,64 @@
             }
         }
     },
-
+    "column_for_iab": {
+        "name": "{{claim}}",
+        "displayTpl": "<a href='#' class='inherit'>{{claim}}</a>",
+        "index": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
+        "field": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
+        "width": 160,
+        "formatter": "showPerfLevelIAB",
+        "sorttype": "int",
+        "align": "center",
+        "title": false,
+        "export": true
+    },
+    "students_iab": {
+        "ELA": [
+            {
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true,
+                        "frozen": true
+                    }
+                ]
+            }
+        ],
+        "Math": [
+            {
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true,
+                        "frozen": true
+                    }
+                ]
+            }
+        ]
+    },
     "comparingPopulations": {
         "grid": [
             {
@@ -670,5 +727,19 @@
         "export_pdf_files": "Generate Reports",
         "generate_reports": "Generating Requested Reports",
         "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
+    },
+    "detailsButtons": {
+        "Overview": {
+            "display": "Overview",
+            "key": "Math_ELA"
+        },
+        "Math": {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        "ELA": {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
     }
 }

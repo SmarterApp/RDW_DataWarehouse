@@ -18,20 +18,11 @@
         "text": "Nhập học sinh",
         "aria": "Tìm học sinh trong cấp lớp này. Nhập từ tìm kiếm và nhấn enter"
     },
-    "detailsSelection": [
-        {
-            "display": "Overview",
-            "key": "Math_ELA"
-        },
-        {
-            "display": "Toán",
-            "key": "Math"
-        },
-        {
-            "display": "ELA/Đọc viết",
-            "key": "ELA"
-        }
-    ],
+    "detailsSelection": {
+        "Summative": ["Overview", "Math", "ELA"],
+        "Interim Comprehensive": ["Overview", "Math", "ELA"],
+        "Interim Assessment Blocks": ["Math", "ELA"]
+    },
     "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}",
                              "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"}
 }

@@ -231,5 +231,4 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(grouped_sections, {})
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

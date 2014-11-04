@@ -23,7 +23,7 @@ define [
 
   class StudentModel
 
-    constructor: (@effectiveDate, @dataSet) ->
+    constructor: (@asmtType, @effectiveDate, @dataSet) ->
 
     init: (row) ->
       @appendColors row
@@ -31,6 +31,10 @@ define [
       row
 
     appendColors: (assessment) ->
+      # do not process if not cut point data available
+      if not @dataSet.cutPointsData
+        return
+      # display asssessment type in the tooltip title
       for key, value of @dataSet.subjectsData
         value = assessment[key]
         continue if not value
@@ -44,8 +48,8 @@ define [
           value.score_bg_color = "#D0D0D0"
           value.score_text_color = "#000000"
         else
-          value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].bg_color
-          value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].text_color
+          value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.bg_color
+          value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.text_color
 
     appendExtraInfo: (row) ->
       # Format student name
@@ -54,8 +58,10 @@ define [
       row['params'] = {
         "studentId": row['student_id'],
         "stateCode": row['state_code'],
-        "asmtYear": edwarePreferences.getAsmtYearPreference()
+        "asmtYear": edwarePreferences.getAsmtYearPreference(),
+        'asmtType': encodeURI(@asmtType.toUpperCase()),
       }
+      row['effectiveDate'] ?= @effectiveDate
       row
 
   class StudentDataSet
@@ -68,13 +74,51 @@ define [
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
+
       @columnData = @createColumns()
-      @formatAssessmentsData()
+      asmtType = edwarePreferences.getAsmtType()
+      if asmtType is Constants.ASMT_TYPE.IAB
+        @formatIABData()
+      else
+        @formatAssessmentsData()
+
+    getColumnData: (viewName) ->
+      asmtType = edwarePreferences.getAsmtType() || Constants.ASMT_TYPE.SUMMATIVE
+      if asmtType is Constants.ASMT_TYPE.IAB and viewName is @allSubjects
+        viewName = 'Math'  #TODO:
+      return @columnData[asmtType][viewName][0]["items"][0]["field"]
+
+    getColumns: (viewName) ->
+      asmt = edwarePreferences.getAsmtPreference()
+      asmtType = asmt.asmt_type || Constants.ASMT_TYPE.SUMMATIVE
+      @columnData[asmtType][viewName]
 
     createColumns: () ->
-      # Use mustache template to replace text in json config
-      # Add assessments data there so we can get column names and translate column names
-      claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
+      columnData = {}
+      SummativeInterim = @createColumnsSummativeInterim()
+      columnData[Constants.ASMT_TYPE.SUMMATIVE] = SummativeInterim
+      columnData[Constants.ASMT_TYPE.INTERIM] = SummativeInterim
+      IAB = @createColumnsIAB()
+      columnData[Constants.ASMT_TYPE.IAB] = IAB
+      columnData
+
+    createColumnsIAB: () ->
+      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
+      for subject, columns of @data.interim_assessment_blocks
+        subjectName = @data.subjects[subject]
+        for claim in columns
+          iab_column_details = {
+            subject: subject
+            claim: claim
+          }
+          column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
+          columnData[subjectName][0].items.push column
+      columnData
+
+    createColumnsSummativeInterim: () ->
+      if not @data.metadata
+        return
+      claimsData = JSON.parse(Mustache.render(JSON.stringify(@data.metadata.claims), @data))
       for idx, claim of claimsData.subject1
         claim.name = @labels.asmt[claim.name]
       for idx, claim of claimsData.subject2
@@ -93,7 +137,7 @@ define [
           @cache[effectiveDate][asmtType] ?= {}
           for studentId, assessment of studentList
             continue if assessment.hide
-            row = new StudentModel(effectiveDate, this).init assessment
+            row = new StudentModel(asmtType, effectiveDate, this).init assessment
             showAllSubjects = false
             # push to each subject view
             for subjectName, subjectType of @subjectsData
@@ -108,9 +152,33 @@ define [
             allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
             allsubjects.push row  if row not in allsubjects
 
-    getAsmtData: (viewName)->
-      # Saved asmtType and viewName
+    formatIABData: () ->
+      @cache[Constants.ASMT_TYPE.IAB] ?= {}
+      for asmtType, studentList of @assessmentsData
+        for studentId, assessment of studentList
+          continue if assessment.hide
+          row = new StudentModel(Constants.ASMT_TYPE.IAB, null, this).init assessment
+          # push to each subject view
+          for subjectName, subjectType of @subjectsData
+            continue if not row[subjectName] or row[subjectName].hide
+            @cache[Constants.ASMT_TYPE.IAB][subjectType] ?= []
+            @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
+
+    getAsmtData: (viewName, params)->
       asmt = edwarePreferences.getAsmtPreference()
+      asmtType = asmt.asmt_type
+      if asmtType is Constants.ASMT_TYPE.IAB
+        return @getIAB(params, viewName)
+      else
+        return @getSummativeAndInterim(asmt, viewName)
+
+    getIAB: (params, viewName) ->
+      viewName = viewName || Constants.ASMT_VIEW.MATH
+      data = @cache[Constants.ASMT_TYPE.IAB][viewName]
+      data
+
+    getSummativeAndInterim: (asmt, viewName) ->
+      viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       effectiveDate = asmt.effective_date
       asmtType = asmt.asmt_type
       data = @cache[effectiveDate]?[asmtType]?[viewName]
@@ -123,6 +191,7 @@ define [
   class StudentGrid
 
     constructor: (@config) ->
+      @isLoaded = true
       @studentsDataSet = new StudentDataSet(config)
       @reportInfo = config.reportInfo
       @studentsConfig = config.students
@@ -159,14 +228,13 @@ define [
       @subjectsData = data.subjects
       @userData = data.user_info
       @academicYears = data.asmt_period_year
-      @grade = @contextData['items'][4]
+      @config.grade = @contextData['items'][4]
       @renderBreadcrumbs(@labels)
       @renderReportInfo()
       @renderReportActionBar()
       @renderFilter()
       @createHeaderAndFooter()
 
-      # @createGrid()
       @bindEvents()
       @applyContextSecurity()
 
@@ -176,8 +244,8 @@ define [
       contextSecurity.apply()
 
     createCutPoints: () ->
-      cutPointsData = @data.metadata.cutpoints
-      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data))
+      cutPointsData = @data.metadata?.cutpoints
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data)) if cutPointsData
       #if cut points don't have background colors, then it will use default background colors
       for key, items of cutPointsData
         for interval, i in items.cut_point_intervals
@@ -249,23 +317,32 @@ define [
     onAcademicYearSelected: (year) ->
       edwarePreferences.clearAsmtPreference()
       @params['asmtYear'] = year
+      @params['asmtType'] = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
+      @reload @params
+
+    onAsmtTypeSelected: (asmt) ->
+      edwarePreferences.saveAsmtForISR(asmt)
+      edwarePreferences.saveAsmtPreference asmt
+      @params['asmtType'] = asmt.asmt_type.toUpperCase()
       @reload @params
 
     renderReportActionBar: () ->
       self = this
       @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      @config.asmtTypes = @data.asmt_administration
       @config.academicYears =
         options: @academicYears
         callback: @onAcademicYearSelected.bind(this)
-      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
-        edwarePreferences.saveAsmtForISR(asmt)
-        edwarePreferences.saveAsmtPreference asmt
-        self.updateView()
+      @config.asmtTypes =
+        options: @data.asmt_administration
+        callback: @onAsmtTypeSelected.bind(this)
+      @config.switchView = @updateView.bind(this)
+      @actionBar = edwareReportActionBar.create '#actionBar', @config
 
     createGrid: (filters) ->
-      data = edwareFilter.filterData(@data, filters)
+      asmtType = edwarePreferences.getAsmtType()
+      filterFunc = edwareFilter.createFilter(filters)(asmtType)
+      data = filterFunc(@data)
       @studentsDataSet.build data, @cutPointsData, @labels
       @updateView()
       #TODO: Set asmt Subject
@@ -276,11 +353,11 @@ define [
 
     updateView: () ->
       viewName = edwarePreferences.getAsmtView()
-      viewName = viewName || @studentsDataSet.allSubjects
+      viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       # Add dark border color between Math and ELA section
       $('#gridWrapper').removeClass().addClass(viewName)
       $("#subjectSelection#{viewName}").addClass('selected')
-      this.renderGrid viewName
+      @renderGrid viewName
 
     fetchData: (params) ->
       self = this
@@ -294,29 +371,34 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
+      #update top row height
+      frozen_row_height = $('.frozen-div').height()
+      $('.ELA .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
+      $('.Math .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
       # Remove second row header as that counts as a column in setLabel function
       $('.jqg-second-row-header').remove()
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
-      asmtData = @studentsDataSet.getAsmtData(viewName)
-      filedName = @studentsDataSet.columnData[viewName][0]["items"][0]["field"]
-      # get filtered data and we pass in the first columns' config
-      # field name for sticky chain list
-      filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, filedName)
+      asmtData = @studentsDataSet.getAsmtData(viewName, @params)
+      columns = @studentsDataSet.getColumns(viewName)
+      fieldName = @studentsDataSet.getColumnData(viewName)
+      filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
 
       self = this
       edwareGrid.create {
         data: filteredInfo.data
-        columns: @studentsDataSet.columnData[viewName]
+        columns: columns
         options:
-          labels: this.labels
+          labels: self.labels
+          scroll: false
+          frozenColumns: true
           stickyCompareEnabled: filteredInfo.enabled
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
       @updateTotalNumber(filteredInfo.data?.length)
-      this.renderHeaderPerfBar()
+      @renderHeaderPerfBar()
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateTotalNumber: (total) ->

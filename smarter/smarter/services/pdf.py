@@ -83,7 +83,7 @@ PDF_PARAMS = {
         Constants.ASMTTYPE: {
             "type": "string",
             "required": False,
-            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
+            "pattern": "^(" + AssessmentType.INTERIM_ASSESSMENT_BLOCKS + "|" + AssessmentType.SUMMATIVE + "|" + AssessmentType.INTERIM_COMPREHENSIVE + ")$",
         },
         Constants.ASMTYEAR: {
             "type": "integer",
@@ -183,11 +183,6 @@ def get_pdf_content(params, sync=False):
     # Check that we have either a list of student GUIDs or a district/school/grade combination in the params
     if student_ids is None and (district_id is None or school_id is None or grades is None):
         raise InvalidParameterError('Required parameter is missing')
-
-    # Validate the assessment type
-    asmt_type = asmt_type.upper()
-    if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]:
-        raise InvalidParameterError('Unknown assessment type')
 
     # Validate necessary assessment information
     if asmt_type == AssessmentType.SUMMATIVE and asmt_year is None and effective_date is None:

@@ -77,7 +77,7 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
                 claim_object['max_score'] = str(result.get('asmt_claim_{0}_score_max'.format(index)))
                 claim_object['min_score'] = str(result.get('asmt_claim_{0}_score_min'.format(index)))
             if include_names:
-                #TODO: refactor, process by subject
+                # TODO: refactor, process by subject
                 claim_object['name'] = claim_name
                 # For Interim Blocks, we don't care about the name alias
                 if result.get('asmt_type') != AssessmentType.INTERIM_ASSESSMENT_BLOCKS:

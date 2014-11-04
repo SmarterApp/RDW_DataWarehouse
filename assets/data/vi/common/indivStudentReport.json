@@ -52,15 +52,10 @@
     },
     "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
                              "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
-    "detailsSelection": [
-        {
-            "display": "Toán",
-            "key": "Math"
-        },
-        {
-            "display": "ELA/Đọc viết",
-            "key": "ELA"
-        }
-    ],
+    "detailsSelection": {
+        "Summative": ["Math", "ELA"],
+        "Interim Comprehensive": ["Math", "ELA"],
+        "Interim Assessment Blocks": ["Math", "ELA"]
+    },
     "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
 }

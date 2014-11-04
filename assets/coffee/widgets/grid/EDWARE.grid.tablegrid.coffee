@@ -18,6 +18,7 @@ define [
       height: "auto"
       viewrecords: true
       autoencode: true
+      frozenColumns: false
       rowNum: 100
       gridview: true
       scroll: 1
@@ -113,6 +114,8 @@ define [
       this.table.jqGrid options
       this.table.jqGrid "hideCol", "rn"
       this.table.setGridWidth options.defaultWidth, false
+      if options.frozenColumns
+        this.table.jqGrid('setFrozenColumns').trigger("reloadGrid")
 
     renderFooter: () ->
       # Add footer row to the grid
@@ -148,7 +151,7 @@ define [
       colModelItem =
         name: column.field
         label: column.name
-        parentLabel: column.parent.name
+        parentLabel: column.parent?.name
         index: column.index
         width: column.width
         resizable: false # prevent the user from manually resizing the columns
@@ -192,9 +195,6 @@ define [
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
-
-      # trigger gridComplete event
-      options.gridComplete() if options.gridComplete
       return this.grid
 
     $.fn.eagerLoad = () ->
@@ -224,7 +224,7 @@ define [
     # adjust grid height based on visible region
     $("#gview_gridTable > .ui-jqgrid-bdiv").css {
       'min-height': 100
-      'height': calculateHeight()
+      'max-height': calculateHeight()
     }
 
   calculateHeight = () ->

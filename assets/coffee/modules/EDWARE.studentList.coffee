@@ -61,7 +61,7 @@ define [
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
         'asmtType': encodeURI(@asmtType.toUpperCase()),
       }
-      row['effectiveDate'] ?= @effectiveDate
+      row['params']['effectiveDate'] ?= @effectiveDate
       row
 
   class StudentDataSet

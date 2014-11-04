@@ -1,5 +1,17 @@
 <h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
 <div class="innerBox clearfix {{all_results.asmt_subject}}">
+    <div class="printHeader printContent">
+        <div class="logo">
+            <img src="{{branding.tenantLogo}}"/> 
+            <span>{{branding.tenantLabel}}</span>
+        </div>
+        <div class="summary">
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
+        </div>
+    </div>
     <div class="isrInterimBlockHeader">
     	{{#current.has_data}}
         <span class="subject">{{all_results.asmt_subject_text}}</span>
@@ -9,20 +21,6 @@
         {{labels.no_results}}
         {{/current.has_data}}
     </div>
-    <!-- TODO - Figure this out for Print PDF-->
-    <div class="printHeader printContent">
-        <div class="logo">
-            <img src="{{branding.tenantLogo}}"/> 
-            <span>{{branding.tenantLabel}}</span>
-        </div>
-        <div class="summary">
-            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{asmt_grade}}</div>
-            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
-            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
-            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
-        </div>
-    </div>
-    <!-- End of TODO-->
     <div class="contentBlocksWrapper">
     	{{#current.grades}}
     	<hr>
@@ -34,7 +32,7 @@
                     <div class="content">
                     	<div class="level{{mostRecent.level}}">
 	                    	<i class="edware-icon-large-perf-level-{{mostRecent.level}}"></i>
-	                    	<div style="display:inline-block">
+	                    	<div class="level{{mostRecent.level}}Content">
 	                    		<div class="takenDate">{{mostRecent.effective_date}}</div>
 	                        {{mostRecent.desc}}
 	                       </div>
@@ -92,7 +90,7 @@
             <img src="../images/smarter_printlogo.png" width="150" height="47" />
         </div>
         <div class="summary">
-            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{grade}}</div>
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
@@ -100,6 +98,7 @@
     </div>
     <!-- End of TODO-->
 </div>
+<div class="pageBreak"></div>
 <!-- TODO - Figure this out for Print PDF-->
 <div id="print_reportInfoContent" class="printContent clearfix">
     <div class="printHeader">
@@ -108,7 +107,7 @@
             <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
-            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{grade}}</div>
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}

@@ -232,7 +232,7 @@ define [
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
-      @updateView()
+      @reloadReport()
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
@@ -284,7 +284,7 @@ define [
     onAsmtTypeSelected: (asmt) ->
       # save assessment type
       edwarePreferences.saveAsmtForISR(asmt)
-      @updateView()
+      @reloadReport()
       @renderReportInfo()
 
     renderReportActionBar: () ->
@@ -342,21 +342,23 @@ define [
       @params = params
 
     updateView: () ->
-      # Decides whether we need to render or retrieve data from server
+      viewName = edwarePreferences.getAsmtView()
+      $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
+  
+    reloadReport: () ->
+      # Decide if we have the data or needs to retrieve from backend
       cacheKey = @getCacheKey()
+      @data.current = @data['views'][cacheKey]
       if not @data['views']?[cacheKey]
         this.prepareParams()
         this.fetchData()
       else
-        @data.current = @data['views'][cacheKey]
-        this.render()
+        @updateView()
+        @render()
 
     render: () ->
       # Get tenant level branding
       @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
-      # The template for Interim Block is different
-      viewName = edwarePreferences.getAsmtView()
-      $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
       if @isBlock
         @renderInterimBlockView()
       else

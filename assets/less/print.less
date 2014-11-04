@@ -238,6 +238,12 @@
         h4 { max-width: 135px; }
       }
     }
+    .blocks {
+      background: @color-white !important;
+      table{
+        background-color: @color-white !important;
+      }
+    }
 
     .exportPopup {display: none;}
 
@@ -814,6 +820,27 @@
 
     #infoBar, #actionBar {
       display: none;
+    }
+    
+    .isrInterimBlockHeader {
+      margin-top: 30px;
+      .subject {
+        color: @color-A1 !important;
+        font-size: 34px;
+      }
+      .info{
+        float: right;
+        color: @color-B2 !important;
+        font-size: 15px;
+      }
+    }
+    .contentBlocksWrapper {
+      hr:first-child {
+        display: none;
+      }
+      .blocks{
+        page-break-inside:avoid;
+      }
     }
   }
 }

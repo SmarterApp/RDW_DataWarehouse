@@ -140,6 +140,6 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o7
 
 
 def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
-    directory = os.path.join(base_dir, state_code, asmt_id)
+    directory = os.path.join(base_dir, state_code.lower(), asmt_id)
     os.makedirs(directory, mode=mode, exist_ok=True)
     return directory

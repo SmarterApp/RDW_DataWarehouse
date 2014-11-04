@@ -61,7 +61,7 @@ class MetadataTemplateManager:
         for root, _, filenames in os.walk(path):
             for file in fnmatch.filter(filenames, pattern):
                 full_path = os.path.join(root, file)
-                with open(full_path, 'r+') as f:
+                with open(full_path, 'r') as f:
                     data = f.read()
                     template = MetadataTemplate(self._get_conversion_func()(data))
                     templates.append(template)

@@ -215,7 +215,8 @@ define [
           subjectData['grades'].push dataByGrade[grade]
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
         subjectData.has_data = true if subjectData.grades.length > 0
-        @data['views'][asmt_year + subjectName] = subjectData
+        @data['views'][asmt_year + @data.all_results.asmt_type]?= []
+        @data['views'][asmt_year + @data.all_results.asmt_type].push subjectData
 
 
   class EdwareISR
@@ -277,6 +278,8 @@ define [
       $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
+      # TODO: Check if there is a more elegant way for iab
+      subjects = if not @isBlock then @data.current else {}
       edwareReportInfoBar.create '#infoBar',
         reportTitle: $('#individualStudentContent h2').first().text()
         reportName: Constants.REPORT_NAME.ISR
@@ -286,7 +289,7 @@ define [
         CSVOptions: @configData.CSVOptions
         metadata: @data.metadata
         # subjects on ISR
-        subjects: @data.current, false, null
+        subjects: subjects, false, null
 
     onAsmtTypeSelected: (asmt) ->
       # save assessment type
@@ -314,14 +317,14 @@ define [
         if @params['effectiveDate']
           return @params['effectiveDate'] + asmtType
         else
-          return @params['asmtYear'] + asmtType
+          return @params['asmtYear'] + Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
           if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
             return asmt['effective_date'] + asmt['asmt_type']
           else
-            return asmt['asmt_period_year'] + @getAsmtViewSelection()
+            return asmt['asmt_period_year'] + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
@@ -448,12 +451,8 @@ define [
       viewName
 
     renderInterimBlockView: () ->
-      final_output = ""
-      for key, view of this.data.views
-        @data.current = @data['views'][key]
-        output = Mustache.to_html isrInterimBlocksTemplate, @data
-        final_output = final_output + output
-      $("#individualStudentContent").html final_output
+      output = Mustache.to_html isrInterimBlocksTemplate, @data
+      $("#individualStudentContent").html output
       @createPopovers()
 
     createPopovers: () ->

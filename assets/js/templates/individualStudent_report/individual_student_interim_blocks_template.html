@@ -1,5 +1,6 @@
 <h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
-<div class="innerBox clearfix {{current.asmt_subject}}">
+{{#current}}
+<div class="innerBox clearfix {{asmt_subject}}">
     <div class="printHeader printContent">
         <div class="logo">
             <img src="{{branding.tenantLogo}}"/> 
@@ -13,16 +14,16 @@
         </div>
     </div>
     <div class="isrInterimBlockHeader">
-    	{{#current.has_data}}
-        <span class="subject">{{current.asmt_subject_text}}</span>
-        <span class="info"> {{current.asmt_type}} {{current.asmt_period}}</span>
-        {{/current.has_data}}
-        {{^current.has_data}}
+    	{{#has_data}}
+        <span class="subject">{{asmt_subject_text}}</span>
+        <span class="info"> {{asmt_type}} {{asmt_period}}</span>
+        {{/has_data}}
+        {{^has_data}}
         {{labels.no_results}}
-        {{/current.has_data}}
+        {{/has_data}}
     </div>
     <div class="contentBlocksWrapper">
-    	{{#current.grades}}
+    	{{#grades}}
     	<hr>
         <div class="blocksSection clearfix">
             <div class="row-fluid">
@@ -82,7 +83,7 @@
                {{/blocks}}
             </div>
         </div>
-        {{/current.grades}}
+        {{/grades}}
     </div>
     <!-- TODO - Figure this out for Print PDF-->
     <div class="assessmentOtherInfoHeader printHeader">
@@ -98,6 +99,7 @@
     </div>
     <!-- End of TODO-->
 </div>
+{{/current}}
 <div class="pageBreak"></div>
 <!-- TODO - Figure this out for Print PDF-->
 <div id="print_reportInfoContent" class="printContent clearfix">

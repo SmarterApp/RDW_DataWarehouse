@@ -26,6 +26,7 @@ import pyramid.security
 from edauth.security.exceptions import NotAuthorized
 from edauth.security.logging import SECURITY_EVENT_TYPE, write_security_event
 from requests.api import get
+import re
 
 
 @forbidden_view_config()
@@ -86,8 +87,12 @@ def _handle_OAUTH2_Implicit_login_flow(request):
     This call is to check for oauth2 flow. It checks if bearer is present and checks with IdP
     if valid
     '''
-    bearer = request.headers.get("bearer", None)
-    if bearer is not None:
+    auth_header = request.headers.get("Authorization", None)
+    if auth_header is not None:
+        m = re.match(r"Bearer ([\w-]+)", auth_header, re.I)
+        bearer = m.group(1)
+        if bearer is None:
+            return
         verify_url = request.registry.settings['auth.oauth2.idp_server_verify_url']
         timeout = request.registry.settings.get('auth.oauth2.idp_server_verify_url.timeout', 10)
         headers = {"Content-Type": "application/x-www-form-urlenocded"}

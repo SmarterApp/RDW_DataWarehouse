@@ -103,10 +103,13 @@ define [
       columnData
 
     createColumnsIAB: () ->
+      currentGrade = @config.grade.id
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
       for subject, columns of @data.interim_assessment_blocks
         subjectName = @data.subjects[subject]
-        for claim in columns
+        for claim in @config.interimAssessmentBlocksOrdering[subject][currentGrade]
+          if claim not in columns
+            continue
           iab_column_details = {
             subject: subject
             claim: claim

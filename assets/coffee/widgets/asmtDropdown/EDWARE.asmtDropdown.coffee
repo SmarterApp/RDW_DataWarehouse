@@ -93,7 +93,7 @@ define [
       if asmt?.asmt_type is Constants.ASMT_TYPE.IAB and grade
         $('.grade', ".IABMessage").html grade?.id
         asmtView = edwarePreferences.getAsmtView()
-        if asmtView is Constants.ASMT_VIEW.OVERVIEW
+        if not asmtView or asmtView is Constants.ASMT_VIEW.OVERVIEW
           edwarePreferences.saveAsmtView Constants.ASMT_VIEW.MATH
         $IABMessage.show()
       else

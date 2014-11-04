@@ -53,7 +53,7 @@ class Meta:
 
     @property
     def asmt_type(self):
-        return self.__asmt_type
+        return self.__asmt_type.upper() if self.__asmt_type is not None else None
 
     @property
     def grade(self):

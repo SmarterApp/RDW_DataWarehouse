@@ -194,6 +194,10 @@ define [
         subjectData = {}
         dataByGrade = {}
         grades = []
+        subjectData['asmt_subject'] = subjectName
+        subjectData['asmt_type'] = @data.all_results.asmt_type
+        subjectData['asmt_subject_text'] = Constants.SUBJECT_TEXT[subjectName]
+        subjectData['asmt_period'] = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
         # Separate all the interim blocks by asmt_grades
         for assessment in @data.all_results[subjectAlias]
           asmt_grade = assessment['grade']
@@ -210,6 +214,7 @@ define [
         for grade in grades.sort().reverse()
           subjectData['grades'].push dataByGrade[grade]
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
+        subjectData.has_data = true if subjectData.grades.length > 0
         @data['views'][asmt_year + subjectName] = subjectData
 
 
@@ -236,6 +241,8 @@ define [
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
+      # We have to call updateView on first load since action bar hasn't been created yet
+      @updateView()
 
     initialize: () ->
       @prepareParams()
@@ -303,6 +310,7 @@ define [
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
+        # TODO FIX THIS
         if @params['effectiveDate']
           return @params['effectiveDate'] + asmtType
         else
@@ -338,12 +346,14 @@ define [
             asmt_type: Constants.ASMT_TYPE[params['asmtType']]
             effective_date: params['effectiveDate']
             asmt_period_year: params['asmtYear']
-        @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
+      @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
       @params = params
 
     updateView: () ->
-      viewName = edwarePreferences.getAsmtView()
-      $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
+      if not @isPdf
+        viewName = @getAsmtViewSelection()
+        $("#subjectSelection#{viewName}").addClass('selected')
+        $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
   
     reloadReport: () ->
       # Decide if we have the data or needs to retrieve from backend
@@ -353,8 +363,8 @@ define [
         this.prepareParams()
         this.fetchData()
       else
-        @updateView()
         @render()
+        @updateView()
 
     render: () ->
       # Get tenant level branding
@@ -435,19 +445,12 @@ define [
     getAsmtViewSelection: () ->
       viewName = edwarePreferences.getAsmtView()
       viewName = @subjectsData['subject1'] if viewName not in Constants.SUBJECTS  # In ISR, we only have two views
-      $("#subjectSelection#{viewName}").addClass('selected')
       viewName
 
     renderInterimBlockView: () ->
       final_output = ""
       for key, view of this.data.views
         @data.current = @data['views'][key]
-        # Update subject text and asmt period year that is unique according to the view
-        subject_text = key.replace(/\d+/g, '')
-        @data.all_results.asmt_subject = subject_text
-        @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[subject_text]
-        @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
-        @data.current.has_data = true if @data.current.grades.length > 0
         output = Mustache.to_html isrInterimBlocksTemplate, @data
         final_output = final_output + output
       $("#individualStudentContent").html final_output

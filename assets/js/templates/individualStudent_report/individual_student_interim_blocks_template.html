@@ -1,5 +1,5 @@
 <h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
-<div class="innerBox clearfix {{all_results.asmt_subject}}">
+<div class="innerBox clearfix {{current.asmt_subject}}">
     <div class="printHeader printContent">
         <div class="logo">
             <img src="{{branding.tenantLogo}}"/> 
@@ -14,8 +14,8 @@
     </div>
     <div class="isrInterimBlockHeader">
     	{{#current.has_data}}
-        <span class="subject">{{all_results.asmt_subject_text}}</span>
-        <span class="info"> {{all_results.asmt_type}} {{all_results.asmt_period}}</span>
+        <span class="subject">{{current.asmt_subject_text}}</span>
+        <span class="info"> {{current.asmt_type}} {{current.asmt_period}}</span>
         {{/current.has_data}}
         {{^current.has_data}}
         {{labels.no_results}}

@@ -55,7 +55,7 @@ class TestCSVMetadata(unittest.TestCase):
         mapping = dict(zip(header, values))
         self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-ELA-7')
         self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '6')
-        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '922171')
+        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '77043c80-4b0a-11e4-916c-0800200c9a66')
         self.assertEqual(mapping[AssessmentHeaders.Asian], 'No')
         self.assertEqual(mapping[AssessmentHeaders.ResponsibleSchoolIdentifier], 'CA_9999827_9999928')
         self.assertEqual(mapping[AssessmentHeaders.NameOfInstitution], 'My Elementary School')

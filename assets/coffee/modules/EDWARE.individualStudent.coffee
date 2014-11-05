@@ -451,6 +451,7 @@ define [
       viewName
 
     renderInterimBlockView: () ->
+      @data.labels.older_display_text = if @isPdf then @data.labels.more_dates_online else @data.labels.older
       output = Mustache.to_html isrInterimBlocksTemplate, @data
       isrContent = $("#individualStudentContent")
       isrContent.html output

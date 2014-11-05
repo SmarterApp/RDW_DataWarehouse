@@ -34,7 +34,7 @@ define [
 
     createDetailSelection: () ->
       asmt = edwarePreferences.getAsmtPreference()
-      asmtType = asmt.asmt_type || Constants.ASMT_TYPE.SUMMATIVE
+      asmtType = asmt?.asmt_type || Constants.ASMT_TYPE.SUMMATIVE
       for i in @config.detailsSelection?[asmtType] || []
         @config.detailsButtons[i]
 

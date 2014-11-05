@@ -39,7 +39,7 @@ def generate_isr_report_path_by_student_id(state_code, effective_date=None, asmt
             effective_date = str(result[Constants.EFFECTIVE_DATE]) if result.get(Constants.EFFECTIVE_DATE) is not None else None
             district_id = result[Constants.DISTRICT_ID]
             school_id = result[Constants.SCHOOL_ID]
-            asmt_grade = result[Constants.ASMT_GRADE]
+            asmt_grade = result.get(Constants.ASMT_GRADE)
 
             # get absolute file path name
             file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, asmt_type=asmt_type, grayScale=grayScale, lang=lang, effective_date=effective_date)
@@ -51,7 +51,10 @@ def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=Non
     '''
     Generate Individual Student Report absolute file path name
     '''
-    dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_id, school_id, asmt_grade, 'isr', asmt_type, student_id + (('.' + effective_date) if effective_date is not None else '') + '.' + lang)
+    dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_id, school_id)
+    if asmt_grade is not None:
+        dirname = os.path.join(dirname, asmt_grade)
+    asmt_grade = os.path.join('isr', asmt_type, student_id + (('.' + effective_date) if effective_date is not None else '') + '.' + lang)
     return dirname + (".g.pdf" if grayScale else ".pdf")
 
 
@@ -84,8 +87,7 @@ def generate_query_for_iab(connection, student_ids, asmt_year):
                     fact_table.c.state_code.label(Constants.STATE_CODE),
                     dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
                     fact_table.c.district_id.label(Constants.DISTRICT_ID),
-                    fact_table.c.school_id.label(Constants.SCHOOL_ID),
-                    fact_table.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                    fact_table.c.school_id.label(Constants.SCHOOL_ID)],
                    from_obj=[fact_table
                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_table.c.asmt_rec_id,
                                                   dim_asmt.c.rec_status == Constants.CURRENT,

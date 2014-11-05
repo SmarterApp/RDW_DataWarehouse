@@ -381,19 +381,17 @@ define [
         output = Mustache.to_html isrTemplate, @data
         $("#individualStudentContent").html output
 
-        # toggle between ELA and Math
-        for item, i in @data.current
-          assessmentSection = "#assessmentSection" + item.count
-          no_results_message = '<div class="no_data screenContent"><p>'+this.data.labels.no_results+'</p></div>'
-          subject_math = $("#individualStudentContent > .Math").attr('class')
-          subject_ela = $("#individualStudentContent > .ELA").attr('class')
-          $("#individualStudentContent").append(no_results_message) and $('.no_data').addClass("Math") if subject_math is undefined
-          $("#individualStudentContent").append(no_results_message) and $('.no_data').addClass("ELA") if subject_ela is undefined
-
         @updateClaimsHeight()
 
         # Generate Confidence Level bar for each assessment
         for item, i in @data.current
+          # For toggling between subjects
+          noResultsMessage = '<div class="no_data screenContent"><p>' + this.data.labels.no_results + '</p></div>'
+          subjectMath = $("#individualStudentContent > .Math").attr('class')
+          subjectEla = $("#individualStudentContent > .ELA").attr('class')
+          $("#individualStudentContent").append(noResultsMessage) and $('.no_data').addClass("Math") if subjectMath is undefined
+          $("#individualStudentContent").append(noResultsMessage) and $('.no_data').addClass("ELA") if subjectEla is undefined
+          
           barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer
 

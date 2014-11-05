@@ -303,13 +303,10 @@ define [
       self = this
       @configData.asmtTypes =
         options: self.data.asmt_administration
-        callback: self.onAsmtTypeSelected
+        callback: self.onAsmtTypeSelected.bind self
       @configData.switchView = (asmtView)->
         self.updateView(asmtView)
-      console.log(this.actionBar == null)
-      console.log(edwareReportActionBar.create)
-      @actionBar = edwareReportActionBar.create('#actionBar', @configData) if @actionBar is null
-      console.log(@actionBar)
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData
       @getAsmtViewSelection()
 
     getCacheKey: ()->

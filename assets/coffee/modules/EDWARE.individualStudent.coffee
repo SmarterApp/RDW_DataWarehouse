@@ -452,8 +452,18 @@ define [
 
     renderInterimBlockView: () ->
       output = Mustache.to_html isrInterimBlocksTemplate, @data
-      $("#individualStudentContent").html output
-      @createPopovers()
+      isrContent = $("#individualStudentContent")
+      isrContent.html output
+      if not @isPdf
+        @createPopovers()
+      else
+        # For PDFs we need to hide sections when we have no data
+        subjectsWithData = []
+        for subjectData in @data.current
+          if subjectData.has_data
+            subjectsWithData.push subjectData.asmt_subject
+        if subjectsWithData.length isnt Object.keys(@data.subjects).length
+          isrContent.addClass(subjectName) for subjectName in subjectsWithData
 
     createPopovers: () ->
       # Creates popovers for interim blocks

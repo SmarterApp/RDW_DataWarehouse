@@ -16,7 +16,7 @@
     <div class="isrInterimBlockHeader">
     	{{#has_data}}
         <span class="subject">{{asmt_subject_text}}</span>
-        <span class="info"> {{asmt_type}} {{asmt_period}}</span>
+        <span class="info"> {{asmt_type}} <span class="iabYear">{{asmt_period}}</span></span>
         {{/has_data}}
         {{^has_data}}
         {{labels.no_results}}
@@ -85,23 +85,10 @@
         </div>
         {{/grades}}
     </div>
-    <!-- TODO - Figure this out for Print PDF-->
-    <div class="assessmentOtherInfoHeader printHeader">
-        <div class="logo">
-            <img src="../images/smarter_printlogo.png" width="150" height="47" />
-        </div>
-        <div class="summary">
-            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
-            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
-            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
-            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
-        </div>
-    </div>
-    <!-- End of TODO-->
+    <div class="pageBreak"></div>
 </div>
 {{/current}}
-<div class="pageBreak"></div>
-<!-- TODO - Figure this out for Print PDF-->
+<!-- <div class="pageBreak"></div> -->
 <div id="print_reportInfoContent" class="printContent clearfix">
     <div class="printHeader">
         <div class="logo">
@@ -122,4 +109,3 @@
     </div>
     <div class="legendPopup"></div>
 </div>
-<!-- End of TODO-->

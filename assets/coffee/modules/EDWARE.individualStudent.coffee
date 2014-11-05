@@ -130,11 +130,7 @@ define [
         @data['views'] ?= {}
         @data['views'][key] ?= []
         @data['views'][key].push assessment if @data['views'][key].length < 2
-        #TODO: temporary workaround for bulk pdf generation
-        if assessment.asmt_type is 'Summative'
-          default_key = assessment.asmt_period_year + 'Summative'
-          @data['views'][default_key] ?= []
-          @data['views'][default_key].push assessment if @data['views'][default_key].length < 2
+
 
   class InterimBlocksDataProcessor extends DataProcessor
     # This is the Data Processor for Interim Assessment Blocks
@@ -312,21 +308,18 @@ define [
       @getAsmtViewSelection()
 
     getCacheKey: ()->
+      # For summative and interim comp, it's always effectiveDate + asmtType
+      # For iab, it's always the asmtYear + asmtType
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
-        # TODO FIX THIS
-        if @params['effectiveDate']
-          return @params['effectiveDate'] + asmtType
-        else
-          return @params['asmtYear'] + Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
+        key = if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params['effectiveDate'] else @params['asmtYear']
+        return key + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
-          if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
-            return asmt['effective_date'] + asmt['asmt_type']
-          else
-            return asmt['asmt_period_year'] + asmt['asmt_type']
+          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then asmt['effective_date'] else + asmt['asmt_period_year']
+          return key + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]

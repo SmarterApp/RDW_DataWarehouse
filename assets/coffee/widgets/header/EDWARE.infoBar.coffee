@@ -51,7 +51,7 @@ define [
         tabindex: 0
 
       # set report info text
-      $('.reportInfoWrapper').append @config.reportInfoText
+      $('.reportInfoWrapper .reportInfoText').append @config.reportInfoText
 
     createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config, @contextSecurity)

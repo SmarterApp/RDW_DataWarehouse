@@ -46,7 +46,7 @@ define [
         @interimDisclaimerIcon.show()
         @displayPopover()
         # show on print version
-        $('.disclaimerInfo.printContent').append("<hr>").append(@content)
+        $('.disclaimerInfo.printContent').append(@content)
       else
         @interimDisclaimerIcon.hide()
         $('.disclaimerInfo.printContent').empty()

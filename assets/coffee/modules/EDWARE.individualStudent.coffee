@@ -190,7 +190,9 @@ define [
     processData: () ->
       @data['views'] ?= {}
       asmt_year = @data.all_results.asmt_period_year
-      for subjectAlias, subjectName of @data.subjects
+      # We want to traverse by subject order
+      for subjectAlias in Object.keys(@data.subjects).sort()
+        subjectName = @data.subjects[subjectAlias]
         subjectData = {}
         dataByGrade = {}
         grades = []

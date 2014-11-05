@@ -269,8 +269,8 @@ define [
         params['asmtGrade'] = [ grade ]
       else
         params['asmtGrade'] = undefined
-      params["effectiveDate"] = asmt.effectiveDate
-      params["asmtType"] = (asmt.asmtType || 'Summative').toUpperCase()
+      params["effectiveDate"] = asmt.effective_date
+      params["asmtType"] = (asmt.asmt_type || 'Summative').toUpperCase()
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
 
       language = @container.find('input[name="language"]:checked').val()
@@ -393,7 +393,7 @@ define [
     sendSyncExtractRequest: () ->
       values = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
-      asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
+      asmtType = edwarePreferences.getAsmtPreference().asmt_type || Constants.ASMT_TYPE.SUMMATIVE
       # Get filters
       params = edwarePreferences.getFilters()
       # Get sticky compared rows if any

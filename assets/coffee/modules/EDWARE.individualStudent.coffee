@@ -300,11 +300,16 @@ define [
       sample = @data.current?[0] || {}
       @configData.subject = @createSampleInterval sample, this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
+      self = this
       @configData.asmtTypes =
-        options: @data.asmt_administration
-        callback: @onAsmtTypeSelected.bind(this)
-      @configData.switchView = @updateView.bind(this)
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData
+        options: self.data.asmt_administration
+        callback: self.onAsmtTypeSelected
+      @configData.switchView = (asmtView)->
+        self.updateView(asmtView)
+      console.log(this.actionBar == null)
+      console.log(edwareReportActionBar.create)
+      @actionBar = edwareReportActionBar.create('#actionBar', @configData) if @actionBar is null
+      console.log(@actionBar)
       @getAsmtViewSelection()
 
     getCacheKey: ()->

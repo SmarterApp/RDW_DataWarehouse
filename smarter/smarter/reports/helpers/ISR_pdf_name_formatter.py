@@ -54,7 +54,7 @@ def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=Non
     dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_id, school_id)
     if asmt_grade is not None:
         dirname = os.path.join(dirname, asmt_grade)
-    asmt_grade = os.path.join('isr', asmt_type, student_id + (('.' + effective_date) if effective_date is not None else '') + '.' + lang)
+    dirname = os.path.join(dirname, 'isr', asmt_type, student_id + (('.' + effective_date) if effective_date is not None else '') + '.' + lang)
     return dirname + (".g.pdf" if grayScale else ".pdf")
 
 

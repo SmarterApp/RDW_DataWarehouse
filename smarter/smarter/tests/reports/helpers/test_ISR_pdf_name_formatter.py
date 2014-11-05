@@ -48,7 +48,7 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
     def test_generate_isr_report_path_by_student_id_for_iab(self):
         file_name = generate_isr_report_path_by_student_id('NC', asmt_year=2015, pdf_report_base_dir='/', student_ids='34b99412-fd5b-48f0-8ce8-f8ca3788634a', asmt_type=AssessmentType.INTERIM_ASSESSMENT_BLOCKS)
         self.assertEqual(len(file_name), 1)
-        self.assertEqual(file_name['34b99412-fd5b-48f0-8ce8-f8ca3788634a'], os.path.join('/', 'NC', '2015', '229', '936', '3', 'isr', 'INTERIM ASSESSMENT BLOCKS', '34b99412-fd5b-48f0-8ce8-f8ca3788634a.en.g.pdf'))
+        self.assertEqual(file_name['34b99412-fd5b-48f0-8ce8-f8ca3788634a'], os.path.join('/', 'NC', '2015', '229', '936', 'isr', 'INTERIM ASSESSMENT BLOCKS', '34b99412-fd5b-48f0-8ce8-f8ca3788634a.en.g.pdf'))
 
     def test_generate_isr_report_path_by_student_id_studentguid_not_exist(self):
         self.assertRaises(NotFoundException, generate_isr_report_path_by_student_id, 'NC', '20120101', pdf_report_base_dir='/', student_ids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')

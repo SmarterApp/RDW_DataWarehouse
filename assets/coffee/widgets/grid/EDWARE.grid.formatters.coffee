@@ -153,7 +153,14 @@ define [
     asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_type]
     columnData = subject[names[1]]
     return '' if not columnData
-    perf_lvl_name = columnData[names[2]][names[3]][names[4]]['perf_lvl_name']
+    effective_date = names[2]
+
+    perf_lvl_name = ""
+    for data in columnData
+      if data.effective_date is effective_date
+        perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
+        value = data[names[3]][names[4]]['perf_lvl']
+        break
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       asmtType: subject.asmt_type,
       asmtSubjectText: asmt_subject_text

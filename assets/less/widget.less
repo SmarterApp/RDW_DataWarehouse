@@ -285,7 +285,17 @@ th.ui-th-column div {
 
 .ui-jqgrid tr.jqgrow td { border-bottom: solid 1px @color-B7; }
 
-.ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {  background: @color-B5; color: @color-B1; font-size: 16px; }
+.ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {
+    background: @color-B5;
+    color: @color-C18;
+    font-size: 11px;
+    height: 30px !important;
+    font-weight: normal;
+
+    .ui-jqgrid-sortable {
+        line-height: 15px;
+    }
+}
 
 tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
   background: @color-B6 !important; color: @color-B2;
@@ -2516,7 +2526,7 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
           &:nth-child(2){
             border-radius:3px 0 0 3px;
             border-left:1px solid #bbbbbb;
-          }          
+          }
         }
       }
 

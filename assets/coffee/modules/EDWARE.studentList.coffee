@@ -116,6 +116,7 @@ define [
               claim: claim
               expanded: isExpanded
               numberOfColumns: Object.keys(effective_dates).length
+              effectiveDate: effective_date
               i: i
             }
             column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
@@ -396,11 +397,6 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
-      self = this
-      # update top row height
-      frozen_row_height = $('.frozen-div').height()
-      $('.ELA .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
-      $('.Math .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
@@ -417,6 +413,7 @@ define [
           labels: self.labels
           scroll: false
           frozenColumns: true
+          expandableColumns: true
           stickyCompareEnabled: filteredInfo.enabled
           gridComplete: () ->
             self.afterGridLoadComplete()

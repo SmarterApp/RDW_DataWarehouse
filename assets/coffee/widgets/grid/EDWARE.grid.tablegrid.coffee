@@ -87,6 +87,12 @@ define [
         parent = $this.parent()
         $this.insertBefore(parent)
 
+    adjustFrozenColumns: () ->
+      # update top row height
+      header_height = $('.ui-jqgrid-hbox').height()
+      $('.frozen-div #gridTable_student_full_name').css('height', header_height)
+
+
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()
       # reset last focus on sorting header
@@ -130,6 +136,8 @@ define [
       this.table.jqGrid('footerData','set', footer, true) if footer
 
     renderHeader: () ->
+      if not this.options.expandableColumns
+        return
       headers = this.getHeaders()
       # return if headers.length <= 0
       # draw headers
@@ -138,6 +146,7 @@ define [
         groupHeaders: headers
         fixed: true
       }
+      this.adjustFrozenColumns()
 
     getColumnNames: () ->
       columnNames = []

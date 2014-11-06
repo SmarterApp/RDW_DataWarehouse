@@ -1,6 +1,9 @@
 # module to handle all sort of events that are globally used
 #
-define ["jquery"], ($) ->
+define [
+  "jquery"
+  "edware"
+], ($, edware) ->
 
   # handle keyboard use highlight effect
   $('body').on

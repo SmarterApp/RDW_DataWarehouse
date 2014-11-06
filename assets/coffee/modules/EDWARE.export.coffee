@@ -1,10 +1,11 @@
 define [
   "jquery"
   "mustache"
+  "edware"
   "edwareConstants"
   "edwareClientStorage"
   "edwareUtil"
-], ($, Mustache, Constants, edwareClientStorage, edwareUtil) ->
+], ($, Mustache, edware, Constants, edwareClientStorage, edwareUtil) ->
 
 
   class CSVBuilder

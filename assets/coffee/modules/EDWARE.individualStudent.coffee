@@ -3,6 +3,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "edwareDataProxy"
   "edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
@@ -15,7 +16,7 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwarePopover"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
   DataFactory = ->
 

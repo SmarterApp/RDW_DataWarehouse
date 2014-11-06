@@ -5,3 +5,9 @@ define ["jquery"], ($) ->
   EDWARE = EDWARE or {}
 
   EDWARE
+
+  # bug from wkhtmltopdf causes issue when we use bind https://github.com/masayuki0812/c3/issues/552
+  Function::bind = Function::bind or (thisp) ->
+    fn = this
+    ->
+      fn.apply thisp, arguments

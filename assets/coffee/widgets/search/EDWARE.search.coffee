@@ -1,11 +1,12 @@
 define [
   "jquery"
   "mustache"
+  "edware"
   "text!SearchBoxTemplate"
   "text!SearchResultTemplate"
   "edwareConstants"
   "edwareGrid"
-], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
+], ($, Mustache, edware, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
 
   ARIA_TEMPALTE = "<span>{{total}}</span> records matching {{keyword}}. Use up and down arrow keys to cycle through matching records. Use enter to select a record. Use escape to exit find mode."
 

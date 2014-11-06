@@ -2,6 +2,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "text!StateDownloadTemplate"
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
@@ -16,7 +17,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, StateDownloadTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, edware, StateDownloadTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   REQUEST_ENDPOINT = {
     "registrationStatistics": "/services/extract/student_registration_statistics",

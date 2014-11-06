@@ -22,6 +22,7 @@ define [
   # Additional data files used by specific reports
   REPORT_DATA =
     ISR: ["../data/interimAssessmentBlocks.json"]
+    LOS: ["../data/interimAssessmentBlocks.json"]
 
   # setup URLs for report's specific JSON
   for reportName, fileName of Constants.REPORT_JSON_NAME

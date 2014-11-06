@@ -293,12 +293,9 @@ define [
       # save assessment type
       edwarePreferences.saveAsmtForISR(asmt)
       @reloadReport()
-      @renderReportInfo()
 
     renderReportActionBar: () ->
-      # TODO:  Currently, the data format is different for interim blocks which the following check, ideally, we should unify it
-      sample = @data.current?[0] || {}
-      @configData.subject = @createSampleInterval sample, this.legendInfo.sample_intervals
+      @configData.subject = @createSampleInterval @data.current?[0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
       self = this
       @configData.asmtTypes =
@@ -358,11 +355,11 @@ define [
     reloadReport: () ->
       # Decide if we have the data or needs to retrieve from backend
       cacheKey = @getCacheKey()
-      @data.current = @data['views'][cacheKey]
       if not @data['views']?[cacheKey]
         this.prepareParams()
         this.fetchData()
       else
+        @data.current = @data['views'][cacheKey]
         @render()
         @updateView()
 

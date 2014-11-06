@@ -270,7 +270,7 @@ define [
       else
         params['asmtGrade'] = undefined
       params["effectiveDate"] = asmt.effectiveDate
-      params["asmtType"] = asmt.asmtType || 'Summative'
+      params["asmtType"] = (asmt.asmtType || 'Summative').toUpperCase()
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
 
       language = @container.find('input[name="language"]:checked').val()

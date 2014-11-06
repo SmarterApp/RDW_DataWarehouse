@@ -154,16 +154,24 @@ define [
       @removeHighlight()
       # ensures that we're only highlighting when there's a search word
       return if not @keyword
-      @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')?[@offset]?['rowId'])
+      id = $('#gridTable').jqGrid('getGridParam', 'data')?[@offset]?['rowId']
+      @lastHighlightedElement = $("#link_#{id}", "#gridTable")
+      @frozenElement = "#gridTable_frozen #link_#{id}"
       text = @lastHighlightedElement.data('value')
       if text
         idx = text.toLowerCase().indexOf(@keyword.toLowerCase())
-        @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
+        textWithHightlight = text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length)
+        @lastHighlightedElement.html(textWithHightlight)
+        $(@frozenElement).html(textWithHightlight)
 
     removeHighlight: () ->
       if @lastHighlightedElement
-        @lastHighlightedElement.html(@lastHighlightedElement.data('value'))
+        value = @lastHighlightedElement.data('value')
+        @lastHighlightedElement.html value
         @lastHighlightedElement = null
+        if @frozenElement
+          $(@frozenElement).html value
+          @frozenElement = null
 
     getRowHeight: () ->
       return @rowHeight if @rowHeight

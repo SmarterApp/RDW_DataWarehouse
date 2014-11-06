@@ -55,8 +55,10 @@ define [
 
     applyCheckboxValues: () ->
       for row of this.selectedRows
-        element = $('#sticky_' + row)
+        id = "#sticky_#{row}"
+        element = $(id)
         element.attr('checked', true)
+        $(id, '.frozen-bdiv').attr('checked', true)
         this.checkedEvent element
 
     # All events related to grid filtering of rows

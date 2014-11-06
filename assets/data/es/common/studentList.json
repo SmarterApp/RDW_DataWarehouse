@@ -18,20 +18,11 @@
         "text": "Ingresar estudiante",
         "aria": "Encontrar estudiantes en este grado. Ingrese el texto de búsqueda y oprima enter"
     },
-    "detailsSelection": [
-        {
-            "display": "Overview",
-            "key": "Math_ELA"
-        },
-        {
-            "display": "Mathematics",
-            "key": "Math"
-        },
-        {
-            "display": "ELA/Literacy",
-            "key": "ELA"
-        }
-    ],
+    "detailsSelection": {
+        "Summative": ["Overview", "Math", "ELA"],
+        "Interim Comprehensive": ["Overview", "Math", "ELA"],
+        "Interim Assessment Blocks": ["Math", "ELA"]
+    },
     "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}",
                              "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"}
 }

@@ -27,8 +27,15 @@ define [], () ->
   ASMT_TYPE: {
     SUMMATIVE: 'Summative'
     INTERIM: 'Interim Comprehensive'
+    IAB: 'Interim Assessment Blocks'
     'INTERIM COMPREHENSIVE': 'Interim Comprehensive'
     'INTERIM ASSESSMENT BLOCKS': 'Interim Assessment Blocks'
+  }
+
+  ASMT_VIEW: {
+    OVERVIEW: "Math_ELA",
+    MATH: "Math",
+    ELA: "ELA"
   }
 
   EVENTS: {

@@ -18,11 +18,11 @@ define [
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
   DataFactory = ->
-  
+
   DataFactory::createDataProcessor = (data, configData, isGrayscale, isBlock) ->
     @dataClass = if isBlock then InterimBlocksDataProcessor else DataProcessor
     new @dataClass data, configData, isGrayscale
-    
+
   class DataProcessor
     # This is the Data Processor for Summative and Interim Comprehensive
     constructor: (@data, @configData, @isGrayscale) ->
@@ -50,7 +50,7 @@ define [
         accommodation_codes = accommodation_codes.concat accommodations[code]
         accommodations_enhanced[bucket] = accommodation_codes
 
-      keys = Object.keys(accommodations_enhanced).sort() 
+      keys = Object.keys(accommodations_enhanced).sort()
       for code in keys
         columns = accommodations_enhanced[code]
         section = {}
@@ -171,7 +171,7 @@ define [
               dataByName[grade][name]['hasOlder'] = true
               dataByName[grade][name]['older'] ?= []
               dataByName[grade][name]['older'].push block
-          
+
       # Group them back to a list and sort them
       returnData = {}
       for grade, gradeData of dataByName
@@ -183,10 +183,10 @@ define [
           return 1 if x.displayOrder > y.displayOrder
           0
         data[grade] = {"blocks": returnData[grade]}
-    
+
     formatDate: (date) ->
       date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
-       
+
     processData: () ->
       @data['views'] ?= {}
       asmt_year = @data.all_results.asmt_period_year
@@ -197,12 +197,12 @@ define [
         # Separate all the interim blocks by asmt_grades
         for assessment in @data.all_results[subjectAlias]
           asmt_grade = assessment['grade']
-          dataByGrade[asmt_grade] ?= [] 
+          dataByGrade[asmt_grade] ?= []
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
-          block_info = {'grade': @configData.labels.grade + " " + asmt_grade, 
-          'effective_date': @formatDate(assessment['effective_date']), 
-          'name': assessment['claims'][0]['name'], 
-          'desc': assessment['claims'][0]['perf_lvl_name'], 
+          block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
+          'effective_date': @formatDate(assessment['effective_date']),
+          'name': assessment['claims'][0]['name'],
+          'desc': assessment['claims'][0]['perf_lvl_name'],
           'level': assessment['claims'][0]['perf_lvl']}
           dataByGrade[asmt_grade].push(block_info)
         @splitByPerfBlockByName(subjectName, dataByGrade)
@@ -211,7 +211,7 @@ define [
           subjectData['grades'].push dataByGrade[grade]
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
         @data['views'][asmt_year + subjectName] = subjectData
-      
+
 
   class EdwareISR
 
@@ -281,21 +281,24 @@ define [
         # subjects on ISR
         subjects: @data.current, false, null
 
+    onAsmtTypeSelected: (asmt) ->
+      # save assessment type
+      edwarePreferences.saveAsmtForISR(asmt)
+      @updateView()
+      @renderReportInfo()
+
     renderReportActionBar: () ->
       # TODO:  Currently, the data format is different for interim blocks which the following check, ideally, we should unify it
       sample = @data.current?[0] || {}
       @configData.subject = @createSampleInterval sample, this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
-      @configData.asmtTypes = @data.asmt_administration
-
-      self = this
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->
-        # save assessment type
-        edwarePreferences.saveAsmtForISR(asmt)
-        self.updateView()
-        self.renderReportInfo()
+      @configData.asmtTypes =
+        options: @data.asmt_administration
+        callback: @onAsmtTypeSelected.bind(this)
+      @configData.switchView = @updateView.bind(this)
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData
       @getAsmtViewSelection()
-    
+
     getCacheKey: ()->
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
@@ -307,7 +310,7 @@ define [
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
-          if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] 
+          if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
             return asmt['effective_date'] + asmt['asmt_type']
           else
             return asmt['asmt_period_year'] + @getAsmtViewSelection()
@@ -326,14 +329,18 @@ define [
           asmtType = isrAsmt['asmt_type']
           effectiveDate = isrAsmt['effective_date']
           asmtYear = isrAsmt['asmt_period_year']
-        params['asmtType'] = asmtType.toUpperCase() if asmtType
+          params['asmtType'] = asmtType.toUpperCase() if asmtType
+          params['effectiveDate'] = effectiveDate if effectiveDate
+          params['asmtYear'] = asmtYear if asmtYear
+        else
+          # We save the params into storage in the case it's found in query params but not in storage
+          edwarePreferences.saveAsmtForISR
+            asmt_type: Constants.ASMT_TYPE[params['asmtType']]
+            effective_date: params['effectiveDate']
+            asmt_period_year: params['asmtYear']
         @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
-        params['effectiveDate'] = effectiveDate if effectiveDate
-        params['asmtYear'] = asmtYear if asmtYear
-      else
-        params['asmtType'] = params['asmtType'].toUpperCase() if params['asmtType']
       @params = params
-    
+
     updateView: () ->
       # Decides whether we need to render or retrieve data from server
       cacheKey = @getCacheKey()
@@ -343,7 +350,7 @@ define [
       else
         @data.current = @data['views'][cacheKey]
         this.render()
-      
+
     render: () ->
       # Get tenant level branding
       @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
@@ -354,35 +361,35 @@ define [
         # use mustache template to display the json data
         output = Mustache.to_html isrTemplate, @data
         $("#individualStudentContent").html output
-  
+
         @updateClaimsHeight()
-  
+
         # Generate Confidence Level bar for each assessment
         i = 0
         for item, i in @data.current
           barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer
-  
+
           # Set the layout for practical implications and policy content section on print version
           printAssessmentInfoContentLength = 0
           printAssessmentOtherInfo = "#assessmentSection" + i + " li.inline"
           printAssessmentOtherInfoLength = $(printAssessmentOtherInfo).length
-  
+
           $(printAssessmentOtherInfo).each (index) ->
             printAssessmentInfoContentLength = printAssessmentInfoContentLength + $(this).html().length
-  
+
           charLimits = 702
           if printAssessmentOtherInfoLength < 2 or printAssessmentInfoContentLength > charLimits
             $(printAssessmentOtherInfo).removeClass "inline"
-  
+
           if printAssessmentInfoContentLength > charLimits
             assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
             $(assessmentInfo + " h1").css("display", "block")
             $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
             $(assessmentInfo + " li:first-child").addClass("bottomLine")
-  
+
           i++
-  
+
         # Show tooltip for claims on mouseover
         $(".arrowBox").popover
           html: true
@@ -445,6 +452,6 @@ define [
           tabindex: 0
           placement: 'top'
       .click ->
-        $(this).mouseover()   
-     
+        $(this).mouseover()
+
   EdwareISR: EdwareISR

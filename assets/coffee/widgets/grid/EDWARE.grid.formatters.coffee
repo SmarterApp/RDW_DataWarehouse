@@ -146,6 +146,25 @@ define [
       export: 'edwareExportColumn' if options.colModel.export
     }
 
+  showPerfLevelIAB = (value, options, rowObject) ->
+    names = options.colModel.name.split "."
+    subject = rowObject[names[0]]
+    return '' if not subject
+    asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_type]
+    columnData = subject[names[1]]
+    return '' if not columnData
+    perf_lvl_name = columnData[names[2]][names[3]][names[4]]['perf_lvl_name']
+    Mustache.to_html PERF_LEVEL_TEMPLATE, {
+      asmtType: subject.asmt_type,
+      asmtSubjectText: asmt_subject_text
+      labels: options.colModel.labels
+      perfLevelNumber: value
+      columnName: options.colModel.label
+      parentName: $(options.colModel.parentLabel).text()
+      perfLevel: perf_lvl_name
+      export: 'edwareExportColumn' if options.colModel.export
+    }
+
   performanceBar = (value, options, rowObject) ->
 
     getScoreALD = (subject) ->
@@ -261,6 +280,7 @@ define [
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   showPerfLevel: showPerfLevel
+  showPerfLevelIAB: showPerfLevelIAB
   performanceBar: performanceBar
   populationBar: populationBar
   totalPopulation: totalPopulation

@@ -7,7 +7,8 @@ define [
   "edwareClientStorage"
   "text!edwareFilterTemplate"
   "edwareGrid"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate, edwareGrid) ->
+  "edwareConstants"
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate, edwareGrid, Constants) ->
 
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
@@ -299,32 +300,9 @@ define [
       $(self.filter).trigger FILTER_SUBMIT
 
 
-
-  filterData = (data, filters) ->
-    # no filters applied
-    return data if not filters
-
-    match = createFilter(filters)
-    for effectiveDate, assessment of data.assessments
-      for asmtType, studentList of assessment
-        for studentId, assessment of studentList
-          if not match.demographics(assessment)
-            assessment.hide = true
-          else
-            assessment.hide = false
-          # check grouping filters
-          for subject of data.subjects
-            asmt_subject = assessment[subject]
-            continue if not asmt_subject
-            if not match.grouping(asmt_subject)
-              asmt_subject.hide = true
-            else
-              asmt_subject.hide = false
-    data
-
   createFilter = (filters) ->
 
-    return {
+    match = {
       demographics : (assessment) ->
         # TODO: may need refactoring
         for filterName, filterValue of filters
@@ -346,11 +324,56 @@ define [
         return false
     }
 
+    IABFilter = (data) ->
+      # no filters applied
+      return data if not filters
+
+      for asmtType, studentList of data.assessments
+        for studentId, assessment of studentList
+          if not match.demographics(assessment)
+            assessment.hide = true
+            continue
+          else
+            assessment.hide = false
+          # check grouping filters
+          if not match.grouping(assessment)
+            assessment.hide = true
+          else
+            assessment.hide = false
+      data
+
+    FAOFilter = (data) ->
+      # no filters applied
+      return data if not filters
+
+      for effectiveDate, assessment of data.assessments
+        for asmtType, studentList of assessment
+          for studentId, assessment of studentList
+            if not match.demographics(assessment)
+              assessment.hide = true
+            else
+              assessment.hide = false
+            # check grouping filters
+            for subject of data.subjects
+              asmt_subject = assessment[subject]
+              continue if not asmt_subject
+              if not match.grouping(asmt_subject)
+                asmt_subject.hide = true
+              else
+                asmt_subject.hide = false
+      data
+
+    return (asmtType) ->
+      if asmtType is Constants.ASMT_TYPE.IAB
+        return IABFilter
+      else
+        return FAOFilter
+
 
   #
   #    *  EDWARE Filter plugin
   #    *  @param filterHook - Panel config data
-  #    *  @param filterTrigger -
+
   #    *  @param callback - callback function, triggered by click event on apply button
   #    *  Example: $("#table1").edwareFilter(filterTrigger, callbackFunction)
   #
@@ -359,4 +382,4 @@ define [
       new EdwareFilter($(this), filterTrigger, configs, callback)
   ) jQuery
 
-  filterData: filterData
+  createFilter: createFilter

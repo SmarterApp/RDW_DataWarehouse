@@ -195,7 +195,7 @@ def __prepare_query_iab(connector, params):
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
-    query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
+    query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT, dim_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if asmt_year is not None:
@@ -316,7 +316,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
                        "pattern": "^[1-9]{8}$"},
                    Constants.ASMTTYPE: {
                        "type": "string",
-                       "required": False,
+                       "required": True,
                        "pattern": "^(" + AssessmentType.INTERIM_ASSESSMENT_BLOCKS + "|" + AssessmentType.SUMMATIVE + "|" + AssessmentType.INTERIM_COMPREHENSIVE + ")$"}
                })
 @validate_user_tenant

@@ -41,6 +41,7 @@ define [
       firstColumn.displayTpl = customView.displayTpl
       firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
+      # firstColumn.options.asmtType = Constants.ASMT_TYPE.SUMMATIVE
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
       this

@@ -414,15 +414,17 @@
     },
     "column_for_iab": {
         "name": "{{claim}}",
-        "displayTpl": "<a href='#' class='inherit'>{{claim}}</a>",
-        "index": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
-        "field": "{{subject}}.{{{claim}}}.0.claims.0.perf_lvl",
+        "displayTpl": "<a href='#' class='inherit'>{{titleText}}</a>",
+        "index": "{{subject}}.{{{claim}}}.{{i}}.claims.0.perf_lvl",
+        "field": "{{subject}}.{{{claim}}}.{{i}}.claims.0.perf_lvl",
         "width": 160,
         "formatter": "showPerfLevelIAB",
         "sorttype": "int",
         "align": "center",
         "title": false,
-        "export": true
+        "export": true,
+        "expanded": "{{expanded}}",
+        "numberOfColumns": "{{numberOfColumns}}"
     },
     "students_iab": {
         "ELA": [
@@ -464,7 +466,7 @@
                         "hidden": true,
                         "sortorder": "asc",
                         "export": true,
-                        "frozen": true
+                        "frozen": false
                     }
                 ]
             }

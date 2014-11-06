@@ -88,6 +88,24 @@ define [
   saveInterimInfo = () ->
     savePreferences {"interimDisclaimerLoaded": true}, true
 
+  isExpandedColumn = (columnName) ->
+    getExpandedColumns()[columnName]
+
+  getExpandedColumns = () ->
+    pref = getPreferences()
+    pref = {} if not pref
+    pref["expandedColumns"] || {}
+
+  saveExpandedColumns = (column) ->
+    pref = getExpandedColumns()
+    pref[column] = true
+    savePreferences {"expandedColumns": pref}
+
+  removeExpandedColumns = (column) ->
+    pref = getExpandedColumns()
+    delete pref[column]
+    savePreferences {"expandedColumns": pref}
+
   # Returns storage based whether long term is set to true
   getStorage = (isLongTerm) ->
     isLongTerm = if typeof isLongTerm isnt "undefined" then isLongTerm else false
@@ -122,3 +140,7 @@ define [
   getFilters: getFilters
   saveAsmtView: saveAsmtView
   getAsmtView: getAsmtView
+  getExpandedColumns: getExpandedColumns
+  saveExpandedColumns: saveExpandedColumns
+  removeExpandedColumns: removeExpandedColumns
+  isExpandedColumn: isExpandedColumn

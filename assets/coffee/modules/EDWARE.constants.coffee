@@ -30,6 +30,9 @@ define [], () ->
     IAB: 'Interim Assessment Blocks'
     'INTERIM COMPREHENSIVE': 'Interim Comprehensive'
     'INTERIM ASSESSMENT BLOCKS': 'Interim Assessment Blocks'
+    'Summative': 'Summative'
+    'Interim Comprehensive': 'Interim'
+    'Interim Assessment Blocks': 'IAB'
   }
 
   ASMT_VIEW: {
@@ -53,6 +56,10 @@ define [], () ->
   SUBJECT_TEXT: {
     Math: "Mathematics"
     ELA: "ELA/Literacy"
+  }
+
+  INDEX_COLUMN: {
+    LOS: "student_full_name"
   }
 
   SUBJECTS: ['Math', 'ELA']

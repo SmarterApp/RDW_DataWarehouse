@@ -49,35 +49,4 @@ define [
     $('#header .dropdown').mouseleave ->
       $(this).removeClass 'open'
 
-  # The code below is curently not being used.  Waiting to be refactored
-  createCommonRegion = ()->
-    # create header, breadcrumbs, info bar, action bar
-    # process breadcrumbs
-    @renderBreadcrumbs(data.context)
-    @renderReportInfo()
-    @renderReportActionBar()
-    @createHeaderAndFooter()
-
-  renderBreadcrumbs: () ->
-    $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb)
-
-  renderReportInfo: () ->
-    edwareReportInfoBar.create '#infoBar',
-      reportTitle: @contextData.items[2].name # set school name as the page title from breadcrumb
-      reportName: Constants.REPORT_NAME.LOS
-      reportInfoText: @config.reportInfo
-      labels: @labels
-      CSVOptions: @config.CSVOptions
-
-  renderReportActionBar: () ->
-    self = this
-    @config.colorsData = @cutPointsData
-    @config.reportName = Constants.REPORT_NAME.LOS
-    asmtTypeDropdown = convertAsmtTypes this.studentsConfig.customViews, this.subjectsData
-    @config.asmtTypes = asmtTypeDropdown
-    @actionBar ?= edwareReportActionBar.create '#actionBar', @config, (viewName) ->
-      # Add dark border color between Math and ELA section to emphasize the division
-      $('#gridWrapper').removeClass().addClass(viewName)
-      self.updateView viewName
-
   create: create

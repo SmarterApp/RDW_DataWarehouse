@@ -26,6 +26,11 @@ define [
       defaultWidth: 980
       loadComplete: () ->
 
+  EXPAND_ICONS = {
+    'EXPANDED': "<i class='expand-icon edware-icon-collapse-expand-minus'></i>"
+    'COLLAPSED': "<i class='expand-icon edware-icon-collapse-expand-plus'></i>"
+  }
+
   class EdwareGrid
 
     constructor: (@table, columns, @options, @footer) ->
@@ -38,7 +43,7 @@ define [
     bindEvents: ()->
       # reset focus after sorting
       self = this
-      $('.ui-jqgrid-sortable').click ()->
+      $('.ui-jqgrid-sortable').click (e)->
         lastFocus = "##{this.id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
@@ -69,9 +74,18 @@ define [
         column
 
     afterLoadComplete: () ->
+      this.customizePosition()
+      this.highlightSortLabels()
+
+    customizePosition: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      this.highlightSortLabels()
+      # move expandable icons
+      # this is necessary, otherwise sorting event will shadow expanding event
+      $(".ui-jqgrid-sortable .edware-icon-collapse-expand-plus").each ()->
+        $this = $(this)
+        parent = $this.parent()
+        $this.insertBefore(parent)
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()
@@ -82,15 +96,8 @@ define [
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
-      # this.renderPrintHeader()
       this.addARIA()
       this.bindEvents()
-
-    renderPrintHeader: ()->
-      # set repeating headers
-      $gridTable = $("div.ui-jqgrid-bdiv table")
-      $gridTable.prepend $('.ui-jqgrid-hdiv thead').clone()
-      # $gridTable.prepend $('.ui-jqgrid-sdiv .footrow').clone()
 
     addARIA: ()->
       $('.ui-jqgrid-hdiv .jqg-third-row-header').attr('role', 'row')
@@ -124,10 +131,10 @@ define [
 
     renderHeader: () ->
       headers = this.getHeaders()
-      return if headers.length <= 0
+      # return if headers.length <= 0
       # draw headers
       this.table.jqGrid "setGroupHeaders", {
-        useColSpanStyle: false
+        useColSpanStyle: true
         groupHeaders: headers
         fixed: true
       }
@@ -177,13 +184,25 @@ define [
       colModelItem
 
     getColumnName: (column) ->
-      column.displayTpl
+      if column.numberOfColumns and column.expanded isnt 'true'
+        column.displayTpl + EXPAND_ICONS.COLLAPSED
+      else
+        column.displayTpl
 
     getHeaders: () ->
-      for column in this.columns
-        startColumnName: column.items[0].field
-        numberOfColumns: column.items.length
-        titleText: column.name
+      expandedHeaders = []
+      cache = {}
+      for column in @columns[0].items
+        if column.expanded isnt 'true'
+          continue
+        header =
+          startColumnName: column.field
+          numberOfColumns: column.numberOfColumns
+          titleText: "#{column.name} #{EXPAND_ICONS.EXPANDED}"
+        if not cache[column.name]
+          expandedHeaders.push(header)
+          cache[column.name] = true
+      expandedHeaders
 
     highlightSortLabels: () ->
       sortingHeaders = $('.jqg-third-row-header .ui-th-ltr')

@@ -94,7 +94,7 @@ jsonTranslationsDiff = () ->
       next
 
 task 'build:translationsDiff', ->
-    jsonTranslationsDiff()
+    # jsonTranslationsDiff()
 
 task 'build:coffee', ->
     walkDir coffeepath, (source) ->

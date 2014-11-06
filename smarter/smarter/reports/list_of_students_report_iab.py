@@ -127,18 +127,23 @@ def get_list_of_students_iab(params):
         return connector.get_result(query)
 
 
-def get_IAB_claims(assessments, subjects):
+def get_IAB_claims(results, subjects):
     claim_names = {}
-    for studentId in assessments.keys():
+    for studentId in results.keys():
         for subject_name in subjects.keys():
-            claim_list = assessments[studentId].get(subject_name)
-            if claim_list:
-                claim_name = claim_names.get(subject_name, set())
-                for claim in claim_list.keys():
-                    claim_name.add(claim)
+            claim_list = results[studentId].get(subject_name)
+            if not claim_list:
+                continue
+            for claim, assessments in claim_list.items():
+                claim_name = claim_names.get(subject_name, dict())
+                temp = claim_name.get(claim, set())
+                for asmt in assessments:
+                    temp.add(asmt["effective_date"])
+                claim_name[claim] = temp
                 claim_names[subject_name] = claim_name
-    for subject_name in claim_names.keys():
-        claim_names[subject_name] = sorted(list(claim_names[subject_name]))
+    for subject_name, claims in claim_names.items():
+        for claim_name, effective_dates in claims.items():
+            claim_names[subject_name][claim_name] = sorted(list(effective_dates), reverse=True)
     return claim_names
 
 

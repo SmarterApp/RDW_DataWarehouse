@@ -15,7 +15,8 @@ define [
   "edwareContextSecurity"
   "edwareSearch"
   "edwareFilter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter) ->
+  "edwareGridUtils"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter, edwareGridUtils) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -75,7 +76,6 @@ define [
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
 
-      @columnData = @createColumns()
       asmtType = edwarePreferences.getAsmtType()
       if asmtType is Constants.ASMT_TYPE.IAB
         @formatIABData()
@@ -91,16 +91,13 @@ define [
     getColumns: (viewName) ->
       asmt = edwarePreferences.getAsmtPreference()
       asmtType = asmt.asmt_type || Constants.ASMT_TYPE.SUMMATIVE
-      @columnData[asmtType][viewName]
+      @createColumns(asmtType, viewName)
 
-    createColumns: () ->
-      columnData = {}
-      SummativeInterim = @createColumnsSummativeInterim()
-      columnData[Constants.ASMT_TYPE.SUMMATIVE] = SummativeInterim
-      columnData[Constants.ASMT_TYPE.INTERIM] = SummativeInterim
-      IAB = @createColumnsIAB()
-      columnData[Constants.ASMT_TYPE.IAB] = IAB
-      columnData
+    createColumns: (asmtType, viewName) ->
+      if asmtType is Constants.ASMT_TYPE.IAB
+        @createColumnsIAB()[viewName]
+      else
+        @createColumnsSummativeInterim()[viewName]
 
     createColumnsIAB: () ->
       currentGrade = @config.grade.id
@@ -108,14 +105,24 @@ define [
       for subject, columns of @data.interim_assessment_blocks
         subjectName = @data.subjects[subject]
         for claim in @config.interimAssessmentBlocksOrdering[subject][currentGrade]
-          if claim not in columns
+          effective_dates = columns[claim]
+          if not effective_dates
             continue
-          iab_column_details = {
-            subject: subject
-            claim: claim
-          }
-          column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
-          columnData[subjectName][0].items.push column
+          isExpanded = edwarePreferences.isExpandedColumn(claim)
+          for effective_date, i in effective_dates
+            iab_column_details = {
+              titleText: if isExpanded then effective_date else claim
+              subject: subject
+              claim: claim
+              expanded: isExpanded
+              numberOfColumns: Object.keys(effective_dates).length
+              i: i
+            }
+            column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
+            columnData[subjectName][0].items.push column
+            # only show latest effective date if not expanded
+            if not isExpanded
+              break
       columnData
 
     createColumnsSummativeInterim: () ->
@@ -280,6 +287,21 @@ define [
           elem.popover("hide")
       , ".asmtScore"
 
+      # expandable icons
+      self = this
+      $(document).on 'click', '.expand-icon', (e)->
+        e.stopPropagation()
+        $this = $(this)
+        columnName = $this.parent().text().trim()
+        if $this.hasClass("edware-icon-collapse-expand-plus")
+          $this.removeClass("edware-icon-collapse-expand-plus").addClass("edware-icon-collapse-expand-minus")
+          edwarePreferences.saveExpandedColumns(columnName)
+        else
+          $this.removeClass("edware-icon-collapse-expand-minus").addClass("edware-icon-collapse-expand-plus")
+          edwarePreferences.removeExpandedColumns(columnName)
+        self.updateView()
+
+
     createHeaderAndFooter: () ->
       self = this
       this.header = edwareHeader.create(this.data, this.config) unless this.header
@@ -357,8 +379,8 @@ define [
     updateView: () ->
       viewName = edwarePreferences.getAsmtView()
       viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
-      # Add dark border color between Math and ELA section
-      $('#gridWrapper').removeClass().addClass(viewName)
+      asmtType = edwarePreferences.getAsmtType()
+      $('#gridWrapper').removeClass().addClass("#{viewName} #{Constants.ASMT_TYPE[asmtType]}")
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName
 
@@ -374,18 +396,17 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
-      #update top row height
+      self = this
+      # update top row height
       frozen_row_height = $('.frozen-div').height()
       $('.ELA .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
       $('.Math .frozen-div #gridTable_student_full_name').css('height', frozen_row_height)
-      # Remove second row header as that counts as a column in setLabel function
-      $('.jqg-second-row-header').remove()
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
       asmtData = @studentsDataSet.getAsmtData(viewName, @params)
       columns = @studentsDataSet.getColumns(viewName)
-      fieldName = @studentsDataSet.getColumnData(viewName)
+      fieldName = Constants.INDEX_COLUMN.LOS
       filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
 
       self = this

@@ -42,7 +42,7 @@ define [
       edwarePreferences.saveInterimInfo()
 
     update: (asmt) ->
-      if asmt in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'], Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']]
+      if asmt.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()]
         @interimDisclaimerIcon.show()
         @displayPopover()
         # show on print version

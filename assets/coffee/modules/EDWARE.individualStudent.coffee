@@ -303,7 +303,7 @@ define [
         callback: self.onAsmtTypeSelected.bind self
       @configData.switchView = (asmtView)->
         self.updateView(asmtView)
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, @params.asmtType
       @getAsmtViewSelection()
 
     getCacheKey: ()->

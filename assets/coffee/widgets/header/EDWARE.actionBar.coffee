@@ -17,7 +17,8 @@ define [
 
   class ReportActionBar
 
-    constructor: (@container, @config) ->
+    constructor: (@container, @config, asmt_type) ->
+      @asmtType = {asmt_type: asmt_type} if asmt_type isnt `undefined`
       @initialize()
       @bindEvents()
 
@@ -73,7 +74,7 @@ define [
 
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
-      @updateDisclaimer()
+      @updateDisclaimer(@asmtType)
 
     updateDisclaimer: (asmtType) ->
       currentAsmtType = asmtType?.asmt_type || edwarePreferences.getAsmtType() || {}
@@ -128,8 +129,8 @@ define [
         self.config.switchView asmtView
 
 
-  create = (container, config) ->
-    new ReportActionBar(container, config)
+  create = (container, config, asmt_type) ->
+    new ReportActionBar(container, config, asmt_type)
 
   ReportActionBar: ReportActionBar
   create: create

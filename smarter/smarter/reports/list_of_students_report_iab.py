@@ -123,7 +123,7 @@ def get_list_of_students_iab(params):
         if asmtGrade is not None:
             query = query.where(and_(fact_block_asmt_outcome.c.asmt_grade == asmtGrade))
 
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(dim_asmt.c.effective_date)
+        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(dim_asmt.c.effective_date.desc())
         return connector.get_result(query)
 
 

@@ -161,7 +161,18 @@ define [
         perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
         value = data[names[3]][names[4]]['perf_lvl']
         break
+    # Format data for previous results popover
+    prev = columnData.slice(1)
+    hasPrevResults = prev.length > 0
+    oldResultsClass = if prev.length > 0 then "hasOlderResults" else ""
+    for i in prev
+      date = i.effective_date
+      i.display_effective_date = date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
+      hasPrevResults: hasPrevResults
+      oldResultsClass: oldResultsClass
+      student_full_name: rowObject.student_full_name
+      prev: prev
       asmtType: subject.asmt_type,
       asmtSubjectText: asmt_subject_text
       labels: options.colModel.labels

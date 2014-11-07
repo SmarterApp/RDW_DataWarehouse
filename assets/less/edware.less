@@ -316,12 +316,6 @@ table {
         color: @color-black;
       }
     }
-    .previousResults {
-       font-family: Arial;
-       font-size: 10px;
-       color: @color-B2 !important;
-       font-weight: bold;
-    }
     .olderResults {
       font-family: Arial;
       font-size: 10px;
@@ -337,7 +331,15 @@ table {
     .oldDateResults {
       margin-bottom: 10px;
     }
-    table {
+  }
+.previousResults {
+  font-family: Arial;
+  font-size: 10px;
+  color: @color-B2 !important;
+  font-weight: bold;
+}
+.iabBlocksTable {
+  table {
       background-color: @color-A7;
       color: @color-C18;
       font-family: Arial;
@@ -358,7 +360,7 @@ table {
           border-right: none;
       }
     }
-  }
+}
 .iabPopover-content {
   padding: 20px;
 }
@@ -366,10 +368,17 @@ table {
   table {
     width: auto;
   }
-  min-width: 50px;
+  min-width: 200px;
   max-width: 500px;
   .edwareScrollable {
     overflow-x: auto;
+  }
+  .studentName{
+    color: @color-black;
+    font-weight: bold;
+  }
+  .iabName{
+    margin-bottom: 20px;
   }
 }
 .placeholder {

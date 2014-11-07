@@ -397,6 +397,7 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
+      @createPopovers()
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
@@ -448,4 +449,16 @@ define [
         rainbowAnchor.html(output)
         rainbowAnchor.closest('th').append(rainbowAnchor)
 
+    createPopovers: () ->
+      # Creates popovers for interim assessment blocks
+      $(".hasOlderResults").each ->
+        $(this).edwarePopover
+          class: 'iabPopoverContent'
+          content: $(this).parent().find(".oldResultsContent").html()
+          container: $('#content')
+          tabindex: 0
+          placement: 'top'
+      .click ->
+        $(this).mouseover()
+        
   StudentGrid: StudentGrid

@@ -30,7 +30,6 @@ require {
     edwareConstants: 'modules/EDWARE.constants',
     edwareDataProxy: 'modules/EDWARE.dataProxy',
     edwareGrid: 'widgets/grid/EDWARE.grid.tablegrid',
-    edwareGridUtils: 'widgets/grid/EDWARE.grid.utils',
     edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
     edwareStudentList: 'modules/EDWARE.studentList',
     edwareIndividualStudent: 'modules/EDWARE.individualStudent',

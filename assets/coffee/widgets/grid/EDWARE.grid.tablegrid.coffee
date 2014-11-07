@@ -139,7 +139,6 @@ define [
       if not this.options.expandableColumns
         return
       headers = this.getHeaders()
-      # return if headers.length <= 0
       # draw headers
       this.table.jqGrid "setGroupHeaders", {
         useColSpanStyle: true

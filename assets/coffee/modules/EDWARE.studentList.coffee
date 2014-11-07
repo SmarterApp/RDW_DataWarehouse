@@ -111,7 +111,7 @@ define [
           isExpanded = edwarePreferences.isExpandedColumn(claim)
           for effective_date, i in effective_dates
             iab_column_details = {
-              titleText: if isExpanded then effective_date else claim
+              titleText: if isExpanded then edwareUtil.formatDate(effective_date) else claim
               subject: subject
               claim: claim
               expanded: isExpanded
@@ -265,8 +265,9 @@ define [
       cutPointsData
 
     bindEvents: ()->
+      $document = $(document)
       # Show tooltip for overall score on mouseover
-      $(document).on
+      $document.on
         'mouseenter focus': ->
           elem = $(this)
           elem.popover
@@ -290,7 +291,8 @@ define [
 
       # expandable icons
       self = this
-      $(document).on 'click', '.expand-icon', (e)->
+      $document.off 'click', '.expand-icon'
+      $document.on 'click', '.expand-icon', (e)->
         e.stopPropagation()
         $this = $(this)
         columnName = $this.parent().text().trim()
@@ -460,5 +462,5 @@ define [
           placement: 'top'
       .click ->
         $(this).mouseover()
-        
+
   StudentGrid: StudentGrid

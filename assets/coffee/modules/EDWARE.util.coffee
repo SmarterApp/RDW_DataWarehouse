@@ -138,6 +138,11 @@ define [
   formatNumber = (num) ->
     if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
 
+  formatDate = (date) ->
+    if not date
+      return ""
+    return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
+
   reRenderBody = (labels) ->
     body = $('body').html()
     output = Mustache.to_html body, {
@@ -190,7 +195,7 @@ define [
 
   getTenantBrandingDataForPrint = (metadata, isGrayscale) ->
     return getTenantBranding(metadata, true, isGrayscale)
-  
+
   getTenantBranding = (metadata, isPrint, isGrayscale) ->
     defaultLogo = '/assets/images/smarterHeader_logo.png'
     if isPrint
@@ -225,3 +230,4 @@ define [
   deepFind: deepFind
   getTenantBrandingData: getTenantBrandingData
   getTenantBrandingDataForPrint: getTenantBrandingDataForPrint
+  formatDate: formatDate

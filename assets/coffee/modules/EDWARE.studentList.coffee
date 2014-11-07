@@ -32,18 +32,17 @@ define [
       row
 
     appendColors: (assessment) ->
-      # do not process if not cut point data available
-      if not @dataSet.cutPointsData
-        return
       # display asssessment type in the tooltip title
       for key, value of @dataSet.subjectsData
         value = assessment[key]
         continue if not value
-        cutpoint = @dataSet.cutPointsData[key]
-        $.extend value, cutpoint
         # display asssessment type in the tooltip title
         subjectType = @dataSet.subjectsData[key]
         value.asmt_type = subjectType
+        # do not continue to process if cut point data is unavailable
+        continue if not @dataSet.cutPointsData
+        cutpoint = @dataSet.cutPointsData[key]
+        $.extend value, cutpoint
         # set default colors for out of range asmt_perf_lvl
         if value.asmt_perf_lvl > value.cut_point_intervals.length
           value.score_bg_color = "#D0D0D0"

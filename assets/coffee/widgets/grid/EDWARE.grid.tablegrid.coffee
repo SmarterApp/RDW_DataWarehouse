@@ -92,7 +92,7 @@ define [
       header_height = $('.ui-jqgrid-hbox').height()
       $('.frozen-div #gridTable_student_full_name').css('height', header_height)
       $('.frozen-bdiv').css('top', header_height + 1) # plus 1px for border
-
+      $('.jqg-second-row-header .ui-jqgrid-sortable').css('height', header_height)
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()

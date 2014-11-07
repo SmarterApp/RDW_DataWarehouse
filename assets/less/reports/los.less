@@ -79,11 +79,14 @@ body.los {
                         padding: 0px;
 
                         .ui-jqgrid-sortable {
+                            display: inline-block;
                             margin: 0px 15px 0px 0px;
                             padding: 10px 0px 10px 10px;
-                            height: 100% !important;
-                            // box-sizing: content-box;
-                            // -moz-box-sizing: bcontent-box;
+                            // padding: 0px;
+                            // top: 50%;
+                            // height: 100% !important;
+                            box-sizing: border-box;
+                            -moz-box-sizing: border-box;
 
                             a {
                                 // position: relative;
@@ -92,19 +95,15 @@ body.los {
                         }
                     }
                 }
-
-                .jqg-third-row-header {
-
-                    .ui-th-column {
-                        .ui-jqgrid-sortable {
-                        }
-                    }
-                }
             }
 
             .frozen-div .ui-th-column {
-                box-sizing: border-box;
-                -moz-box-sizing: border-box;
+                // box-sizing: border-box;
+                // -moz-box-sizing: border-box;
+
+                div {
+                    // height: auto !important;
+                }
             }
         }
     }

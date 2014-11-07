@@ -91,6 +91,7 @@ define [
       # update top row height
       header_height = $('.ui-jqgrid-hbox').height()
       $('.frozen-div #gridTable_student_full_name').css('height', header_height)
+      $('.frozen-bdiv').css('top', header_height + 1) # plus 1px for border
 
 
     resetFocus: ()->
@@ -213,7 +214,7 @@ define [
       expandedHeaders
 
     highlightSortLabels: () ->
-      sortingHeaders = $('.jqg-third-row-header .ui-th-ltr')
+      sortingHeaders = $('.ui-th-ltr')
       sortingHeaders.removeClass('active')
       grid = $('#gridTable')
       column = grid.jqGrid('getGridParam', 'sortname')

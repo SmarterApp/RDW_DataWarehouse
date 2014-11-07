@@ -3,6 +3,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "edwareDataProxy"
   "edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
@@ -15,7 +16,7 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwarePopover"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareConfidenceLevelBar, isrTemplate, isrInterimBlocksTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar, edwarePopover) ->
 
   DataFactory = ->
 
@@ -130,11 +131,7 @@ define [
         @data['views'] ?= {}
         @data['views'][key] ?= []
         @data['views'][key].push assessment if @data['views'][key].length < 2
-        #TODO: temporary workaround for bulk pdf generation
-        if assessment.asmt_type is 'Summative'
-          default_key = assessment.asmt_period_year + 'Summative'
-          @data['views'][default_key] ?= []
-          @data['views'][default_key].push assessment if @data['views'][default_key].length < 2
+
 
   class InterimBlocksDataProcessor extends DataProcessor
     # This is the Data Processor for Interim Assessment Blocks
@@ -190,10 +187,16 @@ define [
     processData: () ->
       @data['views'] ?= {}
       asmt_year = @data.all_results.asmt_period_year
-      for subjectAlias, subjectName of @data.subjects
+      # We want to traverse by subject order
+      for subjectAlias in Object.keys(@data.subjects).sort()
+        subjectName = @data.subjects[subjectAlias]
         subjectData = {}
         dataByGrade = {}
         grades = []
+        subjectData['asmt_subject'] = subjectName
+        subjectData['asmt_type'] = @data.all_results.asmt_type
+        subjectData['asmt_subject_text'] = Constants.SUBJECT_TEXT[subjectName]
+        subjectData['asmt_period'] = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
         # Separate all the interim blocks by asmt_grades
         for assessment in @data.all_results[subjectAlias]
           asmt_grade = assessment['grade']
@@ -210,7 +213,9 @@ define [
         for grade in grades.sort().reverse()
           subjectData['grades'].push dataByGrade[grade]
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
-        @data['views'][asmt_year + subjectName] = subjectData
+        subjectData.has_data = true if subjectData.grades.length > 0
+        @data['views'][asmt_year + @data.all_results.asmt_type]?= []
+        @data['views'][asmt_year + @data.all_results.asmt_type].push subjectData
 
 
   class EdwareISR
@@ -232,10 +237,12 @@ define [
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
-      @updateView()
+      @reloadReport()
       @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
+      # We have to call updateView on first load since action bar hasn't been created yet
+      @updateView()
 
     initialize: () ->
       @prepareParams()
@@ -270,8 +277,10 @@ define [
       $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
+      # TODO: Check if there is a more elegant way for iab
+      subjects = if not @isBlock then @data.current else {}
       edwareReportInfoBar.create '#infoBar',
-        reportTitle: $('#individualStudentContent h2.title').text()
+        reportTitle: $('#individualStudentContent h2').first().text()
         reportName: Constants.REPORT_NAME.ISR
         reportInfoText: @configData.reportInfo
         breadcrumb: @data.context
@@ -279,41 +288,38 @@ define [
         CSVOptions: @configData.CSVOptions
         metadata: @data.metadata
         # subjects on ISR
-        subjects: @data.current, false, null
+        subjects: subjects, false, null
 
     onAsmtTypeSelected: (asmt) ->
       # save assessment type
       edwarePreferences.saveAsmtForISR(asmt)
-      @updateView()
-      @renderReportInfo()
+      @reloadReport()
 
     renderReportActionBar: () ->
-      # TODO:  Currently, the data format is different for interim blocks which the following check, ideally, we should unify it
-      sample = @data.current?[0] || {}
-      @configData.subject = @createSampleInterval sample, this.legendInfo.sample_intervals
+      @configData.subject = @createSampleInterval @data.current?[0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
+      self = this
       @configData.asmtTypes =
-        options: @data.asmt_administration
-        callback: @onAsmtTypeSelected.bind(this)
-      @configData.switchView = @updateView.bind(this)
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData
+        options: self.data.asmt_administration
+        callback: self.onAsmtTypeSelected.bind self
+      @configData.switchView = (asmtView)->
+        self.updateView(asmtView)
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, @params.asmtType
       @getAsmtViewSelection()
 
     getCacheKey: ()->
+      # For summative and interim comp, it's always effectiveDate + asmtType
+      # For iab, it's always the asmtYear + asmtType
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
-        if @params['effectiveDate']
-          return @params['effectiveDate'] + asmtType
-        else
-          return @params['asmtYear'] + asmtType
+        key = if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params['effectiveDate'] else @params['asmtYear']
+        return key + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
-          if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
-            return asmt['effective_date'] + asmt['asmt_type']
-          else
-            return asmt['asmt_period_year'] + @getAsmtViewSelection()
+          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then asmt['effective_date'] else + asmt['asmt_period_year']
+          return key + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
@@ -338,23 +344,29 @@ define [
             asmt_type: Constants.ASMT_TYPE[params['asmtType']]
             effective_date: params['effectiveDate']
             asmt_period_year: params['asmtYear']
-        @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
+      @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
       @params = params
 
     updateView: () ->
-      # Decides whether we need to render or retrieve data from server
+      if not @isPdf
+        viewName = @getAsmtViewSelection()
+        $("#subjectSelection#{viewName}").addClass('selected')
+        $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
+  
+    reloadReport: () ->
+      # Decide if we have the data or needs to retrieve from backend
       cacheKey = @getCacheKey()
       if not @data['views']?[cacheKey]
         this.prepareParams()
         this.fetchData()
       else
         @data.current = @data['views'][cacheKey]
-        this.render()
+        @render()
+        @updateView()
 
     render: () ->
       # Get tenant level branding
       @data.branding = edwareUtil.getTenantBrandingDataForPrint @data.metadata, @isGrayscale
-      # The template for Interim Block is different
       if @isBlock
         @renderInterimBlockView()
       else
@@ -365,8 +377,14 @@ define [
         @updateClaimsHeight()
 
         # Generate Confidence Level bar for each assessment
-        i = 0
         for item, i in @data.current
+          # For toggling between subjects
+          noResultsMessage = '<div class="no_data screenContent"><p>' + this.data.labels.no_results + '</p></div>'
+          subjectMath = $("#individualStudentContent > .Math").attr('class')
+          subjectEla = $("#individualStudentContent > .ELA").attr('class')
+          $("#individualStudentContent").append(noResultsMessage) and $('.no_data').addClass("Math") if subjectMath is undefined
+          $("#individualStudentContent").append(noResultsMessage) and $('.no_data').addClass("ELA") if subjectEla is undefined
+          
           barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer
 
@@ -387,8 +405,6 @@ define [
             $(assessmentInfo + " h1").css("display", "block")
             $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
             $(assessmentInfo + " li:first-child").addClass("bottomLine")
-
-          i++
 
         # Show tooltip for claims on mouseover
         $(".arrowBox").popover
@@ -425,23 +441,23 @@ define [
     getAsmtViewSelection: () ->
       viewName = edwarePreferences.getAsmtView()
       viewName = @subjectsData['subject1'] if viewName not in Constants.SUBJECTS  # In ISR, we only have two views
-      $("#subjectSelection#{viewName}").addClass('selected')
-
-      # TODO: remove this css change after we fix ISR for summative/interim to have subject buttons
-      style = if not @isBlock then 'none' else 'inline-block'
-      $('.detailsItem').css('display', style)
-
       viewName
 
     renderInterimBlockView: () ->
-      viewName = @getAsmtViewSelection()
-      # Update subject text and asmt period year that is unique according to the view
-      @data.all_results.asmt_subject_text = Constants.SUBJECT_TEXT[viewName]
-      @data.all_results.asmt_period = @data.all_results['asmt_period_year'] - 1 + " - " + @data.all_results['asmt_period_year']
-      @data.current.has_data = true if @data.current.grades.length > 0
+      @data.labels.older_display_text = if @isPdf then @data.labels.more_dates_online else @data.labels.older
       output = Mustache.to_html isrInterimBlocksTemplate, @data
-      $("#individualStudentContent").html output
-      @createPopovers()
+      isrContent = $("#individualStudentContent")
+      isrContent.html output
+      if not @isPdf
+        @createPopovers()
+      else
+        # For PDFs we need to hide sections when we have no data
+        subjectsWithData = []
+        for subjectData in @data.current
+          if subjectData.has_data
+            subjectsWithData.push subjectData.asmt_subject
+        if subjectsWithData.length isnt Object.keys(@data.subjects).length
+          isrContent.addClass(subjectName) for subjectName in subjectsWithData
 
     createPopovers: () ->
       # Creates popovers for interim blocks

@@ -42,6 +42,20 @@ body.isr {
     position: relative;
   }
 
+  .no_data {
+    background: #fff;
+    border: solid 1px #b1b1b1;
+    border-radius: 5px;
+    margin: 0px 20px 20px 20px;
+    width: 940px;
+    height: 60px;
+    line-height: 60px;
+
+    p {
+      padding-left: 20px;
+    } 
+  }
+
   .claimsSection, .accommodationSection {
     padding: 0px 24px;
 
@@ -122,11 +136,15 @@ body.isr {
   }
   .blocks {
     padding: 20px;
-    .level1, .level2, .level3 {
+    .level1Content, .level2Content, .level3Content, .level1, .level2, .level3 {
       text-align: left;
+      display: inline-block;
       
       i { vertical-align: text-bottom; }
     }
+    .level1Content { color: @color-C15 !important; }
+    .level2Content { color: @color-B2 !important; }
+    .level3Content { color: @color-C16 !important; }
   }
 
   .accommodationSection {

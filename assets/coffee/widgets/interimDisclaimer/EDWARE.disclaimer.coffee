@@ -42,11 +42,11 @@ define [
       edwarePreferences.saveInterimInfo()
 
     update: (asmt) ->
-      if asmt in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'], Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']]
+      if (typeof asmt is 'string') and (asmt.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
         @interimDisclaimerIcon.show()
         @displayPopover()
         # show on print version
-        $('.disclaimerInfo.printContent').append("<hr>").append(@content)
+        $('.disclaimerInfo.printContent').append(@content)
       else
         @interimDisclaimerIcon.hide()
         $('.disclaimerInfo.printContent').empty()

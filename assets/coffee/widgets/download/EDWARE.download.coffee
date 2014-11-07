@@ -2,6 +2,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "text!StateDownloadTemplate"
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
@@ -16,7 +17,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, StateDownloadTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, edware, StateDownloadTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   REQUEST_ENDPOINT = {
     "registrationStatistics": "/services/extract/student_registration_statistics",
@@ -269,8 +270,8 @@ define [
         params['asmtGrade'] = [ grade ]
       else
         params['asmtGrade'] = undefined
-      params["effectiveDate"] = asmt.effectiveDate
-      params["asmtType"] = (asmt.asmtType || 'Summative').toUpperCase()
+      params["effectiveDate"] = asmt.effective_date
+      params["asmtType"] = (asmt.asmt_type || 'Summative').toUpperCase()
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
 
       language = @container.find('input[name="language"]:checked').val()
@@ -393,7 +394,7 @@ define [
     sendSyncExtractRequest: () ->
       values = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
-      asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
+      asmtType = edwarePreferences.getAsmtPreference().asmt_type || Constants.ASMT_TYPE.SUMMATIVE
       # Get filters
       params = edwarePreferences.getFilters()
       # Get sticky compared rows if any

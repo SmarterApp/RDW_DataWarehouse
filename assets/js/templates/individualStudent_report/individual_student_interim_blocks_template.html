@@ -1,30 +1,29 @@
 <h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
-<div class="innerBox clearfix">
-    <div class="isrInterimBlockHeader">
-    	{{#current.has_data}}
-        <span class="subject">{{all_results.asmt_subject_text}}</span>
-        <span class="info"> {{all_results.asmt_type}} {{all_results.asmt_period}}</span>
-        {{/current.has_data}}
-        {{^current.has_data}}
-        {{labels.no_results}}
-        {{/current.has_data}}
-    </div>
-    <!-- TODO - Figure this out for Print PDF-->
+{{#current}}
+<div class="innerBox clearfix {{asmt_subject}}">
     <div class="printHeader printContent">
         <div class="logo">
             <img src="{{branding.tenantLogo}}"/> 
             <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
-            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{asmt_grade}}</div>
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
         </div>
     </div>
-    <!-- End of TODO-->
+    <div class="isrInterimBlockHeader">
+    	{{#has_data}}
+        <span class="subject">{{asmt_subject_text}}</span>
+        <span class="info"> {{asmt_type}} <span class="iabYear">{{asmt_period}}</span></span>
+        {{/has_data}}
+        {{^has_data}}
+        {{labels.no_results}}
+        {{/has_data}}
+    </div>
     <div class="contentBlocksWrapper">
-    	{{#current.grades}}
+    	{{#grades}}
     	<hr>
         <div class="blocksSection clearfix">
             <div class="row-fluid">
@@ -34,14 +33,14 @@
                     <div class="content">
                     	<div class="level{{mostRecent.level}}">
 	                    	<i class="edware-icon-large-perf-level-{{mostRecent.level}}"></i>
-	                    	<div style="display:inline-block">
+	                    	<div class="level{{mostRecent.level}}Content">
 	                    		<div class="takenDate">{{mostRecent.effective_date}}</div>
 	                        {{mostRecent.desc}}
 	                       </div>
 	                    </div>
                     </div>
                 	<span class="previousResults">{{labels.previous_results}}</span>
-                	{{#hasOlder}}<a class="olderResults pull-right">{{labels.older}}</a>
+                	{{#hasOlder}}<a class="olderResults pull-right">{{labels.older_display_text}}</a>
                 	<div class="oldResultsContent hide">
                 		<span class="previousResults">{{labels.previous_results_contd}}</span>
                 		<table class="table">
@@ -84,23 +83,12 @@
                {{/blocks}}
             </div>
         </div>
-        {{/current.grades}}
+        {{/grades}}
     </div>
-    <!-- TODO - Figure this out for Print PDF-->
-    <div class="assessmentOtherInfoHeader printHeader">
-        <div class="logo">
-            <img src="../images/smarter_printlogo.png" width="150" height="47" />
-        </div>
-        <div class="summary">
-            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{grade}}</div>
-            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
-            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
-            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
-        </div>
-    </div>
-    <!-- End of TODO-->
+    <div class="pageBreak"></div>
 </div>
-<!-- TODO - Figure this out for Print PDF-->
+{{/current}}
+<!-- <div class="pageBreak"></div> -->
 <div id="print_reportInfoContent" class="printContent clearfix">
     <div class="printHeader">
         <div class="logo">
@@ -108,7 +96,7 @@
             <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
-            <div class="title">{{student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{grade}}</div>
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
@@ -116,9 +104,11 @@
     </div>
     <div class="aboutReportPopup">
         <div class="reportInfoWrapper">
-            <h3>{{labels.report_info}}:</h3>
+            <div class="reportInfoText">
+                <h3>{{labels.report_info}}:</h3>
+            </div>
+            <div class='disclaimerInfo printContent'></div>
         </div>
     </div>
     <div class="legendPopup"></div>
 </div>
-<!-- End of TODO-->

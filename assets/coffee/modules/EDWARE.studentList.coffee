@@ -2,6 +2,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
@@ -15,7 +16,7 @@ define [
   "edwareContextSecurity"
   "edwareSearch"
   "edwareFilter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter) ->
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -61,7 +62,7 @@ define [
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
         'asmtType': encodeURI(@asmtType.toUpperCase()),
       }
-      row['effectiveDate'] ?= @effectiveDate
+      row['params']['effectiveDate'] ?= @effectiveDate if @effectiveDate
       row
 
   class StudentDataSet

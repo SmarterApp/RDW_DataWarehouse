@@ -7,6 +7,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
@@ -19,7 +20,7 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
   POPULATION_BAR_WIDTH = 145
 

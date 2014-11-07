@@ -302,7 +302,7 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2, smarter_score_batcher
   '[handlers]':
     keys: console, filelog, audit, security_event, mna_rest
 
@@ -357,6 +357,11 @@ common:
     level: INFO
     handlers: filelog
     qualname: edudl2
+
+  '[logger_smarter_score_batcher]':
+    level: INFO
+    handlers: filelog
+    qualname: smarter_score_batcher  
 
   '[logger_security_event]':
     level: INFO
@@ -514,7 +519,7 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     hpz:
       file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
       file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files

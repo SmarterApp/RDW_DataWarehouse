@@ -194,12 +194,13 @@ class JSONMapping(Mapping):
     '''
     Data Structure used to store mapping values from xml to csv
     '''
-    def __init__(self, src, target, property_name):
+    def __init__(self, src, target, property_name, upper_case=False):
         super(JSONMapping, self).__init__(src, target)
         self.property = property_name
+        self.upper_case = upper_case
 
     def evaluate(self):
-        setattr(self.target, self.property, self.src.get_value())
+        setattr(self.target, self.property, self.src.get_value().upper() if self.upper_case else self.src.get_value())
 
 
 def get_assessment_metadata_mapping(root):
@@ -221,7 +222,7 @@ def get_assessment_metadata_mapping(root):
     mappings = [JSONMapping(XMLMeta(test_node, ".", "testId"), json_output, 'asmt_guid'),
                 JSONMapping(DateMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
                 JSONMapping(subject, json_output, 'subject'),
-                JSONMapping(asmt_type, json_output, 'asmt_type'),
+                JSONMapping(asmt_type, json_output, 'asmt_type', upper_case=True),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
                 JSONMapping(year, json_output, 'asmt_year')]
     for m in mappings:

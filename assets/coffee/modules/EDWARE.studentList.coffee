@@ -111,7 +111,7 @@ define [
           isExpanded = edwarePreferences.isExpandedColumn(claim)
           for effective_date, i in effective_dates
             iab_column_details = {
-              titleText: if isExpanded then effective_date else claim
+              titleText: if isExpanded then edwareUtil.formatDate(effective_date) else claim
               subject: subject
               claim: claim
               expanded: isExpanded

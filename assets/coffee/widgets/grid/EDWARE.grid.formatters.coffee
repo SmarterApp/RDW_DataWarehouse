@@ -17,7 +17,8 @@ define [
   'edwarePreferences'
   'edwareContextSecurity'
   'edwareConstants'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants) ->
+  'edwareUtil'
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants, edwareUtil) ->
 
   SUMMARY_TEMPLATE = edwareFormatterSummaryTemplate
 
@@ -167,7 +168,7 @@ define [
     oldResultsClass = if prev.length > 0 then "hasOlderResults" else ""
     for i in prev
       date = i.effective_date
-      i.display_effective_date = date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
+      i.display_effective_date = edwareUtil.formatDate(date)
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       hasPrevResults: hasPrevResults
       oldResultsClass: oldResultsClass

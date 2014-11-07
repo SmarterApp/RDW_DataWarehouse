@@ -207,7 +207,7 @@ define [
         header =
           startColumnName: column.field
           numberOfColumns: column.numberOfColumns
-          titleText: "#{column.name} #{EXPAND_ICONS.EXPANDED}"
+          titleText: "#{EXPAND_ICONS.EXPANDED}<div class='marginRight20'>#{column.name}</div>"
         if not cache[column.name]
           expandedHeaders.push(header)
           cache[column.name] = true

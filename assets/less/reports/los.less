@@ -65,20 +65,46 @@ body.los {
 
         &.IAB {
             .expand-icon {
-                position: absolute;
-                top: 0px;
-                right: 0px;
+                position: relative;
+                float: right;
+                // top: 0px;
+                // right: 0px;
             }
             .ui-jqgrid-htable {
 
-                .ui-th-column {
-                    padding-right: 15px;
-
-                    .ui-jqgrid-sortable {
-                        margin: 0px;
+                .jqg-second-row-header {
+                    .ui-th-column {
+                        box-sizing: border-box;
+                        -moz-box-sizing: border-box;
                         padding: 0px;
+
+                        .ui-jqgrid-sortable {
+                            margin: 0px 15px 0px 0px;
+                            padding: 10px 0px 10px 10px;
+                            height: 100% !important;
+                            // box-sizing: content-box;
+                            // -moz-box-sizing: bcontent-box;
+
+                            a {
+                                // position: relative;
+                                // top: 5px;
+                            }
+                        }
                     }
                 }
+
+                .jqg-third-row-header {
+
+                    .ui-th-column {
+                        .ui-jqgrid-sortable {
+                        }
+                    }
+                }
+            }
+
+            .frozen-div .ui-th-column {
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
             }
         }
     }

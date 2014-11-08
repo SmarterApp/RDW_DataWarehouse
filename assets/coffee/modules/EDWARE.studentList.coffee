@@ -304,7 +304,6 @@ define [
           edwarePreferences.removeExpandedColumns(columnName)
         self.updateView()
 
-
     createHeaderAndFooter: () ->
       self = this
       this.header = edwareHeader.create(this.data, this.config) unless this.header
@@ -386,6 +385,7 @@ define [
       $('#gridWrapper').removeClass().addClass("#{viewName} #{Constants.ASMT_TYPE[asmtType]}")
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName
+      @print_media()
 
     fetchData: (params) ->
       self = this
@@ -463,4 +463,21 @@ define [
       .click ->
         $(this).mouseover()
 
+    print_media: () ->
+      $('#gview_gridTable_print_media').remove()
+      gview_gridTable_h = $($('#gview_gridTable .ui-jqgrid-hdiv table').get(0))
+      gview_gridTable_b = $($('#gview_gridTable .ui-jqgrid-bdiv table').get(0))
+      table_width = gview_gridTable_h.outerWidth()
+      page_width =  $('body').width()
+      pageCount = Math.ceil(table_width / page_width)
+      $('#gridWrapper').append('<div id="gview_gridTable_print_media" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all"></div>')
+      printWrap = $('#gview_gridTable_print_media')
+      i = 0
+      while i < pageCount
+        printPage = $('<div class="ui-jqgrid-hbox"></div>').css(overflow: "hidden", width: page_width, "page-break-before": (if i is 0 then "auto" else "always")).appendTo(printWrap)
+        gview_gridTable_h.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
+        gview_gridTable_b.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
+        i++
+
   StudentGrid: StudentGrid
+  

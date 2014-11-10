@@ -74,6 +74,9 @@ body.los {
             }
             .ui-jqgrid-hbox {
                 overflow-y: hidden;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
             }
 
             .ui-jqgrid-htable {
@@ -82,17 +85,13 @@ body.los {
                     .ui-th-column {
                         box-sizing: border-box;
                         -moz-box-sizing: border-box;
+                        -webkit-box-sizing: border-box;
                         padding: 0px;
 
                         .ui-jqgrid-sortable {
                             display: inline-block;
                             margin: 0px 15px 0px 0px;
-                            padding: 10px 0px 10px 10px;
-                            // padding: 0px;
-                            // top: 50%;
-                            // height: 100% !important;
-                            box-sizing: border-box;
-                            -moz-box-sizing: border-box;
+                            padding: 10px 0px 0px 10px;
                         }
                     }
                 }

@@ -21,6 +21,8 @@ define [
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
+  TABLE_OFFSET = 0
+
   EdwareGridStickyCompare = edwareStickyCompare.EdwareGridStickyCompare
 
   class StudentModel
@@ -302,6 +304,7 @@ define [
         else
           $this.removeClass("edware-icon-collapse-expand-minus").addClass("edware-icon-collapse-expand-plus")
           edwarePreferences.removeExpandedColumns(columnName)
+        TABLE_OFFSET = $('.ui-jqgrid-bdiv').scrollLeft()
         self.updateView()
 
 
@@ -399,6 +402,7 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
+      $('.ui-jqgrid-bdiv').scrollLeft(TABLE_OFFSET)
       @createPopovers()
 
     renderGrid: (viewName) ->

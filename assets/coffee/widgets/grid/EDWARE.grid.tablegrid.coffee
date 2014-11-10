@@ -93,7 +93,7 @@ define [
       # two for borders
       $('.frozen-div #gridTable_student_full_name .ui-jqgrid-sortable').css('height', header_height + 2)
       # 10 for padding
-      $('.frozen-bdiv').css('top', header_height + 1 + 10) # plus 1px for border
+      $('.frozen-bdiv').css('top', header_height + 1 + 10).css('height', 'auto') # plus 1px for border
       $('.jqg-second-row-header .ui-jqgrid-sortable').css('height', header_height)
 
     resetFocus: ()->

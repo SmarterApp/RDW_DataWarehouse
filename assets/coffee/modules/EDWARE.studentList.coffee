@@ -474,6 +474,8 @@ define [
       printWrap = $('#gview_gridTable_print_media')
       i = 0
       while i < pageCount
+        $('<div class="pageBreak">').appendTo(printWrap) if i isnt 0
+        $('<br>').appendTo(printWrap) if i isnt 0
         printPage = $('<div class="ui-jqgrid-hbox"></div>').css(overflow: "hidden", width: page_width, "page-break-before": (if i is 0 then "auto" else "always")).appendTo(printWrap)
         gview_gridTable_h.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
         gview_gridTable_b.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})

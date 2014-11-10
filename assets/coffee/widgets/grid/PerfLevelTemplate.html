@@ -3,7 +3,7 @@
 </div>
 <div class='{{export}}'>
 	<i class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"> </i>
-	{{#hasPrevResults}}
+	{{#displayPopover}}
 	<div class="oldResultsContent hide">
 		<div class="iabBlocksTable">
 			<div class="studentName">
@@ -27,7 +27,7 @@
 			</table>
 		</div>
 	</div>
-	{{/hasPrevResults}}
+	{{/displayPopover}}
 	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
 	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
 </div>

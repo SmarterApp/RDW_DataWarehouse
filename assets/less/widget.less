@@ -236,7 +236,6 @@ table td {
   thead { display: none; }
 }
 th.ui-th-column div {
-  height: auto !important;
   padding: 4px 5px;
   text-align: left;
   white-space: normal !important;
@@ -253,24 +252,6 @@ th.ui-th-column div {
   color: #333;
 }
 
-.Math .frozen-div {
-    overflow: hidden;
-    #jqgh_gridTable_student_full_name {
-        padding-top: 15px;
-        padding-bottom: 15px;
-    }
-}
-
-
-.ELA .frozen-div {
-    overflow: hidden;
-    #jqgh_gridTable_student_full_name {
-        padding-top: 15px;
-        padding-bottom: 15px;
-    }
-}
-
-
 .ui-state-default .ui-th-column-header {
   text-align: left;
   padding-left: 10px !important;
@@ -286,10 +267,10 @@ th.ui-th-column div {
 .ui-jqgrid tr.jqgrow td { border-bottom: solid 1px @color-B7; }
 
 .ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {
+    padding-right: 0px;
     background: @color-B5;
     color: @color-C18;
     font-size: 11px;
-    height: 30px !important;
     font-weight: normal;
 
     .ui-jqgrid-sortable {

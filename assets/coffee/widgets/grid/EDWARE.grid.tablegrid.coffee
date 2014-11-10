@@ -92,7 +92,7 @@ define [
       header_height = $('.ui-jqgrid-hbox').height()
       $('.frozen-div #gridTable_student_full_name').css('height', header_height)
       $('.frozen-bdiv').css('top', header_height + 1) # plus 1px for border
-
+      $('.jqg-second-row-header .ui-jqgrid-sortable').css('height', header_height)
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()
@@ -183,6 +183,7 @@ define [
       colModelItem.frozen = column.frozen if column.frozen
       colModelItem.export = column.export
       colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
+      colModelItem.expanded = if column.expanded then true else false
 
       #Hide column if the value is true
       if column.hide
@@ -207,7 +208,7 @@ define [
         header =
           startColumnName: column.field
           numberOfColumns: column.numberOfColumns
-          titleText: "#{column.name} #{EXPAND_ICONS.EXPANDED}"
+          titleText: "#{EXPAND_ICONS.EXPANDED}<div class='marginRight20'>#{column.name}</div>"
         if not cache[column.name]
           expandedHeaders.push(header)
           cache[column.name] = true
@@ -219,6 +220,15 @@ define [
       grid = $('#gridTable')
       column = grid.jqGrid('getGridParam', 'sortname')
       grid.jqGrid('setLabel', column, '', 'active')
+      # highlight frozen column headers
+      $('.frozen-div th#gridTable_' + column).addClass('active')
+      # highlight expandable column by its name expandable columns has
+      # dots and spaces which cannot use jQuery selector to pick it
+      # gracefully.
+      if column.indexOf(".") > 0
+        # column name
+        columnName = column.split(".")[1]
+        $('th[id*="' + columnName + '"]').addClass('active')
 
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
@@ -251,7 +261,7 @@ define [
   adjustHeight = () ->
     # adjust grid height based on visible region
     $("#gview_gridTable > .ui-jqgrid-bdiv").css {
-      'min-height': 100
+      # 'min-height': 100
       'max-height': calculateHeight()
     }
 

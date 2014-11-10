@@ -16,7 +16,8 @@ define [
   "edwareContextSecurity"
   "edwareSearch"
   "edwareFilter"
-], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter) ->
+  "edwarePopover"
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter, edwarePopover) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -32,18 +33,17 @@ define [
       row
 
     appendColors: (assessment) ->
-      # do not process if not cut point data available
-      if not @dataSet.cutPointsData
-        return
       # display asssessment type in the tooltip title
       for key, value of @dataSet.subjectsData
         value = assessment[key]
         continue if not value
-        cutpoint = @dataSet.cutPointsData[key]
-        $.extend value, cutpoint
         # display asssessment type in the tooltip title
         subjectType = @dataSet.subjectsData[key]
         value.asmt_type = subjectType
+        # do not continue to process if cut point data is unavailable
+        continue if not @dataSet.cutPointsData
+        cutpoint = @dataSet.cutPointsData[key]
+        $.extend value, cutpoint
         # set default colors for out of range asmt_perf_lvl
         if value.asmt_perf_lvl > value.cut_point_intervals.length
           value.score_bg_color = "#D0D0D0"
@@ -407,7 +407,7 @@ define [
       columns = @studentsDataSet.getColumns(viewName)
       fieldName = Constants.INDEX_COLUMN.LOS
       filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
-
+      
       self = this
       edwareGrid.create {
         data: filteredInfo.data
@@ -453,15 +453,11 @@ define [
 
     createPopovers: () ->
       # Creates popovers for interim assessment blocks
-      $(".hasOlderResults").each ->
-        $(this).edwarePopover
-          class: 'iabPopoverContent'
-          content: $(this).parent().find(".oldResultsContent").html()
-          container: $('#content')
-          tabindex: 0
-          placement: 'top'
-      .click ->
-        $(this).mouseover()
+      edwarePopover.createPopover
+        source: ".hasOlderResults"
+        target: "iabPopoverContent"
+        contentContainer: ".oldResultsContent"
+        container: "#content"
 
     print_media: () ->
       $('#gview_gridTable_print_media').remove()

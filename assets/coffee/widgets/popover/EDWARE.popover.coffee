@@ -66,3 +66,17 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
     this.unbind('mouseleave').on 'mouseleave', ->
       self.popover 'hide'
     this
+
+  createPopover = (config) ->
+    # Creates popovers for multiple items on a page given that the content is embedded in the parent node
+    $(config.source).each ->
+      $(this).edwarePopover
+        class: config.target
+        content: $(this).parent().find(config.contentContainer).html()
+        container: $(config.container) if config.container
+        tabindex: if config.tabindex else 0
+        placement: if config.placement else 'top'
+    .click ->
+      $(this).mouseover()
+  
+  createPopover:createPopover

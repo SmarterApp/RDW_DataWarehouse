@@ -460,14 +460,10 @@ define [
           isrContent.addClass(subjectName) for subjectName in subjectsWithData
 
     createPopovers: () ->
-      # Creates popovers for interim blocks
-      $(".olderResults").each ->
-        $(this).edwarePopover
-          class: 'iabPopoverContent'
-          content: $(this).parent().find(".oldResultsContent").html()
-          tabindex: 0
-          placement: 'top'
-      .click ->
-        $(this).mouseover()
+      # Creates popovers for interim assessment blocks
+      edwarePopover.createPopover
+        source: ".olderResults"
+        target: "iabPopoverContent"
+        contentContainer: ".oldResultsContent"
 
   EdwareISR: EdwareISR

@@ -16,7 +16,8 @@ define [
   "edwareContextSecurity"
   "edwareSearch"
   "edwareFilter"
-], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter) ->
+  "edwarePopover"
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter, edwarePopover) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -406,7 +407,7 @@ define [
       columns = @studentsDataSet.getColumns(viewName)
       fieldName = Constants.INDEX_COLUMN.LOS
       filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
-
+      
       self = this
       edwareGrid.create {
         data: filteredInfo.data
@@ -452,14 +453,10 @@ define [
 
     createPopovers: () ->
       # Creates popovers for interim assessment blocks
-      $(".hasOlderResults").each ->
-        $(this).edwarePopover
-          class: 'iabPopoverContent'
-          content: $(this).parent().find(".oldResultsContent").html()
-          container: $('#content')
-          tabindex: 0
-          placement: 'top'
-      .click ->
-        $(this).mouseover()
+      edwarePopover.createPopover
+        source: ".hasOlderResults"
+        target: "iabPopoverContent"
+        contentContainer: ".oldResultsContent"
+        container: "#content"
 
   StudentGrid: StudentGrid

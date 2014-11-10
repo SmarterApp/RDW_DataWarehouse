@@ -183,6 +183,7 @@ define [
       colModelItem.frozen = column.frozen if column.frozen
       colModelItem.export = column.export
       colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
+      colModelItem.expanded = if column.expanded then true else false
 
       #Hide column if the value is true
       if column.hide

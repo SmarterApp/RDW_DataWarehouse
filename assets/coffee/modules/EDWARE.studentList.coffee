@@ -388,7 +388,7 @@ define [
       $('#gridWrapper').removeClass().addClass("#{viewName} #{Constants.ASMT_TYPE[asmtType]}")
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName
-      @print_media()
+      @createPrintMedia()
 
     fetchData: (params) ->
       self = this
@@ -463,7 +463,7 @@ define [
         contentContainer: ".oldResultsContent"
         container: "#content"
 
-    print_media: () ->
+    createPrintMedia: () ->
       $('#gview_gridTable_print_media').remove()
       gview_gridTable_h = $($('#gview_gridTable .ui-jqgrid-hdiv table').get(0))
       gview_gridTable_b = $($('#gview_gridTable .ui-jqgrid-bdiv table').get(0))

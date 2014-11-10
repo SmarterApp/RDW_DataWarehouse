@@ -478,6 +478,8 @@ define [
         $('<div>&nbsp;</div>').appendTo(printWrap) if i isnt 0
         $('<div class="pageBreak">').appendTo(printWrap) if i isnt 0
         printPage = $('<div class="ui-jqgrid-hbox"></div>').css(overflow: "hidden", width: page_width, "page-break-before": (if i is 0 then "auto" else "always")).appendTo(printWrap)
+        if i+1 is pageCount
+          printPage.css('margin-bottom', '40px')
         gview_gridTable_h.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
         gview_gridTable_b.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
         i++

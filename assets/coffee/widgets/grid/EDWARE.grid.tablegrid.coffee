@@ -220,6 +220,15 @@ define [
       grid = $('#gridTable')
       column = grid.jqGrid('getGridParam', 'sortname')
       grid.jqGrid('setLabel', column, '', 'active')
+      # highlight frozen column headers
+      $('.frozen-div th#gridTable_' + column).addClass('active')
+      # highlight expandable column by its name expandable columns has
+      # dots and spaces which cannot use jQuery selector to pick it
+      # gracefully.
+      if column.indexOf(".") > 0
+        # column name
+        columnName = column.split(".")[1]
+        $('th[id*="' + columnName + '"]').addClass('active')
 
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)

@@ -194,7 +194,7 @@ define [
       colModelItem
 
     getColumnName: (column) ->
-      if column.numberOfColumns and column.expanded isnt 'true'
+      if column.numberOfColumns and column.expanded isnt 'true' and column.numberOfColumns > 1
         column.displayTpl + EXPAND_ICONS.COLLAPSED
       else
         column.displayTpl

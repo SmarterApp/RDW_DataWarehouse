@@ -120,6 +120,7 @@ define [
               numberOfColumns: Object.keys(effective_dates).length
               effectiveDate: effective_date
               i: i
+              width: if isExpanded then 98 else 140
             }
             column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
             columnData[subjectName][0].items.push column

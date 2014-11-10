@@ -417,7 +417,7 @@
         "displayTpl": "<a href='#' title='{{titleText}}' class='inherit'>{{titleText}}</a>",
         "index": "{{subject}}.{{{claim}}}.{{i}}.claims.0.perf_lvl",
         "field": "{{subject}}.{{{claim}}}.{{effectiveDate}}.claims.0.perf_lvl",
-        "width": 160,
+        "width": "{{width}}",
         "formatter": "showPerfLevelIAB",
         "sorttype": "int",
         "align": "center",

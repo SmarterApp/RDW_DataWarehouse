@@ -294,6 +294,7 @@ define [
 
       # expandable icons
       self = this
+      $document.off Constants.EVENTS.EXPAND_COLUMN
       $document.on Constants.EVENTS.EXPAND_COLUMN, (e, source)->
         e.stopPropagation()
         $this = $(source)

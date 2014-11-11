@@ -21,8 +21,6 @@ define [
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
-  TABLE_OFFSET = 0
-
   EdwareGridStickyCompare = edwareStickyCompare.EdwareGridStickyCompare
 
   class StudentModel
@@ -112,8 +110,11 @@ define [
             continue
           isExpanded = edwarePreferences.isExpandedColumn(claim)
           for effective_date, i in effective_dates
+            titleText = if isExpanded then edwareUtil.formatDate(effective_date) else claim
+            if titleText.length > 20
+              titleText = titleText[..20] + "..."
             iab_column_details = {
-              titleText: if isExpanded then edwareUtil.formatDate(effective_date) else claim
+              titleText: titleText
               subject: subject
               claim: claim
               expanded: isExpanded
@@ -298,15 +299,15 @@ define [
       $document.on Constants.EVENTS.EXPAND_COLUMN, (e, source)->
         e.stopPropagation()
         $this = $(source)
-        columnName = $this.parent().text().trim()
+        columnName = $this.parent().attr('title') || $this.siblings('a').attr('title')
         if $this.hasClass("edware-icon-collapse-expand-plus")
           $this.removeClass("edware-icon-collapse-expand-plus").addClass("edware-icon-collapse-expand-minus")
           edwarePreferences.saveExpandedColumns(columnName)
         else
           $this.removeClass("edware-icon-collapse-expand-minus").addClass("edware-icon-collapse-expand-plus")
           edwarePreferences.removeExpandedColumns(columnName)
-        TABLE_OFFSET = $('.ui-jqgrid-bdiv').scrollLeft()
-        self.updateView()
+        offset = $('.ui-jqgrid-bdiv').scrollLeft()
+        self.updateView(offset)
 
     createHeaderAndFooter: () ->
       self = this
@@ -382,7 +383,7 @@ define [
         subjects.push value
       edwarePreferences.saveSubjectPreference subjects
 
-    updateView: () ->
+    updateView: (offset) ->
       viewName = edwarePreferences.getAsmtView()
       viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       asmtType = edwarePreferences.getAsmtType()
@@ -390,6 +391,7 @@ define [
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName
       @createPrintMedia()
+      $('.ui-jqgrid-bdiv').scrollLeft(offset) if offset
 
     fetchData: (params) ->
       self = this
@@ -403,7 +405,6 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
-      $('.ui-jqgrid-bdiv').scrollLeft(TABLE_OFFSET)
       @createPopovers()
 
     renderGrid: (viewName) ->

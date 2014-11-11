@@ -49,6 +49,7 @@ define [
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
         # emit sorting event to other listeners
         $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
+        createPrintMedia()
 
       $('i.expand-icon').click (e) ->
         $(document).trigger CONSTANTS.EVENTS.EXPAND_COLUMN, $(this)
@@ -275,6 +276,26 @@ define [
   afterPrint = () ->
     $('#gridTable').lazyLoad()
 
+  createPrintMedia = () ->
+    $('#gview_gridTable_print_media').remove()
+    gview_gridTable_h = $($('#gview_gridTable .ui-jqgrid-hdiv table').get(0))
+    gview_gridTable_b = $($('#gview_gridTable .ui-jqgrid-bdiv table').get(0))
+    table_width = gview_gridTable_h.outerWidth()
+    page_width =  $('body').width()
+    pageCount = Math.ceil(table_width / page_width)
+    $('#gridWrapper').append('<div id="gview_gridTable_print_media" class="printContent ui-jqgrid ui-widget ui-widget-content ui-corner-all"></div>')
+    printWrap = $('#gview_gridTable_print_media')
+    i = 0
+    while i < pageCount
+      $('<div>&nbsp;</div>').appendTo(printWrap) if i isnt 0
+      $('<div class="pageBreak">').appendTo(printWrap) if i isnt 0
+      printPage = $('<div class="ui-jqgrid-hbox"></div>').css(overflow: "hidden", width: page_width, "page-break-before": (if i is 0 then "auto" else "always")).appendTo(printWrap)
+      if i+1 is pageCount
+        printPage.css('margin-bottom', '40px')
+      gview_gridTable_h.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
+      gview_gridTable_b.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
+      i++
+
   # add hook to run before browser print
   if window.matchMedia
     window.matchMedia('print').addListener (mql)->
@@ -312,3 +333,4 @@ define [
 
   create: create
   adjustHeight: adjustHeight
+  createPrintMedia: createPrintMedia

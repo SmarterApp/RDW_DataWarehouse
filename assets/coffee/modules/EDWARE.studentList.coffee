@@ -112,7 +112,7 @@ define [
           for effective_date, i in effective_dates
             titleText = if isExpanded then edwareUtil.formatDate(effective_date) else claim
             if titleText.length > 20
-              titleText = titleText[..20] + "..."
+              titleText = titleText[..27] + "..."
             iab_column_details = {
               titleText: titleText
               subject: subject

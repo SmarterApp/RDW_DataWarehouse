@@ -70,8 +70,11 @@ body.los {
             }
 
             .expandedHeader {
-                // margin-right: 20px;
-                height: 100%;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                padding-right: 20px;
+                height: 21px;
             }
             .ui-jqgrid-hbox {
                 overflow-y: hidden;
@@ -97,19 +100,47 @@ body.los {
                         }
                         
                         div {
-                            height: auto !important;
+                            height: 47px !important;
 
                             a {
                                 display: inline-block;
                                 width: 100px;
+                                height: 30px;
+                                overflow: hidden;
+                                position: absolute;
+                                top: 10px;
+                                left: 10px;
                             }
                             
                             &>span {
-                                padding-right: 15px;
+                                position: absolute;
+                                top: 50%;
+                                left: 110px;
+                                margin-top: -15px;
                             }
                         }
                     }
                 }
+            }
+            .frozen-div #gridTable_student_full_name .ui-jqgrid-sortable {
+                height: 53px;
+                padding: 0px;
+
+                a {
+                    position: absolute;
+                    left: 133px;
+                    top: 6px;
+                }
+                    
+
+                &>span {
+                    position: absolute;
+                    top: 8px;
+                    left: 178px;
+                }
+            }
+            .frozen-bdiv {
+                top: 54px !important;
             }
         }
 

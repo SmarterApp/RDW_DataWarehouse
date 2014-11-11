@@ -84,15 +84,6 @@ define [
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
 
-    adjustFrozenColumns: () ->
-      # update top row height
-      header_height = $('.ui-jqgrid-hbox').height()
-      # two for borders
-      $('.frozen-div #gridTable_student_full_name .ui-jqgrid-sortable').css('height', header_height)
-      # 10 for padding
-      $('.frozen-bdiv').css('top', header_height + 1).css('height', 'auto') # plus 1px for border
-      # $('.jqg-second-row-header .ui-jqgrid-sortable').css('height', header_height)
-
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()
       # reset last focus on sorting header
@@ -145,7 +136,6 @@ define [
         groupHeaders: headers
         fixed: true
       }
-      this.adjustFrozenColumns()
 
     getColumnNames: () ->
       columnNames = []

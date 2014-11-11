@@ -390,6 +390,7 @@ define [
       $('#gridWrapper').removeClass().addClass("#{viewName} #{Constants.ASMT_TYPE[asmtType]}")
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName
+      @renderReportInfo().updateAsmtTypeView()
       @createPrintMedia()
       $('.ui-jqgrid-bdiv').scrollLeft(offset) if offset
 
@@ -433,7 +434,7 @@ define [
 
     updateTotalNumber: (total) ->
       reportType = Constants.REPORT_TYPE.GRADE
-      display = "#{total} #{@labels.next_level[reportType]}"
+      display = "#{total} #{@labels.next_level[reportType]},"
       $('#total_number').text display
 
     createDisclaimer: () ->

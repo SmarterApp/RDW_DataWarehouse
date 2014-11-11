@@ -8,7 +8,9 @@ define [
   "edwareDataProxy"
   "edwareSearch"
   "edwareUtil"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch, edwareUtil) ->
+  "edwareConstants"
+  "edwarePreferences"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch, edwareUtil, Constants, edwarePreferences) ->
 
   class ReportInfoBar
 
@@ -30,6 +32,13 @@ define [
       @render()
       # Create search box if true, else remove it
       @searchBox ?= @createSearchBox() if createSearch
+
+    updateAsmtTypeView: () ->
+      asmtType = Constants.ASMT_TYPE[@config.param.asmtType]
+      viewName = edwarePreferences.getAsmtView()
+      asmtView = Constants.ASMT_VIEW[viewName.toUpperCase()]
+      subjectText =  (if asmtView isnt `undefined` then ' - ' + Constants.SUBJECT_TEXT[asmtView] else '')
+      $($('.currentAsmtTypeView')[0]).html asmtType + subjectText
 
     bindEvent: () ->
       self = @

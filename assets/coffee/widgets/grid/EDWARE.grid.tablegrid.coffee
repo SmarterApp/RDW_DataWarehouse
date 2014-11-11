@@ -83,6 +83,8 @@ define [
     customizePosition: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
+      rows = $(".frozen-bdiv .jqgrow")
+      $(".frozen-bdiv").css('height', rows.length * 40)
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()

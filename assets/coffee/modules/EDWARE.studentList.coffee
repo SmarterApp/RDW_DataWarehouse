@@ -433,6 +433,7 @@ define [
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateTotalNumber: (total) ->
+      total = (if total isnt `undefined` then total else 0)
       reportType = Constants.REPORT_TYPE.GRADE
       display = "#{total} #{@labels.next_level[reportType]},"
       $('#total_number').text display

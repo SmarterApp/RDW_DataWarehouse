@@ -181,9 +181,6 @@ define [
           0
         data[grade] = {"blocks": returnData[grade]}
 
-    formatDate: (date) ->
-      date.substring(0, 4) + "." + date.substring(4, 6) + "." + date.substring(6)
-
     processData: () ->
       @data['views'] ?= {}
       asmt_year = @data.all_results.asmt_period_year
@@ -203,7 +200,7 @@ define [
           dataByGrade[asmt_grade] ?= []
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
-          'effective_date': @formatDate(assessment['effective_date']),
+          'effective_date': edwareUtil.formatDate(assessment['effective_date']),
           'name': assessment['claims'][0]['name'],
           'desc': assessment['claims'][0]['perf_lvl_name'],
           'level': assessment['claims'][0]['perf_lvl']}
@@ -245,6 +242,7 @@ define [
       @updateView()
 
     initialize: () ->
+      @tries = 0
       @prepareParams()
       edwarePreferences.saveStateCode @params['stateCode']
       @isGrayscale = @params['grayscale']
@@ -355,12 +353,18 @@ define [
   
     reloadReport: () ->
       # Decide if we have the data or needs to retrieve from backend
+      # It is possible to enter an infinite loop if the cacheKey has a mismatch
       cacheKey = @getCacheKey()
       if not @data['views']?[cacheKey]
         this.prepareParams()
         this.fetchData()
+        @tries += 1
+        # This is a safety measure incase we have mismatch with the cachekey to prevent infinite loop
+        if @tries > 2
+          location.href = edwareUtil.getErrorPage()
       else
         @data.current = @data['views'][cacheKey]
+        @tries = 0
         @render()
         @updateView()
 

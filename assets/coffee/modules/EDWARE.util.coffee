@@ -22,12 +22,14 @@ define [
     displayErrorMessage "There is no data available for your request."
 
   displayErrorMessage = (error) ->
-
     if error isnt ""
       $("#errorMessage").show().html(error)
     else
       $("#errorMessage").hide()
 
+  getErrorPage = ->
+    "/assets/public/error.html"
+    
   getUrlParams = ->
     params = {}
     decoded = decodeURIComponent(window.location.search).replace(/\+/g, ' ')
@@ -231,3 +233,4 @@ define [
   getTenantBrandingData: getTenantBrandingData
   getTenantBrandingDataForPrint: getTenantBrandingDataForPrint
   formatDate: formatDate
+  getErrorPage: getErrorPage

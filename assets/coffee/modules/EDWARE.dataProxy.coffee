@@ -42,7 +42,7 @@ define [
     # redirect to login page
     if xhr.status == 401 and /application\/json/.test(responseHeader)
       return location.href = JSON.parse(xhr.responseText).redirect
-    location.href = "/assets/public/error.html" if redirectOnError
+    location.href = edwareUtil.getErrorPage() if redirectOnError
 
   getDatafromSource = (sourceURL, options) ->
     if not sourceURL || not $.type(sourceURL) in ['string', 'array']

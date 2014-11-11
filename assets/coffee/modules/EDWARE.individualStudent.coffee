@@ -131,6 +131,11 @@ define [
         @data['views'] ?= {}
         @data['views'][key] ?= []
         @data['views'][key].push assessment if @data['views'][key].length < 2
+        # Important:  This is a workaround for bulk pdf generation
+        if assessment.asmt_type is 'Summative'
+          default_key = assessment.asmt_period_year + 'Summative'
+          @data['views'][default_key] ?= []
+          @data['views'][default_key].push assessment if @data['views'][default_key].length < 2
 
 
   class InterimBlocksDataProcessor extends DataProcessor
@@ -311,7 +316,11 @@ define [
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
-        key = if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params['effectiveDate'] else @params['asmtYear']
+        if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
+            # Important:  This is a workaround for bulk pdf generation
+           key = if @params['effectiveDate'] then @params['effectiveDate'] else @params['asmtYear']
+        else 
+          key = @params['asmtYear']
         return key + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()

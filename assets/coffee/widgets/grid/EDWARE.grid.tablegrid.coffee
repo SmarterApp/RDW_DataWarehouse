@@ -43,12 +43,15 @@ define [
     bindEvents: ()->
       # reset focus after sorting
       self = this
-      $('.ui-jqgrid-sortable').click (e)->
+      $('.ui-jqgrid-sortable').find('a, span').click (e)->
         lastFocus = "##{this.id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
         # emit sorting event to other listeners
         $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
+
+      $('i.expand-icon').click (e) ->
+        $(document).trigger CONSTANTS.EVENTS.EXPAND_COLUMN, $(this)
 
       # load more data when focus on first and last row by triggering
       # scrolling event.
@@ -80,12 +83,6 @@ define [
     customizePosition: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      # move expandable icons
-      # this is necessary, otherwise sorting event will shadow expanding event
-      $(".ui-jqgrid-sortable .edware-icon-collapse-expand-plus").each ()->
-        $this = $(this)
-        parent = $this.parent()
-        $this.insertBefore(parent)
 
     adjustFrozenColumns: () ->
       # update top row height
@@ -210,7 +207,7 @@ define [
         header =
           startColumnName: column.field
           numberOfColumns: column.numberOfColumns
-          titleText: "#{EXPAND_ICONS.EXPANDED}<div class='expandedHeader' title='#{column.name}'>#{column.name}</div>"
+          titleText: "<div class='expandedHeader' title='#{column.name}'>#{column.name}#{EXPAND_ICONS.EXPANDED}</div>"
         if not cache[column.name]
           expandedHeaders.push(header)
           cache[column.name] = true

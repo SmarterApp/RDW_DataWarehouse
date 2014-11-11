@@ -294,10 +294,9 @@ define [
 
       # expandable icons
       self = this
-      $document.off 'click', '.expand-icon'
-      $document.on 'click', '.expand-icon', (e)->
+      $document.on Constants.EVENTS.EXPAND_COLUMN, (e, source)->
         e.stopPropagation()
-        $this = $(this)
+        $this = $(source)
         columnName = $this.parent().text().trim()
         if $this.hasClass("edware-icon-collapse-expand-plus")
           $this.removeClass("edware-icon-collapse-expand-plus").addClass("edware-icon-collapse-expand-minus")

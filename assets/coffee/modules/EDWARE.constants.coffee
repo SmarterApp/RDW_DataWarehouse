@@ -43,6 +43,7 @@ define [], () ->
 
   EVENTS: {
     SORT_COLUMNS: 'edwareOnSortColumns'
+    EXPAND_COLUMN: 'edwareOnExpandColumn'
   }
 
   KEYS: {

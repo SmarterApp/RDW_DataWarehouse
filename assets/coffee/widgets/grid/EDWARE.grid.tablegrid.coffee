@@ -44,7 +44,8 @@ define [
       # reset focus after sorting
       self = this
       $('.ui-jqgrid-sortable').find('a, span').click (e)->
-        lastFocus = "##{this.id}"
+        id = $(this).parent().attr('id')
+        lastFocus = "##{id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
         # emit sorting event to other listeners
@@ -217,7 +218,7 @@ define [
       # highlight expandable column by its name expandable columns has
       # dots and spaces which cannot use jQuery selector to pick it
       # gracefully.
-      if column.indexOf(".") > 0
+      if column.indexOf("perf_lvl") > 0
         # column name
         columnName = column.split(".")[1]
         $('th[id*="' + columnName + '"]').addClass('active')

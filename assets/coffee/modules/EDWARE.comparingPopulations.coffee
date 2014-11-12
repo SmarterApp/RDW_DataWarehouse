@@ -55,6 +55,7 @@ define [
 
     constructor: (config) ->
       @initialize(config)
+      @bindEvents()
 
     initialize: (config)->
       this.config = config
@@ -173,7 +174,6 @@ define [
       this.renderGrid()
 
     afterGridLoadComplete: () ->
-      this.bindEvents()
       # Rebind events and reset sticky comparison
       this.stickyCompare.update()
       this.alignment.update()
@@ -295,7 +295,10 @@ define [
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
-      $(".progress").popover
+      # TODO:
+      $(document).on
+        'mouseenter focus': ->
+          $(this).popover
             html: true
             placement: 'top'
             container: '#content'
@@ -303,11 +306,10 @@ define [
             content: ->
               # template location: widgets/populationBar/template.html
               $(this).find(".progressBar_tooltip").html()
-        # also display tooltips when focus on
-      $(".progress").on 'focus', ()->
-        $(this).popover('show')
-      .focusout ()->
-        $(this).popover('hide')
+          .popover('show')
+        'focusout': ->
+          $(this).popover('hide')
+        , '.progress'
 
     # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->

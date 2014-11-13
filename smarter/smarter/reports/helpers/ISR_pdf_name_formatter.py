@@ -71,12 +71,11 @@ def generate_query_for_summative_or_interim(connection, asmt_type, student_ids, 
                    from_obj=[fact_table
                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_table.c.asmt_rec_id,
                                                   dim_asmt.c.rec_status == Constants.CURRENT,
-                                                  dim_asmt.c.asmt_type == asmt_type))])
+                                                  dim_asmt.c.asmt_type == asmt_type,
+                                                  dim_asmt.c.asmt_period_year == asmt_year))])
     query = query.where(and_(fact_table.c.rec_status == Constants.CURRENT, fact_table.c.student_id.in_(student_ids)))
     if effective_date is not None:
         query = query.where(and_(dim_asmt.c.effective_date == effective_date))
-    elif asmt_year is not None:
-        query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
     return query
 
 
@@ -91,8 +90,7 @@ def generate_query_for_iab(connection, student_ids, asmt_year):
                    from_obj=[fact_table
                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_table.c.asmt_rec_id,
                                                   dim_asmt.c.rec_status == Constants.CURRENT,
-                                                  dim_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))])
+                                                  dim_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS,
+                                                  dim_asmt.c.asmt_period_year == asmt_year))])
     query = query.where(and_(fact_table.c.rec_status == Constants.CURRENT, fact_table.c.student_id.in_(student_ids)))
-    if asmt_year is not None:
-        query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
     return query

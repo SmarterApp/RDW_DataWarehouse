@@ -41,7 +41,7 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def test_generate_isr_report_path_by_student_id(self):
-        file_name = generate_isr_report_path_by_student_id('NC', '20160404', pdf_report_base_dir='/', student_ids='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
+        file_name = generate_isr_report_path_by_student_id('NC', '20160404', '2016', pdf_report_base_dir='/', student_ids='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
         self.assertEqual(len(file_name), 1)
         self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.g.pdf'))
 
@@ -58,7 +58,7 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.pdf'))
 
     def test_generate_isr_report_path_by_student_id_for_color(self):
-        file_name = generate_isr_report_path_by_student_id('NC', '20160404', pdf_report_base_dir='/', student_ids='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=False, lang='jp')
+        file_name = generate_isr_report_path_by_student_id('NC', '20160404', '2016', pdf_report_base_dir='/', student_ids='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=False, lang='jp')
         self.assertEqual(len(file_name), 1)
         self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.jp.pdf'))
 

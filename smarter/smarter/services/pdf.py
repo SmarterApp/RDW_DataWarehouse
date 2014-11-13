@@ -87,7 +87,7 @@ PDF_PARAMS = {
         },
         Constants.ASMTYEAR: {
             "type": "integer",
-            "required": False,
+            "required": True,
             "pattern": "^2[0-9]{3}$"
         },
         Constants.EFFECTIVEDATE: {

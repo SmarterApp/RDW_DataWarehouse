@@ -52,6 +52,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
         query = select([distinct(fact_asmt_outcome_vw.c.student_id).label(Constants.STUDENT_ID),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
                         dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
+                        dim_asmt.c.asmt_type.label(Constants.ASMT_TYPE),
                         fact_asmt_outcome_vw.c.district_id.label(Constants.DISTRICT_ID),
                         fact_asmt_outcome_vw.c.school_id.label(Constants.SCHOOL_ID),
                         fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
@@ -89,11 +90,11 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
                 district_id = result.get(Constants.DISTRICT_ID)
                 school_id = result.get(Constants.SCHOOL_ID)
                 asmt_grade = result.get(Constants.ASMT_GRADE)
-                student_id = result.get(Constants.STUDENT_ID)
                 effective_date = result.get(Constants.EFFECTIVE_DATE)
-                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, effective_date=effective_date, grayScale=True)
+                asmt_type = result.get(Constants.ASMT_TYPE)
+                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, effective_date=effective_date, asmt_type=asmt_type, grayScale=True)
                 logger.debug('pre-pdf for [%s]', file_name)
-                pdf_trigger.send_pdf_request(student_id, state_code, effective_date, file_name)
+                pdf_trigger.send_pdf_request(student_id, state_code, asmt_period_year, asmt_type, effective_date, file_name)
             except Exception as e:
                 triggered = False
                 logger.warning('Pdf generation failed for %s', student_id)

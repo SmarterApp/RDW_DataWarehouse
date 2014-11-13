@@ -27,8 +27,8 @@ define [
       loadComplete: () ->
 
   EXPAND_ICONS = {
-    'EXPANDED': "<i class='expand-icon edware-icon-collapse-expand-minus'></i>"
-    'COLLAPSED': "<i class='expand-icon edware-icon-collapse-expand-plus'></i>"
+    'EXPANDED': "<a href='#' class='expand-icon edware-icon-collapse-expand-minus'></a>"
+    'COLLAPSED': "<a href='#' class='expand-icon edware-icon-collapse-expand-plus'></a>"
   }
 
   class EdwareGrid
@@ -52,7 +52,7 @@ define [
         $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
         createPrintMedia()
 
-      $('i.expand-icon').click (e) ->
+      $('a.expand-icon').click (e) ->
         $(document).trigger CONSTANTS.EVENTS.EXPAND_COLUMN, $(this)
 
       # load more data when focus on first and last row by triggering

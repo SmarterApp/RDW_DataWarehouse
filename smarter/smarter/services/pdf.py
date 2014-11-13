@@ -534,34 +534,37 @@ def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
         # Get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        if asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
+            fact_table = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
+        else:
+            fact_table = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
         # Build select
-        query = select_with_context([fact_asmt_outcome_vw.c.student_id.label(Constants.STUDENT_ID),
+        query = select_with_context([fact_table.c.student_id.label(Constants.STUDENT_ID),
                                      dim_student.c.first_name,
                                      dim_student.c.last_name],
-                                    from_obj=[fact_asmt_outcome_vw
-                                              .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
+                                    from_obj=[fact_table
+                                              .join(dim_student, and_(fact_table.c.student_rec_id == dim_student.c.student_rec_id))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_table.c.asmt_rec_id))],
                                     permission=RolesConstants.PII, state_code=state_code).distinct()
 
         # Add where clauses
-        query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
-        query = query.where(and_(fact_asmt_outcome_vw.c.school_id == school_id))
-        query = query.where(and_(fact_asmt_outcome_vw.c.district_id == district_id))
-        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
+        query = query.where(fact_table.c.state_code == state_code)
+        query = query.where(and_(fact_table.c.school_id == school_id))
+        query = query.where(and_(fact_table.c.district_id == district_id))
+        query = query.where(and_(fact_table.c.rec_status == Constants.CURRENT))
+        query = query.where(and_(fact_table.c.asmt_type == asmt_type))
         if grade is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
+            query = query.where(and_(fact_table.c.asmt_grade == grade))
         if student_ids is not None:
-            query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student_ids)))
+            query = query.where(and_(fact_table.c.student_id.in_(student_ids)))
         if effective_date is not None:
             query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         elif asmt_year is not None:
             query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
         else:
             raise InvalidParameterError('Need one of effective_date or asmt_year')
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, params)
+        query = apply_filter_to_query(query, fact_table, dim_student, params)
 
         # Add order by clause
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)

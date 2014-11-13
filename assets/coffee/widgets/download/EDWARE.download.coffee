@@ -270,7 +270,7 @@ define [
         params['asmtGrade'] = [ grade ]
       else
         params['asmtGrade'] = undefined
-      params["effectiveDate"] = asmt.effective_date
+      params["effectiveDate"] = asmt.effective_date if asmt.asmt_type isnt Constants.ASMT_TYPE.IAB
       params["asmtType"] = (asmt.asmt_type || 'Summative').toUpperCase()
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
 

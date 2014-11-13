@@ -1280,6 +1280,7 @@ jenkins_dev:
           average.csv: 30000
           average.xml: 30000
     smarter_score_batcher:
+      gpg.homedir: /opt/edware/keys
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
         CELERYD_CONCURRENCY: 4

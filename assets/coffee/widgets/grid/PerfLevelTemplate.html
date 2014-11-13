@@ -1,5 +1,8 @@
 <div class="screenreader">
-	{{asmtType}} {{columnName}} {{perfLevel}}
+	{{asmtType}} {{columnName}} {{perfLevel}} 
+	{{#displayPopover}} {{student_full_name}} {{columnName}} 
+	{{#prev}}{{display_effective_date}} {{claims.0.perf_lvl_name}} 
+	{{/prev}} {{/displayPopover}}
 </div>
 <div class='{{export}}'>
 	<i class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"> </i>

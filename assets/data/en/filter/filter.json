@@ -188,8 +188,8 @@
         }
     ],
     "group_template" : {
-        "display" : "Student Grouping",
-        "tag" : "Student Grouping",
+        "display" : "Student Group",
+        "tag" : "Student Group",
         "name" : "studentGroupId",
         "options" : [
         ]

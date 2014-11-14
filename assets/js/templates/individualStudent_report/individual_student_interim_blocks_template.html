@@ -107,6 +107,10 @@
             <div class="reportInfoText">
                 <h3>{{labels.report_info}}:</h3>
             </div>
+            {{#printAdditionalInfo.policy_content}}
+            <div class="policy"><h4>{{labels.college_content_readiness}}:</h4><p>{{{printAdditionalInfo.policy_content}}}</p></div>
+            {{/printAdditionalInfo.policy_content}}
+            <div class="psychometric"><h4>{{labels.note}}:</h4><p>{{{printAdditionalInfo.psychometric_implications}}}</p></div>
             <div class='disclaimerInfo printContent'></div>
         </div>
     </div>

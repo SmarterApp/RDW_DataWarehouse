@@ -63,6 +63,25 @@ define [
         section["accommodation"] = accommodation.sort()
         section
 
+    updatePolicyContent: (asmtGrade, subject) ->
+      grade = @configData.policy_content[asmtGrade]
+      if grade
+        if asmtGrade is "11"
+          policy_content = grade[subject]
+          if @data.metadata?.branding?.higherEdLink
+            branding_url = @data.metadata.branding.higherEdLink
+            new_link = "<a href='#{branding_url}'>#{branding_url}</a>"
+            policy_content = policy_content.replace(@configData.higherEdLinkDefault, new_link)
+          @data.printAdditionalInfo ?= {}
+          @data.printAdditionalInfo.policy_content ?= policy_content
+          policy_content
+
+    updatePsychometricImplications: (asmtType, subject) ->
+      @data.printAdditionalInfo ?= {}
+      content = this.configData.psychometric_implications[asmtType][subject]
+      @data.printAdditionalInfo.psychometric_implications ?= content
+      content
+    
     processData: () ->
       # TODO: below code should be made prettier someday
       for assessment, idx in @data.all_results
@@ -102,22 +121,13 @@ define [
         assessment.asmt_period = "#{asmt_year-1} - #{asmt_year}"
 
         # set psychometric_implications content
-        psychometricContent = Mustache.render(this.configData.psychometric_implications[assessment.asmt_type][assessment.asmt_subject], assessment)
-
+        psychometricContent = @updatePsychometricImplications assessment.asmt_type, assessment.asmt_subject
         # if the content is more than character limits then truncate the string and add ellipsis (...)
         psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
         assessment.psychometric_implications = psychometricContent
 
         # set policy content
-        grade = @configData.policy_content[assessment.grade]
-        if grade
-          if assessment.grade is "11"
-            policy_content = grade[assessment.asmt_subject]
-            if @data.metadata?.branding?.higherEdLink
-                branding_url = @data.metadata.branding.higherEdLink
-                new_link = "<a href='#{branding_url}'>#{branding_url}</a>"
-                policy_content = policy_content.replace(@configData.higherEdLinkDefault, new_link)
-            assessment.policy_content = policy_content
+        assessment.policy_content = @updatePolicyContent assessment.grade, assessment.asmt_subject
 
         for claim in assessment.claims
           claim.subject = assessment.asmt_subject.toUpperCase()
@@ -214,8 +224,10 @@ define [
         subjectData['grades'] = []
         for grade in grades.sort().reverse()
           subjectData['grades'].push dataByGrade[grade]
+          @updatePolicyContent grade, subjectName
         # Keeps track of the views available according to subject.  Used to toggle between subjects in action bar
         subjectData.has_data = true if subjectData.grades.length > 0
+        @updatePsychometricImplications subjectData['asmt_type'], subjectName
         @data['views'][asmt_year + @data.all_results.asmt_type]?= []
         @data['views'][asmt_year + @data.all_results.asmt_type].push subjectData
 

@@ -228,7 +228,9 @@ define [
       grid = $('#gridTable')
       sortedColumn = grid.jqGrid('getGridParam','sortname')
       for subject, idx of SUBJECT_HEADERS
-        label = "<a class='inherit' href='#'><b>#{Constants.SUBJECT_TEXT[subject]}</b></a>"
+        label = Mustache.render @config.subjectTemplate,
+          subject: Constants.SUBJECT_TEXT[subject]
+          perfLevel: [1..4]
         if sortedColumn is idx
           if sortorder is 'asc'
             label += " <span aria-hidden='true'>#{@config.proficiencyAscending}</span>"

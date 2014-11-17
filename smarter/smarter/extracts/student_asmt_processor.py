@@ -5,9 +5,10 @@ from pyramid.threadlocal import get_current_registry
 from sqlalchemy.sql.expression import and_
 from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import AssessmentType
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query, \
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_query_iab, get_extract_assessment_item_and_raw_query, \
     get_required_permission, get_extract_assessment_item_and_raw_count_query
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
@@ -244,14 +245,59 @@ def _get_asmt_records(param, extract_type):
     return results
 
 
+def _get_asmt_records_iab(param, extract_type):
+    '''
+    query all asmt_guid and asmt_grade by given extract request params
+    '''
+    asmt_type = param.get(Constants.ASMTTYPE)
+    asmt_subject = param.get(Constants.ASMTSUBJECT)
+    state_code = param.get(Constants.STATECODE)
+    district_id = param.get(Constants.DISTRICTGUID)
+    school_id = param.get(Constants.SCHOOLGUID)
+    asmt_grade = param.get(Constants.ASMTGRADE)
+    asmt_year = param.get(Constants.ASMTYEAR)
+    student_id = param.get(Constants.STUDENTGUID)
+    # TODO: remove dim_asmt
+    with EdCoreDBConnection(state_code=state_code) as connector:
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
+        dim_student = connector.get_table(Constants.DIM_STUDENT)
+        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
+                                     fact_block_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                                    from_obj=[dim_asmt
+                                              .join(fact_block_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=get_required_permission(extract_type), state_code=state_code)\
+            .where(and_(fact_block_asmt_outcome.c.state_code == state_code))\
+            .where(and_(fact_block_asmt_outcome.c.asmt_type == asmt_type))\
+            .where(and_(fact_block_asmt_outcome.c.asmt_subject == asmt_subject))\
+            .where(and_(fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))\
+            .group_by(dim_asmt.c.asmt_guid, fact_block_asmt_outcome.c.asmt_grade)
+
+        if district_id is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.district_id == district_id))
+        if school_id is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.school_id == school_id))
+        if asmt_grade is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.asmt_grade == asmt_grade))
+        if asmt_year is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.asmt_year == asmt_year))
+        if student_id:
+            query = query.where(and_(fact_block_asmt_outcome.c.student_id.in_(student_id)))
+
+        query = apply_filter_to_query(query, fact_block_asmt_outcome, dim_student, param)
+        results = connector.get_result(query)
+    return results
+
+
 def _prepare_data(param, extract_type):
     '''
     Prepare record for available pre-query extract
     '''
+    is_iab_asmt = True if param['asmtType'] == AssessmentType.INTERIM_ASSESSMENT_BLOCKS else False
     asmt_guid_with_grades = []
     dim_asmt = None
     fact_asmt_outcome_vw = None
-    available_records = _get_asmt_records(param, extract_type)
+    fact_block_asmt_outcome = None
+    available_records = _get_asmt_records_iab(param, extract_type) if is_iab_asmt else _get_asmt_records(param, extract_type)
     # Format to a list with a tuple of asmt_guid and grades
     for record_by_asmt_type in available_records:
         asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
@@ -260,8 +306,9 @@ def _prepare_data(param, extract_type):
         with EdCoreDBConnection(state_code=param.get(Constants.STATECODE)) as connector:
             dim_asmt = connector.get_table(Constants.DIM_ASMT)
             fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
     # Returns list of asmt guid with grades, and table objects
-    return asmt_guid_with_grades, dim_asmt, fact_asmt_outcome_vw
+    return asmt_guid_with_grades, dim_asmt, fact_asmt_outcome_vw, fact_block_asmt_outcome
 
 
 def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
@@ -271,18 +318,18 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(param, ExtractType.studentAssessment)
+    guid_grade, dim_asmt, fact_asmt_outcome_vw, fact_block_asmt_outcome = _prepare_data(param, ExtractType.studentAssessment)
 
     copied_params = copy.deepcopy(param)
     copied_params[Constants.ASMTGRADE] = None
-    query = get_extract_assessment_query(copied_params)
+    query = get_extract_assessment_query_iab(copied_params) if param['asmtType'] == AssessmentType.INTERIM_ASSESSMENT_BLOCKS else get_extract_assessment_query(copied_params)
     if guid_grade:
         for asmt_guid, asmt_grade in guid_grade:
             copied_params = copy.deepcopy(param)
             copied_params[Constants.ASMTGUID] = asmt_guid
             copied_params[Constants.ASMTGRADE] = asmt_grade
-            query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\
-                .where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
+            query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
+            query_with_asmt_rec_id_and_asmt_grade = query_with_asmt_rec_id_and_asmt_grade.where(and_(fact_block_asmt_outcome.c.asmt_grade == asmt_grade)) if param['asmtType'] == AssessmentType.INTERIM_ASSESSMENT_BLOCKS else query_with_asmt_rec_id_and_asmt_grade.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
             tasks += (_create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade,
                                     is_tenant_level=is_tenant_level))
         copied_task_response[Extract.STATUS] = Extract.OK

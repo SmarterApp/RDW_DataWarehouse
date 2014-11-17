@@ -40,7 +40,7 @@ TENANT_EXTRACT_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.INTERIM_COMPREHENSIVE + ")$"
+                "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.INTERIM_COMPREHENSIVE + "|" + AssessmentType.INTERIM_ASSESSMENT_BLOCKS + ")$"
             },
             "minItems": 1,
             "uniqueItems": True,

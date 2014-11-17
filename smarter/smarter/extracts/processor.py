@@ -34,9 +34,13 @@ def _get_extract_work_zone_base_dir():
     return get_current_registry().settings.get('extract.work_zone_base_dir', tempfile.gettempdir())
 
 
-def get_extract_work_zone_path(tenant, request_id):
+def get_extract_request_base_path(tenant, request_id):
     base = _get_extract_work_zone_base_dir()
-    return os.path.join(base, tenant, request_id, 'data')
+    return os.path.join(base, tenant, request_id)
+
+
+def get_extract_work_zone_path(tenant, request_id):
+    return os.path.join(get_extract_request_base_path(tenant, request_id), 'data')
 
 
 def get_archive_file_path(user_name, tenant, request_id, encrypted=False, partial_no=None, ):

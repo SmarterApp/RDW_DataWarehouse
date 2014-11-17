@@ -16,7 +16,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from smarter.extracts.processor import get_extract_work_zone_path, \
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
-    get_pickup_zone_info, get_extract_request_user_info, _get_extract_work_zone_base_dir
+    get_pickup_zone_info, get_extract_request_user_info, _get_extract_work_zone_base_dir,\
+    get_extract_request_base_path
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edauth.tests.test_helper.create_session import create_test_session
 import edauth
@@ -65,6 +66,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_get_extract_work_zone_path(self):
         path = get_extract_work_zone_path('tenant', 'request')
         self.assertEqual(path, '/tmp/work_zone/tenant/request/data')
+
+    def test_get_extract_request_path(self):
+        path = get_extract_request_base_path('tenant', 'request')
+        self.assertEqual(path, '/tmp/work_zone/tenant/request')
 
     def test_get_encryption_public_key_identifier(self):
         self.assertIsNone(get_encryption_public_key_identifier("tenant"))

@@ -7,9 +7,10 @@ from celery.canvas import chain, group
 import os
 from edextract.tasks.extract import prepare_path, archive, \
     generate_item_or_raw_extract_file, generate_extract_file, remote_copy, \
-    extract_group_separator
+    extract_group_separator, clean_up
 from edextract.tasks.constants import Constants as TaskConstants, \
     ExtractionDataType
+from smarter.extracts.processor import get_extract_request_base_path
 
 
 def start_extract(tenant, request_id, archive_file_names, directories_to_archive, registration_ids, tasks, queue=None):
@@ -22,7 +23,10 @@ def start_extract(tenant, request_id, archive_file_names, directories_to_archive
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
                      generate_archive_file_tasks(request_id, archive_file_names, directories_to_archive, queue_name=queue),
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
-                     generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=queue))
+                     generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=queue),
+                     extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     clean_up.subtask(args=[get_extract_request_base_path(tenant, request_id)], queue_name=queue, immutable=True)   # @UndefinedVariable
+                     )
     workflow.apply_async()
 
 

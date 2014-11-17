@@ -290,7 +290,7 @@ def _get_asmt_records_iab(param, extract_type):
     return results
 
 
-def _prepare_data(param, extract_type, is_iab_asmt):
+def _prepare_data(param, extract_type, is_iab_asmt=False):
     '''
     Prepare record for available pre-query extract
     '''
@@ -298,13 +298,14 @@ def _prepare_data(param, extract_type, is_iab_asmt):
     dim_asmt = None
     fact_asmt_outcome_vw = None
     fact_block_asmt_outcome = None
-    available_records = _get_asmt_records_iab(param, extract_type) if is_iab_asmt else _get_asmt_records(param, extract_type)
 
     if is_iab_asmt:
+        available_records = _get_asmt_records_iab(param, extract_type)
         for record_by_asmt_type in available_records:
             asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE], record_by_asmt_type[Constants.EFFECTIVE_DATE], record_by_asmt_type[Constants.ASMT_CLAIM_1_NAME]))
     else:
         # Format to a list with a tuple of asmt_guid and grades
+        available_records = _get_asmt_records(param, extract_type)
         for record_by_asmt_type in available_records:
             asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
 

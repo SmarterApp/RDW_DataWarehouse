@@ -196,6 +196,7 @@ common:
       metadata:
         static: ../../resources/meta/static
         performance: ../../resources/meta/performance
+        default: ../../resources/meta/default
       cache:
         regions: public.shortlived
         type: memory
@@ -361,7 +362,7 @@ common:
   '[logger_smarter_score_batcher]':
     level: INFO
     handlers: filelog
-    qualname: smarter_score_batcher  
+    qualname: smarter_score_batcher
 
   '[logger_security_event]':
     level: INFO

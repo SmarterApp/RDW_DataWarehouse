@@ -1,0 +1,58 @@
+{
+    "Content": "assessment",
+    "Identification": {
+        "Subject": "ELA",
+        "Period": ""
+    },
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "",
+            "CutPoint": ""
+        },
+        "Level2": {
+            "Name": "",
+            "CutPoint": ""
+        },
+        "Level3": {
+            "Name": "",
+            "CutPoint": ""
+        },
+        "Level4": {
+            "Name": "",
+            "CutPoint": ""
+        },
+        "Level5": {
+            "Name": "",
+            "CutPoint": ""
+        }
+    },
+    "Claims": {
+        "Claim1": {
+            "Name": "Reading",
+            "Mapping": "Claim1"
+        },
+        "Claim2": {
+            "Name": "",
+            "Mapping": ""
+        },
+        "Claim3": {
+            "Name": "",
+            "Mapping": ""
+        },
+        "Claim4": {
+            "Name": "",
+            "Mapping": ""
+        }
+    },
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": ""
+        },
+        "Level2": {
+            "Name": ""
+        },
+        "Level3": {
+            "Name": ""
+        }
+    }
+}

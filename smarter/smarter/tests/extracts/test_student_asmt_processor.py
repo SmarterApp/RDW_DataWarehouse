@@ -153,6 +153,21 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
+    def test_get_file_name_iab(self):
+        params = {'stateCode': 'CA',
+                  'districtId': '341',
+                  'schoolId': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'INTERIM ASSESSMENT BLOCKS',
+                  'asmtYear': '2015',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
+                  'effective_date': '20151111',
+                  'asmt_claim_1_name': 'claim_name'}
+        path = get_extract_file_path(params, 'tenant', 'request_id')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5_UUUU_IAB_claim_name_EFF11-11-2015')
+        self.assertIn(expected_path, path)
+
     def test_get_item_file_name(self):
         params = {'stateCode': 'CA',
                   'asmtYear': '2015',
@@ -264,6 +279,22 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         (guid, grade) = guid_grade[0]
         self.assertEqual(guid, 'a685f0ec-a0a6-4b1e-93b8-0c4298ff6374')
         self.assertEqual(grade, '11')
+
+    def test___prepare_data_iab(self):
+        params = {'stateCode': 'NC',
+                  'asmtType': 'INTERIM ASSESSMENT BLOCKS',
+                  'asmtSubject': 'Math',
+                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
+        smarter.extracts.format.json_column_mapping = {}
+        guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(params, ExtractType.studentAssessment)
+        self.assertEqual(67, len(guid_grade))
+        self.assertIsNotNone(dim_asmt)
+        self.assertIsNotNone(fact_asmt_outcome_vw)
+        (guid, grade, effective_date, asmt_claim_1_name) = guid_grade[0]
+        self.assertEqual(guid, '2d050020-5883-11e4-8ed6-0800200c9a66')
+        self.assertEqual(grade, '11')
+        self.assertEqual(effective_date, '20141201')
+        self.assertEqual(asmt_claim_1_name, 'Mathematics Performance Task')
 
     def test_get_asmt_metadata_file_path(self):
         params = {'stateCode': 'CA',

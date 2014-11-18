@@ -295,7 +295,7 @@ PREQUERY_FUNCTIONS = {
     AssessmentType.INTERIM_ASSESSMENT_BLOCKS: _get_asmt_records_iab,
     AssessmentType.SUMMATIVE: _get_asmt_records,
     AssessmentType.INTERIM_COMPREHENSIVE: _get_asmt_records
-    }
+}
 
 
 def _prepare_data(param, extract_type):
@@ -309,7 +309,7 @@ def _prepare_data(param, extract_type):
         AssessmentType.INTERIM_ASSESSMENT_BLOCKS: Constants.FACT_BLOCK_ASMT_OUTCOME,
         AssessmentType.SUMMATIVE: Constants.FACT_ASMT_OUTCOME_VW,
         AssessmentType.INTERIM_COMPREHENSIVE: Constants.FACT_ASMT_OUTCOME_VW
-        }
+    }
 
     prequery_func = PREQUERY_FUNCTIONS[param['asmtType']]
     available_records = prequery_func(param, extract_type)
@@ -334,7 +334,7 @@ EXTRACT_FUNCTIONS = {
     AssessmentType.INTERIM_ASSESSMENT_BLOCKS: get_extract_assessment_query_iab,
     AssessmentType.SUMMATIVE: get_extract_assessment_query,
     AssessmentType.INTERIM_COMPREHENSIVE: get_extract_assessment_query
-    }
+}
 
 
 def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):

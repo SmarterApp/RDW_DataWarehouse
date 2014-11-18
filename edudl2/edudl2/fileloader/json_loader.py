@@ -128,7 +128,7 @@ def load_to_table(data_dict, guid_batch, int_table, tenant_name, udl_schema):
         from_select_select_values = [record_sid]
         for column in s_int_table.c:
             value = data_dict.get(column.name)
-            if value:
+            if value is not None:
                 from_select_column_names.append(column.name)
                 from_select_select_values.append(
                     ref_column_mapping_columns.get(column.name,

@@ -8,6 +8,7 @@ from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_hel
 import itertools
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
+from smarter_score_batcher.error.exceptions import MetadataException
 
 
 class XMLMeta:
@@ -369,13 +370,22 @@ def get_claims(metadata_file_path, opportunity):
     claim3_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM3, PerformanceMetadataConstants.CLAIM3)
     claim4_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM4, PerformanceMetadataConstants.CLAIM4)
 
+    if not claim1_mapping:
+        # if no claims mapping found, we take the first non-Overall
+        # score element with measureLabel 'ScaleScore' and map to claim1
+        claims = opportunity.findall("./Score/[@measureLabel='ScaleScore']") or []
+        claims = [claim for claim in claims if claim.get('measureOf') != 'Overall']
+        if len(claims) != 1:
+            raise MetadataException("Incorrect claims number of assessment type %s" % metadata['Identification']['Type'])
+        claim1_mapping = claims[0].get('measureOf')
+
     overall_score = XMLClaimScore(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value", "standardError")
     claim1_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim2_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
     claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
 
-    claims = [
+    return [
         Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreValue),
         Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentPerformanceLevelIdentifier),
         Mapping(overall_score.get_min(), AssessmentHeaders.AssessmentSubtestMinimumValue),
@@ -397,5 +407,3 @@ def get_claims(metadata_file_path, opportunity):
         Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim4MaximumValue),
         Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier)
     ]
-
-    return claims

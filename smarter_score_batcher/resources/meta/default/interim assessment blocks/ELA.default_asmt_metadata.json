@@ -26,22 +26,34 @@
             "CutPoint": ""
         }
     },
+    "Overall": {
+        "MaxScore": 0,
+        "MinScore": 0
+    },
     "Claims": {
         "Claim1": {
-            "Name": "Reading",
-            "Mapping": "Claim1"
+            "Name": "",
+            "Mapping": "",
+            "MinScore": 0,
+            "MaxScore": 0
         },
         "Claim2": {
             "Name": "",
-            "Mapping": ""
+            "Mapping": "",
+            "MinScore": 0,
+            "MaxScore": 0
         },
         "Claim3": {
             "Name": "",
-            "Mapping": ""
+            "Mapping": "",
+            "MinScore": 0,
+            "MaxScore": 0
         },
         "Claim4": {
             "Name": "",
-            "Mapping": ""
+            "Mapping": "",
+            "MinScore": 0,
+            "MaxScore": 0
         }
     },
     "ClaimsPerformanceLevel": {

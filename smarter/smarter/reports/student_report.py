@@ -36,6 +36,7 @@ def __prepare_query(connector, params):
     state_code = params.get(Constants.STATECODE)
     effective_date = params.get(Constants.EFFECTIVEDATE)
     asmt_type = params.get(Constants.ASMTTYPE)
+    asmt_year = params.get(Constants.ASMTYEAR)
 
     fact_asmt_outcome_vw = connector.get_table('fact_asmt_outcome_vw')
     dim_student = connector.get_table('dim_student')
@@ -128,6 +129,8 @@ def __prepare_query(connector, params):
         query = query.where(dim_asmt.c.effective_date == str(effective_date))
     if asmt_type is not None:
         query = query.where(dim_asmt.c.asmt_type == asmt_type)
+    if asmt_year is not None:
+        query = query.where(fact_asmt_outcome_vw.c.asmt_year == asmt_year)
     query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
     return query
 
@@ -308,7 +311,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
                    Constants.ASMTYEAR: {
                        "type": "integer",
-                       "required": False,
+                       "required": True,
                        "pattern": "^[1-9][0-9]{3}$"},
                    Constants.EFFECTIVEDATE: {
                        "type": "integer",

@@ -84,7 +84,7 @@ define [
       header = this.table.getGridParam("colNames")
       rowData = this.table.getRowData()
       # build column names
-      result.push this.getColumnNames(header) # row 0 is header
+      result.push this.getColumnNames(header)
       # build summary
       footerData = this.table.footerData()
       if not $.isEmptyObject(footerData)

@@ -2,7 +2,9 @@
 	{{asmtType}} {{columnName}} {{perfLevel}}
 </div>
 <div class='{{export}}'>
+  {{#perfLevelNumber}}
 	<i class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"> </i>
+  {{/perfLevelNumber}}
 	{{#displayPopover}}
 	<div class="oldResultsContent hide">
 		<div class="iabBlocksTable">

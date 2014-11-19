@@ -473,7 +473,7 @@ def get_file_name(param, identifier):
 
 def get_file_name_iab(param, identifier):
     asmt_claim_1_name = param[Constants.ASMT_CLAIM_1_NAME]
-    asmt_claim_1_name = re.sub(r'[^a-zA-Z0-9]', '_', asmt_claim_1_name)
+    asmt_claim_1_name = re.sub(r'[^a-zA-Z0-9]', '', asmt_claim_1_name)
     file_name = 'ASMT_{asmtYear}{identifier}_{asmtGrade}_{asmtSubject}_IAB_{asmt_claim_1_name}_EFF{effectiveDate}_TS{currentTime}_{asmtGuid}.csv'.\
                 format(identifier=identifier,
                        asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
@@ -483,7 +483,7 @@ def get_file_name_iab(param, identifier):
                        asmtYear=param[Constants.ASMTYEAR],
                        asmtGuid=param[Constants.ASMTGUID],
                        effectiveDate=datetime.strptime(param[Constants.EFFECTIVE_DATE], '%Y%m%d').strftime('%m-%d-%Y'),
-                       asmt_claim_1_name=asmt_claim_1_name)
+                       asmt_claim_1_name=asmt_claim_1_name[:10])
     return file_name
 
 

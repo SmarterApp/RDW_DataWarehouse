@@ -163,9 +163,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
                   'effective_date': '20151111',
-                  'asmt_claim_1_name': 'claim_name'}
+                  'asmt_claim_1_name': 'claim / name'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5_UUUU_IAB_claim_name_EFF11-11-2015')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5_UUUU_IAB_claimname_EFF11-11-2015')
         self.assertIn(expected_path, path)
 
     def test_get_item_file_name(self):

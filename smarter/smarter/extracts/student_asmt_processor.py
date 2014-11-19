@@ -20,7 +20,8 @@ from hpz_client.frs.file_registration import register_file
 from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG, \
     apply_filter_to_query
 from smarter.extracts.utils import start_extract, generate_extract_file_tasks
-from edextract.tasks.extract import archive_with_stream, prepare_path
+from edextract.tasks.extract import archive_with_stream, prepare_path, clean_up
+from smarter.extracts.processor import get_extract_request_base_path
 
 
 __author__ = 'ablum'
@@ -108,8 +109,9 @@ def process_extraction_request(params, is_async=True):
     #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
             prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)  # @UndefinedVariable
             generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-            result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
-            return result.get(timeout=celery_timeout)
+            content = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True).get(timeout=celery_timeout)
+            clean_up.apply_async(args=[get_extract_request_base_path(tenant, request_id)], queue=queue)  # @UndefinedVariable
+            return content
         else:
             raise NotFoundException("There are no results")
 

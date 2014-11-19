@@ -1,5 +1,5 @@
 {
-    "reportInfo": "<h4>Propósito:</h4><p>Este reporte presenta las puntuaciones de la evaluación individual del estudiante y provee una guía sobre cómo interpretar los resultados.</p><br/><h4>Usos:</h4><ul><li>Los educadores, padres o estudiantes pueden usar este reporte para comprender el dominio del estudiante, el progreso hacia el dominio de los Estándares Estatales Esenciales Comunes y la obtención del conocimiento académico y las destrezas requeridas para estar listo para la universidad y la vida profesional.</li></ul><br/><h4>Comprender su puntuación:</h4><p>La evaluación de Smarter Balanced es diferente a otras con que usted pudiera estar familiarizado.</p><ul><li>Primero, las evaluaciones de Smarter Balanced son pruebas computacionales adaptables y aprovechan la tecnología para personalizar cada examen a cada estudiante individual. Esto significa que cuando un estudiante contesta correctamente una pregunta, la siguiente pregunta que verá será ligeramente más difícil. Del mismo modo, si una respuesta es incorrecta, la siguiente pregunta será un poco menos difícil. Este procedimiento permite tener la medición más precisa y eficiente del conocimiento y las destrezas del estudiante.</li><li>Segundo, la evaluación es una prueba basada en los criterios, lo cual significa que reporta la comprensión del estudiante individual en torno a un conjunto particular de conocimientos y destrezas. Como resultado, las puntuaciones no pretenden comparar a los estudiantes entre sí, sino determinar qué tan bien cada estudiante comprende el contenido evaluado. </li></ul><br/><h4>Important Information about Interim Assessments:</h4><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol><br/>",
+    "reportInfo": "<h4>Propósito:</h4><p>Este reporte presenta las puntuaciones de la evaluación individual del estudiante y provee una guía sobre cómo interpretar los resultados.</p><br/><h4>Usos:</h4><ul><li>Los educadores, padres o estudiantes pueden usar este reporte para comprender el dominio del estudiante, el progreso hacia el dominio de los Estándares Estatales Esenciales Comunes y la obtención del conocimiento académico y las destrezas requeridas para estar listo para la universidad y la vida profesional.</li></ul><br/><h4>Comprender su puntuación:</h4><p>La evaluación de Smarter Balanced es diferente a otras con que usted pudiera estar familiarizado.</p><ul><li>Primero, las evaluaciones de Smarter Balanced son pruebas computacionales adaptables y aprovechan la tecnología para personalizar cada examen a cada estudiante individual. Esto significa que cuando un estudiante contesta correctamente una pregunta, la siguiente pregunta que verá será ligeramente más difícil. Del mismo modo, si una respuesta es incorrecta, la siguiente pregunta será un poco menos difícil. Este procedimiento permite tener la medición más precisa y eficiente del conocimiento y las destrezas del estudiante.</li><li>Segundo, la evaluación es una prueba basada en los criterios, lo cual significa que reporta la comprensión del estudiante individual en torno a un conjunto particular de conocimientos y destrezas. Como resultado, las puntuaciones no pretenden comparar a los estudiantes entre sí, sino determinar qué tan bien cada estudiante comprende el contenido evaluado. </li></ul><br/>",
 	"legendInfo": {
         "report_info": "Este reporte presenta las <b>puntuaciones de un estudiante individual para una evaluación seleccionada</b>",
         "relative_strength_text": "Las flechas muestran su puntuación pretendida en comparación con su puntuación general. Una flecha hacia arriba representa una fortaleza relativa, mientras que una flecha hacia abajo podría indicar una debilidad relativa.",
@@ -8,29 +8,29 @@
         "achievement_level_scores": "Las puntuaciones del nivel de rendimiento varían por materia y grado."
     },
 	 "accommodationMapping": {
-        "1": " used without prior registration:",
-        "2": " used:",
-        "3": " did not have access to:",
-        "4": " did not use:",
-        "5": " had access to:",
-        "6": " may have had access to:"
+        "1": " usó sin registro previo:",
+        "2": " usó:",
+        "3": " no tuvo acceso a:",
+        "4": " no usó:",
+        "5": " tuvo acceso a:",
+        "6": " pudo haber tenido acceso a:"
     },
     "accommodationColumns": {
-        "acc_noise_buffer_nonembed": "Noise Buffers",
-        "acc_print_on_demand_items_nonembed": "Printed items",
+        "acc_noise_buffer_nonembed": "Reguladores de ruido",
+        "acc_print_on_demand_items_nonembed": "Elementos impresos",
         "acc_braile_embed": "Braille",
-        "acc_closed_captioning_embed": "Closed Captioning",
-        "acc_text_to_speech_embed": "Text-to-speech",
-        "acc_abacus_nonembed": "Abacus",
-        "acc_alternate_response_options_nonembed": "Alternative Response",
-        "acc_calculator_nonembed": "Calculator",
-        "acc_multiplication_table_nonembed": "Multiplication Table",
-        "acc_print_on_demand_nonembed": "Printed passages/stimuli",
-        "acc_read_aloud_nonembed": "Read aloud",
-        "acc_scribe_nonembed": "Scribe",
-        "acc_speech_to_text_nonembed": "Speech-to-text",
-        "acc_streamline_mode": "Streamline Mode",
-        "acc_asl_video_embed" : "American Sign Language"
+        "acc_closed_captioning_embed": "Subtitulado",
+        "acc_text_to_speech_embed": "Texto a habla",
+        "acc_abacus_nonembed": "Ábaco",
+        "acc_alternate_response_options_nonembed": "Respuesta alternativa",
+        "acc_calculator_nonembed": "Calculadora",
+        "acc_multiplication_table_nonembed": "Tabla de multiplicación",
+        "acc_print_on_demand_nonembed": "Pasajes/estímulos impresos",
+        "acc_read_aloud_nonembed": "Lectura en voz alta",
+        "acc_scribe_nonembed": "Escribir",
+        "acc_speech_to_text_nonembed": "Voz a texto",
+        "acc_streamline_mode": "Modo de optimizar",
+        "acc_asl_video_embed" : "Lenguaje de señas norteamericano"
     },
     "accomodationCodeBuckets": {
         "11": "1",
@@ -50,6 +50,12 @@
         "24":"5",
         "18": "6"
     },
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
+    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
+                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
+    "detailsSelection": {
+        "Summative": ["Math", "ELA"],
+        "Interim Comprehensive": ["Math", "ELA"],
+        "Interim Assessment Blocks": ["Math", "ELA"]
+    },
     "higherEdLinkDefault":"<a href='http://www.smarterbalanced.org/higher-education/'>http://www.smarterbalanced.org/higher-education/</a>"
 }

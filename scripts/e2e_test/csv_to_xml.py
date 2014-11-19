@@ -135,7 +135,7 @@ def convert_to_xml(l):
     def _date(date):
         if date == "":
             return ""
-        return "{yyyy}{mm}{dd}".format(
+        return "{yyyy}-{mm}-{dd}T10:49:08.437".format(
             yyyy=date[0:4],
             mm=date[4:6],
             dd=date[6:8]
@@ -145,8 +145,9 @@ def convert_to_xml(l):
     data['subject'] = l[13].upper()
     data['asmt_year'] = l[12]
     data['asmt_type'] = l[11]
-    data['grade'] = l[14]
+    data['grade'] = "%02d" % int(l[14])
     data['studentId'] = l[5]
+    data['birthdate'] = _date(students[l[5]][6])
     data['firstName'] = students[l[5]][3]
     data['middleName'] = students[l[5]][4]
     data['lastName'] = students[l[5]][5]
@@ -158,7 +159,7 @@ def convert_to_xml(l):
     data['White'] = _bool(l[47])
     data['DemographicRaceTwoOrMoreRaces'] = _bool(l[48])
     data['sex'] = 'M' if l[40] == 'male' else 'F'
-    data['GradeLevelWhenAssessed'] = l[15]
+    data['GradeLevelWhenAssessed'] = "%02d" % int(l[15])
     # external ssid is empty in dim_student table, so I made it up here
     data['ExternalSSID'] = l[15]
     data['IDEAIndicator'] = _bool(l[49])
@@ -198,10 +199,10 @@ def convert_to_xml(l):
     data['asmt_claim_3_score_range_min'] = l[33]
     data['asmt_claim_3_score_range_max'] = l[34]
 
-    data['asmt_claim_4_score'] = l[36]
-    data['asmt_claim_4_perf_lvl'] = l[39]
-    data['asmt_claim_4_score_range_min'] = l[37]
-    data['asmt_claim_4_score_range_max'] = l[38]
+    data['asmt_claim_4_score'] = l[36] or 0
+    data['asmt_claim_4_perf_lvl'] = l[39] or 0
+    data['asmt_claim_4_score_range_min'] = l[37] or 0
+    data['asmt_claim_4_score_range_max'] = l[38] or 0
 
     data['acc_asl_video_embed'] = l[54] or 0
     data['acc_noise_buffer_nonembed'] = l[55] or 0

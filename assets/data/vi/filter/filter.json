@@ -188,8 +188,8 @@
         }
     ],
     "group_template" : {
-        "display" : "Nhóm học sinh",
-        "tag" : "Nhóm học sinh",
+        "display" : "Student Group",
+        "tag" : "Student Group",
         "name" : "studentGroupId",
         "options" : [
         ]

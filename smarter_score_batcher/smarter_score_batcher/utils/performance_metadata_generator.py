@@ -66,6 +66,8 @@ def _format_performance_metadata(performancelevel):
                                                             PerformanceMetadataConstants.LEVEL2: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level2_cutPoint())},
                                                             PerformanceMetadataConstants.LEVEL3: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level3_cutPoint())},
                                                             PerformanceMetadataConstants.LEVEL4: {PerformanceMetadataConstants.CUTPOINT: str(performancelevel.get_level4_cutPoint())},
+                                                            # UDL expect a level 5 for historical reason
+                                                            PerformanceMetadataConstants.LEVEL5: {PerformanceMetadataConstants.CUTPOINT: "", PerformanceMetadataConstants.Name: ""}
                                                             }
     meta[PerformanceMetadataConstants.CLAIMS] = {PerformanceMetadataConstants.CLAIM1: {PerformanceMetadataConstants.MINSCORE: str(performancelevel.get_claim1_minScore()),
                                                                                        PerformanceMetadataConstants.MAXSCORE: str(performancelevel.get_claim1_maxScore())},

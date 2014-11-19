@@ -69,3 +69,5 @@ wsgi_*_hpz.conf
 .project
 
 .pydevproject
+
+scripts/e2e_test/output

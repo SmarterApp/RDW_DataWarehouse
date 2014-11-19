@@ -17,7 +17,8 @@ define [
   'edwarePreferences'
   'edwareContextSecurity'
   'edwareConstants'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants) ->
+  'edwareUtil'
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants, edwareUtil) ->
 
   SUMMARY_TEMPLATE = edwareFormatterSummaryTemplate
 
@@ -146,6 +147,37 @@ define [
       export: 'edwareExportColumn' if options.colModel.export
     }
 
+  showPerfLevelIAB = (value, options, rowObject) ->
+    names = options.colModel.name.split "."
+    subject = rowObject[names[0]]
+    return '' if not subject
+    asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_type]
+    columnData = subject[names[1]]
+    return '' if not columnData
+    effective_date = names[2]
+
+    perf_lvl_name = ""
+    for data in columnData
+      date = data.effective_date
+      data.display_effective_date = edwareUtil.formatDate(date)
+      if date is effective_date
+        perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
+        value = data[names[3]][names[4]]['perf_lvl']
+    Mustache.to_html PERF_LEVEL_TEMPLATE, {
+      displayPopover: not options.colModel.expanded  # Only show popover when not expanded
+      oldResultsClass: if not options.colModel.expanded then "hasOlderResults" else ""
+      student_full_name: rowObject.student_full_name
+      prev: columnData
+      asmtType: subject.asmt_type,
+      asmtSubjectText: asmt_subject_text
+      labels: options.colModel.labels
+      perfLevelNumber: value
+      columnName: options.colModel.label
+      parentName: $(options.colModel.parentLabel).text()
+      perfLevel: perf_lvl_name
+      export: 'edwareExportColumn' if options.colModel.export
+    }
+
   performanceBar = (value, options, rowObject) ->
 
     getScoreALD = (subject) ->
@@ -261,6 +293,7 @@ define [
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   showPerfLevel: showPerfLevel
+  showPerfLevelIAB: showPerfLevelIAB
   performanceBar: performanceBar
   populationBar: populationBar
   totalPopulation: totalPopulation

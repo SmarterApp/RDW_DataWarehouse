@@ -6,7 +6,7 @@
 . /etc/rc.d/init.d/functions
 . /opt/virtualenv/smarter/bin/activate
 PIDFILE="/opt/edware/run/edmigrate.pid"
-EDMIGRATED="python -m edmigrate.main -d -p $PIDFILE"
+EDMIGRATED="python -m edmigrate.main -d -p $PIDFILE -t nc"
 
 start() {
 	echo -n "Starting edmigrate: "

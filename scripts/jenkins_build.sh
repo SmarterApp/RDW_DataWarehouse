@@ -225,6 +225,7 @@ function run_functional_tests {
     sed -i.bak 's/port_hpz = 80/port_hpz = 81/g' test.ini
     sed -i.bak 's/cleanup_script_relative_location = \/..\/..\/..\/edware\/hpz\/scripts\/pickup_zone_cleanup.py/cleanup_script_relative_location = \/..\/..\/..\/..\/hpz\/scripts\/pickup_zone_cleanup.py/g' test.ini
     export DISPLAY=:6.0
+    echo $DISPLAY
 
     if $RUN_END_TO_END; then
        cd e2e_tests
@@ -234,8 +235,6 @@ function run_functional_tests {
        FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
-	   #cd frontend_tests
-       #nosetests test_extracts_student_registration_reports.py -vs
        nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi

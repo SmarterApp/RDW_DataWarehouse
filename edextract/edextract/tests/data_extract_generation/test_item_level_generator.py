@@ -74,7 +74,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 211)
         self.assertIn('key', csv_data[0])
-        self.assertIn('student_id', csv_data[0])
+        self.assertIn('studentId', csv_data[0])
         self.assertIn('score', csv_data[0])
 
     def test_generate_item_csv_success_item_ids(self):
@@ -100,7 +100,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 66)
         self.assertIn('key', csv_data[0])
-        self.assertIn('student_id', csv_data[0])
+        self.assertIn('studentId', csv_data[0])
         self.assertIn('score', csv_data[0])
 
     def test_append_csv_files(self):

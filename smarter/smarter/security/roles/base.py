@@ -40,7 +40,7 @@ class BaseRole(object):
         '''
         Get a list of context tables from the query
         '''
-        return {obj for (obj, name) in get_selectable_by_table_name(query).items() if name in (Constants.STUDENT_REG, Constants.FACT_ASMT_OUTCOME_VW)}
+        return {obj for (obj, name) in get_selectable_by_table_name(query).items() if name in (Constants.STUDENT_REG, Constants.FACT_ASMT_OUTCOME_VW, Constants.FACT_BLOCK_ASMT_OUTCOME)}
 
 
 def verify_context(fn):

@@ -7,6 +7,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
@@ -19,7 +20,7 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
   POPULATION_BAR_WIDTH = 145
 
@@ -41,6 +42,7 @@ define [
       firstColumn.displayTpl = customView.displayTpl
       firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
+      # firstColumn.options.asmtType = Constants.ASMT_TYPE.SUMMATIVE
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
       this
@@ -53,6 +55,7 @@ define [
 
     constructor: (config) ->
       @initialize(config)
+      @bindEvents()
 
     initialize: (config)->
       this.config = config
@@ -171,7 +174,6 @@ define [
       this.renderGrid()
 
     afterGridLoadComplete: () ->
-      this.bindEvents()
       # Rebind events and reset sticky comparison
       this.stickyCompare.update()
       this.alignment.update()
@@ -293,7 +295,10 @@ define [
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
-      $(".progress").popover
+      # TODO:
+      $(document).on
+        'mouseenter focus': ->
+          $(this).popover
             html: true
             placement: 'top'
             container: '#content'
@@ -301,11 +306,10 @@ define [
             content: ->
               # template location: widgets/populationBar/template.html
               $(this).find(".progressBar_tooltip").html()
-        # also display tooltips when focus on
-      $(".progress").on 'focus', ()->
-        $(this).popover('show')
-      .focusout ()->
-        $(this).popover('hide')
+          .popover('show')
+        'focusout': ->
+          $(this).popover('hide')
+        , '.progress'
 
     # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->

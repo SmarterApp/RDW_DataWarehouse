@@ -1,19 +1,11 @@
-edware
-======
+Smarter Balanced Reporting and Data Warehouse
+=============================================
 
-Ed-Ware project source repository
+Smarter Balanced Data Warehouse and Reporting offer a secure and scalable multi-tenant system that houses student assessment and student registration data and provides tools for data access in HTML, CSV, and PDF formats.
 
-Please update this and preview markdown file. 
+System Architecture 
+===================
+Reporting Layer - a web based application and supporting system that end users interact with. User roles define access level to the application and user context defines a scope of student PII the user is exposed to.
 
-You can learn markdown's syntax here 
-<http://daringfireball.net/projects/markdown/syntax>
-
-and you can use chrome extension to preview it before commit and push
-<https://chrome.google.com/webstore/detail/markdown-preview/jmchmkecamhbiokiopfpnfgbidieafmd>
-
-Then let's code with fierceness and git with ferociousness
-and remember Ken's Rules of Coding
-
-<https://confluence.wgenhq.net/display/WGC/Ken%27s+Rules+of+Coding>
-
+Data Warehouse - a student assessment and registration multi-tenant data store and a loader process that is responsible for processing new data.
 

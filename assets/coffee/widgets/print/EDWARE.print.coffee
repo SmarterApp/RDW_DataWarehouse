@@ -28,15 +28,18 @@ define [
       @hide()
       option = $('input[name=print]:checked', @container).val()
       asmtType = edwarePreferences.getAsmtType()
+      effectiveDate = edwarePreferences.getEffectiveDate()
+      asmtYear = edwarePreferences.getAsmtYearPreference() 
       params = edwareUtil.getUrlParams()
       url = edwareUtil.getBaseURL() + "/assets/html/print.html?"
       url += 'studentId=' + params['studentId']
       url += '&stateCode=' + params['stateCode']
       url += '&pdf=true'
       url += "&mode=color" if option is "color"
-      url += "&asmtType=" + encodeURI(asmtType) if asmtType
+      url += "&asmtType=" + encodeURI(asmtType.toUpperCase()) if asmtType
       url += "&lang=" + edwarePreferences.getSelectedLanguage()
-      url += "&effectiveDate=" + edwarePreferences.getEffectiveDate()
+      url += "&effectiveDate=" + effectiveDate if effectiveDate
+      url += "&asmtYear=" + asmtYear if asmtYear
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
 
     show: () ->

@@ -75,6 +75,9 @@
         font-size: 15px;
         padding: 0;
       }
+      .currentAsmtTypeView {
+        margin-bottom: 10px;
+      }
 
       .title {
         color: @color-black;
@@ -140,6 +143,14 @@
     }
   }
 
+  body.los {
+    #gbox_gridTable {
+      display: none;
+    }
+    .expand-icon {
+      display: none;
+    }
+  }
   body.cpop, body.los {
     .disclaimerInfo {
       u {
@@ -238,6 +249,15 @@
         h4 { max-width: 135px; }
       }
     }
+    .blocks {
+      background: @color-white !important;
+      table{
+        background-color: @color-white !important;
+      }
+      .olderResults {
+        color: @color-B2 !important;
+      }
+    }
 
     .exportPopup {display: none;}
 
@@ -306,9 +326,6 @@
             }
           }
           .indicator {
-            .asmtScore {
-              color: @color-black !important;
-            }
             margin-left: 7px;
           }
         }
@@ -703,7 +720,7 @@
       
       .table.edware-table-bordered.edware-table-center {
         width: 980px !important;
-        margin-left: -15px !important;
+        margin-left: -10px !important;
         border-collapse: separate; 
         border-spacing: 10px;
 
@@ -814,6 +831,31 @@
 
     #infoBar, #actionBar {
       display: none;
+    }
+    
+    .isrInterimBlockHeader {
+      margin-top: 30px;
+      .subject {
+        color: @color-A1 !important;
+        font-size: 34px;
+      }
+      .info{
+        float: right;
+        color: @color-B2 !important;
+        font-size: 15px;
+      }
+      .year{
+        color: @color-black !important;
+      }
+    }
+   
+    .contentBlocksWrapper {
+      hr:first-child {
+        display: none;
+      }
+      .blocks{
+        page-break-inside:avoid;
+      }
     }
   }
 }

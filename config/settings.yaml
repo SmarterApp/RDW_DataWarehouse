@@ -84,7 +84,7 @@ common:
     # Timeout for pdf generation process
     pdf:
       # expected pdf file size in bytes used to validate that pdf was generated without errors
-      minimum_file_size: 56000
+      minimum_file_size: 50000
       # number of retries allowed after the first failure
       retries_allowed: 3
       # delay in retry in seconds
@@ -141,7 +141,7 @@ common:
           average.csv: 30000
           average.xml: 300000
       work_zone_base_dir: /tmp
-      gpg.homedir: ~/.gnupg
+      gpg.homedir: /opt/edware/keys
       gpg.public_key.cat: sbac_data_provider@sbac.com
       gpg.public_key.fish: sbac_data_provider@sbac.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
@@ -273,9 +273,14 @@ common:
       db:
         cat:
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        nc:
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     migrate_dest:
       db:
         cat:
+          schema_name: edware_prod
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        nc:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     sftp.jail.base_path: /sftp
@@ -297,7 +302,7 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2, smarter_score_batcher
   '[handlers]':
     keys: console, filelog, audit, security_event, mna_rest
 
@@ -352,6 +357,11 @@ common:
     level: INFO
     handlers: filelog
     qualname: edudl2
+
+  '[logger_smarter_score_batcher]':
+    level: INFO
+    handlers: filelog
+    qualname: smarter_score_batcher  
 
   '[logger_security_event]':
     level: INFO
@@ -509,7 +519,7 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/auth/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     hpz:
       file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
       file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
@@ -1024,7 +1034,7 @@ development:
           average.csv: 30000
           average.xml: 30000
     smarter_score_batcher:
-      gpg.homedir: ../../edware/config/gpg
+      gpg.homedir: ../edware/config/gpg
       gpg.keyserver: None
       gpg.passphrase: sbac udl2
       gpg.sign: ca_user@ca.com
@@ -1163,7 +1173,7 @@ integration:
         schema_name: edware_stats
         url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
     extract:
-      gpg.homedir: ../../edware/config/gpg
+      gpg.homedir: /opt/edware/keys
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
@@ -1198,7 +1208,7 @@ jenkins_int:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
         CELERYD_CONCURRENCY: 4
-      gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     smarter_score_batcher:
       celery:
@@ -1260,7 +1270,7 @@ jenkins_dev:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
         CELERYD_CONCURRENCY: 4
-      gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       item_level_base_dir: /opt/edware/item_level
       raw_data_base_dir: /opt/edware/raw_data
@@ -1270,6 +1280,7 @@ jenkins_dev:
           average.csv: 30000
           average.xml: 30000
     smarter_score_batcher:
+      gpg.homedir: /opt/edware/keys
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
         CELERYD_CONCURRENCY: 4

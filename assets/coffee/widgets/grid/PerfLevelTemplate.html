@@ -1,6 +1,33 @@
-<div class="screenreader">{{asmtType}} {{columnName}} {{perfLevel}}</div>
+<div class="screenreader">
+	{{asmtType}} {{columnName}} {{perfLevel}}
+</div>
 <div class='{{export}}'>
-    <i class="edware-icon-perf-level-{{perfLevelNumber}}"></i>
-    <span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
-    <span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
+	<i class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"> </i>
+	{{#displayPopover}}
+	<div class="oldResultsContent hide">
+		<div class="iabBlocksTable">
+			<div class="studentName">
+				{{student_full_name}}
+			</div>
+			<div class="iabName">
+				{{{columnName}}}
+			</div>
+			<span class="previousResults">{{labels.results}}</span>
+			<table class="table">
+				<tbody>
+					<tr>
+						{{#prev}}
+						<td>
+						<div class="takenDate oldDateResults">
+							{{display_effective_date}}
+						</div><i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
+						{{/prev}}
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	{{/displayPopover}}
+	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
+	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
 </div>

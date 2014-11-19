@@ -89,7 +89,7 @@ h6 {
         max-height: 51px;
       }
     }
-    
+
     .tenantLabel{
       font-size: 18px;
       color: @color-white;
@@ -273,6 +273,117 @@ table {
 
 
 /* Indivial Student Report styles */
+.isrInterimBlockHeader{
+  margin: 20px 20px 20px 20px;
+
+  .subject {
+    color: @color-A1;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  .info {
+    color: @color-B2;
+    font-size: 20px;
+    margin-left: 3px;
+  }
+}
+
+.contentBlocksWrapper {
+  width: 900px;
+  margin: 20px 20px 0px;
+  hr{
+    margin: 0px 10px 20px 0px;
+  }
+  .blocksSection{
+    .row-fluid{
+      div:nth-child(3n+4) {
+        margin-left: 0px;
+      }
+
+    }
+  }
+}
+
+.blocks{
+    height: 245px;
+    margin-bottom: 20px;
+    .title{
+      height: 45px;
+      font-size: 13px;
+      font-weight: bold;
+      color: @color-C18 !important;
+      .blockName{
+        color: @color-black;
+      }
+    }
+    .olderResults {
+      font-family: Arial;
+      font-size: 10px;
+      font-weight: bold;
+      color: @color-A2;
+      cursor: pointer;
+    }
+    .takenDate {
+      font-family: Arial;
+      font-size: 11px;
+      color: @color-C18 !important;
+    }
+    .oldDateResults {
+      margin-bottom: 10px;
+    }
+  }
+.previousResults {
+  font-family: Arial;
+  font-size: 10px;
+  color: @color-B2 !important;
+  font-weight: bold;
+}
+.iabBlocksTable {
+  table {
+      background-color: @color-A7;
+      color: @color-C18;
+      font-family: Arial;
+      font-size: 11px;
+      border-collapse: collapse;
+      margin-bottom: 0px;
+      td {
+        width: 82px;
+        height: 60px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid @color-B5;
+        border-bottom: none;
+        border-left: none;
+        font-size: 11px;
+      }
+      td:last-child {
+          border-right: none;
+      }
+    }
+}
+.iabPopover-content {
+  padding: 20px;
+}
+#iabPopoverContent{
+  table {
+    width: auto;
+  }
+  min-width: 200px;
+  max-width: 600px !important;
+  .edwareScrollable {
+    overflow-x: auto;
+  }
+  .studentName{
+    color: @color-black;
+    font-weight: bold;
+  }
+  .iabName{
+    margin-bottom: 20px;
+  }
+}
+.hasOlderResults{
+  cursor: pointer;
+}
 .placeholder {
     background: @color-B5;
     margin: 20px 3% 20px 0;
@@ -289,6 +400,14 @@ table {
     color: @color-A1;
     margin: 5px 0 5px 34px;
     font-size: 18px;
+    }
+    &.Math {
+      .Math{display: block;}
+      .ELA{display: none;}
+    }
+    &.ELA {
+      .Math{display: none;}
+      .ELA{display: block;}
     }
 }
 .sidebar {
@@ -313,6 +432,9 @@ table {
 
     .teacher, .date, .psychometric, .policy, .adminDetails {
     font-size: 13px;
+    }
+    .policy {
+      overflow-wrap: break-word;
     }
 }
 
@@ -545,6 +667,5 @@ table {
     .mask {
         height: 20px;
         position: relative;
-        top: -15px;
     }
 }

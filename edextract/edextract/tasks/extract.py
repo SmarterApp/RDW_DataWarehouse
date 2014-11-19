@@ -24,6 +24,7 @@ from edextract.data_extract_generation.raw_data_generator import generate_raw_da
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
 from hpz_client.frs.http_file_upload import http_file_upload
+import shutil
 
 
 log = logging.getLogger('edextract')
@@ -65,7 +66,6 @@ def archive_with_stream(request_id, directory):
     given a directory, archive everything in this directory to a file name specified
     @return: Streamed contents of archive file.
     '''
-
     task_info = {Constants.TASK_ID: archive_with_stream.request.id,
                  Constants.CELERY_TASK_ID: archive_with_stream.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -123,6 +123,14 @@ def remote_copy(request_id, src_file_name, registration_id):
 
     except Exception as e:
         raise ExtractionError(str(e))
+
+
+@celery.task(name="tasks.extract.clean_up", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+def clean_up(directory):
+    '''
+    clean up temporary working directory
+    '''
+    shutil.rmtree(directory, ignore_errors=True)
 
 
 @celery.task(name="tasks.extract.generate_extract_file", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)

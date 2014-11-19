@@ -36,7 +36,7 @@ def setup_input_file_format():
     global json_column_mapping
     csv_column_mapping = format_mappings(csv_mapping)
     json_column_mapping = format_mappings(json_mapping)
-    #create_empty_json_metadata_template()
+    # create_empty_json_metadata_template()
 
 
 def process_input_file_format(phases, input_source):

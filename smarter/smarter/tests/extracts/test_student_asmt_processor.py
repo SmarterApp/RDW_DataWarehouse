@@ -215,8 +215,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         zip_data = process_extraction_request(params, is_async=False)
         self.assertIsNotNone(zip_data)
 
+    @patch('smarter.extracts.student_asmt_processor.start_extract')
     @patch('smarter.extracts.student_asmt_processor.register_file')
-    def test_process_async_extraction_request_with_subject(self, register_file_patch):
+    def test_process_async_extraction_request_with_subject(self, register_file_patch, mock_start_extract):
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'http://somehost:82/web/a1-b2-c3-d4-e1e10'
         params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],

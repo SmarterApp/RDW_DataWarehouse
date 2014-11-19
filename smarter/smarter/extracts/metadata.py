@@ -66,5 +66,5 @@ def get_asmt_metadata(state_code, asmt_guid):
                         dim_asmt.c.asmt_claim_perf_lvl_name_2.label(mapping.get('asmt_claim_perf_lvl_name_2', 'asmt_claim_perf_lvl_name_2')),
                         dim_asmt.c.asmt_claim_perf_lvl_name_3.label(mapping.get('asmt_claim_perf_lvl_name_3', 'asmt_claim_perf_lvl_name_3'))],
                        from_obj=[dim_asmt])
-        query = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
+        query = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid, dim_asmt.c.rec_status == Constants.CURRENT))
         return query

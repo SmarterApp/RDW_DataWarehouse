@@ -8,7 +8,9 @@ define [
   "edwareDataProxy"
   "edwareSearch"
   "edwareUtil"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch, edwareUtil) ->
+  "edwareConstants"
+  "edwarePreferences"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareDataProxy, edwareSearch, edwareUtil, Constants, edwarePreferences) ->
 
   class ReportInfoBar
 
@@ -19,7 +21,7 @@ define [
     initialize: (createSearch) ->
       breadcrumb = (item.name for item in @config.breadcrumb.items[1..]).join(" / ")
       # Tenant level branding
-      brandingData = edwareUtil.getTenantBrandingDataForPrint @config.metadata, false 
+      brandingData = edwareUtil.getTenantBrandingDataForPrint @config.metadata, false
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
@@ -30,6 +32,13 @@ define [
       @render()
       # Create search box if true, else remove it
       @searchBox ?= @createSearchBox() if createSearch
+
+    updateAsmtTypeView: () ->
+      asmtType = Constants.ASMT_TYPE[@config.param.asmtType]
+      viewName = edwarePreferences.getAsmtView()
+      asmtView = Constants.ASMT_VIEW[viewName.toUpperCase()]
+      subjectText =  (if asmtView isnt `undefined` then ' - ' + Constants.SUBJECT_TEXT[asmtView] else '')
+      $($('.currentAsmtTypeView')[0]).html asmtType + subjectText
 
     bindEvent: () ->
       self = @
@@ -51,7 +60,7 @@ define [
         tabindex: 0
 
       # set report info text
-      $('.reportInfoWrapper').append @config.reportInfoText
+      $('.reportInfoWrapper .reportInfoText').append @config.reportInfoText
 
     createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config, @contextSecurity)

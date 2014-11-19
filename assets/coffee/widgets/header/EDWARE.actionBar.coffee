@@ -68,6 +68,7 @@ define [
           self.config.academicYears.callback academicYear
         onAsmtTypeSelected: (asmt) ->
           # save assessment type
+          $('.detailsItem').hide()
           self.updateDisclaimer asmt
           self.config.asmtTypes.callback asmt
       @createDisclaimer()

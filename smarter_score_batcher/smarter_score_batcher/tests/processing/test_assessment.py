@@ -6,11 +6,14 @@ Created on Aug 12, 2014
 import unittest
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping,\
     get_assessment_mapping, AssessmentHeaders, AssessmentData,\
-    getClaimMappingName, get_groups, get_accommodations
+    getClaimMappingName, get_groups, get_accommodations, get_claims
 from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 import os
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
+from smarter_score_batcher.error.exceptions import MetadataException
+
+
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -168,6 +171,49 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(accommodations[12].evaluate(), '0')
         self.assertEqual(accommodations[13].evaluate(), '0')
         self.assertEqual(accommodations[14].evaluate(), '0')
+
+    def test_iab_get_claims(self):
+        data = read_data("iab_assessment.xml")
+        opportunity = ET.fromstring(data).find("./Opportunity")
+        here = os.path.abspath(os.path.dirname(__file__))
+        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
+        claims = get_claims(static_metadata, opportunity)
+        self.assertEqual(len(claims), 20)
+
+        # overall
+        self.assertEqual(claims[0].evaluate(), '245.174914080214')
+        self.assertEqual(claims[1].evaluate(), '2')
+        self.assertEqual(claims[2].evaluate(), '226')
+        self.assertEqual(claims[3].evaluate(), '264')
+        # all claims should be empty except claim1
+        # claim1
+        self.assertEqual(claims[4].evaluate(), '403.416')
+        self.assertEqual(claims[5].evaluate(), '199')
+        self.assertEqual(claims[6].evaluate(), '607')
+        self.assertEqual(claims[7].evaluate(), '2')
+        # claim2
+        self.assertEqual(claims[8].evaluate(), None)
+        self.assertEqual(claims[9].evaluate(), '0')
+        self.assertEqual(claims[10].evaluate(), '0')
+        self.assertEqual(claims[11].evaluate(), None)
+        # claim3
+        self.assertEqual(claims[12].evaluate(), None)
+        self.assertEqual(claims[13].evaluate(), '0')
+        self.assertEqual(claims[14].evaluate(), '0')
+        self.assertEqual(claims[15].evaluate(), None)
+        # claim4
+        self.assertEqual(claims[16].evaluate(), None)
+        self.assertEqual(claims[17].evaluate(), '0')
+        self.assertEqual(claims[18].evaluate(), '0')
+        self.assertEqual(claims[19].evaluate(), None)
+
+    def test_iab_get_claims_exception(self):
+        data = read_data("assessment.xml")
+        opportunity = ET.fromstring(data).find("./Opportunity")
+        here = os.path.abspath(os.path.dirname(__file__))
+        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
+        self.assertRaises(MetadataException, get_claims, static_metadata, opportunity)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -155,7 +155,7 @@ class PerfMetadataTemplateManager(MetadataTemplateManager):
         custom_template_content = custom_template.get_asmt_metadata_template() if custom_template else \
             self.default_meta_template_mgr.get_template(subject, path=asmt_type)
         if not custom_template_content:
-            raise MetadataException('Unable to load metadata for key {0} from location {1}'.format(key, "TODO"))
+            raise MetadataException('Unable to load metadata for key {0}'.format(key))
 
         standard_template = self.meta_template_mgr.get_template(subject)
         return MetadataTemplate(deep_merge(standard_template, custom_template_content))

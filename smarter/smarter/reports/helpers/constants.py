@@ -131,3 +131,4 @@ class Constants():
     BRANDING = 'branding'
     ASSESSMENTS = 'assessments'
     INTERIM_ASSESSMENT_BLOCKS = 'interim_assessment_blocks'
+    ASMT_CLAIM_1_NAME = 'asmt_claim_1_name'

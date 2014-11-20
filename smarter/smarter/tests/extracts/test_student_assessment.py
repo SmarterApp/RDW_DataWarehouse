@@ -11,7 +11,8 @@ from pyramid.registry import Registry
 from sqlalchemy.sql.expression import select
 from pyramid.security import Allow
 
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query
+from smarter.extracts.student_assessment import get_extract_assessment_query, \
+    get_extract_assessment_item_and_raw_query, get_extract_assessment_query_iab
 from edcore.utils.utils import compile_query_to_sql_text
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
@@ -49,6 +50,31 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
     def tearDown(self):
         self.__request = None
         testing.tearDown()
+
+    def test_get_extract_assessment_query_iab(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2019',
+                  'asmtType': 'INTERIM ASSESSMENT BLOCKS',
+                  'asmtSubject': 'Math',
+                  'extractType': 'studentAssessment'}
+        query = get_extract_assessment_query_iab(params)
+        self.assertIsNotNone(query)
+        self.assertIn('fact_block_asmt_outcome.asmt_type', str(query._whereclause))
+
+    def test_get_extract_assessment_query_results_iab(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'INTERIM ASSESSMENT BLOCKS',
+                  'asmtSubject': 'Math',
+                  'asmt_grade': '3'}
+        query = get_extract_assessment_query_iab(params)
+        self.assertIsNotNone(query)
+        with UnittestEdcoreDBConnection() as connection:
+            results = connection.get_result(query)
+        self.assertIsNotNone(results)
+        self.assertGreater(len(results), 0)
+        self.assertEqual('ab06bc40-5372-11e4-916c-0800200c9a66', results[0]['AssessmentGuid'])
+        self.assertEqual('INTERIM ASSESSMENT BLOCKS', results[0]['AssessmentType'])
 
     def test_get_extract_assessment_query(self):
         params = {'stateCode': 'NC',

@@ -96,14 +96,16 @@ def get_selectables_from_query(query):
     :param query: SQLAlchemy query object
     '''
     selectables = set()
+    a = list(query.inner_columns)
     for c in list(query.inner_columns):
         if hasattr(c, 'table'):
             selectables.add(c.table)
-        elif c.element.name == "count" and hasattr(query, "froms"):
+        elif hasattr(c.element, 'name') and c.element.name == "count" and hasattr(query, "froms"):
             for _from in query.froms:
                 selectables.add(_from)
         else:
-            selectables.add(c.element.table)
+            if hasattr(c.element, 'table'):
+                selectables.add(c.element.table)
     return selectables
 
 

@@ -74,7 +74,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(results)
         self.assertGreater(len(results), 0)
         self.assertEqual('ab06bc40-5372-11e4-916c-0800200c9a66', results[0]['AssessmentGuid'])
-        self.assertEqual('INTERIM ASSESSMENT BLOCKS', results[0]['asmt_type'])
+        self.assertEqual('INTERIM ASSESSMENT BLOCKS', results[0]['AssessmentType'])
 
     def test_get_extract_assessment_query(self):
         params = {'stateCode': 'NC',

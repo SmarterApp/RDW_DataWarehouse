@@ -98,11 +98,6 @@ def get_selectables_from_query(query):
     selectables = set()
     a = list(query.inner_columns)
     for c in list(query.inner_columns):
-        if hasattr(c.element, 'name'):
-            test = 'yes'
-        else:
-            test = 'no'
-
         if hasattr(c, 'table'):
             selectables.add(c.table)
         elif hasattr(c.element, 'name') and c.element.name == "count" and hasattr(query, "froms"):

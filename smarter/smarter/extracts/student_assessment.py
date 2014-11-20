@@ -3,7 +3,7 @@ Created on Nov 1, 2013
 
 @author: ejen
 '''
-from sqlalchemy.sql.expression import and_, func
+from sqlalchemy.sql.expression import and_, func, literal
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
@@ -233,11 +233,26 @@ def get_extract_assessment_query_iab(params):
                                     dim_student.c.group_10_id.label(dim_student_label.get('group_10_id', 'group_10_id')),
                                     dim_student.c.group_10_text.label(dim_student_label.get('group_10_text', 'group_10_text')),
                                     fact_block_asmt_outcome.c.date_taken.label(fact_block_asmt_outcome_label.get('date_taken', 'date_taken')),
+                                    literal("").label("AssessmentSubtestResultScoreValue"),
+                                    literal("").label("AssessmentSubtestMinimumValue"),
+                                    literal("").label("AssessmentSubtestMaximumValue"),
                                     fact_block_asmt_outcome.c.asmt_perf_lvl.label(fact_block_asmt_outcome_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_score.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score', 'asmt_claim_1_score')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label(fact_block_asmt_outcome_label.get('asmt_claim_1_perf_lvl', 'asmt_claim_1_perf_lvl')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_min')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score_range_max', 'asmt_claim_1_score_range_max')),
+                                    literal("").label("AssessmentSubtestResultScoreClaim2Value"),
+                                    literal("").label("AssessmentClaim2PerformanceLevelIdentifier"),
+                                    literal("").label("AssessmentSubtestClaim2MinimumValue"),
+                                    literal("").label("AssessmentSubtestClaim2MaximumValue"),
+                                    literal("").label("AssessmentSubtestResultScoreClaim3Value"),
+                                    literal("").label("AssessmentClaim3PerformanceLevelIdentifier"),
+                                    literal("").label("AssessmentSubtestClaim3MinimumValue"),
+                                    literal("").label("AssessmentSubtestClaim3MaximumValue"),
+                                    literal("").label("AssessmentSubtestResultScoreClaim4Value"),
+                                    literal("").label("AssessmentClaim4PerformanceLevelIdentifier"),
+                                    literal("").label("AssessmentSubtestClaim4MinimumValue"),
+                                    literal("").label("AssessmentSubtestClaim4MaximumValue"),
                                     fact_block_asmt_outcome.c.dmg_eth_hsp.label(fact_block_asmt_outcome_label.get(Constants.DMG_ETH_HSP, Constants.DMG_ETH_HSP)),
                                     fact_block_asmt_outcome.c.dmg_eth_ami.label(fact_block_asmt_outcome_label.get(Constants.DMG_ETH_AMI, Constants.DMG_ETH_AMI)),
                                     fact_block_asmt_outcome.c.dmg_eth_asn.label(fact_block_asmt_outcome_label.get(Constants.DMG_ETH_ASN, Constants.DMG_ETH_ASN)),

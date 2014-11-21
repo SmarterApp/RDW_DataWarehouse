@@ -353,6 +353,7 @@ define [
       @reload @params
 
     onAsmtTypeSelected: (asmt) ->
+      $('.detailsItem').hide()
       edwarePreferences.saveAsmtForISR(asmt)
       edwarePreferences.saveAsmtPreference asmt
       @params['asmtType'] = asmt.asmt_type.toUpperCase()
@@ -414,7 +415,7 @@ define [
       columns = @studentsDataSet.getColumns(viewName)
       fieldName = Constants.INDEX_COLUMN.LOS
       filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
-      
+
       self = this
       edwareGrid.create {
         data: filteredInfo.data
@@ -468,4 +469,3 @@ define [
         container: "#content"
 
   StudentGrid: StudentGrid
-  

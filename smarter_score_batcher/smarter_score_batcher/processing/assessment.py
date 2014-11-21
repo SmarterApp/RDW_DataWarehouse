@@ -365,19 +365,13 @@ def get_claims(metadata_file_path, opportunity):
         metadata_json = f.read()
         metadata = json.loads(metadata_json)
 
-    claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1)
+    claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1) or get_claim1_mapping(opportunity)
     claim2_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, PerformanceMetadataConstants.CLAIM2)
     claim3_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM3, PerformanceMetadataConstants.CLAIM3)
     claim4_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM4, PerformanceMetadataConstants.CLAIM4)
 
     if not claim1_mapping:
-        # if no claims mapping found, we take the first non-Overall
-        # score element with measureLabel 'ScaleScore' and map to claim1
-        claims = opportunity.findall("./Score/[@measureLabel='ScaleScore']") or []
-        claims = [claim for claim in claims if claim.get('measureOf') != 'Overall']
-        if len(claims) != 1:
-            raise MetadataException("Incorrect claims number of assessment type %s" % metadata['Identification']['Type'])
-        claim1_mapping = claims[0].get('measureOf')
+        raise MetadataException("Incorrect claims number of assessment type %s" % metadata['Identification']['Type'])
 
     overall_score = XMLClaimScore(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value", "standardError")
     claim1_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
@@ -407,3 +401,13 @@ def get_claims(metadata_file_path, opportunity):
         Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim4MaximumValue),
         Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier)
     ]
+
+
+def get_claim1_mapping(opportunity):
+    # if no claims mapping found, we take the first non-Overall
+    # score element with measureLabel 'ScaleScore' and map to claim1
+    claims = opportunity.findall("./Score/[@measureLabel='ScaleScore']") or []
+    claims = [claim for claim in claims if claim.get('measureOf') != 'Overall']
+    if len(claims) != 1:
+        return None
+    return claims[0].get('measureOf')

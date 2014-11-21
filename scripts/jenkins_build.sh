@@ -236,7 +236,7 @@ function run_functional_tests {
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
        cd frontend_tests
-       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+       nosetests --verbose --logging-level=DEBUG --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        #nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi

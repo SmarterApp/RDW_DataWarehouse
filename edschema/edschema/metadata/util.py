@@ -96,7 +96,6 @@ def get_selectables_from_query(query):
     :param query: SQLAlchemy query object
     '''
     selectables = set()
-    a = list(query.inner_columns)
     for c in list(query.inner_columns):
         if hasattr(c, 'table'):
             selectables.add(c.table)

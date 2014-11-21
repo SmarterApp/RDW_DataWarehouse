@@ -431,6 +431,10 @@ qa:
         BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
       metadata:
         performance: /opt/edware/resources/meta/performance
+        static: /opt/edware/resources/meta/static
+        default: /opt/edware/resources/meta/default
+      xsd:
+        path: /opt/edware/resources/sample_xsd.xsd
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -526,7 +530,7 @@ qa:
       file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
       ignore_certificate: True
   '[handlers]':
-    keys: audit, syslog, security_event
+    keys: audit, syslog, security_event, filelog
   '[logger_root]':
     level: INFO
     handlers: syslog
@@ -606,6 +610,7 @@ dev:
       metadata:
         performance: /opt/edware/resources/meta/performance
         static: /opt/edware/resources/meta/static
+        default: /opt/edware/resources/meta/default
       xsd.path: /opt/edware/resources/sample_xsd.xsd
       gpg:
         homedir: /opt/edware/keys

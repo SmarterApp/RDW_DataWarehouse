@@ -116,12 +116,14 @@ define [
             iab_column_details = {
               titleText: titleText
               subject: subject
+              subjectText: Constants.SUBJECT_TEXT[subject]
               claim: claim
               expanded: isExpanded
               numberOfColumns: Object.keys(effective_dates).length
               effectiveDate: effective_date
               i: i
               width: if isExpanded then 98 else 140
+              effectiveDateText: if isExpanded then effective_date else @labels['latest_result']
             }
             column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
             columnData[subjectName][0].items.push column

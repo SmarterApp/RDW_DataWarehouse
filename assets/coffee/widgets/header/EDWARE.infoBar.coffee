@@ -36,7 +36,7 @@ define [
     updateAsmtTypeView: () ->
       asmtType = Constants.ASMT_TYPE[@config.param.asmtType]
       viewName = edwarePreferences.getAsmtView()
-      asmtView = Constants.ASMT_VIEW[viewName.toUpperCase()]
+      asmtView = Constants.ASMT_VIEW[viewName?.toUpperCase()]
       subjectText =  (if asmtView isnt `undefined` then ' - ' + Constants.SUBJECT_TEXT[asmtView] else '')
       $($('.currentAsmtTypeView')[0]).html asmtType + subjectText
 

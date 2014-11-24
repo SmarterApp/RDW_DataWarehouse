@@ -57,6 +57,8 @@ define [], () ->
   SUBJECT_TEXT: {
     Math: "Mathematics"
     ELA: "ELA/Literacy"
+    subject1: "Mathematics"
+    subject2: "ELA/Literacy"
   }
 
   INDEX_COLUMN: {

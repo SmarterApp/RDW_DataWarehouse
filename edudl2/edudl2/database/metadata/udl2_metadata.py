@@ -255,7 +255,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('guid_school', String(40), CheckConstraint('guid_school' != ''), nullable=False),
                                   Column('name_school', String(60), CheckConstraint('name_school' != ''), nullable=False),
                                   Column('guid_student', String(40), CheckConstraint('guid_student' != ''), nullable=False),
-                                  Column('external_student_id', String(40), CheckConstraint('external_student_id' != ''), nullable=False),
+                                  Column('external_student_id', String(40), nullable=True),
                                   Column('name_student_first', String(35), nullable=True),
                                   Column('name_student_middle', String(35), nullable=True),
                                   Column('name_student_last', String(35), nullable=True),

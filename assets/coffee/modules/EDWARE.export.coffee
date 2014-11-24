@@ -34,7 +34,7 @@ define [
     getSortBy: () ->
       sortName = this.table.getGridParam('sortname')
       sortedColumnId = "#jqgh_gridTable_#{sortName}".replace(/\./g, "\\.")
-      sortBy = $(sortedColumnId).text() || sortName.split(".")[1]
+      sortBy = $(sortedColumnId).first().text() || sortName.split(".")[1]
       sortBy
 
     build: () ->

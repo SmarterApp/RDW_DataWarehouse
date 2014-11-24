@@ -34,9 +34,8 @@ define [
     getSortBy: () ->
       sortName = this.table.getGridParam('sortname')
       sortedColumnId = "#jqgh_gridTable_#{sortName}".replace(/\./g, "\\.")
-      sortBy = $(sortedColumnId).text()
+      sortBy = $(sortedColumnId).text() || sortName.split(".")[1]
       sortBy
-
 
     build: () ->
       records = [] # fixed first 10 rows
@@ -101,7 +100,7 @@ define [
         columnName = $(header).data("export-name")
         if not columnName
           continue
-        columnValues.push columnName.replace(/,\ +$/, '')
+        columnValues.push columnName.replace(/,\ +$/, '').trim()
       columnValues.join(Constants.DELIMITOR.COMMA)
 
     getColumnValues: (record) ->

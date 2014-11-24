@@ -67,7 +67,6 @@ def get_list_of_students_iab(params):
                                      fact_block_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                      dim_asmt.c.asmt_subject.label('asmt_subject'),
                                      dim_asmt.c.effective_date.label('effective_date'),
-                                     fact_block_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
                                      dim_asmt.c.asmt_type.label('asmt_type'),
                                      dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                      dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -175,7 +174,6 @@ def format_assessments_iab(results, subjects_map):
 
         assessment = {Constants.EFFECTIVE_DATE: effectiveDate}
         assessment['asmt_grade'] = result['asmt_grade']
-        assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
         claims = assessment.get('claims', [])
         claim = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0]
         claims.append(claim)

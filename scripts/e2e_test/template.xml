@@ -75,6 +75,11 @@
     <Accommodation type="TTS Pausing" value="TTS Pausing On" code="TDS_TTSPause1" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="TTX Business Rules" value="A203" code="TDS_TTX_A203" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="Word List" value="No Glossary" code="TDS_WL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
+    {{#is_iab}}
+    <Score measureOf="{{iab_block_name}}" measureLabel="ScaleScore" value="{{asmt_claim_1_score}}" standardError="619.751" />
+    <Score measureOf="{{iab_block_name}}" measureLabel="PerformanceLevel" value="{{asmt_claim_1_perf_lvl}}" />
+    {{/is_iab}}
+    {{^is_iab}}
     <Score measureOf="Overall" measureLabel="ScaleScore" value="{{asmt_score}}" standardError="19.3617008392283" />
     <Score measureOf="Overall" measureLabel="PerformanceLevel" value="{{asmt_perf_lvl}}" />
     <Score measureOf="Claim1" measureLabel="ScaleScore" value="{{asmt_claim_1_score}}" standardError="619.751" />
@@ -85,6 +90,7 @@
     <Score measureOf="Claim3" measureLabel="PerformanceLevel" value="{{asmt_claim_3_perf_lvl}}" />
     <Score measureOf="Claim4" measureLabel="ScaleScore" value="{{asmt_claim_4_score}}" standardError="204.982" />
     <Score measureOf="Claim4" measureLabel="PerformanceLevel" value="{{asmt_claim_4_perf_lvl}}" />
+    {{/is_iab}}
     <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="{{acc_abacus_nonembed}}" />
     <Score measureOf="TextToSpeech" measureLabel="Accommodation" value="{{acc_text_to_speech_embed}}" />
     <Score measureOf="StreamlinedInterface" measureLabel="Accommodation" value="{{acc_streamline_mode}}" />

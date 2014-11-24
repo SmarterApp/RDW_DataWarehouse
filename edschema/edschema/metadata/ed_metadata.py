@@ -268,7 +268,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      Column('date_taken_day', SmallInteger, nullable=False),
                                      Column('date_taken_month', SmallInteger, nullable=False),
                                      Column('date_taken_year', SmallInteger, nullable=False),
-                                     Column('asmt_perf_lvl', SmallInteger, nullable=False),
                                      Column('asmt_claim_1_score', SmallInteger, nullable=True),
                                      Column('asmt_claim_1_score_range_min', SmallInteger, nullable=True),
                                      Column('asmt_claim_1_score_range_max', SmallInteger, nullable=True),

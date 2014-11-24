@@ -75,8 +75,6 @@
     <Accommodation type="TTS Pausing" value="TTS Pausing On" code="TDS_TTSPause1" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="TTX Business Rules" value="A203" code="TDS_TTX_A203" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="Word List" value="No Glossary" code="TDS_WL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Score measureOf="Overall" measureLabel="ScaleScore" value="245.174914080214" standardError="19.3617008392283" />
-    <Score measureOf="Overall" measureLabel="PerformanceLevel" value="2" />
     <Score measureOf="Listen/Interpret" measureLabel="ScaleScore" value="403.416" standardError="204.982" />
     <Score measureOf="Listen/Interpret" measureLabel="PerformanceLevel" value="2" />
     <Score measureOf="NonEmbeddedAccommodations" measureLabel="Accommodation" value="6" />

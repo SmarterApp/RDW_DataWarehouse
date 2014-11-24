@@ -237,7 +237,7 @@ def get_extract_assessment_query_iab(params):
                                     literal("").label(fact_asmt_outcome_vw_label.get('asmt_score', 'asmt_score')),
                                     literal("").label(fact_asmt_outcome_vw_label.get('asmt_score_range_min', 'asmt_score_range_min')),
                                     literal("").label(fact_asmt_outcome_vw_label.get('asmt_score_range_max', 'asmt_score_range_max')),
-                                    fact_block_asmt_outcome.c.asmt_perf_lvl.label(fact_block_asmt_outcome_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
+                                    literal("").label(fact_asmt_outcome_vw_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_score.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score', 'asmt_claim_1_score')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label(fact_block_asmt_outcome_label.get('asmt_claim_1_perf_lvl', 'asmt_claim_1_perf_lvl')),
                                     fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_min')),

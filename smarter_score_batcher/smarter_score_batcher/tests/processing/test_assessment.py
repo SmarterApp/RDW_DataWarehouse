@@ -31,6 +31,15 @@ class TestCSVMetadata(unittest.TestCase):
         val = xmlmeta.get_value()
         self.assertEquals(val, '3-12')
 
+    def test_xml_metadata_with_default_value(self):
+        data = '''<TDSReport>
+        <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
+        </TDSReport>'''
+        root = ET.fromstring(data)
+        xmlmeta = XMLMeta(root, './Test', 'iDontExist', default_value='iHaveAValue')
+        val = xmlmeta.get_value()
+        self.assertEquals(val, 'iHaveAValue')
+
     def test_xml_metadata_with_attribute_to_compare(self):
         data = '''<TDSReport>
         <Accommodation type="Speech to Text" value="9" context="FINAL" />
@@ -180,11 +189,11 @@ class TestCSVMetadata(unittest.TestCase):
         claims = get_claims(static_metadata, opportunity)
         self.assertEqual(len(claims), 20)
 
-        # overall
-        self.assertEqual(claims[0].evaluate(), '245.174914080214')
-        self.assertEqual(claims[1].evaluate(), '2')
-        self.assertEqual(claims[2].evaluate(), '226')
-        self.assertEqual(claims[3].evaluate(), '264')
+        # overall is zero in IAB
+        self.assertEqual(claims[0].evaluate(), 0)
+        self.assertEqual(claims[1].evaluate(), 0)
+        self.assertEqual(claims[2].evaluate(), '0')
+        self.assertEqual(claims[3].evaluate(), '0')
         # all claims should be empty except claim1
         # claim1
         self.assertEqual(claims[4].evaluate(), '403.416')

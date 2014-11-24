@@ -100,7 +100,7 @@ define [
         columnName = $(header).data("export-name")
         if not columnName
           continue
-        columnValues.push columnName.replace(/,\ +$/, '').trim()
+        columnValues.push columnName.replace(/,\ +$/, '').replace(/,\ /g,',').trim()
       columnValues.join(Constants.DELIMITOR.COMMA)
 
     getColumnValues: (record) ->

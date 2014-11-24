@@ -68,6 +68,17 @@ define [
         offset = bodyDiv.scrollTop()
         bodyDiv.scrollTop(offset - 10)
 
+      $('.ui-jqgrid-htable').on 'keyup', (e) ->
+        if e.which isnt CONSTANTS.KEYS.TAB
+          return
+        $header = $('.ui-jqgrid-htable')
+        $body = $('.ui-jqgrid-bdiv')
+        headerLeft = $header.offset().left
+        bodyLeft = $body.offset().left
+        if headerLeft != bodyLeft
+          # $("#gridTable").css('margin-left', headerLeft + 50)
+          $body.scrollLeft(-headerLeft + 50)
+
     setSortedColumn: (columns) ->
       sorted = this.options.sort
       return columns if not sorted

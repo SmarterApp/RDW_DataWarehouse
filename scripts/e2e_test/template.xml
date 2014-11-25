@@ -47,7 +47,7 @@
   <Opportunity server="{{where_taken_name}}" database="CASBAC_SHARD_2013sp" clientName="{{clientName}}" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="{{oppId}}"
   	startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="{{date_taken}}" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0"
   	gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1"
-  	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="2014-03-04">
+  	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="{{{effective_date}}}">
     <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
     <Accommodation type="AmericanSignLanguage" value="Do not show ASL videos" code="TDS_ASL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
     <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810" />

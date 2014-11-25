@@ -68,7 +68,7 @@ def prepare_asmt_data():
         csv_reader = csv.reader(f, delimiter=',')
         next(csv_reader)
         for a in csv_reader:
-            asmt[a[0]] = {'name': a[7], 'effectiveDate': a[36]}
+            asmt[a[0]] = {'name': a[7], 'effectiveDate': a[35]}
 
 
 def convert(input_path, output_path, is_iab):
@@ -117,12 +117,12 @@ def convert_to_xml(l, is_iab):
         )
     fact_asmt_index = {'demographics': 42,
                        'gender': 40,
-                       'asmt': 23,
+                       'asmt': 24,
                        'acc': 54}
-    fact_block_index = {'demographics': 27,
-                        'gender': 25,
+    fact_block_index = {'demographics': 26,
+                        'gender': 24,
                         'asmt': 20,
-                        'acc': 39}
+                        'acc': 38}
     index = fact_asmt_index if not is_iab else fact_block_index
     data = {}
     data['subject'] = l[13].upper()
@@ -162,15 +162,15 @@ def convert_to_xml(l, is_iab):
     data['where_taken_name'] = l[10]
     data['date_taken'] = _date(l[16])
 
-    data['asmt_perf_lvl'] = l[index['asmt']]
-    data['asmt_claim_1_score'] = l[index['asmt'] + 1]
-    data['asmt_claim_1_score_range_min'] = l[index['asmt'] + 2]
-    data['asmt_claim_1_score_range_max'] = l[index['asmt'] + 3]
-    data['asmt_claim_1_perf_lvl'] = l[index['asmt'] + 4]
+    data['asmt_claim_1_score'] = l[index['asmt']]
+    data['asmt_claim_1_score_range_min'] = l[index['asmt'] + 1]
+    data['asmt_claim_1_score_range_max'] = l[index['asmt'] + 2 ]
+    data['asmt_claim_1_perf_lvl'] = l[index['asmt'] + 3]
 
     data['is_iab'] = is_iab
 
     if not is_iab:
+        data['asmt_perf_lvl'] = l[23]
         data['asmt_score'] = l[20]
         data['asmt_score_range_min'] = l[21]
         data['asmt_score_range_max'] = l[22]

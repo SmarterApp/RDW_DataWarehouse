@@ -235,9 +235,7 @@ function run_functional_tests {
        FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
-       cd frontend_tests
-       nosetests test_grade_view_list_of_students.py --verbose --logging-level=DEBUG --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
-       #nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+       nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi
 

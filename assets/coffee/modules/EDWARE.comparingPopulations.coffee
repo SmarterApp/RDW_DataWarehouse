@@ -424,9 +424,10 @@ define [
       # Add color for each intervals
     appendColor: (data, colors) ->
       i = 0
+      colors = colors?.colors || []
       defaultColors = this.defaultColors
       intervals = data.intervals
-      if colors and colors['colors'] then len = colors['colors'].length else len = defaultColors.length
+      len = if colors.length > 0 then colors.length else defaultColors.length
       sort = 0
       while i < len and intervals
         element = intervals[i]
@@ -434,7 +435,7 @@ define [
         element.count = edwareUtil.formatNumber(element.count)
         element.description = @intervals[i].name
         element.text_color_class = @intervals[i].text_color?.substr(1)
-        if colors and colors[i]
+        if colors[i]
           element.color = colors[i]
         else
           element.color = defaultColors[i]

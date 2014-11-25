@@ -27,8 +27,8 @@ define [
       loadComplete: () ->
 
   EXPAND_ICONS = {
-    'EXPANDED': "<i class='expand-icon edware-icon-collapse-expand-minus'></i>"
-    'COLLAPSED': "<i class='expand-icon edware-icon-collapse-expand-plus'></i>"
+    'EXPANDED': "<a href='#' class='expand-icon edware-icon-collapse-expand-minus'></a>"
+    'COLLAPSED': "<a href='#' class='expand-icon edware-icon-collapse-expand-plus'></a>"
   }
 
   class EdwareGrid
@@ -52,7 +52,7 @@ define [
         $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
         createPrintMedia()
 
-      $('i.expand-icon').click (e) ->
+      $('a.expand-icon').click (e) ->
         $(document).trigger CONSTANTS.EVENTS.EXPAND_COLUMN, $(this)
 
       # load more data when focus on first and last row by triggering
@@ -67,6 +67,19 @@ define [
       bodyTable.on 'focus', 'tr:nth-child(2) ', ->
         offset = bodyDiv.scrollTop()
         bodyDiv.scrollTop(offset - 10)
+
+      $('.ui-jqgrid-hdiv .ui-jqgrid-htable').first().on 'keyup', 'th', (e) ->
+        if e.which isnt CONSTANTS.KEYS.TAB
+          return
+        bodyLeft = $('body').offset().left
+        $header = $(e.delegateTarget)
+        $body = $('.ui-jqgrid-bdiv')
+        headerLeftOffset = bodyLeft - $header.offset().left
+        columnOffset = $(this)[0].offsetLeft - headerLeftOffset
+        if columnOffset < 330
+          $body.scrollLeft(0)
+        else
+          $body.scrollLeft(headerLeftOffset)
 
     setSortedColumn: (columns) ->
       sorted = this.options.sort
@@ -87,6 +100,8 @@ define [
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
       rows = $(".frozen-bdiv .jqgrow")
       $(".frozen-bdiv").css('height', rows.length * 40)
+      # ignore students name on tab
+      $("#gridWrapper.IAB .ui-jqgrid-bdiv").not(".frozen-bdiv").find("input, a[href!='#']").attr('tabindex', '-1')
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()

@@ -52,6 +52,7 @@ define [], () ->
     ESC: 27
     UP_ARROW: 38
     DOWN_ARROW: 40
+    TAB: 9
   }
 
   SUBJECT_TEXT: {

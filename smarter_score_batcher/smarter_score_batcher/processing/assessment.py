@@ -15,20 +15,17 @@ class XMLMeta:
     '''
     Used for storing and extracting elements from xml
     '''
-    def __init__(self, root, xpath, attribute, attribute_to_compare=None, default_value=None):
+    def __init__(self, root, xpath, attribute, attribute_to_compare=None):
         self.root = root
         self.path = xpath
         self.attribute = attribute
         self.attribute_to_compare = attribute_to_compare
-        self.default_value = default_value
 
     def get_value(self):
         if self.attribute_to_compare:
             val = extract_meta_with_fallback_helper(self.root, self.path, self.attribute, self.attribute_to_compare)
         else:
             val = extract_meta_without_fallback_helper(self.root, self.path, self.attribute)
-        if val is None:
-            val = self.default_value
         return val
 
 
@@ -383,8 +380,8 @@ def get_claims(metadata_file_path, opportunity):
     claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
 
     return [
-        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value", default_value=0), AssessmentHeaders.AssessmentSubtestResultScoreValue),
-        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='PerformanceLevel']", "value", default_value=0), AssessmentHeaders.AssessmentPerformanceLevelIdentifier),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentPerformanceLevelIdentifier),
         Mapping(overall_score.get_min(), AssessmentHeaders.AssessmentSubtestMinimumValue),
         Mapping(overall_score.get_max(), AssessmentHeaders.AssessmentSubtestMaximumValue),
         Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim1Value),

@@ -5,9 +5,10 @@
 	{{/prev}} {{/displayPopover}}
 </div>
 <div class='{{export}}'>
-	<a href='#' class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"> </a>
+	<a href="#" class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"></a> 
+	<div id= "iabPopoverContent" class="iabPopoverContent hide">
 	{{#displayPopover}}
-	<div class="oldResultsContent hide">
+	<div class="oldResultsContent">
 		<div class="iabBlocksTable">
 			<div class="studentName">
 				{{student_full_name}}
@@ -31,6 +32,7 @@
 		</div>
 	</div>
 	{{/displayPopover}}
+	</div>
 	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
 	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
 </div>

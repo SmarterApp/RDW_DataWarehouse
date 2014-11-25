@@ -293,6 +293,27 @@ define [
           elem.popover("hide")
       , ".asmtScore"
 
+      # Show iab popover
+      $document.on
+        'mouseenter focus': ->
+          elem = $(this)
+          elem.popover
+            html: true
+            trigger: "manual"
+            container: '#content'
+            placement: (tip, element) ->
+              edwareUtil.popupPlacement(element, 400, 220)
+            template: '<div id= "iabPopoverContent" class="popover iabPopoverContent edwarePopover"><div class="arrow"></div><div class="popover-content"><p></p></div></div>'
+            content: ->
+              elem.parent().find(".iabPopoverContent").html() #for iab perf levels
+          .popover("show")
+        click: (e) ->
+          e.preventDefault()
+        'mouseleave focusout': ->
+          elem = $(this)
+          elem.popover("hide")
+      , ".hasOlderResults"
+
       # expandable icons
       self = this
       $document.off Constants.EVENTS.EXPAND_COLUMN
@@ -406,7 +427,6 @@ define [
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
       this.infoBar.update()
-      @createPopovers()
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
@@ -458,14 +478,6 @@ define [
         rainbowAnchor = $("#"+key+"_perfBar")
         rainbowAnchor.html(output)
         rainbowAnchor.closest('th').append(rainbowAnchor)
-
-    createPopovers: () ->
-      # Creates popovers for interim assessment blocks
-      edwarePopover.createPopover
-        source: ".hasOlderResults"
-        target: "iabPopoverContent"
-        contentContainer: ".oldResultsContent"
-        container: "#content"
 
   StudentGrid: StudentGrid
   

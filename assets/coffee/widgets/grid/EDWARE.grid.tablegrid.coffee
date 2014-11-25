@@ -71,12 +71,15 @@ define [
       $('.ui-jqgrid-hdiv .ui-jqgrid-htable').first().on 'keyup', 'th', (e) ->
         if e.which isnt CONSTANTS.KEYS.TAB
           return
+        bodyLeft = $('body').offset().left
         $header = $(e.delegateTarget)
         $body = $('.ui-jqgrid-bdiv')
-        headerLeft = $header.offset().left
-        bodyLeft = $body.offset().left
-        # if headerLeft != bodyLeft
-        $body.scrollLeft(-headerLeft + 470)
+        headerLeftOffset = bodyLeft - $header.offset().left
+        columnOffset = $(this)[0].offsetLeft - headerLeftOffset
+        if columnOffset < 330
+          $body.scrollLeft(0)
+        else
+          $body.scrollLeft(headerLeftOffset)
 
     setSortedColumn: (columns) ->
       sorted = this.options.sort
@@ -97,6 +100,8 @@ define [
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
       rows = $(".frozen-bdiv .jqgrow")
       $(".frozen-bdiv").css('height', rows.length * 40)
+      # ignore students name on tab
+      $("#gridWrapper.IAB .ui-jqgrid-bdiv").not(".frozen-bdiv").find("input, a[href!='#']").attr('tabindex', '-1')
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()

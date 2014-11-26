@@ -16,7 +16,7 @@ from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
-from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
+from smarter.extracts.metadata import get_metadata_file_name, get_metadata_file_name_iab, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from hpz_client.frs.file_registration import register_file
 from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG, \
@@ -504,4 +504,7 @@ def get_items_extract_file_path(param, tenant, request_id, partial_no=None):
 
 
 def get_asmt_metadata_file_path(params, tenant, request_id):
-    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), get_metadata_file_name(params))
+    META_DATA_FILENAME_FUNC = {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: get_metadata_file_name_iab}
+    meta_data_filename_func = META_DATA_FILENAME_FUNC.get(params['asmtType'], get_metadata_file_name)
+    meta_data_file_name = meta_data_filename_func(params)
+    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), meta_data_file_name)

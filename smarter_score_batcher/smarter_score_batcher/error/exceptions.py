@@ -115,3 +115,8 @@ class FileMonitorException(TSBException):
 class FileMonitorFileNotFoundException(FileMonitorException):
     def __init__(self, msg='dir does not exist', err_source=None):
         FileMonitorException.__init__(self, msg, err_code=ErrorCode.FILE_NOT_FOUND_FILE_MONITOR_ERROR, err_source=None, err_input=None)
+
+
+class TSBSecurityException(TSBException):
+    def __init__(self, msg, err_code, err_source=None, err_input=None):
+        TSBException.__init__(self, msg, err_code=err_code, err_source=err_source, err_input=err_input)

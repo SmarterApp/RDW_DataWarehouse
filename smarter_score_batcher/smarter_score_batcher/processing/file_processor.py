@@ -14,7 +14,7 @@ from smarter_score_batcher.utils.file_utils import csv_file_writer, \
     json_file_writer
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
 from smarter_score_batcher.error.exceptions import GenerateCSVException, \
-    TSBException
+    TSBException, TSBSecurityException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 
 try:
@@ -140,6 +140,12 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o7
 
 
 def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
-    directory = os.path.join(base_dir, state_code.lower(), asmt_id)
-    os.makedirs(directory, mode=mode, exist_ok=True)
-    return directory
+    # prevent path traversal
+    base_dir = os.path.abspath(base_dir)
+    request_directory = os.path.join(base_dir, state_code.lower(), asmt_id)
+    abs_request_directory = os.path.abspath(request_directory)
+    if os.path.commonprefix([base_dir, request_directory, abs_request_directory]) == base_dir:
+        os.makedirs(abs_request_directory, mode=mode, exist_ok=True)
+    else:
+        raise TSBSecurityException(msg='path travasal detected base_dir:[' + base_dir + '] requested dir[' + abs_request_directory + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.PREPARE_ASSESSMENT_DIR)
+    return abs_request_directory

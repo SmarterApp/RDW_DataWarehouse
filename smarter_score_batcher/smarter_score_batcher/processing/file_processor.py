@@ -147,5 +147,5 @@ def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
     if os.path.commonprefix([base_dir, request_directory, abs_request_directory]) == base_dir:
         os.makedirs(abs_request_directory, mode=mode, exist_ok=True)
     else:
-        raise TSBSecurityException(msg='path travasal detected base_dir:[' + base_dir + '] requested dir[' + abs_request_directory + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.PREPARE_ASSESSMENT_DIR)
+        raise TSBSecurityException(msg='Issue creating path requested dir[' + abs_request_directory + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.PREPARE_ASSESSMENT_DIR)
     return abs_request_directory

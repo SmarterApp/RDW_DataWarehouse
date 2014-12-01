@@ -30,6 +30,6 @@ def remote_csv_generator(meta, csv_file_path, xml_file_path, work_dir):
         err_file_path = os.path.abspath(os.path.join(directory, asmt_id + Extensions.ERR))
         json_file_path = os.path.abspath(os.path.join(directory, asmt_id + Extensions.JSON))
         if os.path.commonprefix(directory, err_file_path, json_file_path) != directory:
-            raise TSBSecurityException(msg='path travasal detected base_dir:[' + directory + '] requested dir[' + err_file_path + '] and [' + json_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_CSV_GENERATOR)
+            raise TSBSecurityException(msg='Creating file path error requested dir[' + err_file_path + '] and [' + json_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_CSV_GENERATOR)
         handle_error(e, err_file_path, xml_file_path, json_file_path)
     return rtn

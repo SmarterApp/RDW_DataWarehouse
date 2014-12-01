@@ -1,6 +1,7 @@
 from sqlalchemy.schema import MetaData, CreateSchema
-from sqlalchemy import Table, Column
-from sqlalchemy import String
+from sqlalchemy import Table, Column, Index
+from sqlalchemy import String, Text
+from sqlalchemy import ForeignKey
 import argparse
 from sqlalchemy.engine import create_engine
 
@@ -39,7 +40,7 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('Section504Status', String(50), nullable=True),
                      Column('EconomicDisadvantageStatus', String(50), nullable=True),
                      Column('MigrantStatus', String(50), nullable=True),
-                     Column('AssessmentGuid', String(50), nullable=True),
+                     Column('AssessmentGuid', String(50), ForeignKey('tsb_metadata.asmt_guid'), nullable=False),
                      Column('AssessmentSessionLocationId', String(50), nullable=True),
                      Column('AssessmentSessionLocation', String(50), nullable=True),
                      Column('AssessmentAdministrationFinishDate', String(50), nullable=True),
@@ -103,6 +104,12 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('AccommodationSpeechToText', String(50), nullable=True),
                      Column('AccommodationNoiseBuffer', String(50), nullable=True))
 
+    tsb_metadata = Table('tsb_metadata', metadata,
+                         Column('asmt_guid', String(50), primary_key=True),
+                         Column('content', Text, nullable=True))
+
+    Index('tsb_metadata_idx', tsb_metadata.c.asmt_guid, unique=True)
+
     return metadata
 
 
@@ -135,5 +142,5 @@ if __name__ == "__main__":
     engine = create_engine(__URL, echo=True)
     connection = engine.connect()
     connection.execute(CreateSchema(__schema))
-    metadata = generate_tsb_metadata(scheme_name=__schema, bind=engine)
+    metadata = generate_tsb_metadata(schema_name=__schema, bind=engine)
     metadata.create_all(engine)

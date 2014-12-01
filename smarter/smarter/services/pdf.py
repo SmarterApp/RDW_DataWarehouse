@@ -586,6 +586,7 @@ def _get_school_name(state_code, district_id, school_id):
         query = query.where(dim_inst_hier.c.state_code == state_code)
         query = query.where(and_(dim_inst_hier.c.district_id == district_id))
         query = query.where(and_(dim_inst_hier.c.school_id == school_id))
+        query = query.where(and_(dim_inst_hier.c.rec_status == Constants.CURRENT))
 
         # Return the result
         results = connector.get_result(query)

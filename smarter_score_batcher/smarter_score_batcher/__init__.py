@@ -10,6 +10,8 @@ from edauth import configure
 from pyramid_beaker import set_cache_regions_from_settings
 from edcore.utils.utils import set_environment_path_variable,\
     get_config_from_ini
+from edcore.database import initialize_db
+from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +34,8 @@ def main(global_config, **settings):
     here = os.path.abspath(os.path.dirname(__file__))
     xsd_file = os.path.join(here, settings['smarter_score_batcher.xsd.path'])
     xsd.xsd = xsd.XSD(xsd_file)
+
+    tenant_mapping = initialize_db(TSBDBConnection, settings)
 
     # Set up celery. Important - This must happen before scan
     setup_xml_celery(settings, prefix=prefix)

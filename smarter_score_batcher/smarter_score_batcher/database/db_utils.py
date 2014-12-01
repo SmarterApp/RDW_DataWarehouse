@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import json
 from sqlalchemy.sql.expression import Select, func, select, and_
 from sqlalchemy.exc import IntegrityError
@@ -177,3 +178,14 @@ def delete_assessments(assessment_id, tsb_asmt_guids, tsb_error_guids):
             except IntegrityError:
                 # there might be new assessment records written to database while processing the old one
                 pass
+=======
+from smarter_score_batcher.database.tsb_connector import TSBDBConnection
+from smarter_score_batcher.constant import Constants
+
+
+def save_asmt_to_database(data):
+    parameters = {key: value for key, value in zip(data.header, data.values)}
+    with TSBDBConnection(tenant='cat') as conn:
+        ins = conn.get_table(Constants.TSB_ASMT).insert()
+        conn.execute(ins, **parameters)
+>>>>>>> saved tsb data to database

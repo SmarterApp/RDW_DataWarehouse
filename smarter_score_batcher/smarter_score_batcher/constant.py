@@ -12,3 +12,7 @@ class Extensions:
 class Constants:
 
     TSB_ASMT = 'tsb_asmt'
+    TSB_METADATA = 'tsb_metadata'
+
+    ASMT_GUID = 'asmt_guid'
+    CONTENT = 'content'

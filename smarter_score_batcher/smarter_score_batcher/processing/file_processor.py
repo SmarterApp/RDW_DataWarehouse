@@ -16,7 +16,8 @@ from smarter_score_batcher.utils.metadata_generator import metadata_generator_bo
 from smarter_score_batcher.error.exceptions import GenerateCSVException, \
     TSBException, TSBSecurityException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
-from smarter_score_batcher.database.db_utils import save_asmt_to_database
+from smarter_score_batcher.database.db_utils import save_assessment, \
+    save_metadata, get_metadata_by_asmt_guid
 
 try:
     import xml.etree.cElementTree as ET
@@ -27,14 +28,28 @@ except ImportError:
 logger = logging.getLogger("smarter_score_batcher")
 
 
-def process_assessment_data(root, meta, base_dir, mode=0o700):
+def process_assessment_data(root, meta):
     '''
     process assessment data
     :param root: xml root document
     '''
     # Create dir name based on state code and file name from asmt id
-    directory = prepare_assessment_dir(base_dir, meta.state_code, meta.asmt_id, mode=mode)
-    lock_and_write(root, os.path.join(directory, meta.asmt_id), mode=mode)
+    asmtGuid, metadata = get_assessment_metadata_mapping(root)
+    stateCode, data = get_assessment_mapping(root, metadata)
+    tenant = stateCode.lower()
+    if not get_metadata_by_asmt_guid(asmtGuid, tenant):
+        save_metadata(asmtGuid, metadata, tenant)
+    save_assessment(data, tenant)
+
+
+# def process_assessment_data(root, meta, base_dir, mode=0o700):
+#     '''
+#     process assessment data
+#     :param root: xml root document
+#     '''
+#     # Create dir name based on state code and file name from asmt id
+#     directory = prepare_assessment_dir(base_dir, meta.state_code, meta.asmt_id, mode=mode)
+#     lock_and_write(root, os.path.join(directory, meta.asmt_id), mode=mode)
 
 
 def generate_assessment_file(file_object, root, metadata_file_path, header=False):
@@ -45,8 +60,7 @@ def generate_assessment_file(file_object, root, metadata_file_path, header=False
     :param data: data
     '''
     data = get_assessment_mapping(root, metadata_file_path)
-    save_asmt_to_database(data)
-    # csv_file_writer(file_object, [data.values], header=data.header if header else None)
+    csv_file_writer(file_object, [data.values], header=data.header if header else None)
 
 
 def generate_assessment_metadata_file(root, file_path):
@@ -115,7 +129,7 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o7
     try:
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
-        process_assessment_data(root, meta, work_dir, mode=mode)
+        process_assessment_data(root, meta)
         written = process_item_level_data(root, meta, csv_file_path)
         if written:
             metadata_generator_bottom_up(csv_file_path, generateMetadata=True)

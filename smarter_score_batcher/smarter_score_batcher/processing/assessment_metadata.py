@@ -232,7 +232,9 @@ def get_assessment_metadata_mapping(root):
         claim1_mapping = get_claim1_mapping(opportunity)
         json_output.claim1_name = claim1_mapping
 
-    mappings = [JSONMapping(XMLMeta(test_node, ".", "testId"), json_output, 'asmt_guid'),
+    asmtGuid = XMLMeta(test_node, ".", "testId")
+
+    mappings = [JSONMapping(asmtGuid, json_output, 'asmt_guid'),
                 JSONMapping(DateMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
                 JSONMapping(subject, json_output, 'subject'),
                 JSONMapping(asmt_type, json_output, 'asmt_type', upper_case=True),
@@ -241,4 +243,4 @@ def get_assessment_metadata_mapping(root):
 
     for m in mappings:
         m.evaluate()
-    return json_output.get_values()
+    return asmtGuid.get_value(), json_output.get_values()

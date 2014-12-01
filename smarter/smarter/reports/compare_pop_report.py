@@ -110,7 +110,7 @@ def get_merged_report_records(summative, interim):
                             copied_interval = deepcopy(interval)
                             copied_interval[Constants.COUNT] = -1
                             copied_interval[Constants.PERCENTAGE] = -1
-                            record[Constants.RESULTS][subject][Constants.INTERVALS].append(deepcopy(interval))
+                            record[Constants.RESULTS][subject][Constants.INTERVALS].append(deepcopy(copied_interval))
         merged[r] = record
     # Go through summative
     for record in summative[Constants.RECORDS]:

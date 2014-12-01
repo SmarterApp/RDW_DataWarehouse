@@ -9,6 +9,7 @@ import itertools
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 from smarter_score_batcher.error.exceptions import MetadataException
+from edcore.utils.utils import xml_datetime_convert
 
 
 class XMLMeta:
@@ -33,7 +34,7 @@ class DateMeta(XMLMeta):
 
     def get_value(self):
         date = super().get_value()
-        return date[:10].replace('-', '') if date else date
+        return xml_datetime_convert(date)
 
 
 class IntegerMeta(XMLMeta):

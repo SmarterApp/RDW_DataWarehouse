@@ -38,7 +38,7 @@ def remote_write(xml_data):
         timestamp = time.strftime('%Y%m%d%H%M%S', time.gmtime())
         xml_file_path = create_path(root_dir_xml, meta_names, generate_file_path, **{'extension': timestamp + '.xml'})
         if os.path.commonprefix([root_dir_xml, xml_file_path]) != root_dir_xml:
-            raise TSBSecurityException(msg='path travasal detected base_dir:[' + root_dir_xml + '] requested dir[' + xml_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_WRITE)
+            raise TSBSecurityException(msg='Fail to create filepath name requested dir[' + xml_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_WRITE)
         written = file_writer(xml_file_path, xml_data)
         if written:
             work_dir = conf.get("smarter_score_batcher.base_dir.working")
@@ -47,7 +47,7 @@ def remote_write(xml_data):
             queue_name = conf.get('smarter_score_batcher.async_queue')
             csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
             if os.path.commonprefix([root_dir_csv, csv_file_path]) != root_dir_csv:
-                raise TSBSecurityException(msg='path travasal detected base_dir:[' + root_dir_csv + '] requested dir[' + csv_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_WRITE)
+                raise TSBSecurityException(msg='Fail to create filepath name requested dir[' + csv_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_WRITE)
             remote_csv_generator.apply_async(args=(meta_names, csv_file_path, xml_file_path, work_dir), queue=queue_name)  # @UndefinedVariable
     except TSBException as e:
         # ignore exception for error handling because this function is synchonous call

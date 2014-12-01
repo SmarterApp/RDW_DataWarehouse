@@ -158,7 +158,7 @@ def _handle_SAML2_login_flow(request):
     # Redirect to sso if it's not an ajax call, and if we detected that the requested url is different than referrer
     # This is a patch to get around api calls made from browser window.location
     if not request.is_xhr and request.referrer is not None and request.url != request.referrer:
-        write_security_event("Login processed successfully", SECURITY_EVENT_TYPE.INFO)
+        write_security_event("Redirect to Idp", SECURITY_EVENT_TYPE.INFO)
         return HTTPFound(location=redirect_url)
 
     # We need to return 401 with a redirect url and the front end will handle the redirect

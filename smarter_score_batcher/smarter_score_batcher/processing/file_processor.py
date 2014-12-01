@@ -16,6 +16,7 @@ from smarter_score_batcher.utils.metadata_generator import metadata_generator_bo
 from smarter_score_batcher.error.exceptions import GenerateCSVException, \
     TSBException, TSBSecurityException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
+from smarter_score_batcher.database.db_utils import save_asmt_to_database
 
 try:
     import xml.etree.cElementTree as ET
@@ -44,7 +45,8 @@ def generate_assessment_file(file_object, root, metadata_file_path, header=False
     :param data: data
     '''
     data = get_assessment_mapping(root, metadata_file_path)
-    csv_file_writer(file_object, [data.values], header=data.header if header else None)
+    save_asmt_to_database(data)
+    # csv_file_writer(file_object, [data.values], header=data.header if header else None)
 
 
 def generate_assessment_metadata_file(root, file_path):

@@ -8,9 +8,9 @@ from sqlalchemy.engine import create_engine
 DBDRIVER = "postgresql+pypostgresql"
 
 
-def generate_tsb_metadata(scheme_name=None, bind=None):
+def generate_tsb_metadata(schema_name=None, bind=None):
 
-    metadata = MetaData(schema=scheme_name, bind=bind)
+    metadata = MetaData(schema=schema_name, bind=bind)
 
     # Two-letter state - some countries have 3 or more, but two will do for US
     tsb_asmt = Table('tsb_asmt', metadata,

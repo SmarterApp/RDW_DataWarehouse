@@ -7,3 +7,8 @@ class Extensions:
     JSON = ".json"
     PARTIAL = ".partial"
     ERR = '.err'
+
+
+class Constants:
+
+    TSB_ASMT = 'tsb_asmt'

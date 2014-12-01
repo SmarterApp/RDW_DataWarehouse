@@ -202,6 +202,10 @@ common:
         type: memory
         expire: 7200 # one 2 hours
         lock_dir: /tmp/memcache
+      db:
+        cat:
+          schema_name: edware_tsb
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     sftp:
         home: /
         base_dir: /sftp/opt/edware/home

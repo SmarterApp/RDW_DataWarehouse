@@ -4,7 +4,7 @@ import logging
 import json
 from edcore.watch.util import FileUtil
 from edcore.utils.utils import tar_files, read_ini
-from edcore.utils.utils import run_cron_job
+from edcore.utils.utils import run_cron_job, create_daemon
 from edcore.utils.data_archiver import encrypt_file
 from edcore.watch.file_hasher import MD5Hasher
 from smarter_score_batcher.constant import Extensions, Constants
@@ -272,12 +272,22 @@ def main():
     Main Entry for ad-hoc testing to trigger batcher
     '''
     parser = ArgumentParser(description='File Batcher entry point')
+    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/file-monitor-smarter_score_batcher.pid',
+                        help="pid file for TSB file monitor daemon")
+    parser.add_argument('-d', dest='daemon', action='store_true', default=False,
+                        help="daemon mode for TSB file monitor")
     parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter_score_batcher.ini', help="ini file")
     args = parser.parse_args()
+
+    if args.daemon:
+        create_daemon(args.pid_file)
     file = args.ini_file
     settings = read_ini(file)
     initialize_db(TSBDBConnection, settings)
-    move_to_staging(settings)
+    if args.daemon:
+        run_cron_sync_file(settings)
+    else:
+        move_to_staging(settings)
 
 
 if __name__ == '__main__':

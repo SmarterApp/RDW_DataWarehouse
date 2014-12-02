@@ -324,6 +324,6 @@ if __name__ == '__main__':
     __up = args.up
 
     if __up:
-        metadata_generator_top_down(__path, metadata_filename=__metadata, recursive=__recursive, force=__force)
-    else:
         metadata_generator_bottom_up(__path, metadata_filename=__metadata, recursive=__recursive)
+    else:
+        metadata_generator_top_down(__path, metadata_filename=__metadata, recursive=__recursive, force=__force)

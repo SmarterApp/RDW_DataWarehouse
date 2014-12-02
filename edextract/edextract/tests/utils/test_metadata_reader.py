@@ -21,6 +21,7 @@ class Test(unittest.TestCase):
         self.file2 = os.path.join(self.__dir11, 'hello2')
         self.file3 = os.path.join(self.__dir11, 'hello3')
         self.file4 = os.path.join(self.__dir21, 'hello4')
+
         with open(self.file1, 'w') as f:
             f.write('hello world')
         with open(self.file2, 'w') as f:
@@ -49,6 +50,11 @@ class Test(unittest.TestCase):
         metadata = MetadataReader()
         size = metadata.get_size(self.file4)
         self.assertEqual(3, size)
+
+    def test_get_files(self):
+        metadata = MetadataReader()
+        files = metadata.get_files(os.path.join(self.__dir11, 'hello*'))
+        self.assertEqual(2, len(files))
 
 
 if __name__ == "__main__":

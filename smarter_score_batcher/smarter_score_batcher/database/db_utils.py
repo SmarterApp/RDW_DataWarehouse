@@ -91,8 +91,6 @@ def get_assessments(asmtGuid):
     '''
     with TSBDBConnection() as conn:
         tsb_asmt = conn.get_table(Constants.TSB_ASMT)
-        query = Select([tsb_asmt]).where(tsb_asmt.c.AssessmentGuid == asmtGuid)
-        assessments = conn.get_streaming_result(query)
         columns = []
         data = []
         guids = []

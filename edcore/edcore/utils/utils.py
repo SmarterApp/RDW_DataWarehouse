@@ -202,5 +202,6 @@ def tar_files(dir_name, output_file):
         for file in files:
             tf.add(file, arcname=os.path.basename(file))
 
+
 def xml_datetime_convert(date):
     return date[:10].replace('-', '') if date and len(date) > 9 else date

@@ -10,6 +10,7 @@ import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 from smarter_score_batcher.error.exceptions import MetadataException
 from edcore.utils.utils import xml_datetime_convert
+import hashlib
 
 
 class XMLMeta:
@@ -42,6 +43,16 @@ class IntegerMeta(XMLMeta):
     def get_value(self):
         data = super().get_value()
         return str(int(data)) if data else data
+
+
+class HashMeta(XMLMeta):
+    '''
+    Evaluates the value from XML attribute, and hashes it
+    '''
+
+    def get_value(self):
+        data = super().get_value()
+        return hashlib.sha1(data.encode("utf-8")).hexdigest()
 
 
 class ValueMeta():
@@ -290,9 +301,12 @@ def get_groups(examinee):
     for i in range(TOTAL_GROUPS):
         if i < len(groups):
             meta = XMLMeta(groups[i], '.', 'value')
+            group_id = HashMeta(groups[i], '.', 'value')
         else:
             meta = ValueMeta('')
-        mappings.append(Mapping(meta, 'Group%dId' % (i + 1)))
+            group_id = ValueMeta('')
+
+        mappings.append(Mapping(group_id, 'Group%dId' % (i + 1)))
         mappings.append(Mapping(meta, 'Group%dText' % (i + 1)))
     return mappings
 

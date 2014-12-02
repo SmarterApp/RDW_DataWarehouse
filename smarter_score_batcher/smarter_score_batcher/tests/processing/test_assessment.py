@@ -12,6 +12,7 @@ import os
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 from smarter_score_batcher.error.exceptions import MetadataException
+import hashlib
 
 
 try:
@@ -87,11 +88,11 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(mapping[AssessmentHeaders.EconomicDisadvantageStatus], 'No')
         self.assertEqual(mapping[AssessmentHeaders.MigrantStatus], 'Yes')
         # test groups
-        self.assertEqual(mapping[AssessmentHeaders.Group1Id], 'Brennan Math')
+        self.assertEqual(mapping[AssessmentHeaders.Group1Id], hashlib.sha1('Brennan Math'.encode()).hexdigest())
         self.assertEqual(mapping[AssessmentHeaders.Group1Text], 'Brennan Math')
-        self.assertEqual(mapping[AssessmentHeaders.Group2Id], 'Tuesday Science')
+        self.assertEqual(mapping[AssessmentHeaders.Group2Id], hashlib.sha1('Tuesday Science'.encode()).hexdigest())
         self.assertEqual(mapping[AssessmentHeaders.Group2Text], 'Tuesday Science')
-        self.assertEqual(mapping[AssessmentHeaders.Group3Id], 'Smith Research')
+        self.assertEqual(mapping[AssessmentHeaders.Group3Id], hashlib.sha1('Smith Research'.encode()).hexdigest())
         self.assertEqual(mapping[AssessmentHeaders.Group3Text], 'Smith Research')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentAdministrationFinishDate], '20140414')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentYear], '2014')
@@ -142,11 +143,11 @@ class TestCSVMetadata(unittest.TestCase):
         examinee = ET.fromstring(data).find("./Examinee")
         group_mappings = get_groups(examinee)
         self.assertEqual(len(group_mappings), 20)
-        self.assertEqual(group_mappings[0].evaluate(), 'Brennan Math')
+        self.assertEqual(group_mappings[0].evaluate(), 'afa6289f535474b99d6dac29e3a2b8782b0fe0b7')
         self.assertEqual(group_mappings[1].evaluate(), 'Brennan Math')
-        self.assertEqual(group_mappings[2].evaluate(), 'Tuesday Science')
+        self.assertEqual(group_mappings[2].evaluate(), '5b62bc83fb94dc4d1961c00f8c93809b57c56dc9')
         self.assertEqual(group_mappings[3].evaluate(), 'Tuesday Science')
-        self.assertEqual(group_mappings[4].evaluate(), 'Smith Research')
+        self.assertEqual(group_mappings[4].evaluate(), '6697b20b4902b5812f1221c2746600b476f61a20')
         self.assertEqual(group_mappings[5].evaluate(), 'Smith Research')
         self.assertEqual(group_mappings[6].evaluate(), '')
         self.assertEqual(group_mappings[7].evaluate(), '')

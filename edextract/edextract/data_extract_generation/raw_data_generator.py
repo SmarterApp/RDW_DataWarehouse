@@ -14,6 +14,7 @@ from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.file_utils import File
 from edextract.utils.metadata_reader import MetadataReader
 import copy
+import glob
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,9 @@ def _prepare_file_list(raw_root_dir, results):
     for result in results:
         path = generate_path_to_raw_xml(raw_root_dir, extension='*.xml', **result)
         actual_paths = metadata_reader.get_files(path)
+        if not actual_paths:
+            path = generate_path_to_raw_xml(raw_root_dir, extension='xml', **result)
+            actual_paths = glob.glob(path)
         for actual_path in actual_paths:
             size = metadata_reader.get_size(actual_path)
             file = File(actual_path, size)

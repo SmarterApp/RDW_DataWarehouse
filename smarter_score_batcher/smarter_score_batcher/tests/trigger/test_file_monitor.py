@@ -6,8 +6,7 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 import os
 import shutil
-from smarter_score_batcher.trigger.file_monitor import list_asmt_with_tenant,\
-    FileEncryption, move_to_staging
+from smarter_score_batcher.trigger.file_monitor import FileEncryption, move_to_staging
 
 
 class TestFileMonitor(unittest.TestCase):

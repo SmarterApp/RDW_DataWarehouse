@@ -14,8 +14,7 @@ from smarter_score_batcher.utils.meta import Meta
 from smarter_score_batcher.utils.file_lock import FileLock
 import json
 from smarter_score_batcher.processing.file_processor import generate_csv_from_xml, \
-    process_assessment_data, generate_assessment_file, lock_and_write, \
-    generate_assessment_metadata_file
+    process_assessment_data
 from smarter_score_batcher.error.exceptions import TSBException
 
 try:

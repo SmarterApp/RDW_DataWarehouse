@@ -1,19 +1,27 @@
 import os
 import shutil
 import logging
+import json
 from edcore.watch.util import FileUtil
 from edcore.utils.utils import tar_files, read_ini
 from edcore.utils.utils import run_cron_job
 from edcore.utils.data_archiver import encrypt_file
 from edcore.watch.file_hasher import MD5Hasher
-from smarter_score_batcher.constant import Extensions
-from smarter_score_batcher.utils.file_lock import FileLock
+from smarter_score_batcher.constant import Extensions, Constants
 import time
 import uuid
 from argparse import ArgumentParser
 from smarter_score_batcher.error.exceptions import FileMonitorFileNotFoundException, \
     FileMonitorException
-from smarter_score_batcher.error.error_codes import ErrorSource
+from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
+from smarter_score_batcher.database.db_utils import get_metadata, get_assessments, \
+    delete_assessments
+from smarter_score_batcher.database.tsb_connector import TSBDBConnection
+from edcore.database import initialize_db
+from smarter_score_batcher.error.exceptions import GenerateCSVException, \
+    TSBException, TSBSecurityException
+from smarter_score_batcher.utils.file_utils import csv_file_writer, \
+    json_file_writer
 
 
 logger = logging.getLogger("smarter_score_batcher")
@@ -57,61 +65,32 @@ def move_to_staging(settings):
     logger.debug("start synchronizing files from working directory to staging directory")
     working_dir = settings['smarter_score_batcher.base_dir.working']
     staging_dir = settings['smarter_score_batcher.base_dir.staging']
-    for tenant, assessment in list_asmt_with_tenant(working_dir):
+    for meta_record in get_metadata():
+        tenant = meta_record['state_code']
+        assessment = meta_record['asmt_guid']
         logger.debug("start processing assessment %s", assessment)
-        SPINLOCK = True
-        while SPINLOCK:
-            try:
-                with FileEncryption(tenant, assessment) as fl:
-                    # TODO: should we make a backup before manipulating files?
-                    # encrypt tar file
-                    SPINLOCK = False
-                    data_path = fl.copy_to_tempdir()
-                    tar_file = fl.archive_to_tar(data_path)
-                    gpg_file_path = fl.encrypt(tar_file, settings)
-                    fl.move_files(gpg_file_path, staging_dir)
-                # do housekeeping afterwards
-                _clean_up(assessment)
-                logger.debug("complete processing assessment %s data", assessment)
-            except BlockingIOError:
-                # someone already lock.
-                time.sleep(1)
-            except FileNotFoundError:
-                # if file not found, file might be already in process or
-                msg = "assessment %s data not found for tenant %s" % (assessment, tenant)
-                logger.debug(msg)
-                SPINLOCK = False
-                raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
-            except Exception as e:
-                # pass to process next assessment data
-                msg = "Error occurs during process assessment %s for tenant %s: %s" % (assessment, tenant, str(e))
-                logger.error(msg)
-                SPINLOCK = False
-                raise FileMonitorException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
-
-
-def _clean_up(dir_path):
-    ''' clean up directory `dir_path`. '''
-    try:
-        os.rmdir(dir_path)
-    except OSError as e:
-        logger.warning("OSError occurs while attempting to remove %s: %s", dir_path, e)
-
-
-def list_asmt_with_tenant(workspace):
-    ''' Return list of (tenant, assessment directory os.path) tuple under workspace. '''
-    def _valid_name(name):
-        return name and not name.startswith(".")
-
-    def _list_dirs(base_dir):
-        return [(d, os.path.join(base_dir, d)) for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d)) and _valid_name(d)]
-
-    files = []
-    if os.path.isdir(workspace):
-        for tenant, tenant_full_path in _list_dirs(workspace):
-                for _, asmt in _list_dirs(tenant_full_path):
-                    files.append((tenant, asmt))
-    return files
+        try:
+            with FileEncryption(working_dir, tenant, assessment) as fl:
+                # TODO: should we make a backup before manipulating files?
+                # encrypt tar file
+                data_path = fl.save_to_tempdir()
+                tar_file = fl.archive_to_tar(data_path)
+                gpg_file_path = fl.encrypt(tar_file, settings)
+                fl.move_files(gpg_file_path, staging_dir)
+            logger.debug("complete processing assessment %s data", assessment)
+        except BlockingIOError:
+            # someone already lock.
+            time.sleep(1)
+        except FileNotFoundError:
+            # if file not found, file might be already in process or
+            msg = "assessment %s data not found for tenant %s" % (assessment, tenant)
+            logger.debug(msg)
+            raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
+        except Exception as e:
+            # pass to process next assessment data
+            msg = "Error occurs during process assessment %s for tenant %s: %s" % (assessment, tenant, str(e))
+            logger.error(msg)
+            raise FileMonitorException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
 
 
 def run_cron_sync_file(settings):
@@ -142,25 +121,43 @@ def _get_gpg_settings_by_tenant(tenant, settings):
     return recipients, kw_settings
 
 
-class FileEncryption(FileLock):
+# TODO: add security fix back
+def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
+    # prevent path traversal
+    base_dir = os.path.abspath(base_dir)
+    request_directory = os.path.join(base_dir, state_code.lower(), asmt_id)
+    abs_request_directory = os.path.abspath(request_directory)
+    if os.path.commonprefix([base_dir, request_directory, abs_request_directory]) == base_dir:
+        os.makedirs(abs_request_directory, mode=mode, exist_ok=True)
+    else:
+        raise TSBSecurityException(msg='Issue creating path requested dir[' + abs_request_directory + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.PREPARE_ASSESSMENT_DIR)
+    return abs_request_directory
 
-    def __init__(self, tenant, asmt_dir):
+
+def generate_assessment_file(file_object, root, metadata_file_path, header=False):
+    '''
+    lock file then write
+    non-block lock, if the file is already locked, then raise IOError instead of waiting.
+    :param file_path: file path
+    :param data: data
+    '''
+    data = get_assessment_mapping(root, metadata_file_path)
+    csv_file_writer(file_object, [data.values], header=data.header if header else None)
+
+
+class FileEncryption:
+
+    def __init__(self, asmt_dir, tenant, assessment_id):
         ''' Constructor of FileEncryption class.
 
         :param tenant str: tenant name
         :param asmt_dir str: full os.path to assessment directory
         '''
         self.tenant = tenant
-        self.asmt_dir = asmt_dir
-        self.assessment_id = os.path.split(asmt_dir)[1]
-        self.json_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.JSON)
-        self.csv_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.CSV)
-        self.err_file = os.path.join(self.asmt_dir, self.assessment_id + Extensions.ERR)
+        self.asmt_dir = os.path.join(asmt_dir, tenant)
+        self.assessment_id = assessment_id
         self.__success = False
-        if not os.path.isfile(self.csv_file):
-            raise FileNotFoundError()
         self.hasher = MD5Hasher()
-        super().__init__(self.csv_file, no_block_lock=True, do_not_create_lock_file=True)
 
     def move_files(self, src_file, staging_dir):
         '''Moves encrypted file to `staging_dir`.
@@ -206,27 +203,20 @@ class FileEncryption(FileLock):
 
     def __enter__(self):
         ''' acquires lock and creates a .tmp directory under current assessment'''
-        super().__enter__()
-        self.temp_dir = os.path.join(self.asmt_dir, ".tmp")
+        self.temp_dir = os.path.join(self.asmt_dir, self.assessment_id)
         if not os.path.exists(self.temp_dir):
             os.makedirs(self.temp_dir, exist_ok=True)
         return self
 
     def __exit__(self, type, value, tb):
         self.__cleanup()
-        super().__exit__(type, value, tb)
 
     def __cleanup(self):
         ''' releases lock and remove .tmp directory. '''
         shutil.rmtree(self.temp_dir)
-        if self.__success:
-            # delete JSON and CSV files to release the lock
-            os.remove(self.json_file)
-            os.remove(self.csv_file)
-            if os.path.exists(self.err_file):
-                os.remove(self.err_file)
+        delete_assessments(self.assessment_id, self.tsb_asmt_guids)
 
-    def copy_to_tempdir(self):
+    def save_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
 
         This function moves JSON file before CSV because CSV file
@@ -234,18 +224,31 @@ class FileEncryption(FileLock):
 
         '''
 
-        def _list_file_with_ext(base_dir, ext):
-            return [os.path.join(base_dir, f) for f in os.listdir(base_dir) if f.endswith(ext)]
+        def _save_metadata(assessment_id, output_dir):
+            metadata = get_metadata(asmtGuid=assessment_id)
+            filepath = os.path.join(output_dir, assessment_id + Extensions.JSON)
+            content = json.loads(metadata[0][Constants.CONTENT])
+            with open(filepath, mode='w') as f:
+                json_file_writer(f, content)
+
+        def _save_assessments(assessment_id, output_dir):
+            asmt_guids, data, headers = get_assessments(asmtGuid=assessment_id)
+            filepath = os.path.join(output_dir, assessment_id + Extensions.CSV)
+            with open(filepath, mode='w') as f:
+                csv_file_writer(f, data, header=headers)
+            return asmt_guids
+
+        def _save_errors(assessment_id, output_dir):
+            # TODO:
+            pass
 
         # create a directory with name `assessment id` under .tmp
         tmp_dir = os.path.join(self.temp_dir, self.assessment_id)
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir, exist_ok=True)
-        # copy JSON and CSV files over. If ERR file exist, then move the file too
-        # move JSON file before moving CSV
-        for ext in [Extensions.JSON, Extensions.CSV, Extensions.ERR]:
-            for file in _list_file_with_ext(self.asmt_dir, ext):
-                shutil.copy(file, tmp_dir)
+        _save_metadata(self.assessment_id, tmp_dir)
+        self.tsb_asmt_guids = _save_assessments(self.assessment_id, tmp_dir)
+        _save_errors(self.assessment_id, tmp_dir)
         return tmp_dir
 
     def archive_to_tar(self, data_path):
@@ -273,6 +276,7 @@ def main():
     args = parser.parse_args()
     file = args.ini_file
     settings = read_ini(file)
+    initialize_db(TSBDBConnection, settings)
     move_to_staging(settings)
 
 

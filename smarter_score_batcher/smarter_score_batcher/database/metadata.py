@@ -1,7 +1,6 @@
-from sqlalchemy.schema import MetaData, CreateSchema
+from sqlalchemy.schema import MetaData, CreateSchema, Sequence
 from sqlalchemy import Table, Column, Index
-from sqlalchemy import String, Text
-from sqlalchemy import ForeignKey
+from sqlalchemy import String, Text, BigInteger
 import argparse
 from sqlalchemy.engine import create_engine
 
@@ -15,6 +14,7 @@ def generate_tsb_metadata(schema_name=None, bind=None):
 
     # Two-letter state - some countries have 3 or more, but two will do for US
     tsb_asmt = Table('tsb_asmt', metadata,
+                     Column('tsb_asmt_guid', BigInteger, Sequence('tsb_asmt_guid_seq'), primary_key=True),
                      Column('StateAbbreviation', String(50), nullable=True),
                      Column('ResponsibleDistrictIdentifier', String(50), nullable=True),
                      Column('OrganizationName', String(50), nullable=True),
@@ -40,7 +40,7 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('Section504Status', String(50), nullable=True),
                      Column('EconomicDisadvantageStatus', String(50), nullable=True),
                      Column('MigrantStatus', String(50), nullable=True),
-                     Column('AssessmentGuid', String(50), ForeignKey('tsb_metadata.asmt_guid'), nullable=False),
+                     Column('AssessmentGuid', String(50), nullable=False),
                      Column('AssessmentSessionLocationId', String(50), nullable=True),
                      Column('AssessmentSessionLocation', String(50), nullable=True),
                      Column('AssessmentAdministrationFinishDate', String(50), nullable=True),
@@ -103,6 +103,8 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('AccommodationScribe', String(50), nullable=True),
                      Column('AccommodationSpeechToText', String(50), nullable=True),
                      Column('AccommodationNoiseBuffer', String(50), nullable=True))
+
+    Index('tsb_asmt_idx', tsb_asmt.c.tsb_asmt_guid, unique=True)
 
     tsb_metadata = Table('tsb_metadata', metadata,
                          Column('asmt_guid', String(50), primary_key=True),

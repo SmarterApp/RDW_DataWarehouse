@@ -33,3 +33,36 @@ def get_metadata(asmtGuid=None):
         if asmtGuid:
             query = query.where(tsb_metadata.c.asmt_guid == asmtGuid)
         return conn.get_result(query)
+
+
+def get_assessments(asmtGuid):
+    with TSBDBConnection(tenant=TSB_TENENT) as conn:
+        tsb_asmt = conn.get_table(Constants.TSB_ASMT)
+        query = Select([tsb_asmt]).where(tsb_asmt.c.AssessmentGuid == asmtGuid)
+        assessments = conn.get_result(query)
+        # TODO: need to refactor below code
+        columns = []
+        data = []
+        guids = []
+        for i, asmt in enumerate(assessments):
+            row = []
+            for j, (column, value) in enumerate(asmt.items()):
+                if i == 0 and j > 0:  # first column is guid
+                    columns.append(column)
+                if j == 0:
+                    guids.append(value)
+                else:
+                    row.append(value)
+            data.append(row)
+        return guids, data, columns
+
+
+def delete_assessments(assessment_id, tsb_asmt_guids):
+    # TODO: not in transaction?
+    with TSBDBConnection(tenant=TSB_TENENT) as conn:
+        tsb_metadata = conn.get_table(Constants.TSB_METADATA)
+        tsb_asmt = conn.get_table(Constants.TSB_ASMT)
+        # delete meta data in database
+        conn.execute(tsb_asmt.delete().where(tsb_asmt.c.tsb_asmt_guid.in_(tsb_asmt_guids)))
+        # delete assessment data in database
+        conn.execute(tsb_metadata.delete().where(tsb_metadata.c.asmt_guid == assessment_id))

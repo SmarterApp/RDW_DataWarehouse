@@ -5,7 +5,7 @@ Created on Nov 25, 2014
 '''
 import unittest
 import tempfile
-from smarter_score_batcher.processing.file_processor import prepare_assessment_dir
+# from smarter_score_batcher.processing.file_processor import prepare_assessment_dir
 from smarter_score_batcher.error.exceptions import TSBSecurityException
 import os
 

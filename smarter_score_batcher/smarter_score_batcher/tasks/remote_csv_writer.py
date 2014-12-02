@@ -1,6 +1,5 @@
 from smarter_score_batcher.celery import celery
-from smarter_score_batcher.processing.file_processor import generate_csv_from_xml, \
-    prepare_assessment_dir
+from smarter_score_batcher.processing.file_processor import generate_csv_from_xml
 from smarter_score_batcher.error.exceptions import TSBException,\
     TSBSecurityException
 from smarter_score_batcher.error.error_handler import handle_error
@@ -28,7 +27,7 @@ def remote_csv_generator(meta, csv_file_path, xml_file_path, work_dir):
         e.err_input = 'student_guid: ' + meta.student_id
         state_code = meta.state_code
         asmt_id = meta.asmt_id
-        directory = prepare_assessment_dir(work_dir, state_code, asmt_id, mode=0o700)
+        # directory = prepare_assessment_dir(work_dir, state_code, asmt_id, mode=0o700)
         err_file_path = os.path.abspath(os.path.join(directory, asmt_id + Extensions.ERR))
         json_file_path = os.path.abspath(os.path.join(directory, asmt_id + Extensions.JSON))
         if os.path.commonprefix(directory, err_file_path, json_file_path) != directory:

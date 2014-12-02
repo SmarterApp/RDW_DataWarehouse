@@ -16,28 +16,6 @@ def save_assessment(data):
     with TSBDBConnection() as conn:
         query = None
         tsb_asmt = conn.get_table(Constants.TSB_ASMT)
-        count_where = and_(tsb_asmt.c.StudentIdentifier == parameters['StudentIdentifier'], tsb_asmt.c.AssessmentGuid == parameters['AssessmentGuid'])
-        count_query = select([func.count().label('count')]).select_from(tsb_asmt).where(count_where)
-        results = conn.get_result(count_query)
-        if results:
-            count = results[0]['count']
-            if count > 0:
-                query = tsb_asmt.update().where(count_where)
-        if query is None:
-            query = tsb_asmt.insert()
-        conn.execute(query, **parameters)
-
-
-def save_metadata(asmtGuid, stateCode, metadata):
-    '''
-    Save metadata to `Constants.TSB_METADATA` table.
-    '''
-    parameters = {
-        Constants.ASMT_GUID: asmtGuid,
-        Constants.STATE_CODE: stateCode,
-        Constants.CONTENT: json.dumps(metadata)
-    }
-    with TSBDBConnection() as conn:
         ins = conn.get_table(Constants.TSB_METADATA).insert()
         conn.execute(ins, **parameters)
 
@@ -67,7 +45,9 @@ def get_metadata(asmtGuid):
     '''
     with TSBDBConnection() as conn:
         tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-        query = Select([tsb_metadata]).where(tsb_metadata.c.asmt_guid == asmtGuid)
+        query = Select([tsb_metadata]).where(tsb_metadata.c.status == Status.NEW)
+        if asmtGuid:
+            query = query.where(tsb_metadata.c.asmt_guid == asmtGuid)
         return conn.get_result(query)
 
 

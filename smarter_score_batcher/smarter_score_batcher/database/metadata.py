@@ -106,7 +106,9 @@ def generate_tsb_metadata(schema_name=None, bind=None):
 
     tsb_metadata = Table('tsb_metadata', metadata,
                          Column('asmt_guid', String(50), primary_key=True),
-                         Column('content', Text, nullable=True))
+                         Column('state_code', String(2), nullable=False),
+                         Column('content', Text, nullable=True),
+                         Column('status', String(1), nullable=False))
 
     Index('tsb_metadata_idx', tsb_metadata.c.asmt_guid, unique=True)
 

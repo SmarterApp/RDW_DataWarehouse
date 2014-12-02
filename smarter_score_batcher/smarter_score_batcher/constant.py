@@ -16,3 +16,11 @@ class Constants:
 
     ASMT_GUID = 'asmt_guid'
     CONTENT = 'content'
+    STATE_CODE = 'state_code'
+    STATUS = 'status'
+
+
+class Status:
+
+    NEW = 'C'
+    DONE = 'D'

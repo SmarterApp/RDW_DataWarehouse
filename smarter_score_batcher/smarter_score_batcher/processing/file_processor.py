@@ -17,7 +17,7 @@ from smarter_score_batcher.error.exceptions import GenerateCSVException, \
     TSBException, TSBSecurityException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 from smarter_score_batcher.database.db_utils import save_assessment, \
-    save_metadata, get_metadata_by_asmt_guid
+    save_metadata, get_metadata
 
 try:
     import xml.etree.cElementTree as ET
@@ -36,10 +36,9 @@ def process_assessment_data(root, meta):
     # Create dir name based on state code and file name from asmt id
     asmtGuid, metadata = get_assessment_metadata_mapping(root)
     stateCode, data = get_assessment_mapping(root, metadata)
-    tenant = stateCode.lower()
-    if not get_metadata_by_asmt_guid(asmtGuid, tenant):
-        save_metadata(asmtGuid, metadata, tenant)
-    save_assessment(data, tenant)
+    if not get_metadata(asmtGuid=asmtGuid):
+        save_metadata(asmtGuid, stateCode, metadata)
+    save_assessment(data)
 
 
 # def process_assessment_data(root, meta, base_dir, mode=0o700):

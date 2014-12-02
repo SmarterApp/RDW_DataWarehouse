@@ -452,7 +452,9 @@ define [
       ### Update height of all claim box to match the highest one. ###
       # fix ELA claim height 0 bug fix
       ela_display = $('#individualStudentContent.Math .ELA')
+      math_display = $('#individualStudentContent.ELA .Math')
       ela_display.css('display', 'block')
+      math_display.css('display', 'block')
       for idx, subject of @subjectsData
         do (subject) ->
           descriptions = $(".claims.#{subject.toUpperCase()} .description")
@@ -461,6 +463,7 @@ define [
           highest = Math.max.apply(Math, heights)
           descriptions.height highest
       ela_display.css('display','')
+      math_display.css('display','')
 
     createSampleInterval : (subject, sample_interval) ->
       # merge sample and subject information

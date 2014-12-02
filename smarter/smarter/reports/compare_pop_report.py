@@ -99,11 +99,11 @@ def get_merged_report_records(summative, interim):
         for subject in record[Constants.RESULTS].keys():
             # when total number of students is not zero, that means there are results (could be insufficient data)
             # mocking interval
-            summative_records = summative[Constants.RECORDS]
-            if summative_records:
-                summative_subject = summative_records[0][Constants.RESULTS].get(subject)
-                if summative_subject is not None:
-                    intervals = summative_subject.get(Constants.INTERVALS)
+            mocked_records = summative[Constants.SUMMARY]
+            if mocked_records:
+                mocked_subject = mocked_records[0][Constants.RESULTS].get(subject)
+                if mocked_subject is not None:
+                    intervals = mocked_subject.get(Constants.INTERVALS)
                     if intervals is not None:
                         record[Constants.RESULTS][subject][Constants.INTERVALS] = []
                         for interval in intervals:

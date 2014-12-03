@@ -24,6 +24,8 @@ import datetime
 import os
 import random
 import shutil
+import itertools
+from sbac_data_generation.model.assessment import SBACAssessment
 
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
@@ -36,14 +38,19 @@ import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
 import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as sbac_asmt_gen
+import sbac_data_generation.generators.interimassessment as sbac_interim_asmt_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
 
 from data_generation.writers.filters import FILTERS as DG_FILTERS
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.student import SBACStudent
+from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
+from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
 from sbac_data_generation.util.id_gen import IDGen
 from sbac_data_generation.writers.filters import SBAC_FILTERS
+from sbac_data_generation.util import all_combinations
 
 OUT_PATH_ROOT = 'out'
 DB_CONN = None
@@ -114,7 +121,7 @@ def assign_configuration_options(gen_type, state_name, state_code, state_type):
         NUMBER_REGISTRATION_SYSTEMS = 1
         GRADES_OF_CONCERN = {11}
         sbac_in_config.SUBJECTS = ['Math']
-        sbac_in_config.INTERIM_ASMT_RATE = 0
+        sbac_in_config.INTERIM_ASMT_SCHOOL_RATE = 0
         sbac_in_config.ASMT_SKIP_RATE = 0
         sbac_in_config.ASMT_RETAKE_RATE = 0
         sbac_in_config.ASMT_DELETE_RATE = 0
@@ -147,17 +154,29 @@ def prepare_output_files():
         return
 
     # Prepare star-schema output files
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_VW_FORMAT['name'], sbac_out_config.FAO_VW_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_VW_FORMAT['name'],
+                                sbac_out_config.FAO_VW_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.FBAO_VW_FORMAT['name'],
+                                sbac_out_config.FBAO_VW_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'],
+                                sbac_out_config.FAO_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.FBAO_FORMAT['name'],
+                                sbac_out_config.FBAO_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
-                                sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
-                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
+                                sbac_out_config.DIM_STUDENT_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.SR_FORMAT['name'], sbac_out_config.SR_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
+                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'],
+                                sbac_out_config.DIM_ASMT_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.SR_FORMAT['name'],
+                                sbac_out_config.SR_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
 
 
@@ -227,6 +246,48 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen, generate_
     if WRITE_LZ:
         file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid_sr)
         json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
+                                         root_path=OUT_PATH_ROOT)
+        file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid_sr)
+        csv_writer.prepare_csv_file(file_name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+
+    if WRITE_STAR:
+        file_name = sbac_out_config.DIM_ASMT_FORMAT['name']
+        csv_writer.write_records_to_file(file_name, sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt],
+                                         tbl_name='dim_asmt', root_path=OUT_PATH_ROOT)
+
+    if WRITE_PG:
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_asmt',
+                                               sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt])
+
+    # Return the object
+    return asmt
+
+
+def create_interim_assessment_object(date: datetime.date,
+                                     subject: str,
+                                     block: str,
+                                     grade: int,
+                                     id_gen: IDGen,
+                                     generate_item_level: bool=True):
+    """
+    Create a new assessment object and write it out to JSON.
+
+    @param asmt_type: Type of assessment to create
+    @param period: Period (month) of assessment to create
+    @param year: Year of assessment to create
+    @param subject: Subject of assessment to create
+    @param id_gen: ID generator
+    @param generate_item_level: If sshould generate item-level data
+    @returns: New assessment object
+    """
+    # Create assessment
+    asmt = sbac_interim_asmt_gen.generate_interim_assessment(date, subject, block, grade, id_gen,
+                                                             generate_item_level=generate_item_level)
+
+    # Output to requested mediums
+    if WRITE_LZ:
+        file_name = sbac_out_config.IAB_JSON_FORMAT['name'].replace('<GUID>', asmt.guid_sr)
+        json_writer.write_object_to_file(file_name, sbac_out_config.IAB_JSON_FORMAT['layout'], asmt,
                                          root_path=OUT_PATH_ROOT)
         file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid_sr)
         csv_writer.prepare_csv_file(file_name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
@@ -340,8 +401,71 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hi
         create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results, skip_rate,
                                          retake_rate, delete_rate, update_rate, generate_item_level)
 
+def create_iab_outcome_object(student: SBACStudent,
+                              iab_asmt: SBACAssessment,
+                              inst_hier: InstitutionHierarchy,
+                              id_gen: IDGen,
+                              iab_results: {str: SBACAssessmentOutcome},
+                              generate_item_level=True):
+    """
 
-def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state_code, district_id):
+    :param student:
+    :param iab_asmt:
+    :param inst_hier:
+    :param id_gen:
+    :param iab_results:
+    :param generate_item_level:
+    :return:
+    """
+    # Make sure the assessment is known in the results
+    if iab_asmt.guid_sr not in iab_results:
+        iab_results[iab_asmt.guid_sr] = []
+
+    # Create the original outcome object
+    ao = sbac_interim_asmt_gen.generate_interim_assessment_outcome(student, iab_asmt, inst_hier, id_gen,
+                                                                   generate_item_level=generate_item_level)
+    iab_results[iab_asmt.guid_sr].append(ao)
+
+
+def create_iab_outcome_objects(student: SBACStudent,
+                               asmts: {str: SBACAssessment},
+                               inst_hier: InstitutionHierarchy,
+                               id_gen: IDGen,
+                               iab_results: {str: SBACAssessmentOutcome},
+                               generate_item_level=True):
+    """
+    Create a set of interim assessment outcome objects for a student.
+
+    :param student: The student to create outcomes for
+    :param iab_asmts: Relevant IAB assessments
+    :param inst_hier: The institution hierarchy these assessments relate to
+    :param id_gen: ID generator
+    :param iab_results: Dictionary of iab results to update
+    :param skip_rate: The rate (chance) that this student skips an assessment
+    :param generate_item_level: If should generate item-level data
+    :return: None
+    """
+    # some % of students won't have any results
+    if random.random() < sbac_in_config.IAB_STUDENT_RATE:
+        return
+
+    # for randomly selecting a subset of dates on which a student took the test
+    date_combos = tuple(all_combinations(sbac_in_config.IAB_EFFECTIVE_DATES))
+    for year, subject, grade in itertools.product(ASMT_YEARS,
+                                                  sbac_in_config.SUBJECTS,
+                                                  GRADES_OF_CONCERN):
+
+            for block in sbac_in_config.IAB_NAMES[subject][grade]:
+                for offset_date in random.choice(date_combos):
+                    date = datetime.date(year + offset_date.year - 1, offset_date.month, offset_date.day)
+                    key = get_iab_key(date, grade, subject, block)
+                    iab_asmt = asmts[key]
+                    create_iab_outcome_object(student, iab_asmt, inst_hier, id_gen, iab_results,
+                                              generate_item_level=generate_item_level)
+
+
+def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, iab_results, state_code,
+                      district_id):
     """
     Write student and assessment data for a school to one or more output formats.
 
@@ -358,8 +482,12 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     it_lz_out_cols = sbac_out_config.LZ_ITEMDATA_FORMAT['columns']
     fao_vw_out_name = sbac_out_config.FAO_VW_FORMAT['name']
     fao_vw_out_cols = sbac_out_config.FAO_VW_FORMAT['columns']
+    fbao_vw_out_name = sbac_out_config.FBAO_VW_FORMAT['name']
+    fbao_vw_out_cols = sbac_out_config.FBAO_VW_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
+    fbao_out_name = sbac_out_config.FBAO_FORMAT['name']
+    fbao_out_cols = sbac_out_config.FBAO_FORMAT['columns']
     dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
     dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
     sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
@@ -368,12 +496,14 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     # Write student data optionally to landing zone CSV, star-schema CSV, and/or to postgres
     if WRITE_LZ:
         csv_writer.write_records_to_file(sr_out_name, sr_lz_out_cols, sr_students, root_path=OUT_PATH_ROOT)
+
     if WRITE_STAR:
         csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
                                          entity_filter=('held_back', False), tbl_name='dim_student',
                                          root_path=OUT_PATH_ROOT)
         csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
                                          root_path=OUT_PATH_ROOT)
+
     if WRITE_PG:
         postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
                                                entity_filter=('held_back', False))
@@ -381,6 +511,30 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
 
     # Write assessment results if we have them; also optionally to landing zone CSV, star-schema CSV, and/or to postgres
     if asmt_year in ASMT_YEARS:
+        for guid, rslts in iab_results.items():
+            if WRITE_LZ:
+                csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
+                                                 lz_asmt_out_cols,
+                                                 rslts,
+                                                 root_path=OUT_PATH_ROOT,
+                                                 entity_filter=('result_status', 'C'))
+
+            if WRITE_STAR:
+                csv_writer.write_records_to_file(fbao_vw_out_name, fbao_vw_out_cols, rslts,
+                                                 tbl_name='fact_block_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(fbao_out_name, fbao_out_cols, rslts,
+                                                 tbl_name='fact_block_asmt_outcome', root_path=OUT_PATH_ROOT)
+
+            if WRITE_PG:
+                try:
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_block_asmt_outcome_vw',
+                                                           fbao_vw_out_cols, rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_block_asmt_outcome',
+                                                           fbao_out_cols, rslts)
+                except Exception as e:
+                    print('PostgreSQL EXCEPTION ::: %s' % str(e))
+
+
         for guid, rslts in assessment_results.items():
 
             if WRITE_IL:
@@ -422,8 +576,12 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                     print('PostgreSQL EXCEPTION ::: %s' % str(e))
 
 
-def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments,
-                           asmt_skip_rates_by_subject, id_gen):
+def generate_district_data(state: SBACState,
+                           district: SBACDistrict,
+                           reg_sys_guid: str,
+                           assessments: {str: SBACAssessment},
+                           asmt_skip_rates_by_subject: {str: float},
+                           id_gen: IDGen):
     """
     Generate an entire data set for a single district.
 
@@ -509,6 +667,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
             # Process the whole school
             assessment_results = {}
+            iab_results = {}
             sr_students = []
             dim_students = []
             for grade, grade_students in grades.items():
@@ -543,6 +702,13 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                                                               assessment_results, skip_rate,
                                                               generate_item_level=WRITE_IL)
 
+                            create_iab_outcome_objects(student,
+                                                       assessments,
+                                                       inst_hier,
+                                                       id_gen,
+                                                       iab_results,
+                                                       generate_item_level=WRITE_IL)
+
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
                                 sr_students.append(student)
@@ -551,10 +717,12 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                             if student.guid not in students:
                                 students[student.guid] = student
                                 dim_students.append(student)
+
                             if student.guid not in unique_students:
                                 unique_students[student.guid] = True
 
                         first_subject = False
+
                 else:
                     # We're not doing assessment results, so put all of the students into the list
                     sr_students.extend(grade_students)
@@ -566,14 +734,17 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                             unique_students[student.guid] = True
 
             # Write out the school
-            write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state.code,
-                              district.guid)
+            write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, iab_results,
+                              state.code, district.guid)
+
             del dim_students
             del sr_students
             del assessment_results
+            del iab_results
+
+    unique_student_count = len(unique_students)
 
     # Some explicit garbage collection
-    unique_student_count = len(unique_students)
     del hierarchies
     del inst_hiers
     del schools
@@ -585,7 +756,13 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     return int(student_count // len(ASMT_YEARS)), unique_student_count
 
 
-def generate_state_data(state: SBACState, id_gen):
+def get_iab_key(date, grade, subject, block):
+    return "%i-%i-%i IAB %i %s %s" % (date.year, date.month, date.day, grade, subject, block)
+
+
+def generate_state_data(state: SBACState,
+                        id_gen: IDGen,
+                        generate_iabs: bool):
     """
     Generate an entire data set for a single state.
 
@@ -595,8 +772,22 @@ def generate_state_data(state: SBACState, id_gen):
     # Grab the assessment rates by subjects
     asmt_skip_rates_by_subject = state.config['subject_skip_percentages']
 
-    # Create the assessment objects
     assessments = {}
+
+    # Create the assessment objects
+    if generate_iabs:
+        for year, offset_date, subject, grade in itertools.product(ASMT_YEARS,
+                                                                   sbac_in_config.IAB_EFFECTIVE_DATES,
+                                                                   sbac_in_config.SUBJECTS,
+                                                                   GRADES_OF_CONCERN):
+
+            for block in sbac_in_config.IAB_NAMES[subject][grade]:
+                date = datetime.date(year + offset_date.year - 1, offset_date.month, offset_date.day)
+                key = get_iab_key(date, grade, subject, block)
+
+                assessments[key] = create_interim_assessment_object(date, subject, block, grade,
+                                                                    id_gen, generate_item_level=WRITE_IL)
+
     for year in ASMT_YEARS:
         for subject in sbac_in_config.SUBJECTS:
             for grade in GRADES_OF_CONCERN:
@@ -651,7 +842,7 @@ if __name__ == '__main__':
                         help='Specify the type of state to generate data for (devel (default), typical_1, california, udl_test)',
                         required=False)
     parser.add_argument('-o', '--out_dir', dest='out_dir', action='store', default='out',
-                        help='Specify the root directory for writing output files to',
+                        help='Specify the root directory for writing output files to (default=%(default)s)',
                         required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
@@ -665,6 +856,9 @@ if __name__ == '__main__':
                         help='Output data to landing zone CSV and JSON', required=False)
     parser.add_argument('-io', '--il_out', dest='il_out', action='store_true', help='Output item-level data',
                         required=False)
+    parser.add_argument('-gia', '--generate_iabs', dest='generate_iabs',
+                        action='store_false', default=True,
+                        help='generate interim assessment blocks (default=%(default)s)')
     args, unknown = parser.parse_known_args()
 
     # Save output flags
@@ -729,7 +923,7 @@ if __name__ == '__main__':
         print('Creating State: %s' % state.name)
 
         # Process the state
-        generate_state_data(state, idg)
+        generate_state_data(state, idg, generate_iabs=args.generate_iabs)
 
     # Close the open DB connection
     if WRITE_PG:

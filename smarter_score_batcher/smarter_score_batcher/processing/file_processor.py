@@ -9,7 +9,7 @@ from smarter_score_batcher.processing.assessment import get_assessment_mapping
 from smarter_score_batcher.processing.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 from smarter_score_batcher.utils.file_utils import csv_file_writer
-from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
+from smarter_score_batcher.utils.metadata_generator import metadata_generator_task
 from smarter_score_batcher.error.exceptions import GenerateCSVException, TSBException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 from smarter_score_batcher.database.db_utils import save_assessment, \
@@ -51,7 +51,7 @@ def process_item_level_data(root, meta, csv_file_path):
     return written
 
 
-def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o700):
+def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, metadata_queue, mode=0o700):
     '''
     Creates a csv in the given csv file path by reading from the xml file path
     :param csv_file_path: csv file path
@@ -65,7 +65,7 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, mode=0o7
         process_assessment_data(root, meta)
         written = process_item_level_data(root, meta, csv_file_path)
         if written:
-            metadata_generator_bottom_up(csv_file_path, generateMetadata=True)
+            metadata_generator_task.apply_async(args=(csv_file_path), queue=metadata_queue)
     except ET.ParseError as e:
         # this should not be happened because we already validate against xsd
         error_msg = str(e)

@@ -183,6 +183,7 @@ common:
       celery_timeout: 30
       sync_queue: smarter_score_batcher_sync
       async_queue: smarter_score_batcher_async
+      metadata_queue: smarter_score_batcher_metadata
       celery:
         CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer',)
         CELERY_RESULT_BACKEND: amqp

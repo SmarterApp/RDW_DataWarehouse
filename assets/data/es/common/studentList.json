@@ -1,5 +1,5 @@
 {
-    "reportInfo": "<h4>Propósito:</h4><p>Este reporte presenta una lista de las puntuaciones individuales del estudiante para una evaluación seleccionada.</p><br><h4>Usos:</h4><ul><li>Use este reporte para ver los resultados de la evaluación para una clase u otros subgrupos de estudiantes, filtrados u ordenados según sus necesidades específicas.</li><li>Revisar las escalas de puntuaciones y bandas de error para el rendimiento general de los estudiantes en una evaluación específica</li><li>Ver los íconos para exponer puntuaciones para comprender el rendimiento de los estudiantes en cada exposición.</li></ul><br><h4>Características:</h4><ul><li>Selecionar la evaluación y área de contenido (o áreas de contenido) a desplegar</li><li>Ordenar los resultados por cualquier columna </li><li>Seleccionar estudiantes específicos para enfocar su revisión </li><li>Buscar estudiantes en particular </li><li>Filtrar a los estudiantes según atributos (p. ej., Género, Programa de Educación Individualizado (IEP), Raza/Etnicidad)</li><li>Descargar resultados de evaluación del estudiante para un mayor análisis </li><li>Imprimir reportes individuales del estudiante (PDF) para un grupo seleccionado de estudiantes </li>",
+    "reportInfo": "<h4>Propósito:</h4><p>Este reporte presenta una lista de las puntuaciones individuales del estudiante para una evaluación seleccionada.</p><h4>Usos:</h4><ul><li>Use este reporte para ver los resultados de la evaluación para una clase u otros subgrupos de estudiantes, filtrados u ordenados según sus necesidades específicas.</li><li>Revisar las escalas de puntuaciones y bandas de error para el rendimiento general de los estudiantes en una evaluación específica</li><li>Ver los íconos para exponer puntuaciones para comprender el rendimiento de los estudiantes en cada exposición.</li></ul><h4>Características:</h4><ul><li>Selecionar la evaluación y área de contenido (o áreas de contenido) a desplegar</li><li>Ordenar los resultados por cualquier columna </li><li>Seleccionar estudiantes específicos para enfocar su revisión </li><li>Buscar estudiantes en particular </li><li>Filtrar a los estudiantes según atributos (p. ej., Género, Programa de Educación Individualizado (IEP), Raza/Etnicidad)</li><li>Descargar resultados de evaluación del estudiante para un mayor análisis </li><li>Imprimir reportes individuales del estudiante (PDF) para un grupo seleccionado de estudiantes </li>",
     "legendInfo": {
         "report_info": "Este reporte presenta una lista de <b>puntuaciones individuales del estudiante para una evaluación seleccionada</b>.",
         "error_band": "Las pruebas Smarter Balanced proveen las puntuaciones más precisas posibles dentro de un límite de tiempo razonable, pero ninguna prueba puede ser 100 porciento precisa. La <b>banda de error</b> indica el rango de puntuaciones que un estudiante obtendría si tomara la prueba varias veces. Es similar al \"margen de error\" que los diarios reportan para las encuestas de opinión pública.",
@@ -18,19 +18,11 @@
         "text": "Ingresar estudiante",
         "aria": "Encontrar estudiantes en este grado. Ingrese el texto de búsqueda y oprima enter"
     },
-    "detailsSelection": [
-        {
-            "display": "Overview",
-            "key": "Math_ELA"
-        },
-        {
-            "display": "Mathematics",
-            "key": "Math"
-        },
-        {
-            "display": "ELA/Literacy",
-            "key": "ELA"
-        }
-    ],
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • {{asmt_type}}"
+    "detailsSelection": {
+        "Summative": ["Overview", "Math", "ELA"],
+        "Interim Comprehensive": ["Overview", "Math", "ELA"],
+        "Interim Assessment Blocks": ["Math", "ELA"]
+    },
+    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}",
+                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"}
 }

@@ -1,7 +1,8 @@
 {
     "Content": "assessment", 
     "Identification": {
-        "Subject": "ELA"
+        "Subject": "ELA",
+        "Period": ""
     }, 
     "PerformanceLevels": {
         "Level1": {
@@ -15,6 +16,10 @@
         }, 
         "Level4": {
             "Name": "Thorough Understanding"
+        },
+        "Level5": {
+            "Name": "",
+            "CutPoint": ""
         }
     }, 
     "Claims": {

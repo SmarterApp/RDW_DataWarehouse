@@ -1,26 +1,29 @@
 from datetime import datetime
 import os
 import copy
+import re
 from pyramid.threadlocal import get_current_registry
 from sqlalchemy.sql.expression import and_
 from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import AssessmentType
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query, \
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_query_iab, get_extract_assessment_item_and_raw_query, \
     get_required_permission, get_extract_assessment_item_and_raw_count_query
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
-from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
+from smarter.extracts.metadata import get_metadata_file_name, get_metadata_file_name_iab, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from hpz_client.frs.file_registration import register_file
 from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG, \
     apply_filter_to_query
 from smarter.extracts.utils import start_extract, generate_extract_file_tasks
-from edextract.tasks.extract import archive_with_stream, prepare_path
+from edextract.tasks.extract import archive_with_stream, prepare_path, clean_up
+from smarter.extracts.processor import get_extract_request_base_path
 
 
 __author__ = 'ablum'
@@ -108,8 +111,9 @@ def process_extraction_request(params, is_async=True):
     #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
             prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)  # @UndefinedVariable
             generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-            result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
-            return result.get(timeout=celery_timeout)
+            content = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True).get(timeout=celery_timeout)
+            clean_up.apply_async(args=[get_extract_request_base_path(tenant, request_id)], queue=queue)  # @UndefinedVariable
+            return content
         else:
             raise NotFoundException("There are no results")
 
@@ -244,24 +248,95 @@ def _get_asmt_records(param, extract_type):
     return results
 
 
+def _get_asmt_records_iab(param, extract_type):
+    '''
+    query all asmt_guid and asmt_grade by given extract request params
+    '''
+    asmt_type = param.get(Constants.ASMTTYPE)
+    asmt_subject = param.get(Constants.ASMTSUBJECT)
+    state_code = param.get(Constants.STATECODE)
+    district_id = param.get(Constants.DISTRICTGUID)
+    school_id = param.get(Constants.SCHOOLGUID)
+    asmt_grade = param.get(Constants.ASMTGRADE)
+    asmt_year = param.get(Constants.ASMTYEAR)
+    student_id = param.get(Constants.STUDENTGUID)
+    # TODO: remove dim_asmt
+    with EdCoreDBConnection(state_code=state_code) as connector:
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
+        dim_student = connector.get_table(Constants.DIM_STUDENT)
+        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
+                                     dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
+                                     dim_asmt.c.asmt_claim_1_name.label(Constants.ASMT_CLAIM_1_NAME),
+                                     fact_block_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                                    from_obj=[dim_asmt
+                                              .join(fact_block_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=get_required_permission(extract_type), state_code=state_code)\
+            .where(and_(fact_block_asmt_outcome.c.state_code == state_code))\
+            .where(and_(fact_block_asmt_outcome.c.asmt_type == asmt_type))\
+            .where(and_(fact_block_asmt_outcome.c.asmt_subject == asmt_subject))\
+            .where(and_(fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))\
+            .group_by(dim_asmt.c.asmt_guid, dim_asmt.c.effective_date, dim_asmt.c.asmt_claim_1_name, fact_block_asmt_outcome.c.asmt_grade)
+
+        if district_id is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.district_id == district_id))
+        if school_id is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.school_id == school_id))
+        if asmt_grade is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.asmt_grade == asmt_grade))
+        if asmt_year is not None:
+            query = query.where(and_(fact_block_asmt_outcome.c.asmt_year == asmt_year))
+        if student_id:
+            query = query.where(and_(fact_block_asmt_outcome.c.student_id.in_(student_id)))
+
+        query = apply_filter_to_query(query, fact_block_asmt_outcome, dim_student, param)
+        results = connector.get_result(query)
+    return results
+
+
+PREQUERY_FUNCTIONS = {
+    AssessmentType.INTERIM_ASSESSMENT_BLOCKS: _get_asmt_records_iab,
+    AssessmentType.SUMMATIVE: _get_asmt_records,
+    AssessmentType.INTERIM_COMPREHENSIVE: _get_asmt_records
+}
+
+
 def _prepare_data(param, extract_type):
     '''
     Prepare record for available pre-query extract
     '''
     asmt_guid_with_grades = []
     dim_asmt = None
-    fact_asmt_outcome_vw = None
-    available_records = _get_asmt_records(param, extract_type)
-    # Format to a list with a tuple of asmt_guid and grades
+    fact_table = None
+    FACT_TABLE = {
+        AssessmentType.INTERIM_ASSESSMENT_BLOCKS: Constants.FACT_BLOCK_ASMT_OUTCOME,
+        AssessmentType.SUMMATIVE: Constants.FACT_ASMT_OUTCOME_VW,
+        AssessmentType.INTERIM_COMPREHENSIVE: Constants.FACT_ASMT_OUTCOME_VW
+    }
+
+    prequery_func = PREQUERY_FUNCTIONS[param['asmtType']]
+    available_records = prequery_func(param, extract_type)
     for record_by_asmt_type in available_records:
-        asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
+        record = (record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE])
+        if (Constants.EFFECTIVE_DATE in record_by_asmt_type):
+            # IAB records
+            record_iab = (record_by_asmt_type[Constants.EFFECTIVE_DATE], record_by_asmt_type[Constants.ASMT_CLAIM_1_NAME])
+        else:
+            record_iab = ()
+        asmt_guid_with_grades.append(record + record_iab)
 
     if asmt_guid_with_grades:
         with EdCoreDBConnection(state_code=param.get(Constants.STATECODE)) as connector:
             dim_asmt = connector.get_table(Constants.DIM_ASMT)
-            fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            fact_table = connector.get_table(FACT_TABLE[param['asmtType']])
     # Returns list of asmt guid with grades, and table objects
-    return asmt_guid_with_grades, dim_asmt, fact_asmt_outcome_vw
+    return asmt_guid_with_grades, dim_asmt, fact_table
+
+
+EXTRACT_FUNCTIONS = {
+    AssessmentType.INTERIM_ASSESSMENT_BLOCKS: get_extract_assessment_query_iab,
+    AssessmentType.SUMMATIVE: get_extract_assessment_query,
+    AssessmentType.INTERIM_COMPREHENSIVE: get_extract_assessment_query
+}
 
 
 def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
@@ -271,18 +346,27 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(param, ExtractType.studentAssessment)
+    effective_date = ''
+    asmt_claim_1_name = ''
+    guid_grade, dim_asmt, fact_table = _prepare_data(param, ExtractType.studentAssessment)
 
     copied_params = copy.deepcopy(param)
     copied_params[Constants.ASMTGRADE] = None
-    query = get_extract_assessment_query(copied_params)
+    query_func = EXTRACT_FUNCTIONS[param['asmtType']]
+    query = query_func(copied_params)
     if guid_grade:
-        for asmt_guid, asmt_grade in guid_grade:
+        for asmt_record in guid_grade:
+            if len(asmt_record) == 2:
+                asmt_guid, asmt_grade = asmt_record
+            else:
+                asmt_guid, asmt_grade, effective_date, asmt_claim_1_name = asmt_record
             copied_params = copy.deepcopy(param)
             copied_params[Constants.ASMTGUID] = asmt_guid
             copied_params[Constants.ASMTGRADE] = asmt_grade
-            query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\
-                .where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
+            copied_params[Constants.EFFECTIVE_DATE] = effective_date
+            copied_params[Constants.ASMT_CLAIM_1_NAME] = asmt_claim_1_name
+            query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
+            query_with_asmt_rec_id_and_asmt_grade = query_with_asmt_rec_id_and_asmt_grade.where(and_(fact_table.c.asmt_grade == asmt_grade))
             tasks += (_create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade,
                                     is_tenant_level=is_tenant_level))
         copied_task_response[Extract.STATUS] = Extract.OK
@@ -370,7 +454,14 @@ def _create_new_task(request_id, user, tenant, params, query, extract_type=None,
 
 
 def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
+    FILENAME_FUNC = {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: get_file_name_iab}
     identifier = '_' + param.get(Constants.STATECODE) if is_tenant_level else ''
+    filename_func = FILENAME_FUNC.get(param['asmtType'], get_file_name)
+    file_name = filename_func(param, identifier)
+    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
+
+
+def get_file_name(param, identifier):
     file_name = 'ASMT_{asmtYear}{identifier}_{asmtGrade}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.\
                 format(identifier=identifier,
                        asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
@@ -379,7 +470,23 @@ def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
                        currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
                        asmtYear=param[Constants.ASMTYEAR],
                        asmtGuid=param[Constants.ASMTGUID])
-    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
+    return file_name
+
+
+def get_file_name_iab(param, identifier):
+    asmt_claim_1_name = param[Constants.ASMT_CLAIM_1_NAME]
+    asmt_claim_1_name = re.sub(r'[^a-zA-Z0-9]', '', asmt_claim_1_name)
+    file_name = 'ASMT_{asmtYear}{identifier}_{asmtGrade}_{asmtSubject}_IAB_{asmt_claim_1_name}_EFF{effectiveDate}_TS{currentTime}_{asmtGuid}.csv'.\
+                format(identifier=identifier,
+                       asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
+                       asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                       asmtType=param[Constants.ASMTTYPE].upper(),
+                       currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                       asmtYear=param[Constants.ASMTYEAR],
+                       asmtGuid=param[Constants.ASMTGUID],
+                       effectiveDate=datetime.strptime(param[Constants.EFFECTIVE_DATE], '%Y%m%d').strftime('%m-%d-%Y'),
+                       asmt_claim_1_name=asmt_claim_1_name[:10])
+    return file_name
 
 
 def get_items_extract_file_path(param, tenant, request_id, partial_no=None):
@@ -397,4 +504,7 @@ def get_items_extract_file_path(param, tenant, request_id, partial_no=None):
 
 
 def get_asmt_metadata_file_path(params, tenant, request_id):
-    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), get_metadata_file_name(params))
+    META_DATA_FILENAME_FUNC = {AssessmentType.INTERIM_ASSESSMENT_BLOCKS: get_metadata_file_name_iab}
+    meta_data_filename_func = META_DATA_FILENAME_FUNC.get(params['asmtType'], get_metadata_file_name)
+    meta_data_file_name = meta_data_filename_func(params)
+    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), meta_data_file_name)

@@ -7,6 +7,7 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
+  "edware"
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
@@ -19,7 +20,7 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
+], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
   POPULATION_BAR_WIDTH = 145
 
@@ -41,6 +42,7 @@ define [
       firstColumn.displayTpl = customView.displayTpl
       firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
+      # firstColumn.options.asmtType = Constants.ASMT_TYPE.SUMMATIVE
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
       this
@@ -53,6 +55,7 @@ define [
 
     constructor: (config) ->
       @initialize(config)
+      @bindEvents()
 
     initialize: (config)->
       this.config = config
@@ -171,7 +174,6 @@ define [
       this.renderGrid()
 
     afterGridLoadComplete: () ->
-      this.bindEvents()
       # Rebind events and reset sticky comparison
       this.stickyCompare.update()
       this.alignment.update()
@@ -226,7 +228,9 @@ define [
       grid = $('#gridTable')
       sortedColumn = grid.jqGrid('getGridParam','sortname')
       for subject, idx of SUBJECT_HEADERS
-        label = "<a class='inherit' href='#'><b>#{Constants.SUBJECT_TEXT[subject]}</b></a>"
+        label = Mustache.render @config.subjectTemplate,
+          subject: Constants.SUBJECT_TEXT[subject]
+          perfLevel: [1..4]
         if sortedColumn is idx
           if sortorder is 'asc'
             label += " <span aria-hidden='true'>#{@config.proficiencyAscending}</span>"
@@ -293,7 +297,10 @@ define [
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
-      $(".progress").popover
+      # TODO:
+      $(document).on
+        'mouseenter focus': ->
+          $(this).popover
             html: true
             placement: 'top'
             container: '#content'
@@ -301,11 +308,10 @@ define [
             content: ->
               # template location: widgets/populationBar/template.html
               $(this).find(".progressBar_tooltip").html()
-        # also display tooltips when focus on
-      $(".progress").on 'focus', ()->
-        $(this).popover('show')
-      .focusout ()->
-        $(this).popover('hide')
+          .popover('show')
+        'focusout': ->
+          $(this).popover('hide')
+        , '.progress'
 
     # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->
@@ -418,9 +424,10 @@ define [
       # Add color for each intervals
     appendColor: (data, colors) ->
       i = 0
+      colors = colors?.colors || []
       defaultColors = this.defaultColors
       intervals = data.intervals
-      if colors and colors['colors'] then len = colors['colors'].length else len = defaultColors.length
+      len = if colors.length > 0 then colors.length else defaultColors.length
       sort = 0
       while i < len and intervals
         element = intervals[i]
@@ -428,7 +435,7 @@ define [
         element.count = edwareUtil.formatNumber(element.count)
         element.description = @intervals[i].name
         element.text_color_class = @intervals[i].text_color?.substr(1)
-        if colors and colors[i]
+        if colors[i]
           element.color = colors[i]
         else
           element.color = defaultColors[i]

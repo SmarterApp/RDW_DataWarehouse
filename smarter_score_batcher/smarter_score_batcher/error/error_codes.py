@@ -28,6 +28,9 @@ class ErrorCode():
     GENERAL_FILE_MONITOR_ERROR = 4500
     FILE_NOT_FOUND_FILE_MONITOR_ERROR = 4510
 
+    # Security error
+    PATH_TRAVERSAL_DETECTED = 4600
+
     message = {GENERAL_TSB_ERROR: 'GENERAL_TSB_ERROR',
                GENERAL_FILELOCK_ERROR: 'GENERAL_FILELOCK_ERROR',
                FILE_FOR_FILELOCK_DOES_NOT_EXIST: 'FILE_FOR_FILELOCK_DOES_NOT_EXIST',
@@ -35,7 +38,8 @@ class ErrorCode():
                DIRECTORY_NOT_EXIST_FOR_METADATA_GENERATOR: 'DIRECTORY_NOT_EXIST_FOR_METADATA_GENERATOR',
                CSV_GENERATE_ERROR: 'CSV_GENERATE_ERROR',
                CSV_PARSE_ERROR: 'CSV_PARSE_ERROR',
-               UNABLE_TO_LOAD_METADATA_SUBJECT: 'UNABLE_TO_LOAD_METADATA_SUBJECT'}
+               UNABLE_TO_LOAD_METADATA_SUBJECT: 'UNABLE_TO_LOAD_METADATA_SUBJECT',
+               PATH_TRAVERSAL_DETECTED: 'PATH_TRAVERSAL_DETECTED'}
 
 
 class ErrorSource():
@@ -49,6 +53,9 @@ class ErrorSource():
     METADATATEMPLATEMANAGER_GET_TEMPLATE = 4005
     MOVE_TO_STAGE = 4006
     GENERATE_PERFORMANCE_METADATA = 4007
+    PREPARE_ASSESSMENT_DIR = 4008
+    REMOTE_CSV_GENERATOR = 4009
+    REMOTE_WRITE = 4010
 
     message = {METADATA_GENERATOR_TOP_DOWN: 'metadata_generator_top_down',
                METADATA_GENERATOR_BOTTOM_UP: 'metadata_generator_bottom_up',
@@ -56,5 +63,8 @@ class ErrorSource():
                GENERATE_CSV_FROM_XML: 'generate_csv_from_xml',
                METADATATEMPLATEMANAGER_GET_TEMPLATE: 'MetadataTemplateManager.get_template',
                MOVE_TO_STAGE: 'move_to_stage',
-               GENERATE_PERFORMANCE_METADATA: 'generate_performance_metadata'
+               GENERATE_PERFORMANCE_METADATA: 'generate_performance_metadata',
+               PREPARE_ASSESSMENT_DIR: 'prepare_assessment_dir',
+               REMOTE_CSV_GENERATOR: 'remote_csv_generator',
+               REMOTE_WRITE: 'remote_write'
                }

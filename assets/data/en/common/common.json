@@ -192,7 +192,7 @@
                 "items": [
                     {
                         "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit'>Students</>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -207,7 +207,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='Mathematics Overall, Mathematics Error Band, Mathematics Performance Level, Mathematics Performance Level Number'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 230,
@@ -222,7 +222,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='ELA/Literacy Overall, ELA/Literacy Error Band, ELA/Literacy Performance Level, ELA/Literacy Performance Level Number'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 230,
@@ -251,7 +251,7 @@
                 "items": [
                     {
                         "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -266,7 +266,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='Mathematics Overall, Mathematics Error Band, Mathematics Performance Level, Mathematics Performance Level Number'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 175,
@@ -281,7 +281,7 @@
                     },
                     {
                         "name": "{{claims.subject1.0.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Mathematics - {{claims.subject1.0.name}} - Performance Level Number, Mathematics - {{claims.subject1.0.name}} - Performance Level'>{{claims.subject1.0.name}}</a>",
                         "index": "subject1.claims.0.perf_lvl",
                         "field": "subject1.claims.0.perf_lvl",
                         "width": 154,
@@ -293,7 +293,7 @@
                     },
                     {
                         "name": "{{claims.subject1.1.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Mathematics - {{claims.subject1.1.name}} - Performance Level Number, Mathematics - {{claims.subject1.1.name}} - Performance Level'>{{claims.subject1.1.name}}</a>",
                         "index": "subject1.claims.1.perf_lvl",
                         "field": "subject1.claims.1.perf_lvl",
                         "width": 160,
@@ -305,7 +305,7 @@
                     },
                     {
                         "name": "{{claims.subject1.2.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Mathematics - {{claims.subject1.2.name}} - Performance Level Number, Mathematics - {{claims.subject1.2.name}} - Performance Level'>{{claims.subject1.2.name}}</a>",
                         "index": "subject1.claims.2.perf_lvl",
                         "field": "subject1.claims.2.perf_lvl",
                         "width": 160,
@@ -324,7 +324,7 @@
                 "items": [
                     {
                         "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -339,7 +339,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='ELA/Literacy Overall, ELA/Literacy Error Band, ELA/Literacy Performance Level, ELA/Literacy Performance Level Number'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 175,
@@ -354,7 +354,7 @@
                     },
                     {
                         "name": "{{claims.subject2.0.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Literacy - {{claims.subject2.0.name}} - Performance Level Number, ELA/Literacy - {{claims.subject2.0.name}} - Performance Level'>{{claims.subject2.0.name}}</a>",
                         "index": "subject2.claims.0.perf_lvl",
                         "field": "subject2.claims.0.perf_lvl",
                         "width": 118,
@@ -366,7 +366,7 @@
                     },
                     {
                         "name": "{{claims.subject2.1.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Literacy - {{claims.subject2.1.name}} - Performance Level Number, ELA/Literacy - {{claims.subject2.1.name}} - Performance Level'>{{claims.subject2.1.name}}</a>",
                         "index": "subject2.claims.1.perf_lvl",
                         "field": "subject2.claims.1.perf_lvl",
                         "width": 118,
@@ -378,7 +378,7 @@
                     },
                     {
                         "name": "{{claims.subject2.2.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Literacy - {{claims.subject2.2.name}} - Performance Level Number, ELA/Literacy - {{claims.subject2.2.name}} - Performance Level'>{{claims.subject2.2.name}}</a>",
                         "index": "subject2.claims.2.perf_lvl",
                         "field": "subject2.claims.2.perf_lvl",
                         "width": 118,
@@ -390,7 +390,7 @@
                     },
                     {
                         "name": "{{claims.subject2.3.name}}",
-                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Literacy - {{claims.subject2.3.name}} - Performance Level Number, ELA/Literacy - {{claims.subject2.3.name}} - Performance Level'>{{claims.subject2.3.name}}</a>",
                         "index": "subject2.claims.3.perf_lvl",
                         "field": "subject2.claims.3.perf_lvl",
                         "width": 120,
@@ -404,7 +404,7 @@
             }
         ],
         "customViews": {
-            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
+            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}, {"name": "Interim Assessment Blocks", "display": "Interim Assessment Blocks"}],
             "items": {
                 "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
                 "{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -412,7 +412,66 @@
             }
         }
     },
-
+    "column_for_iab": {
+        "name": "{{claim}}",
+        "displayTpl": "<a href='#' title='{{claim}}' data-export-name='{{subjectText}}-{{claim}}-{{effectiveDateText}}-Performance Level Number,{{subjectText}}-{{claim}}-{{effectiveDateText}}-Performance Level' class='inherit'>{{titleText}}</a>",
+        "index": "{{subject}}.{{{claim}}}.{{i}}.claims.0.perf_lvl",
+        "field": "{{subject}}.{{{claim}}}.{{effectiveDate}}.claims.0.perf_lvl",
+        "width": "{{width}}",
+        "formatter": "showPerfLevelIAB",
+        "sorttype": "int",
+        "align": "center",
+        "title": false,
+        "export": true,
+        "expanded": "{{expanded}}",
+        "numberOfColumns": "{{numberOfColumns}}"
+    },
+    "students_iab": {
+        "ELA": [
+            {
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true,
+                        "frozen": true
+                    }
+                ]
+            }
+        ],
+        "Math": [
+            {
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true,
+                        "frozen": true
+                    }
+                ]
+            }
+        ]
+    },
     "comparingPopulations": {
         "grid": [
             {
@@ -450,7 +509,7 @@
                     },
                     {
                         "name": "Total Pop",
-                        "displayTpl": "<a class='inherit' href='#'># Assessed</a>",
+                        "displayTpl": "<a class='inherit' href='#' data-export-name='Mathematics Total Assessed'># Assessed</a>",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
                         "sorttype": "int",
@@ -479,7 +538,7 @@
                     },
                     {
                         "name": "Total Pop",
-                        "displayTpl": "<a class='inherit' href='#'># Assessed</a>",
+                        "displayTpl": "<a class='inherit' href='#' data-export-name='ELA/Literacy Total Assessed'># Assessed</a>",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
                         "sorttype": "int",
@@ -497,19 +556,19 @@
         "customViews": {
             "school": {
                 "name": "Grade",
-                "displayTpl": "<a href='#' class='inherit'>Grade</a>",
+                "displayTpl": "<a href='#' class='inherit' data-export-name='Grade'>Grade</a>",
                 "link": "studentList.html",
                 "id_name": "asmtGrade"
             },
             "district": {
                 "name": "School Name",
-                "displayTpl": "<a href='#' class='inherit'>School Name</a>",
+                "displayTpl": "<a href='#' class='inherit' data-export-name='School Name'>School Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "schoolId"
             },
             "state": {
                 "name": "District Name",
-                "displayTpl": "<a href='#' class='inherit'>District Name</a>",
+                "displayTpl": "<a href='#' class='inherit' data-export-name='District Name'>District Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "districtId"
             }
@@ -670,5 +729,19 @@
         "export_pdf_files": "Generate Reports",
         "generate_reports": "Generating Requested Reports",
         "note": "<b>Note:</b> The downloads above will reflect any selections you have made, including academic year, assessment, and filters."
+    },
+    "detailsButtons": {
+        "Overview": {
+            "display": "Overview",
+            "key": "Math_ELA"
+        },
+        "Math": {
+            "display": "Mathematics",
+            "key": "Math"
+        },
+        "ELA": {
+            "display": "ELA/Literacy",
+            "key": "ELA"
+        }
     }
 }

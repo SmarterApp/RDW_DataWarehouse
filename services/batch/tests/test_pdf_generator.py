@@ -62,7 +62,7 @@ class TestPdfGenerator(unittest.TestCase):
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
-        results = self.pdf_generator.send_pdf_request('student-guid', 'ny', '20120201', pdf_file)
+        results = self.pdf_generator.send_pdf_request('student-guid', 'ny', '2012', 'SUMMATIVE', '20120201', pdf_file)
         self.assertIsNotNone(results.task_id)
         self.assertEqual(results.status, 'SUCCESS')
 
@@ -70,13 +70,15 @@ class TestPdfGenerator(unittest.TestCase):
         student_id = '2343'
         report = 'ISR.html'
         effective_date = '20120201'
-        results = self.pdf_generator.build_url(student_id, 'ny', effective_date, report)
+        results = self.pdf_generator.build_url(student_id, 'ny', '2012', 'SUMMATIVE', effective_date, report)
         url = urlparse(results)
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + '/' + report)
         query_param = parse_qs(url.query)
-        self.assertEqual(len(query_param.keys()), 4)
+        self.assertEqual(len(query_param.keys()), 6)
         self.assertEqual(query_param['studentId'][0], student_id)
         self.assertEqual(query_param['pdf'][0], 'true')
+        self.assertEqual(query_param['asmtYear'][0], '2012')
+        self.assertEqual(query_param['asmtType'][0], 'SUMMATIVE')
 
     def test_build_url_with_trailing_slash(self):
         self.settings['pdf.base.url'] = 'http://dummy:8234/reports/'
@@ -85,11 +87,11 @@ class TestPdfGenerator(unittest.TestCase):
         student_id = '2343'
         report = 'ISR.html'
         effective_date = '20120201'
-        results = self.pdf_generator.build_url(student_id, 'ny', effective_date, report)
+        results = self.pdf_generator.build_url(student_id, 'ny', '2012', 'SUMMATIVE', effective_date, report)
         url = urlparse(results)
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + report)
         query_param = parse_qs(url.query)
-        self.assertEqual(len(query_param.keys()), 4)
+        self.assertEqual(len(query_param.keys()), 6)
         self.assertEqual(query_param['studentId'][0], student_id)
         self.assertEqual(query_param['pdf'][0], 'true')
         self.assertEqual(query_param['stateCode'][0], 'ny')

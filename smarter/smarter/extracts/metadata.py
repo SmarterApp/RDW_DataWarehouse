@@ -7,6 +7,8 @@ from smarter.reports.helpers.constants import Constants
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import select, and_, literal
 from smarter.extracts.format import get_column_mapping
+from datetime import datetime
+import re
 
 
 def get_metadata_file_name(params):
@@ -20,6 +22,23 @@ def get_metadata_file_name(params):
                asmtType=params.get(Constants.ASMTTYPE).upper(),
                asmtYear=params.get(Constants.ASMTYEAR),
                asmtGuid=params.get(Constants.ASMTGUID))
+
+
+def get_metadata_file_name_iab(params):
+    '''
+    Returns file name of json metadata
+    '''
+    asmt_claim_1_name = params[Constants.ASMT_CLAIM_1_NAME]
+    asmt_claim_1_name = re.sub(r'[^a-zA-Z0-9]', '', asmt_claim_1_name)
+    return "METADATA_ASMT_{asmtYear}_{stateCode}_GRADE_{asmtGrade}_{asmtSubject}_IAB_{asmt_claim_1_name}_EFF{effectiveDate}_{asmtGuid}.json".\
+        format(stateCode=params.get(Constants.STATECODE).upper(),
+               asmtGrade=params.get(Constants.ASMTGRADE).upper(),
+               asmtSubject=params.get(Constants.ASMTSUBJECT).upper(),
+               asmtType=params.get(Constants.ASMTTYPE).upper(),
+               asmtYear=params.get(Constants.ASMTYEAR),
+               effectiveDate=datetime.strptime(params[Constants.EFFECTIVE_DATE], '%Y%m%d').strftime('%m-%d-%Y'),
+               asmtGuid=params.get(Constants.ASMTGUID),
+               asmt_claim_1_name=asmt_claim_1_name[:10])
 
 
 def get_asmt_metadata(state_code, asmt_guid):
@@ -66,5 +85,5 @@ def get_asmt_metadata(state_code, asmt_guid):
                         dim_asmt.c.asmt_claim_perf_lvl_name_2.label(mapping.get('asmt_claim_perf_lvl_name_2', 'asmt_claim_perf_lvl_name_2')),
                         dim_asmt.c.asmt_claim_perf_lvl_name_3.label(mapping.get('asmt_claim_perf_lvl_name_3', 'asmt_claim_perf_lvl_name_3'))],
                        from_obj=[dim_asmt])
-        query = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
+        query = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid, dim_asmt.c.rec_status == Constants.CURRENT))
         return query

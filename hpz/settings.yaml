@@ -135,19 +135,38 @@ qa:
         url: postgresql+psycopg2://hpz:hpz2014@dbpghpz0.qa.dum.edwdc.net:5432/hpz
         pool_size: 20
       frs:
-        download_base_url: https://hpzweb0.qa.dum.edwdc.net/
+        download_base_url: https://hpzweb0.qa.dum.edwdc.net/download
     auth:
+      policy:
+        timeout: 7200
+      session:
+        timeout: 7200
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
       saml:
         issuer_name: https://hpzweb0.qa.dum.edwdc.net
-        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
     cache:
       session:
         url: dwcache0.qa.dum.edwdc.net:11211
+        expire: 7200
       type: ext:memcached
+      expire: 7200
+      lock_dir: /tmp/memcache
+      public:
+        data:
+          expire: 31556940
+          url: dwcache0.qa.dum.edwdc.net:11211
+        filtered_data:
+          expire: 15552000
+          url: dwcache0.qa.dum.edwdc.net:11211
+        shortlived:
+          expire: 7776000
+          url: dwcache0.qa.dum.edwdc.net:11211
+      regions: public.data, public.filtered_data, public.shortlived, session
+      
 
 uat:
   '[app:main]':

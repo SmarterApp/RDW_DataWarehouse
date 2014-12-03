@@ -98,7 +98,7 @@ qa:
             db_schema: edware_es_1_7
     edware_stats:
         db:
-            schema_name: edware_es_1_7
+            schema_name: edware_es_stats
             url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
 
 dev:

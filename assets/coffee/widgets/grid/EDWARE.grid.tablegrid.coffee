@@ -18,12 +18,18 @@ define [
       height: "auto"
       viewrecords: true
       autoencode: true
+      frozenColumns: false
       rowNum: 100
       gridview: true
       scroll: 1
       shrinkToFit: false
       defaultWidth: 980
       loadComplete: () ->
+
+  EXPAND_ICONS = {
+    'EXPANDED': "<a href='#' class='expand-icon edware-icon-collapse-expand-minus'></a>"
+    'COLLAPSED': "<a href='#' class='expand-icon edware-icon-collapse-expand-plus'></a>"
+  }
 
   class EdwareGrid
 
@@ -37,12 +43,17 @@ define [
     bindEvents: ()->
       # reset focus after sorting
       self = this
-      $('.ui-jqgrid-sortable').click ()->
-        lastFocus = "##{this.id}"
+      $('.ui-jqgrid-sortable').find('a, span').click (e)->
+        id = $(this).parent().attr('id')
+        lastFocus = "##{id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
         # emit sorting event to other listeners
         $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
+        createPrintMedia()
+
+      $('a.expand-icon').click (e) ->
+        $(document).trigger CONSTANTS.EVENTS.EXPAND_COLUMN, $(this)
 
       # load more data when focus on first and last row by triggering
       # scrolling event.
@@ -57,6 +68,19 @@ define [
         offset = bodyDiv.scrollTop()
         bodyDiv.scrollTop(offset - 10)
 
+      $('.ui-jqgrid-hdiv .ui-jqgrid-htable').first().on 'keyup', 'th', (e) ->
+        if e.which isnt CONSTANTS.KEYS.TAB
+          return
+        bodyLeft = $('body').offset().left
+        $header = $(e.delegateTarget)
+        $body = $('.ui-jqgrid-bdiv')
+        headerLeftOffset = bodyLeft - $header.offset().left
+        columnOffset = $(this)[0].offsetLeft - headerLeftOffset
+        if columnOffset < 330
+          $body.scrollLeft(0)
+        else
+          $body.scrollLeft(headerLeftOffset)
+
     setSortedColumn: (columns) ->
       sorted = this.options.sort
       return columns if not sorted
@@ -68,9 +92,16 @@ define [
         column
 
     afterLoadComplete: () ->
+      this.customizePosition()
+      this.highlightSortLabels()
+
+    customizePosition: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      this.highlightSortLabels()
+      rows = $(".frozen-bdiv .jqgrow")
+      $(".frozen-bdiv").css('height', rows.length * 40)
+      # ignore students name on tab
+      $("#gridWrapper.IAB .ui-jqgrid-bdiv").not(".frozen-bdiv").find("input, a[href!='#']").attr('tabindex', '-1')
 
     resetFocus: ()->
       $("#{this.lastFocus} a").focus()
@@ -81,15 +112,8 @@ define [
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
-      # this.renderPrintHeader()
       this.addARIA()
       this.bindEvents()
-
-    renderPrintHeader: ()->
-      # set repeating headers
-      $gridTable = $("div.ui-jqgrid-bdiv table")
-      $gridTable.prepend $('.ui-jqgrid-hdiv thead').clone()
-      # $gridTable.prepend $('.ui-jqgrid-sdiv .footrow').clone()
 
     addARIA: ()->
       $('.ui-jqgrid-hdiv .jqg-third-row-header').attr('role', 'row')
@@ -113,6 +137,8 @@ define [
       this.table.jqGrid options
       this.table.jqGrid "hideCol", "rn"
       this.table.setGridWidth options.defaultWidth, false
+      if options.frozenColumns
+        this.table.jqGrid('setFrozenColumns').trigger("reloadGrid")
 
     renderFooter: () ->
       # Add footer row to the grid
@@ -120,11 +146,12 @@ define [
       this.table.jqGrid('footerData','set', footer, true) if footer
 
     renderHeader: () ->
+      if not this.options.expandableColumns
+        return
       headers = this.getHeaders()
-      return if headers.length <= 0
       # draw headers
       this.table.jqGrid "setGroupHeaders", {
-        useColSpanStyle: false
+        useColSpanStyle: true
         groupHeaders: headers
         fixed: true
       }
@@ -148,7 +175,7 @@ define [
       colModelItem =
         name: column.field
         label: column.name
-        parentLabel: column.parent.name
+        parentLabel: column.parent?.name
         index: column.index
         width: column.width
         resizable: false # prevent the user from manually resizing the columns
@@ -164,6 +191,7 @@ define [
       colModelItem.frozen = column.frozen if column.frozen
       colModelItem.export = column.export
       colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
+      colModelItem.expanded = if column.expanded then true else false
 
       #Hide column if the value is true
       if column.hide
@@ -174,27 +202,45 @@ define [
       colModelItem
 
     getColumnName: (column) ->
-      column.displayTpl
+      if column.numberOfColumns and column.expanded isnt 'true' and column.numberOfColumns > 1
+        column.displayTpl + EXPAND_ICONS.COLLAPSED
+      else
+        column.displayTpl
 
     getHeaders: () ->
-      for column in this.columns
-        startColumnName: column.items[0].field
-        numberOfColumns: column.items.length
-        titleText: column.name
+      expandedHeaders = []
+      cache = {}
+      for column in @columns[0].items
+        if column.expanded isnt 'true'
+          continue
+        header =
+          startColumnName: column.field
+          numberOfColumns: column.numberOfColumns
+          titleText: "<div class='expandedHeader' title='#{column.name}'>#{column.name}#{EXPAND_ICONS.EXPANDED}</div>"
+        if not cache[column.name]
+          expandedHeaders.push(header)
+          cache[column.name] = true
+      expandedHeaders
 
     highlightSortLabels: () ->
-      sortingHeaders = $('.jqg-third-row-header .ui-th-ltr')
+      sortingHeaders = $('.ui-th-ltr')
       sortingHeaders.removeClass('active')
       grid = $('#gridTable')
       column = grid.jqGrid('getGridParam', 'sortname')
       grid.jqGrid('setLabel', column, '', 'active')
+      # highlight frozen column headers
+      $('.frozen-div th#gridTable_' + column).addClass('active')
+      # highlight expandable column by its name expandable columns has
+      # dots and spaces which cannot use jQuery selector to pick it
+      # gracefully.
+      if column.indexOf("perf_lvl") > 0
+        # column name
+        columnName = column.split(".")[1]
+        $('th[id*="' + columnName + '"]').addClass('active')
 
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
-
-      # trigger gridComplete event
-      options.gridComplete() if options.gridComplete
       return this.grid
 
     $.fn.eagerLoad = () ->
@@ -223,8 +269,8 @@ define [
   adjustHeight = () ->
     # adjust grid height based on visible region
     $("#gview_gridTable > .ui-jqgrid-bdiv").css {
-      'min-height': 100
-      'height': calculateHeight()
+      # 'min-height': 100
+      'max-height': calculateHeight()
     }
 
   calculateHeight = () ->
@@ -245,6 +291,26 @@ define [
 
   afterPrint = () ->
     $('#gridTable').lazyLoad()
+
+  createPrintMedia = () ->
+    $('#gview_gridTable_print_media').remove()
+    gview_gridTable_h = $($('#gview_gridTable .ui-jqgrid-hdiv table').get(0))
+    gview_gridTable_b = $($('#gview_gridTable .ui-jqgrid-bdiv table').get(0))
+    table_width = gview_gridTable_h.outerWidth()
+    page_width =  $('body').width()
+    pageCount = Math.ceil(table_width / page_width)
+    $('#gridWrapper').append('<div id="gview_gridTable_print_media" class="printContent ui-jqgrid ui-widget ui-widget-content ui-corner-all"></div>')
+    printWrap = $('#gview_gridTable_print_media')
+    i = 0
+    while i < pageCount
+      $('<div>&nbsp;</div>').appendTo(printWrap) if i isnt 0
+      $('<div class="pageBreak">').appendTo(printWrap) if i isnt 0
+      printPage = $('<div class="ui-jqgrid-hbox"></div>').css(overflow: "hidden", width: page_width, "page-break-before": (if i is 0 then "auto" else "always")).appendTo(printWrap)
+      if i+1 is pageCount
+        printPage.css('margin-bottom', '40px')
+      gview_gridTable_h.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
+      gview_gridTable_b.clone().appendTo(printPage).css({"position": "relative", "left": -i * page_width})
+      i++
 
   # add hook to run before browser print
   if window.matchMedia
@@ -283,3 +349,4 @@ define [
 
   create: create
   adjustHeight: adjustHeight
+  createPrintMedia: createPrintMedia

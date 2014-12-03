@@ -1,0 +1,118 @@
+<h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
+{{#current}}
+<div class="innerBox clearfix {{asmt_subject}}">
+    <div class="printHeader printContent">
+        <div class="logo">
+            <img src="{{branding.tenantLogo}}"/> 
+            <span>{{branding.tenantLabel}}</span>
+        </div>
+        <div class="summary">
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
+        </div>
+    </div>
+    <div class="isrInterimBlockHeader">
+    	{{#has_data}}
+        <span class="subject">{{asmt_subject_text}}</span>
+        <span class="info">{{asmt_type}} <span class="iabYear">{{asmt_period}}</span></span>
+        {{/has_data}}
+        {{^has_data}}
+        {{labels.no_results}}
+        {{/has_data}}
+    </div>
+    <div style="clear:both"></div>
+    <div class="contentBlocksWrapper">
+    	{{#grades}}
+    	<hr>
+        <div class="blocksSection clearfix">
+            <div class="row-fluid">
+            	{{#blocks}}
+                <div class="span4 claims blocks iabBlocksTable">
+                    <div class="title">{{mostRecent.grade}}: <span class="blockName">{{mostRecent.name}}</span></div>
+                    <div class="content">
+                    	<div class="level{{mostRecent.level}}">
+	                    	<i class="edware-icon-large-perf-level-{{mostRecent.level}}"></i>
+	                    	<div class="level{{mostRecent.level}}Content">
+	                    		<div class="takenDate">{{mostRecent.effective_date}}</div>
+	                        {{mostRecent.desc}}
+	                       </div>
+	                    </div>
+                    </div>
+                	<span class="previousResults">{{labels.previous_results}}</span>
+                	{{#hasOlder}}<a href='#' class="olderResults pull-right">{{labels.older_display_text}}</a>
+                	<div class="oldResultsContent hide">
+                		<span class="previousResults">{{labels.previous_results_contd}}</span>
+                		<table class="table">
+                		<tbody>
+                    		<tr>
+		                		{{#older}}
+		                			<td>
+				        			<div class="takenDate oldDateResults">{{effective_date}}</div>
+                    				<i class="edware-icon-small-perf-level-{{level}}"></i>
+                    				</td>
+				        		{{/older}}
+				        	</tr>
+				        </tbody>
+				        </table>
+		        		</div>
+                	{{/hasOlder}}
+                	<table class="table">
+                		<tbody>
+                    		<tr>
+                    			{{#previous}}
+                    			{{#placeholder}}
+                    			<td></td>
+                    			{{/placeholder}}
+                    			{{^placeholder}}
+                    			<td>
+                    			<div class="takenDate oldDateResults">{{effective_date}}</div>
+                    			<i class="edware-icon-small-perf-level-{{level}}"></i>
+                    			</td>
+                    			{{/placeholder}}
+                    			{{/previous}}
+                    			{{^previous}}
+                    			<td>{{labels.none}}</td>
+                    			<td></td>
+                    			<td></td>
+                    			{{/previous}}
+                    		</tr>
+                    	</tbody>
+                	</table>
+               </div>
+               {{/blocks}}
+            </div>
+        </div>
+        {{/grades}}
+    </div>
+    <div class="pageBreak"></div>
+</div>
+{{/current}}
+<div id="print_reportInfoContent" class="printContent clearfix">
+    <div class="printHeader">
+        <div class="logo">
+            <img src="{{branding.tenantLogo}}" width="{{branding.tenantLogoWidth}}" height="{{branding.tenantLogoHeight}}"/> 
+            <span>{{branding.tenantLabel}}</span>
+        </div>
+        <div class="summary">
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
+        </div>
+    </div>
+    <div class="aboutReportPopup">
+        <div class="reportInfoWrapper">
+            <div class="reportInfoText">
+                <h3>{{labels.report_info}}:</h3>
+            </div>
+            {{#printAdditionalInfo.policy_content}}
+            <div class="policy"><h4>{{labels.college_content_readiness}}:</h4><p>{{{printAdditionalInfo.policy_content}}}</p></div>
+            {{/printAdditionalInfo.policy_content}}
+            <div class="psychometric"><h4>{{labels.note}}:</h4><p>{{{printAdditionalInfo.psychometric_implications}}}</p></div>
+            <div class='disclaimerInfo printContent'></div>
+        </div>
+    </div>
+    <div class="legendPopup"></div>
+</div>

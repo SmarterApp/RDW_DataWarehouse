@@ -1,10 +1,11 @@
 define [
   "jquery"
   "mustache"
+  "edware"
   "edwareConstants"
   "edwareClientStorage"
   "edwareUtil"
-], ($, Mustache, Constants, edwareClientStorage, edwareUtil) ->
+], ($, Mustache, edware, Constants, edwareClientStorage, edwareUtil) ->
 
 
   class CSVBuilder
@@ -33,9 +34,8 @@ define [
     getSortBy: () ->
       sortName = this.table.getGridParam('sortname')
       sortedColumnId = "#jqgh_gridTable_#{sortName}".replace(/\./g, "\\.")
-      sortBy = $(sortedColumnId).text()
+      sortBy = $(sortedColumnId).first().text() || sortName.split(".")[1]
       sortBy
-
 
     build: () ->
       records = [] # fixed first 10 rows
@@ -80,9 +80,10 @@ define [
 
     buildContent: () ->
       result = []
+      header = this.table.getGridParam("colNames")
       rowData = this.table.getRowData()
       # build column names
-      result.push this.getColumnNames(rowData[0]) # row 0 is header
+      result.push this.getColumnNames(header)
       # build summary
       footerData = this.table.footerData()
       if not $.isEmptyObject(footerData)
@@ -92,8 +93,15 @@ define [
         result.push this.getColumnValues(record)
       result
 
-    getColumnNames: (record) ->
-      this.buildRow(record, 'export-name')
+    getColumnNames: (headers) ->
+      columnValues = []
+      return columnValues if not headers
+      for header in headers
+        columnName = $(header).data("export-name")
+        if not columnName
+          continue
+        columnValues.push columnName.replace(/,\ +$/, '').replace(/,\ /g,',').trim()
+      columnValues.join(Constants.DELIMITOR.COMMA)
 
     getColumnValues: (record) ->
       this.buildRow(record, 'export-value')

@@ -24,7 +24,8 @@ from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file, archive, archive_with_stream,
-                                     remote_copy, prepare_path, generate_item_or_raw_extract_file, extract_group_separator)
+                                     remote_copy, prepare_path, generate_item_or_raw_extract_file, extract_group_separator,
+                                     clean_up)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -531,6 +532,11 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
         self.assertRaises(ExtractionError, generate_item_or_raw_extract_file, 'hello', 'request_id', task)
         f.cleanup()
+
+    def test_clean_up(self):
+        f = tempfile.TemporaryDirectory()
+        clean_up(f.name)
+        self.assertFalse(os.path.exists(f.name))
 
     def __create_item_raw_extract_query(self, params):
         with UnittestEdcoreDBConnection() as connection:

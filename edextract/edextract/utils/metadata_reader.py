@@ -6,6 +6,7 @@ Created on Jul 22, 2014
 import os
 import logging
 import fcntl
+import fnmatch
 
 
 logger = logging.getLogger('edextract')
@@ -27,7 +28,19 @@ class MetadataReader():
         if filesize is None:
             self._load_metadata(filepath)
             filesize = self.__metadata.get(filepath)
+            if filesize is None and os.path.exists(filepath):
+                filesize = os.stat(filepath).st_size
+                self.__metadata[filepath] = filesize
         return filesize if filesize is not None else -1
+
+    def get_files(self, file_pattern):
+        self._load_metadata(file_pattern)
+        files = []
+        _dir, _base = os.path.split(file_pattern)
+        for f in self.__metadata.keys():
+            if fnmatch.fnmatch(os.path.basename(f), _base):
+                files.append(f)
+        return files
 
     def _load_metadata(self, filepath):
         metadata_file = os.path.join(os.path.dirname(filepath), self.__metadata_filename)
@@ -42,10 +55,7 @@ class MetadataReader():
                     self.__metadata[os.path.join(directory, metadata[1])] = int(metadata[2])
                 logging.info('closing metadata[' + metadata_file + ']')
                 fcntl.flock(f, fcntl.LOCK_UN)
-            if self.__metadata.get(filepath) is None:
-                self.__metadata[filepath] = os.stat(filepath).st_size
         else:
-            self.__metadata[filepath] = os.stat(filepath).st_size
             if metadata_file not in self.__metadata_tracker:
                 self.__metadata_tracker.add(metadata_file)
                 logging.info('metadata not found[' + metadata_file + ']')

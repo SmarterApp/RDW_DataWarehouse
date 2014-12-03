@@ -493,7 +493,6 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', 'date_taken_day', 'fact_block_asmt_outcome', 'date_taken_day', None, None),
         ('4', 'int_sbac_asmt_outcome', 'date_taken_month', 'fact_block_asmt_outcome', 'date_taken_month', None, None),
         ('4', 'int_sbac_asmt_outcome', 'date_taken_year', 'fact_block_asmt_outcome', 'date_taken_year', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'score_perf_level', 'fact_block_asmt_outcome', 'asmt_perf_lvl', None, None),
         ('4', 'int_sbac_asmt_outcome', 'score_claim_1', 'fact_block_asmt_outcome', 'asmt_claim_1_score', None, None),
         ('4', 'int_sbac_asmt_outcome', 'score_claim_1_min', 'fact_block_asmt_outcome', 'asmt_claim_1_score_range_min', None, None),
         ('4', 'int_sbac_asmt_outcome', 'score_claim_1_max', 'fact_block_asmt_outcome', 'asmt_claim_1_score_range_max', None, None),

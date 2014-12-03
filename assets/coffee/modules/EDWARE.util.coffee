@@ -22,12 +22,14 @@ define [
     displayErrorMessage "There is no data available for your request."
 
   displayErrorMessage = (error) ->
-
     if error isnt ""
       $("#errorMessage").show().html(error)
     else
       $("#errorMessage").hide()
 
+  getErrorPage = ->
+    "/assets/public/error.html"
+    
   getUrlParams = ->
     params = {}
     decoded = decodeURIComponent(window.location.search).replace(/\+/g, ' ')
@@ -138,6 +140,11 @@ define [
   formatNumber = (num) ->
     if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
 
+  formatDate = (date) ->
+    if not date
+      return ""
+    return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
+
   reRenderBody = (labels) ->
     body = $('body').html()
     output = Mustache.to_html body, {
@@ -190,7 +197,7 @@ define [
 
   getTenantBrandingDataForPrint = (metadata, isGrayscale) ->
     return getTenantBranding(metadata, true, isGrayscale)
-  
+
   getTenantBranding = (metadata, isPrint, isGrayscale) ->
     defaultLogo = '/assets/images/smarterHeader_logo.png'
     if isPrint
@@ -225,3 +232,5 @@ define [
   deepFind: deepFind
   getTenantBrandingData: getTenantBrandingData
   getTenantBrandingDataForPrint: getTenantBrandingDataForPrint
+  formatDate: formatDate
+  getErrorPage: getErrorPage

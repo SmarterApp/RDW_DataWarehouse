@@ -38,7 +38,7 @@ def send_request(xml_directory):
     access_token = authenticate_with_oauth('shall')
     _request_header = {
         "content-type": "application/xml",
-        "bearer": access_token
+        "Authorization": 'Bearer {0}'.format(access_token)
     }
     for xml_file in os.listdir(xml_directory):
         if not xml_file.endswith(".xml"):

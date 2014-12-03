@@ -22,7 +22,7 @@ logger = logging.getLogger('edextract')
 ITEM_KEY_POS = 0
 # Write the header to the file
 # TODO: Should not be hard coded
-CSV_HEADER = ['key', 'student_id', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
+CSV_HEADER = ['key', 'studentId', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
               'format', 'score', 'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel',
               'pageNumber', 'pageVisits', 'pageTime', 'dropped']
 

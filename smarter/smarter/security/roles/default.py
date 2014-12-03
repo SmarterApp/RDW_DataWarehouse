@@ -16,12 +16,6 @@ class DefaultRole(BaseRole):
     def __init__(self, connector, name):
         super().__init__(connector, name)
 
-    def get_context(self, tenant, user):
-        '''
-        no-op
-        '''
-        pass
-
     def check_context(self, tenant, user, student_ids):
         '''
         Has Context to resource

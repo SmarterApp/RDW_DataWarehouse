@@ -38,49 +38,6 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         self.__config.testing_securitypolicy(self.user)
 
-    def verify_get_context_tenant_level(self, role):
-        with UnittestEdcoreDBConnection() as connection:
-            state_level = StateLevel(connection, role)
-            clause = state_level.get_context(self.tenant, self.user)
-            self.assertEqual(len(clause), 0)
-
-    def verify_get_context_state_level(self, role):
-        dummy_session = create_test_session([role])
-        dummy_session.set_user_context([RoleRelation(role, self.tenant, 'NC', None, None)])
-        self.user = dummy_session.get_user()
-        self.__request = DummyRequest()
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        self.__config.testing_securitypolicy(self.user)
-        with UnittestEdcoreDBConnection() as connection:
-            student_reg = connection.get_table(Constants.STUDENT_REG)
-            query = select([student_reg.c.school_id],
-                           from_obj=([student_reg]))
-            state_level = StateLevel(connection, role)
-            clause = state_level.get_context(self.tenant, self.user)
-            self.assertEqual(len(clause), 1)
-            query = query.where(*clause)
-            result = connection.get_result(query)
-            self.assertEqual(len(result), 2581)
-
-    def verify_get_context_multi_level(self, role):
-        dummy_session = create_test_session([role])
-        dummy_session.set_user_context([RoleRelation(role, self.tenant, 'NC', None, None),
-                                        RoleRelation(role, self.tenant, None, None, None)])
-        self.user = dummy_session.get_user()
-        self.__request = DummyRequest()
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        self.__config.testing_securitypolicy(self.user)
-        with UnittestEdcoreDBConnection() as connection:
-            student_reg = connection.get_table(Constants.STUDENT_REG)
-            query = select([student_reg.c.school_id],
-                           from_obj=([student_reg]))
-            state_level = StateLevel(connection, role)
-            clause = state_level.get_context(self.tenant, self.user)
-            self.assertEqual(len(clause), 1)
-            query = query.where(*clause)
-            result = connection.get_result(query)
-            self.assertEqual(len(result), 2581)
-
     def verify_has_context_with_context(self, role):
         with UnittestEdcoreDBConnection() as connection:
             state_level = StateLevel(connection, role)
@@ -98,30 +55,6 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
             state_level = StateLevel(connection, role)
             context = state_level.check_context(self.tenant, self.user, ['115f7b10-9e18-11e2-9e96-0800200c9a66', 'notyourstudent'])
             self.assertFalse(context)
-
-    def test_get_context_tenant_level(self):
-        for role in self.role_constants:
-            self.verify_get_context_tenant_level(role)
-
-    def test_get_context_state_level(self):
-        for role in self.role_constants:
-            self.verify_get_context_state_level(role)
-
-    def test_get_context_multi_level(self):
-        for role in self.role_constants:
-            self.verify_get_context_multi_level(role)
-
-    def test_has_context_with_context(self):
-        for role in self.role_constants:
-            self.verify_has_context_with_context(role)
-
-    def test_has_context_with_no_context(self):
-        for role in self.role_constants:
-            self.verify_has_context_with_no_context(role)
-
-    def test_has_context_with_some_invalid_guids(self):
-        for role in self.role_constants:
-            self.verify_has_context_with_some_invalid_guids(role)
 
     def test_add_context_without_tenant(self):
         dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])

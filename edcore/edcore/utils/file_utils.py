@@ -1,4 +1,5 @@
 import os
+from edcore.utils.utils import xml_datetime_convert
 
 
 def generate_path_to_raw_xml(root_dir, extension='xml', **kwargs):
@@ -37,11 +38,16 @@ def generate_file_path(items_root_dir, extension=None, state_code=None, asmt_yea
         asmt_year = str(asmt_year)
     if type(effective_date) is int:
         effective_date = str(effective_date)
+    effective_date = xml_datetime_convert(effective_date)
     if type(asmt_grade) is int:
         asmt_grade = str(asmt_grade)
+    elif type(asmt_grade) is str:
+        if asmt_grade.isnumeric():
+            asmt_grade = int(asmt_grade)
+            asmt_grade = str(asmt_grade)
     path = items_root_dir
     if state_code is not None:
-        path = os.path.join(path, state_code)
+        path = os.path.join(path, state_code.upper())
     else:
         return path_with_extention(path)
     if asmt_year is not None:

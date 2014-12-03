@@ -14,6 +14,7 @@ from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.file_utils import File
 from edextract.utils.metadata_reader import MetadataReader
 import copy
+import glob
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +45,15 @@ def _prepare_file_list(raw_root_dir, results):
     metadata_reader = MetadataReader()
     files = []
     for result in results:
-        path = generate_path_to_raw_xml(raw_root_dir, **result)
-        size = metadata_reader.get_size(path)
-        file = File(path, size)
-        files.append(file)
+        path = generate_path_to_raw_xml(raw_root_dir, extension='*.xml', **result)
+        actual_paths = metadata_reader.get_files(path)
+        if not actual_paths:
+            path = generate_path_to_raw_xml(raw_root_dir, extension='xml', **result)
+            actual_paths = glob.glob(path)
+        for actual_path in actual_paths:
+            size = metadata_reader.get_size(actual_path)
+            file = File(actual_path, size)
+            files.append(file)
     return files
 
 
@@ -67,5 +73,9 @@ def _copy_files(raw_root_dir, results, output_dirs):
         if threshold_size > 0 and current_total_size + file.size > threshold_size and _output_dirs:
             out_dir = _output_dirs.pop(0)
             current_total_size = 0
-        os.symlink(file.name, os.path.join(out_dir, os.path.basename(file.name)))
+        try:
+            os.symlink(file.name, os.path.join(out_dir, os.path.basename(file.name)))
+        except OSError:
+            # ignore exception (symlink is already there)
+            pass
         current_total_size += file.size

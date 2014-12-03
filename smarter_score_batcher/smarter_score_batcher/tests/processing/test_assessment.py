@@ -6,11 +6,15 @@ Created on Aug 12, 2014
 import unittest
 from smarter_score_batcher.processing.assessment import XMLMeta, Mapping,\
     get_assessment_mapping, AssessmentHeaders, AssessmentData,\
-    getClaimMappingName, get_groups, get_accommodations
+    getClaimMappingName, get_groups, get_accommodations, get_claims
 from smarter_score_batcher.tests.processing.utils import DummyObj, read_data
 import os
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
+from smarter_score_batcher.error.exceptions import MetadataException
+import hashlib
+
+
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -55,7 +59,7 @@ class TestCSVMetadata(unittest.TestCase):
         mapping = dict(zip(header, values))
         self.assertEqual(mapping[AssessmentHeaders.AssessmentGuid], 'SBAC-FT-SomeDescription-ELA-7')
         self.assertEqual(mapping[AssessmentHeaders.AccommodationBraille], '6')
-        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '922171')
+        self.assertEqual(mapping[AssessmentHeaders.StudentIdentifier], '77043c80-4b0a-11e4-916c-0800200c9a66')
         self.assertEqual(mapping[AssessmentHeaders.Asian], 'No')
         self.assertEqual(mapping[AssessmentHeaders.ResponsibleSchoolIdentifier], 'CA_9999827_9999928')
         self.assertEqual(mapping[AssessmentHeaders.NameOfInstitution], 'My Elementary School')
@@ -84,11 +88,11 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(mapping[AssessmentHeaders.EconomicDisadvantageStatus], 'No')
         self.assertEqual(mapping[AssessmentHeaders.MigrantStatus], 'Yes')
         # test groups
-        self.assertEqual(mapping[AssessmentHeaders.Group1Id], 'Brennan Math')
+        self.assertEqual(mapping[AssessmentHeaders.Group1Id], hashlib.sha1('Brennan Math'.encode()).hexdigest())
         self.assertEqual(mapping[AssessmentHeaders.Group1Text], 'Brennan Math')
-        self.assertEqual(mapping[AssessmentHeaders.Group2Id], 'Tuesday Science')
+        self.assertEqual(mapping[AssessmentHeaders.Group2Id], hashlib.sha1('Tuesday Science'.encode()).hexdigest())
         self.assertEqual(mapping[AssessmentHeaders.Group2Text], 'Tuesday Science')
-        self.assertEqual(mapping[AssessmentHeaders.Group3Id], 'Smith Research')
+        self.assertEqual(mapping[AssessmentHeaders.Group3Id], hashlib.sha1('Smith Research'.encode()).hexdigest())
         self.assertEqual(mapping[AssessmentHeaders.Group3Text], 'Smith Research')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentAdministrationFinishDate], '20140414')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentYear], '2014')
@@ -139,11 +143,11 @@ class TestCSVMetadata(unittest.TestCase):
         examinee = ET.fromstring(data).find("./Examinee")
         group_mappings = get_groups(examinee)
         self.assertEqual(len(group_mappings), 20)
-        self.assertEqual(group_mappings[0].evaluate(), 'Brennan Math')
+        self.assertEqual(group_mappings[0].evaluate(), 'afa6289f535474b99d6dac29e3a2b8782b0fe0b7')
         self.assertEqual(group_mappings[1].evaluate(), 'Brennan Math')
-        self.assertEqual(group_mappings[2].evaluate(), 'Tuesday Science')
+        self.assertEqual(group_mappings[2].evaluate(), '5b62bc83fb94dc4d1961c00f8c93809b57c56dc9')
         self.assertEqual(group_mappings[3].evaluate(), 'Tuesday Science')
-        self.assertEqual(group_mappings[4].evaluate(), 'Smith Research')
+        self.assertEqual(group_mappings[4].evaluate(), '6697b20b4902b5812f1221c2746600b476f61a20')
         self.assertEqual(group_mappings[5].evaluate(), 'Smith Research')
         self.assertEqual(group_mappings[6].evaluate(), '')
         self.assertEqual(group_mappings[7].evaluate(), '')
@@ -168,6 +172,49 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(accommodations[12].evaluate(), '0')
         self.assertEqual(accommodations[13].evaluate(), '0')
         self.assertEqual(accommodations[14].evaluate(), '0')
+
+    def test_iab_get_claims(self):
+        data = read_data("iab_assessment.xml")
+        opportunity = ET.fromstring(data).find("./Opportunity")
+        here = os.path.abspath(os.path.dirname(__file__))
+        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
+        claims = get_claims(static_metadata, opportunity)
+        self.assertEqual(len(claims), 20)
+
+        # overall
+        self.assertEqual(claims[0].evaluate(), None)
+        self.assertEqual(claims[1].evaluate(), None)
+        self.assertEqual(claims[2].evaluate(), '0')
+        self.assertEqual(claims[3].evaluate(), '0')
+        # all claims should be empty except claim1
+        # claim1
+        self.assertEqual(claims[4].evaluate(), '403.416')
+        self.assertEqual(claims[5].evaluate(), '199')
+        self.assertEqual(claims[6].evaluate(), '607')
+        self.assertEqual(claims[7].evaluate(), '2')
+        # claim2
+        self.assertEqual(claims[8].evaluate(), None)
+        self.assertEqual(claims[9].evaluate(), '0')
+        self.assertEqual(claims[10].evaluate(), '0')
+        self.assertEqual(claims[11].evaluate(), None)
+        # claim3
+        self.assertEqual(claims[12].evaluate(), None)
+        self.assertEqual(claims[13].evaluate(), '0')
+        self.assertEqual(claims[14].evaluate(), '0')
+        self.assertEqual(claims[15].evaluate(), None)
+        # claim4
+        self.assertEqual(claims[16].evaluate(), None)
+        self.assertEqual(claims[17].evaluate(), '0')
+        self.assertEqual(claims[18].evaluate(), '0')
+        self.assertEqual(claims[19].evaluate(), None)
+
+    def test_iab_get_claims_exception(self):
+        data = read_data("assessment.xml")
+        opportunity = ET.fromstring(data).find("./Opportunity")
+        here = os.path.abspath(os.path.dirname(__file__))
+        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
+        self.assertRaises(MetadataException, get_claims, static_metadata, opportunity)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -83,13 +83,13 @@ class Test(unittest.TestCase):
 
     def test_create_path_valid(self):
         meta = Meta(True, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date', 'asmt_id')
-        path = os.path.join(self.__temp_dir.name, 'state_name', 'academic_year', 'ASMT_TYPE', 'effective_date', 'SUBJECT', 'grade', 'district_id', 'student_id.xml')
+        path = os.path.join(self.__temp_dir.name, 'STATE_NAME', 'academic_year', 'ASMT_TYPE', 'effective_', 'SUBJECT', 'grade', 'district_id', 'student_id.xml')
         create_path_result = create_path(self.__temp_dir.name, meta, generate_path_to_raw_xml)
         self.assertEqual(path, create_path_result)
 
     def test_create_path_invalid(self):
         meta = Meta(True, 'NA', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date', 'asmt_id')
-        path = os.path.join(self.__temp_dir.name, 'student_id', 'state_name', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
+        path = os.path.join(self.__temp_dir.name, 'student_id', 'STATE_NAME', 'district_id', 'academic_year', 'asmt_type', 'subject', 'grade', 'effective_date')
         create_path_result = create_path(self.__temp_dir.name, meta, generate_path_to_raw_xml)
         self.assertNotEqual(path, create_path_result)
 

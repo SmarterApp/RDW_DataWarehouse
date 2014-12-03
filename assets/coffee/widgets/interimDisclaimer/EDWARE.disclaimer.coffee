@@ -3,7 +3,8 @@ define [
   "mustache"
   "edwarePreferences"
   "edwarePopover"
-], ($, Mustache, edwarePreferences, edwarePopover) ->
+  "edwareConstants"
+], ($, Mustache, edwarePreferences, edwarePopover, Constants) ->
 
 
   class EdwareDisclaimer
@@ -41,11 +42,11 @@ define [
       edwarePreferences.saveInterimInfo()
 
     update: (asmt) ->
-      if asmt is "Interim Comprehensive"
+      if (typeof asmt is 'string') and (asmt.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
         @interimDisclaimerIcon.show()
         @displayPopover()
         # show on print version
-        $('.disclaimerInfo.printContent').append("<hr>").append(@content)
+        $('.disclaimerInfo.printContent').append(@content)
       else
         @interimDisclaimerIcon.hide()
         $('.disclaimerInfo.printContent').empty()

@@ -1,5 +1,5 @@
 {
-    "reportInfo": "<h4>Mục đích:</h4><p>Báo cáo này trình bày điểm số của từng cá nhân học sinh cho một lĩnh vực đánh giá được chọn.</p><br><h4>Sử dụng:</h4><ul><li>Sử dụng báo cáo này để xem kết quả đánh giá cho một lớp hoặc một phân nhóm học sinh khác được lọc hoặc phân loại theo nhu cầu cụ thể của bạn.</li><li>Xem lại điểm chung và nhóm lỗi cho hiệu quả học tập tổng quát của học sinh trong bài đánh giá cụ thể.</li><li>Xem biểu tượng điểm thực tế để hiểu thêm về hiệu quả học tập của học sinh cho từng điểm thực tế.</li></ul><br><h4>Tính năng:</h4><ul><li>Chọn bài đánh giá và (các) nội dung môn học để xem</li><li>Phân loại kết quả theo bất kỳ cột nào </li><li>Chọn các học sinh cụ thể để tập trung vào yêu cầu xem xét của bạn</li><li>Tìm kiếm học sinh cụ thể</li><li>Lọc học sinh theo đặc điểm (ví dụ như Giới tính, IEP, Chủng tộc/Sắc tộc)</li><li>Tải về kết quả đánh giá của học sinh để phân tích thêm</li><li>In Phiếu Kết Quả Cá Nhân (PDF) cho nhóm học sinh đã chọn</li>",
+    "reportInfo": "<h4>Mục đích:</h4><p>Báo cáo này trình bày điểm số của từng cá nhân học sinh cho một lĩnh vực đánh giá được chọn.</p><h4>Sử dụng:</h4><ul><li>Sử dụng báo cáo này để xem kết quả đánh giá cho một lớp hoặc một phân nhóm học sinh khác được lọc hoặc phân loại theo nhu cầu cụ thể của bạn.</li><li>Xem lại điểm chung và nhóm lỗi cho hiệu quả học tập tổng quát của học sinh trong bài đánh giá cụ thể.</li><li>Xem biểu tượng điểm thực tế để hiểu thêm về hiệu quả học tập của học sinh cho từng điểm thực tế.</li></ul><h4>Tính năng:</h4><ul><li>Chọn bài đánh giá và (các) nội dung môn học để xem</li><li>Phân loại kết quả theo bất kỳ cột nào </li><li>Chọn các học sinh cụ thể để tập trung vào yêu cầu xem xét của bạn</li><li>Tìm kiếm học sinh cụ thể</li><li>Lọc học sinh theo đặc điểm (ví dụ như Giới tính, IEP, Chủng tộc/Sắc tộc)</li><li>Tải về kết quả đánh giá của học sinh để phân tích thêm</li><li>In Phiếu Kết Quả Cá Nhân (PDF) cho nhóm học sinh đã chọn</li>",
     "legendInfo": {
         "report_info": "Báo cáo này trình bày <b>điểm số của từng cá nhân học sinh cho một lĩnh vực đánh giá được chọn</b>.",
         "error_band": "Bài kiểm tra Có Cân Nhắc về sự Thông Minh Hơn cho điểm số chính xác nhất có thể trong thời hạn hợp lý, nhưng không có bài kiểm tra nào có thể chính xác 100 phần trăm. <b>Nhóm lỗi</b> cho biết phạm vi điểm mà học sinh có khả năng đạt được nếu các em làm bài kiểm tra nhiều lần. Điều này tương tự như \"giới hạn lỗi\" mà các tờ báo thường báo cáo cho các khảo sát tìm hiểu ý kiến của công chúng.",
@@ -18,19 +18,11 @@
         "text": "Nhập học sinh",
         "aria": "Tìm học sinh trong cấp lớp này. Nhập từ tìm kiếm và nhấn enter"
     },
-    "detailsSelection": [
-        {
-            "display": "Overview",
-            "key": "Math_ELA"
-        },
-        {
-            "display": "Toán",
-            "key": "Math"
-        },
-        {
-            "display": "ELA/Đọc viết",
-            "key": "ELA"
-        }
-    ],
-    "asmtSelectorTemplate": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • {{asmt_type}}"
+    "detailsSelection": {
+        "Summative": ["Overview", "Math", "ELA"],
+        "Interim Comprehensive": ["Overview", "Math", "ELA"],
+        "Interim Assessment Blocks": ["Math", "ELA"]
+    },
+    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}",
+                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"}
 }

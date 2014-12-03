@@ -3,7 +3,7 @@ Created on Aug 11, 2014
 
 @author: dip
 '''
-from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, DateMeta, IntegerMeta
+from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, DateMeta, IntegerMeta, get_claim1_mapping
 from zope import component
 from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
     get_template_key
@@ -126,6 +126,14 @@ class JSONHeaders:
         self.values['PerformanceLevels']['Level5']['Cutpoint'] = value
 
     @property
+    def claim1_name(self):
+        return self.values['Claims']['Claim1']['Name']
+
+    @claim1_name.setter
+    def claim1_name(self, value):
+        self.values['Claims']['Claim1']['Name'] = value
+
+    @property
     def claim1_min_score(self):
         return self.values['Claims']['Claim1']['MinScore']
 
@@ -194,12 +202,13 @@ class JSONMapping(Mapping):
     '''
     Data Structure used to store mapping values from xml to csv
     '''
-    def __init__(self, src, target, property_name):
+    def __init__(self, src, target, property_name, upper_case=False):
         super(JSONMapping, self).__init__(src, target)
         self.property = property_name
+        self.upper_case = upper_case
 
     def evaluate(self):
-        setattr(self.target, self.property, self.src.get_value())
+        setattr(self.target, self.property, self.src.get_value().upper() if self.upper_case else self.src.get_value())
 
 
 def get_assessment_metadata_mapping(root):
@@ -218,12 +227,18 @@ def get_assessment_metadata_mapping(root):
 
     json_output = JSONHeaders(meta_template)
 
+    # attach claim1 information if it doesn't exist
+    if not json_output.claim1_name:
+        claim1_mapping = get_claim1_mapping(opportunity)
+        json_output.claim1_name = claim1_mapping
+
     mappings = [JSONMapping(XMLMeta(test_node, ".", "testId"), json_output, 'asmt_guid'),
                 JSONMapping(DateMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
                 JSONMapping(subject, json_output, 'subject'),
-                JSONMapping(asmt_type, json_output, 'asmt_type'),
+                JSONMapping(asmt_type, json_output, 'asmt_type', upper_case=True),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
                 JSONMapping(year, json_output, 'asmt_year')]
+
     for m in mappings:
         m.evaluate()
     return json_output.get_values()

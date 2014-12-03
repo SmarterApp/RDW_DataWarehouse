@@ -8,6 +8,9 @@ from smarter_score_batcher.utils.xml_utils import extract_meta_with_fallback_hel
 import itertools
 import json
 from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
+from smarter_score_batcher.error.exceptions import MetadataException
+from edcore.utils.utils import xml_datetime_convert
+import hashlib
 
 
 class XMLMeta:
@@ -32,7 +35,7 @@ class DateMeta(XMLMeta):
 
     def get_value(self):
         date = super().get_value()
-        return date[:10].replace('-', '') if date else date
+        return xml_datetime_convert(date)
 
 
 class IntegerMeta(XMLMeta):
@@ -40,6 +43,16 @@ class IntegerMeta(XMLMeta):
     def get_value(self):
         data = super().get_value()
         return str(int(data)) if data else data
+
+
+class HashMeta(XMLMeta):
+    '''
+    Evaluates the value from XML attribute, and hashes it
+    '''
+
+    def get_value(self):
+        data = super().get_value()
+        return hashlib.sha1(data.encode("utf-8")).hexdigest()
 
 
 class ValueMeta():
@@ -230,24 +243,9 @@ def get_assessment_mapping(root, metadata_file_path):
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")
 
-    # read metadata and map Claim1, Claim2, Claim3, and Claim4
-    metadata = None
-    with open(metadata_file_path) as f:
-        metadata_json = f.read()
-        metadata = json.loads(metadata_json)
-    claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1)
-    claim2_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, PerformanceMetadataConstants.CLAIM2)
-    claim3_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM3, PerformanceMetadataConstants.CLAIM3)
-    claim4_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM4, PerformanceMetadataConstants.CLAIM4)
-
-    overall_score = XMLClaimScore(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value", "standardError")
-    claim1_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
-    claim2_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
-    claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
-    claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
-
     groups = get_groups(examinee)
     accommodations = get_accommodations(opportunity)
+    claims = get_claims(metadata_file_path, opportunity)
 
     # In the order of the LZ mapping for easier maintenance
     mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context"), AssessmentHeaders.StateAbbreviation),
@@ -255,8 +253,7 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolName']", "value", "context"), AssessmentHeaders.NameOfInstitution),
-
-                               Mapping(XMLMeta(examinee, ".", "key"), AssessmentHeaders.StudentIdentifier),
+                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='StudentIdentifier']", "value", "context"), AssessmentHeaders.StudentIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='AlternateSSID']", "value", "context"), AssessmentHeaders.ExternalSSID),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='FirstName']", "value", "context"), AssessmentHeaders.FirstName),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='MiddleName']", "value", "context"), AssessmentHeaders.MiddleName),
@@ -284,29 +281,8 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(XMLMeta(test_node, ".", "academicYear"), AssessmentHeaders.AssessmentYear),
                                Mapping(XMLMeta(test_node, ".", "assessmentType"), AssessmentHeaders.AssessmentType),
                                Mapping(XMLMeta(test_node, ".", "subject"), AssessmentHeaders.AssessmentAcademicSubject),
-                               Mapping(IntegerMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned),
-
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreValue),
-                               Mapping(overall_score.get_min(), AssessmentHeaders.AssessmentSubtestMinimumValue),
-                               Mapping(overall_score.get_max(), AssessmentHeaders.AssessmentSubtestMaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentPerformanceLevelIdentifier),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim1Value),
-                               Mapping(claim1_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim1MinimumValue),
-                               Mapping(claim1_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim1PerformanceLevelIdentifier),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim2Value),
-                               Mapping(claim2_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim2MinimumValue),
-                               Mapping(claim2_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim2MaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim2PerformanceLevelIdentifier),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim3Value),
-                               Mapping(claim3_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim3MinimumValue),
-                               Mapping(claim3_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim3MaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim3PerformanceLevelIdentifier),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim4Value),
-                               Mapping(claim4_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim4MinimumValue),
-                               Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim4MaximumValue),
-                               Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier)],
-                              groups, accommodations)
+                               Mapping(IntegerMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
+                              claims, groups, accommodations)
     mappings.evaluate()
     return mappings
 
@@ -325,9 +301,12 @@ def get_groups(examinee):
     for i in range(TOTAL_GROUPS):
         if i < len(groups):
             meta = XMLMeta(groups[i], '.', 'value')
+            group_id = HashMeta(groups[i], '.', 'value')
         else:
             meta = ValueMeta('')
-        mappings.append(Mapping(meta, 'Group%dId' % (i + 1)))
+            group_id = ValueMeta('')
+
+        mappings.append(Mapping(group_id, 'Group%dId' % (i + 1)))
         mappings.append(Mapping(meta, 'Group%dText' % (i + 1)))
     return mappings
 
@@ -392,3 +371,58 @@ def get_accommodations(opportunity):
             use_code = score.get('value') if score is not None else USE_CODE_NO_MESSAGE
         accommodations.append(Mapping(ValueMeta(use_code), config['target']))
     return accommodations
+
+
+def get_claims(metadata_file_path, opportunity):
+    # read metadata and map Claim1, Claim2, Claim3, and Claim4
+    metadata = None
+    with open(metadata_file_path) as f:
+        metadata_json = f.read()
+        metadata = json.loads(metadata_json)
+
+    claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1) or get_claim1_mapping(opportunity)
+    claim2_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, PerformanceMetadataConstants.CLAIM2)
+    claim3_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM3, PerformanceMetadataConstants.CLAIM3)
+    claim4_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM4, PerformanceMetadataConstants.CLAIM4)
+
+    if not claim1_mapping:
+        raise MetadataException("Incorrect claims number of assessment type %s" % metadata['Identification']['Type'])
+
+    overall_score = XMLClaimScore(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value", "standardError")
+    claim1_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
+    claim2_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
+    claim3_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
+    claim4_score = XMLClaimScore(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value", "standardError")
+
+    return [
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='Overall'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentPerformanceLevelIdentifier),
+        Mapping(overall_score.get_min(), AssessmentHeaders.AssessmentSubtestMinimumValue),
+        Mapping(overall_score.get_max(), AssessmentHeaders.AssessmentSubtestMaximumValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim1Value),
+        Mapping(claim1_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim1MinimumValue),
+        Mapping(claim1_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim1MaximumValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim1_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim1PerformanceLevelIdentifier),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim2Value),
+        Mapping(claim2_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim2MinimumValue),
+        Mapping(claim2_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim2MaximumValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim2_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim2PerformanceLevelIdentifier),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim3Value),
+        Mapping(claim3_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim3MinimumValue),
+        Mapping(claim3_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim3MaximumValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim3_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim3PerformanceLevelIdentifier),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='ScaleScore']", "value"), AssessmentHeaders.AssessmentSubtestResultScoreClaim4Value),
+        Mapping(claim4_score.get_min(), AssessmentHeaders.AssessmentSubtestClaim4MinimumValue),
+        Mapping(claim4_score.get_max(), AssessmentHeaders.AssessmentSubtestClaim4MaximumValue),
+        Mapping(XMLMeta(opportunity, "./Score/[@measureOf='" + claim4_mapping + "'][@measureLabel='PerformanceLevel']", "value"), AssessmentHeaders.AssessmentClaim4PerformanceLevelIdentifier)
+    ]
+
+
+def get_claim1_mapping(opportunity):
+    # if no claims mapping found, we take the first non-Overall
+    # score element with measureLabel 'ScaleScore' and map to claim1
+    claims = opportunity.findall("./Score/[@measureLabel='ScaleScore']") or []
+    claims = [claim for claim in claims if claim.get('measureOf') != 'Overall']
+    if len(claims) != 1:
+        return None
+    return claims[0].get('measureOf')

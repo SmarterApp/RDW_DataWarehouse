@@ -17,7 +17,8 @@ define [
 
   class ReportActionBar
 
-    constructor: (@container, @config, @reloadCallback) ->
+    constructor: (@container, @config, asmt_type) ->
+      @asmtType = {asmt_type: asmt_type} if asmt_type isnt `undefined`
       @initialize()
       @bindEvents()
 
@@ -25,12 +26,18 @@ define [
       @container = $(@container)
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
-        detailsSelection: @config.detailsSelection
+        detailsSelection: @createDetailSelection()
       @legend ?= @createLegend()
       @printer ?= @createPrint()
       years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
-      @asmtDropdown = @createAsmtDropdown(years)
+      @createAsmtDropdown(years)
+
+    createDetailSelection: () ->
+      asmt = edwarePreferences.getAsmtPreference()
+      asmtType = asmt?.asmt_type || Constants.ASMT_TYPE.SUMMATIVE
+      for i in @config.detailsSelection?[asmtType] || []
+        @config.detailsButtons[i]
 
     createAcademicYear: (years) ->
       return if not years
@@ -49,9 +56,6 @@ define [
 
     # Create assessment type dropdown
     createAsmtDropdown: (years) ->
-      # if not @config.asmtTypes || @config.asmtTypes.length is 0
-      #   $('.asmtTypeItem').remove()
-      #   return
       self = this
       if @config.reportName is Constants.REPORT_NAME.ISR
         preference = edwarePreferences.getAsmtForISR
@@ -59,19 +63,18 @@ define [
         preference = edwarePreferences.getAsmtPreference
       # render academic years
       @config.years= years
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config, preference,
+      $('.asmtDropdown').edwareAsmtDropdown @config, preference,
         onAcademicYearSelected: (academicYear) ->
           self.config.academicYears.callback academicYear
-        onAsmtYearSelected: (asmt) ->
+        onAsmtTypeSelected: (asmt) ->
           # save assessment type
           self.updateDisclaimer asmt
-          self.reloadCallback(asmt)
+          self.config.asmtTypes.callback asmt
       @createDisclaimer()
-      asmtDropdown
 
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
-      @updateDisclaimer()
+      @updateDisclaimer(@asmtType)
 
     updateDisclaimer: (asmtType) ->
       currentAsmtType = asmtType?.asmt_type || edwarePreferences.getAsmtType() || {}
@@ -84,7 +87,7 @@ define [
       legendInfo = @config.legendInfo
       colorsData = @config.colorsData
       # merge default color data into sample intervals data
-      sampleColor = colorsData.subject1 || colorsData.subject2
+      sampleColor = colorsData?.subject1 || colorsData?.subject2 || {}
       for color, i in sampleColor.colors || @config.colors
         legendInfo.sample_intervals.intervals[i].color = color
       legendInfo.sample_intervals
@@ -123,11 +126,11 @@ define [
         $this.addClass('selected')
         asmtView = $this.data('view')
         edwarePreferences.saveAsmtView(asmtView)
-        self.reloadCallback()
+        self.config.switchView asmtView
 
 
-  create = (container, config, reloadCallback) ->
-    new ReportActionBar(container, config, reloadCallback)
+  create = (container, config, asmt_type) ->
+    new ReportActionBar(container, config, asmt_type)
 
   ReportActionBar: ReportActionBar
   create: create

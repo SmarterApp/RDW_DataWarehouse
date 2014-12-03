@@ -14,6 +14,7 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
     # center legend popover to prevent it overflow the screen
     $popover = $('.edwarePopover')
     popLeft = $popover.offset().left
+    popTop = $popover.offset().top
     popRight = popLeft + $popover.width()
 
     $body = $('#header') # use header element to make sure offset left consistant cross browsers
@@ -31,6 +32,11 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
       $popover.css "left", "-=#{popRight}"
       arrowLeft = $popover.width() / 2 + popRight
       $(".arrow", $popover).css "left", arrowLeft
+    
+    # Reposition the mask according to whether popover is placed on top or bottom
+    arrowTop = $(".arrow", $popover).offset().top
+    maskTop = if arrowTop < popTop then -15 else $popover.height() - 7
+    $(".mask", $popover).css "top", maskTop
 
   $(document).keyup (e)->
     if e.keyCode is 27
@@ -60,3 +66,17 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
     this.unbind('mouseleave').on 'mouseleave', ->
       self.popover 'hide'
     this
+
+  createPopover = (config) ->
+    # Creates popovers for multiple items on a page given that the content is embedded in the parent node
+    $(config.source).each ->
+      $(this).edwarePopover
+        class: config.target
+        content: $(this).parent().find(config.contentContainer).html()
+        container: $(config.container) if config.container
+        tabindex: if config.tabindex else 0
+        placement: if config.placement else 'top'
+    .click ->
+      $(this).mouseover()
+  
+  createPopover:createPopover

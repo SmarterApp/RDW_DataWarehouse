@@ -23,7 +23,8 @@ requires = [
     'edauth',
     'edworker',
     'smarter_common',
-    'pyramid_exclog==0.7']
+    'pyramid_exclog==0.7',
+    'python3-memcached == 1.51']
 
 docs_extras = [
     'Sphinx',

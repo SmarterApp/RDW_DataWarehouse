@@ -188,8 +188,8 @@
         }
     ],
     "group_template" : {
-        "display" : "Agrupación estudiantil",
-        "tag" : "Agrupación estudiantil",
+        "display" : "Student Group",
+        "tag" : "Student Group",
         "name" : "studentGroupId",
         "options" : [
         ]

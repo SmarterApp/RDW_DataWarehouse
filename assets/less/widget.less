@@ -219,18 +219,23 @@ table td {
   color: @color-B2;
   font-weight: normal;
 }
-.ui-jqgrid .ui-jqgrid-htable th div {
-  text-align: center;
+.ui-jqgrid .ui-jqgrid-htable th {
+  div {
+    text-align: center;
+  }
+  .ui-jqgrid-sortable {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 }
 
 // DE76: hide horizontal bar when vertical bar shows up
 .ui-jqgrid .ui-jqgrid-bdiv {
-  overflow-x: hidden;
+  //overflow-x: hidden;
 
   thead { display: none; }
 }
 th.ui-th-column div {
-  height: auto !important;
   padding: 4px 5px;
   text-align: left;
   white-space: normal !important;
@@ -261,10 +266,24 @@ th.ui-th-column div {
 
 .ui-jqgrid tr.jqgrow td { border-bottom: solid 1px @color-B7; }
 
-.ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {  background: @color-B5; color: @color-B1; font-size: 16px; }
+.ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {
+    padding-right: 0px;
+    background: @color-B5;
+    color: @color-C18;
+    font-size: 11px;
+    font-weight: normal;
 
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
-  background: @color-B6; color: @color-B2;
+    .ui-jqgrid-sortable {
+        line-height: 15px;
+    }
+}
+
+.frozen-div.ui-jqgrid-hdiv {
+    height: auto !important;
+}
+
+tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+  background: @color-B6 !important; color: @color-B2;
 }
 
 .ui-jqgrid-sdiv {
@@ -311,7 +330,7 @@ th.ui-th-column div {
   .scoreWrapper {
     margin-left: 3%;
     position: absolute;;
-    z-index: 110;
+    z-index: 0;
     height: 20px;
   }
   .overall_score {
@@ -377,7 +396,6 @@ th.ui-th-column div {
     margin-left: 3%;
     position: absolute;;
     margin-top: 30px;
-    z-index:1;
 
     .bar {
       padding-top: 7px;
@@ -2266,6 +2284,15 @@ th.ui-th-column div {
                color: @color-A4;
              }
   }
+  #reportInfoPopover{
+    line-height: 18px;
+    li {
+      line-height: 18px;
+    }
+    ul:not(:last-child){
+      margin-bottom: 10px;
+    }
+  }
 
   #downloadMenuPopup {
     position: absolute;;
@@ -2318,7 +2345,7 @@ th.ui-th-column div {
     .modal-body {
       max-height: 500px;
       padding: 20px;
-      overflow-y: visible;
+      overflow-y: auto;
     }
 
     ul {
@@ -2389,7 +2416,7 @@ th.ui-th-column div {
 
   }
 
-  .reminderMessage {
+  .reminderMessage, .IABMessage {
     line-height: 26px;
     background-color: @color-C17;
     padding-left: 26px;
@@ -2410,7 +2437,7 @@ th.ui-th-column div {
 
   background-color: @color-C11;
   border-top: solid 1px @color-B17;
-  
+
   .academicYearLabel {
     margin-top: 4px;
   }
@@ -2484,6 +2511,19 @@ th.ui-th-column div {
     .detailsItem {
       margin-left: 15px;
 
+      &.iab_display {
+        .subjectSelection {
+          &:first-child {
+            display : none;
+          }
+
+          &:nth-child(2){
+            border-radius:3px 0 0 3px;
+            border-left:1px solid #bbbbbb;
+          }
+        }
+      }
+
       .subjectSelection {
         height:30px;
         margin-top: -15px;
@@ -2535,18 +2575,18 @@ th.ui-th-column div {
         }
       }
     }
-    
+
     .actionBarDropDownLabel {
       color: @color-C18;
       font-size: 14px;
       font-weight: bold;
     }
-    
+
     .actionBarDropDown {
       color: @color-B1;
       font-size: 14px;
       font-family: helvetica neue;
-      
+
       button {
         height: 30px;
       }
@@ -2555,28 +2595,28 @@ th.ui-th-column div {
     .alignmentItem {
       .divider {
         border-right: solid 1px @color-B5;
-        
+
         span {
           margin-right: 15px;
           color: @color-C18;
-          
+
         }
         ul {
           display: inline-block;
           vertical-align: top;
           margin-left: 0px;
         }
-      
+
         input {
           margin: 0 7px 0 0;
         }
       }
-      
+
       label {
         float: right;
       }
     }
-    
+
     .printItem {
       .divider {
         border-right: solid 1px @color-B5;
@@ -2589,7 +2629,7 @@ th.ui-th-column div {
       vertical-align: text-bottom;
       margin-right: 5px;
     }
-    
+
     .actionItems{
       color: @color-A1;
     }
@@ -2625,7 +2665,7 @@ th.ui-th-column div {
 
       .asmtDropdown {
         margin-top: -15px;
-        
+
         button {
           height: 30px;
         }

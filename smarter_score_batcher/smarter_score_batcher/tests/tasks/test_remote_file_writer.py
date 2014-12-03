@@ -9,6 +9,8 @@ import os
 import hashlib
 from smarter_score_batcher.tasks.remote_file_writer import remote_write
 from unittest.mock import patch
+import smarter_score_batcher
+from smarter_score_batcher.celery import conf
 
 
 class Test(unittest.TestCase):
@@ -29,6 +31,8 @@ class Test(unittest.TestCase):
         outfile1 = os.path.join(self.temp_dir.name, 'output1.xml')
         mock_create_path.return_value = outfile1
         mock_extract_meta_names.return_value.valid_meta.return_value = True
+        conf['smarter_score_batcher.base_dir.csv'] = self.temp_dir.name
+        conf['smarter_score_batcher.base_dir.xml'] = self.temp_dir.name
         with open(self.test1, 'r') as f:
             data = f.read()
         written = remote_write(data)
@@ -39,6 +43,8 @@ class Test(unittest.TestCase):
     @patch('smarter_score_batcher.tasks.remote_file_writer.extract_meta_names')
     @patch('smarter_score_batcher.tasks.remote_file_writer.create_path')
     def test_remote_write_utf8(self, mock_create_path, mock_extract_meta_names, mock_remote_csv_generator):
+        conf['smarter_score_batcher.base_dir.csv'] = self.temp_dir.name
+        conf['smarter_score_batcher.base_dir.xml'] = self.temp_dir.name
         outfile1 = os.path.join(self.temp_dir.name, 'output2.xml')
         mock_create_path.return_value = outfile1
         mock_extract_meta_names.return_value.valid_meta.return_value = True

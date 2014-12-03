@@ -34,6 +34,7 @@ class PerformanceMetadataConstants():
     LEVEL2 = 'Level2'
     LEVEL3 = 'Level3'
     LEVEL4 = 'Level4'
+    LEVEL5 = 'Level5'
     CUTPOINT = 'CutPoint'
     CLAIMS = 'Claims'
     CLAIM1 = 'Claim1'
@@ -41,3 +42,4 @@ class PerformanceMetadataConstants():
     CLAIM3 = 'Claim3'
     CLAIM4 = 'Claim4'
     MAPPING = 'Mapping'
+    Name = 'Name'

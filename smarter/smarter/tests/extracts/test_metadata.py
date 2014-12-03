@@ -11,7 +11,7 @@ from pyramid import testing
 from pyramid.security import Allow
 
 from smarter.reports.helpers.constants import Constants
-from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
+from smarter.extracts.metadata import get_metadata_file_name, get_metadata_file_name_iab, get_asmt_metadata
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edauth.tests.test_helper.create_session import create_test_session
@@ -56,6 +56,18 @@ class TestMetadata(Unittest_with_edcore_sqlite):
         filename = get_metadata_file_name(params)
         self.assertEqual(filename, 'METADATA_ASMT_2015_UT_GRADE_5_DD_BB_abc.json')
 
+    def test_get_metadata_file_name_iab(self):
+        params = {Constants.STATECODE: 'UT',
+                  Constants.ASMTGUID: 'abc',
+                  Constants.ASMTGRADE: '5',
+                  Constants.ASMTSUBJECT: 'dd',
+                  Constants.ASMTYEAR: '2015',
+                  Constants.ASMTTYPE: 'bb',
+                  Constants.EFFECTIVE_DATE: '20150111',
+                  Constants.ASMT_CLAIM_1_NAME: 'claim @#$ name'}
+        filename = get_metadata_file_name_iab(params)
+        self.assertEqual(filename, 'METADATA_ASMT_2015_UT_GRADE_5_DD_IAB_claimname_EFF01-11-2015_abc.json')
+
     def test_get_asmt_metadata_query(self):
         asmt_guid = '20'
         query = get_asmt_metadata('NC', asmt_guid)
@@ -63,5 +75,5 @@ class TestMetadata(Unittest_with_edcore_sqlite):
         self.assertIn('dim_asmt.asmt_guid', str(query._whereclause))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

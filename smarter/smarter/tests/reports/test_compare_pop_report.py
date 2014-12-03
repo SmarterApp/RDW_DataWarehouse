@@ -432,7 +432,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
                                   'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
                                  {'id': 'b', 'name': 'b', 'type': 'sum',
                                   'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
-                     'subjects': {'a': 'a'}}
+                     'subjects': {'a': 'a'}, 'summary': [{'results': {'a': {'intervals': [{'percentage': 100}]}}}]}
         interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int',
                                 'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
                                {'id': 'b', 'name': 'b', 'type': 'int',
@@ -447,7 +447,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
     def test_get_merged_report_records_with_no_summative(self):
         summative = {'records': [],
-                     'subjects': {'a': 'a'}}
+                     'subjects': {'a': 'a'},
+                     'summary': [{'results': {'a': {'intervals': [{'percentage': 10}]}}}]}
         interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int',
                                 'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
                                {'id': 'b', 'name': 'b', 'type': 'int',
@@ -459,11 +460,14 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results[0]['name'], 'a')
         self.assertEqual(results[1]['type'], 'int')
         self.assertEqual(results[1]['name'], 'b')
+        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
+        self.assertEqual(results[0]['results']['a']['intervals'][0]['count'], -1)
 
     def test_get_merged_report_records_with_mixed_asmt_types(self):
         summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
                                   'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
-                     'subjects': {'a': 'a'}}
+                     'subjects': {'a': 'a'},
+                     'summary': [{'results': {'a': {'intervals': [{'percentage': 100}]}}}]}
         interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int',
                                 'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
                                {'id': 'b', 'name': 'b', 'type': 'int',
@@ -479,7 +483,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
     def test_get_merged_report_records_with_interim(self):
         summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
                                   'results': {'a': {'total': 0, 'intervals': [{'percentage': 0}]}}}],
-                     'subjects': {'a': 'a'}}
+                     'subjects': {'a': 'a'},
+                     'summary': [{'results': {'a': {'intervals': [{'percentage': 100}]}}}]}
         interim = {'records': [{'id': 'b', 'name': 'b', 'type': 'int',
                                 'results': {'a': {'total': -1, 'hasInterim': True, 'intervals': [{'percentage': -1}]}}}],
                    'subjects': {'a': 'a'}}
@@ -492,7 +497,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
     def test_get_merged_report_records_with_no_results(self):
         summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
                                   'results': {'a': {'total': 0, 'intervals': [{'percentage': 0}]}}}],
-                     'subjects': {'a': 'a'}}
+                     'subjects': {'a': 'a'},
+                     'summary': [{'results': {'a': {'intervals': [{'percentage': 100}]}}}]}
         interim = {'records': [{'id': 'b', 'name': 'b', 'type': 'int',
                                 'results': {'a': {'total': 3, 'hasInterim': True, 'intervals': [{'percentage': 100}]}}}],
                    'subjects': {'a': 'a'}}

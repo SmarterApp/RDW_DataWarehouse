@@ -75,6 +75,9 @@
         font-size: 15px;
         padding: 0;
       }
+      .currentAsmtTypeView {
+        margin-bottom: 10px;
+      }
 
       .title {
         color: @color-black;
@@ -140,6 +143,14 @@
     }
   }
 
+  body.los {
+    #gbox_gridTable {
+      display: none;
+    }
+    .expand-icon {
+      display: none;
+    }
+  }
   body.cpop, body.los {
     .disclaimerInfo {
       u {
@@ -238,6 +249,15 @@
         h4 { max-width: 135px; }
       }
     }
+    .blocks {
+      background: @color-white !important;
+      table{
+        background-color: @color-white !important;
+      }
+      .olderResults {
+        color: @color-B2 !important;
+      }
+    }
 
     .exportPopup {display: none;}
 
@@ -246,20 +266,27 @@
     #print_reportInfoContent {
       .aboutReportPopup {
         border-bottom: solid 1px @color-B4;
+        font-size: 11pt;
         p {
-          line-height: 14px;
+          line-height: 1.2;
         }
 
         li {
-          line-height: 14px;
+          line-height: 1.2;
         }
       }
-
+      h3 {
+        font-size: 16pt;
+        color: @color-black;
+      }
       .legendPopup {
         margin-top: 10px;
       }
+      h4 {
+        font-size: 12pt;
+        line-height: 1;
+      }
     }
-    #print_reportInfoContent h3 { color: @color-black; font-size: 20px; }
     .reportInfoWrapper { width: 100%; }
     #content { min-height: 0; }
 
@@ -306,9 +333,6 @@
             }
           }
           .indicator {
-            .asmtScore {
-              color: @color-black !important;
-            }
             margin-left: 7px;
           }
         }
@@ -703,7 +727,7 @@
       
       .table.edware-table-bordered.edware-table-center {
         width: 980px !important;
-        margin-left: -15px !important;
+        margin-left: -10px !important;
         border-collapse: separate; 
         border-spacing: 10px;
 
@@ -814,6 +838,64 @@
 
     #infoBar, #actionBar {
       display: none;
+    }
+    
+    .isrInterimBlockHeader {
+      margin-top: 30px;
+      margin-left: 0px;
+      margin-right: 0px;
+      width: 980px;
+      .subject {
+        color: @color-A1 !important;
+        font-size: 34px;
+      }
+      .iabYear{
+        color: @color-black !important;
+      }
+      .info {
+        float: right;
+        margin-right: 20px;
+        color: @color-C18 !important;
+        font-size: 17px;
+      }
+    }
+   
+    .contentBlocksWrapper {
+      width: 980px;
+      margin-left: 0px;
+      margin-right: 0px;
+      hr:first-child {
+        display: none;
+      }
+      .blocks{
+        page-break-inside:avoid;
+        border: solid 1px @color-C18;
+        .title{
+          font-size: 12pt;
+        }
+        .takenDate{
+          color: @color-black !important;
+          font-size: 9pt;
+          font-weight: normal;
+        }
+        .previousResults{
+          font-size: 8pt;
+          color: @color-C18 !important;
+        }
+        .olderResults{
+          color: @color-black !important;
+        }
+        .level1Content, .level2Content, .level3Content{
+          //font-size: 12pt;
+          width: 215px;
+        }
+        tbody{
+          td {
+            font-size: 9pt;
+            border-color: @color-C18;
+          }
+        }
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 <h2 class="title printContent">{{current.0.student_full_name}} | {{labels.grade}} {{current.0.asmt_grade}}</h2>
 {{#current}}
-<div id="assessmentSection{{count}}" class="innerBox clearfix assessmentSection">
+<div id="assessmentSection{{count}}" class="innerBox clearfix assessmentSection {{asmt_subject}}">
     <div class="sidebar pull-left">
         <h1 aria-role="heading" aria-label="{{asmt_subject}}">{{asmt_subject_text}}</h1>
         <h3 class="type">
@@ -45,8 +45,8 @@
                 <div class="overallText">
                     <strong>{{labels.overall_score}}</strong>
                 </div>
-                <div class="indicator" style="background-color: {{score_bg_color}}!important; color: {{score_text_color}};">
-                    <strong class="asmtScore">{{asmt_score}}</strong>
+                <div class="indicator" style="background-color: {{score_bg_color}}!important;">
+                    <strong class="asmtScore" style="color: {{score_text_color}} !important;">{{asmt_score}}</strong>
                 </div>
                 <div class="overallDesc" style="color: {{score_color}}">
                     <strong class="scoreName">{{score_name}}</strong>
@@ -78,7 +78,7 @@
             </div>
         </div>
         {{#accommodations}}
-        <div class="accommodationSection clearfix screenContent">
+        <div class="accommodationSection clearfix">
             <div class="content">
                 <h4>{{labels.accommodations}}</h4>
                 <div id="accommodationScreenReader{{count}}" aria-labelledby="accommodationScreenReader{{count}}">
@@ -127,7 +127,14 @@
     </div>
     <div class="aboutReportPopup">
         <div class="reportInfoWrapper">
-            <h3>{{labels.report_info}}:</h3>
+            <div class="reportInfoText">
+                <h3>{{labels.report_info}}:</h3>
+            </div>
+            {{#printAdditionalInfo.policy_content}}
+            <div class="policy"><h4>{{labels.college_content_readiness}}:</h4><p>{{{printAdditionalInfo.policy_content}}}</p></div>
+            {{/printAdditionalInfo.policy_content}}
+            <div class="psychometric"><h4>{{labels.note}}:</h4><p>{{{printAdditionalInfo.psychometric_implications}}}</p></div>
+            <div class='disclaimerInfo printContent'></div>
         </div>
     </div>
     <div class="legendPopup"></div>

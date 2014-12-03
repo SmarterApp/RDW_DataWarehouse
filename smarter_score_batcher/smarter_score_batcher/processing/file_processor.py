@@ -8,11 +8,9 @@ import logging
 from smarter_score_batcher.processing.assessment import get_assessment_mapping
 from smarter_score_batcher.processing.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
-from smarter_score_batcher.utils.file_utils import csv_file_writer, \
-    json_file_writer
+from smarter_score_batcher.utils.file_utils import csv_file_writer
 from smarter_score_batcher.utils.metadata_generator import metadata_generator_bottom_up
-from smarter_score_batcher.error.exceptions import GenerateCSVException, \
-    TSBException, TSBSecurityException
+from smarter_score_batcher.error.exceptions import GenerateCSVException, TSBException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 from smarter_score_batcher.database.db_utils import save_assessment, \
     save_metadata, get_metadata
@@ -34,7 +32,7 @@ def process_assessment_data(root, meta):
     # Create dir name based on state code and file name from asmt id
     asmtGuid, metadata = get_assessment_metadata_mapping(root)
     stateCode, data = get_assessment_mapping(root, metadata)
-    if not get_metadata(asmtGuid=asmtGuid):
+    if not get_metadata(asmtGuid):
         save_metadata(asmtGuid, stateCode, metadata)
     save_assessment(data)
 

@@ -6,9 +6,9 @@ config_namespace = 'smarter_score_batcher.db'
 
 class TSBDBConnection(DBConnection):
     '''
-    DBConnector for UDL Stats
+    DBConnector for Smarter Score Batcher
 
-    Stats Database is NOT tenant specific, there is only one config per install
+    TSB Database is NOT tenant specific, there is only one config per install
 
     '''
 

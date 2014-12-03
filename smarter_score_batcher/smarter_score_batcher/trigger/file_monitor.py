@@ -18,8 +18,7 @@ from smarter_score_batcher.database.db_utils import get_metadata, get_assessment
     delete_assessments, get_error_message, get_all_assessment_guids
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 from edcore.database import initialize_db
-from smarter_score_batcher.error.exceptions import GenerateCSVException, \
-    TSBException, TSBSecurityException
+from smarter_score_batcher.error.exceptions import TSBSecurityException
 from smarter_score_batcher.utils.file_utils import csv_file_writer, \
     json_file_writer
 
@@ -84,6 +83,8 @@ def move_to_staging(settings):
             msg = "assessment %s data not found for tenant %s" % (assessment, tenant)
             logger.debug(msg)
             raise FileMonitorFileNotFoundException(msg, err_source=ErrorSource.MOVE_TO_STAGE)
+        except TSBSecurityException as e:
+            logger.error("Path traversal vulnerability found: %s", e)
         except Exception as e:
             # pass to process next assessment data
             msg = "Error occurs during process assessment %s for tenant %s: %s" % (assessment, tenant, str(e))
@@ -119,7 +120,6 @@ def _get_gpg_settings_by_tenant(tenant, settings):
     return recipients, kw_settings
 
 
-# TODO: add security fix back
 def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
     # prevent path traversal
     base_dir = os.path.abspath(base_dir)
@@ -132,17 +132,6 @@ def prepare_assessment_dir(base_dir, state_code, asmt_id, mode=0o700):
     return abs_request_directory
 
 
-def generate_assessment_file(file_object, root, metadata_file_path, header=False):
-    '''
-    lock file then write
-    non-block lock, if the file is already locked, then raise IOError instead of waiting.
-    :param file_path: file path
-    :param data: data
-    '''
-    data = get_assessment_mapping(root, metadata_file_path)
-    csv_file_writer(file_object, [data.values], header=data.header if header else None)
-
-
 class FileEncryption:
 
     def __init__(self, asmt_dir, tenant, assessment_id):
@@ -152,7 +141,7 @@ class FileEncryption:
         :param asmt_dir str: full os.path to assessment directory
         '''
         self.tenant = tenant
-        self.asmt_dir = os.path.join(asmt_dir, tenant)
+        self.asmt_dir = asmt_dir
         self.assessment_id = assessment_id
         self.__success = False
         self.hasher = MD5Hasher()
@@ -201,9 +190,7 @@ class FileEncryption:
 
     def __enter__(self):
         ''' acquires lock and creates a .tmp directory under current assessment'''
-        self.temp_dir = os.path.join(self.asmt_dir, self.assessment_id)
-        if not os.path.exists(self.temp_dir):
-            os.makedirs(self.temp_dir, exist_ok=True)
+        self.temp_dir = prepare_assessment_dir(self.asmt_dir, self.tenant, self.assessment_id)
         return self
 
     def __exit__(self, type, value, tb):
@@ -247,7 +234,7 @@ class FileEncryption:
                 json_file_writer(f, error_message)
             return error_guids
 
-        # create a directory with name `assessment id` under .tmp
+        # create a directory with name `assessment id`
         tmp_dir = os.path.join(self.temp_dir, self.assessment_id)
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir, exist_ok=True)

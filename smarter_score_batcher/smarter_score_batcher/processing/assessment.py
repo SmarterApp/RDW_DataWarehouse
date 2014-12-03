@@ -237,7 +237,7 @@ def getClaimMappingName(metadata, claim_name, default_value):
 
 def get_assessment_mapping(root, metadata):
     '''
-    Returns the landing zone format of assessment csv file
+    Returns state code and the landing zone format of assessment csv file
     '''
     examinee = root.find("./Examinee")
     opportunity = root.find("./Opportunity")

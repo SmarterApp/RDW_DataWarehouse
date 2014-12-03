@@ -213,7 +213,7 @@ class JSONMapping(Mapping):
 
 def get_assessment_metadata_mapping(root):
     '''
-    Returns the json format needed for landing zone assessment file
+    Returns assessment guid and the json format needed for landing zone assessment file
     '''
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")

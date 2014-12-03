@@ -45,9 +45,7 @@ def get_metadata(asmtGuid):
     '''
     with TSBDBConnection() as conn:
         tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-        query = Select([tsb_metadata])
-        if asmtGuid:
-            query = query.where(tsb_metadata.c.asmt_guid == asmtGuid)
+        query = Select([tsb_metadata]).where(tsb_metadata.c.asmt_guid == asmtGuid)
         return conn.get_result(query)
 
 

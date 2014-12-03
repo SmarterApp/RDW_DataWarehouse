@@ -130,7 +130,6 @@ def assign_student_groups(school, grade, grade_students, schools_with_groupings)
 
     num_tot_groups = len(ela_groups['staff_based'])
     num_tot_students = len(grade_students)
-    num_students_per_group = int(num_tot_students / num_tot_groups)
 
     ela_groups_staff_based = ela_groups['staff_based']
     ela_groups_section_based = ela_groups['section_based']

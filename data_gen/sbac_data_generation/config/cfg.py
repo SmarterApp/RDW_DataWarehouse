@@ -29,6 +29,7 @@ STUDENT_GROUPING_RATE = .7
 ALL_GROUP_RATE = .9
 ONE_GROUP_RATE = .5
 STUDENTS_PER_GROUP = 50
+INTERIM_ASMT_SCHOOL_RATE = .85
 GROUP_TYPE = ['section_based', 'staff_based']
 
 HOLD_BACK_RATE = .01
@@ -44,7 +45,6 @@ ASMT_ITEM_BANK_SIZE = 130
 ASMT_ITEM_BANK_FORMAT = ['MC', 'EQ', 'GI']
 ITEMS_PER_ASMT = 100
 
-INTERIM_ASMT_RATE = .85
 ASMT_SKIP_RATE = .05
 ASMT_RETAKE_RATE = .01
 ASMT_DELETE_RATE = .02
@@ -91,7 +91,7 @@ CLAIM_DEFINITIONS = {'Math': [{'name': 'Concepts & Procedures', 'weight': .4},
                              {'name': 'Research & Inquiry', 'weight': .30}]
                      }
 
-ACCOMMODATIONS = {
+ACCOMMODATIONS = {  # 0: range is 0; 4: range is 4-26
                   'acc_abacus_nonembed': {'ELA': 0, 'Math': 4},
                   'acc_alternate_response_options_nonembed': {'ELA': 4, 'Math': 4},
                   'acc_asl_video_embed': {'ELA': 4, 'Math': 4},
@@ -838,3 +838,132 @@ LEVELS_BY_GRADE_BY_SUBJ = {
                             dmg_eth_wht=Stats(5.3, 24.7, 54.6, 15.4),),),
     },
 }
+
+## BEGIN interim assessment configuration ##
+
+# % of students that have might take at least 1 interim assessment block
+IAB_STUDENT_RATE = .5
+
+# In the following, the year is the year adjustment (offset of the year from the start of the schoolyear)
+# However, python (perhaps reasonably) doesn't do a year 0, so we'll need to subtract 1 from these later
+IAB_EFFECTIVE_DATES = (datetime.date(1, 10, 1),
+                       datetime.date(2, 1, 1),
+                       datetime.date(2, 3, 1),)
+
+# subject → grade → block name
+IAB_NAMES = {'ELA': {3: ('Read Literary Texts',
+                         'Read Informational Texts',
+                         'Edit/Revise',
+                         'Brief Writes',
+                         'Listen/Interpret',
+                         'Research',
+                         'Narrative Performance Task',
+                         'Informational Performance Task',
+                         'Opinion Performance Task'),
+                     4: ('Read Literary Texts',
+                         'Read Informational Texts',
+                         'Edit/Revise',
+                         'Brief Writes',
+                         'Listen/Interpret',
+                         'Research',
+                         'Narrative Performance Task',
+                         'Informational Performance Task',
+                         'Opinion Performance Task'),
+                     5: ('Read Literary Texts',
+                         'Read Informational Texts',
+                         'Edit/Revise',
+                         'Brief Writes',
+                         'Listen/Interpret',
+                         'Research',
+                         'Narrative Performance Task',
+                         'Informational Performance Task',
+                         'Opinion Performance Task'),
+                     6: ('Read Literary Texts',
+                         'Read Informational Texts',
+                         'Edit/Revise',
+                         'Brief Writes',
+                         'Listen/Interpret',
+                         'Research',
+                         'Narrative Performance Task',
+                         'Explanatory Performance Task',
+                         'Argument Performance Task'),
+                     7: ('Read Literary Texts',
+                         'Read Informational Texts',
+                         'Edit/Revise',
+                         'Brief Writes',
+                         'Listen/Interpret',
+                         'Research',
+                         'Narrative Performance Task',
+                         'Explanatory Performance Task',
+                         'Argument Performance Task'),
+                     8: ('Read Literary Texts',
+                         'Read Informational Texts',
+                         'Edit/Revise',
+                         'Brief Writes',
+                         'Listen/Interpret',
+                         'Research',
+                         'Narrative Performance Task',
+                         'Explanatory Performance Task',
+                         'Argument Performance Task'),
+                     11: ('Read Literary Texts',
+                          'Read Informational Texts',
+                          'Edit/Revise',
+                          'Brief Writes',
+                          'Listen/Interpret',
+                          'Research',
+                          'Narrative Performance Task',
+                          'Explanatory Performance Task',
+                          'Argument Performance Task'), },
+             'Math': {3: ('Operations and Algebraic Thinking',
+                          'Numbers and Operations in Base 10',
+                          'Fractions',
+                          'Measurement and Data',
+                          'Mathematics Performance Task',),
+                      4: ('Operations and Algebraic Thinking',
+                          'Numbers and Operations in Base 10',
+                          'Fractions',
+                          'Geometry',
+                          'Measurement and Data',
+                          'Mathematics Performance Task',),
+                      5: ('Operations and Algebraic Thinking',
+                          'Numbers and Operations in Base 10',
+                          'Fractions',
+                          'Geometry',
+                          'Measurement and Data',
+                          'Mathematics Performance Task',),
+                      6: ('Ratio and Proportional Relationships',
+                          'Number System',
+                          'Expressions and Equations',
+                          'Geometry',
+                          'Statistics and Probability',
+                          'Mathematics Performance Task',),
+                      7: ('Ratio and Proportional Relationships',
+                          'Number System',
+                          'Expressions and Equations',
+                          'Geometry',
+                          'Statistics and Probability',
+                          'Mathematics Performance Task',),
+                      8: ('Expressions & Equations I (and Proportionality)',
+                          'Expressions & Equations II',
+                          'Functions',
+                          'Geometry',
+                          'Mathematics Performance Task'),
+                      11: ('Algebra and Functions - Linear Functions',
+                           'Algebra and Functions - Quadratic Functions',
+                           'Algebra and Functions - Exponential Functions',
+                           'Algebra and Functions - Polynomials Functions',
+                           'Algebra and Functions - Radicals Functions',
+                           'Algebra and Functions - Rational Functions',
+                           'Algebra and Functions - Trigonometric Functions',
+                           'Geometry - Transformations in Geometry',
+                           'Geometry - Right Triangle Ratios in Geometry',
+                           'Geometry - Three - Dimensional Geometry',
+                           'Geometry - Proofs',
+                           'Geometry - Circles',
+                           'Geometry - Applications',
+                           'Interpreting Categorical and Quantitative Data',
+                           'Probability',
+                           'Making Inferences and Justifying Conclusions',
+                           'Mathematics Performance Task')}}
+
+## END interim assessment configuration ##

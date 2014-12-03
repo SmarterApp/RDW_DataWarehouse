@@ -83,6 +83,15 @@ SCHOOL_TYPES = {'High School': {'type': 'High School',
                 'UDL High School': {'type': 'High School',
                                     'grades': [11],
                                     'students': {'min': 999, 'max': 1001, 'avg': 1000}},
+                'Tiny High School': {'type': 'High School',
+                                'grades': [11],
+                                'students': {'min': 5, 'max': 10, 'avg': 7}},
+                'Tiny Middle School': {'type': 'Middle School',
+                                  'grades': [6, 7, 8],
+                                  'students': {'min': 5, 'max': 10, 'avg': 7}},
+                'Tiny Elementary School': {'type': 'Elementary School',
+                                      'grades': [3, 4, 5],
+                                      'students': {'min': 5, 'max': 10, 'avg': 7}},
                 }
 
 DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_MAX, 'avg': BIG_AVG},  # if SML_MIN = 9 then (200, 450, 325)
@@ -190,7 +199,11 @@ DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_M
                                                              'Good Middle School': OTHR_MIDL,
                                                              'Good Elementary School': OTHR_ELEM}},
                   'Big UDL': {'school_counts': {'min': 200, 'max': 201, 'avg': 200},
-                              'school_types_and_ratios': {'UDL High School': 1}}
+                              'school_types_and_ratios': {'UDL High School': 1}},
+                  'Tiny': {'school_counts': {'min': SML_MIN, 'max': SML_MAX, 'avg': SML_AVG},
+                           'school_types_and_ratios': {'Tiny High School': NORM_HIGH,
+                                                       'Tiny Middle School': NORM_MIDL,
+                                                       'Tiny Elementary School': NORM_ELEM}},
                   }
 
 STATE_TYPES = {'california': {'district_types_and_counts': [('Big LA', 1), ('Big Average', 10), ('Big Poor', 10),
@@ -209,6 +222,9 @@ STATE_TYPES = {'california': {'district_types_and_counts': [('Big LA', 1), ('Big
                            'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                            'demographics': 'california'},
                'devel': {'district_types_and_counts': [('Small Average', 4)],
+                         'subject_skip_percentages': {'Math': .04, 'ELA': .03},
+                         'demographics': 'california'},
+               'tiny': {'district_types_and_counts': [('Tiny', 2)],
                          'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                          'demographics': 'california'},
                'udl_test': {'district_types_and_counts': [('Big UDL', 1)],

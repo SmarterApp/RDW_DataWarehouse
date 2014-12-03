@@ -88,8 +88,157 @@ FAO_VW_FORMAT = {'format': 'csv',
                              {'name': 'rec_status', 'val': 'assessment_outcome.result_status'},
                              {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
+FBAO_VW_FORMAT = {'format': 'csv',
+                 'name': 'fact_block_asmt_outcome_vw.csv',
+                 'columns': [{'name': 'asmt_outcome_vw_rec_id', 'val': 'assessment_outcome.rec_id'},
+                             {'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
+                             {'name': 'student_rec_id', 'val': 'student.rec_id'},
+                             {'name': 'inst_hier_rec_id', 'val': 'institution_hierarchy.rec_id'},
+                             {'name': 'asmt_guid', 'val': 'assessment.guid_sr'},
+                             {'name': 'student_id', 'val': 'student.guid_sr'},
+                             {'name': 'state_code', 'val': 'state.code'},
+                             {'name': 'district_id', 'val': 'district.guid_sr'},
+                             {'name': 'school_id', 'val': 'school.guid_sr'},
+                             {'name': 'where_taken_id', 'val': 'school.guid_sr'},
+                             {'name': 'where_taken_name', 'val': 'school.name'},
+                             {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
+                             {'name': 'asmt_year', 'val': 'assessment.period_year'},
+                             {'name': 'asmt_subject', 'val': 'assessment.subject'},
+                             {'name': 'asmt_grade', 'val': 'student.grade'},
+                             {'name': 'enrl_grade', 'val': 'student.grade'},
+                             {'name': 'date_taken', 'val': 'assessment_outcome.date_taken', 'filter': 'date_Ymd'},
+                             {'name': 'date_taken_day', 'val': 'assessment_outcome.date_taken', 'filter': 'date_d'},
+                             {'name': 'date_taken_month', 'val': 'assessment_outcome.date_taken', 'filter': 'date_m'},
+                             {'name': 'date_taken_year', 'val': 'assessment_outcome.date_taken', 'filter': 'date_Y'},
+                             {'name': 'asmt_score', 'val': 'assessment_outcome.overall_score'},
+                             {'name': 'asmt_score_range_min', 'val': 'assessment_outcome.overall_score_range_min'},
+                             {'name': 'asmt_score_range_max', 'val': 'assessment_outcome.overall_score_range_max'},
+                             {'name': 'asmt_perf_lvl', 'val': 'assessment_outcome.overall_perf_lvl'},
+                             {'name': 'asmt_claim_1_score', 'val': 'assessment_outcome.claim_1_score'},
+                             {'name': 'asmt_claim_1_score_range_min', 'val': 'assessment_outcome.claim_1_score_range_min'},
+                             {'name': 'asmt_claim_1_score_range_max', 'val': 'assessment_outcome.claim_1_score_range_max'},
+                             {'name': 'asmt_claim_1_perf_lvl', 'val': 'assessment_outcome.claim_1_perf_lvl'},
+                             {'name': 'asmt_claim_2_score', 'val': 'assessment_outcome.claim_2_score'},
+                             {'name': 'asmt_claim_2_score_range_min', 'val': 'assessment_outcome.claim_2_score_range_min'},
+                             {'name': 'asmt_claim_2_score_range_max', 'val': 'assessment_outcome.claim_2_score_range_max'},
+                             {'name': 'asmt_claim_2_perf_lvl', 'val': 'assessment_outcome.claim_2_perf_lvl'},
+                             {'name': 'asmt_claim_3_score', 'val': 'assessment_outcome.claim_3_score'},
+                             {'name': 'asmt_claim_3_score_range_min', 'val': 'assessment_outcome.claim_3_score_range_min'},
+                             {'name': 'asmt_claim_3_score_range_max', 'val': 'assessment_outcome.claim_3_score_range_max'},
+                             {'name': 'asmt_claim_3_perf_lvl', 'val': 'assessment_outcome.claim_3_perf_lvl'},
+                             {'name': 'asmt_claim_4_score', 'val': 'assessment_outcome.claim_4_score'},
+                             {'name': 'asmt_claim_4_score_range_min', 'val': 'assessment_outcome.claim_4_score_range_min'},
+                             {'name': 'asmt_claim_4_score_range_max', 'val': 'assessment_outcome.claim_4_score_range_max'},
+                             {'name': 'asmt_claim_4_perf_lvl', 'val': 'assessment_outcome.claim_4_perf_lvl'},
+                             {'name': 'sex', 'val': 'student.gender'},
+                             {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'},
+                             {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
+                             {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
+                             {'name': 'dmg_eth_asn', 'val': 'student.eth_asian'},
+                             {'name': 'dmg_eth_blk', 'val': 'student.eth_black'},
+                             {'name': 'dmg_eth_pcf', 'val': 'student.eth_pacific'},
+                             {'name': 'dmg_eth_wht', 'val': 'student.eth_white'},
+                             {'name': 'dmg_eth_2om', 'val': 'student.eth_multi'},
+                             {'name': 'dmg_eth_iep', 'val': 'student.prg_iep'},
+                             {'name': 'dmg_prg_lep', 'val': 'student.prg_lep'},
+                             {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
+                             {'name': 'dmg_sts_ecd', 'val': 'student.prg_econ_disad'},
+                             {'name': 'dmg_sts_mig', 'val': 'student.prg_migrant'},
+                             {'name': 'acc_asl_video_embed', 'val': 'assessment_outcome.acc_asl_video_embed'},
+                             {'name': 'acc_print_on_demand_items_nonembed',
+                              'val':  'assessment_outcome.acc_print_on_demand_items_nonembed'},
+                             {'name': 'acc_noise_buffer_nonembed',
+                              'val': 'assessment_outcome.acc_noise_buffer_nonembed'},
+                             {'name': 'acc_braile_embed', 'val': 'assessment_outcome.acc_braile_embed'},
+                             {'name': 'acc_closed_captioning_embed',
+                                      'val': 'assessment_outcome.acc_closed_captioning_embed'},
+                             {'name': 'acc_text_to_speech_embed', 'val': 'assessment_outcome.acc_text_to_speech_embed'},
+                             {'name': 'acc_abacus_nonembed', 'val': 'assessment_outcome.acc_abacus_nonembed'},
+                             {'name': 'acc_alternate_response_options_nonembed',
+                                      'val': 'assessment_outcome.acc_alternate_response_options_nonembed'},
+                             {'name': 'acc_calculator_nonembed', 'val': 'assessment_outcome.acc_calculator_nonembed'},
+                             {'name': 'acc_multiplication_table_nonembed',
+                                      'val': 'assessment_outcome.acc_multiplication_table_nonembed'},
+                             {'name': 'acc_print_on_demand_nonembed',
+                                      'val': 'assessment_outcome.acc_print_on_demand_nonembed'},
+                             {'name': 'acc_read_aloud_nonembed', 'val': 'assessment_outcome.acc_read_aloud_nonembed'},
+                             {'name': 'acc_scribe_nonembed', 'val': 'assessment_outcome.acc_scribe_nonembed'},
+                             {'name': 'acc_speech_to_text_nonembed',
+                                      'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
+                             {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'},
+                             {'name': 'from_date', 'val': 'assessment_outcome.from_date', 'filter': 'date_Ymd'},
+                             {'name': 'to_date', 'val': 'assessment_outcome.to_date', 'filter': 'date_Ymd'},
+                             {'name': 'rec_status', 'val': 'assessment_outcome.result_status'},
+                             {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
+
 FAO_FORMAT = {'format': 'csv',
               'name': 'fact_asmt_outcome.csv',
+              'columns': [{'name': 'asmt_outcome_rec_id', 'val': 'assessment_outcome.rec_id'},
+                          {'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
+                          {'name': 'student_rec_id', 'val': 'student.rec_id'},
+                          {'name': 'inst_hier_rec_id', 'val': 'institution_hierarchy.rec_id'},
+                          {'name': 'asmt_guid', 'val': 'assessment.guid_sr'},
+                          {'name': 'student_id', 'val': 'student.guid_sr'},
+                          {'name': 'state_code', 'val': 'state.code'},
+                          {'name': 'district_id', 'val': 'district.guid_sr'},
+                          {'name': 'school_id', 'val': 'school.guid_sr'},
+                          {'name': 'where_taken_id', 'val': 'school.guid_sr'},
+                          {'name': 'where_taken_name', 'val': 'school.name'},
+                          {'name': 'asmt_grade', 'val': 'student.grade'},
+                          {'name': 'enrl_grade', 'val': 'student.grade'},
+                          {'name': 'date_taken', 'val': 'assessment_outcome.date_taken', 'filter': 'date_Ymd'},
+                          {'name': 'date_taken_day', 'val': 'assessment_outcome.date_taken', 'filter': 'date_d'},
+                          {'name': 'date_taken_month', 'val': 'assessment_outcome.date_taken', 'filter': 'date_m'},
+                          {'name': 'date_taken_year', 'val': 'assessment_outcome.date_taken', 'filter': 'date_Y'},
+                          {'name': 'asmt_score', 'val': 'assessment_outcome.overall_score'},
+                          {'name': 'asmt_score_range_min', 'val': 'assessment_outcome.overall_score_range_min'},
+                          {'name': 'asmt_score_range_max', 'val': 'assessment_outcome.overall_score_range_max'},
+                          {'name': 'asmt_perf_lvl', 'val': 'assessment_outcome.overall_perf_lvl'},
+                          {'name': 'asmt_claim_1_score', 'val': 'assessment_outcome.claim_1_score'},
+                          {'name': 'asmt_claim_1_score_range_min', 'val': 'assessment_outcome.claim_1_score_range_min'},
+                          {'name': 'asmt_claim_1_score_range_max', 'val': 'assessment_outcome.claim_1_score_range_max'},
+                          {'name': 'asmt_claim_1_perf_lvl', 'val': 'assessment_outcome.claim_1_perf_lvl'},
+                          {'name': 'asmt_claim_2_score', 'val': 'assessment_outcome.claim_2_score'},
+                          {'name': 'asmt_claim_2_score_range_min', 'val': 'assessment_outcome.claim_2_score_range_min'},
+                          {'name': 'asmt_claim_2_score_range_max', 'val': 'assessment_outcome.claim_2_score_range_max'},
+                          {'name': 'asmt_claim_2_perf_lvl', 'val': 'assessment_outcome.claim_2_perf_lvl'},
+                          {'name': 'asmt_claim_3_score', 'val': 'assessment_outcome.claim_3_score'},
+                          {'name': 'asmt_claim_3_score_range_min', 'val': 'assessment_outcome.claim_3_score_range_min'},
+                          {'name': 'asmt_claim_3_score_range_max', 'val': 'assessment_outcome.claim_3_score_range_max'},
+                          {'name': 'asmt_claim_3_perf_lvl', 'val': 'assessment_outcome.claim_3_perf_lvl'},
+                          {'name': 'asmt_claim_4_score', 'val': 'assessment_outcome.claim_4_score'},
+                          {'name': 'asmt_claim_4_score_range_min', 'val': 'assessment_outcome.claim_4_score_range_min'},
+                          {'name': 'asmt_claim_4_score_range_max', 'val': 'assessment_outcome.claim_4_score_range_max'},
+                          {'name': 'asmt_claim_4_perf_lvl', 'val': 'assessment_outcome.claim_4_perf_lvl'},
+                          {'name': 'acc_asl_video_embed', 'val': 'assessment_outcome.acc_asl_video_embed'},
+                             {'name': 'acc_print_on_demand_items_nonembed',
+                              'val':  'assessment_outcome.acc_print_on_demand_items_nonembed'},
+                             {'name': 'acc_noise_buffer_nonembed',
+                              'val': 'assessment_outcome.acc_noise_buffer_nonembed'},
+                          {'name': 'acc_braile_embed', 'val': 'assessment_outcome.acc_braile_embed'},
+                          {'name': 'acc_closed_captioning_embed',
+                                   'val': 'assessment_outcome.acc_closed_captioning_embed'},
+                          {'name': 'acc_text_to_speech_embed', 'val': 'assessment_outcome.acc_text_to_speech_embed'},
+                          {'name': 'acc_abacus_nonembed', 'val': 'assessment_outcome.acc_abacus_nonembed'},
+                          {'name': 'acc_alternate_response_options_nonembed',
+                                   'val': 'assessment_outcome.acc_alternate_response_options_nonembed'},
+                          {'name': 'acc_calculator_nonembed', 'val': 'assessment_outcome.acc_calculator_nonembed'},
+                          {'name': 'acc_multiplication_table_nonembed',
+                                   'val': 'assessment_outcome.acc_multiplication_table_nonembed'},
+                          {'name': 'acc_print_on_demand_nonembed',
+                                   'val': 'assessment_outcome.acc_print_on_demand_nonembed'},
+                          {'name': 'acc_read_aloud_nonembed', 'val': 'assessment_outcome.acc_read_aloud_nonembed'},
+                          {'name': 'acc_scribe_nonembed', 'val': 'assessment_outcome.acc_scribe_nonembed'},
+                          {'name': 'acc_speech_to_text_nonembed',
+                                   'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
+                          {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'},
+                          {'name': 'from_date', 'val': 'assessment_outcome.from_date', 'filter': 'date_Ymd'},
+                          {'name': 'to_date', 'val': 'assessment_outcome.to_date', 'filter': 'date_Ymd'},
+                          {'name': 'rec_status', 'val': 'assessment_outcome.result_status'},
+                          {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
+
+FBAO_FORMAT = {'format': 'csv',
+              'name': 'fact_block_asmt_outcome.csv',
               'columns': [{'name': 'asmt_outcome_rec_id', 'val': 'assessment_outcome.rec_id'},
                           {'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
                           {'name': 'student_rec_id', 'val': 'student.rec_id'},
@@ -305,6 +454,81 @@ STUDENT_REG_FORMAT = {'format': 'csv',
                                   {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
+                    'name': 'METADATA_ASMT_ID_<GUID>.json',
+                    'layout': {
+                        'content': 'assessment',
+                        'Identification': {
+                            'Guid': 'assessment.guid_sr',
+                            'Year': 'assessment.period_year',
+                            'Type': 'assessment.asmt_type',
+                            'Period': 'assessment.period',
+                            'Subject': 'assessment.subject',
+                            'EffectiveDate': 'assessment_effective.date',
+                            'Version': 'assessment.version'
+                        },
+                        'Overall': {
+                            'MinScore': 'assessment.overall_score_min',
+                            'MaxScore': 'assessment.overall_score_max'
+                        },
+                        'PerformanceLevels': {
+                            'Level1': {
+                                'Name': 'assessment.perf_lvl_name_1',
+                                'CutPoint': 'assessment.overall_score_min'
+                            },
+                            'Level2': {
+                                'Name': 'assessment.perf_lvl_name_2',
+                                'CutPoint': 'assessment.overall_cut_point_1'
+                            },
+                            'Level3': {
+                                'Name': 'assessment.perf_lvl_name_3',
+                                'CutPoint': 'assessment.overall_cut_point_2'
+                            },
+                            'Level4': {
+                                'Name': 'assessment.perf_lvl_name_4',
+                                'CutPoint': 'assessment.overall_cut_point_3'
+                            },
+                            'Level5': {
+                                'Name': 'assessment.perf_lvl_name_5',
+                                'CutPoint': 'assessment.overall_cut_point_4'
+                            }
+                        },
+                        'Claims': {
+                            'Claim1': {
+                                'Name': 'assessment.claim_1_name',
+                                'MinScore': 'assessment.claim_1_score_min',
+                                'MaxScore': 'assessment.claim_1_score_max'
+                            },
+                            'Claim2': {
+                                'Name': 'assessment.claim_2_name',
+                                'MinScore': 'assessment.claim_2_score_min',
+                                'MaxScore': 'assessment.claim_2_score_max'
+                            },
+                            'Claim3': {
+                                'Name': 'assessment.claim_3_name',
+                                'MinScore': 'assessment.claim_3_score_min',
+                                'MaxScore': 'assessment.claim_3_score_max'
+                            },
+                            'Claim4': {
+                                'Name': 'assessment.claim_4_name',
+                                'MinScore': 'assessment.claim_4_score_min',
+                                'MaxScore': 'assessment.claim_4_score_max'
+                            }
+                        },
+                        'ClaimsPerformanceLevel': {
+                            'Level1': {
+                                'Name': 'assessment.claim_perf_lvl_name_1'
+                            },
+                            'Level2': {
+                                'Name': 'assessment.claim_perf_lvl_name_2'
+                            },
+                            'Level3': {
+                                'Name': 'assessment.claim_perf_lvl_name_3'
+                            }
+                        }
+                    }}
+
+
+IAB_JSON_FORMAT = {'format': 'json',
                     'name': 'METADATA_ASMT_ID_<GUID>.json',
                     'layout': {
                         'content': 'assessment',

@@ -58,7 +58,7 @@ def generate_district(district_type, state: SBACState, id_gen):
     return d
 
 
-def generate_school(school_type, district: SBACDistrict, id_gen, interim_asmt_rate=sbac_config.INTERIM_ASMT_RATE):
+def generate_school(school_type, district: SBACDistrict, id_gen, interim_asmt_rate=sbac_config.INTERIM_ASMT_SCHOOL_RATE):
     """
     Generate a school specified by the parameters.
 

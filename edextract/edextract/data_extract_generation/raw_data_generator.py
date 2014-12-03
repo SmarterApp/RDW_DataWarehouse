@@ -73,5 +73,9 @@ def _copy_files(raw_root_dir, results, output_dirs):
         if threshold_size > 0 and current_total_size + file.size > threshold_size and _output_dirs:
             out_dir = _output_dirs.pop(0)
             current_total_size = 0
-        os.symlink(file.name, os.path.join(out_dir, os.path.basename(file.name)))
+        try:
+            os.symlink(file.name, os.path.join(out_dir, os.path.basename(file.name)))
+        except OSError:
+            # ignore exception (symlink is already there)
+            pass
         current_total_size += file.size

@@ -45,7 +45,7 @@ def get_metadata(asmtGuid):
     '''
     with TSBDBConnection() as conn:
         tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-        query = Select([tsb_metadata]).where(tsb_metadata.c.status == Status.NEW)
+        query = Select([tsb_metadata])
         if asmtGuid:
             query = query.where(tsb_metadata.c.asmt_guid == asmtGuid)
         return conn.get_result(query)
@@ -117,8 +117,6 @@ def get_error_message(asmtGuid):
     '''
     with TSBDBConnection() as conn:
         tsb_error = conn.get_table(Constants.TSB_ERROR)
-        query = Select([tsb_error]).where(tsb_error.c.asmt_guid == asmtGuid)
-        errors = conn.get_streaming_result(query)
         error_info = build_error_info_header()
         error_guids = []
         for error in errors:

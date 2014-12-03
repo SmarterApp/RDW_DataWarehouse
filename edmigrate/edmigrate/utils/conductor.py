@@ -98,8 +98,8 @@ class Conductor:
         player_task.apply_async((Constants.COMMAND_START_REPLICATION, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_START_REPLICATION, player_group, group_ids)
 
-    def migrate(self):
-        return start_migrate_daily_delta()
+    def migrate(self, tenant=None):
+        return start_migrate_daily_delta(tenant=tenant)
 
     def wait_PGPool_disconnected(self, player_group=None, timeout=30):
         self.__wait_for_status(player_group, timeout, self.__player_trakcer.is_pgpool_disconnected)

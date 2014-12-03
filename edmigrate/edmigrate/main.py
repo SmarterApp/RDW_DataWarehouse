@@ -63,16 +63,18 @@ def migrate_task(settings):
     monitor_timeout = settings.getint(Constants.REPMGR_MONITOR_TIME, 28800)
     mail_server = settings.get(NotificationConstants.MAIL_SERVER)
     mail_sender = settings.get(NotificationConstants.MAIL_SENDER)
+    tenant = settings.get('tenant')
     process_conductor(player_find_time_wait=find_player_timeout,
                       replication_lag_tolerance=replication_lag_tolerance,
                       apply_lag_tolerance=apply_lag_tolerance,
                       time_lag_tolerance=time_lag_tolerance,
                       monitor_timeout=monitor_timeout,
                       mail_server=mail_server,
-                      mail_sender=mail_sender)
+                      mail_sender=mail_sender,
+                      tenant=tenant)
 
 
-def run_with_conductor(daemon_mode, settings):
+def run_with_conductor(daemon_mode, settings, tenant):
     logger.debug('edmigrate main program has started')
     url = get_broker_url(settings)
     celery.conf.update(BROKER_URL=url)
@@ -151,6 +153,7 @@ def migrate_only(settings, tenant=None):
 
 def process(settings, tenant, daemon_mode, pid_file):
     initialize_dbs(False, settings)
+    settings['tenant'] = tenant
     if daemon_mode:
         create_daemon(pid_file)
     run_with_conductor(daemon_mode, settings)

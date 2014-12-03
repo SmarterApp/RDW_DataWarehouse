@@ -1,5 +1,5 @@
-from sqlalchemy.schema import MetaData, CreateSchema, Sequence
-from sqlalchemy import Table, Column, Index, ForeignKey
+from sqlalchemy.schema import MetaData, CreateSchema, Sequence, UniqueConstraint
+from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy import String, Text, BigInteger
 import argparse
 from sqlalchemy.engine import create_engine
@@ -102,16 +102,14 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('AccommodationMultiplicationTable', String(50), nullable=True),
                      Column('AccommodationScribe', String(50), nullable=True),
                      Column('AccommodationSpeechToText', String(50), nullable=True),
-                     Column('AccommodationNoiseBuffer', String(50), nullable=True))
-
-    Index('tsb_asmt_rec_id_idx', tsb_asmt.c.tsb_asmt_rec_id, unique=True)
+                     Column('AccommodationNoiseBuffer', String(50), nullable=True),
+                     UniqueConstraint('StudentIdentifier', 'AssessmentGuid')
+                     )
 
     tsb_metadata = Table('tsb_metadata', metadata,
                          Column('asmt_guid', String(50), primary_key=True),
                          Column('state_code', String(2), nullable=False),
                          Column('content', Text, nullable=True))
-
-    Index('tsb_metadata_idx', tsb_metadata.c.asmt_guid, unique=True)
 
     tsb_error = Table('tsb_error', metadata,
                       Column('tsb_error_rec_id', BigInteger, Sequence('tsb_error_rec_id_seq'), primary_key=True),

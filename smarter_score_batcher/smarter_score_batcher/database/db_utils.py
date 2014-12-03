@@ -1,5 +1,5 @@
 import json
-from sqlalchemy.sql.expression import Select
+from sqlalchemy.sql.expression import Select, func, select, and_
 from sqlalchemy.exc import IntegrityError
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 from smarter_score_batcher.constant import Constants
@@ -14,8 +14,18 @@ def save_assessment(data):
     '''
     parameters = {key: value for key, value in zip(data.header, data.values)}
     with TSBDBConnection() as conn:
-        ins = conn.get_table(Constants.TSB_ASMT).insert()
-        conn.execute(ins, **parameters)
+        query = None
+        tsb_asmt = conn.get_table(Constants.TSB_ASMT)
+        count_where = and_(tsb_asmt.c.StudentIdentifier == parameters['StudentIdentifier'], tsb_asmt.c.AssessmentGuid == parameters['AssessmentGuid'])
+        count_query = select([func.count().label('count')]).select_from(tsb_asmt).where(count_where)
+        results = conn.get_result(count_query)
+        if results:
+            count = results[0]['count']
+            if count > 0:
+                query = tsb_asmt.update().where(count_where)
+        if query is None:
+            query = tsb_asmt.insert()
+        conn.execute(query, **parameters)
 
 
 def save_metadata(asmtGuid, stateCode, metadata):

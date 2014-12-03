@@ -27,6 +27,7 @@ from sbac_data_generation.util.id_gen import IDGen
 
 
 def generate_interim_assessment(date: datetime.date,
+                                asmt_year: int,
                                 subject: str,
                                 block: str,
                                 grade: int,
@@ -69,7 +70,7 @@ def generate_interim_assessment(date: datetime.date,
     sa.guid_sr = id_gen.get_sr_uuid()
     sa.asmt_type = "INTERIM ASSESSMENT BLOCK"
     sa.period = str(date)
-    sa.period_year = date.year
+    sa.period_year = asmt_year
     sa.version = sbac_config.ASMT_VERSION
     sa.subject = subject
     sa.claim_1_name = "%s (Grade %s)" % (block, grade)

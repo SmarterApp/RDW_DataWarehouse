@@ -264,6 +264,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen, generate_
 
 
 def create_interim_assessment_object(date: datetime.date,
+                                     asmt_year: int,
                                      subject: str,
                                      block: str,
                                      grade: int,
@@ -281,7 +282,7 @@ def create_interim_assessment_object(date: datetime.date,
     @returns: New assessment object
     """
     # Create assessment
-    asmt = sbac_interim_asmt_gen.generate_interim_assessment(date, subject, block, grade, id_gen,
+    asmt = sbac_interim_asmt_gen.generate_interim_assessment(date, asmt_year, subject, block, grade, id_gen,
                                                              generate_item_level=generate_item_level)
 
     # Output to requested mediums
@@ -428,6 +429,9 @@ def create_iab_outcome_object(student: SBACStudent,
 
 
 def create_iab_outcome_objects(student: SBACStudent,
+                               asmt_year: int,
+                               grade: int,
+                               subject: str,
                                asmts: {str: SBACAssessment},
                                inst_hier: InstitutionHierarchy,
                                id_gen: IDGen,
@@ -451,17 +455,14 @@ def create_iab_outcome_objects(student: SBACStudent,
 
     # for randomly selecting a subset of dates on which a student took the test
     date_combos = tuple(all_combinations(sbac_in_config.IAB_EFFECTIVE_DATES))
-    for year, subject, grade in itertools.product(ASMT_YEARS,
-                                                  sbac_in_config.SUBJECTS,
-                                                  GRADES_OF_CONCERN):
 
-            for block in sbac_in_config.IAB_NAMES[subject][grade]:
-                for offset_date in random.choice(date_combos):
-                    date = datetime.date(year + offset_date.year - 1, offset_date.month, offset_date.day)
-                    key = get_iab_key(date, grade, subject, block)
-                    iab_asmt = asmts[key]
-                    create_iab_outcome_object(student, iab_asmt, inst_hier, id_gen, iab_results,
-                                              generate_item_level=generate_item_level)
+    for block in sbac_in_config.IAB_NAMES[subject][grade]:
+        for offset_date in random.choice(date_combos):
+            date = datetime.date(asmt_year + offset_date.year - 2, offset_date.month, offset_date.day)
+            key = get_iab_key(date, grade, subject, block)
+            iab_asmt = asmts[key]
+            create_iab_outcome_object(student, iab_asmt, inst_hier, id_gen, iab_results,
+                                      generate_item_level=generate_item_level)
 
 
 def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, iab_results, state_code,
@@ -607,6 +608,7 @@ def generate_district_data(state: SBACState,
     hierarchies = []
     inst_hiers = {}
     schools = []
+
     for school_type, school_type_ratio in district.config['school_types_and_ratios'].items():
         # Decide how many of this school type we need
         school_type_count = max(int(school_count * school_type_ratio), 1)  # Make sure at least 1
@@ -624,6 +626,7 @@ def generate_district_data(state: SBACState,
         csv_writer.write_records_to_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
                                          sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies,
                                          tbl_name='dim_hier', root_path=OUT_PATH_ROOT)
+
     if WRITE_PG:
         postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_inst_hier',
                                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies)
@@ -703,6 +706,9 @@ def generate_district_data(state: SBACState,
                                                               generate_item_level=WRITE_IL)
 
                             create_iab_outcome_objects(student,
+                                                       asmt_year,
+                                                       grade,
+                                                       subject,
                                                        assessments,
                                                        inst_hier,
                                                        id_gen,
@@ -776,16 +782,17 @@ def generate_state_data(state: SBACState,
 
     # Create the assessment objects
     if generate_iabs:
-        for year, offset_date, subject, grade in itertools.product(ASMT_YEARS,
-                                                                   sbac_in_config.IAB_EFFECTIVE_DATES,
-                                                                   sbac_in_config.SUBJECTS,
-                                                                   GRADES_OF_CONCERN):
+        for subject, grade in itertools.product(sbac_in_config.SUBJECTS,
+                                                GRADES_OF_CONCERN):
 
-            for block in sbac_in_config.IAB_NAMES[subject][grade]:
-                date = datetime.date(year + offset_date.year - 1, offset_date.month, offset_date.day)
+            for year, block, offset_date in itertools.product(ASMT_YEARS,
+                                                              sbac_in_config.IAB_NAMES[subject][grade],
+                                                              sbac_in_config.IAB_EFFECTIVE_DATES,):
+
+                date = datetime.date(year + offset_date.year - 2, offset_date.month, offset_date.day)
                 key = get_iab_key(date, grade, subject, block)
 
-                assessments[key] = create_interim_assessment_object(date, subject, block, grade,
+                assessments[key] = create_interim_assessment_object(date, year, subject, block, grade,
                                                                     id_gen, generate_item_level=WRITE_IL)
 
     for year in ASMT_YEARS:

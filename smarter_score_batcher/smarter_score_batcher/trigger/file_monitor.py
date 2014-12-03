@@ -15,7 +15,7 @@ from smarter_score_batcher.error.exceptions import FileMonitorFileNotFoundExcept
     FileMonitorException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 from smarter_score_batcher.database.db_utils import get_metadata, get_assessments, \
-    delete_assessments
+    delete_assessments, get_error_message, get_all_assessment_guids
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 from edcore.database import initialize_db
 from smarter_score_batcher.error.exceptions import GenerateCSVException, \
@@ -65,9 +65,7 @@ def move_to_staging(settings):
     logger.debug("start synchronizing files from working directory to staging directory")
     working_dir = settings['smarter_score_batcher.base_dir.working']
     staging_dir = settings['smarter_score_batcher.base_dir.staging']
-    for meta_record in get_metadata():
-        tenant = meta_record['state_code']
-        assessment = meta_record['asmt_guid']
+    for tenant, assessment in get_all_assessment_guids():
         logger.debug("start processing assessment %s", assessment)
         try:
             with FileEncryption(working_dir, tenant, assessment) as fl:
@@ -214,7 +212,7 @@ class FileEncryption:
     def __cleanup(self):
         ''' releases lock and remove .tmp directory. '''
         shutil.rmtree(self.temp_dir)
-        delete_assessments(self.assessment_id, self.tsb_asmt_guids)
+        delete_assessments(self.assessment_id, self.tsb_asmt_guids, self.tsb_error_guids)
 
     def save_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
@@ -226,6 +224,8 @@ class FileEncryption:
 
         def _save_metadata(assessment_id, output_dir):
             metadata = get_metadata(asmtGuid=assessment_id)
+            if not metadata:
+                return
             filepath = os.path.join(output_dir, assessment_id + Extensions.JSON)
             content = json.loads(metadata[0][Constants.CONTENT])
             with open(filepath, mode='w') as f:
@@ -239,8 +239,13 @@ class FileEncryption:
             return asmt_guids
 
         def _save_errors(assessment_id, output_dir):
-            # TODO:
-            pass
+            error_guids, error_message = get_error_message(asmtGuid=assessment_id)
+            if not error_guids:
+                return
+            filepath = os.path.join(output_dir, assessment_id + Extensions.ERR)
+            with open(filepath, mode='w') as f:
+                json_file_writer(f, error_message)
+            return error_guids
 
         # create a directory with name `assessment id` under .tmp
         tmp_dir = os.path.join(self.temp_dir, self.assessment_id)
@@ -248,7 +253,7 @@ class FileEncryption:
             os.makedirs(tmp_dir, exist_ok=True)
         _save_metadata(self.assessment_id, tmp_dir)
         self.tsb_asmt_guids = _save_assessments(self.assessment_id, tmp_dir)
-        _save_errors(self.assessment_id, tmp_dir)
+        self.tsb_error_guids = _save_errors(self.assessment_id, tmp_dir)
         return tmp_dir
 
     def archive_to_tar(self, data_path):

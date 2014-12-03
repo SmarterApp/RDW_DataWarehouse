@@ -54,3 +54,16 @@ def build_err_list(err_code, err_source, err_code_text, err_source_text, err_inp
     err_list[ErrorsConstants.ERR_SOURCE_TEXT] = err_source_text
     err_list[ErrorsConstants.ERR_INPUT] = err_input
     return err_list
+
+
+def build_err_list_from_object(error_object):
+    '''
+    error file body
+    '''
+    err_list = {}
+    err_list[ErrorsConstants.ERR_CODE] = error_object[ErrorsConstants.ERR_CODE]
+    err_list[ErrorsConstants.ERR_SOURCE] = error_object[ErrorsConstants.ERR_SOURCE]
+    err_list[ErrorsConstants.ERR_CODE_TEXT] = error_object[ErrorsConstants.ERR_CODE_TEXT]
+    err_list[ErrorsConstants.ERR_SOURCE_TEXT] = error_object[ErrorsConstants.ERR_SOURCE_TEXT]
+    err_list[ErrorsConstants.ERR_INPUT] = error_object[ErrorsConstants.ERR_INPUT]
+    return err_list

@@ -12,7 +12,7 @@ from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 PREFIX = 'smarter_score_batcher.celery'
 
 
-def setup_celery(settings, prefix=PREFIX):
+def setup_celery(settings, prefix=PREFIX, db_connection=True):
     '''
     Setup celery based on parameters defined in setting (ini file).
     This calls by client application when dictionary of settings is given
@@ -23,11 +23,13 @@ def setup_celery(settings, prefix=PREFIX):
     global conf
     conf = settings
     setup_for_worker(celery, settings, prefix)
-    initialize_db(TSBDBConnection, settings)
+    if db_connection:
+        # This creates the schema if it doesn't exist
+        initialize_db(TSBDBConnection, settings, allow_schema_create=True)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
-    setup_celery(conf)
+    setup_celery(conf, db_connection=True)

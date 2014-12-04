@@ -47,6 +47,7 @@ def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetim
     s.prg_migrant = general_pop_gen.determine_demo_option_selected(demo_config['migrant'])
     s.prg_idea = general_pop_gen.determine_demo_option_selected(demo_config['idea'])
     s.prg_primary_disability = random.choice(sbac_in_config.PRG_DISABILITY_TYPES)
+    s.skip_iab = random.random() < sbac_in_config.IAB_STUDENT_RATE
 
     # None-out primary disability if it doesn't make sense
     if not s.prg_iep and not s.prg_idea and not s.prg_sec504:

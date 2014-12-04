@@ -25,7 +25,6 @@ import os
 import random
 import shutil
 import itertools
-from sbac_data_generation.model.assessment import SBACAssessment
 
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
@@ -45,12 +44,15 @@ import sbac_data_generation.generators.population as sbac_pop_gen
 from data_generation.writers.filters import FILTERS as DG_FILTERS
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.student import SBACStudent
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
 from sbac_data_generation.util.id_gen import IDGen
 from sbac_data_generation.writers.filters import SBAC_FILTERS
 from sbac_data_generation.util import all_combinations
+from sbac_data_generation.util.id_gen import IDGen
+from sbac_data_generation.writers.filters import SBAC_FILTERS
 
 OUT_PATH_ROOT = 'out'
 DB_CONN = None
@@ -121,7 +123,7 @@ def assign_configuration_options(gen_type, state_name, state_code, state_type):
         NUMBER_REGISTRATION_SYSTEMS = 1
         GRADES_OF_CONCERN = {11}
         sbac_in_config.SUBJECTS = ['Math']
-        sbac_in_config.INTERIM_ASMT_SCHOOL_RATE = 0
+        sbac_in_config.INTERIM_ASMT_RATE = 0
         sbac_in_config.ASMT_SKIP_RATE = 0
         sbac_in_config.ASMT_RETAKE_RATE = 0
         sbac_in_config.ASMT_DELETE_RATE = 0
@@ -449,10 +451,6 @@ def create_iab_outcome_objects(student: SBACStudent,
     :param generate_item_level: If should generate item-level data
     :return: None
     """
-    # some % of students won't have any results
-    if random.random() < sbac_in_config.IAB_STUDENT_RATE:
-        return
-
     # for randomly selecting a subset of dates on which a student took the test
     date_combos = tuple(all_combinations(sbac_in_config.IAB_EFFECTIVE_DATES))
 
@@ -566,7 +564,7 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                 csv_writer.write_records_to_file(fao_vw_out_name, fao_vw_out_cols, rslts,
                                                  tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
                 csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts,
-                                                 tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
+                                                 tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
             if WRITE_PG:
                 try:
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw',
@@ -705,15 +703,16 @@ def generate_district_data(state: SBACState,
                                                               assessment_results, skip_rate,
                                                               generate_item_level=WRITE_IL)
 
-                            create_iab_outcome_objects(student,
-                                                       asmt_year,
-                                                       grade,
-                                                       subject,
-                                                       assessments,
-                                                       inst_hier,
-                                                       id_gen,
-                                                       iab_results,
-                                                       generate_item_level=WRITE_IL)
+                            if not student.skip_iab:
+                                create_iab_outcome_objects(student,
+                                                           asmt_year,
+                                                           grade,
+                                                           subject,
+                                                           assessments,
+                                                           inst_hier,
+                                                           id_gen,
+                                                           iab_results,
+                                                           generate_item_level=WRITE_IL)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -778,9 +777,11 @@ def generate_state_data(state: SBACState,
     # Grab the assessment rates by subjects
     asmt_skip_rates_by_subject = state.config['subject_skip_percentages']
 
-    assessments = {}
+
 
     # Create the assessment objects
+    assessments = {}
+
     if generate_iabs:
         for subject, grade in itertools.product(sbac_in_config.SUBJECTS,
                                                 GRADES_OF_CONCERN):

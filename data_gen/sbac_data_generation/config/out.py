@@ -527,7 +527,6 @@ ASMT_JSON_FORMAT = {'format': 'json',
                         }
                     }}
 
-
 IAB_JSON_FORMAT = {'format': 'json',
                     'name': 'METADATA_ASMT_ID_<GUID>.json',
                     'layout': {

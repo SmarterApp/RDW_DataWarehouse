@@ -15,8 +15,6 @@ import sbac_data_generation.config.cfg as sbac_config
 
 from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
-from sbac_data_generation.model.interimassessment import SBACInterimAssessment
-from sbac_data_generation.model.interimassessmentoutcome import SBACInterimAssessmentOutcome
 from sbac_data_generation.model.itemdata import SBACAssessmentOutcomeItemData
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.student import SBACStudent
@@ -47,17 +45,12 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     if subject not in claim_definitions:
         raise KeyError("Subject '%s' not found in claim definitions" % subject)
 
-    if asmt_type == "INTERIM":
-        return generate_interim_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date, to_date,
-                                           claim_definitions, generate_item_level)
-
     claims = claim_definitions[subject]
 
     # Run the General generator
     sa = gen_asmt_generator.generate_assessment(SBACAssessment)
 
     # Determine the period month
-
     year_adj = 1
     period_month = 9
     if asmt_type == 'SUMMATIVE':
@@ -121,64 +114,6 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     sa.item_bank = item_bank
 
     return sa
-
-
-def generate_interim_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date=None, to_date=None,
-                        claim_definitions=sbac_config.CLAIM_DEFINITIONS,
-                        generate_item_level=True):
-    sa = gen_asmt_generator.generate_assessment(SBACInterimAssessment)
-
-    claims = claim_definitions[subject]
-
-    item_bank = {}
-    if generate_item_level:
-        for i in range(1, sbac_config.ASMT_ITEM_BANK_SIZE + 1):
-            item_bank[i] = id_gen.get_rec_id('assmt_item_id')
-
-    sa.rec_id = id_gen.get_rec_id('assessment')
-    sa.guid_sr = id_gen.get_sr_uuid()
-    sa.asmt_type = asmt_type
-    sa.period = period + ' ' + str((asmt_year - year_adj))
-    sa.period_year = asmt_year
-    sa.version = sbac_config.ASMT_VERSION
-    sa.subject = subject
-    sa.claim_1_name = claims[0]['name']
-    sa.claim_2_name = claims[1]['name']
-    sa.claim_3_name = claims[2]['name']
-    sa.claim_4_name = claims[3]['name'] if len(claims) == 4 else None
-    sa.perf_lvl_name_1 = sbac_config.ASMT_PERF_LEVEL_NAME_1
-    sa.perf_lvl_name_2 = sbac_config.ASMT_PERF_LEVEL_NAME_2
-    sa.perf_lvl_name_3 = sbac_config.ASMT_PERF_LEVEL_NAME_3
-    sa.perf_lvl_name_4 = sbac_config.ASMT_PERF_LEVEL_NAME_4
-    sa.perf_lvl_name_5 = sbac_config.ASMT_PERF_LEVEL_NAME_5
-    sa.overall_score_min = sbac_config.ASMT_SCORE_MIN
-    sa.overall_score_max = sbac_config.ASMT_SCORE_MAX
-    sa.claim_1_score_min = sbac_config.CLAIM_SCORE_MIN
-    sa.claim_1_score_max = sbac_config.CLAIM_SCORE_MAX
-    sa.claim_1_score_weight = claims[0]['weight']
-    sa.claim_2_score_min = sbac_config.CLAIM_SCORE_MIN
-    sa.claim_2_score_max = sbac_config.CLAIM_SCORE_MAX
-    sa.claim_2_score_weight = claims[1]['weight']
-    sa.claim_3_score_min = sbac_config.CLAIM_SCORE_MIN
-    sa.claim_3_score_max = sbac_config.CLAIM_SCORE_MAX
-    sa.claim_3_score_weight = claims[2]['weight']
-    sa.claim_4_score_min = sbac_config.CLAIM_SCORE_MIN if len(claims) == 4 else None
-    sa.claim_4_score_max = sbac_config.CLAIM_SCORE_MAX if len(claims) == 4 else None
-    sa.claim_4_score_weight = claims[3]['weight'] if len(claims) == 4 else None
-    sa.claim_perf_lvl_name_1 = sbac_config.CLAIM_PERF_LEVEL_NAME_1
-    sa.claim_perf_lvl_name_2 = sbac_config.CLAIM_PERF_LEVEL_NAME_2
-    sa.claim_perf_lvl_name_3 = sbac_config.CLAIM_PERF_LEVEL_NAME_3
-    sa.overall_cut_point_1 = sbac_config.ASMT_SCORE_CUT_POINT_1
-    sa.overall_cut_point_2 = sbac_config.ASMT_SCORE_CUT_POINT_2
-    sa.overall_cut_point_3 = sbac_config.ASMT_SCORE_CUT_POINT_3
-    sa.overall_cut_point_4 = sbac_config.ASMT_SCORE_CUT_POINT_4
-    sa.claim_cut_point_1 = sbac_config.CLAIM_SCORE_CUT_POINT_1
-    sa.claim_cut_point_2 = sbac_config.CLAIM_SCORE_CUT_POINT_2
-    sa.effective_date = datetime.date(asmt_year - year_adj, period_month, 15)
-    sa.from_date = from_date if from_date is not None else sa.effective_date
-    sa.to_date = to_date if to_date is not None else sbac_config.ASMT_TO_DATE
-    sa.item_bank = item_bank
-
 
 
 def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, inst_hier: InstitutionHierarchy,

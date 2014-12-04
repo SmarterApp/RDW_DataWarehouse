@@ -15,7 +15,7 @@ def remote_csv_generator(meta, csv_file_path, xml_file_path, work_dir, metadata_
     '''
     rtn = False
     try:
-        metadata_generator_task.apply_async(args=(xml_file_path), queue=metadata_queue)
+        metadata_generator_task.apply_async(args=(xml_file_path,), queue=metadata_queue)
         mode = 0o700
         rtn = generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, metadata_queue, mode=mode)
     except TSBException as e:

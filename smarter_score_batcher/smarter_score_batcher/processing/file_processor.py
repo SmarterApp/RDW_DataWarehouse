@@ -65,7 +65,7 @@ def generate_csv_from_xml(meta, csv_file_path, xml_file_path, work_dir, metadata
         process_assessment_data(root, meta)
         written = process_item_level_data(root, meta, csv_file_path)
         if written:
-            metadata_generator_task.apply_async(args=(csv_file_path), queue=metadata_queue)
+            metadata_generator_task.apply_async(args=(csv_file_path,), queue=metadata_queue)
     except ET.ParseError as e:
         # this should not be happened because we already validate against xsd
         error_msg = str(e)

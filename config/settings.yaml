@@ -185,7 +185,7 @@ common:
       async_queue: smarter_score_batcher_async
       metadata_queue: smarter_score_batcher_metadata
       celery:
-        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer',)
+        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer', 'smarter_score_batcher.utils.metadata_generator')
         CELERY_RESULT_BACKEND: amqp
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 20
@@ -431,6 +431,7 @@ qa:
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
     smarter_score_batcher:
+      gpg.homedir: /opt/edware/keys
       celery:
         BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/smarter_score_batcher
       metadata:
@@ -439,6 +440,9 @@ qa:
         default: /opt/edware/resources/meta/default
       xsd:
         path: /opt/edware/resources/sample_xsd.xsd
+      db:
+        schema_name: edware_tsb
+        url: postgresql+psycopg2://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg

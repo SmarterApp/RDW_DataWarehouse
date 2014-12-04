@@ -264,7 +264,7 @@ def main():
     Main Entry for ad-hoc testing to trigger batcher
     '''
     parser = ArgumentParser(description='File Batcher entry point')
-    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/file-monitor-smarter_score_batcher.pid',
+    parser.add_argument('-p', dest='pid_file', default='/opt/edware/run/file-monitor-smarter_score_batcher.pid',
                         help="pid file for TSB file monitor daemon")
     parser.add_argument('-d', dest='daemon', action='store_true', default=False,
                         help="daemon mode for TSB file monitor")

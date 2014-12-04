@@ -308,7 +308,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      )
 
     Index('fact_block_asmt_outcome_student_idx', assessment_block_outcome.c.student_id, assessment_block_outcome.c.asmt_guid, unique=False)
-    Index('fact_block_asmt_outcome_report_idx', assessment_block_outcome.c.state_code, assessment_block_outcome.c.school_id, assessment_block_outcome.c.district_id, assessment_block_outcome.c.asmt_year, assessment_block_outcome.c.rec_status, assessment_block_outcome.c.asmt_type, assessment_block_outcome.c.asmt_grade, unique=False)
+    Index('fact_block_asmt_outcome_report_idx', assessment_block_outcome.c.state_code, assessment_block_outcome.c.school_id, assessment_block_outcome.c.district_id, assessment_block_outcome.c.asmt_year, assessment_block_outcome.c.rec_status, assessment_block_outcome.c.asmt_type, assessment_block_outcome.c.asmt_grade, assessment_block_outcome.c.asmt_subject, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmt_outcome_rec_id', BigInteger, primary_key=True),

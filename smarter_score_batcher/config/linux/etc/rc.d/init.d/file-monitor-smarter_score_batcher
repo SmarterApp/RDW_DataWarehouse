@@ -6,7 +6,7 @@
 . /etc/rc.d/init.d/functions
 . /opt/virtualenv/smarter_score_batcher/bin/activate
 PIDFILE="/var/run/smarter_score_batcher/file-monitor-smarter_score_batcher.pid"
-FILE_MONITOR="python -m smarter_score_batcher.trigger.file_monitor -d -p $PIDFILE"
+FILE_MONITOR="python -m smarter_score_batcher.trigger.file_monitor -p $PIDFILE"
 
 start() {
 	echo -n "Starting file monitor: "

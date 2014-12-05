@@ -6,7 +6,6 @@ Created on Jul 21, 2014
 import os
 import fcntl
 import logging
-from smarter_score_batcher.celery import celery
 from smarter_score_batcher.utils.constants import Constants
 import argparse
 from smarter_score_batcher.utils.file_lock import FileLock
@@ -46,11 +45,6 @@ def metadata_generator_top_down(dir_path, metadata_filename=Constants.METADATA, 
     else:
         logger.info('[' + dir_path + '] is not directory')
         raise MetadataDirNotExistException('[' + dir_path + '] is not directory', err_source=ErrorSource.METADATA_GENERATOR_TOP_DOWN, err_input='metadata_filename: ' + metadata_filename)
-
-
-@celery.task(name="tasks.tsb.metadata_generator_task")
-def metadata_generator_task(file_path):
-    metadata_generator_bottom_up(file_path, generateMetadata=True)
 
 
 def metadata_generator_bottom_up(file_path, metadata_filename=Constants.METADATA, recursive=True, generateMetadata=False):

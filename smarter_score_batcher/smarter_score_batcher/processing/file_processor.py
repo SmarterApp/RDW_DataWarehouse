@@ -9,7 +9,7 @@ from smarter_score_batcher.processing.assessment import get_assessment_mapping
 from smarter_score_batcher.processing.assessment_metadata import get_assessment_metadata_mapping
 from smarter_score_batcher.utils.item_level_utils import get_item_level_data
 from smarter_score_batcher.utils.file_utils import csv_file_writer
-from smarter_score_batcher.utils.metadata_generator import metadata_generator_task
+from smarter_score_batcher.tasks.remote_metadata_writer import metadata_generator_task
 from smarter_score_batcher.error.exceptions import GenerateCSVException, TSBException
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 from smarter_score_batcher.database.db_utils import save_assessment, \

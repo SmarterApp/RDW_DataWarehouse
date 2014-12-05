@@ -16,7 +16,7 @@ from smarter_score_batcher.error.exceptions import TSBException,\
     TSBSecurityException
 import os
 from smarter_score_batcher.error.error_codes import ErrorCode, ErrorSource
-from smarter_score_batcher.utils.metadata_generator import metadata_generator_task
+from smarter_score_batcher.tasks.remote_metadata_writer import metadata_generator_task
 
 logger = logging.getLogger("smarter_score_batcher")
 

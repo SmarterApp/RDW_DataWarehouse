@@ -143,6 +143,8 @@ class FileEncryption:
         self.tenant = tenant
         self.asmt_dir = asmt_dir
         self.assessment_id = assessment_id
+        self.tsb_asmt_guids = []
+        self.tsb_error_guids = []
         self.__success = False
         self.hasher = MD5Hasher()
 

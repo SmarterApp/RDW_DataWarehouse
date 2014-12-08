@@ -1,4 +1,3 @@
-import unittest
 import tempfile
 import tarfile
 from pyramid.registry import Registry
@@ -6,10 +5,22 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 import os
 import shutil
-from smarter_score_batcher.trigger.file_monitor import FileEncryption, move_to_staging
+from smarter_score_batcher.trigger.file_monitor import FileEncryption, move_to_staging, prepare_assessment_dir
+from smarter_score_batcher.tests.database.unittest_with_tsb_sqlite import Unittest_with_tsb_sqlite
+from smarter_score_batcher.tests.processing.utils import read_data
+from smarter_score_batcher.processing.file_processor import process_assessment_data
+from smarter_score_batcher.database.db_utils import get_assessments, get_metadata, get_all_assessment_guids
+from smarter_score_batcher.utils.meta import extract_meta_names
+from smarter_score_batcher.error.exceptions import TSBSecurityException
 
 
-class TestFileMonitor(unittest.TestCase):
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
+
+
+class TestFileMonitor(Unittest_with_tsb_sqlite):
 
     def setUp(self):
         self.__workspace = tempfile.mkdtemp()
@@ -24,6 +35,7 @@ class TestFileMonitor(unittest.TestCase):
         self.settings = {
             'smarter_score_batcher.gpg.keyserver': None,
             'smarter_score_batcher.gpg.homedir': self.gpg_home,
+            'smarter_score_batcher.gpg.public_key.ca': 'sbac_data_provider@sbac.com',
             'smarter_score_batcher.gpg.public_key.cat': 'sbac_data_provider@sbac.com',
             'smarter_score_batcher.gpg.public_key.fish': 'sbac_data_provider@sbac.com',
             'smarter_score_batcher.gpg.path': 'gpg',
@@ -38,7 +50,8 @@ class TestFileMonitor(unittest.TestCase):
 
     def _prepare_testing_files(self):
         '''create test file under a temporary directory with structure like /tmp/{tenant}/{asmt_id}/{asmt_id}.{csv, json}'''
-        self.test_tenant = 'cat'
+        self.test_tenant = 'CA'
+        self.asmt_guid = 'SBAC-FT-SomeDescription-ELA-7'
         self.test_asmt = "test_1"
         self.test_files = ['test_1.csv', 'test_1.json']
         self.test_tenants = ['cat', 'fish']
@@ -51,6 +64,11 @@ class TestFileMonitor(unittest.TestCase):
             for file in self.test_files:
                 with open(os.path.join(self.temp_directory, file), 'a') as f:
                     f.write(file)
+        # prepare data in database
+        data = read_data("assessment.xml")
+        meta = extract_meta_names(data)
+        root = ET.fromstring(data)
+        process_assessment_data(root, meta)
 
     def tearDown(self):
         if os.path.exists(self.__workspace):
@@ -59,41 +77,42 @@ class TestFileMonitor(unittest.TestCase):
             shutil.rmtree(self.__staging)
         testing.tearDown()
 
-    def test_list_asmt_with_tenant(self):
-        base_dir = self.__workspace
-        filenames = list_asmt_with_tenant(base_dir)
-        expected = [(t, os.path.join(base_dir, t, self.test_asmt)) for t in self.test_tenants]
-        self.assertEqual(filenames.sort(), expected.sort(), "list_asmt_with_tenant() should return a list of tuple of (tenant, asmt_dir_path)")
+    def test_prepare_assessment_dir_path_traversal(self):
+        with tempfile.TemporaryDirectory() as base_dir:
+            self.assertRaises(TSBSecurityException, prepare_assessment_dir, base_dir, '..', 'CDE')
+
+    def test_prepare_assessment(self):
+        with tempfile.TemporaryDirectory() as base_dir:
+            directory = prepare_assessment_dir(base_dir, 'state_code', 'asmt_id')
+            self.assertEqual(os.path.join(base_dir, 'state_code', 'asmt_id'), directory)
 
     def test_compress(self):
-        with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            data_directory = fl.copy_to_tempdir()
+        with FileEncryption(self.temp_directory, self.test_tenant, self.asmt_guid) as fl:
+            data_directory = fl.save_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             self.assertTrue(os.path.exists(tar), "compress funcion should create a tar file")
             self.assertTrue(tarfile.is_tarfile(tar), "compress funcion should create a tar file")
             self.assertNotEqual(os.path.getsize(tar), 0)
 
     def test_encrypted_archive_files(self):
-        with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            data_directory = fl.copy_to_tempdir()
+        with FileEncryption(self.temp_directory, self.test_tenant, self.asmt_guid) as fl:
+            data_directory = fl.save_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             outputfile = fl.encrypt(tar, self.settings)
             self.assertTrue(os.path.isfile(outputfile))
             self.assertNotEqual(os.path.getsize(outputfile), 0)
 
     def test_move_to_tempdir(self):
-        with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            target_dir = fl.copy_to_tempdir()
+        with FileEncryption(self.temp_directory, self.test_tenant, self.asmt_guid) as fl:
+            target_dir = fl.save_to_tempdir()
             self.assertTrue(os.path.exists(target_dir), "should create a temporary directory for JSON and CSV files")
-            expected_csv = os.path.join(target_dir, "test_1.csv")
+            expected_csv = os.path.join(target_dir, "SBAC-FT-SomeDescription-ELA-7.csv")
             self.assertTrue(os.path.isfile(expected_csv), "CSV file should be moved to temporary directory")
-            old_csv = os.path.join(self.temp_directory, "test_1.csv")
-            self.assertTrue(os.path.exists(old_csv), "Should keep csv file to hold the lock")
 
     def test_move_files(self):
         staging_dir = self.__staging
-        with FileEncryption(self.test_tenant, self.temp_directory) as fl:
-            data_directory = fl.copy_to_tempdir()
+        with FileEncryption(self.temp_directory, self.test_tenant, self.asmt_guid) as fl:
+            data_directory = fl.save_to_tempdir()
             tar = fl.archive_to_tar(data_directory)
             outputfile = fl.encrypt(tar, self.settings)
             dest_file = fl.move_files(outputfile, staging_dir)
@@ -102,8 +121,8 @@ class TestFileMonitor(unittest.TestCase):
             self.assertTrue(os.path.isfile(dest_file + ".done"), "should move checksum file to staging directory")
 
     def test_context_management(self):
-        with FileEncryption(self.test_tenant, self.temp_directory):
-            temp_dir = os.path.join(self.temp_directory, ".tmp")
+        with FileEncryption(self.temp_directory, self.test_tenant, self.asmt_guid):
+            temp_dir = os.path.join(self.temp_directory, "ca", self.asmt_guid)
             self.assertTrue(os.path.exists(temp_dir), "should create a temporary directory for file manipulation")
         self.assertFalse(os.path.exists(temp_dir), "should remove the temporary directory that is created for file manipulation")
 
@@ -117,7 +136,7 @@ class TestFileMonitor(unittest.TestCase):
     def test_create_checksum(self):
         # use test_1.csv to test checksum
         csv_file_path = os.path.join(self.temp_directory, "test_1.csv")
-        with FileEncryption(self.test_tenant, self.temp_directory) as fl:
+        with FileEncryption(self.temp_directory, self.test_tenant, self.asmt_guid) as fl:
             checksum = fl._create_checksum(csv_file_path)
             self.assertIsNotNone(checksum, "should create a checksum file")
             self.assertTrue(os.path.isfile(checksum), "should create a checksum file")

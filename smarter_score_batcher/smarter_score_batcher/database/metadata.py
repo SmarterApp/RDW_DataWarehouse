@@ -116,10 +116,10 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                       Column('asmt_guid', String(50), nullable=False),
                       Column('state_code', String(2), nullable=False),
                       Column('err_code', String(50), nullable=False),
-                      Column('err_source', String(50), nullable=False),
-                      Column('err_code_text', String(50), nullable=False),
-                      Column('err_source_text', String(50), nullable=False),
-                      Column('err_input', String(50), nullable=False))
+                      Column('err_source', String(50), nullable=True),
+                      Column('err_code_text', String(50), nullable=True),
+                      Column('err_source_text', String(50), nullable=True),
+                      Column('err_input', String(50), nullable=True))
 
     return metadata
 

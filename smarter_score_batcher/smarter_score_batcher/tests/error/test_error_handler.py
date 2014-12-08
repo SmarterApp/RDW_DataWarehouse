@@ -7,45 +7,28 @@ import unittest
 from smarter_score_batcher.error.error_handler import handle_error
 from smarter_score_batcher.error.exceptions import FileLockException, \
     TSBException
-import tempfile
-import os
 import uuid
-import json
 from smarter_score_batcher.error.constants import ErrorsConstants
 from smarter_score_batcher.error.error_codes import ErrorCode
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
+from smarter_score_batcher.tests.database.unittest_with_tsb_sqlite import Unittest_with_tsb_sqlite
+from smarter_score_batcher.database.db_utils import get_error_message
 
 
-class Test(unittest.TestCase):
-
-    def setUp(self):
-        cache_opts = {'cache.type': 'memory',
-                      'cache.regions': 'public.data,public.filtered_data,public.shortlived'
-                      }
-        CacheManager(**parse_cache_config_options(cache_opts))
-        self.tmp = tempfile.TemporaryDirectory()
-
-    def tearDown(self):
-        self.tmp.cleanup()
+class Test(Unittest_with_tsb_sqlite):
 
     def test_handle_error_with_FileLockException(self):
         ex = None
-        here = os.path.abspath(os.path.dirname(__file__))
-        json_path = os.path.join(here, '..', 'resources', 'meta', 'performance', '2014', 'summative', '3', 'ELA.asmt_metadata.json')
-        xml_path = os.path.join(here, '..', 'resources', 'assessment.xml')
         try:
             raise FileLockException('hello')
         except TSBException as e:
             ex = e
-        error_file = os.path.join(self.tmp.name, str(uuid.uuid4()))
-        handle_error(ex, error_file, xml_path, json_path)
-        self.assertTrue(os.path.isfile(error_file))
-        with open(error_file) as f:
-            data = f.read()
-        error_dict = json.loads(data)
-        err_list = error_dict[ErrorsConstants.TSB_ERROR][0]
-        self.assertTrue(err_list[ErrorsConstants.ERR_CODE], ErrorCode.GENERAL_FILELOCK_ERROR)
+        state_code = 'NC'
+        asmt_guid = str(uuid.uuid4())
+        handle_error(ex, state_code, asmt_guid)
+        errors = get_error_message(asmt_guid)
+        self.assertIsNotNone(errors)
+        error_list = errors[1][ErrorsConstants.TSB_ERROR][0]
+        self.assertTrue(error_list[ErrorsConstants.ERR_CODE], ErrorCode.GENERAL_FILELOCK_ERROR)
 
 
 if __name__ == "__main__":

@@ -48,7 +48,8 @@ class TestJSONMetadata(unittest.TestCase):
     def test_get_json_mapping(self):
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
-        mapping = get_assessment_metadata_mapping(root)
+        asmt_guid, mapping = get_assessment_metadata_mapping(root)
+        self.assertEqual(asmt_guid, 'SBAC-FT-SomeDescription-ELA-7')
         self.assertEqual(mapping['Identification']['Guid'], 'SBAC-FT-SomeDescription-ELA-7')
         self.assertEqual(mapping['Overall']['MinScore'], '1000')
         self.assertEqual(mapping['PerformanceLevels']['Level1']['Name'], 'Minimal Understanding')

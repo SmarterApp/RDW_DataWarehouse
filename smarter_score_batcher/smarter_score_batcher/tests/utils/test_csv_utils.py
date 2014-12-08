@@ -2,7 +2,7 @@ import unittest
 import tempfile
 import os
 import csv
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch
 from smarter_score_batcher.utils.file_utils import file_writer, create_path
 from pyramid.registry import Registry
 from pyramid import testing
@@ -12,10 +12,13 @@ from edcore.utils.file_utils import generate_path_to_raw_xml, \
     generate_path_to_item_csv
 from smarter_score_batcher.utils.meta import Meta
 from smarter_score_batcher.utils.file_lock import FileLock
-import json
 from smarter_score_batcher.processing.file_processor import generate_csv_from_xml, \
     process_assessment_data
 from smarter_score_batcher.error.exceptions import TSBException
+from smarter_score_batcher.tests.database.unittest_with_tsb_sqlite import Unittest_with_tsb_sqlite
+from smarter_score_batcher.database.db_utils import get_assessments, get_metadata, get_all_assessment_guids
+from smarter_score_batcher.utils.constants import Constants
+
 
 try:
     import xml.etree.cElementTree as ET
@@ -24,7 +27,7 @@ except ImportError:
 from zope.component.globalregistry import base
 
 
-class TestCSVUtils(unittest.TestCase):
+class TestCSVUtils(Unittest_with_tsb_sqlite):
     def setUp(self):
         self.__tempfolder = tempfile.TemporaryDirectory()
         # setup registry
@@ -37,7 +40,7 @@ class TestCSVUtils(unittest.TestCase):
         reg.utilities = base.utilities
         reg.settings = settings
         self.__config = testing.setUp(registry=reg)
-        setup_celery(settings)
+        setup_celery(settings, db_connection=False)
 
     def tearDown(self):
         self.__tempfolder.cleanup()
@@ -48,8 +51,9 @@ class TestCSVUtils(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, "work")
         xml_string = '''<TDSReport>
-        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
+        <Test subject="MATH" testId="SBAC-FT-SomeDescription-ELA-7" grade="3" assessmentType="Summative" academicYear="2014" />
         <Examinee key="12">
+        <ExamineeRelationship context="INITIAL" name="StateAbbreviation" entityKey="3" value="CA"  contextDate="2014-04-14T11:13:41.803"/>
         </Examinee>
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"
@@ -65,7 +69,7 @@ class TestCSVUtils(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir)
+        generate_csv_from_xml(meta_names, csv_file_path, xml_file_path, work_dir, metadata_queue='test')
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
@@ -83,7 +87,7 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir)
+        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir, metadata_queue='test')
 
     @patch('smarter_score_batcher.processing.file_processor.process_assessment_data')
     def test_generate_csv_from_xml_parse_exception(self, mock_process_assessment_data):
@@ -107,13 +111,11 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir)
+        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir, metadata_queue='test')
 
-    @patch('smarter_score_batcher.processing.file_processor.metadata_generator_bottom_up')
     @patch('smarter_score_batcher.processing.file_processor.process_item_level_data')
-    def test_generate_csv_from_xml_parse_exception_written(self, mock_process_item_level_data, mock_metadata_generator_bottom_up):
+    def test_generate_csv_from_xml_parse_exception_written(self, mock_process_item_level_data):
         mock_process_item_level_data.return_value = True
-        mock_metadata_generator_bottom_up.side_effect = Exception()
         root_dir_xml = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, "work")
@@ -133,101 +135,44 @@ class TestCSVUtils(unittest.TestCase):
         xml_file_path = create_path(root_dir_xml, meta_names, generate_path_to_raw_xml)
         file_writer(xml_file_path, xml_string)
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir)
+        self.assertRaises(TSBException, generate_csv_from_xml, meta_names, csv_file_path, xml_file_path, work_dir, metadata_queue='test')
 
     def test_process_assessment_data(self):
         base_dir = os.path.join(self.__tempfolder.name, 'work')
         xml_string = '''<TDSReport>
-        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
-        <Examinee key="134"/>
+        <Test subject="MATH" grade="3" testId="SBAC-FT-SomeDescription-ELA-7" assessmentType="Summative" academicYear="2014" />
+        <Examinee key="134">
+        <ExamineeRelationship context="INITIAL" name="StateAbbreviation" entityKey="3" value="CA"  contextDate="2014-04-14T11:13:41.803"/>
+        </Examinee>
         <Opportunity>
         </Opportunity>
         </TDSReport>'''
         meta = Meta(True, 'test1', 'state_code', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'asmt_id')
         root = ET.fromstring(xml_string)
-        process_assessment_data(root, meta, base_dir)
-        self.assertTrue(os.path.isfile(os.path.join(base_dir, 'state_code', 'asmt_id', 'asmt_id.csv')))
-        self.assertTrue(os.path.isfile(os.path.join(base_dir, 'state_code', 'asmt_id', 'asmt_id.json')))
-
-    def test_generate_assessment_file_when_file_exists(self):
-        here = os.path.abspath(os.path.dirname(__file__))
-        json = os.path.join(here, '..', 'resources', 'meta', 'static', 'MATH.static_asmt_metadata.json')
-        file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
-        xml_string = '''<TDSReport>
-        <Test subject="MATh" grade="3" assessmentType="Summative" academicYear="2014" />
-        <Examinee key="134"/>
-        <Opportunity>
-        </Opportunity>
-        </TDSReport>'''
-        root = ET.fromstring(xml_string)
-        # Test that the file has 3 lines (1 header + 2 data)
-        with open(file_path, 'a') as f:
-            generate_assessment_file(f, root, json, header=True)
-        self.assertTrue(os.path.isfile(file_path))
-        rows = []
-        with open(file_path, 'r') as f:
-            csv_reader = csv.reader(f, delimiter=',')
-            for row in csv_reader:
-                rows.append(row)
-        self.assertTrue(len(rows), 2)
-        with open(file_path, 'a') as f:
-            generate_assessment_file(f, root, json, header=True)
-        rows = []
-        with open(file_path, 'r') as f:
-            csv_reader = csv.reader(f, delimiter=',')
-            for row in csv_reader:
-                rows.append(row)
-        self.assertTrue(len(rows), 3)
-
-    @PropertyMock('smarter_score_batcher.processing.file_processor.SPIN_LOCK')
-    def test_lock_and_write_spin_lock(self, mock_SPIN_LOCK):
-        file_path = os.path.join(self.__tempfolder.name, 'testassessment')
-        fl = FileLock(file_path + '.csv')
-        mock_SPIN_LOCK.return_value = [True, True, False]
-        xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
-        <Examinee key="134"/>
-        <Opportunity>
-        </Opportunity>
-        </TDSReport>'''
-        root = ET.fromstring(xml_string)
-        lock_and_write(root, file_path)
-        self.assertEqual(3, mock_SPIN_LOCK.call_count)
-
-    @patch('smarter_score_batcher.processing.file_processor.lock_and_write')
-    def test_generate_assessment_exception(self, mock_lock_and_write):
-        mock_lock_and_write.side_effect = [Exception()]
-        file_path = os.path.join(self.__tempfolder.name, 'testassessment.csv')
-        xml_string = '''<TDSReport>
-        <Test subject="MA" grade="3" assessmentType="Formative" academicYear="2014" />
-        <Examinee key="134"/>
-        <Opportunity>
-        </Opportunity>
-        </TDSReport>'''
-        root = ET.fromstring(xml_string)
-        self.assertRaises(Exception, generate_assessment_file, root, file_path)
+        process_assessment_data(root, meta)
+        # test asmt guids
+        asmt_guids = get_all_assessment_guids()
+        self.assertIsNotNone(asmt_guids)
+        state_code, asmt_guid = next(iter(asmt_guids))
+        self.assertEqual(state_code, 'CA')
+        self.assertEqual(asmt_guid, 'SBAC-FT-SomeDescription-ELA-7')
+        # test metadata
+        asmt_meta = get_metadata(asmt_guid)
+        self.assertIsNotNone(asmt_meta)
+        self.assertIsNotNone(asmt_meta[0][Constants.CONTENT])
+        assessments = get_assessments(asmt_guid)
+        self.assertIsNotNone(assessments)
+        self.assertEqual(len(assessments), 3)
+        guids, rows, headers = assessments
+        self.assertEqual(len(guids), 1)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(len(headers), 88)
 
     def test_lock_and_write_IOError(self):
         temp_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
         fl = FileLock(temp_file)
         self.assertRaises(IOError, FileLock, temp_file, no_block_lock=True)
 
-    @patch('smarter_score_batcher.processing.file_processor.get_assessment_metadata_mapping')
-    def test_generate_assessment_metadata_file_file_already_exist(self, mock_get_assessment_metadata_mapping):
-        fake_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
-        open(fake_file, 'a').close()
-        generate_assessment_metadata_file(None, fake_file)
-        self.assertEqual(mock_get_assessment_metadata_mapping.call_count, 0)
-
-    @patch('smarter_score_batcher.processing.file_processor.get_assessment_metadata_mapping')
-    def test_generate_assessment_metadata_file(self, mock_get_assessment_metadata_mapping):
-        values = {'hello': 'world'}
-        mock_get_assessment_metadata_mapping.return_value = values
-        fake_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))
-        generate_assessment_metadata_file(None, fake_file)
-        with open(fake_file) as f:
-            line = f.read()
-        self.assertEqual(line, json.dumps(values, indent=4))
 
 if __name__ == "__main__":
     unittest.main()

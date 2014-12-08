@@ -1,6 +1,7 @@
 import os
 import shutil
 import logging
+import logging.config
 import json
 from edcore.watch.util import FileUtil
 from edcore.utils.utils import tar_files, read_ini
@@ -276,10 +277,13 @@ def main():
     if args.daemon:
         create_daemon(args.pid_file)
     file = args.ini_file
+    logging.config.fileConfig(file)
     settings = read_ini(file)
     initialize_db(TSBDBConnection, settings)
     if args.daemon:
         run_cron_sync_file(settings)
+        while True:
+            time.sleep(1)
     else:
         move_to_staging(settings)
 

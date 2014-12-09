@@ -1,4 +1,5 @@
 import json
+from sqlalchemy.sql import union
 from sqlalchemy.sql.expression import Select, func, select, and_
 from sqlalchemy.exc import IntegrityError
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
@@ -58,24 +59,13 @@ def get_all_assessment_guids():
     reason that this function need to look into both tables.
     '''
     with TSBDBConnection() as conn:
-        all_guids = set()
         # query guids from metadata table
         tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-        query = Select([tsb_metadata.c.state_code, tsb_metadata.c.asmt_guid])
-        assessments = conn.get_streaming_result(query)
-        for assessment in assessments:
-            state_code = assessment[Constants.STATE_CODE]
-            asmt_guid = assessment[Constants.ASMT_GUID]
-            all_guids.add((state_code, asmt_guid))
+        query_metadata = Select([tsb_metadata.c.state_code, tsb_metadata.c.asmt_guid])
         # query guids from error message table
         tsb_error = conn.get_table(Constants.TSB_ERROR)
-        query = Select([tsb_error.c.state_code, tsb_error.c.asmt_guid])
-        error_asmt_guids = conn.get_streaming_result(query)
-        for error_record in error_asmt_guids:
-            state_code = error_record[Constants.STATE_CODE]
-            asmt_guid = error_record[Constants.ASMT_GUID]
-            all_guids.add((state_code, asmt_guid))
-        return all_guids
+        query_error = Select([tsb_error.c.state_code, tsb_error.c.asmt_guid])
+        return conn.execute(union(query_metadata, query_error)).fetchall()
 
 
 def get_assessments(asmtGuid):
@@ -124,7 +114,7 @@ def get_error_message(asmtGuid):
         return error_guids, error_info
 
 
-def delete_assessments(assessment_id, tsb_asmt_guids, tsb_error_guids):
+def delete_assessments(assessment_id, tsb_asmt_rec_ids, tsb_error_rec_ids):
     '''
     Delete assessment information in database with a batch.
 
@@ -134,14 +124,14 @@ def delete_assessments(assessment_id, tsb_asmt_guids, tsb_error_guids):
     '''
     with TSBDBConnection() as conn:
         # delete error messages
-        if tsb_error_guids:
+        if tsb_error_rec_ids:
             tsb_error = conn.get_table(Constants.TSB_ERROR)
-            conn.execute(tsb_error.delete().where(tsb_error.c.tsb_error_rec_id.in_(tsb_error_guids)))
+            conn.execute(tsb_error.delete().where(tsb_error.c.tsb_error_rec_id.in_(tsb_error_rec_ids)))
 
         # delete meta data in database
-        if tsb_asmt_guids:
+        if tsb_asmt_rec_ids:
             tsb_asmt = conn.get_table(Constants.TSB_ASMT)
-            conn.execute(tsb_asmt.delete().where(tsb_asmt.c.tsb_asmt_rec_id.in_(tsb_asmt_guids)))
+            conn.execute(tsb_asmt.delete().where(tsb_asmt.c.tsb_asmt_rec_id.in_(tsb_asmt_rec_ids)))
 
         # delete assessment data in database
         if assessment_id:

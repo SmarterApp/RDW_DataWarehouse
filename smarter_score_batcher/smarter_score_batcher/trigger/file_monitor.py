@@ -144,8 +144,8 @@ class FileEncryption:
         self.tenant = tenant
         self.asmt_dir = asmt_dir
         self.assessment_id = assessment_id
-        self.tsb_asmt_guids = []
-        self.tsb_error_guids = []
+        self.tsb_asmt_rec_ids = []
+        self.tsb_error_rec_ids = []
         self.__success = False
         self.hasher = MD5Hasher()
 
@@ -202,7 +202,7 @@ class FileEncryption:
     def __cleanup(self):
         ''' releases lock and remove .tmp directory. '''
         shutil.rmtree(self.temp_dir)
-        delete_assessments(self.assessment_id, self.tsb_asmt_guids, self.tsb_error_guids)
+        delete_assessments(self.assessment_id, self.tsb_asmt_rec_ids, self.tsb_error_rec_ids)
 
     def save_to_tempdir(self):
         ''' moves JSON file and CSV file to temporary directory.
@@ -242,8 +242,8 @@ class FileEncryption:
         if not os.path.exists(tmp_dir):
             os.makedirs(tmp_dir, exist_ok=True)
         _save_metadata(self.assessment_id, tmp_dir)
-        self.tsb_asmt_guids = _save_assessments(self.assessment_id, tmp_dir)
-        self.tsb_error_guids = _save_errors(self.assessment_id, tmp_dir)
+        self.tsb_asmt_rec_ids = _save_assessments(self.assessment_id, tmp_dir)
+        self.tsb_error_rec_ids = _save_errors(self.assessment_id, tmp_dir)
         return tmp_dir
 
     def archive_to_tar(self, data_path):

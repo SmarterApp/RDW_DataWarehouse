@@ -1,6 +1,6 @@
 import json
 from sqlalchemy.sql import union
-from sqlalchemy.sql.expression import Select, func, select, and_
+from sqlalchemy.sql.expression import Select
 from sqlalchemy.exc import IntegrityError
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 from smarter_score_batcher.constant import Constants
@@ -15,8 +15,20 @@ def save_assessment(data):
     '''
     parameters = {key: value for key, value in zip(data.header, data.values)}
     with TSBDBConnection() as conn:
-        query = None
-        tsb_asmt = conn.get_table(Constants.TSB_ASMT)
+        ins = conn.get_table(Constants.TSB_ASMT).insert()
+        conn.execute(ins, **parameters)
+
+
+def save_metadata(asmtGuid, stateCode, metadata):
+    '''
+    Save metadata to `Constants.TSB_METADATA` table.
+    '''
+    parameters = {
+        Constants.ASMT_GUID: asmtGuid,
+        Constants.STATE_CODE: stateCode,
+        Constants.CONTENT: json.dumps(metadata)
+    }
+    with TSBDBConnection() as conn:
         ins = conn.get_table(Constants.TSB_METADATA).insert()
         conn.execute(ins, **parameters)
 
@@ -82,6 +94,8 @@ def get_assessments(asmtGuid):
         columns = []
         data = []
         guids = []
+        query = Select([tsb_asmt]).where(tsb_asmt.c.AssessmentGuid == asmtGuid)
+        assessments = conn.get_streaming_result(query)
         for i, asmt in enumerate(assessments):
             row = []
             for j, (column, value) in enumerate(asmt.items()):
@@ -106,6 +120,8 @@ def get_error_message(asmtGuid):
     with TSBDBConnection() as conn:
         tsb_error = conn.get_table(Constants.TSB_ERROR)
         error_info = build_error_info_header()
+        query = Select([tsb_error]).where(tsb_error.c.asmt_guid == asmtGuid)
+        errors = conn.get_streaming_result(query)
         error_guids = []
         for error in errors:
             error_guids.append(error[Constants.TSB_ERROR_GUID])

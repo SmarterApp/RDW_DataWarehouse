@@ -16,6 +16,7 @@ from smarter_score_batcher.error.exceptions import TSBException,\
     TSBSecurityException
 import os
 from smarter_score_batcher.error.error_codes import ErrorCode, ErrorSource
+from smarter_score_batcher.tasks.remote_metadata_writer import metadata_generator_task
 
 logger = logging.getLogger("smarter_score_batcher")
 
@@ -48,7 +49,10 @@ def remote_write(xml_data):
             csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
             if os.path.commonprefix([root_dir_csv, csv_file_path]) != root_dir_csv:
                 raise TSBSecurityException(msg='Fail to create filepath name requested dir[' + csv_file_path + ']', err_code=ErrorCode.PATH_TRAVERSAL_DETECTED, err_source=ErrorSource.REMOTE_WRITE)
-            remote_csv_generator.apply_async(args=(meta_names, csv_file_path, xml_file_path, work_dir), queue=queue_name)  # @UndefinedVariable
+            metadata_queue = conf.get('smarter_score_batcher.metadata_queue')
+            # Fire two celery tasks - one to generate metadata for xml, and one to generate item level/assessment csv
+            metadata_generator_task.apply_async(args=(xml_file_path,), queue=metadata_queue)    # @UndefinedVariable
+            remote_csv_generator.apply_async(args=(meta_names, csv_file_path, xml_file_path, work_dir, metadata_queue), queue=queue_name)  # @UndefinedVariable
     except TSBException as e:
         # ignore exception for error handling because this function is synchonous call
         logging.error(str(e))

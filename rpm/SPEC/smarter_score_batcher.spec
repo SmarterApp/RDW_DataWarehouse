@@ -32,6 +32,7 @@ cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/file-monitor-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
 
 %build
 export LANG=en_US.UTF-8
@@ -124,6 +125,8 @@ cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
 /opt/virtualenv/smarter_score_batcher/bin/python
 /opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-smarter_score_batcher
+%attr(755,root,root) /etc/rc.d/init.d/file-monitor-smarter_score_batcher
+
 
 %pre
 id celery > /dev/null 2>&1
@@ -138,13 +141,20 @@ if [ ! -d /var/log/celery-smarter_score_batcher ]; then
     mkdir -p /var/log/celery-smarter_score_batcher
     chown celery.celery /var/log/celery-smarter_score_batcher
 fi
+if [ ! -d /opt/edware/resources ]; then
+    mkdir -p /opt/edware/resources
+fi
+chown -R celery.celery /opt/edware/resources
 
 %post
 chkconfig --add celeryd-smarter_score_batcher
 chkconfig --level 2345 celeryd-smarter_score_batcher off
+chkconfig --add file-monitor-smarter_score_batcher
+chkconfig --level 2345 file-monitor-smarter_score_batcher off
 
 %preun
 chkconfig --del celeryd-smarter_score_batcher
+chkconfig --del file-monitor-smarter_score_batcher
 
 %postun
 

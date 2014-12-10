@@ -5,15 +5,15 @@ from pyramid.testing import DummyRequest
 from smarter_score_batcher.celery import setup_celery
 from unittest.mock import patch
 import os
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 import tempfile
 from smarter_score_batcher.services.xml import xml_catcher
+from smarter_score_batcher.tests.database.unittest_with_tsb_sqlite import Unittest_with_tsb_sqlite
 from pyramid.httpexceptions import HTTPServiceUnavailable
 here = os.path.abspath(os.path.dirname(__file__))
 xsd_file_path = os.path.abspath(os.path.join(here, '..', '..', '..', 'resources', 'sample_xsd.xsd'))
 
 
-class TestXML(unittest.TestCase):
+class TestXML(Unittest_with_tsb_sqlite):
 
     def setUp(self):
         self.__tempfolder = tempfile.TemporaryDirectory()
@@ -28,7 +28,7 @@ class TestXML(unittest.TestCase):
         reg = Registry()
         reg.settings = settings
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-        setup_celery(settings)
+        setup_celery(settings, db_connection=False)
 
     def tearDown(self):
         testing.tearDown()

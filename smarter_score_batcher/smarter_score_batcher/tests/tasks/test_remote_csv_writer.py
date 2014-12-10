@@ -14,12 +14,14 @@ from edcore.utils.file_utils import generate_path_to_raw_xml,\
 from zope import component
 from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
     PerfMetadataTemplateManager
+from smarter_score_batcher.tests.database.unittest_with_tsb_sqlite import Unittest_with_tsb_sqlite
 from zope.component.globalregistry import base
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 
 
-class Test(unittest.TestCase):
+class Test(Unittest_with_tsb_sqlite):
+
     def setUp(self):
         self.__tempfolder = tempfile.TemporaryDirectory()
         settings = {
@@ -32,7 +34,7 @@ class Test(unittest.TestCase):
         reg.utilities = base.utilities
         CacheManager(**parse_cache_config_options({'cache.regions': 'public.shortlived', 'cache.type': 'memory', 'cache.public.shortlived.expire': 7200}))
         self.__config = testing.setUp(registry=reg)
-        setup_celery(settings)
+        setup_celery(settings, db_connection=False)
         path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/performance')
         static_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resources/meta/static')
         component.provideUtility(PerfMetadataTemplateManager(asmt_meta_dir=path, static_asmt_meta_dir=static_path), IMetadataTemplateManager)
@@ -46,8 +48,10 @@ class Test(unittest.TestCase):
         root_dir_csv = os.path.join(self.__tempfolder.name, str(uuid.uuid4()), str(uuid.uuid4()))
         work_dir = os.path.join(self.__tempfolder.name, 'work_dir')
         xml_string = '''<TDSReport>
-        <Test subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
-        <Examinee key="12"></Examinee>
+        <Test testId="SBAC-FT-SomeDescription-ELA-7" subject="MATH" grade="3" assessmentType="Summative" academicYear="2014" />
+        <Examinee key="12">
+        <ExamineeRelationship context="INITIAL" name="StateAbbreviation" entityKey="3" value="CA"  contextDate="2014-04-14T11:13:41.803"/>
+        </Examinee>
         <Opportunity>
         <Item position="position_value" segmentId="segmentId_value"
         bankKey="test" key="key_value" operational="operational_value" isSelected="isSelected_value" format="format_type_value"
@@ -62,7 +66,7 @@ class Test(unittest.TestCase):
         file_writer(xml_file_path, xml_string)
         rows = []
         csv_file_path = create_path(root_dir_csv, meta_names, generate_path_to_item_csv)
-        remote_csv_generator(meta_names, csv_file_path, xml_file_path, work_dir)
+        remote_csv_generator(meta_names, csv_file_path, xml_file_path, work_dir, metadata_queue='test')
         with open(csv_file_path, newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
@@ -70,6 +74,7 @@ class Test(unittest.TestCase):
         csv_first_row_list = ['key_value', '12', 'segmentId_value', 'position_value', '', 'operational_value', 'isSelected_value', 'format_type_value', 'score_value', 'scoreStatus_value', 'adminDate_value', 'numberVisits_value', 'strand_value', 'contentLevel_value', 'pageNumber_value', 'pageVisits_value', 'pageTime_value', 'dropped_value']
         self.assertEqual(1, len(rows))
         self.assertEqual(csv_first_row_list, rows[0])
+
 
 if __name__ == "__main__":
     unittest.main()

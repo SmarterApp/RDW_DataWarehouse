@@ -32,8 +32,6 @@ def generate_interim_assessment(date: datetime.date,
                                 block: str,
                                 grade: int,
                                 id_gen: IDGen,
-                                from_date=None,
-                                to_date=None,
                                 claim_definitions=sbac_config.CLAIM_DEFINITIONS,
                                 generate_item_level=True):
     """
@@ -82,17 +80,17 @@ def generate_interim_assessment(date: datetime.date,
     sa.perf_lvl_name_3 = None
     sa.perf_lvl_name_4 = None
     sa.perf_lvl_name_5 = None
-    sa.overall_score_min = None
-    sa.overall_score_max = None
+    sa.overall_score_min = 0
+    sa.overall_score_max = 0
     sa.claim_1_score_min = sbac_config.CLAIM_SCORE_MIN
     sa.claim_1_score_max = sbac_config.CLAIM_SCORE_MAX
     sa.claim_1_score_weight = 1.0
-    sa.claim_2_score_min = None
-    sa.claim_2_score_max = None
-    sa.claim_2_score_weight = None
-    sa.claim_3_score_min = None
-    sa.claim_3_score_max = None
-    sa.claim_3_score_weight = None
+    sa.claim_2_score_min = 0
+    sa.claim_2_score_max = 0
+    sa.claim_2_score_weight = 0.0
+    sa.claim_3_score_min = 0
+    sa.claim_3_score_max = 0
+    sa.claim_3_score_weight = 0.0
     sa.claim_4_score_min = None
     sa.claim_4_score_max = None
     sa.claim_4_score_weight = None
@@ -106,8 +104,8 @@ def generate_interim_assessment(date: datetime.date,
     sa.claim_cut_point_1 = sbac_config.CLAIM_SCORE_CUT_POINT_1
     sa.claim_cut_point_2 = sbac_config.CLAIM_SCORE_CUT_POINT_2
     sa.effective_date = date
-    sa.from_date = from_date if from_date is not None else sa.effective_date
-    sa.to_date = to_date if to_date is not None else sbac_config.ASMT_TO_DATE
+    sa.from_date = date
+    sa.to_date = date
     sa.item_bank = item_bank
 
     return sa

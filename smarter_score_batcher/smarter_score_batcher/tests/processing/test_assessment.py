@@ -49,9 +49,10 @@ class TestCSVMetadata(unittest.TestCase):
     def test_get_csv_mapping(self):
         here = os.path.abspath(os.path.dirname(__file__))
         static_metadata = os.path.join(here, '..', 'resources', 'meta', 'static', 'ELA.static_asmt_metadata.json')
+        metadata = self.load_metadata(static_metadata)
         data = read_data("assessment.xml")
         root = ET.fromstring(data)
-        data = get_assessment_mapping(root, static_metadata)
+        state_code, data = get_assessment_mapping(root, metadata)
         header = data.header
         values = data.values
         self.assertEqual(len(header), len(values))
@@ -128,9 +129,7 @@ class TestCSVMetadata(unittest.TestCase):
     def test_getClaimMappingName(self):
         here = os.path.abspath(os.path.dirname(__file__))
         static_metadata = os.path.join(here, '..', 'resources', 'meta', 'static', 'MATH.static_asmt_metadata.json')
-        with open(static_metadata) as f:
-            metadata_string = f.read()
-            metadata = json.loads(metadata_string)
+        metadata = self.load_metadata(static_metadata)
         mapping = getClaimMappingName(metadata, 'hello', 'world')
         self.assertEqual(mapping, 'world')
         mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, 'world')
@@ -178,7 +177,9 @@ class TestCSVMetadata(unittest.TestCase):
         opportunity = ET.fromstring(data).find("./Opportunity")
         here = os.path.abspath(os.path.dirname(__file__))
         static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
-        claims = get_claims(static_metadata, opportunity)
+        # read metadata and map Claim1, Claim2, Claim3, and Claim4
+        metadata = self.load_metadata(static_metadata)
+        claims = get_claims(metadata, opportunity)
         self.assertEqual(len(claims), 20)
 
         # overall
@@ -213,7 +214,16 @@ class TestCSVMetadata(unittest.TestCase):
         opportunity = ET.fromstring(data).find("./Opportunity")
         here = os.path.abspath(os.path.dirname(__file__))
         static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
-        self.assertRaises(MetadataException, get_claims, static_metadata, opportunity)
+        metadata = self.load_metadata(static_metadata)
+        self.assertRaises(MetadataException, get_claims, metadata, opportunity)
+
+    def load_metadata(self, metadata_file_path):
+        # read metadata and map Claim1, Claim2, Claim3, and Claim4
+        metadata = None
+        with open(metadata_file_path) as f:
+            metadata_json = f.read()
+            metadata = json.loads(metadata_json)
+        return metadata
 
 
 if __name__ == "__main__":

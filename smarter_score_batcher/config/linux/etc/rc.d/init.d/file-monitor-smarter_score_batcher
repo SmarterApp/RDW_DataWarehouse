@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+. /opt/virtualenv/smarter_score_batcher/bin/activate
+PIDFILE="/var/run/smarter_score_batcher/file-monitor-smarter_score_batcher.pid"
+FILE_MONITOR="python -m smarter_score_batcher.trigger.file_monitor -d -p $PIDFILE"
+
+start() {
+	echo -n "Starting file monitor: "
+	daemon --user celery $FILE_MONITOR
+	RETVAL=$?
+}
+
+stop() {
+	echo -n "Stopping file monitor: "
+	killproc -p $PIDFILE
+	RETVAL=$?
+}
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	*)
+
+	echo $"Usage: file-monitor-smarter_score_batcher {start|stop}"
+	exit 2
+esac
+deactivate
+exit $RETVAL

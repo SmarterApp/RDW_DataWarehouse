@@ -6,10 +6,8 @@ from smarter_common.security.root_factory import RootFactory, Permission
 import os
 from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
-from smarter_score_batcher import trigger
 from edauth import configure
 from pyramid_beaker import set_cache_regions_from_settings
-from beaker.cache import CacheManager
 from edcore.utils.utils import set_environment_path_variable,\
     get_config_from_ini
 
@@ -35,8 +33,11 @@ def main(global_config, **settings):
     xsd_file = os.path.join(here, settings['smarter_score_batcher.xsd.path'])
     xsd.xsd = xsd.XSD(xsd_file)
 
+    mode = settings.get('mode', 'prod').upper()
+    init_db = False if mode == 'PROD' else True
     # Set up celery. Important - This must happen before scan
-    setup_xml_celery(settings, prefix=prefix)
+    # We don't need to initialize the db in Prod mode as only celery workers needs db connection
+    setup_xml_celery(settings, prefix=prefix, db_connection=init_db)
 
     set_cache_regions_from_settings(get_config_from_ini(settings, 'smarter_score_batcher', True))
 

@@ -7,3 +7,16 @@ class Extensions:
     JSON = ".json"
     PARTIAL = ".partial"
     ERR = '.err'
+
+
+class Constants:
+
+    TSB_ASMT = 'tsb_asmt'
+    TSB_METADATA = 'tsb_metadata'
+    TSB_ERROR = 'tsb_error'
+
+    ASMT_GUID = 'asmt_guid'
+    CONTENT = 'content'
+    STATE_CODE = 'state_code'
+    STATUS = 'status'
+    TSB_ERROR_GUID = 'tsb_error_rec_id'

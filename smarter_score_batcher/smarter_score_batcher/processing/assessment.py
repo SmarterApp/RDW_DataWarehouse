@@ -235,9 +235,9 @@ def getClaimMappingName(metadata, claim_name, default_value):
     return mapping
 
 
-def get_assessment_mapping(root, metadata_file_path):
+def get_assessment_mapping(root, metadata):
     '''
-    Returns the landing zone format of assessment csv file
+    Returns state code and the landing zone format of assessment csv file
     '''
     examinee = root.find("./Examinee")
     opportunity = root.find("./Opportunity")
@@ -245,10 +245,11 @@ def get_assessment_mapping(root, metadata_file_path):
 
     groups = get_groups(examinee)
     accommodations = get_accommodations(opportunity)
-    claims = get_claims(metadata_file_path, opportunity)
+    claims = get_claims(metadata, opportunity)
 
+    stateCode = XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")
     # In the order of the LZ mapping for easier maintenance
-    mappings = AssessmentData([Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context"), AssessmentHeaders.StateAbbreviation),
+    mappings = AssessmentData([Mapping(stateCode, AssessmentHeaders.StateAbbreviation),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleDistrictIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
                                Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
@@ -284,7 +285,7 @@ def get_assessment_mapping(root, metadata_file_path):
                                Mapping(IntegerMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()
-    return mappings
+    return stateCode.get_value(), mappings
 
 
 def get_groups(examinee):
@@ -373,12 +374,12 @@ def get_accommodations(opportunity):
     return accommodations
 
 
-def get_claims(metadata_file_path, opportunity):
+def get_claims(metadata, opportunity):
     # read metadata and map Claim1, Claim2, Claim3, and Claim4
-    metadata = None
-    with open(metadata_file_path) as f:
-        metadata_json = f.read()
-        metadata = json.loads(metadata_json)
+    # metadata = None
+    # with open(metadata_file_path) as f:
+    #     metadata_json = f.read()
+    #     metadata = json.loads(metadata_json)
 
     claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1) or get_claim1_mapping(opportunity)
     claim2_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, PerformanceMetadataConstants.CLAIM2)

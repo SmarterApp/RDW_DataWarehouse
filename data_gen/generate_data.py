@@ -404,6 +404,7 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hi
         create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results, skip_rate,
                                          retake_rate, delete_rate, update_rate, generate_item_level)
 
+
 def create_iab_outcome_object(student: SBACStudent,
                               iab_asmt: SBACAssessment,
                               inst_hier: InstitutionHierarchy,
@@ -526,7 +527,6 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                                                            fbao_out_cols, rslts)
                 except Exception as e:
                     print('PostgreSQL EXCEPTION ::: %s' % str(e))
-
 
         for guid, rslts in assessment_results.items():
 
@@ -770,8 +770,6 @@ def generate_state_data(state: SBACState,
     """
     # Grab the assessment rates by subjects
     asmt_skip_rates_by_subject = state.config['subject_skip_percentages']
-
-
 
     # Create the assessment objects
     assessments = {}

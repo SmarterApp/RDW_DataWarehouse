@@ -92,22 +92,22 @@ CLAIM_DEFINITIONS = {'Math': [{'name': 'Concepts & Procedures', 'weight': .4},
                      }
 
 ACCOMMODATIONS = {  # 0: range is 0; 4: range is 4-26
-                  'acc_abacus_nonembed': {'ELA': 0, 'Math': 4},
-                  'acc_alternate_response_options_nonembed': {'ELA': 4, 'Math': 4},
-                  'acc_asl_video_embed': {'ELA': 4, 'Math': 4},
-                  'acc_braile_embed': {'ELA': 4, 'Math': 4},
-                  'acc_calculator_nonembed': {'ELA': 0, 'Math': 4},
-                  'acc_closed_captioning_embed': {'ELA': 4, 'Math': 0},
-                  'acc_multiplication_table_nonembed': {'ELA': 0, 'Math': 4},
-                  'acc_noise_buffer_nonembed': {'ELA': 4, 'Math': 4},
-                  'acc_print_on_demand_items_nonembed': {'ELA': 4, 'Math': 4},
-                  'acc_print_on_demand_nonembed': {'ELA': 4, 'Math': 4},
-                  'acc_read_aloud_nonembed': {'ELA': 4, 'Math': 0},
-                  'acc_scribe_nonembed': {'ELA': 4, 'Math': 0},
-                  'acc_speech_to_text_nonembed': {'ELA': 4, 'Math': 0},
-                  'acc_streamline_mode': {'ELA': 4, 'Math': 4},
-                  'acc_text_to_speech_embed': {'ELA': 4, 'Math': 0},
-                  }
+    'acc_abacus_nonembed': {'ELA': 0, 'Math': 4},
+    'acc_alternate_response_options_nonembed': {'ELA': 4, 'Math': 4},
+    'acc_asl_video_embed': {'ELA': 4, 'Math': 4},
+    'acc_braile_embed': {'ELA': 4, 'Math': 4},
+    'acc_calculator_nonembed': {'ELA': 0, 'Math': 4},
+    'acc_closed_captioning_embed': {'ELA': 4, 'Math': 0},
+    'acc_multiplication_table_nonembed': {'ELA': 0, 'Math': 4},
+    'acc_noise_buffer_nonembed': {'ELA': 4, 'Math': 4},
+    'acc_print_on_demand_items_nonembed': {'ELA': 4, 'Math': 4},
+    'acc_print_on_demand_nonembed': {'ELA': 4, 'Math': 4},
+    'acc_read_aloud_nonembed': {'ELA': 4, 'Math': 0},
+    'acc_scribe_nonembed': {'ELA': 4, 'Math': 0},
+    'acc_speech_to_text_nonembed': {'ELA': 4, 'Math': 0},
+    'acc_streamline_mode': {'ELA': 4, 'Math': 4},
+    'acc_text_to_speech_embed': {'ELA': 4, 'Math': 0},
+}
 
 
 DEMOGRAPHICS_BY_GRADE = {
@@ -839,7 +839,7 @@ LEVELS_BY_GRADE_BY_SUBJ = {
     },
 }
 
-## BEGIN interim assessment configuration ##
+# BEGIN interim assessment configuration ##
 
 # % of students that have might take at least 1 interim assessment block
 IAB_STUDENT_RATE = .5
@@ -966,4 +966,4 @@ IAB_NAMES = {'ELA': {3: ('Read Literary Texts',
                            'Making Inferences and Justifying Conclusions',
                            'Mathematics Performance Task')}}
 
-## END interim assessment configuration ##
+# END interim assessment configuration ##

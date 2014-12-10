@@ -91,7 +91,6 @@ class SBACInterimAssessmentOutcome(AssessmentOutcome):
                 'assessment': self.assessment,
                 'assessment_outcome': self}
 
-
     def __setattr__(self, name, value):
         """
         Prevent setting some values to prevent bugs due to typos etc.
@@ -102,7 +101,7 @@ class SBACInterimAssessmentOutcome(AssessmentOutcome):
         if name in {'overall_score', 'overall_score_range_min', 'overall_score_range_max', 'overall_perf_lvl',
                     'claim_2_score', 'claim_2_score_range_min', 'claim_2_score_range_max', 'claim_2_perf_lvl',
                     'claim_3_score', 'claim_3_score_range_min', 'claim_3_score_range_max', 'claim_3_perf_lvl',
-                    'claim_4_score', 'claim_4_score_range_min', 'claim_4_score_range_max', 'claim_4_perf_lvl',}:
+                    'claim_4_score', 'claim_4_score_range_min', 'claim_4_score_range_max', 'claim_4_perf_lvl'}:
             raise AttributeError('cannot set %s of %s' % (name, self.__class__.__qualname__))
 
         else:

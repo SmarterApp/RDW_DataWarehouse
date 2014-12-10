@@ -30,7 +30,6 @@ class SBACInterimAssessment(Assessment):
                  'claim_cut_point_1', 'claim_cut_point_2',
                  'from_date', 'to_date', 'effective_date', 'item_bank',)
 
-
     def __init__(self):
         super().__init__()
         self.rec_id = None

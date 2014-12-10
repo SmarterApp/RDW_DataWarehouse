@@ -1,5 +1,6 @@
 import itertools
 
+
 def all_combinations(elements, include_empty=True):
     """
     generate all combinations of the elements
@@ -13,5 +14,3 @@ def all_combinations(elements, include_empty=True):
 
     for r in range(1, len(elements) + 1):
         yield from itertools.combinations(elements, r)
-
-

@@ -481,8 +481,6 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     it_lz_out_cols = sbac_out_config.LZ_ITEMDATA_FORMAT['columns']
     fao_vw_out_name = sbac_out_config.FAO_VW_FORMAT['name']
     fao_vw_out_cols = sbac_out_config.FAO_VW_FORMAT['columns']
-    fbao_vw_out_name = sbac_out_config.FBAO_VW_FORMAT['name']
-    fbao_vw_out_cols = sbac_out_config.FBAO_VW_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
     fbao_out_name = sbac_out_config.FBAO_FORMAT['name']
@@ -519,15 +517,11 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                                                  entity_filter=('result_status', 'C'))
 
             if WRITE_STAR:
-                csv_writer.write_records_to_file(fbao_vw_out_name, fbao_vw_out_cols, rslts,
-                                                 tbl_name='fact_block_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
                 csv_writer.write_records_to_file(fbao_out_name, fbao_out_cols, rslts,
                                                  tbl_name='fact_block_asmt_outcome', root_path=OUT_PATH_ROOT)
 
             if WRITE_PG:
                 try:
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_block_asmt_outcome_vw',
-                                                           fbao_vw_out_cols, rslts)
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_block_asmt_outcome',
                                                            fbao_out_cols, rslts)
                 except Exception as e:

@@ -66,7 +66,7 @@ def generate_interim_assessment(date: datetime.date,
     # Set other specifics
     sa.rec_id = id_gen.get_rec_id('assessment')
     sa.guid_sr = id_gen.get_sr_uuid()
-    sa.asmt_type = "INTERIM ASSESSMENT BLOCK"
+    sa.asmt_type = "INTERIM ASSESSMENT BLOCKS"
     sa.period = str(date)
     sa.period_year = asmt_year
     sa.version = sbac_config.ASMT_VERSION

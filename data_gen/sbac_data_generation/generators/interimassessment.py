@@ -71,8 +71,8 @@ def generate_interim_assessment(date: datetime.date,
     sa.period_year = asmt_year
     sa.version = sbac_config.ASMT_VERSION
     sa.subject = subject
-    sa.claim_1_name = "%s (Grade %s)" % (block, grade)
-    sa.claim_2_name = None
+    sa.claim_1_name = block
+    sa.claim_2_name = "Grade %s" % grade
     sa.claim_3_name = None
     sa.claim_4_name = None
     sa.perf_lvl_name_1 = None

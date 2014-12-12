@@ -13,9 +13,10 @@
                 "linkTarget": "_blank"
             }, {
                 "subtitle": "Trợ giúp báo cáo",
+                "helpMenu": "helpMenu",
                 "class": "reportingHelp",
                 "desc": "Các video hướng dẫn cách sử dụng báo cáo",
-                "link": "#"
+                "link": "#resources"
             }, {
                 "subtitle": "Câu Hỏi Thường Gặp",
                 "helpMenu": "helpMenu",

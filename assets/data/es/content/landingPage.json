@@ -13,9 +13,10 @@
                 "linkTarget": "_blank"
             }, {
                 "subtitle": "Ayuda con los reportes",
+                "helpMenu": "helpMenu",
                 "class": "reportingHelp",
                 "desc": "Videos que ilustran cómo usar los reportes",
-                "link": "#"
+                "link": "#resources"
             }, {
                 "subtitle": "Preguntas frecuentes",
                 "helpMenu": "helpMenu",

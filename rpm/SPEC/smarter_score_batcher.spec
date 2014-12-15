@@ -141,10 +141,10 @@ if [ ! -d /var/log/celery-smarter_score_batcher ]; then
     mkdir -p /var/log/celery-smarter_score_batcher
     chown celery.celery /var/log/celery-smarter_score_batcher
 fi
-if [ ! -d /opt/edware/resources ]; then
-    mkdir -p /opt/edware/resources
-fi
-chown -R celery.celery /opt/edware/resources
+# if [ ! -d /opt/edware/resources ]; then
+#     mkdir -p /opt/edware/resources
+# fi
+# chown -R celery.celery /opt/edware/resources
 
 %post
 chkconfig --add celeryd-smarter_score_batcher

@@ -87,7 +87,7 @@ cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
 
 
 %files
-%defattr(644,root,root,-)
+%defattr(644,root,root,755)
 /opt/edware/smarter_score_batcher/smarter_score_batcher.wsgi
 /opt/edware/resources/*
 /opt/edware/conf/generate_ini.py

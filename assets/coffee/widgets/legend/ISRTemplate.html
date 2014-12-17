@@ -64,7 +64,7 @@
                         <img src="../images/ISR_ErrorBandConnector.png" class="isr_legend_error_connector"/>
                         <img src="../images/ISRCurlyBracket.png" class="isr_legend_curly_bracket"/>
                         <img src="../images/ISR_Score.png" class="isr_legend_score_indicator_bottom"/>
-                        
+
                         <div class="isrPerfBarSmall"></div>
                         <img src="../images/ISR_BracketLeft.png" class="isr_legend_band_left_bottom"/>
                         <img src="../images/ISR_BracketRight.png" class="isr_legend_band_right_bottom"/>
@@ -171,9 +171,11 @@
                     <tbody>
                         {{#legendInfo.performance_levels}}
                         <td>
-                            <i class="edware-icon-perf-level-{{level}} icon_perf_level" style="vertical-align: middle;"></i>
-                             <div class="icon_perf_level_desc">{{desc}}</div>
-                             <p>{{meaning}}</p>
+                            <span>
+                                <img src="../images/icons/perf_level_{{level}}_icons.png"/>
+                                <div class="icon_perf_level_desc">{{desc}}</div>
+                            </span>
+                            <p>{{meaning}}</p>
                         </td>
                         {{/legendInfo.performance_levels}}
                     </tbody>

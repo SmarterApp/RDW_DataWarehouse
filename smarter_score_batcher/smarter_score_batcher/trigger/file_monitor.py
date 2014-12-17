@@ -161,7 +161,7 @@ class FileEncryption:
 
         '''
         # retain directory structure per tenant in staging
-        dst_dir = os.path.join(staging_dir, self.tenant)
+        dst_dir = os.path.join(staging_dir, self.tenant.lower())
         if not os.path.exists(dst_dir):
             os.makedirs(dst_dir, exist_ok=True)
         # create checksum

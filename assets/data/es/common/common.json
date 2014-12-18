@@ -192,7 +192,7 @@
                 "items": [
                     {
                         "name": "Estudiantes",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Estudiantes'>Estudiantes</>",
+                        "displayTpl": "<a href='#' class='inherit'>Estudiantes</>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -207,7 +207,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='Matemáticas general, Matemáticas Banda de error, Matemáticas Nivel de rendimiento, Matemática Número del nivel de rendimientos'>Matemáticas general</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Matemáticas general</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 230,
@@ -222,7 +222,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='ELA/Alfabetización general, ELA/Alfabetización Banda de error, ELA/Alfabetización Nivel de rendimiento, ELA/Alfabetización Número del nivel de rendimiento'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 230,
@@ -251,7 +251,7 @@
                 "items": [
                     {
                         "name": "Estudiantes",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Estudiantes'>Estudiantes</a>",
+                        "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -266,7 +266,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='Matemáticas general, Matemáticas Banda de error, Matemáticas Nivel de rendimiento, Matemática Número del nivel de rendimientos'>Matemáticas general</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Matemáticas general</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 175,
@@ -281,7 +281,7 @@
                     },
                     {
                         "name": "{{claims.subject1.0.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Matemáticas - {{claims.subject1.0.name}} - Número del nivel de rendimiento, Matemáticas - {{claims.subject1.0.name}} - Nivel de rendimiento'>{{claims.subject1.0.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
                         "index": "subject1.claims.0.perf_lvl",
                         "field": "subject1.claims.0.perf_lvl",
                         "width": 154,
@@ -293,7 +293,7 @@
                     },
                     {
                         "name": "{{claims.subject1.1.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Matemáticas - {{claims.subject1.1.name}} - Número del nivel de rendimiento, Matemáticas - {{claims.subject1.1.name}} - Nivel de rendimiento'>{{claims.subject1.1.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
                         "index": "subject1.claims.1.perf_lvl",
                         "field": "subject1.claims.1.perf_lvl",
                         "width": 160,
@@ -305,7 +305,7 @@
                     },
                     {
                         "name": "{{claims.subject1.2.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Matemáticas - {{claims.subject1.2.name}} - Número del nivel de rendimiento, Matemáticas - {{claims.subject1.2.name}} - Nivel de rendimiento'>{{claims.subject1.2.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
                         "index": "subject1.claims.2.perf_lvl",
                         "field": "subject1.claims.2.perf_lvl",
                         "width": 160,
@@ -324,7 +324,7 @@
                 "items": [
                     {
                         "name": "Estudiantes",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Estudiantes'>Estudiantes</a>",
+                        "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -339,7 +339,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#' data-export-name='ELA/Alfabetización general, ELA/Alfabetización Banda de error, ELA/Alfabetización Nivel de rendimiento, ELA/Alfabetización Número del nivel de rendimiento'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 175,
@@ -354,7 +354,7 @@
                     },
                     {
                         "name": "{{claims.subject2.0.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Alfabetización - {{claims.subject2.0.name}} - Número del nivel de rendimiento, ELA/Alfabetización - {{claims.subject2.0.name}} - Nivel de rendimiento'>{{claims.subject2.0.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
                         "index": "subject2.claims.0.perf_lvl",
                         "field": "subject2.claims.0.perf_lvl",
                         "width": 118,
@@ -366,7 +366,7 @@
                     },
                     {
                         "name": "{{claims.subject2.1.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Alfabetización - {{claims.subject2.1.name}} - Número del nivel de rendimiento, ELA/Alfabetización - {{claims.subject2.1.name}} - Nivel de rendimiento'>{{claims.subject2.1.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
                         "index": "subject2.claims.1.perf_lvl",
                         "field": "subject2.claims.1.perf_lvl",
                         "width": 118,
@@ -378,7 +378,7 @@
                     },
                     {
                         "name": "{{claims.subject2.2.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Alfabetización - {{claims.subject2.2.name}} - Número del nivel de rendimiento, ELA/Alfabetización - {{claims.subject2.2.name}} - Nivel de rendimiento'>{{claims.subject2.2.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
                         "index": "subject2.claims.2.perf_lvl",
                         "field": "subject2.claims.2.perf_lvl",
                         "width": 118,
@@ -390,7 +390,7 @@
                     },
                     {
                         "name": "{{claims.subject2.3.name}}",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='ELA/Alfabetización - {{claims.subject2.3.name}} - Número del nivel de rendimiento, ELA/Alfabetización - {{claims.subject2.3.name}} - Nivel de rendimiento'>{{claims.subject2.3.name}}</a>",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
                         "index": "subject2.claims.3.perf_lvl",
                         "field": "subject2.claims.3.perf_lvl",
                         "width": 120,
@@ -414,7 +414,7 @@
     },
     "column_for_iab": {
         "name": "{{claim}}",
-        "displayTpl": "<a href='#' title='{{claim}}' data-export-name='{{subjectText}}-{{claim}}-{{effectiveDateText}}-Número del nivel de rendimiento,{{subjectText}}-{{claim}}-{{effectiveDateText}}-Nivel de rendimiento' class='inherit'>{{titleText}}</a>",
+        "displayTpl": "<a class='inherit' href='#' title='{{claim}}'>{{titleText}}</a>",
         "index": "{{subject}}.{{{claim}}}.{{i}}.claims.0.perf_lvl",
         "field": "{{subject}}.{{{claim}}}.{{effectiveDate}}.claims.0.perf_lvl",
         "width": "{{width}}",
@@ -432,7 +432,7 @@
                 "items": [
                     {
                         "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</a>",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -454,7 +454,7 @@
                 "items": [
                     {
                         "name": "Students",
-                        "displayTpl": "<a href='#' class='inherit' data-export-name='Students'>Students</a>",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
                         "width": 330,
@@ -509,7 +509,7 @@
                     },
                     {
                         "name": "Población total",
-                        "displayTpl": "<a class='inherit' href='#' data-export-name='Población total Evaluada'># Evaluada</a>",
+                        "displayTpl": "<a class='inherit' href='#'># Evaluada</a>",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
                         "sorttype": "int",
@@ -538,7 +538,7 @@
                     },
                     {
                         "name": "Población total",
-                        "displayTpl": "<a class='inherit' href='#' data-export-name='Población total Evaluada'># Evaluada</a>",
+                        "displayTpl": "<a class='inherit' href='#'># Evaluada</a>",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
                         "sorttype": "int",
@@ -556,19 +556,19 @@
         "customViews": {
             "school": {
                 "name": "Grado",
-                "displayTpl": "<a href='#' class='inherit' data-export-name='Grado'>Grado</a>",
+                "displayTpl": "<a href='#' class='inherit'>Grado</a>",
                 "link": "studentList.html",
                 "id_name": "asmtGrade"
             },
             "district": {
                 "name": "Nombre de la escuela",
-                "displayTpl": "<a href='#' class='inherit' data-export-name='Nombre de la escuela'>Nombre de la escuela</a>",
+                "displayTpl": "<a href='#' class='inherit'>Nombre de la escuela</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "schoolId"
             },
             "state": {
                 "name": "Nombre del distrito",
-                "displayTpl": "<a href='#' class='inherit' data-export-name='Nombre del distrito'>Nombre del distrito</a>",
+                "displayTpl": "<a href='#' class='inherit'>Nombre del distrito</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "districtId"
             }

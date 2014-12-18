@@ -80,10 +80,9 @@ define [
 
     buildContent: () ->
       result = []
-      header = this.table.getGridParam("colNames")
       rowData = this.table.getRowData()
       # build column names
-      result.push this.getColumnNames(header)
+      result.push this.getColumnNames(rowData[0])
       # build summary
       footerData = this.table.footerData()
       if not $.isEmptyObject(footerData)
@@ -93,15 +92,8 @@ define [
         result.push this.getColumnValues(record)
       result
 
-    getColumnNames: (headers) ->
-      columnValues = []
-      return columnValues if not headers
-      for header in headers
-        columnName = $(header).data("export-name")
-        if not columnName
-          continue
-        columnValues.push columnName.replace(/,\ +$/, '').replace(/,\ /g,',').trim()
-      columnValues.join(Constants.DELIMITOR.COMMA)
+    getColumnNames: (record) ->
+      this.buildRow(record, 'export-name')
 
     getColumnValues: (record) ->
       this.buildRow(record, 'export-value')

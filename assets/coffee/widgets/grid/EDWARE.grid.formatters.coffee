@@ -163,18 +163,22 @@ define [
           if date is effective_date
             perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
             value = data[names[3]][names[4]]['perf_lvl']
+    isExpanded = options.colModel.expanded
+    labels = options.colModel.labels
+    dateText = { text: if isExpanded then effective_date else labels['latest_result'] }
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       displayPopover: not options.colModel.expanded  # Only show popover when not expanded
-      oldResultsClass: if not options.colModel.expanded then "hasOlderResults" else ""
+      oldResultsClass: if not isExpanded then "hasOlderResults" else ""
       student_full_name: rowObject.student_full_name
       prev: columnData
       asmtType: subject.asmt_type,
       asmtSubjectText: asmt_subject_text
-      labels: options.colModel.labels
+      labels: labels
       perfLevelNumber: value
       columnName: options.colModel.label
       parentName: $(options.colModel.parentLabel).text()
       perfLevel: perf_lvl_name
+      effectiveDateText: dateText
       export: 'edwareExportColumn' if options.colModel.export
     }
 

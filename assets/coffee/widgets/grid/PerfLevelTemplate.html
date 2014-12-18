@@ -35,6 +35,6 @@
 	</div>
 	{{/displayPopover}}
 	</div>
-	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
-	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} - {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
+	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} {{#effectiveDateText}}- {{text}} {{/effectiveDateText}}- {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
+	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} {{#effectiveDateText}}- {{text}} {{/effectiveDateText}}- {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
 </div>

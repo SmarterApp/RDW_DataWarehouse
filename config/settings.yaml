@@ -84,7 +84,7 @@ common:
     # Timeout for pdf generation process
     pdf:
       # expected pdf file size in bytes used to validate that pdf was generated without errors
-      minimum_file_size: 50000
+      minimum_file_size: 40000
       # number of retries allowed after the first failure
       retries_allowed: 3
       # delay in retry in seconds

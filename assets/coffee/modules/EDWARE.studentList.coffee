@@ -438,13 +438,15 @@ define [
       fieldName = Constants.INDEX_COLUMN.LOS
       filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
 
+      asmtType = edwarePreferences.getAsmtType()
+      scrollable = asmtType isnt Constants.ASMT_TYPE.IAB
       self = this
       edwareGrid.create {
         data: filteredInfo.data
         columns: columns
         options:
           labels: self.labels
-          scroll: false
+          scroll:  if scrollable then 1 else false
           frozenColumns: true
           expandableColumns: true
           stickyCompareEnabled: filteredInfo.enabled

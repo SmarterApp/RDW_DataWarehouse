@@ -337,6 +337,8 @@ define [
     # merge configuration
     config = $.extend true, {}, DEFAULT_CONFIG, config
     options = config['options']
+    if not options.scroll
+      options.rowNum = 100000
     data = config['data']
     options.data = data
     columns = config['columns']

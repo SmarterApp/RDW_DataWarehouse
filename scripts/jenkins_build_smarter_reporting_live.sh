@@ -372,7 +372,9 @@ function build_rpm {
     #echo "Upload to pulp"
     #pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
     echo "Sync RPM to S3"
-    cd /home/jenkins/rpmbuild/RPMS/x86_64/
+    cd  /home/smarter-rpms
+    cp /home/jenkins/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm .
+    rm /home/jenkins/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm
     aws s3 sync s3://smarter-s3-yum-repo .
     createrepo —update .
     aws s3 sync . s3://smarter-s3-yum-repo 

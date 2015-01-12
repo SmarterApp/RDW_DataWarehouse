@@ -376,7 +376,7 @@ function build_rpm {
     cp /home/jenkins/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm .
     rm /home/jenkins/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm
     aws s3 sync s3://smarter-yum-repo/edware .
-    createrepo —update .
+    createrepo --update .
     aws s3 sync . s3://smarter-yum-repo/edware 
 
     echo "Finished building RPM"

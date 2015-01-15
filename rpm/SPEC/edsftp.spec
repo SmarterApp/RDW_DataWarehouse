@@ -88,8 +88,8 @@ rm -rf %{buildroot}
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/pip
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/pip-3.3
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/python3.3
-/opt/virtualenv/edsftp/bin/python
-/opt/virtualenv/edsftp/bin/python3
+%attr(755,root,root) /opt/virtualenv/edsftp/bin/python
+%attr(755,root,root) /opt/virtualenv/edsftp/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/edsftp-watcher
 
 %pre

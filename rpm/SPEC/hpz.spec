@@ -104,8 +104,8 @@ prelink -u %{buildroot}/opt/virtualenv/hpz/bin/python3
 %attr(755,root,root) /opt/virtualenv/hpz/bin/pviews
 %attr(755,root,root) /opt/virtualenv/hpz/bin/pygmentize
 %attr(755,root,root) /opt/virtualenv/hpz/bin/python3.3
-/opt/virtualenv/hpz/bin/python
-/opt/virtualenv/hpz/bin/python3
+%attr(755,root,root) /opt/virtualenv/hpz/bin/python
+%attr(755,root,root) /opt/virtualenv/hpz/bin/python3
 
 
 %pre

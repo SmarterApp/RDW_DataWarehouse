@@ -118,8 +118,8 @@ rm -rf %{buildroot}
 %attr(755,root,root) /opt/virtualenv/udl2/bin/celeryd
 %attr(755,root,root) /opt/virtualenv/udl2/bin/celeryd-multi
 %attr(755,root,root) /opt/virtualenv/udl2/bin/celeryev
-/opt/virtualenv/udl2/bin/python
-/opt/virtualenv/udl2/bin/python3
+%attr(755,root,root) /opt/virtualenv/udl2/bin/python
+%attr(755,root,root) /opt/virtualenv/udl2/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-file-grabber

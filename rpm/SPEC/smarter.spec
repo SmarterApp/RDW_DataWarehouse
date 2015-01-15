@@ -162,8 +162,8 @@ prelink -u %{buildroot}/opt/virtualenv/smarter/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter/bin/celeryd
 %attr(755,root,root) /opt/virtualenv/smarter/bin/celeryd-multi
 %attr(755,root,root) /opt/virtualenv/smarter/bin/celeryev
-/opt/virtualenv/smarter/bin/python
-/opt/virtualenv/smarter/bin/python3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/python
+%attr(755,root,root) /opt/virtualenv/smarter/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter/bin/repmgr_cleanup.sh
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract

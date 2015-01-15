@@ -117,6 +117,7 @@ find virtualenv/smarter/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuil
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
+prelink -u %{buildroot}/opt/virtualenv/smarter/bin/python3
 
 
 %clean

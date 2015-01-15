@@ -69,6 +69,7 @@ find virtualenv/hpz/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/B
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
+prelink -u %{buildroot}/opt/virtualenv/hpz/bin/python3
 
 
 %clean

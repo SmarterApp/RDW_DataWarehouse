@@ -78,6 +78,7 @@ find virtualenv/udl2/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/udl2 %{buildroot}/opt/virtualenv
+prelink -u %{buildroot}/opt/virtualenv/udl2/bin/python3
 
 %clean
 rm -rf %{buildroot}

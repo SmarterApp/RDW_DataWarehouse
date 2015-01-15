@@ -66,6 +66,7 @@ find virtualenv/edsftp/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/edsftp %{buildroot}/opt/virtualenv
+prelink -u %{buildroot}/opt/virtualenv/edsftp/bin/python3
 
 %clean
 rm -rf %{buildroot}

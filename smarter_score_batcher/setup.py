@@ -24,6 +24,8 @@ requires = [
     'edworker',
     'smarter_common',
     'pyramid_exclog==0.7',
+    'py-postgresql==1.1.0',
+    'psycopg2==2.5.1',
     'python3-memcached == 1.51']
 
 docs_extras = [

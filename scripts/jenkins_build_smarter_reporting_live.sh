@@ -367,11 +367,13 @@ function build_rpm {
 
     ENV_NAME=$(echo ${1}_env_name | tr '[:lower:]' '[:upper:]')
     echo "Sync RPM to S3"
+    mkdir /home/jenkins/smarter-rpms
     cd /home/jenkins/smarter-rpms
     mv /home/jenkins/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm .
     aws s3 sync s3://smarter-dev-yum-repo/edware .
     createrepo --update .
     aws s3 sync . s3://smarter-dev-yum-repo/edware 
+    rm -rf /home/jenkins/smarter-rpms
 
     echo "Finished building RPM"
 }

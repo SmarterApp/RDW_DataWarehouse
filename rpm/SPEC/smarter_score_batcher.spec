@@ -123,8 +123,8 @@ prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryd
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryd-multi
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/celeryev
-/opt/virtualenv/smarter_score_batcher/bin/python
-/opt/virtualenv/smarter_score_batcher/bin/python3
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/python
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-smarter_score_batcher
 %attr(755,root,root) /etc/rc.d/init.d/file-monitor-smarter_score_batcher
 

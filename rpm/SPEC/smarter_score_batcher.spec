@@ -81,6 +81,7 @@ find virtualenv/smarter_score_batcher/bin -type f -exec sed -i 's/\/var\/lib\/je
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
+prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
 
 
 %clean

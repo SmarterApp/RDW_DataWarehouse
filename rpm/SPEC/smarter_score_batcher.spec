@@ -152,6 +152,9 @@ chkconfig --add celeryd-smarter_score_batcher
 chkconfig --level 2345 celeryd-smarter_score_batcher off
 chkconfig --add file-monitor-smarter_score_batcher
 chkconfig --level 2345 file-monitor-smarter_score_batcher off
+mkdir -p /opt/edware/item_level
+mkdir -p /opt/edware/raw_data
+mkdir -p /opt/edware/tsb
 
 %preun
 chkconfig --del celeryd-smarter_score_batcher

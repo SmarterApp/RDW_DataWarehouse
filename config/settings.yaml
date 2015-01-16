@@ -820,6 +820,7 @@ uat:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
       metadata:
         performance: /opt/edware/resources/meta/performance
+        static: /opt/edware/resources/meta/static
     extract:
       gpg:
         keyserver: hkp://celrydw1.dmo.som.edwdc.net

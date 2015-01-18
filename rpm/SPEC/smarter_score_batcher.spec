@@ -33,6 +33,9 @@ cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/file-monitor-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+mkdir -p %{buildroot}/opt/edware/item_level
+mkdir -p %{buildroot}/opt/edware/raw_data
+mkdir -p %{buildroot}/opt/edware/tsb
 
 %build
 export LANG=en_US.UTF-8

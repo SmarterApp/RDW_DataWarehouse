@@ -127,9 +127,11 @@ prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-smarter_score_batcher
 %attr(755,root,root) /etc/rc.d/init.d/file-monitor-smarter_score_batcher
-%dir(755, celery, celery) /opt/edware/item_level
-%dir(755, celery, celery) /opt/edware/raw_data
-%dir(755, celery, celery) /opt/edware/tsb
+
+%dir
+%attr(755, celery, celery) /opt/edware/item_level
+%attr(755, celery, celery) /opt/edware/raw_data
+%attr(755, celery, celery) /opt/edware/tsb
 
 
 %pre

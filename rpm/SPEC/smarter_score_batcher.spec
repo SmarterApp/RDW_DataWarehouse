@@ -127,13 +127,20 @@ prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-smarter_score_batcher
 %attr(755,root,root) /etc/rc.d/init.d/file-monitor-smarter_score_batcher
+%dir(755, celery, celery) /opt/edware/item_level
+%dir(755, celery, celery) /opt/edware/raw_data
+%dir(755, celery, celery) /opt/edware/tsb
 
 
 %pre
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
    useradd celery
-   usermod -G fuse celery
+   egrep -i "^fuse:" /etc/group > /dev/null 2>&1
+   RET=$?
+   if [ ${RET} == 0 ]; then
+      usermod -G fuse celery
+   fi
 fi
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
@@ -152,9 +159,6 @@ chkconfig --add celeryd-smarter_score_batcher
 chkconfig --level 2345 celeryd-smarter_score_batcher off
 chkconfig --add file-monitor-smarter_score_batcher
 chkconfig --level 2345 file-monitor-smarter_score_batcher off
-mkdir -p /opt/edware/item_level
-mkdir -p /opt/edware/raw_data
-mkdir -p /opt/edware/tsb
 
 %preun
 chkconfig --del celeryd-smarter_score_batcher

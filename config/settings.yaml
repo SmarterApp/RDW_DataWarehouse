@@ -819,6 +819,7 @@ uat:
       celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/smarter_score_batcher
       metadata:
+        default: /opt/edware/resources/meta/default
         performance: /opt/edware/resources/meta/performance
         static: /opt/edware/resources/meta/static
     extract:

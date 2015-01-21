@@ -43,6 +43,7 @@ def main(global_config, **settings):
 
     config.add_route('xml', '/services/xml')
     config.add_route('error', '/error')
+    config.add_route('heartbeat', '/services/heartbeat')
     config.scan()
 
     # Set default permission

@@ -112,7 +112,7 @@ define [
         assessment.score_name = @configData.labels.asmt[performance_level.name]
 
         # set level-based overall ald content
-        overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject], assessment)
+        overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject][assessment.asmt_perf_lvl], assessment)
         overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
         assessment.overall_ald = overallALD
 

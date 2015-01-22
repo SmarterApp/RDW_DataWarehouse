@@ -10,8 +10,18 @@
     },
 
     "overall_ald": {
-        "Math": "Tóm tắt điểm phác thảo: Học sinh ở Cấp độ {{asmt_perf_lvl}} thể hiện <strong>{{score_name}} và khả năng ứng dụng</strong> kiến thức toán học và các kỹ năng cần thiết để thành công trong trường đại học và công việc, như được nêu cụ thể trong Tiêu Chuẩn Cốt Lõi Chung của Tiểu Bang.",
-        "ELA": "Tóm tắt điểm phác thảo: Học sinh ở Cấp độ {{asmt_perf_lvl}} thể hiện <strong>{{score_name}} và khả năng ứng dụng</strong> kiến thức nghệ thuật tiếng Anh và đọc viết cũng như các kỹ năng cần thiết để thành công trong trường đại học và công việc, như được nêu cụ thể trong Tiêu Chuẩn Cốt Lõi Chung của Tiểu Bang."
+        "Math": {
+            "1": "The student has not met the achievement standard and needs substantial improvement.",
+            "2": "The student has nearly met the achievement standard and may require further development.",
+            "3": "The student has met the achievement standard and demonstrates progress.",
+            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+        },
+        "ELA": {
+            "1": "The student has not met the achievement standard and needs substantial improvement.",
+            "2": "The student has nearly met the achievement standard and may require further development.",
+            "3": "The student has met the achievement standard and demonstrates progress.",
+            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+        }
     },
 
     "psychometric_implications": {

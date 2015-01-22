@@ -10,8 +10,18 @@
     },
 
     "overall_ald": {
-        "Math": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
-        "ELA": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the English language arts and literacy knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards."
+        "Math": {
+            "1": "The student has not met the achievement standard and needs substantial improvement.",
+            "2": "The student has nearly met the achievement standard and may require further development.",
+            "3": "The student has met the achievement standard and demonstrates progress.",
+            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+        },
+        "ELA": {
+            "1": "The student has not met the achievement standard and needs substantial improvement.",
+            "2": "The student has nearly met the achievement standard and may require further development.",
+            "3": "The student has met the achievement standard and demonstrates progress.",
+            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+        }
     },
 
     "psychometric_implications": {

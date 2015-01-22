@@ -10,8 +10,18 @@
     },
 
     "overall_ald": {
-        "Math": "Resumen de la puntuación provisional: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} y habilidad para aplicar</strong> el conocimiento y las detrezas matemáticas necesarias para el éxito en la universidad y en su profesión, como se especifica en los Estándares Estatales Esenciales Comunes.",
-        "ELA": "Resumen de la puntuación provisional: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} y habilidad para aplicar</strong> el conocimiento y las detrezas en las artes del lenguaje en el idioma inglés necesarias para el éxito en la universidad y en su profesión, como se especifica en los Estándares Estatales Esenciales Comunes."
+        "Math": {
+            "1": "The student has not met the achievement standard and needs substantial improvement.",
+            "2": "The student has nearly met the achievement standard and may require further development.",
+            "3": "The student has met the achievement standard and demonstrates progress.",
+            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+        },
+        "ELA": {
+            "1": "The student has not met the achievement standard and needs substantial improvement.",
+            "2": "The student has nearly met the achievement standard and may require further development.",
+            "3": "The student has met the achievement standard and demonstrates progress.",
+            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+        }
     },
 
     "psychometric_implications": {

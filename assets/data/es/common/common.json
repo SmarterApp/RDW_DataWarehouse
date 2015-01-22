@@ -69,7 +69,7 @@
     ],
     "legendInfo": {
         "sample_intervals": {
-            "asmt_score": 1772,
+            "asmt_score": 2475,
             "asmt_score_interval": 65,
             "asmt_score_max": 2400,
             "asmt_score_max_range": 441,
@@ -85,7 +85,7 @@
                     "bg_color": "#BB231C",
                     "end_gradient_bg_color": "#C32C25",
                     "interval": "1400",
-                    "name": "COMPRENSIÓN MÍNIMA",
+                    "name": "Nivel 1",
                     "start_gradient_bg_color": "#E14A45",
                     "text_color": "#FFFFFF"
                 },
@@ -94,7 +94,7 @@
                     "bg_color": "#e4c904",
                     "end_gradient_bg_color": "#e3c703",
                     "interval": "1800",
-                    "name": "COMPRENSIÓN PARCIAL",
+                    "name": "Nivel 2",
                     "start_gradient_bg_color": "#eed909",
                     "text_color": "#000"
                 },
@@ -103,7 +103,7 @@
                     "bg_color": "#6aa506",
                     "end_gradient_bg_color": "#6aa506",
                     "interval": "2100",
-                    "name": "COMPRENSIÓN ADECUADA",
+                    "name": "Nivel 3",
                     "start_gradient_bg_color": "#99be23",
                     "text_color": "#FFFFFF"
                 },
@@ -112,7 +112,7 @@
                     "bg_color": "#237ccb",
                     "end_gradient_bg_color": "#2078ca",
                     "interval": "2400",
-                    "name": "COMPRENSIÓN PROFUNDA",
+                    "name": "Nivel 4",
                     "start_gradient_bg_color": "#3a98d1",
                     "text_color": "#FFFFFF"
                 }
@@ -574,7 +574,7 @@
             }
         }
     },
-    "interimDisclaimer": "<u>Información importante acerca de las evaluaciones provisionales</u><ol><li>Las preguntas en las pruebas provisionales que requieren una calificación realizada por personas, se pueden calificar de manera local por maestros. Esta calificación local no está sujeta a los controles rigurosos que se usan en la evaluación acumulativa y los resultados locales pueden mostrar ciertas variaciones.</li><li>Las preguntas de evaluación personal no son seguras. La exposición a ellas y la familiaridad con las preguntas de la prueba pueden afectar el rendimiento y la precisión de los resultados provisionales.</li></ol>"
+    "interimDisclaimer": "<u>Información importante acerca de las evaluaciones provisionales</u><ol><li>Las evaluaciones provisionales pueden ser evaluadas por maestros locales. Esta evaluación no está sujeta a los controles rigurosos usados en la evaluación acumulativa y los resultados locales pueden mostrar algunas variaciones.</li><li>Las preguntas de la evaluación provisional no son confidenciales. La exposición y la familiaridad con las preguntas del examen pueden afectar el desempeño del estudiante y la precisión de los resultados provisionales.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {

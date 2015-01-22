@@ -69,7 +69,7 @@
     ],
     "legendInfo": {
         "sample_intervals": {
-            "asmt_score": 1772,
+            "asmt_score": 2475,
             "asmt_score_interval": 65,
             "asmt_score_max": 2400,
             "asmt_score_max_range": 441,
@@ -85,7 +85,7 @@
                     "bg_color": "#BB231C",
                     "end_gradient_bg_color": "#C32C25",
                     "interval": "1400",
-                    "name": "MINIMAL UNDERSTANDING",
+                    "name": "Level 1",
                     "start_gradient_bg_color": "#E14A45",
                     "text_color": "#FFFFFF"
                 },
@@ -94,7 +94,7 @@
                     "bg_color": "#e4c904",
                     "end_gradient_bg_color": "#e3c703",
                     "interval": "1800",
-                    "name": "PARTIAL UNDERSTANDING",
+                    "name": "Level 2",
                     "start_gradient_bg_color": "#eed909",
                     "text_color": "#000"
                 },
@@ -103,7 +103,7 @@
                     "bg_color": "#6aa506",
                     "end_gradient_bg_color": "#6aa506",
                     "interval": "2100",
-                    "name": "ADEQUATE UNDERSTANDING",
+                    "name": "Level 3",
                     "start_gradient_bg_color": "#99be23",
                     "text_color": "#FFFFFF"
                 },
@@ -112,7 +112,7 @@
                     "bg_color": "#237ccb",
                     "end_gradient_bg_color": "#2078ca",
                     "interval": "2400",
-                    "name": "THOROUGH UNDERSTANDING",
+                    "name": "Level 4",
                     "start_gradient_bg_color": "#3a98d1",
                     "text_color": "#FFFFFF"
                 }
@@ -574,7 +574,7 @@
             }
         }
     },
-    "interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require human scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
+    "interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Interim assessments may be scored by local teachers. This scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {

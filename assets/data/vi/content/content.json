@@ -11,31 +11,31 @@
 
     "overall_ald": {
         "Math": {
-            "1": "The student has not met the achievement standard and needs substantial improvement.",
-            "2": "The student has nearly met the achievement standard and may require further development.",
-            "3": "The student has met the achievement standard and demonstrates progress.",
-            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+            "1": "Học sinh chưa đáp ứng tiêu chuẩn trình độ và cần cải thiện nhiều.",
+            "2": "Học sinh gần đáp ứng tiêu chuẩn trình độ và cần phát triển thêm.",
+            "3": "Học sinh đã đáp ứng tiêu chuẩn trình độ và đang dần tiến tới nắm vững.",
+            "4": "Học sinh đã vượt qua tiêu chuẩn trình độ và thể hiện sự tiến bộ vượt trội."
         },
         "ELA": {
-            "1": "The student has not met the achievement standard and needs substantial improvement.",
-            "2": "The student has nearly met the achievement standard and may require further development.",
-            "3": "The student has met the achievement standard and demonstrates progress.",
-            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+            "1": "Học sinh chưa đáp ứng tiêu chuẩn trình độ và cần cải thiện nhiều.",
+            "2": "Học sinh gần đáp ứng tiêu chuẩn trình độ và cần phát triển thêm.",
+            "3": "Học sinh đã đáp ứng tiêu chuẩn trình độ và đang dần tiến tới nắm vững.",
+            "4": "Học sinh đã vượt qua tiêu chuẩn trình độ và thể hiện sự tiến bộ vượt trội."
         }
     },
 
     "psychometric_implications": {
        "Summative": {
-        "Math": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện.",
-        "ELA": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện."
+        "Math": "Mức Trình độ thể hiện số điểm học sinh đạt được trên bản đánh giá và khả năng cũng như vùng cải thiện của học sinh. Các kết quả kiểm tra là một trong nhiều thước đo kết quả học tập của một học sinh.",
+        "ELA": "Mức Trình độ thể hiện số điểm học sinh đạt được trên bản đánh giá và khả năng cũng như vùng cải thiện của học sinh. Các kết quả kiểm tra là một trong nhiều thước đo kết quả học tập của một học sinh."
        },
        "Interim Comprehensive": {
-        "Math": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện.",
-        "ELA": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện."
+        "Math": "Mức Trình độ thể hiện số điểm học sinh đạt được trên bản đánh giá và khả năng cũng như vùng cải thiện của học sinh. Các kết quả kiểm tra là một trong nhiều thước đo kết quả học tập của một học sinh.",
+        "ELA": "Mức Trình độ thể hiện số điểm học sinh đạt được trên bản đánh giá và khả năng cũng như vùng cải thiện của học sinh. Các kết quả kiểm tra là một trong nhiều thước đo kết quả học tập của một học sinh."
        },
        "Interim Assessment Blocks": {
-        "Math": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện.",
-        "ELA": "Thang điểm, đơn vị và điểm chuẩn có tính minh họa và có thể thay đổi. Các tóm tắt điểm số sẽ được chỉnh sửa vào mùa hè năm 2014, và được thực hiện theo cấp lớp và môn học về kiến thức, các kỹ năng và quy trình mà bạn đã thể hiện là bạn có thể thực hiện."
+        "Math": "Mức Trình độ thể hiện số điểm học sinh đạt được trên bản đánh giá và khả năng cũng như vùng cải thiện của học sinh. Các kết quả kiểm tra là một trong nhiều thước đo kết quả học tập của một học sinh.",
+        "ELA": "Mức Trình độ thể hiện số điểm học sinh đạt được trên bản đánh giá và khả năng cũng như vùng cải thiện của học sinh. Các kết quả kiểm tra là một trong nhiều thước đo kết quả học tập của một học sinh."
        }
     },
 

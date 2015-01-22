@@ -69,7 +69,7 @@
     ],
     "legendInfo": {
         "sample_intervals": {
-            "asmt_score": 1772,
+            "asmt_score": 2475,
             "asmt_score_interval": 65,
             "asmt_score_max": 2400,
             "asmt_score_max_range": 441,
@@ -85,7 +85,7 @@
                     "bg_color": "#BB231C",
                     "end_gradient_bg_color": "#C32C25",
                     "interval": "1400",
-                    "name": "KIẾN THỨC TỐI THIỂU",
+                    "name": "Mức 1",
                     "start_gradient_bg_color": "#E14A45",
                     "text_color": "#FFFFFF"
                 },
@@ -94,7 +94,7 @@
                     "bg_color": "#e4c904",
                     "end_gradient_bg_color": "#e3c703",
                     "interval": "1800",
-                    "name": "HIỂU BIẾT MỘT PHẦN",
+                    "name": "Mức 2",
                     "start_gradient_bg_color": "#eed909",
                     "text_color": "#000"
                 },
@@ -103,7 +103,7 @@
                     "bg_color": "#6aa506",
                     "end_gradient_bg_color": "#6aa506",
                     "interval": "2100",
-                    "name": "KIẾN THỨC ĐẦY ĐỦ",
+                    "name": "Mức 3",
                     "start_gradient_bg_color": "#99be23",
                     "text_color": "#FFFFFF"
                 },
@@ -112,7 +112,7 @@
                     "bg_color": "#237ccb",
                     "end_gradient_bg_color": "#2078ca",
                     "interval": "2400",
-                    "name": "HIỂU BIẾT THẤU ĐÁO",
+                    "name": "Mức 4",
                     "start_gradient_bg_color": "#3a98d1",
                     "text_color": "#FFFFFF"
                 }
@@ -574,7 +574,7 @@
             }
         }
     },
-    "interimDisclaimer": "<u>Thông tin quan trọng về các Đánh Giá Tạm Thời</u><ol><li>Câu hỏi trong các bài kiểm tra tạm thời yêu cầu con người tính điểm có thể do giáo viên tại trường tính điểm. Cách tính điểm nội bộ này không chịu sự kiểm soát nghiêm ngặt như được áp dụng trong đánh giá tổng hợp và kết quả nội bộ có thể cho thấy có một vài khác nhau.</li><li>Các câu hỏi đánh giá tạm thời không đảm bảo. Việc áp dụng, và hiểu rõ, những câu hỏi kiểm tra này có thể ảnh hưởng đến hiệu quả hoạt động của học sinh và tính chính xác của kết quả tạm thời.</li></ol>"
+    "interimDisclaimer": "<u>Thông tin quan trọng về các Đánh Giá Tạm Thời</u><ol><li>Những đánh giá tạm thời có thể do giáo viên tại chỗ cho điểm. Việc cho điểm này không phụ thuộc vào những kiểm soát chặt chẽ được sử dụng trong đánh giá tổng quát và các kết quả tại chỗ có thể có sai lệch.</li><li>Những câu hỏi đánh giá tạm thời không cố định. Việc tiếp xúc và quen với những câu hỏi kiểm tra có thể ảnh hưởng tới kết quả của học sinh và độchính xác của các kết quả tạm thời.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {

@@ -11,31 +11,31 @@
 
     "overall_ald": {
         "Math": {
-            "1": "The student has not met the achievement standard and needs substantial improvement.",
-            "2": "The student has nearly met the achievement standard and may require further development.",
-            "3": "The student has met the achievement standard and demonstrates progress.",
-            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+            "1": "El estudiante no ha cumplido con el estándar de rendimiento y necesita una mejora sustancial.",
+            "2": "El estudiante apenas cumple con el estándar de rendimiento y puede requerir un mayor desarrollo.",
+            "3": "El estudiante cumplió con el estándar de rendimiento y demuestra un avance hacia el dominio.",
+            "4": "El estudiante excedió el estándar de rendimiento y demuestra un progreso superior."
         },
         "ELA": {
-            "1": "The student has not met the achievement standard and needs substantial improvement.",
-            "2": "The student has nearly met the achievement standard and may require further development.",
-            "3": "The student has met the achievement standard and demonstrates progress.",
-            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+            "1": "El estudiante no ha cumplido con el estándar de rendimiento y necesita una mejora sustancial.",
+            "2": "El estudiante apenas cumple con el estándar de rendimiento y puede requerir un mayor desarrollo.",
+            "3": "El estudiante cumplió con el estándar de rendimiento y demuestra un avance hacia el dominio.",
+            "4": "El estudiante excedió el estándar de rendimiento y demuestra un progreso superior."
         }
     },
 
     "psychometric_implications": {
        "Summative": {
-        "Math": "La escala, las unidades y los puntos de corte son ilustrativos y se espera que cambien. Las puntuaciones provisionales se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que usted ha demostrado que puede hacer.",
-        "ELA": "La escala, las unidades y los puntos de corte son ilustrativos y se espera que cambien. Las puntuaciones provisionales se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que usted ha demostrado que puede hacer."
+        "Math": "Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante.",
+        "ELA": "Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."
        },
        "Interim Comprehensive": {
-        "Math": "La escala, las unidades y los puntos de corte son ilustrativos y se espera que cambien. Las puntuaciones provisionales se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que usted ha demostrado que puede hacer.",
-        "ELA": "La escala, las unidades y los puntos de corte son ilustrativos y se espera que cambien. Las puntuaciones provisionales se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que usted ha demostrado que puede hacer."
+        "Math": "Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante.",
+        "ELA": "Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."
        },
        "Interim Assessment Blocks": {
-        "Math": "La escala, las unidades y los puntos de corte son ilustrativos y se espera que cambien. Las puntuaciones provisionales se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que usted ha demostrado que puede hacer.",
-        "ELA": "La escala, las unidades y los puntos de corte son ilustrativos y se espera que cambien. Las puntuaciones provisionales se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que usted ha demostrado que puede hacer."
+        "Math": "Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante.",
+        "ELA": "Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."
        }
     },
 

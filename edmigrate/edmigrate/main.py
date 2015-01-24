@@ -14,7 +14,7 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from kombu import Connection
 from argparse import ArgumentParser
-from edmigrate.utils.utils import get_broker_url, read_ini
+from edmigrate.utils.utils import get_broker_url, read_ini, get_broker_use_ssl
 from edmigrate.edmigrate_celery import celery
 import logging
 import logging.config
@@ -78,7 +78,11 @@ def run_with_conductor(daemon_mode, settings):
     logger.debug('edmigrate main program has started')
     url = get_broker_url(settings)
     celery.conf.update(BROKER_URL=url)
-    connect = Connection(url)
+
+    broker_use_ssl = get_broker_use_ssl(settings)
+    if broker_use_ssl is not False:
+        celery.conf.update(BROKER_USE_SSL=broker_use_ssl)
+    connect = Connection(url, ssl=broker_use_ssl)
     logger.debug('connection: ' + url)
     consumerThread = ConsumerThread(connect)
     try:

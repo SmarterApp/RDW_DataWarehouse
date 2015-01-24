@@ -24,7 +24,7 @@ def get_broker_url(config=None):
         config_file = get_config_file()
         if config_file is None:
             config = configparser.ConfigParser()
-            config['app:mian'] = {}
+            config['app:main'] = {}
         else:
             config = read_ini(config_file)
 
@@ -41,6 +41,10 @@ def get_broker_url(config=None):
         except:
             pass
     return url
+
+
+def get_broker_use_ssl(config):
+    return config.get(Config.BROKER_USE_SSL, False)
 
 
 def get_my_master_by_id(my_node_id):

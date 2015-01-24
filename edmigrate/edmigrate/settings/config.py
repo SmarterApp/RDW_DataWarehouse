@@ -11,6 +11,7 @@ class Config():
     DEFAULT_ROUTUNG_KEY = 'migrate.celery.CELERY_DEFAULT_ROUTING_KEY'
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'
+    BROKER_USE_SSL = 'migrate.celery.BROKER_USE_SSL'
     EAGER_MODE = 'migrate.celery.celery_always_eager'
 
 

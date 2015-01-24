@@ -24,6 +24,10 @@ def configure_celery(conf, celery):
                                        conf['celery_defaults']['CELERY_DEFAULT_EXCHANGE']),
                               routing_key=conf['celery_defaults']['CELERY_DEFAULT_ROUTING_KEY'])
 
+    broker_use_ssl = conf['celery'].get('broker_use_ssl')
+    if broker_use_ssl is not None:
+        celery.conf.update(BROKER_USE_SSL=broker_use_ssl)
+
     celery.conf.update(CELERYD_CONCURRENCY=conf['celery_defaults']['CELERYD_CONCURRENCY'],  # number of available workers processes
                        CELERYD_LOG_DEBUG=conf['logging']['debug'],
                        CELERYD_LOG_LEVEL=conf['logging']['level'],

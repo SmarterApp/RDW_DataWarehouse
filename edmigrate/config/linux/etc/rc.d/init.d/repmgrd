@@ -5,7 +5,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 #. /opt/virtualenv/smarter/bin/activate
-CONF="/var/lib/pgsql/repmgrd.conf"
+CONF="/var/lib/pgsql/repmgr.conf"
 PIDFILE="/var/run/repmgrd/repmgrd.pid"
 LOG="/var/log/repmgrd/repmgr.log"
 REPMGRD="/usr/pgsql-9.2/bin/repmgrd -f $CONF -d -p $PIDFILE --monitoring-history --verbose > $LOG 2>&1 &"

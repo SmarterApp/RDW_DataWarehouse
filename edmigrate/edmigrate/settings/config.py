@@ -1,3 +1,4 @@
+from ast import literal_eval
 __author__ = 'sravi'
 from edmigrate.utils.constants import Constants
 
@@ -22,6 +23,7 @@ LIST_OF_CONFIG = [(Config.BROADCAST_QUEUE, str, None),
                   (Config.DEFAULT_ROUTUNG_QUEUE, str, Constants.CONDUCTOR_QUEUE),
                   (Config.BROKER_URL, str, 'memory://'),
                   (Config.EAGER_MODE, bool, False),
+                  (Config.BROKER_USE_SSL, literal_eval, '{}'),
                   (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
                   (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
                   (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO)]

@@ -5,6 +5,7 @@ Created on Mar 21, 2014
 '''
 import logging
 from edmigrate.utils.constants import Constants
+from edmigrate.settings.config import settings, get_setting, Config
 
 
 logger = logging.getLogger(Constants.WORKER_NAME)
@@ -22,7 +23,7 @@ from edmigrate.utils.iptables import IptablesChecker, IptablesController
 
 class Player(metaclass=Singleton):
     def __init__(self,
-                 connection=Connection(get_broker_url()),
+                 connection=Connection(get_broker_url(), ssl=get_setting(Config.BROKER_USE_SSL)),
                  exchange=conductor.exchange,
                  routing_key=Constants.CONDUCTOR_ROUTING_KEY):
         self.connection = connection

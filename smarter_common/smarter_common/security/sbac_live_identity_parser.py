@@ -145,6 +145,10 @@ def _extract_role_relationship_chain(chains):
         tenancy_chain.pop()
 
         role = tenancy_chain[SbacIdentityParser.ROLE_INDEX]
-        relations.append(RoleRelation(role, tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
+        tenant = tenancy_chain[SbacIdentityParser.TENANT_INDEX]
+        if tenant:
+            tenant = tenant.lower()
+        # Tenant is the state code in in uppercase, make it lower case for tenancy name purposes
+        relations.append(RoleRelation(role, tenant, tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
                          tenancy_chain[SbacIdentityParser.DISTRICT_ID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_ID_INDEX]))
     return relations

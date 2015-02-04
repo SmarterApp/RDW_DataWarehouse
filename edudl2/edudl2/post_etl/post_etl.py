@@ -32,7 +32,7 @@ def cleanup_work_zone(work_zone_directories_to_cleanup):
     for directory in work_zone_directories_to_cleanup.values():
         # cleanup the entire directory recursively
         if os.path.exists(directory):
-            shutil.rmtree(directory)
+            shutil.rmtree(directory, ignore_errors=True)
     return True
 
 

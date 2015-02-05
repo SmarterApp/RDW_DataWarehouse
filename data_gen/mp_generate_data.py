@@ -92,7 +92,7 @@ def generate_state_district_hierarchy(id_gen):
     return district_tuples
 
 
-def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_mdict, pg_host, pg_schema):
+def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_mdict, pg_host, pg_schema, passwd=None):
     """
     Process a single district. This is basically a wrapper for generate_data.generate_district_date that is designed to
     be called through a multiprocessor.Pool construct.
@@ -113,7 +113,7 @@ def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_m
 
     # Connect to Postgres
     if generate_data.WRITE_PG:
-        generate_data.DB_CONN = generate_data.connect_to_postgres(pg_host, 5432, 'edware', 'edware', 'edware2013')
+        generate_data.DB_CONN = generate_data.connect_to_postgres(pg_host, 5432, 'edware', passwd, 'edware2013')
         generate_data.DB_SCHEMA = pg_schema
 
     # Start the processing

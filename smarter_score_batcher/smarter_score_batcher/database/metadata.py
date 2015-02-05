@@ -130,7 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--database", default="edware", help="set database name default[edware]")
     parser.add_argument("--host", default="127.0.0.1:5432", help="postgre host default[127.0.0.1:5432]")
     parser.add_argument("-u", "--user", default="edware", help="postgre username default[edware]")
-    parser.add_argument("-p", "--passwd", default="edware2013", help="postgre password default[edware]")
+    parser.add_argument("-p", "--passwd", help="postgre password")
     args = parser.parse_args()
 
     __schema = args.schema

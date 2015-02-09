@@ -26,7 +26,7 @@ class SbacIdentityParser(IdentityParser):
         '''
         Returns a list of role/relationship
         '''
-        return _extract_role_relationship_chain(attributes.get('memberOf', []))
+        return _extract_role_relationship_chain(attributes.get('sbacTenancyChain', []))
 
     @staticmethod
     def create_session(name, session_index, attributes, last_access, expiration):
@@ -43,27 +43,27 @@ class SbacIdentityParser(IdentityParser):
         session.set_session_id(__session_id)
         session.set_name_id(__name_id)
         # get fullName
-        fullName = __attributes.get('fullName')
+        fullName = __attributes.get('cn')
         if fullName is not None:
             session.set_fullName(fullName[0])
 
         # get firstName
-        firstName = __attributes.get('firstName')
+        firstName = __attributes.get('givenName')
         if firstName is not None:
             session.set_firstName(firstName[0])
 
         # get lastName
-        lastName = __attributes.get('lastName')
+        lastName = __attributes.get('sn')
         if lastName is not None:
             session.set_lastName(lastName[0])
 
         # get uid
-        if 'uid' in __attributes:
-            if __attributes['uid']:
-                session.set_uid(__attributes['uid'][0])
+        uid = __attributes.get('sbacUUID')
+        if uid is not None:
+            session.set_uid(uid[0])
 
         # get guid
-        guid = __attributes.get('guid')
+        guid = __attributes.get('sbacUUID')
         if guid is not None:
             session.set_guid(guid[0])
 

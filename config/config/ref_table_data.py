@@ -52,7 +52,7 @@ ref_table_conf = {
         ('1', 'lz_json', 'Identification.Type', 'int_sbac_asmt', 'type', 'asmtType', None),
         ('1', 'lz_json', 'Identification.Version', 'int_sbac_asmt', 'version', 'clean', None),
         ('1', 'lz_json', 'Identification.Year', 'int_sbac_asmt', 'year', None, "to_number({value},'9999')"),
-        ('1', 'lz_json', 'Identification.EffectiveDate', 'int_sbac_asmt', 'effective_date', 'clean', None),
+        ('1', 'lz_json', 'Identification.EffectiveDate', 'int_sbac_asmt', 'effective_date', 'date', None),
         # CSV to staging
         ('1', 'lz_csv', 'StateAbbreviation', 'stg_sbac_asmt_outcome', 'StateAbbreviation', 'cleanUpper', None),
         ('1', 'lz_csv', 'ResponsibleDistrictIdentifier', 'stg_sbac_asmt_outcome', 'ResponsibleDistrictIdentifier', 'clean', None),

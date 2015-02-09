@@ -83,6 +83,13 @@ class TestTransformationCodeGenerator(unittest.TestCase):
         expected_result = [(rule_name, sr.special_rules[rule_name][0], sr.special_rules[rule_name][1])]
         self.assertEqual(actual_result, expected_result)
 
+    def test_generate_sql_proc_date(self):
+        rule_name = 'date'
+        func_name = 'test_func'
+        code_version = action_sql_map = ''
+        actual_result = tg.generate_sql_proc_date(code_version, rule_name, action_sql_map, func_name)
+        self.assertEqual(actual_result, EXPECTED_CODE_FOR_DATE)
+
 
 def update_actual_result(actual_result):
     delete_str = '-- THIS CODE WAS GENERATED AT'
@@ -95,6 +102,42 @@ def update_actual_result(actual_result):
 
 
 # expected result
+EXPECTED_CODE_FOR_DATE = """
+CREATE OR REPLACE FUNCTION test_func(p_input_date VARCHAR)
+RETURNS VARCHAR AS
+$$
+DECLARE
+v_date_formats text[] := array['YYYY-MM-DD', 'YYYYMMDD', 'DD Month YYYY', 'DD Mon YY', 'MM-DD-YYYY'];
+v_date_format text;
+v_date_output_format text := 'YYYYMMDD';
+v_format_found int;
+v_date VARCHAR(255) := NULL;
+v_date_mapped date := NULL;
+
+BEGIN
+    v_date := p_input_date;
+    v_format_found := 0;
+    FOREACH v_date_format IN ARRAY v_date_formats
+    LOOP
+        BEGIN
+        v_date_mapped := to_date(v_date, v_date_format);
+        IF v_date_mapped IS NOT NULL THEN
+            v_format_found := 1;
+            EXIT;
+    END IF;
+    EXCEPTION WHEN OTHERS THEN
+        -- Do nothing
+        END;
+    END LOOP;
+    IF v_format_found = 1 THEN
+        RETURN to_char(v_date_mapped, v_date_output_format);
+    ELSE
+        RETURN v_date;
+    END IF;
+END;
+$$LANGUAGE plpgsql;
+"""
+
 EXPECTED_CODE_FOR_PCLEAN = """CREATE OR REPLACE FUNCTION sp_{col_name}
 (
     p_{col_name} IN VARCHAR

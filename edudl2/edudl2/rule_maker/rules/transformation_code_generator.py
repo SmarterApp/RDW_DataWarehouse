@@ -7,10 +7,11 @@ import datetime
 from edudl2.rule_maker.rules.udl_transformation_config import transform_rules
 from edudl2.rule_maker.rules.code_generator_special_rules import special_rules
 from edudl2.rule_maker.rules.rule_keys import COMPARE_LENGTH, INLIST, OUTLIST,\
-    PCLEAN, VCLEAN, LOOKUP, RCLEAN, DATE, CALCULATE
+    PCLEAN, VCLEAN, LOOKUP, RCLEAN, DATE, DATEIN, DATEOUT, CALCULATE
 from edudl2.rule_maker.rules.code_generator_util import assignment,\
     action_fun_map, fun_name
 import edudl2.rule_maker.rules.code_generator_sql_template as sql_tpl
+from edudl2.rule_maker.makers.date_transformation import generate_transform_date_function
 
 
 FUNC_PREFIX = 'sp_'
@@ -259,7 +260,10 @@ def generate_sql_proc_date(code_version, rule_name, action_sql_map, func_name):
     '''
     # TODO:
     # return 'date rule template for %s' % str(action_sql_map)
-    return ''
+    #return ''
+    formats_input = transform_rules[rule_name][DATE][DATEIN]
+    format_output = transform_rules[rule_name][DATE][DATEOUT]
+    return generate_transform_date_function(formats_input, func_name, format_output)
 
 
 def generate_sql_proc_calc(code_version, rule_name, action_sql_map, func_name):

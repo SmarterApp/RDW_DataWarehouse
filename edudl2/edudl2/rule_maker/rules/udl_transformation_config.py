@@ -13,7 +13,7 @@ CLEANERS = set([PCLEAN, VCLEAN, RCLEAN])
 transform_rules = {'clean': {PCLEAN: [REMNL, TRIM]},
                    'cleanUpper': {PCLEAN: [UPPER, REMNL, TRIM]},
                    'cleanLower': {PCLEAN: [LOWER, REMNL, TRIM]},
-                   'date': {DATE: {DATEIN: ['DD Month YYYY', 'DD Mon YY', 'DDMMYYYY', 'MM-DD-YYYY'],
+                   'date': {DATE: {DATEIN: ['YYYY-MM-DD', 'YYYYMMDD', 'DD Month YYYY', 'DD Mon YY', 'MM-DD-YYYY'],
                                    DATEOUT: 'YYYYMMDD'}},
                    'srDate': {DATE: {DATEIN: ['YYYY-MM-DD'], DATEOUT: 'YYYYMMDD'}},
                    'schoolType': {PCLEAN: [UPPER, REMNL, TRIM],

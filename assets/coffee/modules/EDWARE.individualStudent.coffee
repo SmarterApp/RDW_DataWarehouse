@@ -86,6 +86,8 @@ define [
       # TODO: below code should be made prettier someday
       for assessment, idx in @data.all_results
         for cut_point_interval, i in assessment.cut_point_intervals
+          # To show the levels as level 1,2,3,4 on pdf
+          assessment.cut_point_intervals[i].name = @configData.labels.level + " " + (i+1)
           if @isGrayscale
             assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.grayColors[i])
           else if not cut_point_interval.bg_color

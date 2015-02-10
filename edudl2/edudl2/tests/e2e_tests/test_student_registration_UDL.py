@@ -6,6 +6,7 @@ from edcore.notification.constants import Constants as NotificationConstants
 import unittest
 import shutil
 import os
+from datetime import datetime
 import subprocess
 from time import sleep
 from uuid import uuid4
@@ -147,7 +148,7 @@ class FTestStudentRegistrationUDL(UDLE2ETestCase):
             self.assertEquals(student_data_tuple[1], student['district_name_col'], 'District Name did not match')
             self.assertEquals(student_data_tuple[2], student['school_id_col'], 'School Id did not match')
             self.assertEquals(student_data_tuple[3], student['sex_col'], 'Sex did not match')
-            self.assertEquals(student_data_tuple[4], student['dob_col'], 'Date of Birth did not match')
+            self.assertEquals(student_data_tuple[4], datetime.strptime(student['dob_col'], "%Y-%m-%d").strftime("%Y%m%d"), 'Date of Birth did not match')
             self.assertEquals(student_data_tuple[5], student['eth_hsp_col'], 'Hispanic Ethnicity should be true')
             self.assertEquals(student_data_tuple[6], student['sec504_col'], 'Section504 status should be false')
             self.assertEquals(student_data_tuple[7], student['year_col'], 'Academic Year did not match')

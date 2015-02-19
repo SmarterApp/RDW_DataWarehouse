@@ -205,7 +205,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
 
     int_sbac_asmt = Table('int_sbac_asmt', metadata,
                           Column('record_sid', BigInteger, primary_key=True),
-                          Column('guid_asmt', String(36), CheckConstraint('guid_asmt' != ''), nullable=False),
+                          Column('guid_asmt', String(255), CheckConstraint('guid_asmt' != ''), nullable=False),
                           Column('type', String(32), CheckConstraint('type' != ''), nullable=False),
                           Column('period', String(32), CheckConstraint('period' != ''), nullable=True),
                           Column('year', SmallInteger, nullable=False),
@@ -245,7 +245,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
     int_sbac_asmt_outcome = Table('int_sbac_asmt_outcome', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
                                   Column('op', String(1), CheckConstraint('op' != ''), server_default='C', nullable=False),
-                                  Column('guid_asmt', String(36), nullable=True),
+                                  Column('guid_asmt', String(255), nullable=True),
                                   Column('guid_asmt_location', String(40), nullable=True),
                                   Column('name_asmt_location', String(60), nullable=True),
                                   Column('grade_asmt', String(10), CheckConstraint('grade_asmt' != ''), nullable=False),

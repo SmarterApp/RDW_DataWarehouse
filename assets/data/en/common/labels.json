@@ -159,12 +159,10 @@
             "Below Standard": "Below Standard",
             "At/Near Standard": "At/Near Standard",
             "Above Standard": "Above Standard",
-            "perf_lvl_name": {
-                "1":"Level 1",
-                "2":"Level 2",
-                "3":"Level 3",
-                "4":"Level 4"
-            }
+            "Level 1": "Level 1",
+            "Level 2": "Level 2",
+            "Level 3": "Level 3",
+            "Level 4": "Level 4"
         },
         "iab_asmt":{
         	"Operations and Algebraic Thinking":"Operations and Algebraic Thinking",

@@ -87,7 +87,7 @@ define [
       for assessment, idx in @data.all_results
         for cut_point_interval, i in assessment.cut_point_intervals
           # To show the levels as level 1,2,3,4 on pdf
-          assessment.cut_point_intervals[i].name = @configData.labels.asmt.perf_lvl_name[i+1]
+          assessment.cut_point_intervals[i].name = @configData.labels.asmt[assessment.cut_point_intervals[i].name] || assessment.cut_point_intervals[i].name
           if @isGrayscale
             assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.grayColors[i])
           else if not cut_point_interval.bg_color
@@ -111,7 +111,7 @@ define [
         assessment.score_color = performance_level.bg_color
         assessment.score_text_color = performance_level.text_color
         assessment.score_bg_color = performance_level.bg_color
-        assessment.score_name = @configData.labels.asmt.perf_lvl_name[assessment.asmt_perf_lvl]
+        assessment.score_name = @configData.labels.asmt[performance_level.name] || performance_level.name
 
         # set level-based overall ald content
         overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject][assessment.asmt_perf_lvl], assessment)

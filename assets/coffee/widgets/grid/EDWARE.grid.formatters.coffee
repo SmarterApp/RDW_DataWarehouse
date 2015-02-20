@@ -186,7 +186,7 @@ define [
 
     getScoreALD = (subject) ->
       return '' if not subject
-      if not subject.asmt_perf_lvl then "" else options.colModel.labels.asmt.perf_lvl_name[subject.asmt_perf_lvl]
+      if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else options.colModel.labels.asmt[subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]] || subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]
 
     getStudentName = () ->
       name = rowObject.student_first_name if rowObject.student_first_name

@@ -32,9 +32,14 @@ define [
 
     # Calculate width for cutpoints other than first and last cutpoints
     j = 1
+    total_width = items.cut_point_intervals[0].asmt_cut_point + items.last_interval.asmt_cut_point
     while j < items.cut_point_intervals.length - 1
       items.cut_point_intervals[j].asmt_cut_point =  Math.round(((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width)
+      total_width += items.cut_point_intervals[j].asmt_cut_point
       j++
+
+    # Make sure total width does not exceed barWidth
+    items.last_interval.asmt_cut_point = items.last_interval.asmt_cut_point + ( barWidth - total_width )
 
     # Calculate position for indicator
     items.asmt_score_pos = Math.round(((items.asmt_score - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width) - (score_indicator_width / 2)

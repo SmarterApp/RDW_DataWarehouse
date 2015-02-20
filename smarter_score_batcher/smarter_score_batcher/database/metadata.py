@@ -40,7 +40,7 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('Section504Status', String(50), nullable=True),
                      Column('EconomicDisadvantageStatus', String(50), nullable=True),
                      Column('MigrantStatus', String(50), nullable=True),
-                     Column('AssessmentGuid', String(50), ForeignKey('tsb_metadata.asmt_guid'), nullable=False),
+                     Column('AssessmentGuid', String(255), ForeignKey('tsb_metadata.asmt_guid'), nullable=False),
                      Column('AssessmentSessionLocationId', String(50), nullable=True),
                      Column('AssessmentSessionLocation', String(50), nullable=True),
                      Column('AssessmentAdministrationFinishDate', String(50), nullable=True),
@@ -107,13 +107,13 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      )
 
     tsb_metadata = Table('tsb_metadata', metadata,
-                         Column('asmt_guid', String(50), primary_key=True),
+                         Column('asmt_guid', String(255), primary_key=True),
                          Column('state_code', String(2), nullable=False),
                          Column('content', Text, nullable=True))
 
     tsb_error = Table('tsb_error', metadata,
                       Column('tsb_error_rec_id', BigInteger, Sequence('tsb_error_rec_id_seq'), primary_key=True),
-                      Column('asmt_guid', String(50), nullable=False),
+                      Column('asmt_guid', String(255), nullable=False),
                       Column('state_code', String(2), nullable=False),
                       Column('err_code', String(50), nullable=False),
                       Column('err_source', String(50), nullable=True),

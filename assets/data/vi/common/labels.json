@@ -156,13 +156,15 @@
             "Research & Inquiry": "Nghiên cứu & Tìm hiểu",
             "Speaking & Listening": "Nói & Nghe",
             "Writing": "Viết",
-            "Adequate Understanding": "Mức 3",
-            "Minimal Understanding": "Mức 1",
-            "Partial Understanding": "Mức 2",
-            "Thorough Understanding": "Mức 4",
             "Below Standard": "Dưới tiêu chuẩn",
             "At/Near Standard": "Ở mức/Gần mức tiêu chuẩn",
-            "Above Standard": "Trên tiêu chuẩn"
+            "Above Standard": "Trên tiêu chuẩn",
+            "perf_lvl_name": {
+                "1":"Mức 1",
+                "2":"Mức 2",
+                "3":"Mức 3",
+                "4":"Mức 4"
+            }
         },
         "iab_asmt":{
         	"Operations and Algebraic Thinking":"Operations and Algebraic Thinking",

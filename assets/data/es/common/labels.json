@@ -156,13 +156,15 @@
             "Research & Inquiry": "Investigación y consulta",
             "Speaking & Listening": "Hablar y escuchar",
             "Writing": "Escritura",
-            "Adequate Understanding": "Nivel 3",
-            "Minimal Understanding": "Nivel 1",
-            "Partial Understanding": "Nivel 2",
-            "Thorough Understanding": "Nivel 4",
             "Below Standard": "Debajo del estándar",
             "At/Near Standard": "En el estándar/cerca del estándar",
-            "Above Standard": "Arriba del estándar"
+            "Above Standard": "Arriba del estándar",
+            "perf_lvl_name": {
+                "1":"Nivel 1",
+                "2":"Nivel 2",
+                "3":"Nivel 3",
+                "4":"Nivel 4"
+            }
         },
         "iab_asmt":{
         	"Operations and Algebraic Thinking":"Operations and Algebraic Thinking",

@@ -175,7 +175,7 @@ def format_assessments_iab(results, subjects_map):
         assessment = {Constants.EFFECTIVE_DATE: effectiveDate}
         assessment['asmt_grade'] = result['asmt_grade']
         claims = assessment.get('claims', [])
-        claim = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)[0]
+        claim = get_claims(number_of_claims=1, result=result, include_scores=False, include_names=True)[0]
         claims.append(claim)
         assessment['claims'] = claims
         claim_name = claims[0]['name']

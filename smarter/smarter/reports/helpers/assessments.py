@@ -62,14 +62,14 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
         claim_name = result.get('asmt_claim_{0}_name'.format(index))
         if claim_name is not None and len(claim_name) > 0:
             claim_object = {}
+            claim_object['perf_lvl'] = str(result.get('asmt_claim_{0}_perf_lvl'.format(index)))
+            claim_object['perf_lvl_name'] = str(result.get('asmt_claim_perf_lvl_name_{0}'.format(claim_object['perf_lvl'])))
             if include_scores:
                 claim_score = result.get('asmt_claim_{0}_score'.format(index))
                 claim_object['score'] = str(claim_score)
                 claim_object['range_min_score'] = str(result.get('asmt_claim_{0}_score_range_min'.format(index)))
                 claim_object['range_max_score'] = str(result.get('asmt_claim_{0}_score_range_max'.format(index)))
                 claim_object['confidence'] = str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index)))
-                claim_object['perf_lvl'] = str(result.get('asmt_claim_{0}_perf_lvl'.format(index)))
-                claim_object['perf_lvl_name'] = str(result.get('asmt_claim_perf_lvl_name_{0}'.format(claim_object['perf_lvl'])))
             if include_indexer:
                 # This is used by ISR
                 claim_object['indexer'] = str(index)

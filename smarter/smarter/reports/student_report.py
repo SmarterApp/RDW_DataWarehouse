@@ -284,7 +284,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
     for result in results:
         subject_list = {}
         subject = result['asmt_subject']
-        subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=True, include_min_max_scores=False, include_indexer=False)
+        subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=False, include_min_max_scores=False, include_indexer=False)
         subject_list['grade'] = result.get('asmt_grade')
         subject_list['effective_date'] = result.get('effective_date')
         subject_data[subjects_map.get(subject)].append(subject_list)

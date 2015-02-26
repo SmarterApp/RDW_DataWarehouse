@@ -204,12 +204,6 @@ define [
 
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject[subject_type]
-    #To show only min & mac cut point in tooltip
-    subjectForConfidenceBar = $.extend(true, {}, rowObject[subject_type])
-    if (subjectForConfidenceBar?.cut_point_intervals)
-      for interval in subjectForConfidenceBar.cut_point_intervals
-        interval.interval = ""
-    if subjectForConfidenceBar?.cut_point_intervals then subjectForConfidenceBar.cut_point_intervals[length-1].interval = subjectForConfidenceBar?.asmt_score_max
     score_ALD = getScoreALD(subject)
     asmt_subject_text = getSubjectText(subject)
     student_name = getStudentName()
@@ -222,7 +216,7 @@ define [
       labels: options.colModel.labels
       score_ALD: score_ALD
       asmt_perf_lvl: asmt_perf_lvl
-      confidenceLevelBar: edwareConfidenceLevelBar.create(subjectForConfidenceBar, 300) if subject
+      confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
       rowId: rowId
     }
     # hack to remove html tag in name

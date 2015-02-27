@@ -74,7 +74,7 @@ def get_repl_status_query(repl_status, node_ids=None):
     query = select([repl_status.c.standby_node.label(Constants.REPL_STANDBY_NODE),
                     repl_status.c.replication_lag.label(Constants.REPLICATION_LAG),
                     repl_status.c.apply_lag.label(Constants.APPLY_LAG),
-                    repl_status.c.time_lag.label(Constants.TIME_LAG)])
+                    repl_status.c.communication_time_lag.label(Constants.TIME_LAG)])
     if node_ids:
         query = query.where(repl_status.c.standby_node.in_(node_ids))
     return query

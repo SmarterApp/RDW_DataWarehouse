@@ -104,7 +104,7 @@ define [
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students_iab)))
       for subject, columns of @data.interim_assessment_blocks
         subjectName = @data.subjects[subject]
-        for claim in @config.interimAssessmentBlocksOrdering[subject][currentGrade]
+        for claim in @config.interimAssessmentBlocksOrdering[subject][currentGrade.replace(/^0+/,'')]
           effective_dates = columns[claim]
           if not effective_dates
             continue

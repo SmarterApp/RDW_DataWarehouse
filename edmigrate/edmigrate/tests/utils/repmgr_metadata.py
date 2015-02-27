@@ -21,7 +21,7 @@ def generate_repmgr_metadata(schema_name=None, bind=None):
                         Column('last_wal_standby_location', Text(255), nullable=False),
                         Column('replication_lag', Text(255), nullable=False),
                         Column('apply_lag', Text(255), nullable=False),
-                        Column('time_lag', Interval, nullable=False, default=datetime.timedelta(0)),
+                        Column('communication_time_lag', Interval, nullable=False, default=datetime.timedelta(0)),
                         Column('last_monitor_time', DateTime(True), nullable=False, default=datetime.datetime.strptime('2000-01-01 00:00:00', '%Y-%m-%d %H:%M:%S'))
                         )
 

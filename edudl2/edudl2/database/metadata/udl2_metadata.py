@@ -170,7 +170,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('assessmentsubtestclaim4minimumvalue', String(256), nullable=True),
                                   Column('assessmentsubtestclaim4maximumvalue', String(256), nullable=True),
                                   Column('assessmentsubtestclaim4performancelevelidentifier', String(256), nullable=True),
-                                  Column('assessmentstatus', String(2), nullable=True),
                                   Column('assessmenttype', String(256), nullable=True),
                                   Column('assessmentacademicsubject', String(256), nullable=True),
                                   Column('assessmentyear', String(256), nullable=True),
@@ -191,6 +190,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('accommodationstreamlinemode', String(256), nullable=True),
                                   Column('accommodationnoisebuffer', String(256), nullable=True),
                                   Column('guid_batch', String(256), nullable=False),
+                                  Column('assessmentstatus', String(2), nullable=True),
                                   )
 
     err_list = Table('err_list', metadata,
@@ -320,7 +320,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('score_claim_4_min', SmallInteger, nullable=True),
                                   Column('score_claim_4_max', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                                  Column('asmt_status', String(2), nullable=False, server_default='OK'),
                                   Column('asmt_type', String(32), CheckConstraint('asmt_type' != ''), nullable=False),
                                   Column('asmt_subject', String(64), CheckConstraint('asmt_subject' != ''), nullable=False),
                                   Column('asmt_year', SmallInteger, nullable=False),
@@ -341,6 +340,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
                                   Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
                                   Column('guid_batch', String(36), CheckConstraint('guid_batch' != ''), nullable=False),
+                                  Column('asmt_status', String(2), nullable=False, server_default='OK'),
                                   )
 
     int_sbac_stu_reg = Table('int_sbac_stu_reg', metadata,

@@ -383,7 +383,6 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', 'score_claim_4_min', 'fact_asmt_outcome_vw', 'asmt_claim_4_score_range_min', None, None),
         ('4', 'int_sbac_asmt_outcome', 'score_claim_4_max', 'fact_asmt_outcome_vw', 'asmt_claim_4_score_range_max', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_claim_4_perf_lvl', 'fact_asmt_outcome_vw', 'asmt_claim_4_perf_lvl', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome_vw', 'asmt_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_type', 'fact_asmt_outcome_vw', 'asmt_type', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_subject', 'fact_asmt_outcome_vw', 'asmt_subject', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_year', 'fact_asmt_outcome_vw', 'asmt_year', None, None),
@@ -476,6 +475,7 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', "'99991231'", 'fact_asmt_outcome', 'to_date', None, None),
         ('4', 'int_sbac_asmt_outcome', 'op', 'fact_asmt_outcome', 'rec_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_batch', 'fact_asmt_outcome', 'batch_guid', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome_vw', 'asmt_status', None, None),
         # Interim Assessment Blocks
         ('4', 'int_sbac_asmt_outcome', 'record_sid', 'fact_block_asmt_outcome', 'asmt_outcome_rec_id', None, None),
         ('4', 'int_sbac_asmt_outcome', '-1', 'fact_block_asmt_outcome', 'asmt_rec_id', None, None),
@@ -498,7 +498,6 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', 'score_claim_1_min', 'fact_block_asmt_outcome', 'asmt_claim_1_score_range_min', None, None),
         ('4', 'int_sbac_asmt_outcome', 'score_claim_1_max', 'fact_block_asmt_outcome', 'asmt_claim_1_score_range_max', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_claim_1_perf_lvl', 'fact_block_asmt_outcome', 'asmt_claim_1_perf_lvl', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_block_asmt_outcome', 'asmt_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_type', 'fact_block_asmt_outcome', 'asmt_type', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_subject', 'fact_block_asmt_outcome', 'asmt_subject', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_year', 'fact_block_asmt_outcome', 'asmt_year', None, None),
@@ -535,6 +534,7 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', "'99991231'", 'fact_block_asmt_outcome', 'to_date', None, None),
         ('4', 'int_sbac_asmt_outcome', 'op', 'fact_block_asmt_outcome', 'rec_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_batch', 'fact_block_asmt_outcome', 'batch_guid', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_block_asmt_outcome', 'asmt_status', None, None),
         # Used only in reporting app, smarter.  udl should never pick this up
         ('1000', 'int_sbac_asmt_outcome', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
     ]

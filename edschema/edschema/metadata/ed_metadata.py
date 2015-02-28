@@ -198,7 +198,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                                  Column('asmt_status', String(2), nullable=False),
                                   Column('sex', String(10), nullable=False),
                                   Column('dmg_eth_derived', SmallInteger, nullable=True),
                                   Column('dmg_eth_hsp', Boolean, nullable=True),
@@ -232,6 +231,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   MetaColumn('to_date', String(8), nullable=True),
                                   MetaColumn('rec_status', String(1), nullable=False),
                                   MetaColumn('batch_guid', String(36), nullable=False),
+                                  Column('asmt_status', String(2), nullable=False),
                                   )
 
     Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_guid, unique=False)
@@ -273,7 +273,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      Column('asmt_claim_1_score_range_min', SmallInteger, nullable=True),
                                      Column('asmt_claim_1_score_range_max', SmallInteger, nullable=True),
                                      Column('asmt_claim_1_perf_lvl', SmallInteger, nullable=True),
-                                     Column('asmt_status', String(2), nullable=False),
                                      Column('sex', String(10), nullable=False),
                                      Column('dmg_eth_derived', SmallInteger, nullable=True),
                                      Column('dmg_eth_hsp', Boolean, nullable=True),
@@ -307,6 +306,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      MetaColumn('to_date', String(8), nullable=True),
                                      MetaColumn('rec_status', String(1), nullable=False),
                                      MetaColumn('batch_guid', String(36), nullable=False),
+                                     Column('asmt_status', String(2), nullable=False),
                                      )
 
     Index('fact_block_asmt_outcome_student_idx', assessment_block_outcome.c.student_id, assessment_block_outcome.c.asmt_guid, unique=False)

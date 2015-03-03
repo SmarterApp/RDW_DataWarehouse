@@ -113,7 +113,7 @@ def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_m
 
     # Connect to Postgres
     if generate_data.WRITE_PG:
-        generate_data.DB_CONN = generate_data.connect_to_postgres(pg_host, 5432, 'edware', passwd, 'edware2013')
+        generate_data.DB_CONN = generate_data.connect_to_postgres(pg_host, 5432, 'edware','edware' , passwd)
         generate_data.DB_SCHEMA = pg_schema
 
     # Start the processing
@@ -172,6 +172,8 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
+    parser.add_argument('-p', '--passwd', dest='passwd', action='store', default='edware2013',
+                        help='The passwd for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
                         help='The schema for the PostgreSQL database to write data to')
     parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
@@ -222,7 +224,7 @@ if __name__ == '__main__':
 
     # Connect to Postgres
     if generate_data.WRITE_PG:
-        generate_data.DB_CONN = generate_data.connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', 'edware2013')
+        generate_data.DB_CONN = generate_data.connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', args.passwd)
         generate_data.DB_SCHEMA = args.pg_schema
 
     # Create the ID generator

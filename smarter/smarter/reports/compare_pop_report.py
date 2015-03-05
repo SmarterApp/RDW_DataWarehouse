@@ -9,7 +9,7 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, cast
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.logging import audit_event
 import collections
@@ -27,6 +27,7 @@ from smarter.reports.student_administration import get_asmt_academic_years, get_
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
 from smarter.reports.helpers.aggregate_dim import get_aggregate_dim
+from sqlalchemy.types import SmallInteger
 
 
 REPORT_NAME = "comparing_populations"
@@ -455,36 +456,46 @@ class QueryHelper():
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         self._dim_student = connector.get_table(Constants.DIM_STUDENT)
+        self._fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
 
-    def build_sub_query(self, extra_columns=[], where_guid=None):
+    def build_sub_query(self, target_fact_table, asmt_type, extra_columns=[], where_guid=None):
         '''
         build select columns based on request
         '''
-        query = select(extra_columns + [self._fact_asmt_outcome_vw.c.asmt_subject.label(Constants.ASMT_SUBJECT),
-                                        self._fact_asmt_outcome_vw.c.inst_hier_rec_id,
-                                        func.count().label(Constants.TOTAL),
-                                        self._fact_asmt_outcome_vw.c.asmt_perf_lvl.label(Constants.LEVEL)])\
-            .where(and_(self._fact_asmt_outcome_vw.c.state_code == self._state_code,
-                        self._fact_asmt_outcome_vw.c.asmt_type == self._asmt_type,
-                        self._fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT,
-                        self._fact_asmt_outcome_vw.c.asmt_year == self._asmt_year))\
-            .group_by(self._fact_asmt_outcome_vw.c.asmt_subject,
-                      self._fact_asmt_outcome_vw.c.inst_hier_rec_id,
-                      self._fact_asmt_outcome_vw.c.asmt_perf_lvl)
+        base_columns = [target_fact_table.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                        target_fact_table.c.inst_hier_rec_id,
+                        func.count().label(Constants.TOTAL)]
+        if 'asmt_perf_lvl' in target_fact_table.c:
+            base_columns += [target_fact_table.c.asmt_perf_lvl.label(Constants.LEVEL)]
+        else:
+            base_columns += [cast(-1, SmallInteger).label(Constants.LEVEL)]
+        query = select(extra_columns + base_columns)\
+            .where(and_(target_fact_table.c.state_code == self._state_code,
+                        target_fact_table.c.asmt_type == asmt_type,
+                        target_fact_table.c.rec_status == Constants.CURRENT,
+                        target_fact_table.c.asmt_year == self._asmt_year))\
+            .group_by(target_fact_table.c.asmt_subject,
+                      target_fact_table.c.inst_hier_rec_id,
+                      Constants.LEVEL)
         if where_guid is not None:
             query = query.where(and_(where_guid))
-        return apply_filter_to_query(query, self._fact_asmt_outcome_vw, self._dim_student, self._filters)
+        return apply_filter_to_query(query, target_fact_table, self._dim_student, self._filters)
 
-    def build_query(self, name_field, id_field, subquery_where_guid=None):
-        fao = self.build_sub_query(where_guid=subquery_where_guid).alias()
-        query = select([name_field.label(Constants.NAME),
-                        id_field.label(Constants.ID),
-                        fao.columns[Constants.ASMT_SUBJECT].label(Constants.ASMT_SUBJECT),
-                        fao.columns[Constants.LEVEL].label(Constants.LEVEL),
-                        func.sum(fao.columns[Constants.TOTAL]).label(Constants.TOTAL)],
-                       from_obj=[fao.join(self._dim_inst_hier, self._dim_inst_hier.c.inst_hier_rec_id == fao.c.inst_hier_rec_id)])\
-            .group_by(Constants.NAME, Constants.ID, Constants.ASMT_SUBJECT, Constants.LEVEL)\
-            .order_by(Constants.NAME)
+    def build_query(self, name_field, id_field, subquery_where_district_id=None):
+        def _build_pre_query(sub_query):
+            query = select([name_field.label(Constants.NAME),
+                            id_field.label(Constants.ID),
+                            sub_query.columns[Constants.ASMT_SUBJECT].label(Constants.ASMT_SUBJECT),
+                            sub_query.columns[Constants.LEVEL].label(Constants.LEVEL),
+                            func.sum(sub_query.columns[Constants.TOTAL]).label(Constants.TOTAL)],
+                           from_obj=[sub_query.join(self._dim_inst_hier, self._dim_inst_hier.c.inst_hier_rec_id == sub_query.c.inst_hier_rec_id)])\
+                           .group_by(Constants.NAME, Constants.ID, Constants.ASMT_SUBJECT, Constants.LEVEL)
+            return query
+        fao = self.build_sub_query(self._fact_asmt_outcome_vw, self._asmt_type, where_guid=(self._fact_asmt_outcome_vw.c.district_id == subquery_where_district_id) if subquery_where_district_id else None).alias()
+        fbao = self.build_sub_query(self._fact_block_asmt_outcome, AssessmentType.INTERIM_ASSESSMENT_BLOCKS, where_guid=(self._fact_block_asmt_outcome.c.district_id == subquery_where_district_id) if subquery_where_district_id else None).alias()
+        fao_query = _build_pre_query(fao)
+        fbao_query = _build_pre_query(fbao)
+        query = fao_query.union(fbao_query).order_by(Constants.NAME)
         return query
 
     def get_query(self):
@@ -494,10 +505,18 @@ class QueryHelper():
         return self.build_query(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_id)
 
     def get_query_for_district_view(self):
-        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, subquery_where_guid=(self._fact_asmt_outcome_vw.c.district_id == self._district_id))
+        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, subquery_where_district_id=self._district_id)
 
     def get_query_for_school_view(self):
-        return self.build_sub_query(extra_columns=[self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ID)],
-                                    where_guid=(and_(self._fact_asmt_outcome_vw.c.district_id == self._district_id, self._fact_asmt_outcome_vw.c.school_id == self._school_id)))\
-            .group_by(self._fact_asmt_outcome_vw.c.asmt_grade)\
-            .order_by(self._fact_asmt_outcome_vw.c.asmt_grade)
+        fao_query = self.build_sub_query(self._fact_asmt_outcome_vw,
+                                         self._asmt_type,
+                                         extra_columns=[self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ID)],
+                                         where_guid=(and_(self._fact_asmt_outcome_vw.c.district_id == self._district_id, self._fact_asmt_outcome_vw.c.school_id == self._school_id)))\
+                                         .group_by(Constants.NAME)
+        fbao_query = self.build_sub_query(self._fact_block_asmt_outcome,
+                                          AssessmentType.INTERIM_ASSESSMENT_BLOCKS,
+                                          extra_columns=[self._fact_block_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_block_asmt_outcome.c.asmt_grade.label(Constants.ID)],
+                                          where_guid=(and_(self._fact_block_asmt_outcome.c.district_id == self._district_id, self._fact_block_asmt_outcome.c.school_id == self._school_id)))\
+                                          .group_by(Constants.NAME)
+        query = fao_query.union(fbao_query).order_by(Constants.NAME)
+        return query

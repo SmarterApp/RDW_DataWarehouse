@@ -8,8 +8,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     get_unittest_tenant_name
 from edapi.tests.dummy import DummyRequest
 from pyramid import testing
-from smarter.reports.helpers.aggregate_dim import get_aggregate_dim,\
-    get_aggregate_dim_cache_route, get_aggregate_dim_cache_route_cache_key
+from smarter.reports.helpers.aggregate_dim import get_aggregate_dim_cache_route, get_aggregate_dim_cache_route_cache_key,\
+    get_aggregate_dim_interim
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from edauth.tests.test_helper.create_session import create_test_session
@@ -38,7 +38,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
 
     def test_get_aggregate_dim(self):
         tenant = get_unittest_tenant_name()
-        agg_results = get_aggregate_dim('NC', None, None, AssessmentType.INTERIM_COMPREHENSIVE, 2016, tenant, {'subject1': 'Math', 'subject2': 'ELA'})
+        agg_results = get_aggregate_dim_interim('NC', None, None, 2016, tenant, {'subject1': 'Math', 'subject2': 'ELA'})
         records = agg_results[Constants.RECORDS]
         self.assertEqual(4, len(records))
         record = records[3]

@@ -81,15 +81,20 @@ def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=Non
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
-        s = exists(['*'], from_obj=[dim_inst_hier]).where(or_(create_where_clause(fact_asmt_outcome, AssessmentType.INTERIM_COMPREHENSIVE), create_where_clause(fact_block_asmt_outcome, AssessmentType.INTERIM_ASSESSMENT_BLOCKS)))
+        s_fao = exists(['*'], from_obj=[dim_inst_hier]).where(create_where_clause(fact_asmt_outcome, AssessmentType.INTERIM_COMPREHENSIVE))
+        s_fbao = exists(['*'], from_obj=[dim_inst_hier]).where(create_where_clause(fact_block_asmt_outcome, AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
         if districtId is None and schoolId is None:
-            query = get_select_for_state_view(dim_inst_hier, stateCode).where(s)
+            query_fao = get_select_for_state_view(dim_inst_hier, stateCode).where(s_fao)
+            query_fbao = get_select_for_state_view(dim_inst_hier, stateCode).where(s_fbao)
+            query = query_fao.union(query_fbao)
         elif districtId is not None and schoolId is not None:
             fao_query = get_select_for_school_view(fact_asmt_outcome, stateCode, districtId, schoolId, asmtYear, AssessmentType.INTERIM_COMPREHENSIVE, subject)
             fbao_query = get_select_for_school_view(fact_block_asmt_outcome, stateCode, districtId, schoolId, asmtYear, AssessmentType.INTERIM_ASSESSMENT_BLOCKS, subject)
             query = fao_query.union(fbao_query)
         else:
-            query = get_select_for_district_view(dim_inst_hier, stateCode, districtId).where(s)
+            query_fao = get_select_for_district_view(dim_inst_hier, stateCode, districtId).where(s_fao)
+            query_fbao = get_select_for_district_view(dim_inst_hier, stateCode, districtId).where(s_fbao)
+            query = query_fao.union(query_fbao)
         results = connector.get_result(query)
         for result in results:
             params = {Constants.ID: result.get(Constants.ID), Constants.STATECODE: stateCode}

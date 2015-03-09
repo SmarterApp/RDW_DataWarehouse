@@ -73,8 +73,8 @@ def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=Non
     '''
     def create_where_clause(fact_table, asmt):
         where = and_(fact_table.c.asmt_year == asmtYear, fact_table.c.state_code == stateCode, fact_table.c.rec_status == 'C',
-                         fact_table.c.asmt_type == asmt, fact_table.c.inst_hier_rec_id == dim_inst_hier.c.inst_hier_rec_id,
-                         fact_table.c.asmt_subject == subject)
+                     fact_table.c.asmt_type == asmt, fact_table.c.inst_hier_rec_id == dim_inst_hier.c.inst_hier_rec_id,
+                     fact_table.c.asmt_subject == subject)
         return where
     rows = {}
     with EdCoreDBConnection(tenant=tenant, state_code=stateCode) as connector:
@@ -111,7 +111,7 @@ def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=Non
                     Constants.PARAMS: params,
                     Constants.RESULTS: {}
                     }
-            data[Constants.RESULTS][subject_key] = {Constants.ASMT_SUBJECT: subject, Constants.TOTAL:-1, Constants.HASINTERIM: True}
+            data[Constants.RESULTS][subject_key] = {Constants.ASMT_SUBJECT: subject, Constants.TOTAL: -1, Constants.HASINTERIM: True}
             rows[data[Constants.ID]] = data
     return rows
 

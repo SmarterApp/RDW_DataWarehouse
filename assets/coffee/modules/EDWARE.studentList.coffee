@@ -240,7 +240,8 @@ define [
       return configs
 
     setAsmtType: (asmt_administration) ->
-      if asmt_administration isnt undefined and asmt_administration.asmt_type isnt undefined
+      asmtSelectedFromDropDown = edwarePreferences.getAsmtPreference()
+      if asmt_administration isnt undefined and asmt_administration.asmt_type isnt undefined and asmtSelectedFromDropDown is undefined
         asmt = {}
         asmt['asmt_type'] = Constants.ASMT_TYPE[asmt_administration.asmt_type]
         asmt['asmt_period_year'] = asmt_administration.asmt_period_year

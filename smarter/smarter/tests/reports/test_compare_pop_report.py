@@ -401,7 +401,6 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants.ASMTTYPE] = AssessmentType.SUMMATIVE
         results = get_comparing_populations_report(testParam)
 
         self.assertEqual(results['not_stated']['total'], 29)

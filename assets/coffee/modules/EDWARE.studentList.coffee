@@ -239,7 +239,19 @@ define [
         configs.filters.push group_filter
       return configs
 
+    setAsmtType: (asmt_administration) ->
+      if asmt_administration isnt undefined and asmt_administration.asmt_type isnt undefined
+        asmt = {}
+        asmt['asmt_type'] = Constants.ASMT_TYPE[asmt_administration.asmt_type]
+        asmt['asmt_period_year'] = asmt_administration.asmt_period_year
+        asmt['effective_date'] = asmt_administration.effective_date
+        asmt['asmt_grade'] = asmt_administration.asmt_grade
+        
+        edwarePreferences.saveAsmtPreference asmt
+        edwarePreferences.saveAsmtForISR asmt
+
     loadPage: (@data) ->
+      @setAsmtType data.asmt_administration[0]
       @cutPointsData = @createCutPoints()
       @contextData = data.context
       @subjectsData = data.subjects

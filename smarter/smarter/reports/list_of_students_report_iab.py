@@ -10,7 +10,7 @@ from sqlalchemy.sql.expression import and_
 from smarter_common.security.constants import RolesConstants
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
-from smarter.reports.helpers.metadata import get_subjects_map
+from smarter.reports.helpers.metadata import get_subjects_map, get_custom_metadata
 from smarter.reports.list_of_students_report_utils import get_group_filters, \
     __reverse_map
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
@@ -35,6 +35,7 @@ def get_list_of_students_report_iab(params):
     los_results['groups'] = get_group_filters(results)
 
     # color metadata
+    los_results[Constants.METADATA] = {}
     los_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=stateCode, district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
     los_results[Constants.SUBJECTS] = __reverse_map(subjects_map)
 

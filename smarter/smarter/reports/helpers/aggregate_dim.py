@@ -6,9 +6,10 @@ Created on May 12, 2014
 from sqlalchemy.sql import select, and_, exists
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from sqlalchemy.sql.expression import distinct, or_
+from sqlalchemy.sql.expression import distinct, or_, cast
 from edapi.cache import cache_region
 from copy import deepcopy
+from sqlalchemy.types import String
 
 
 def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subjects={}):
@@ -102,6 +103,8 @@ def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=Non
                 params[Constants.DISTRICTGUID] = districtId
             if schoolId is not None:
                 params[Constants.SCHOOLGUID] = schoolId
+                if result[Constants.ASMT_TYPE]:
+                    params[Constants.ASMTTYPE] = result[Constants.ASMT_TYPE]
             data = {Constants.ID: result.get(Constants.ID),
                     Constants.ROWID: result.get(Constants.ID),
                     Constants.NAME: result.get(Constants.NAME),
@@ -123,7 +126,7 @@ def get_select_for_district_view(dim_inst_hier, state_code, district_id):
 
 
 def get_select_for_school_view(fact_table, state_code, district_id, school_id, asmtYear, asmtType, subject):
-    return select([distinct(fact_table.c.asmt_grade).label(Constants.ID), fact_table.c.asmt_grade.label(Constants.NAME)], from_obj=[fact_table])\
+    return select([distinct(fact_table.c.asmt_grade).label(Constants.ID), fact_table.c.asmt_grade.label(Constants.NAME), cast(asmtType, String).label(Constants.ASMT_TYPE)], from_obj=[fact_table])\
         .where(and_(fact_table.c.state_code == state_code,
                     fact_table.c.district_id == district_id,
                     fact_table.c.school_id == school_id,

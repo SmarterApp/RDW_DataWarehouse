@@ -115,12 +115,7 @@ define [
   # dropdownValues is an array of values to feed into dropdown
   (($)->
     $.fn.edwareAsmtDropdown = (config, getAsmtPreference, callbacks) ->
-      # Check if only IAB is loaded for 1st time
-      firstTimeLoad = if Object.keys(getAsmtPreference()).length == 0 then true else false
       new EdwareAsmtDropdown($(this), config, getAsmtPreference, callbacks)
-      asmt = getAsmtPreference()
-      if firstTimeLoad and asmt?.asmt_type == 'Interim Assessment Blocks'
-        location.reload()
   ) jQuery
 
   EdwareAsmtDropdown: EdwareAsmtDropdown

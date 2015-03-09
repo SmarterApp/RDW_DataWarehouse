@@ -241,6 +241,7 @@ define [
 
     setAsmtType: (asmt_administration) ->
       asmtSelectedFromDropDown = edwarePreferences.getAsmtPreference()
+      # if drop down has already selected, we do not need to populate data from asmt_administration
       if asmt_administration isnt undefined and asmt_administration.asmt_type isnt undefined and asmtSelectedFromDropDown is undefined
         asmt = {}
         asmt['asmt_type'] = Constants.ASMT_TYPE[asmt_administration.asmt_type]

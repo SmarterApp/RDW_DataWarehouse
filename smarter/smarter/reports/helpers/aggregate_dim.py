@@ -65,7 +65,6 @@ def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=Non
     :param string stateCode
     :param string districtId
     :param string schoolId
-    :param string asmtType
     :param string asmtYear
     :param string tenant: tenant info for database connection
     :rtype: rset

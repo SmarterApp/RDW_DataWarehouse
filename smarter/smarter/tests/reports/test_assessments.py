@@ -122,8 +122,8 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(len(result), 5)
         self.assertTrue(len(claims), 2)
         self.assertEqual(claims[1]['name2'], '{{labels.claim}} 2')
-        self.assertEqual(len(claims[0]), 2)
-        self.assertEqual(len(claims[1]), 2)
+        self.assertEqual(len(claims[0]), 4)
+        self.assertEqual(len(claims[1]), 4)
 
     def test_get_claims_for_scores_only(self):
         result = {'asmt_cut_point_name_1': 'one',
@@ -174,7 +174,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_indexer=True)
         self.assertEqual(len(claims), 2)
-        self.assertEqual(len(claims[0]), 1)
+        self.assertEqual(len(claims[0]), 3)
         self.assertEqual(claims[0]['indexer'], '1')
         self.assertEqual(claims[1]['indexer'], '2')
 
@@ -199,7 +199,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_type': 'SUMMATIVE'}
         claims = get_claims(number_of_claims=2, result=result, include_min_max_scores=True)
         self.assertEqual(len(claims), 2)
-        self.assertEqual(len(claims[0]), 2)
+        self.assertEqual(len(claims[0]), 4)
         self.assertEqual(claims[0]['min_score'], '2')
         self.assertEqual(claims[1]['max_score'], '5')
 

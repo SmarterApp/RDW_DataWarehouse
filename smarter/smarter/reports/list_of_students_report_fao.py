@@ -7,9 +7,9 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_, select
-from smarter.reports.helpers.filters import apply_filter_to_query,\
+from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
-from smarter.reports.helpers.assessments import get_claims, get_cut_points,\
+from smarter.reports.helpers.assessments import get_claims, get_cut_points, \
     get_overall_asmt_interval
 from edapi.cache import cache_region
 from smarter.reports.helpers.metadata import get_subjects_map, \
@@ -37,8 +37,7 @@ def get_list_of_students_report_fao(params):
     los_results['assessments'] = format_assessments_fao(results, subjects_map)
     los_results['groups'] = get_group_filters(results)
 
-    # query dim_asmt to get cutpoints
-    asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
+    asmt_data = __get_asmt_data(results)
     # color metadata
     custom_metadata_map = get_custom_metadata(stateCode, None)
     los_results[Constants.METADATA] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
@@ -84,6 +83,15 @@ def get_list_of_students_fao(params):
                                      dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                                      dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
                                      dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
+                                     dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
+                                     dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
+                                     dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
+                                     dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
+                                     dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
+                                     dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
+                                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
+                                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
+                                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
                                      fact_asmt_outcome_vw.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                                      fact_asmt_outcome_vw.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                                      fact_asmt_outcome_vw.c.asmt_claim_3_score.label('asmt_claim_3_score'),
@@ -151,39 +159,34 @@ def get_list_of_students_fao(params):
         return connector.get_result(query)
 
 
-@cache_region('public.shortlived')
-def __get_asmt_data(asmtSubject, stateCode):
+def __get_asmt_data(results):
     '''
     Queries dim_asmt for cutpoint and custom metadata
     '''
-    with EdCoreDBConnection(state_code=stateCode) as connector:
-        dim_asmt = connector.get_table(Constants.DIM_ASMT)
-
-        # construct the query
-        query = select([dim_asmt.c.asmt_subject.label("asmt_subject"),
-                        dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
-                        dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
-                        dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
-                        dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
-                        dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
-                        dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
-                        dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
-                        dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
-                        dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
-                        dim_asmt.c.asmt_score_min.label('asmt_score_min'),
-                        dim_asmt.c.asmt_score_max.label('asmt_score_max'),
-                        dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
-                        dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
-                        dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
-                        dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name')],
-                       from_obj=[dim_asmt])
-        query = query.where(dim_asmt.c.rec_status == Constants.CURRENT)
-        query = query.where(dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]))
-        if asmtSubject is not None:
-            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
-
-        # run it
-        return connector.get_result(query)
+    asmt_data_results = {}
+    for result in results:
+        asmt_subject = result['asmt_subject']
+        if asmt_subject not in asmt_data_results:
+            asmt_data_result = {}
+            asmt_data_result['asmt_subject'] = asmt_subject
+            asmt_data_result['asmt_cut_point_name_1'] = result['asmt_cut_point_name_1']
+            asmt_data_result['asmt_cut_point_name_2'] = result['asmt_cut_point_name_2']
+            asmt_data_result['asmt_cut_point_name_3'] = result['asmt_cut_point_name_3']
+            asmt_data_result['asmt_cut_point_name_4'] = result['asmt_cut_point_name_4']
+            asmt_data_result['asmt_cut_point_name_5'] = result['asmt_cut_point_name_5']
+            asmt_data_result['asmt_cut_point_1'] = result['asmt_cut_point_1']
+            asmt_data_result['asmt_cut_point_2'] = result['asmt_cut_point_2']
+            asmt_data_result['asmt_cut_point_3'] = result['asmt_cut_point_3']
+            asmt_data_result['asmt_cut_point_4'] = result['asmt_cut_point_4']
+            asmt_data_result['asmt_score_min'] = result['asmt_score_min']
+            asmt_data_result['asmt_score_max'] = result['asmt_score_max']
+            asmt_data_result['asmt_claim_1_name'] = result['asmt_claim_1_name']
+            asmt_data_result['asmt_claim_2_name'] = result['asmt_claim_2_name']
+            asmt_data_result['asmt_claim_3_name'] = result['asmt_claim_3_name']
+            asmt_data_result['asmt_claim_4_name'] = result['asmt_claim_4_name']
+            asmt_data_results[asmt_subject] = asmt_data_result
+        
+    return list(asmt_data_results.values())
 
 
 def __format_cut_points(results, subjects_map, custom_metadata_map):

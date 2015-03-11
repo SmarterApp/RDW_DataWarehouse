@@ -33,11 +33,11 @@ def get_list_of_students_report_fao(params):
     asmtYear = params.get(Constants.ASMTYEAR)
     results = get_list_of_students_fao(params)
     subjects_map = get_subjects_map(asmtSubject)
+    asmt_data = __get_asmt_data(results)
     los_results = {}
     los_results['assessments'] = format_assessments_fao(results, subjects_map)
     los_results['groups'] = get_group_filters(results)
 
-    asmt_data = __get_asmt_data(results)
     # color metadata
     custom_metadata_map = get_custom_metadata(stateCode, None)
     los_results[Constants.METADATA] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)

@@ -58,52 +58,51 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
     Returns a list of claims information.
     If get_name_only is True, it returns only the name of the claim and its equivalence claim number name.
     '''
-    _result = result.copy()
     claims = []
     for index in range(1, number_of_claims + 1):
-        claim_name = _result.get('asmt_claim_{0}_name'.format(index))
+        claim_name = result.get('asmt_claim_{0}_name'.format(index))
         if claim_name is not None and len(claim_name) > 0:
             claim_object = {}
-            claim_object['perf_lvl'] = str(_result.get('asmt_claim_{0}_perf_lvl'.format(index)))
-            claim_object['perf_lvl_name'] = str(_result.get('asmt_claim_perf_lvl_name_{0}'.format(claim_object['perf_lvl'])))
+            claim_object['perf_lvl'] = str(result.get('asmt_claim_{0}_perf_lvl'.format(index)))
+            claim_object['perf_lvl_name'] = str(result.get('asmt_claim_perf_lvl_name_{0}'.format(claim_object['perf_lvl'])))
             if include_scores:
-                claim_score = _result.get('asmt_claim_{0}_score'.format(index))
+                claim_score = result.get('asmt_claim_{0}_score'.format(index))
                 claim_object['score'] = str(claim_score)
-                claim_object['range_min_score'] = str(_result.get('asmt_claim_{0}_score_range_min'.format(index)))
-                claim_object['range_max_score'] = str(_result.get('asmt_claim_{0}_score_range_max'.format(index)))
-                claim_object['confidence'] = str(claim_score - _result.get('asmt_claim_{0}_score_range_min'.format(index)))
+                claim_object['range_min_score'] = str(result.get('asmt_claim_{0}_score_range_min'.format(index)))
+                claim_object['range_max_score'] = str(result.get('asmt_claim_{0}_score_range_max'.format(index)))
+                claim_object['confidence'] = str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index)))
             if include_indexer:
                 # This is used by ISR
                 claim_object['indexer'] = str(index)
             if include_min_max_scores:
-                claim_object['max_score'] = str(_result.get('asmt_claim_{0}_score_max'.format(index)))
-                claim_object['min_score'] = str(_result.get('asmt_claim_{0}_score_min'.format(index)))
+                claim_object['max_score'] = str(result.get('asmt_claim_{0}_score_max'.format(index)))
+                claim_object['min_score'] = str(result.get('asmt_claim_{0}_score_min'.format(index)))
             if include_names:
                 # TODO: refactor, process by subject
                 claim_object['name'] = claim_name
                 # For Interim Blocks, we don't care about the name alias
-                if _result.get('asmt_type') != AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
+                if result.get('asmt_type') != AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
                     claim_object['name2'] = '{{labels.claim}} ' + str(index)
-                    if _result['asmt_subject'] == 'Math' and index == 2:
+                    if result['asmt_subject'] == 'Math' and index == 2:
                         claim_object['name2'] = '{{labels.claims}} 2 & 4'
 
             claims.append(claim_object)
 
         # deleting duplicated record
-        if 'asmt_claim_{0}_name'.format(index) in _result:
-            del(_result['asmt_claim_{0}_name'.format(index)])
-        if 'asmt_claim_{0}_score'.format(index) in _result:
-            del(_result['asmt_claim_{0}_score'.format(index)])
-        if 'asmt_claim_{0}_score_range_min'.format(index) in _result:
-            del(_result['asmt_claim_{0}_score_range_min'.format(index)])
-        if 'asmt_claim_{0}_score_range_max'.format(index) in _result:
-            del(_result['asmt_claim_{0}_score_range_max'.format(index)])
-        if 'asmt_claim_{0}_perf_lvl'.format(index) in _result:
-            del(_result['asmt_claim_{0}_perf_lvl'.format(index)])
-        if 'asmt_claim_{0}_score_min'.format(index) in _result:
-            del(_result['asmt_claim_{0}_score_min'.format(index)])
-        if 'asmt_claim_{0}_score_max'.format(index) in _result:
-            del(_result['asmt_claim_{0}_score_max'.format(index)])
+        if 'asmt_claim_{0}_name'.format(index) in result:
+            del(result['asmt_claim_{0}_name'.format(index)])
+        if 'asmt_claim_{0}_score'.format(index) in result:
+            del(result['asmt_claim_{0}_score'.format(index)])
+        if 'asmt_claim_{0}_score_range_min'.format(index) in result:
+            del(result['asmt_claim_{0}_score_range_min'.format(index)])
+        if 'asmt_claim_{0}_score_range_max'.format(index) in result:
+            del(result['asmt_claim_{0}_score_range_max'.format(index)])
+        if 'asmt_claim_{0}_perf_lvl'.format(index) in result:
+            del(result['asmt_claim_{0}_perf_lvl'.format(index)])
+        if 'asmt_claim_{0}_score_min'.format(index) in result:
+            del(result['asmt_claim_{0}_score_min'.format(index)])
+        if 'asmt_claim_{0}_score_max'.format(index) in result:
+            del(result['asmt_claim_{0}_score_max'.format(index)])
     return claims
 
 

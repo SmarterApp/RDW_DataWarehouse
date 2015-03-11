@@ -51,6 +51,7 @@ define [
     }
     $('#DownloadSuccessModal').edwareModal
       keepLastFocus: true
+      backdrop: 'static'
 
   renderNoDataModal = (self) ->
     $('#DownloadResponseContainer').html Mustache.to_html NoDataTemplate, {

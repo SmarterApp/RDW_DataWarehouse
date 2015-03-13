@@ -476,7 +476,7 @@ define [
         precedence = { interval: items.asmt_score_min }
         for interval in items.cut_point_intervals
           current_span = (interval.interval - precedence.interval)
-          interval.asmt_cut_point = items.bar_width * current_span / score_range
+          interval.asmt_cut_point = Math.floor(items.bar_width * current_span / score_range)
           precedence = interval
         # use mustache template to display the json data
         output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items

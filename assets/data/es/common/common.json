@@ -718,8 +718,8 @@
             "color": "Color"
         },
         "export_success": "Los reportes solicitados estarán disponibles dentro de 24 horas.",
-        "export_failure": "Hubo un error.",
-        "export_retry": "Favor de intentar nuevamente o contactar al administrador en <a target='_blank' href='mailto:sbac-help@sbac.com'>sbac-help@sbac.com</a>",
+        "export_failure": "Something went wrong! Please, try again.",
+        "export_retry": "If you continue to have difficulty, have additional questions, or would like to share a comment, please contact your state help desk.",
         "no_data": {
             "title": "Error",
             "header": "No hay datos.",

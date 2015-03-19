@@ -5,10 +5,10 @@
         </div>
     </div>
         {{#hasTextReplacement}}
-        <div aria-label="{{subject.asmt_subject}} {{displayText}}" role="">{{displayText}}</div>
+        <div aria-label="{{subject.asmt_subject}} {{displayText}}" role="" {{#header}}class="population-bar-column-header" data-summative="{{subject.summative}}"{{/header}}>AAA{{displayText}}</div>
         {{/hasTextReplacement}}
 
         {{^hasTextReplacement}}
-         <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
+         <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine" {{#header}}class="population-bar-column-heaader" data-summative="{{subject.summative}}"{{/header}}>BBB</div>
         {{/hasTextReplacement}}
 </div>

@@ -718,8 +718,8 @@
             "color": "Màu"
         },
         "export_success": "Những báo cáo mà bạn yêu cầu sẽ có sẵn trong vòng 24 giờ.",
-        "export_failure": "Something went wrong! Please, try again.",
-        "export_retry": "If you continue to have difficulty, have additional questions, or would like to share a comment, please contact your state help desk.",
+        "export_failure": "Có điều gì đó không đúng! Vui lòng thử lại.",
+        "export_retry": "Nếu quý vị tiếp tục gặp khó khăn, có câu hỏi khác, hoặc muốn chia sẻ ý kiến, vui lòng liên hệ bộ phận dịch vụ khách hàng tại tiểu bang của quý vị.",
         "no_data": {
             "title": "Lỗi",
             "header": "Không có dữ liệu.",

@@ -33,7 +33,7 @@ def rsync(*args, **kwargs):
             ssh_option += " -i " + private_key
         rsync_command.append("-e")
         rsync_command.append(ssh_option)
-    
+
         if not remote_dir.endswith('/'):
             remote_dir += '/'
         if not landing.endswith('/'):

@@ -1054,6 +1054,7 @@ development:
       gpg.keyserver: None
       gpg.passphrase: sbac udl2
       gpg.sign: ca_user@ca.com
+      health_check.job.queue: health_check
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'

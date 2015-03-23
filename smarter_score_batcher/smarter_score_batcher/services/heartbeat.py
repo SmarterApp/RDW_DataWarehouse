@@ -8,7 +8,6 @@ from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from smarter_score_batcher.tasks import health_check
 import pyramid.threadlocal
 from sqlalchemy.sql.expression import select
-from edcore.database import get_data_source_names
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 
 
@@ -17,8 +16,7 @@ def heartbeat(request):
     '''
     service end point for heartbeat
     '''
-    check_list = [check_celery, check_datasource]
-    results = [check_task(request) for check_task in check_list]
+    results = [check_celery(request), check_datasource()]
     results = map(lambda x: isinstance(x, HTTPServerError().__class__), results)
     if True in results:
         return HTTPServerError()
@@ -51,7 +49,7 @@ def check_celery(request):
         return HTTPServerError()
 
 
-def check_datasource(request):
+def check_datasource():
     '''
     GET request that executes a Select 1 and returns status of 200 if database returns results
 
@@ -59,10 +57,9 @@ def check_datasource(request):
     '''
     try:
         results = None
-        for datasource_name in get_data_source_names():
-            with TSBDBConnection(name=datasource_name) as connector:
-                query = select([1])
-                results = connector.get_result(query)
+        with TSBDBConnection() as connector:
+            query = select([1])
+            results = connector.get_result(query)
     except Exception:
         results = None
 

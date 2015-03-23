@@ -82,6 +82,13 @@ class Test(unittest.TestCase):
             self.assertIn(src_file, self.__src_files)
             self.assertIn(dest_file, self.__dest_files)
 
+    @patch('edudl2.udl2_util.file_archiver.S3_buckup.archive')
+    @patch('edudl2.udl2_util.file_archiver.S3_buckup.__init__')
+    def test_archive_file_backup_to_backup(self, mock_S3_buckup, mock_archive):
+        mock_S3_buckup.return_value = None
+        mock_archive.return_value = False
+        rtn = archive_files(self.__src_dir, 's3_bucket', 1, prefix=self.__prefix, backup_of_backup=self.__backup_dir)
+        self.assertFalse(rtn)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

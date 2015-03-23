@@ -34,7 +34,7 @@ def archive_files(src_dir, s3_bucket, s3_to_glacier_after_days, prefix=None, bac
                     logger.error('Failed to archive, but save to backup of backup to archive later: ' + backup_filename)
                     # failed to archive.  save to backup of backup
                     if backup_of_backup is not None:
-                        dest_path = os.path.join(backup_of_backup, backup_filename[len(src_dir) + 1])
+                        dest_path = os.path.join(backup_of_backup, archive_name)
                         if not os.path.exists(dest_path):
                             os.makedirs(dest_path, mode=0o750, exist_ok=True)
                         shutil.copy2(backup_filename, dest_path)
@@ -42,9 +42,9 @@ def archive_files(src_dir, s3_bucket, s3_to_glacier_after_days, prefix=None, bac
             # s3 bucket is in operation
             # If there are unarchived file in backup of backup, then save
             return archive_files(backup_of_backup, s3_bucket, s3_to_glacier_after_days, prefix=prefix)
-        return True
     except:
         # backup has an issue.  save in backup of backup.
+        saved = False
         if backup_filenames and backup_of_backup is not None:
             logger.error(traceback.format_exc())
             logger.error('File could not be archived in S3.  Saving to backup of backup: ' + backup_of_backup)
@@ -53,4 +53,4 @@ def archive_files(src_dir, s3_bucket, s3_to_glacier_after_days, prefix=None, bac
                 if not os.path.exists(dest_path):
                     os.makedirs(dest_path, mode=0o750, exist_ok=True)
                 shutil.copy2(file, dest_path)
-    return False
+    return saved

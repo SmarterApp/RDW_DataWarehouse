@@ -8,7 +8,7 @@ import logging
 import tempfile
 import os
 import shutil
-from edcore.utils.aws import s3_backup
+from edudl2.udl2_util.file_archiver import archive_files
 
 
 logger = logging.getLogger('edudl2')
@@ -25,9 +25,9 @@ def rsync(*args, **kwargs):
         remote_host = settings.get('file-grabber.args.remote_host')
         remote_dir = settings.get('file-grabber.args.remote_dir')
         landing = settings.get('file-grabber.args.landing')
-        s3_bucket = settings.get('file-grabber.args.archive_S3_bucket')
+        s3_bucket = settings.get('file-grabber.args.archive_s3_bucket_name')
+        s3_to_glacier_after_days = int(settings.get('file-grabber.args.archive_s3_to_glacier_after_days', '30'))
         private_key = settings.get('file-grabber.args.private_key')
-        backup_of_backup_tmp_dir = os.path.join(tempfile.gettempdir(), 's3_backup')
         ssh_option = "ssh -o StrictHostKeyChecking=no"
         if private_key is not None:
             ssh_option += " -i " + private_key
@@ -44,30 +44,14 @@ def rsync(*args, **kwargs):
         if returncode is not 0:
             logger.error('failed rsync. return code: ' + str(returncode))
         else:
-            backup_filenames = []
+            # copy from temporary directory to actual landing directory
+            # using 2 steps copy because of archiving
+            backup_of_backup_tmp_dir = os.path.join(tempfile.gettempdir(), 's3_backup')
             for dirpath, dirs, files in os.walk(tmp):
                 for filename in files:
                     fname = os.path.abspath(os.path.join(dirpath, filename))
-                    backup_filenames.append(fname)
-                    dest_path = os.path.join(landing, dirpath)
-                    os.makedirs(dest_path, mode=0o760, exist_ok=True)
+                    dest_path = os.path.join(landing, dirpath[len(tmp) + 1:])
+                    os.makedirs(dest_path, mode=0o750, exist_ok=True)
                     shutil.copy2(fname, dest_path)
-            try:
-                saved = s3_backup(s3_bucket, tmp, backup_filenames)
-                if saved:
-                    # Empty list.
-                    del backup_filenames[:]
-                    leftover_backupfiles = []
-                    for dirpath, dirs, files in os.walk(backup_of_backup_tmp_dir):
-                        fname = os.path.abspath(os.path.join(dirpath, filename))
-                        leftover_backupfiles.append(fname)
-                    saved_again = s3_backup(s3_bucket, backup_of_backup_tmp_dir, leftover_backupfiles)
-                    if saved_again:
-                        shutil.rmtree(backup_of_backup_tmp_dir)
-            except:
-                # backup has an issue.  save somewhere else.
-                if backup_filenames:
-                    if not os.path.exists(backup_of_backup_tmp_dir):
-                        os.makedirs(backup_of_backup_tmp_dir, mode=0o760, exist_ok=True)
-                    for file in backup_filenames:
-                        shutil.copy2(file, backup_of_backup_tmp_dir)
+            archive_files(tmp, s3_bucket, s3_to_glacier_after_days, backup_of_backup=backup_of_backup_tmp_dir)
+        archive_files(backup_of_backup_tmp_dir, s3_bucket, s3_to_glacier_after_days)

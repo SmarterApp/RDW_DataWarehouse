@@ -188,7 +188,7 @@
         }
     ],
     "group_template" : {
-        "display" : "Student Group",
+        "display" : "Grupo de estudiantes",
         "tag" : "Student Group",
         "name" : "studentGroupId",
         "options" : [

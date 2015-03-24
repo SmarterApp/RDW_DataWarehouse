@@ -175,6 +175,7 @@ common:
       gpg.public_key.vt: sbac_data_provider@sbac.com
       gpg.public_key.ca: sbac_data_provider@sbac.com
       #gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+      health_check.job.queue: health_check
       base_dir:
         xml: /opt/edware/raw_data
         csv: /opt/edware/item_level
@@ -1054,7 +1055,6 @@ development:
       gpg.keyserver: None
       gpg.passphrase: sbac udl2
       gpg.sign: ca_user@ca.com
-      health_check.job.queue: health_check
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'

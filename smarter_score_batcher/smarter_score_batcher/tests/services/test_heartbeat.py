@@ -21,12 +21,11 @@ class TestHeartbeat(Unittest_with_tsb_sqlite):
         '''
         During unit test, the celery doesn't run. So it should fail
         '''
-        results = check_celery(DummyRequest())
-        self.assertIsInstance(results, HTTPServerError)
+        self.assertRaises(Exception, check_celery, DummyRequest())
 
     def testValidDataSource(self):
         ok = check_datasource()
-        self.assertTrue(ok)
+        self.assertIsNone(ok)
 
     def testValidHeartbeat(self):
         '''

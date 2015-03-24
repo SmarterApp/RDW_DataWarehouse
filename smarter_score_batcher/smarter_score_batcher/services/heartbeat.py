@@ -16,12 +16,12 @@ def heartbeat(request):
     '''
     service end point for heartbeat
     '''
-    results = [check_celery(request), check_datasource()]
-    results = map(lambda x: isinstance(x, HTTPServerError().__class__), results)
-    if True in results:
+    try:
+        check_celery(request)
+        check_datasource()
+    except:
         return HTTPServerError()
-    else:
-        return HTTPOk()
+    return HTTPOk()
 
 
 def check_celery(request):
@@ -37,16 +37,12 @@ def check_celery(request):
     else:
         queue = 'health_check'
         timeout = 10.0
-    try:
-        celery_response = health_check.apply_async(queue=queue)
-        heartbeat_message = celery_response.get(timeout=timeout)
-    except Exception as e:
-        return HTTPServerError()
 
-    if heartbeat_message[0:9] == 'heartbeat':
-        return HTTPOk()
-    else:
-        return HTTPServerError()
+    celery_response = health_check.apply_async(queue=queue)
+    heartbeat_message = celery_response.get(timeout=timeout)
+
+    if heartbeat_message[0:9] != 'heartbeat':
+        raise Exception('TSB Heartbeat Exception')
 
 
 def check_datasource():
@@ -55,14 +51,8 @@ def check_datasource():
 
     :param request:  Pyramid request object
     '''
-    try:
-        results = None
-        with TSBDBConnection() as connector:
-            query = select([1])
-            results = connector.get_result(query)
-    except Exception:
-        results = None
-
-    if results and len(results) > 0:
-        return HTTPOk()
-    return HTTPServerError()
+    with TSBDBConnection() as connector:
+        query = select([1])
+        results = connector.get_result(query)
+        if not results:
+            raise Exception('TSB Heartbeat Exception')

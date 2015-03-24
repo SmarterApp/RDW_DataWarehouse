@@ -15,8 +15,11 @@ logger = logging.getLogger('edudl2')
 
 
 def archive_files(src_dir, s3_bucket, s3_to_glacier_after_days, prefix=None, backup_of_backup=None):
+    timestamp = time.strftime('%Y%m%d%H%M')
     if prefix is None:
-        prefix = time.strftime('%Y%m%d%H%M')
+        prefix = timestamp
+    else:
+        prefix = os.path.join(prefix, timestamp)
     backup_filenames = []
     try:
         # create file list for archive
@@ -38,10 +41,6 @@ def archive_files(src_dir, s3_bucket, s3_to_glacier_after_days, prefix=None, bac
                         if not os.path.exists(dest_path):
                             os.makedirs(dest_path, mode=0o750, exist_ok=True)
                         shutil.copy2(backup_filename, dest_path)
-        if saved and backup_of_backup is not None:
-            # s3 bucket is in operation
-            # If there are unarchived file in backup of backup, then save
-            return archive_files(backup_of_backup, s3_bucket, s3_to_glacier_after_days, prefix=prefix)
     except:
         # backup has an issue.  save in backup of backup.
         saved = False

@@ -11,7 +11,8 @@ install_requires = [
     "python-gnupg==0.3.5",
     'requests == 2.2.1',
     'httpretty == 0.8.0',
-    'psycopg2==2.5.1']
+    'psycopg2==2.5.1',
+    'boto == 2.36.0']
 
 tests_require = [
     'WebTest == 1.3.6',  # py3 compat

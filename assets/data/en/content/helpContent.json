@@ -61,7 +61,8 @@
                         "answer": "These reports are designed to provide parents and educators with a common understanding of student progress and achievement. Discuss your child’s report with their teachers and work together to develop appropriate supports for your child."}]}
     ],
     "user_guide_content": [
-        {"display_text":"A general Reporting System user guide can be found at <a href='http://www.smarterapp.org' target='_blank'>www.smarterapp.org</a>.<br>California educators should visit <a href='http://caaspp.org' target='_blank'>http://caaspp.org</a> to access and use the California-specific Interim Assessment Reporting System user guide."}
+        {"heading":"General User Guide", "display_text":"A general Reporting System user guide can be found at <a href='http://www.smarterapp.org/specs/Reporting-UserGuide.html' target='_blank'>www.smarterapp.org/specs/Reporting-UserGuide.html</a>."},
+        {"heading": "California User Guide", "display_text":"California educators should visit <a href='http://caaspp.org' target='_blank'>http://caaspp.org</a> to access and use the California-specific Interim Assessment Reporting System user guide."}
     ],
     "glossary_content": [
         {"alphabet": "#",

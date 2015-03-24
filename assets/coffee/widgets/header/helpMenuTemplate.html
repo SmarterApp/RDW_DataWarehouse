@@ -30,8 +30,15 @@
 	            <p>{{{helpContent.faq_footer}}}</p>
             </div>
             <div class="tab-pane" id="userGuide">
-                {{#helpContent.user_guide_content}}{{{display_text}}}
+                <ul>
+                {{#helpContent.user_guide_content}}
+                    <li>
+                        <div class="userGuideHeader">{{heading}}</div>
+                        {{{display_text}}}
+                        <br>
+                    </li>
                 {{/helpContent.user_guide_content}}
+                </ul>
             </div>
             <div class="tab-pane" id="glossary">
                 <div class="alphabetList">

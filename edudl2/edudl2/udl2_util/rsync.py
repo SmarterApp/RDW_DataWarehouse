@@ -9,12 +9,25 @@ import tempfile
 import os
 import shutil
 from edudl2.udl2_util.file_archiver import archive_files
+import traceback
 
 
 logger = logging.getLogger('edudl2')
 
 
 def rsync(*args, **kwargs):
+    '''
+    when cron is used, all exceptions are ignored and no log in the system.
+    To solve this issue, we catch exceptions in here and log them.
+    '''
+    try:
+        _rsync(*args, **kwargs)
+    except:
+        logger.error(traceback.format_exc())
+        raise
+
+
+def _rsync(*args, **kwargs):
     '''
     executing rsync command
     '''
@@ -27,7 +40,7 @@ def rsync(*args, **kwargs):
         landing = settings.get('file-grabber.args.landing')
         s3_bucket = settings.get('file-grabber.args.archive_s3_bucket_name')
         s3_to_glacier_after_days = int(settings.get('file-grabber.args.archive_s3_to_glacier_after_days', '30'))
-        s3_prefix = int(settings.get('file-grabber.args.archive_s3_prefix'))
+        s3_prefix = settings.get('file-grabber.args.archive_s3_prefix')
         private_key = settings.get('file-grabber.args.private_key')
         ssh_option = "ssh -o StrictHostKeyChecking=no"
         if private_key is not None:

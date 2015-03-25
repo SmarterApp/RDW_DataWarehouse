@@ -52,25 +52,20 @@ class TestFileArrived(unittest.TestCase):
             self.assertTrue(os.path.isdir(directory))
             os.rmdir(directory)
 
-    def test_move_file_to_work_and_history(self):
+    def test_move_file_to_work(self):
         incoming_file = '/tmp/udl2_test1.txt'
         arrived_dir = '/tmp/udl2_test_arrived'
-        history_dir = '/tmp/udl2_test_history'
         os.mkdir(arrived_dir)
-        os.mkdir(history_dir)
         open(incoming_file, 'w')
         self.assertTrue(os.path.isfile(incoming_file))
-        file_arrived.move_file_to_work_and_history(incoming_file, arrived_dir, history_dir)
+        file_arrived.move_file_to_work(incoming_file, arrived_dir)
 
         self.assertFalse(os.path.isfile(incoming_file))
         self.assertTrue(os.path.isfile(os.path.join(arrived_dir, 'udl2_test1.txt')))
-        self.assertTrue(os.path.isfile(os.path.join(history_dir, 'udl2_test1.txt')))
 
         # cleanup
         os.remove(os.path.join(arrived_dir, 'udl2_test1.txt'))
-        os.remove(os.path.join(history_dir, 'udl2_test1.txt'))
         os.rmdir(arrived_dir)
-        os.rmdir(history_dir)
 
     def test_move_file_from_arrivals(self):
         batch_guid = 'guid1234'

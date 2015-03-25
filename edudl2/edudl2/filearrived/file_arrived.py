@@ -23,8 +23,7 @@ def move_file_from_arrivals(incoming_file, batch_guid, tenant_name):
         raise InvalidTenantNameException
     tenant_directory_paths = create_directory_paths(tenant_name, batch_guid)
     create_batch_directories(tenant_directory_paths)
-    move_file_to_work_and_history(incoming_file, tenant_directory_paths.get(mk.ARRIVED),
-                                  tenant_directory_paths.get(mk.HISTORY))
+    move_file_to_work(incoming_file, tenant_directory_paths.get(mk.ARRIVED))
     return tenant_directory_paths
 
 
@@ -40,7 +39,7 @@ def get_file_path_striped_extension(file_path, extension=Const.PROCESSING_FILE_E
     return file_path[:loc] if loc != -1 else file_path
 
 
-def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
+def move_file_to_work(incoming_file, arrived_dir):
     """
     Copy the incoming source file to its arrived directory under the work folder
         and move the file pair(source and checksum file) to its history directory
@@ -49,18 +48,10 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     :param history_dir: the directory path to the history directory
     :return: None
     """
-    if os.path.exists(incoming_file):
-        shutil.copy2(incoming_file, history_dir)
-        history_file_path = os.path.join(history_dir, os.path.basename(incoming_file))
-        os.rename(history_file_path, get_file_path_striped_extension(history_file_path))
 
-        shutil.move(incoming_file, arrived_dir)
-        arrived_file_path = os.path.join(arrived_dir, os.path.basename(incoming_file))
-        os.rename(arrived_file_path, get_file_path_striped_extension(arrived_file_path))
-
-        checksum_file = FileUtil.get_complement_file_name(get_file_path_striped_extension(incoming_file))
-        if os.path.exists(checksum_file):
-            shutil.move(checksum_file, history_dir)
+    shutil.move(incoming_file, arrived_dir)
+    arrived_file_path = os.path.join(arrived_dir, os.path.basename(incoming_file))
+    os.rename(arrived_file_path, get_file_path_striped_extension(arrived_file_path))
 
 
 def create_directory_paths(tenant_name, batch_guid):

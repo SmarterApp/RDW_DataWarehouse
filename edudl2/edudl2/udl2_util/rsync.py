@@ -42,12 +42,12 @@ def _rsync(*args, **kwargs):
         s3_to_glacier_after_days = int(settings.get('file-grabber.args.archive_s3_to_glacier_after_days', '30'))
         s3_prefix = settings.get('file-grabber.args.archive_s3_prefix')
         private_key = settings.get('file-grabber.args.private_key')
-        ssh_option = "ssh -o StrictHostKeyChecking=no"
+        rsync_command.append("-e")
+        rsync_command.append("ssh -o StrictHostKeyChecking=no")
         backup_of_backup_tmp_dir = os.path.join(tempfile.gettempdir(), 's3_backup')
         if private_key is not None:
-            ssh_option += " -i " + private_key
-        rsync_command.append("-e")
-        rsync_command.append(ssh_option)
+            rsync_command.append("-e")
+            rsync_command.append(" -i " + private_key)
 
         if not remote_dir.endswith('/'):
             remote_dir += '/'
@@ -65,7 +65,7 @@ def _rsync(*args, **kwargs):
                 for filename in files:
                     fname = os.path.abspath(os.path.join(dirpath, filename))
                     dest_path = os.path.join(landing, dirpath[len(tmp) + 1:])
-                    os.makedirs(dest_path, mode=0o750, exist_ok=True)
+                    os.makedirs(dest_path, exist_ok=True)
                     shutil.copy2(fname, dest_path)
             archive_files(tmp, s3_bucket, s3_to_glacier_after_days, prefix=s3_prefix, backup_of_backup=backup_of_backup_tmp_dir)
         # check backup of backup

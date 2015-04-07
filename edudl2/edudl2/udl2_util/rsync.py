@@ -43,6 +43,7 @@ def _rsync(*args, **kwargs):
         s3_prefix = settings.get('file-grabber.args.archive_s3_prefix')
         private_key = settings.get('file-grabber.args.private_key')
         ssh_option = "ssh -o StrictHostKeyChecking=no"
+        backup_of_backup_tmp_dir = os.path.join(tempfile.gettempdir(), 's3_backup')
         if private_key is not None:
             ssh_option += " -i " + private_key
         rsync_command.append("-e")
@@ -60,7 +61,6 @@ def _rsync(*args, **kwargs):
         else:
             # copy from temporary directory to actual landing directory
             # using 2 steps copy because of archiving
-            backup_of_backup_tmp_dir = os.path.join(tempfile.gettempdir(), 's3_backup')
             for dirpath, dirs, files in os.walk(tmp):
                 for filename in files:
                     fname = os.path.abspath(os.path.join(dirpath, filename))

@@ -44,7 +44,6 @@ def _rsync(*args, **kwargs):
         private_key = settings.get('file-grabber.args.private_key')
         rsync_command.append("-e")
         rsync_command.append("ssh -o StrictHostKeyChecking=no")
-        backup_of_backup_tmp_dir = os.path.join(tempfile.gettempdir(), 's3_backup')
         if private_key is not None:
             rsync_command.append("-e")
             rsync_command.append(" -i " + private_key)
@@ -67,6 +66,4 @@ def _rsync(*args, **kwargs):
                     dest_path = os.path.join(landing, dirpath[len(tmp) + 1:])
                     os.makedirs(dest_path, exist_ok=True)
                     shutil.copy2(fname, dest_path)
-            archive_files(tmp, s3_bucket, s3_to_glacier_after_days, prefix=s3_prefix, backup_of_backup=backup_of_backup_tmp_dir)
-        # check backup of backup
-        archive_files(backup_of_backup_tmp_dir, s3_bucket, s3_to_glacier_after_days, prefix=s3_prefix)
+            archive_files(tmp, s3_bucket, s3_to_glacier_after_days, prefix=s3_prefix)

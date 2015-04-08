@@ -50,7 +50,7 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="127.0.0.1", help="postgre host default[127.0.0.1]")
     parser.add_argument("--port", default='5432', help="default port[5432")
     parser.add_argument("-u", "--user", default="edware", help="postgre username default[edware]")
-    parser.add_argument("-p", "--passwd", default="edware2013", help="postgre password default[edware]")
+    parser.add_argument("-p", "--passwd", help="postgre password")
     parser.add_argument("-a", "--action", default="setup", help="action, default is setup, use teardown to drop all tables")
 
     args = parser.parse_args()

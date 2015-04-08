@@ -172,7 +172,7 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
-    parser.add_argument('-p', '--passwd', dest='passwd', action='store', default='edware2013',
+    parser.add_argument('-p', '--passwd', dest='passwd', action='store', default='',
                         help='The passwd for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
                         help='The schema for the PostgreSQL database to write data to')

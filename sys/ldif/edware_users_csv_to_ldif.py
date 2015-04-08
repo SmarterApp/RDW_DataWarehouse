@@ -17,7 +17,7 @@ def main():
         exit()
     
     try:
-        conn = psycopg2.connect("dbname='edware' user='edware' host='localhost' password='edware2013'")
+        conn = psycopg2.connect("dbname='edware' user='edware' host='localhost' password=''")
         cur1 = conn.cursor()
     except:
         print ("Unable to connect to the database.")

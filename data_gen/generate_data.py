@@ -846,6 +846,8 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
+    parser.add_argument('-pa', '--pass', dest='pg_pass', action='store', default='',
+                        help='The password for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
                         help='The schema for the PostgreSQL database to write data to')
     parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
@@ -901,7 +903,7 @@ if __name__ == '__main__':
 
     # Connect to Postgres
     if WRITE_PG:
-        DB_CONN = connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', 'edware2013')
+        DB_CONN = connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', args.pg_pass)
         DB_SCHEMA = args.pg_schema
 
     # Create the ID generator

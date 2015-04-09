@@ -85,12 +85,13 @@ jsonTranslationsDiff = () ->
           process.exit 1
         jsonDest = JSON.parse(fs.readFileSync(translatedFile, "utf8"))
 
-        jsonDiff = jsondiffpatch.diff(jsonSrc, jsonDest).filter (x) -> x.kind not in ['E']
-        if jsonDiff.length > 0
-          console.error translatedFile + " is structurally different from source file " + srcFile
-          console.error jsonDiff
-          console.error "Fix the translations and build again"
-          process.exit 1
+        if (srcFile.indexOf("helpContent") < 0) # avoid length check for helpContent.json
+          jsonDiff = jsondiffpatch.diff(jsonSrc, jsonDest).filter (x) -> x.kind not in ['E']
+          if jsonDiff.length > 0
+            console.error translatedFile + " is structurally different from source file " + srcFile
+            console.error jsonDiff
+            console.error "Fix the translations and build again"
+            process.exit 1
       next
 
 task 'build:translationsDiff', ->

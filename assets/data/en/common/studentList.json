@@ -24,5 +24,6 @@
         "Interim Assessment Blocks": ["Math", "ELA"]
     },
     "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} · {{asmt_type}}",
-                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"}
+                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
+    "reportTitle": "Assessment Results for Grade "
 }

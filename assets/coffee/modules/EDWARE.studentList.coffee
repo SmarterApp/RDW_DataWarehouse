@@ -349,7 +349,7 @@ define [
       @config.labels.SearchResultText = @config.SearchResultText
       @infoBar ?= edwareReportInfoBar.create '#infoBar',
         breadcrumb: @contextData
-        reportTitle: "Grade #{@contextData.items[4].id} Assessment Results"
+        reportTitle: @config.reportTitle + @contextData.items[4].id
         reportType: Constants.REPORT_TYPE.GRADE
         reportName: Constants.REPORT_NAME.LOS
         reportInfoText: @config.reportInfo

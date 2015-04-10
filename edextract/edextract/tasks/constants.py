@@ -4,6 +4,8 @@ Created on Dec 9, 2013
 @author: dip
 '''
 
+import pkg_resources
+
 
 class ExtractionDataType():
     SR_STATISTICS = 'StudentRegistrationStatisticsReportCSV'
@@ -32,6 +34,7 @@ class Constants():
     ITEM_IDS = 'item_ids'
     DIRECTORY_TO_ARCHIVE = 'directory_to_archive'
     THRESHOLD_SIZE = 'threshold_size'
+    TEMPLATE_DIR = pkg_resources.resource_filename('edextract', 'templates')
 
 
 class QueryType():

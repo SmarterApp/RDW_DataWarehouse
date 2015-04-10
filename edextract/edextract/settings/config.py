@@ -14,6 +14,7 @@ class Config():
     KEYSERVER = 'extract.gpg.keyserver'
     TENANT = 'extract.gpg.'
     PICKUP_ROUTE_BASE_DIR = 'extract.sftp.route.base_dir'
+    MAIL_SERVER = 'extract.mail_server'
 
 # list of configurations that are specific to edextract
 LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
@@ -22,7 +23,8 @@ LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
                   (Config.HOMEDIR, str, '~/.gpg'),
                   (Config.BINARYFILE, str, 'gpg'),
                   (Config.KEYSERVER, str, None),
-                  (Config.PICKUP_ROUTE_BASE_DIR, str, 'route')
+                  (Config.PICKUP_ROUTE_BASE_DIR, str, 'route'),
+                  (Config.MAIL_SERVER, str, 'localhost'),
                   ]
 
 # Keeps track of configuration related to edextract that is read off from ini

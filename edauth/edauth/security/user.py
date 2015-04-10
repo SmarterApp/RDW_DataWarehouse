@@ -21,6 +21,7 @@ class UserConstants():
     GUID = 'guid'
     STATECODE = 'stateCode'
     DISPLAYHOME = 'displayHome'
+    EMAILADDRESS = 'emailAddress'
 
 
 class RoleRelation(object):
@@ -169,6 +170,7 @@ class User(object):
         self.__info[UserConstants.STATECODE] = []
         self.__info[UserConstants.GUID] = None
         self.__info[UserConstants.DISPLAYHOME] = False
+        self.__info[UserConstants.EMAILADDRESS] = None
 
     def set_user_info(self, info):
         '''
@@ -215,6 +217,9 @@ class User(object):
         @type info: string
         '''
         self.__info[UserConstants.NAME][UserConstants.LASTNAME] = last_name
+
+    def set_email_address(self, email):
+        self.__info[UserConstants.EMAILADDRESS] = email
 
     def set_context(self, role_inst_rel_list_all):
         # For now set the roles and tenant like this to make everything continue to work
@@ -275,6 +280,9 @@ class User(object):
 
     def get_name(self):
         return {UserConstants.NAME: self.__info[UserConstants.NAME]}
+
+    def get_email_address(self):
+        return self.__info[UserConstants.EMAILADDRESS]
 
     def get_uid(self):
         return self.__info[UserConstants.UID]

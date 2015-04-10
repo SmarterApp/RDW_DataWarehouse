@@ -23,8 +23,11 @@ from edextract.data_extract_generation.item_level_generator import generate_item
 from edextract.data_extract_generation.raw_data_generator import generate_raw_data_xml
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
+from email.mime.text import MIMEText
 from hpz_client.frs.http_file_upload import http_file_upload
+from jinja2 import Template
 import shutil
+import smtplib
 
 
 log = logging.getLogger('edextract')
@@ -280,6 +283,27 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
                 raise generate_extract_file.retry(args=[tenant, request_id, task], exc=exc)
         else:
             raise ExtractionError()
+
+
+@celery.task(name="tasks.extract.send_email_from_template", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+def send_email_from_template(template_name, from_addr, to_addr, subject, substitutions):
+    if template_name is None:
+        return
+
+    template_filename = os.path.join(TaskConstants.TEMPLATE_DIR, "{}.j2".format(template_name))
+    with open(template_filename) as fh:
+        template_text = fh.read()
+
+    template = Template(template_text)
+    email_text = template.render(substitutions)
+    message = MIMEText(email_text)
+    message["Subject"] = subject
+    message["From"] = from_addr
+    message["To"] = to_addr
+
+    with smtplib.SMTP(get_setting(Config.MAIL_SERVER)) as mail:
+        mail.send_message(message)
+        mail.quit()
 
 
 def get_extract_func(extract_type):

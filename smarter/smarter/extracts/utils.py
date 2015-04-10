@@ -7,13 +7,13 @@ from celery.canvas import chain, group
 import os
 from edextract.tasks.extract import prepare_path, archive, \
     generate_item_or_raw_extract_file, generate_extract_file, remote_copy, \
-    extract_group_separator, clean_up
+    send_email_from_template, extract_group_separator, clean_up
 from edextract.tasks.constants import Constants as TaskConstants, \
     ExtractionDataType
 from smarter.extracts.processor import get_extract_request_base_path
 
 
-def start_extract(tenant, request_id, archive_file_names, directories_to_archive, registration_ids, tasks, queue=None):
+def start_extract(tenant, request_id, archive_file_names, directories_to_archive, registration_ids, tasks, queue=None, to_addr=None, web_url=None):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
@@ -24,6 +24,9 @@ def start_extract(tenant, request_id, archive_file_names, directories_to_archive
                      generate_archive_file_tasks(request_id, archive_file_names, directories_to_archive, queue_name=queue),
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
                      generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=queue),
+                     extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     send_email_from_template.subtask(args=["reports_available", "DoNotReply@SmarterBalanced.org", to_addr, "Your requested reports are available", {"web_url": web_url}],
+                                                      queue_name=queue, immutable=True),
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
                      clean_up.subtask(args=[get_extract_request_base_path(tenant, request_id)], queue_name=queue, immutable=True)   # @UndefinedVariable
                      )
@@ -103,3 +106,4 @@ def generate_remote_copy_tasks(request_id, archive_file_names, registration_ids,
     for i in range(0, len(archive_file_names)):
         remote_copy_tasks.append(remote_copy.subtask(args=[request_id, archive_file_names[i], registration_ids[i]], queue=queue_name, immutable=True))  # @UndefinedVariable
     return group(remote_copy_tasks)
+

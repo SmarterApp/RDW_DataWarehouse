@@ -61,8 +61,8 @@
                         "answer": "Các báo cáo này được thiết kế nhằm giúp phụ huynh và nhà giáo dục có những hiểu biết thông thường về sự tiến bộ và thành tích của học sinh. Thảo luận báo cáo của học sinh với giáo viên của trẻ và phối hợp phát triển hỗ trợ thích hợp cho trẻ."}]}
     ],
     "user_guide_content": [
-        {"heading":"General User Guide", "display_text":"Tài liệu hướng dẫn sử dụng Hệ thống Báo cáo tổng quát có thể được tìm thấy tại trang web <a href='http://www.smarterapp.org/specs/Reporting-UserGuide.html' target='_blank'>www.smarterapp.org/specs/Reporting-UserGuide.html</a>."},
-        {"heading": "California User Guide", "display_text":"Các nhà giáo dục tại California nên vào trang web <a href='http://caaspp.org' target='_blank'>http://caaspp.org</a> để truy cập và dùng tài liệu hướng dẫn sử dụng Hệ thống Báo cáo Đánh giá Giữa kỳ dành riêng cho California."}
+        {"heading":"Hướng Dẫn Chung Cho Mọi Người", "display_text":"Tài liệu hướng dẫn sử dụng Hệ thống Báo cáo tổng quát có thể được tìm thấy tại trang web <a href='http://www.smarterapp.org/specs/Reporting-UserGuide.html' target='_blank'>www.smarterapp.org/specs/Reporting-UserGuide.html</a>."},
+        {"heading": "Hướng Dẫn Cho Người Dùng Tại California", "display_text":"Các nhà giáo dục tại California nên vào trang web <a href='http://caaspp.org' target='_blank'>http://caaspp.org</a> để truy cập và dùng tài liệu hướng dẫn sử dụng Hệ thống Báo cáo Đánh giá Giữa kỳ dành riêng cho California."}
     ],
     "glossary_content": [
         {"alphabet": "#",

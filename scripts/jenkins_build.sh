@@ -80,7 +80,7 @@ function check_pep8 {
     echo "********************************"
     echo "Checking code style against pep8"
     echo "********************************"
-    ignore="E501,E265"
+    ignore="E501,E265,E402"
 
     pep8 --ignore=$ignore $WORKSPACE/$1
 

@@ -60,8 +60,8 @@
                         "answer": "Estos reportes están diseñados para proveer a los padres y educadores un entendimiento común del progreso y el rendimiento del estudiante. Discuta el reporte de su hijo/a con sus maestros y trabajen juntos para desarrollar los apoyos apropiados para su hijo/a."}]}
     ],
     "user_guide_content": [
-        {"heading":"General User Guide", "display_text":"La guía del usuario para el Sistema de Reportes, puede encontrarse en <a href='http://www.smarterapp.org/specs/Reporting-UserGuide.html' target='_blank'>www.smarterapp.org/specs/Reporting-UserGuide.html</a>."},
-        {"heading": "California User Guide", "display_text":"Los educadores del estado de California deben visitar <a href='http://caaspp.org' target='_blank'>http://caaspp.org</a> para tener acceso a la guía del usuario, exclusiva para California, del Sistema de Reportes de Evaluaciones Provisionales."}
+        {"heading":"Guía para el usuario general", "display_text":"La guía del usuario para el Sistema de Reportes, puede encontrarse en <a href='http://www.smarterapp.org/specs/Reporting-UserGuide.html' target='_blank'>www.smarterapp.org/specs/Reporting-UserGuide.html</a>."},
+        {"heading": "Guía para el usuario en California", "display_text":"Los educadores del estado de California deben visitar <a href='http://caaspp.org' target='_blank'>http://caaspp.org</a> para tener acceso a la guía del usuario, exclusiva para California, del Sistema de Reportes de Evaluaciones Provisionales."}
     ],
     "glossary_content": [
         {"alphabet": "#",

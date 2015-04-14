@@ -105,9 +105,6 @@ class Session:
         '''
         self.__user.set_first_name(firstName)
 
-    def set_email_address(self, email):
-        self.__user.set_email_address(email)
-
     def set_idp_session_index(self, index):
         '''
         @param index: the idp session index

@@ -145,7 +145,12 @@ common:
       gpg.public_key.cat: sbac_data_provider@sbac.com
       gpg.public_key.fish: sbac_data_provider@sbac.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
-      mail_server: localhost
+      mail:
+        server: localhost
+        subject: HPZ Notification
+        sender: DoNotReply@SmarterBalanced.org
+        smtp_username: AmazonSESUserName
+        smtp_password: AmazonSESPassword
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
       available_grades: 3,4,5,6,7,8,11

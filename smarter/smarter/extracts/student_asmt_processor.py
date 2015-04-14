@@ -95,11 +95,11 @@ def process_extraction_request(params, is_async=True):
 
             response[Constants.FILES].append(files)
 
-            email_addr = user.get_email_address()
+            email_addr = user.get_uid()
 
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks,
-                          queue=queue, to_addr=email_addr, web_url=web_download_url)
+            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, email_addr, web_download_url,
+                          queue=queue)
         return response
     else:
         if tasks:

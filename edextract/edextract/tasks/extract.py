@@ -286,24 +286,32 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
 
 
 @celery.task(name="tasks.extract.send_email_from_template", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
-def send_email_from_template(template_name, from_addr, to_addr, subject, substitutions):
-    if template_name is None:
-        return
+def send_email_from_template(hpz_to_addr, substitutions):
 
-    template_filename = os.path.join(TaskConstants.TEMPLATE_DIR, "{}.j2".format(template_name))
-    with open(template_filename) as fh:
-        template_text = fh.read()
-
-    template = Template(template_text)
-    email_text = template.render(substitutions)
-    message = MIMEText(email_text)
-    message["Subject"] = subject
-    message["From"] = from_addr
-    message["To"] = to_addr
-
-    with smtplib.SMTP(get_setting(Config.MAIL_SERVER)) as mail:
-        mail.send_message(message)
-        mail.quit()
+    mail_server = get_setting(Config.MAIL_SERVER)
+    if mail_server is not None and mail_server != 'None': 
+        template_filename = os.path.join(TaskConstants.TEMPLATE_DIR, "reports_available.j2")
+        with open(template_filename) as fh:
+            template_text = fh.read()
+    
+            template = Template(template_text)
+            email_text = template.render(substitutions)
+            message = MIMEText(email_text)
+            message["Subject"] = get_setting(Config.MAIL_SUBJECT)
+            message["From"] = get_setting(Config.MAIL_SENDER)
+            message["Return-Path"] = 'DoNotReply@SmarterBalanced.org'
+            message["To"] = hpz_to_addr
+    
+            try:
+                with smtplib.SMTP_SSL(mail_server, 465) as mail:
+                    mail.login(get_setting(Config.MAIL_USERNAME), get_setting(Config.MAIL_PASSWORD))
+                    mail.send_message(message)
+                    mail.quit()
+                    return True
+            except Exception as e:
+                log.error('Failed to send email: ' + str(e))
+                raise
+    return False
 
 
 def get_extract_func(extract_type):

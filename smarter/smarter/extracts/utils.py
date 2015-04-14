@@ -13,7 +13,7 @@ from edextract.tasks.constants import Constants as TaskConstants, \
 from smarter.extracts.processor import get_extract_request_base_path
 
 
-def start_extract(tenant, request_id, archive_file_names, directories_to_archive, registration_ids, tasks, queue=None, to_addr=None, web_url=None):
+def start_extract(tenant, request_id, archive_file_names, directories_to_archive, registration_ids, tasks, hpz_to_addr, hpz_url, queue=None):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
@@ -25,10 +25,9 @@ def start_extract(tenant, request_id, archive_file_names, directories_to_archive
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
                      generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=queue),
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
-                     send_email_from_template.subtask(args=["reports_available", "DoNotReply@SmarterBalanced.org", to_addr, "Your requested reports are available", {"web_url": web_url}],
-                                                      queue_name=queue, immutable=True),
+                     clean_up.subtask(args=[get_extract_request_base_path(tenant, request_id)], queue_name=queue, immutable=True),  # @UndefinedVariable
                      extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
-                     clean_up.subtask(args=[get_extract_request_base_path(tenant, request_id)], queue_name=queue, immutable=True)   # @UndefinedVariable
+                     send_email_from_template.subtask(args=[hpz_to_addr, {"hpz_url": hpz_url}], queue_name=queue, immutable=True)  # @UndefinedVariable
                      )
     workflow.apply_async()
 

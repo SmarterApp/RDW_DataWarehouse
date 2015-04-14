@@ -14,7 +14,11 @@ class Config():
     KEYSERVER = 'extract.gpg.keyserver'
     TENANT = 'extract.gpg.'
     PICKUP_ROUTE_BASE_DIR = 'extract.sftp.route.base_dir'
-    MAIL_SERVER = 'extract.mail_server'
+    MAIL_SERVER = 'extract.mail.server'
+    MAIL_SUBJECT = 'extract.mail.subject'
+    MAIL_SENDER = 'extract.mail.sender'
+    MAIL_USERNAME = 'extract.mail.smtp_username'
+    MAIL_PASSWORD = 'extract.mail.smtp_password'
 
 # list of configurations that are specific to edextract
 LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
@@ -24,7 +28,11 @@ LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
                   (Config.BINARYFILE, str, 'gpg'),
                   (Config.KEYSERVER, str, None),
                   (Config.PICKUP_ROUTE_BASE_DIR, str, 'route'),
-                  (Config.MAIL_SERVER, str, 'localhost'),
+                  (Config.MAIL_SERVER, str, 'None'),
+                  (Config.MAIL_SUBJECT, str, 'HPZ Notification'),
+                  (Config.MAIL_SENDER, str, 'DoNotReply@SmarterBalanced.org'),
+                  (Config.MAIL_USERNAME, str, 'None'),
+                  (Config.MAIL_PASSWORD, str, 'None'),
                   ]
 
 # Keeps track of configuration related to edextract that is read off from ini

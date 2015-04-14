@@ -357,6 +357,30 @@ uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
  Q==
 
+dn: uid=tosako@amplify.com,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: sbac
+cn: Osako, Takashi
+sn: Osako
+sbacUUID: ed81c400-8874-4a96-b6fd-3573b3c3000b
+sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
+sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
+sbacTenancyChain: ||PII|||SBAC|||||||||||||
+sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||SUPER_USER|||SBAC|||||||||||||
+sbacTenancyChain: ||AUDITXML|||SBAC|||||||||||||
+sbacTenancyChain: ||IIRDEXTRACTS|||SBAC|||||||||||||
+sbacTenancyChain: ||ASMTDATALOAD|||SBAC||||||||||||
+givenName: Takashi
+uid: tosako@ampfliy.com
+userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
+ Q==
+
 dn: uid=smagnusson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
@@ -931,6 +955,7 @@ objectClass: top
 objectClass: groupOfNames
 cn: District_Education_Administrator_1
 member: uid=gman,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=tosako@amplify.com,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=School_Education_Administrator_2,ou=groups,ou=cat,ou=environment,dc=e
  dwdc,dc=net

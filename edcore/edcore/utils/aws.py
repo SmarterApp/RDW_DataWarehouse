@@ -12,6 +12,7 @@ from boto.exception import S3CreateError
 
 logger = logging.getLogger('edcore')
 
+
 class S3_buckup:
     def __init__(self, bucket_name, s3_to_glacier_after_days=None):
         # create s3 connection

@@ -21,11 +21,11 @@ from edextract.status.constants import Constants
 from sqlalchemy.sql.expression import and_, select
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.exceptions import ExtractionError
-from edextract.settings.config import setup_settings
+from edextract.settings.config import setup_settings, Config
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file, archive, archive_with_stream,
                                      remote_copy, prepare_path, generate_item_or_raw_extract_file, extract_group_separator,
-                                     clean_up)
+                                     clean_up, send_email_from_template)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -63,8 +63,14 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         shutil.rmtree(self.__tmp_dir)
         shutil.rmtree(os.path.dirname(self.__tmp_zip))
 
-    def test_generate(self):
-        pass
+    @patch('edextract.tasks.extract.smtplib.SMTP')
+    def test_send_email_from_template(self, mock_smtp):
+        setup_settings({Config.MAIL_SERVER: 'None'})
+        mail_sent = send_email_from_template('foo@foo.com', {})
+        self.assertFalse(mail_sent)
+        setup_settings({Config.MAIL_SERVER: 'localhost'})
+        mail_sent = send_email_from_template('foo@foo.com', {})
+        self.assertTrue(mail_sent)
 
     def test_archive_with_stream(self):
         open(self.__tmp_zip, 'wb').write(archive_with_stream('req_id', self.__tmp_dir))

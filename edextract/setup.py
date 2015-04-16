@@ -12,7 +12,8 @@ requires = [
     "anyjson==0.3.3",
     "amqp==1.0.13",
     "apscheduler==2.1.1",
-    "requests_toolbelt"
+    "requests_toolbelt",
+    "Jinja2==2.7.3",
 ]
 
 tests_require = requires
@@ -44,4 +45,5 @@ setup(name='edextract',
           'docs': docs_extras, },
       entry_points="""\
       """,
+      package_data={'edextract': ['templates/*.j2']},
       )

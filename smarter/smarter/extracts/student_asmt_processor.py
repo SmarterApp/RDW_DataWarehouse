@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import copy
 import re
-from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_registry, get_current_request
 from sqlalchemy.sql.expression import and_
 from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
@@ -89,13 +89,17 @@ def process_extraction_request(params, is_async=True):
 
             # Register extract file with HPZ.
             registration_id, download_url, web_download_url = register_file(user.get_uid())
+
             files[Constants.DOWNLOAD_URL] = download_url
             files[Constants.WEB_DOWNLOAD_URL] = web_download_url
 
             response[Constants.FILES].append(files)
 
+            email_addr = user.get_uid()
+
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, queue=queue)
+            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, email_addr, web_download_url,
+                          queue=queue)
         return response
     else:
         if tasks:

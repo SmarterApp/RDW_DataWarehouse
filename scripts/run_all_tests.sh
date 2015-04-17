@@ -8,17 +8,17 @@ echo
 echo
 echo Style checking
 echo
-pep8 edcore/ --ignore=E501
-pep8 edschema/ --ignore=E501
-pep8 edudl2/ --ignore=E501
-pep8 edextract/ --ignore=E501
-pep8 edapi/ --ignore=E501
-pep8 edauth/ --ignore=E501
-pep8 edmigrate/ --ignore=E501
-pep8 edworker/ --ignore=E501
-pep8 edsftp/ --ignore=E501
-pep8 services/ --ignore=E501
-pep8 smarter/ --ignore=E501
+pep8 edcore/ --ignore=E501,E402
+pep8 edschema/ --ignore=E501,E402
+pep8 edudl2/ --ignore=E501,E402
+pep8 edextract/ --ignore=E501,E402
+pep8 edapi/ --ignore=E501,E402
+pep8 edauth/ --ignore=E501,E402
+pep8 edmigrate/ --ignore=E501,E402
+pep8 edworker/ --ignore=E501,E402
+pep8 edsftp/ --ignore=E501,E402
+pep8 services/ --ignore=E501,E402
+pep8 smarter/ --ignore=E501,E402
 
 # Perform EdAPI tests
 echo

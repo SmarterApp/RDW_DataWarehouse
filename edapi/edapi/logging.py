@@ -51,7 +51,7 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             allargs = {'callable': func_name}
             report_name = func_name
             # Log the entry into the function
-            if not class_name is None:
+            if class_name is not None:
                 allargs['class'] = class_name
                 report_name = str.format('{0}.{1}', class_name, func_name)
             params = {}
@@ -63,9 +63,9 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             allargs['params'] = params
             user = authenticated_userid(get_current_request())
             guid = user.get_guid() if user else "Unknown guid"
-            if not 'user_session' in allargs.keys():
+            if 'user_session' not in allargs.keys():
                 allargs['session_id'] = guid
-            if not 'principals' in allargs.keys():
+            if 'principals' not in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
 
             keys = set(args_dict.keys()) - set(blacklist_args)

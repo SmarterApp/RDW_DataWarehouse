@@ -3,6 +3,8 @@ Created on Jan 16, 2013
 
 @author: aoren
 '''
+
+from functools import update_wrapper, wraps
 import logging
 
 
@@ -75,9 +77,6 @@ def add_configuration_header(params_config):
         "properties": params_config}
 
     return result
-
-
-from functools import update_wrapper, wraps
 
 
 class decorator_adapter(object):

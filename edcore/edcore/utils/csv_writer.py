@@ -1,5 +1,3 @@
-__author__ = 'tshewchuk'
-
 """
 This module defines a simple CSV file writer.
 """

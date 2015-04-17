@@ -56,8 +56,8 @@ class TestCleanup(Unittest_with_edcore_sqlite):
     def test_get_filtered_all_tables(self):
         with UnittestEdcoreDBConnection() as connection:
             all_tables = get_filtered_tables(connection)
-            self.assertTrue(len(set(all_tables).intersection(self.dim_tables
-                            + self.fact_tables + self.other_tables)) > 0)
+            self.assertTrue(len(set(all_tables).intersection(self.dim_tables +
+                            self.fact_tables + self.other_tables)) > 0)
 
     def test_cleanup_all_tables_with_prefix_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:

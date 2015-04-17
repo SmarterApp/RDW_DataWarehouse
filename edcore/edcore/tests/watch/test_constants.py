@@ -1,5 +1,3 @@
-__author__ = 'sravi'
-
 import unittest
 from edcore.watch.constants import WatcherConstants as Const
 

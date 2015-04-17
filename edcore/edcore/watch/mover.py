@@ -1,5 +1,3 @@
-__author__ = 'sravi'
-
 import os
 import logging
 from edcore.watch.util import SendFileUtil

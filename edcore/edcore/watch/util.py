@@ -1,5 +1,3 @@
-__author__ = 'sravi'
-
 import sys
 import os
 import threading

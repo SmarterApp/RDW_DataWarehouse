@@ -1,6 +1,4 @@
 from unittest.mock import patch, call
-__author__ = 'sravi'
-
 import unittest
 import shutil
 import os

@@ -1,5 +1,3 @@
-__author__ = 'sravi'
-
 import hashlib
 import os
 from abc import ABCMeta, abstractmethod

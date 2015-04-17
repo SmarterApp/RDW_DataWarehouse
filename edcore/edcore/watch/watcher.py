@@ -1,5 +1,3 @@
-__author__ = 'sravi'
-
 import os
 import fnmatch
 import time

@@ -1,5 +1,3 @@
-__author__ = 'tshewchuk'
-
 """
 This module describes the unit tests for the csv_writer module.
 """

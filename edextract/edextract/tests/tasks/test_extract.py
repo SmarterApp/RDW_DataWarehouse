@@ -63,7 +63,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         shutil.rmtree(self.__tmp_dir)
         shutil.rmtree(os.path.dirname(self.__tmp_zip))
 
-    @patch('edextract.tasks.extract.smtplib.SMTP')
+    @patch('edextract.tasks.extract.smtplib.SMTP_SSL')
     def test_send_email_from_template(self, mock_smtp):
         setup_settings({Config.MAIL_SERVER: 'None'})
         mail_sent = send_email_from_template('foo@foo.com', {})

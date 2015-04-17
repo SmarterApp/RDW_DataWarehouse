@@ -289,11 +289,11 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
 def send_email_from_template(hpz_to_addr, substitutions):
 
     mail_server = get_setting(Config.MAIL_SERVER)
-    if mail_server is not None and mail_server != 'None': 
+    if mail_server is not None and mail_server != 'None':
         template_filename = os.path.join(TaskConstants.TEMPLATE_DIR, "reports_available.j2")
         with open(template_filename) as fh:
             template_text = fh.read()
-    
+
             template = Template(template_text)
             email_text = template.render(substitutions)
             message = MIMEText(email_text)
@@ -301,7 +301,7 @@ def send_email_from_template(hpz_to_addr, substitutions):
             message["From"] = get_setting(Config.MAIL_SENDER)
             message["Return-Path"] = 'DoNotReply@SmarterBalanced.org'
             message["To"] = hpz_to_addr
-    
+
             try:
                 with smtplib.SMTP_SSL(mail_server, 465) as mail:
                     mail.login(get_setting(Config.MAIL_USERNAME), get_setting(Config.MAIL_PASSWORD))

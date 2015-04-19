@@ -11,17 +11,58 @@
 
     "overall_ald": {
         "Math": {
-            "1": "The student has not met the achievement standard and needs substantial improvement.",
-            "2": "The student has nearly met the achievement standard and may require further development.",
-            "3": "The student has met the achievement standard and demonstrates progress.",
-            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+            "3_5": {
+                "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework.",
+                "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework.",
+                "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework.",
+                "4": "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
+            },
+            "6_8": {
+                "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "4": "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
+            },
+            "9_12": {
+                "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school. ",
+                "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after completing high school coursework.",
+                "4": "The student has exceeded the achievement standard and demonstrates the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
+            }
         },
         "ELA": {
-            "1": "The student has not met the achievement standard and needs substantial improvement.",
-            "2": "The student has nearly met the achievement standard and may require further development.",
-            "3": "The student has met the achievement standard and demonstrates progress.",
-            "4": "The student has exceeded the achievement standard and demonstrates advanced progress."
+            "3_5": {
+                "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework.",
+                "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework.",
+                "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework.",
+                "4": "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
+            },
+            "6_8": {
+                "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "4": "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
+            },
+            "9_12": {
+                "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school. ",
+                "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school.",
+                "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after completing high school coursework.",
+                "4": "The student has exceeded the achievement standard and demonstrates the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school. "
+            }
         }
+    },
+    
+    "overall_ald_grade_buckets": {
+        "3": "3_5",
+        "4": "3_5",
+        "5": "3_5",
+        "6": "6_8",
+        "7": "6_8",
+        "8": "6_8",
+        "9": "9_12",
+        "10": "9_12",
+        "11": "9_12",
+        "12": "9_12"
     },
 
     "psychometric_implications": {

@@ -4,15 +4,16 @@ Created on Jul 16, 2013
 @author: tosako
 '''
 import unittest
-from sqlalchemy.sql.expression import true, false, null, select
-from smarter.reports.helpers.filters import _get_filter,\
-    has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP,\
-    FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
-    FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN, FILTERS_GROUP,\
-    FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_ECD, FILTERS_PROGRAM_MIG,\
-    FILTERS_GRADE, YES, NOT_STATED, NO,\
+from sqlalchemy.sql.expression import true, false, null, select, \
+    BinaryExpression
+from smarter.reports.helpers.filters import _get_filter, \
+    has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, \
+    FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI, \
+    FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN, FILTERS_GROUP, \
+    FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_ECD, FILTERS_PROGRAM_MIG, \
+    FILTERS_GRADE, YES, NOT_STATED, NO, \
     reverse_filter_map, get_student_demographic, FILTERS_SEX
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load, \
     UnittestEdcoreDBConnection
 from smarter.reports.helpers.constants import Constants
 
@@ -21,17 +22,21 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
 
     def test_get_demographic_program_filter(self):
         test_filter = {}
+        true = BinaryExpression(True, True, '=')
+        false = BinaryExpression(False, False, '=')
+        none = BinaryExpression(None, None, '=')
+        
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
         self.assertFalse(value)
         test_filter = {FILTERS_PROGRAM_IEP: [YES]}
         value = _get_filter(FILTERS_PROGRAM_IEP, True, test_filter)
-        self.assertEqual(str(value), str(True == true()))
+        self.assertEqual(str(value), str(true))
         test_filter = {FILTERS_PROGRAM_IEP: [NO]}
         value = _get_filter(FILTERS_PROGRAM_IEP, False, test_filter)
-        self.assertEqual(str(value), str(False == false()))
+        self.assertEqual(str(value), str(false))
         test_filter = {FILTERS_PROGRAM_IEP: [NOT_STATED]}
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
-        self.assertEqual(str(value), str(None == null()))
+        self.assertEqual(str(value), str(none))
         test_filter = {FILTERS_PROGRAM_IEP: [YES, NO, NOT_STATED]}
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
         self.assertEqual(3, len(value))

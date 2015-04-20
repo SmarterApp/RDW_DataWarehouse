@@ -31,7 +31,7 @@ def main():
             os.makedirs(filepath)
         with open(filename, 'w') as f:
             system('git', 'show', ':' + name.decode("utf-8"), stdout=f)
-    output = system('pep8', '--ignore=E501', '.', cwd=tempdir)
+    output = system('pep8', '--ignore=E501,E402', '.', cwd=tempdir)
     shutil.rmtree(tempdir)
     if output:
         print(output.decode('utf-8'))

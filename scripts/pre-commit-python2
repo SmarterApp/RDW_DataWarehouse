@@ -31,7 +31,7 @@ def main():
             os.makedirs(filepath)
         with file(filename, 'w') as f:
             system('git', 'show', ':' + name, stdout=f)
-    output = system('pep8', '--ignore=E501', '.', cwd=tempdir)
+    output = system('pep8', '--ignore=E501,E402', '.', cwd=tempdir)
     shutil.rmtree(tempdir)
     if output:
         print output

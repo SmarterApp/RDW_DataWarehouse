@@ -11,7 +11,7 @@
 
     "overall_ald": {
         "Math": {
-            "3_5": {
+            "K_5": {
                 "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework.",
                 "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework.",
                 "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework.",
@@ -31,7 +31,7 @@
             }
         },
         "ELA": {
-            "3_5": {
+            "K_5": {
                 "1": "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework.",
                 "2": "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework.",
                 "3": "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework.",
@@ -53,9 +53,12 @@
     },
     
     "overall_ald_grade_buckets": {
-        "3": "3_5",
-        "4": "3_5",
-        "5": "3_5",
+        "K": "K_5",
+        "1": "K_5",
+        "2": "K_5",
+        "3": "K_5",
+        "4": "K_5",
+        "5": "K_5",
         "6": "6_8",
         "7": "6_8",
         "8": "6_8",

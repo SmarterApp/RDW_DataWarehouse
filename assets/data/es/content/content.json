@@ -11,7 +11,7 @@
 
     "overall_ald": {
         "Math": {
-            "3_5": {
+            "K_5": {
                 "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros.",
                 "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros.",
                 "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros.",
@@ -31,7 +31,7 @@
             }
         },
         "ELA": {
-            "3_5": {
+            "K_5": {
                 "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros.",
                 "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros.",
                 "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros.",
@@ -53,9 +53,12 @@
     },
 
     "overall_ald_grade_buckets": {
-        "3": "3_5",
-        "4": "3_5",
-        "5": "3_5",
+        "K": "K_5",
+        "1": "K_5",
+        "2": "K_5",
+        "3": "K_5",
+        "4": "K_5",
+        "5": "K_5",
         "6": "6_8",
         "7": "6_8",
         "8": "6_8",

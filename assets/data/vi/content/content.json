@@ -11,7 +11,7 @@
 
     "overall_ald": {
         "Math": {
-            "3_5": {
+            "K_5": {
                 "1": "Học sinh chưa đáp ứng được tiêu chuẩn hoàn thành và cần sự trau dồi đáng kể để chứng tỏ các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập trong tương lai.",
                 "2": "Học sinh hầu như đáp ứng được tiêu chuẩn hoàn thành và có lẽ cần phát triển hơn nữa để chứng tỏ các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập trong tương lai.",
                 "3": "Học sinh đáp ứng được tiêu chuẩn hoàn thành và chứng tỏ sự tiến bộ đối với việc nắm vững các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập trong tương lai.",
@@ -27,12 +27,12 @@
                 "1": "Học sinh chưa đáp ứng được tiêu chuẩn hoàn thành và cần sự trau dồi đáng kể để chứng tỏ các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập cấp độ ban đầu đại học được tính tín chỉ sau trung học. ",
                 "2": "Học sinh hầu như đáp ứng được tiêu chuẩn hoàn thành và có lẽ cần phát triển hơn nữa để chứng tỏ các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập cấp độ ban đầu đại học được tính tín chỉ sau trung học.",
                 "3": "Học sinh đáp ứng được tiêu chuẩn hoàn thành và chứng tỏ sự tiến bộ đối với việc nắm vững các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập cấp độ ban đầu đại học được tính tín chỉ sau khi hoàn thành các bài tập trung học.",
-                "4": "Học sinh vượt trội hơn tiêu chuẩn hoàn thành và chứng tỏ được các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập cấp độ ban đầu đại học được tính tín chỉ sau trung học. "
+                "4": "Học sinh vượt trội hơn tiêu chuẩn hoàn thành và chứng tỏ được các kiến thức và kỹ năng toán học cần thiết cho khả năng thành công trong các bài tập cấp độ ban đầu đại học được tính tín chỉ sau trung học."
             }
 
         },
         "ELA": {
-            "3_5": {
+            "K_5": {
                 "1": "Học sinh chưa đáp ứng được tiêu chuẩn hoàn thành và cần sự trau dồi đáng kể để chứng tỏ các kiến thức và kỹ năng ngôn ngữ/văn học Anh cần thiết cho khả năng thành công trong các bài tập trong tương lai.",
                 "2": "Học sinh hầu như đáp ứng được tiêu chuẩn hoàn thành và có lẽ cần phát triển hơn nữa để chứng tỏ các kiến thức và kỹ năng ngôn ngữ/văn học Anh cần thiết cho khả năng thành công trong các bài tập trong tương lai.",
                 "3": "Học sinh đáp ứng được tiêu chuẩn hoàn thành và chứng tỏ sự tiến bộ đối với việc nắm vững các kiến thức và kỹ năng ngôn ngữ/văn học Anh cần thiết cho khả năng thành công trong các bài tập trong tương lai.",
@@ -54,9 +54,12 @@
     },
 
     "overall_ald_grade_buckets": {
-        "3": "3_5",
-        "4": "3_5",
-        "5": "3_5",
+        "K": "K_5",
+        "1": "K_5",
+        "2": "K_5",
+        "3": "K_5",
+        "4": "K_5",
+        "5": "K_5",
         "6": "6_8",
         "7": "6_8",
         "8": "6_8",

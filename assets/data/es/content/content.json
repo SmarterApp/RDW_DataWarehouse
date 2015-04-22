@@ -11,17 +11,61 @@
 
     "overall_ald": {
         "Math": {
-            "1": "El estudiante no ha cumplido con el estándar de rendimiento y necesita una mejora sustancial.",
-            "2": "El estudiante apenas cumple con el estándar de rendimiento y puede requerir un mayor desarrollo.",
-            "3": "El estudiante cumplió con el estándar de rendimiento y demuestra un avance hacia el dominio.",
-            "4": "El estudiante excedió el estándar de rendimiento y demuestra un progreso superior."
+            "K_5": {
+                "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros.",
+                "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros.",
+                "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros.",
+                "4": "El estudiante ha excedido el estándar de rendimiento y demuestra un progreso avanzado hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros."
+            },
+            "6_8": {
+                "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "4": "El estudiante ha excedido el estándar de rendimiento y demuestra un progreso avanzado hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
+            },
+            "9_12": {
+                "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de completar los cursos de la escuela secundaria.",
+                "4": "El estudiante ha excedido el estándar de rendimiento y demuestra el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria. "
+            }
         },
         "ELA": {
-            "1": "El estudiante no ha cumplido con el estándar de rendimiento y necesita una mejora sustancial.",
-            "2": "El estudiante apenas cumple con el estándar de rendimiento y puede requerir un mayor desarrollo.",
-            "3": "El estudiante cumplió con el estándar de rendimiento y demuestra un avance hacia el dominio.",
-            "4": "El estudiante excedió el estándar de rendimiento y demuestra un progreso superior."
+            "K_5": {
+                "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros.",
+                "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros.",
+                "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros.",
+                "4": "El estudiante ha excedido el estándar de rendimiento y demuestra un progreso avanzado hacia el dominio del conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros."
+            },
+            "6_8": {
+                "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "4": "El estudiante ha excedido el estándar de rendimiento y demuestra un progreso avanzado hacia el dominio del conocimiento y las destrezas en artes del lenguaje/ alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
+            },
+            "9_12": {
+                "1": "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "2": "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria.",
+                "3": "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de completar los cursos de la escuela secundaria.",
+                "4": "El estudiante ha excedido el estándar de rendimiento y demuestra el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
+            }
         }
+    },
+
+    "overall_ald_grade_buckets": {
+        "K": "K_5",
+        "1": "K_5",
+        "2": "K_5",
+        "3": "K_5",
+        "4": "K_5",
+        "5": "K_5",
+        "6": "6_8",
+        "7": "6_8",
+        "8": "6_8",
+        "9": "9_12",
+        "10": "9_12",
+        "11": "9_12",
+        "12": "9_12"
     },
 
     "psychometric_implications": {

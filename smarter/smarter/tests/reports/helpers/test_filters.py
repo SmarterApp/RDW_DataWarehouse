@@ -25,7 +25,6 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         true = BinaryExpression(True, True, '=')
         false = BinaryExpression(False, False, '=')
         none = BinaryExpression(None, None, '=')
-        
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
         self.assertFalse(value)
         test_filter = {FILTERS_PROGRAM_IEP: [YES]}

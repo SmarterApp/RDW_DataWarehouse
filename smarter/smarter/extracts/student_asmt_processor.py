@@ -205,7 +205,8 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
         tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
         response['tasks'] = task_responses
         response['files'] = extract_files
-        start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
+        email_addr = user.get_uid()
+        start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, email_addr, web_download_url, queue=queue)
     return response
 
 

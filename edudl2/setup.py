@@ -19,7 +19,9 @@ requires = ['billiard==2.7.3.32',
             'config',
             'edcore',
             'edworker',
-            'edschema']
+            'edschema',
+            'Jinja2==2.7.3',
+            ]
 
 requires.append('pyinotify') if sys.platform == 'linux' else None
 
@@ -52,4 +54,5 @@ setup(name='edudl2',
           'docs': docs_extras, },
       entry_points="""\
       """,
+      package_data={'edudl2': ['templates/*.j2']},
       )

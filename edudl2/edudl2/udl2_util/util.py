@@ -4,6 +4,10 @@ from sqlalchemy.sql.expression import select
 from edudl2.json_util.json_util import get_value_from_json
 import json
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
+from email.mime.text import MIMEText
+from jinja2 import Template
+import pkg_resources
+import smtplib
 __author__ = 'sravi'
 
 import os
@@ -59,3 +63,27 @@ def get_assessment_type(json_file_dir):
     if assessment_type not in assessment_types:
         raise ValueError('No valid load type specified in json file --')
     return assessment_type
+
+
+def send_email_from_template(config_key, substitutions=None):
+    if substitutions is None:
+        substitutions = {}
+
+    settings = udl2_conf[config_key]
+
+    template_dir = pkg_resources.resource_filename("edudl2", "templates")
+    template_filename = os.path.join(template_dir, settings["template_filename"])
+    with open(template_filename) as fh:
+        template_text = fh.read()
+
+    template = Template(template_text)
+    email_text = template.render(substitutions)
+
+    message = MIMEText(email_text)
+    message["Subject"] = settings["subject"]
+    message["From"] = settings["mail_from"]
+    message["To"] = settings["mail_to"]
+
+    with smtplib.SMTP(udl2_conf["mail_server_host"], udl2_conf["mail_server_port"]) as mail:
+        mail.send_message(message)
+        mail.quit()

@@ -185,7 +185,7 @@ def __get_asmt_data(results):
             asmt_data_result['asmt_claim_3_name'] = result['asmt_claim_3_name']
             asmt_data_result['asmt_claim_4_name'] = result['asmt_claim_4_name']
             asmt_data_results[asmt_subject] = asmt_data_result
-        
+
     return list(asmt_data_results.values())
 
 

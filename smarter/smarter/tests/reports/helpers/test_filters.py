@@ -24,7 +24,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         test_filter = {}
         true = BinaryExpression(True, True, '=')
         false = BinaryExpression(False, False, '=')
-        none = BinaryExpression(None, None, '=')
+        none = BinaryExpression(None, None, 'IS')
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
         self.assertFalse(value)
         test_filter = {FILTERS_PROGRAM_IEP: [YES]}
@@ -41,7 +41,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         self.assertEqual(3, len(value))
         test_filter = {FILTERS_PROGRAM_IEP: [YES, 'whatever']}
         value = _get_filter(FILTERS_PROGRAM_IEP, True, test_filter)
-        self.assertEqual(str(value), str(True == true()))
+        self.assertEqual(str(value), str(true))
 
     def test_has_filters_with_empty_params(self):
         self.assertFalse(has_filters({}))

@@ -85,7 +85,7 @@ class Udl2BaseTask(Task):
             "udl_phase_step": udl_phase_step,
             "failure_time": failure_time,
             }
-        send_email_from_template("exception_email", {})
+        send_email_from_template("exception_email", email_info)
 
         # Write to ERR_LIST
         try:

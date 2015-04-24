@@ -31,7 +31,7 @@ requires = [
     'python3-memcached == 1.51']
 
 docs_extras = [
-    'Sphinx==1.2b1',
+    'Sphinx',
     'docutils',
     'repoze.sphinx.autointerface']
 

@@ -1312,19 +1312,19 @@ jenkins_dev:
         cat:
           state_code: NC
           schema_name: edware_sds_1_34
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@127.0.0.1:5432/edware_functional_tests
         dog:
           state_code: CA
           schema_name: edware_sds_1_34_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@127.0.0.1:5432/edware_functional_tests
         fish:
           state_code: VT
           schema_name: edware_sds_1_34_fish
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@127.0.0.1:5432/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_34
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
+        url: postgresql+psycopg2://edware:edware2013@127.0.0.1:5432/edware_functional_tests_stats
     auth:
       policy.secure: False
       skip.verify: False

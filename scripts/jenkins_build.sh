@@ -169,7 +169,7 @@ function setup_functional_test_dependencies {
     rm -rf $WORKSPACE/edware_test
     mkdir  $WORKSPACE/edware_test
     cd $WORKSPACE/edware_test
-    git clone -b ${BRANCH} git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
+    git clone -b ${BRANCH} ssh://git@git.amplify.com/ed-ware-sbac/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first
     deactivate

@@ -1285,13 +1285,13 @@ jenkins_dev:
   '[app:main]':
     environment.PATH: /opt/pdfunite/bin/
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+      BROKER_URL: amqp://edware:edware1234@localhost/services
       CELERYD_CONCURRENCY: 4
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@localhost/edmigrate
     extract:
       celery:
-        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+        BROKER_URL: amqp://edware:edware1234@localhost/edextract
         CELERYD_CONCURRENCY: 4
       gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
@@ -1305,7 +1305,7 @@ jenkins_dev:
     smarter_score_batcher:
       gpg.homedir: /opt/edware/keys
       celery:
-        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
+        BROKER_URL: amqp://edware:edware1234@localhost/smarter_score_batcher
         CELERYD_CONCURRENCY: 4
     edware:
       db:
@@ -1329,28 +1329,28 @@ jenkins_dev:
       policy.secure: False
       skip.verify: False
       saml:
-        issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
-        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
+        issuer_name: 'http://localhost:6543/sp.xml'
+        idp_server_login_url: 'http://sso-internal.dev.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
+        idp_server_logout_url: 'http://sso-internal.dev.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
+        name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: http://sso-internal.dev.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf
-      base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
+      base.url: http://localhost/assets/html/
       health_check.job.queue: health_check
       generate_timeout: 30
     cache:
-      public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
-      public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
-      public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
-      session.url: edwappsrv2.poc.dum.edwdc.net:11211
+      public.shortlived.url: localhost:11211
+      public.filtered_data.url: localhost:11211
+      public.data.url: localhost:11211
+      session.url: localhost:11211
     pickup:
       sftp.hostname: localhost
     hpz:
-        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
-        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
+        file_registration_url: http://localhost:81/registration
+        file_upload_base_url: http://localhost:81/files
 
 air:
   '[app:main]':

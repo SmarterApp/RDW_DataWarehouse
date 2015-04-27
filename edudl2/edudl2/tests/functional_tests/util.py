@@ -7,9 +7,6 @@ from edcore.database.utils.utils import create_schema, drop_schema
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from edschema.metadata.util import get_tables_starting_with
 from edudl2.tests.functional_tests import UDLFunctionalTestCase
-import asyncore
-import smtpd
-import threading
 
 
 class UDLTestHelper(UDLFunctionalTestCase):
@@ -199,21 +196,3 @@ class UDLTestHelper(UDLFunctionalTestCase):
                 results_dict['dmg_eth_derived'] = derived_count
 
         return results_dict
-
-
-class SMTPTestServer(smtpd.SMTPServer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.messages = []
-
-        self.thread = threading.Thread(target=asyncore.loop, kwargs={"timeout": 1})
-        self.thread.daemon = True
-        self.thread.start()
-
-    def process_message(self, peer, mail_from, mail_to, data):
-        self.messages.append({"mail_from": mail_from, "mail_to": mail_to, "data": data})
-
-    def end(self):
-        asyncore.close_all()
-        if self.thread.is_alive():
-            self.thread.join()

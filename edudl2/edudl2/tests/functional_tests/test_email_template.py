@@ -1,5 +1,6 @@
 import asyncore
-from edudl2.tests.functional_tests.util import UDLTestHelper, SMTPTestServer
+from edudl2.tests.functional_tests.util import UDLTestHelper
+from edudl2.tests.utils.smtp_test import SMTPTestServer
 from edudl2.udl2_util.util import send_email_from_template
 from edudl2.udl2.celery import udl2_conf
 

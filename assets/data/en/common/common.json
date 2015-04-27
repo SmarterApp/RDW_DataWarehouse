@@ -681,7 +681,12 @@
             "text": "Printable student reports",
             "desc": {
                 "enabled": "Download individual reports for students in this school.",
-                "disabled": "Not available. Click into a school to download individual student reports.",
+                "disabled": {
+                    "state": "Not available. Click into a school to download individual student reports.",
+                    "district": "Not available. Click into a school to download individual student reports.",
+                    "school": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
+                    "grade": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report."
+                },
                 "no_permission": "You do not have PII permission for all students in this school."
             }
         },
@@ -698,7 +703,7 @@
                     "school": "Download assessment results for all students in this school.",
                     "grade": "Download assessment results for all students in this grade."
                 },
-                "disabled": "Not available.",
+                "disabled": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
                 "no_permission": {
                     "state": "You do not have PII permission for all students in this state.",
                     "district": "You do not have PII permission for all students in this district.",

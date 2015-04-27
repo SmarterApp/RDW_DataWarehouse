@@ -154,6 +154,10 @@ define [
             i++
         if $('li.pdf').find('input').attr('disabled') != 'disabled' and pdf_disable
             $('li.pdf').find('input').attr('disabled', 'disabled')
+            $('li.pdf'). attr('class','pdf disabled')
+        if $('li.extract').find('input').attr('disabled') != 'disabled' and pdf_disable
+            $('li.extract').find('input').attr('disabled', 'disabled')
+            $('li.extract'). attr('class','extract disabled')
 
     renderHeader: () ->
       if not this.options.expandableColumns

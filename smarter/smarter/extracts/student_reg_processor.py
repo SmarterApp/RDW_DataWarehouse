@@ -71,7 +71,8 @@ def process_extraction_request(params):
     extract_file[EndpointConstants.WEB_DOWNLOAD_URL] = web_download_url
     response[EndpointConstants.FILES] = [extract_file]
 
-    start_extract(tenant, request_id, [archived_file_path], [data_directory_to_archive], [registration_id], [task_info], queue=queue)
+    email_addr = user.get_uid()
+    start_extract(tenant, request_id, [archived_file_path], [data_directory_to_archive], [registration_id], [task_info], email_addr, download_url, queue=queue)
 
     return response
 

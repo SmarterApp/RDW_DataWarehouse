@@ -312,6 +312,7 @@ define [
       if @reportType
         this.config.ExportOptions.export_download_raw_view.desc.enabled.display_msg = this.config.ExportOptions.export_download_raw_view.desc.enabled[@reportType]
         this.config.ExportOptions.export_download_raw_view.desc.no_permission.display_msg = this.config.ExportOptions.export_download_raw_view.desc.no_permission[@reportType]
+        this.config.ExportOptions.export_bulk_pdf.desc.disabled.display_msg = this.config.ExportOptions.export_bulk_pdf.desc.disabled[@reportType]
       output = Mustache.to_html DownloadMenuTemplate, {
         reportType: @reportType
         labels: this.config['labels']

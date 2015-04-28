@@ -681,7 +681,12 @@
             "text": "Báo cáo của học sinh có thể in",
             "desc": {
                 "enabled": "Tải về từng báo cáo cho các học sinh trong trường này.",
-                "disabled": "Không có. Nhấp vào một trường để tải về từng báo cáo của học sinh.",
+                "disabled": {
+                    "state": "Not available. Click into a school to download individual student reports.",
+                    "district": "Not available. Click into a school to download individual student reports.",
+                    "school": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
+                    "grade": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report."
+                },
                 "no_permission": "Bạn không có phép PII cho tất cả học sinh trong trường này."
             }
         },
@@ -698,7 +703,7 @@
                     "school": "Tải về kết quả đánh giá cho tất cả các học sinh trong trường này.",
                     "grade": "Tải về kết quả đánh giá cho tất cả các học sinh trong cấp lớp này."
                 },
-                "disabled": "Không có.",
+                "disabled": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
                 "no_permission": {
                     "state": "Bạn không có phép PII cho tất cả học sinh trong tiểu bang này.",
                     "district": "Bạn không có phép PII cho tất cả học sinh trong học khu này.",

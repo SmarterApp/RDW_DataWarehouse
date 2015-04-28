@@ -147,7 +147,7 @@ common:
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       mail:
         server: localhost
-        subject: HPZ Notification
+        subject: Your Smarter Balanced Report is Ready for Download
         sender: DoNotReply@SmarterBalanced.org
         smtp_username: AmazonSESUserName
         smtp_password: AmazonSESPassword

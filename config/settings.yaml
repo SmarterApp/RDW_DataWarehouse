@@ -1330,11 +1330,11 @@ jenkins_dev:
       skip.verify: False
       saml:
         issuer_name: 'http://jenkins.dev.smarterbalanced.org'
-        idp_server_login_url: 'http://sso-internal.dev.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://sso-internal.dev.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
+        idp_server_login_url: 'http://http://sso-dev.demoreporting.smarterbalanced.org/:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
+        idp_server_logout_url: 'http://http://sso-dev.demoreporting.smarterbalanced.org/:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: http://sso-internal.dev.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: http://http://sso-dev.demoreporting.smarterbalanced.org/:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf

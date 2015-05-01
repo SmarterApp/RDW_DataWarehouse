@@ -119,13 +119,13 @@ jenkins_dev:
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
         pool_size: 5
       frs:
-        download_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/
+        download_base_url: http://localhost:81/
     auth:
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
-        issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
+        idp_server_login_url: http://jenkins.dev.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://jenkins.dev.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://jenkins.dev.smarterbalanced.org:8080/OpenAM-11.0.0
+        issuer_name: 'http://jenkins.dev.smarterbalanced.org:81'
 
 qa:
   '[app:main]':

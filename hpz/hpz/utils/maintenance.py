@@ -8,12 +8,11 @@ from datetime import datetime, timedelta
 from sqlalchemy.sql import select, delete
 from sqlalchemy.sql.expression import bindparam
 from hpz.database.hpz_connector import HPZDBConnection
-import configparser
 
 
-def cleanup(expiration_duration):
-    if type(expiration_duration) is configparser.SectionProxy:
-        expiration_duration = expiration_duration.get('hpz.record_expiration')
+def cleanup(settings):
+    settings['hpz.record_expiration'] = str(settings.get('hpz.record_expiration', 30))
+    expiration_duration = settings['hpz.record_expiration']
     expiration_duration = int(expiration_duration)
     time_now = datetime.now()
     time_change = timedelta(days=expiration_duration)
@@ -26,11 +25,8 @@ def cleanup(expiration_duration):
         delete_query = delete(file_reg_table).where(file_reg_table.c.registration_id == bindparam('registration_id'))
 
         results = conn.execute(select_query, stream_results=True)
-        rows = results.fetchmany(1024)
-        while len(rows) > 0:
-            for row in rows:
-                if os.path.exists(row['file_path']):
-                    os.remove(row['file_path'])
-
-                conn.execute(delete_query, registration_id=row['registration_id'])
-            rows = results.fetchmany(1024)
+        rows = results.fetchall()
+        for row in rows:
+            if os.path.exists(row['file_path']):
+                os.remove(row['file_path'])
+            conn.execute(delete_query, registration_id=row['registration_id'])

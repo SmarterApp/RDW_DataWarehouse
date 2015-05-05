@@ -8,63 +8,52 @@ from datetime import datetime, timedelta
 from hpz.database.constants import HPZ
 from uuid import uuid4
 
-record_expiration = '7'
-
 
 class Test(Unittest_with_hpz_sqlite):
+
+    def setUp(self):
+        self.__settings = {'hpz.record_expiration': '7'}
+        self.__file1_details = {'filename': 'file1', 'days': 20, 'user_id': 'user_id_1'}  # file that will be purged
+        self.__file2_details = {'filename': 'file2', 'days': 1, 'user_id': 'user_id_2'}  # file that wont be purged
+        time_now = datetime.now()
+        self.__tmp_dir = tempfile.TemporaryDirectory()
+        for file_details in [self.__file1_details, self.__file2_details]:
+            time_stamp_file = time_now - timedelta(days=file_details['days'])
+            file = file_details['filename']
+            full_file_path = os.path.join(self.__tmp_dir.name, file)
+            file_details['full_file_path'] = full_file_path
+            dirname = os.path.dirname(full_file_path)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            open(os.path.join(full_file_path), 'w').close()
+            registration_id = uuid4()
+            file_details['registration_id'] = str(registration_id)
+            registration_info = {HPZ.FILE_PATH: full_file_path,
+                                 HPZ.CREATE_DT: time_stamp_file,
+                                 HPZ.FILE_NAME: file_details['filename'], HPZ.REGISTRATION_ID: str(registration_id),
+                                 HPZ.USER_ID: file_details['filename']}
+            with HPZDBConnection() as conn:
+                file_reg_table = conn.get_table(table_name=HPZ.TABLE_NAME)
+                conn.execute(file_reg_table.insert().values(registration_info))
 
     def tearDown(self):
         self.__tmp_dir.cleanup()
 
     def test_maintenance_purge_file(self):
-        time_now = datetime.now()
-        time_stamp_file = time_now - timedelta(days=20)  # 20 day old
-        file = 'file1'
-        self.__tmp_dir = tempfile.TemporaryDirectory()
-        filename = os.path.join(self.__tmp_dir.name, file)
-        dirname = os.path.dirname(filename)
-        if not os.path.exists(dirname):
-                os.makedirs(dirname)
-        open(os.path.join(filename), 'w').close()
-        registration_id = uuid4()
-        registration_info = {HPZ.FILE_PATH: filename,
-                             HPZ.CREATE_DT: time_stamp_file,
-                             HPZ.FILE_NAME: 'temp_file_1', HPZ.REGISTRATION_ID: str(registration_id),
-                             HPZ.USER_ID: 'user_id_1'}
+        cleanup(self.__settings)
+        self.assertFalse(os.path.exists(self.__file1_details['full_file_path']))
         with HPZDBConnection() as conn:
             file_reg_table = conn.get_table(table_name=HPZ.TABLE_NAME)
-            conn.execute(file_reg_table.insert().values(registration_info))
-        cleanup(record_expiration)
-        self.assertFalse(os.path.exists(filename))
-        with HPZDBConnection() as conn:
-            file_reg_table = conn.get_table(table_name=HPZ.TABLE_NAME)
-            result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == str(registration_id)))
+            result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == self.__file1_details['registration_id']))
             result = result.fetchone()
         self.assertIsNone(result)
 
     def test_maintenance_dont_purge_file(self):
-        time_now = datetime.now()
-        time_stamp_file = time_now - timedelta(days=1)  # 1 day old
-        file = 'file2'
-        self.__tmp_dir = tempfile.TemporaryDirectory()
-        filename = os.path.join(self.__tmp_dir.name, file)
-        dirname = os.path.dirname(filename)
-        if not os.path.exists(dirname):
-                os.makedirs(dirname)
-        open(os.path.join(filename), 'w').close()
-        registration_id = uuid4()
-        registration_info = {HPZ.FILE_PATH: filename,
-                             HPZ.CREATE_DT: time_stamp_file,
-                             HPZ.FILE_NAME: 'temp_file_2', HPZ.REGISTRATION_ID: str(registration_id),
-                             HPZ.USER_ID: 'user_id_2'}
+        cleanup(self.__settings)
+        self.assertTrue(os.path.exists(self.__file2_details['full_file_path']))
         with HPZDBConnection() as conn:
             file_reg_table = conn.get_table(table_name=HPZ.TABLE_NAME)
-            conn.execute(file_reg_table.insert().values(registration_info))
-        cleanup(record_expiration)
-        self.assertTrue(os.path.exists(filename))
-        with HPZDBConnection() as conn:
-            file_reg_table = conn.get_table(table_name=HPZ.TABLE_NAME)
-            result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == str(registration_id)))
+            result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == self.__file2_details['registration_id']))
             result = result.fetchone()
         self.assertIsNotNone(result)
 

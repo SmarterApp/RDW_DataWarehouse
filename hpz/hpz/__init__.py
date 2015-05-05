@@ -7,15 +7,10 @@ from pyramid_beaker import set_cache_regions_from_settings
 from smarter_common.security.root_factory import RootFactory
 import os
 from edauth import configure
-from edcore.utils.utils import read_ini, get_config_from_ini, run_cron_job
+from edcore.utils.utils import run_cron_job
 from hpz.utils.maintenance import cleanup
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser
 
 HPZ_EXPIRATION = 'hpz.record_expiration'
-HPZ_INI_PATH = "/opt/edware/conf/hpz.ini"
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +38,7 @@ def main(global_config, **settings):
 
     config.scan()
 
-    #Clean up old files from HPZ
-    hpz_config = ConfigParser()
-    hpz_config.read(HPZ_INI_PATH)
-    settings = hpz_config['app:main']
+    # Clean up old files from HPZ
     run_cron_job(settings, HPZ_EXPIRATION + '.', cleanup)
 
     logger.info("HPZ Started")

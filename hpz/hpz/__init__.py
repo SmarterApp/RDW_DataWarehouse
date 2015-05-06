@@ -7,6 +7,10 @@ from pyramid_beaker import set_cache_regions_from_settings
 from smarter_common.security.root_factory import RootFactory
 import os
 from edauth import configure
+from edcore.utils.utils import run_cron_job
+from hpz.utils.maintenance import cleanup
+
+HPZ_EXPIRATION = 'hpz.record_expiration'
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +37,9 @@ def main(global_config, **settings):
     config.include(services)
 
     config.scan()
+
+    # Clean up old files from HPZ
+    run_cron_job(settings, HPZ_EXPIRATION + '.', cleanup)
 
     logger.info("HPZ Started")
 

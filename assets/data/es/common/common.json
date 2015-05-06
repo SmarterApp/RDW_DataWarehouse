@@ -682,10 +682,10 @@
             "desc": {
                 "enabled": "Descargar reportes individuales para estudiantes en esta escuela.",
                 "disabled": {
-                    "state": "Not available. Click into a school to download individual student reports.",
-                    "district": "Not available. Click into a school to download individual student reports.",
-                    "school": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
-                    "grade": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report."
+                    "state": "No disponible. Haga clic en una escuela para descargar reportes individuales del estudiante.",
+                    "district": "No disponible. Haga clic en una escuela para descargar reportes individuales del estudiante.",
+                    "school": "Para descargar resultados de las evaluaciones provisionales, navegue al reporte de Resultados de las Evaluaciones por Grado.",
+                    "grade": "Para descargar resultados de las evaluaciones provisionales, navegue al reporte de Resultados de las Evaluaciones por Grado."
                 },
                 "no_permission": "Usted no tiene permiso para ver la información personal (PII) para todos los estudiantes de esta escuela."
             }
@@ -703,7 +703,7 @@
                     "school": "Descargar resultados de evaluación para todos los estudiantes en esta escuela.",
                     "grade": "Descargar resultados de evaluación para todos los estudiantes en este grado."
                 },
-                "disabled": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
+                "disabled": "Para descargar resultados de las evaluaciones provisionales, navegue al reporte de Resultados de las Evaluaciones por Grado.",
                 "no_permission": {
                     "state": "Usted no tiene permiso para ver la información personal (PII) para todos los estudiantes en este estado.",
                     "district": "Usted no tiene permiso para ver la información personal (PII) para todos los estudiantes en este distrito.",

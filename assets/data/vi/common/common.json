@@ -682,10 +682,10 @@
             "desc": {
                 "enabled": "Tải về từng báo cáo cho các học sinh trong trường này.",
                 "disabled": {
-                    "state": "Not available. Click into a school to download individual student reports.",
-                    "district": "Not available. Click into a school to download individual student reports.",
-                    "school": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
-                    "grade": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report."
+                    "state": "Không có. Nhấp vào một trường để tải về từng báo cáo của học sinh.",
+                    "district": "Không có. Nhấp vào một trường để tải về từng báo cáo của học sinh.",
+                    "school": "Để tải về các kết quả Đánh Giá Giữa Kỳ, hãy truy cập đến báo cáo Kết Quả Đánh Giá Theo Lớp.",
+                    "grade": "Để tải về các kết quả Đánh Giá Giữa Kỳ, hãy truy cập đến báo cáo Kết Quả Đánh Giá Theo Lớp."
                 },
                 "no_permission": "Bạn không có phép PII cho tất cả học sinh trong trường này."
             }
@@ -703,7 +703,7 @@
                     "school": "Tải về kết quả đánh giá cho tất cả các học sinh trong trường này.",
                     "grade": "Tải về kết quả đánh giá cho tất cả các học sinh trong cấp lớp này."
                 },
-                "disabled": "To download results for Interim Assessments, navigate to the Assessment Results by Grade report.",
+                "disabled": "Để tải về các kết quả Đánh Giá Giữa Kỳ, hãy truy cập đến báo cáo Kết Quả Đánh Giá Theo Lớp.",
                 "no_permission": {
                     "state": "Bạn không có phép PII cho tất cả học sinh trong tiểu bang này.",
                     "district": "Bạn không có phép PII cho tất cả học sinh trong học khu này.",

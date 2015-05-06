@@ -52,6 +52,12 @@ common:
       record_expiration: 7
       record_expiration.enable: True
       record_expiration.schedule.cron.hour: 4
+      mail:
+        server: localhost
+        subject: Your Smarter Balanced Report is Ready for Download
+        sender: DoNotReply@SmarterBalanced.org
+        smtp_username: AmazonSESUserName
+        smtp_password: AmazonSESPassword
 
   '[server:main]':
     use: 'egg:waitress#main'

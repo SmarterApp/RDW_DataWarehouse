@@ -95,11 +95,8 @@ def process_extraction_request(params, is_async=True):
 
             response[Constants.FILES].append(files)
 
-            email_addr = user.get_uid()
-
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, email_addr, web_download_url,
-                          queue=queue)
+            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, queue=queue)
         return response
     else:
         if tasks:
@@ -205,8 +202,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
         tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
         response['tasks'] = task_responses
         response['files'] = extract_files
-        email_addr = user.get_uid()
-        start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, email_addr, web_download_url, queue=queue)
+        start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
     return response
 
 

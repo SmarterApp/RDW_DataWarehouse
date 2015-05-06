@@ -45,4 +45,5 @@ setup(name='hpz',
       [paste.app_factory]
       main = hpz:main
       """,
+      package_data={'hpz': ['templates/*.j2']},
       )

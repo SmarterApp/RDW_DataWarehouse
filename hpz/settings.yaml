@@ -49,6 +49,12 @@ common:
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296
+      mail:
+        server: localhost
+        subject: Your Smarter Balanced Report is Ready for Download
+        sender: DoNotReply@SmarterBalanced.org
+        smtp_username: AmazonSESUserName
+        smtp_password: AmazonSESPassword
 
   '[server:main]':
     use: 'egg:waitress#main'

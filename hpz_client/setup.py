@@ -11,7 +11,8 @@ requires = [
     'pyramid_debugtoolbar == 1.0.8',
     'requests == 2.2.1',
     "requests_toolbelt",
-    'edcore']
+    'edcore',
+    "Jinja2==2.7.3",]
 
 setup(name='hpz_client',
       version='0.1',

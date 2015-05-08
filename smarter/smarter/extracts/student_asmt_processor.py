@@ -88,7 +88,7 @@ def process_extraction_request(params, is_async=True):
             directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
             # Register extract file with HPZ.
-            registration_id, download_url, web_download_url = register_file(user.get_uid())
+            registration_id, download_url, web_download_url = register_file(user.get_uid(), user.get_email())
 
             files[Constants.DOWNLOAD_URL] = download_url
             files[Constants.WEB_DOWNLOAD_URL] = web_download_url
@@ -192,7 +192,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
                 directories_to_archive.append(base_directory_to_archive)
                 archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
             archive_files.append(archive_file_name)
-            registration_id, download_url, web_download_url = register_file(user.get_uid())
+            registration_id, download_url, web_download_url = register_file(user.get_uid(), user.get_email())
             registration_ids.append(registration_id)
             extract_file[Constants.FILENAME] = os.path.basename(archive_file_name)
             extract_file[Constants.DOWNLOAD_URL] = download_url

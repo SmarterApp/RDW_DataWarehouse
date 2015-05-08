@@ -67,6 +67,11 @@ class SbacIdentityParser(IdentityParser):
         if guid is not None:
             session.set_guid(guid[0])
 
+        # get email
+        email = __attributes.get('mail')
+        if email is not None:
+            session.set_email(email[0])
+
         # get Identity specific parsing values
         session.set_user_context(SbacIdentityParser.get_role_relationship_chain(__attributes))
 

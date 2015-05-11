@@ -62,9 +62,9 @@ class TestEdMetadata(Unittest_with_sqlite):
 
     def test_meta_column_col_type_attr(self):
         meta_column = MetaColumn('test_meta_column', String(50))
-        self.assertEquals(getattr(meta_column, "col_type", "Column"), "MetaColumn")
+        self.assertEqual(getattr(meta_column, "col_type", "Column"), "MetaColumn")
         column = Column('test_column', String(50))
-        self.assertEquals(getattr(column, "col_type", "Column"), "Column")
+        self.assertEqual(getattr(column, "col_type", "Column"), "Column")
 
     def test_fact_block_outcome(self):
         self.assertTrue('fact_block_asmt_outcome' in self.get_Metadata().tables, "missing fact_block_asmt_outcome")

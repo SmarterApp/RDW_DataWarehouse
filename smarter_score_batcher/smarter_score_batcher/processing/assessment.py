@@ -282,7 +282,7 @@ def get_assessment_mapping(root, metadata):
                                Mapping(XMLMeta(test_node, ".", "academicYear"), AssessmentHeaders.AssessmentYear),
                                Mapping(XMLMeta(test_node, ".", "assessmentType"), AssessmentHeaders.AssessmentType),
                                Mapping(XMLMeta(test_node, ".", "subject"), AssessmentHeaders.AssessmentAcademicSubject),
-                               Mapping(IntegerMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
+                               Mapping(XMLMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()
     return stateCode.get_value(), mappings

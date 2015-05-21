@@ -245,11 +245,22 @@ define [
         self.loadPrintMedia()
         self.fetchData()
 
+    loadDisclaimer: () ->
+      if @isPdf
+        asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
+      else
+        asmtType = edwarePreferences.getAsmtType();
+      #Display only for 2 asmt types
+      if (typeof asmtType is 'string') and (asmtType.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
+        #HTML string with u > h4 
+        this.configData.interimDisclaimer.replace(/<u>/g,'<h4>').replace(/<\/u>/g,'<\/h4>');
+
     loadPage: (template) ->
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @dataFactory ?= new DataFactory()
       @data = @dataFactory.createDataProcessor(data, @configData, @isGrayscale, @isBlock).process()
       @data.labels = @configData.labels
+      @data.interimDisclaimer = @loadDisclaimer()
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
@@ -373,7 +384,7 @@ define [
         viewName = @getAsmtViewSelection()
         $("#subjectSelection#{viewName}").addClass('selected')
         $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
-  
+
     reloadReport: () ->
       # Decide if we have the data or needs to retrieve from backend
       # It is possible to enter an infinite loop if the cacheKey has a mismatch

@@ -249,11 +249,10 @@ define [
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
       else
-        asmtType = edwarePreferences.getAsmtType();
+        asmtType = edwarePreferences.getAsmtType()
       #Display only for 2 asmt types
       if (typeof asmtType is 'string') and (asmtType.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
-        #HTML string with u > h4 
-        this.configData.interimDisclaimer.replace(/<u>/g,'<h4>').replace(/<\/u>/g,'<\/h4>');
+        this.configData.interimDisclaimer
 
     loadPage: (template) ->
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))

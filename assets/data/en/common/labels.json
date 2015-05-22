@@ -139,7 +139,6 @@
         "unfiltered_total_assessed": "Unfiltered Total Assessed",
         "uses": "Uses",
         "viewing": "Viewing",
-        "viewing_iab": "The results below are grade <span class='grade'></span> Interim Assessment Blocks administered during the selected academic year.",
         "viewing_previous_year": "You are viewing a previous academic year. <a href='#'>Return to <span class='latestYear'>{{latestYear}}</span></a>.",
         "viewing_default_year": {
             "state": "The results below are from last year's summative assessments.",

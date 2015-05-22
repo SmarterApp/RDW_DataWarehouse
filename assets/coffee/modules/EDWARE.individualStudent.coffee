@@ -247,9 +247,7 @@ define [
 
     loadDisclaimer: () ->
       if @isPdf
-        asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
-      else
-        asmtType = edwarePreferences.getAsmtType()
+        asmtType = if @params['asmtType'] then @params['asmtType'].toUpperCase() else edwarePreferences.getAsmtType()
       #Display only for 2 asmt types
       if (typeof asmtType is 'string') and (asmtType.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
         this.configData.interimDisclaimer
@@ -343,7 +341,7 @@ define [
         if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
             # Important:  This is a workaround for bulk pdf generation
            key = if @params['effectiveDate'] then @params['effectiveDate'] else @params['asmtYear']
-        else 
+        else
           key = @params['asmtYear']
         return key + asmtType
       else

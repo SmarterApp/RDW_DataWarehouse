@@ -12,7 +12,7 @@ from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 from edudl2.udl2.constants import Constants
 import tempfile
 import os
-from edcore.utils.utils import archive_files
+from edcore.utils.utils import archive_files, run_cron_job
 from hpz_client.frs.file_registration import register_file
 from hpz_client.frs.http_file_upload import http_file_upload
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
@@ -22,6 +22,8 @@ import pkg_resources
 from jinja2 import Template
 import datetime
 import argparse
+import time
+import copy
 
 STUDENT_ID = 'student_id'
 ASMT_GUID = 'asmt_guid'
@@ -66,6 +68,7 @@ def generate_report(uid, email_to, start_date, end_date=None, email_from='norepl
         http_file_upload(None, registration_id, email_from=email_from, email_subject=subject, email_content=mail_content)
     return
 
+
 def create_email_content(summary):
     template_filename = os.path.join(pkg_resources.resource_filename('edudl2', 'templates'), "udl_report.j2")
     with open(template_filename) as fh:
@@ -74,6 +77,7 @@ def create_email_content(summary):
         template = Template(template_text)
         mail_content = template.render(summary)
     return mail_content
+
 
 def export_to_csv(file_path, report_data):
     with open(file_path, 'w') as f:
@@ -102,6 +106,7 @@ def create_report_data(start_date, end_date=None):
         report.append(report_data[key])
     return report
 
+
 def get_udl_record_by_batch_guid(batch_guid, tenant):
     records = []
     with get_prod_connection(tenant=tenant) as connection:
@@ -111,6 +116,7 @@ def get_udl_record_by_batch_guid(batch_guid, tenant):
         select_fbao = select([fact_block_asmt_outcome.c.student_id.label(STUDENT_ID), fact_block_asmt_outcome.c.asmt_guid.label(ASMT_GUID)]).where(and_(fact_block_asmt_outcome.c.batch_guid == batch_guid, fact_block_asmt_outcome.c.rec_status == 'C'))
         records = connection.get_result(select_fao.union(select_fbao))
     return records
+
 
 def get_intput_file(batch_guid):
     input_file = ''
@@ -129,14 +135,15 @@ except Exception:
     config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
 
+def generate_report_for_cron(settings):
+    generate_report(settings['uid'], settings['mail_to'], settings['start_date'], settings['end_date'], settings['mail_from'], settings['subject'])
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate udl report')
     parser.add_argument('-c', '--config', help='Set the path to ini file', default=UDL2_DEFAULT_CONFIG_PATH_FILE)
-    parser.add_argument("-t", "--type", default=DAILY, choices=[DAILY, WEEKLY], help="type of report. Default is " + DAILY)
     args = parser.parse_args()
 
     config_path_file = args.config
-    report_type = args.type
     # get udl2 configuration as nested and flat dictionary
     # TODO: Refactor to use either flat or map structure
     udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
@@ -148,10 +155,26 @@ if __name__ == "__main__":
     mail_from = udl2_conf.get(UDL_REPORT_MAIL_FROM)
     today = datetime.date.today()
     end = None
-    if report_type == DAILY:
-        start = today
-    else:
-        one_week = datetime.timedelta(weeks=1)
-        start = today - one_week
-        end = today
-    generate_report(uid, email_to, start, end_date=end, email_from=mail_from, subject=subject)
+    start = today
+    generate_report_settings = {'report.enable': 'True',
+                                'report.schedule.cron.hour': '1',
+                                'report.schedule.cron.minute': '0',
+                                'report.schedule.cron.second': '0',
+                                'uid': uid,
+                                'mail_to': email_to,
+                                'subject': subject,
+                                'mail_from': mail_from,
+                                'start_date': start,
+                                'end_date': None}
+    run_cron_job(copy.deepcopy(generate_report_settings), 'report.', generate_report_for_cron)
+
+    one_week = datetime.timedelta(weeks=1)
+    start = today - one_week
+    end = today
+    generate_report_settings['report.schedule.cron.day_of_week'] = '6'
+    generate_report_settings['report.schedule.cron.hour'] = '2'
+    generate_report_settings['end_date'] = end
+    run_cron_job(generate_report_settings, 'report.', generate_report_for_cron)
+
+    while True:
+        time.sleep(1)

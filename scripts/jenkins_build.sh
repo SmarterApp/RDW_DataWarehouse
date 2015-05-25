@@ -169,7 +169,7 @@ function setup_functional_test_dependencies {
     rm -rf $WORKSPACE/edware_test
     mkdir  $WORKSPACE/edware_test
     cd $WORKSPACE/edware_test
-    git clone -b ${BRANCH} git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
+    git clone -b ${BRANCH} ssh://git@git.amplify.com/ed-ware-sbac/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first
     deactivate
@@ -218,10 +218,10 @@ function run_functional_tests {
     cd "$WORKSPACE/$FUNC_DIR"
 	#Override the values from localhost to jenkins dev specifics
 	sed -i.bak 's/port_tsb = 6543/port_tsb = 82/g' test.ini
-    sed -i.bak "s/host_tsb = localhost/host_tsb=$HOSTNAME/g" test.ini
+    #sed -i.bak "s/host_tsb = localhost/host_tsb=$HOSTNAME/g" test.ini
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
-    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
-    sed -i.bak "s/host_hpz = localhost/host_hpz = $HOSTNAME/g" test.ini
+    #sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    #sed -i.bak "s/host_hpz = localhost/host_hpz = $HOSTNAME/g" test.ini
     sed -i.bak 's/port_hpz = 80/port_hpz = 81/g' test.ini
     sed -i.bak 's/cleanup_script_relative_location = \/..\/..\/..\/edware\/hpz\/scripts\/pickup_zone_cleanup.py/cleanup_script_relative_location = \/..\/..\/..\/..\/hpz\/scripts\/pickup_zone_cleanup.py/g' test.ini
     export DISPLAY=:6.0
@@ -462,7 +462,7 @@ function setup_for_udl {
 function setup_for_hpz {
     echo "Rebuild HPZ DB"
     cd $WORKSPACE/hpz/scripts
-    python pickup_zone_cleanup.py -e 0
+    python pickup_zone_cleanup.py -c ${HPZ_INI}
     /bin/sh teardown_database.sh
     /bin/sh initialize_database.sh
 }

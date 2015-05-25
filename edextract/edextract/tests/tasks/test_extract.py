@@ -25,7 +25,7 @@ from edextract.settings.config import setup_settings, Config
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file, archive, archive_with_stream,
                                      remote_copy, prepare_path, generate_item_or_raw_extract_file, extract_group_separator,
-                                     clean_up, send_email_from_template)
+                                     clean_up)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -62,15 +62,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def tearDown(self):
         shutil.rmtree(self.__tmp_dir)
         shutil.rmtree(os.path.dirname(self.__tmp_zip))
-
-    @patch('edextract.tasks.extract.smtplib.SMTP_SSL')
-    def test_send_email_from_template(self, mock_smtp):
-        setup_settings({Config.MAIL_SERVER: 'None'})
-        mail_sent = send_email_from_template('foo@foo.com', {})
-        self.assertFalse(mail_sent)
-        setup_settings({Config.MAIL_SERVER: 'localhost'})
-        mail_sent = send_email_from_template('foo@foo.com', {})
-        self.assertTrue(mail_sent)
 
     def test_archive_with_stream(self):
         open(self.__tmp_zip, 'wb').write(archive_with_stream('req_id', self.__tmp_dir))

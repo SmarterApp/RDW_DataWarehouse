@@ -167,6 +167,9 @@ def __get_asmt_data(results):
     for result in results:
         asmt_subject = result['asmt_subject']
         if asmt_subject not in asmt_data_results:
+            '''
+            keep first available for subject.
+            '''
             asmt_data_result = {}
             asmt_data_result['asmt_subject'] = asmt_subject
             asmt_data_result['asmt_cut_point_name_1'] = result['asmt_cut_point_name_1']
@@ -185,7 +188,7 @@ def __get_asmt_data(results):
             asmt_data_result['asmt_claim_3_name'] = result['asmt_claim_3_name']
             asmt_data_result['asmt_claim_4_name'] = result['asmt_claim_4_name']
             asmt_data_results[asmt_subject] = asmt_data_result
-        
+
     return list(asmt_data_results.values())
 
 

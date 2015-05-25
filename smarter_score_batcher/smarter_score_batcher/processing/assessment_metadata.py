@@ -218,7 +218,7 @@ def get_assessment_metadata_mapping(root):
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")
     subject = XMLMeta(test_node, ".", "subject")
-    grade = IntegerMeta(test_node, ".", "grade")
+    grade = XMLMeta(test_node, ".", "grade")
     asmt_type = XMLMeta(test_node, ".", "assessmentType")
     year = XMLMeta(test_node, ".", "academicYear")
 

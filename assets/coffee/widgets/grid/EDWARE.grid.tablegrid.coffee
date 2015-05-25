@@ -143,7 +143,21 @@ define [
     renderFooter: () ->
       # Add footer row to the grid
       footer = this.footer
-      this.table.jqGrid('footerData','set', footer, true) if footer
+      if footer
+        this.table.jqGrid('footerData','set', footer, true)
+        colum_headers = $('.population-bar-column-header')
+        i = 0
+        pdf_disable = true
+        while i < colum_headers.length
+            colum_header = colum_headers[i]
+            pdf_disable = pdf_disable && ($(colum_header).data('summative') == false)
+            i++
+        if $('li.pdf').find('input').attr('disabled') != 'disabled' and pdf_disable
+            $('li.pdf').find('input').attr('disabled', 'disabled')
+            $('li.pdf'). attr('class','pdf disabled')
+        if $('li.extract').find('input').attr('disabled') != 'disabled' and pdf_disable
+            $('li.extract').find('input').attr('disabled', 'disabled')
+            $('li.extract'). attr('class','extract disabled')
 
     renderHeader: () ->
       if not this.options.expandableColumns

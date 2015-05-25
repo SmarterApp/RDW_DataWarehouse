@@ -1,6 +1,8 @@
 """
 This module describes the file upload endpoint for HPZ.
 """
+from hpz.frs.mail import sendmail
+from hpz.database.constants import HPZ
 __author__ = 'ablum,'
 __author__ = 'tshewchuk'
 
@@ -13,6 +15,7 @@ from pyramid.view import view_config
 
 from hpz.database.file_registry import FileRegistry
 from hpz.frs.decorators import validate_request_info
+from urllib.parse import urljoin
 
 
 logger = logging.getLogger(__name__)
@@ -44,6 +47,27 @@ def file_upload_service(context, request):
 
             logger.info('File %s was successfully uploaded', file_pathname)
             FileRegistry.update_registration(registration_id, file_pathname, file_name)
+            mail_server = request.registry.settings.get('hpz.mail.server')
+            if mail_server is not None and mail_server != 'None':
+                base_url = request.registry.settings.get('hpz.frs.download_base_url')
+                mail_port = request.registry.settings.get('hpz.mail.port', 465)
+                if type(mail_port) is str:
+                    mail_port = int(mail_port)
+                mail_from = request.registry.settings.get('hpz.mail.sender')
+                mail_return_path = request.registry.settings.get('hpz.mail.return_path', mail_from)
+                mail_subject = request.registry.settings.get('hpz.mail.subject')
+                hpz_web_url = urljoin(base_url, '/download/' + registration_id)
+                aws_mail_username = request.registry.settings.get('hpz.mail.smtp_username')
+                aws_mail_password = request.registry.settings.get('hpz.mail.smtp_password')
+                registration = FileRegistry.get_registration_info(registration_id)
+                user_id = registration[HPZ.EMAIL]
+                email = True
+                try:
+                    email = sendmail(mail_server, mail_port, mail_from, user_id, mail_return_path, mail_subject, hpz_web_url, aws_mail_username, aws_mail_password)
+                except:
+                    email = False
+                if email is False:
+                    logger.error('failed to sent email to ' + user_id)
         else:
             logger.error('The file attempting to be upload is not registered')
     except IOError as e:

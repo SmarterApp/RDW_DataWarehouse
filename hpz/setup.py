@@ -14,7 +14,7 @@ requires = [
     'SQLAlchemy == 0.8.3',
     'py-postgresql == 1.1.0',
     'zope.sqlalchemy==0.7.3',
-    'Jinja2==2.7.2',
+    'Jinja2==2.7.3',
     'config',
     'edschema',
     'edauth',
@@ -45,4 +45,5 @@ setup(name='hpz',
       [paste.app_factory]
       main = hpz:main
       """,
+      package_data={'hpz': ['templates/*.j2']},
       )

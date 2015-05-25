@@ -247,6 +247,7 @@ define [
       export: subject.export
       hasTextReplacement: subject.hasTextReplacement
       displayText: subject.displayText
+      header: rowObject.header
     }
 
   # Used to display total population count
@@ -279,10 +280,15 @@ define [
     subject.hasTextReplacement = insufficient || interim || noData
     if interim
       subject.displayText = options.colModel.labels['interim_data_only']
+      subject.summative = false
     else if insufficient
       subject.displayText = options.colModel.labels['insufficient_data']
+      subject.summative = false
     else if noData
       subject.displayText = options.colModel.labels['no_data_available']
+      subject.summative = false
+    else
+      subject.summative = true
     subject.asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_subject]
     subject
 

@@ -68,15 +68,16 @@ common:
         file_stat_watch_period: 10
         file_checksum_threshold_wait_period: 30
         file_system_scan_delay: 10
-    mail_server_host: localhost
-    mail_server_port: 25
-    exception_email:
-        template_filename: udl2_error.j2
-        subject: UDL Task Failure
-        mail_from:
-        mail_to:
-        server_host:
-        server_port:
+    mail:
+      enabled: False
+      server_host: localhost
+      server_port: 25
+      smtp_username:
+      smtp_password:
+      template_filename: udl2_error.j2
+      subject: UDL Task Failure
+      from:
+      to:
 
 qa:
   '[app]':

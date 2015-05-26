@@ -12,7 +12,7 @@ from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 from edudl2.udl2.constants import Constants
 import tempfile
 import os
-from edcore.utils.utils import archive_files, run_cron_job
+from edcore.utils.utils import archive_files, run_cron_job, create_daemon
 from hpz_client.frs.file_registration import register_file
 from hpz_client.frs.http_file_upload import http_file_upload
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
@@ -140,12 +140,19 @@ def generate_report_for_cron(settings):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate udl report')
-    parser.add_argument('-c', '--config', help='Set the path to ini file', default=UDL2_DEFAULT_CONFIG_PATH_FILE)
+    parser.add_argument('-i', dest='ini_file', help='Set the path to ini file', default=UDL2_DEFAULT_CONFIG_PATH_FILE)
+    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edudl2-report.pid',
+                        help="pid file for edudl2 trigger daemon")
+    parser.add_argument('-d', dest='daemon', action='store_true', default=False,
+                        help="daemon mode for udl report")
     args = parser.parse_args()
 
-    config_path_file = args.config
+    config_path_file = args.ini_file
+    daemon_mode = args.daemon
+    pid_file = args.pidfile
+    if daemon_mode:
+        create_daemon(pid_file)
     # get udl2 configuration as nested and flat dictionary
-    # TODO: Refactor to use either flat or map structure
     udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
     initialize_all_db(udl2_conf, udl2_flat_conf)
 

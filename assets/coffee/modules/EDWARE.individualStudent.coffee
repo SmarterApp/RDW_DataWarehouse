@@ -245,11 +245,19 @@ define [
         self.loadPrintMedia()
         self.fetchData()
 
+    loadDisclaimer: () ->
+      if @isPdf
+        asmtType = if @params['asmtType'] then @params['asmtType'].toUpperCase() else edwarePreferences.getAsmtType()
+      #Display only for 2 asmt types
+      if (typeof asmtType is 'string') and (asmtType.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
+        this.configData.interimDisclaimer
+
     loadPage: (template) ->
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @dataFactory ?= new DataFactory()
       @data = @dataFactory.createDataProcessor(data, @configData, @isGrayscale, @isBlock).process()
       @data.labels = @configData.labels
+      @data.interimDisclaimer = @loadDisclaimer()
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
@@ -333,7 +341,7 @@ define [
         if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
             # Important:  This is a workaround for bulk pdf generation
            key = if @params['effectiveDate'] then @params['effectiveDate'] else @params['asmtYear']
-        else 
+        else
           key = @params['asmtYear']
         return key + asmtType
       else
@@ -373,7 +381,7 @@ define [
         viewName = @getAsmtViewSelection()
         $("#subjectSelection#{viewName}").addClass('selected')
         $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
-  
+
     reloadReport: () ->
       # Decide if we have the data or needs to retrieve from backend
       # It is possible to enter an infinite loop if the cacheKey has a mismatch

@@ -5,8 +5,9 @@ from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
 from edcore.notification.constants import Constants
-from edudl2.udl2_util.util import merge_to_udl2stat_notification
+from edudl2.udl2_util.util import merge_to_udl2stat_notification, send_email_from_template
 import traceback
+
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -87,6 +88,16 @@ class Udl2BaseTask(Task):
         error_handler_chain = self.__get_pipeline_error_handler_chain(err_msg, self.name)
         if error_handler_chain is not None:
             error_handler_chain.delay()
+
+        # Send email on exception
+        email_info = {
+            "task_id": task_id,
+            "batch_guid": batch_guid,
+            "load_type": load_type,
+            "udl_phase": self.name,
+            "udl_phase_step": udl_phase_step,
+            "failure_time": failure_time}
+        send_email_from_template(email_info)
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))

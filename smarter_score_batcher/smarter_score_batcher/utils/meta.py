@@ -94,7 +94,7 @@ def extract_meta_names(raw_xml_string):
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
         effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
         if effective_date:
-            m = re.search('\d+-\d+-\d+',effective_date)
+            m = re.search('\d+-\d+-\d+', effective_date)
             effective_date = m.group(0)
         # Get asmt id, not required for validation
         asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")

@@ -72,6 +72,7 @@ def get_list_of_students_fao(params):
                                      fact_asmt_outcome_vw.c.asmt_grade.label('asmt_grade'),
                                      dim_asmt.c.asmt_subject.label('asmt_subject'),
                                      dim_asmt.c.effective_date.label('effective_date'),
+                                     fact_asmt_outcome_vw.c.date_taken.label('date_taken'),
                                      fact_asmt_outcome_vw.c.asmt_score.label('asmt_score'),
                                      fact_asmt_outcome_vw.c.asmt_score_range_min.label('asmt_score_range_min'),
                                      fact_asmt_outcome_vw.c.asmt_score_range_max.label('asmt_score_range_max'),
@@ -219,13 +220,14 @@ def format_assessments_fao(results, subjects_map):
     assessments = {}
     # Formatting data for Front End
     for result in results:
-        effectiveDate = result['effective_date']  # e.g. 20140401
-        asmtDict = assessments.get(effectiveDate, {})
+        dateTaken = result['date_taken']  # e.g. 20140401
         asmtType = capwords(result['asmt_type'], ' ')  # Summative, Interim
-        asmtList = asmtDict.get(asmtType, {})
+        asmtDict = assessments.get(asmtType, {})
+        studentDataByDate = {}
         studentId = result['student_id']  # e.g. student_1
+        asmtList = asmtDict.get(studentId, [])
 
-        student = asmtList.get(studentId, {})
+        student = {}
         student['student_id'] = studentId
         student['student_first_name'] = result['first_name']
         student['student_middle_name'] = result['middle_name']
@@ -249,9 +251,15 @@ def format_assessments_fao(results, subjects_map):
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
-
         student[subject] = assessment
-        asmtList[studentId] = student
-        asmtDict[asmtType] = asmtList
-        assessments[effectiveDate] = asmtDict
+        studentDataByDate[dateTaken] = student
+        indexToInsert = 0
+        for asmt in asmtList:
+            if int(dateTaken) <= int(list(asmt.keys())[0]):
+                indexToInsert = asmtList.index(asmt)
+                break
+            indexToInsert = asmtList.index(asmt) + 1
+        asmtList.insert(indexToInsert, studentDataByDate)
+        asmtDict[studentId] = asmtList
+        assessments[asmtType] = asmtDict
     return assessments

@@ -23,13 +23,13 @@ class Test(unittest.TestCase):
         xml_string = '''<TDSReport>
         <Test subject="MA" grade="3-12" assessmentType="Formative" academicYear="2014" />
         <Examinee key="CA-9999999598-11">
-        <ExamineeRelationship context="FINAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="FINAL" name="ResponsibleDistrictIdentifier" value="CA_9999827" />
         <ExamineeRelationship context="FINAL" name="StateName" value="California" />
-        <ExamineeRelationship context="INITIAL" name="DistrictID" value="CA_9999827" />
+        <ExamineeRelationship context="INITIAL" name="ResponsibleDistrictIdentifier" value="CA_9999827" />
         <ExamineeRelationship context="INITIAL" name="StateAbbreviation" value="California" />
         <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="CA-9999999598" />
         </Examinee>
-        <Opportunity effectiveDate="2014-02-02" />
+        <Opportunity dateCompleted="2014-02-02T16:12:24.238" />
         </TDSReport>'''
         meta = extract_meta_names(xml_string)
         self.assertTrue(meta.valid_meta)

@@ -80,6 +80,9 @@ define [
           $body.scrollLeft(0)
         else
           $body.scrollLeft(headerLeftOffset)
+      # update grid max-height on window resize
+      $(window).resize () ->
+        adjustHeight()
 
     setSortedColumn: (columns) ->
       sorted = this.options.sort

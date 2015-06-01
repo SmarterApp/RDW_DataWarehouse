@@ -89,7 +89,7 @@ define [
       asmt_period_year: $option.data('asmtperiodyear')
 
     setSelectedValue: (asmt) ->
-      displayText = @getAsmtDisplayText(asmt, true)
+      displayText = @getAsmtDisplayText(asmt)
       $('#selectedAsmtType').html displayText
       # show iab message
       $IABMessage =  $(".IABMessage")
@@ -103,14 +103,13 @@ define [
       else
         $IABMessage.hide()
 
-    getAsmtDisplayText: (asmt, option)->
+    getAsmtDisplayText: (asmt)->
       #comparingPopulations
       if asmt.asmt_type is undefined
         return "" if not asmt.effective_date
       #studentList
-      if option
-        asmt.asmt_from_year = asmt.asmt_period_year - 1
-        asmt.asmt_to_year = asmt.asmt_period_year
+      asmt.asmt_from_year = asmt.asmt_period_year - 1
+      asmt.asmt_to_year = asmt.asmt_period_year
       return Mustache.to_html @displayTemplate.selection, asmt
 
   # dropdownValues is an array of values to feed into dropdown

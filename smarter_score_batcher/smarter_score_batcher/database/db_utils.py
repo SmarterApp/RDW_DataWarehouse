@@ -7,6 +7,7 @@ from smarter_score_batcher.constant import Constants
 from smarter_score_batcher.error.constants import ErrorsConstants
 from smarter_score_batcher.error.error_file_generator import build_error_info_header, \
     build_err_list_from_object
+import time
 
 
 def save_assessment(data):
@@ -19,7 +20,7 @@ def save_assessment(data):
         conn.execute(ins, **parameters)
 
 
-def save_metadata(asmtGuid, stateCode, metadata):
+def save_metadata(conn, asmtGuid, stateCode, metadata):
     '''
     Save metadata to `Constants.TSB_METADATA` table.
     '''
@@ -28,9 +29,8 @@ def save_metadata(asmtGuid, stateCode, metadata):
         Constants.STATE_CODE: stateCode,
         Constants.CONTENT: json.dumps(metadata)
     }
-    with TSBDBConnection() as conn:
-        ins = conn.get_table(Constants.TSB_METADATA).insert()
-        conn.execute(ins, **parameters)
+    ins = conn.get_table(Constants.TSB_METADATA).insert()
+    conn.execute(ins, **parameters)
 
 
 def save_error_msg(asmtGuid, stateCode, err_code=None, err_source=None,
@@ -52,14 +52,13 @@ def save_error_msg(asmtGuid, stateCode, err_code=None, err_source=None,
         conn.execute(ins, **parameters)
 
 
-def get_metadata(asmtGuid):
+def get_metadata(conn, asmtGuid):
     '''
     Get assessment metadata by assessment guid. The assessment guid is passed in from XML request.
     '''
-    with TSBDBConnection() as conn:
-        tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-        query = Select([tsb_metadata]).where(tsb_metadata.c.asmt_guid == asmtGuid)
-        return conn.get_result(query)
+    tsb_metadata = conn.get_table(Constants.TSB_METADATA)
+    query = Select([tsb_metadata]).where(tsb_metadata.c.asmt_guid == asmtGuid).with_for_update(of=tsb_metadata)
+    return conn.get_result(query)
 
 
 def get_all_assessment_guids():
@@ -138,22 +137,28 @@ def delete_assessments(assessment_id, tsb_asmt_rec_ids, tsb_error_rec_ids):
     :param: list of `Constants.TSB_ASMT` primary keys
     :param: list of `Constants.TSB_ERROR` primary keys
     '''
-    with TSBDBConnection() as conn:
-        # delete error messages
-        if tsb_error_rec_ids:
-            tsb_error = conn.get_table(Constants.TSB_ERROR)
-            conn.execute(tsb_error.delete().where(tsb_error.c.tsb_error_rec_id.in_(tsb_error_rec_ids)))
-
-        # delete meta data in database
-        if tsb_asmt_rec_ids:
-            tsb_asmt = conn.get_table(Constants.TSB_ASMT)
-            conn.execute(tsb_asmt.delete().where(tsb_asmt.c.tsb_asmt_rec_id.in_(tsb_asmt_rec_ids)))
-
-        # delete assessment data in database
-        if assessment_id:
+    retry = 3
+    while retry != 0:
+        with TSBDBConnection() as conn:
+            transaction = conn.get_transaction()
             try:
-                tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-                conn.execute(tsb_metadata.delete().where(tsb_metadata.c.asmt_guid == assessment_id))
-            except IntegrityError:
-                # there might be new assessment records written to database while processing the old one
-                pass
+                # delete error messages
+                if tsb_error_rec_ids:
+                    tsb_error = conn.get_table(Constants.TSB_ERROR)
+                    conn.execute(tsb_error.delete().where(tsb_error.c.tsb_error_rec_id.in_(tsb_error_rec_ids)))
+        
+                # delete meta data in database
+                if tsb_asmt_rec_ids:
+                    tsb_asmt = conn.get_table(Constants.TSB_ASMT)
+                    conn.execute(tsb_asmt.delete().where(tsb_asmt.c.tsb_asmt_rec_id.in_(tsb_asmt_rec_ids)))
+        
+                # delete assessment data in database
+                if assessment_id:
+                    tsb_metadata = conn.get_table(Constants.TSB_METADATA)
+                    conn.execute(tsb_metadata.delete().where(tsb_metadata.c.asmt_guid == assessment_id))
+                transaction.commit()
+                break
+            except:
+                transaction.rollback()
+                time.sleep(1)
+        retry -= 1

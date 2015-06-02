@@ -62,4 +62,3 @@ def get_udl_stats_by_date(start_date, end_date=None):
             s = s.where(and_(udl_stats.c.file_arrived > start_date, udl_stats.c.file_arrived <= end_date))
         results = connector.get_result(s)
     return results
-        

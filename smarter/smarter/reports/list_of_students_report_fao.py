@@ -6,7 +6,7 @@ Created on Oct 21, 2014
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, select
+from sqlalchemy.sql.expression import and_, select, desc
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
 from smarter.reports.helpers.assessments import get_claims, get_cut_points, \
@@ -155,7 +155,7 @@ def get_list_of_students_fao(params):
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmtGrade))
 
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(fact_asmt_outcome_vw.c.date_taken)
+        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(desc(fact_asmt_outcome_vw.c.date_taken))
         return connector.get_result(query)
 
 

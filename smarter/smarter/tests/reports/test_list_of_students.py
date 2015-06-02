@@ -82,9 +82,9 @@ class TestLOS(Unittest_with_edcore_sqlite):
 
         assessments = results['assessments']
         self.assertEqual(2, len(assessments), "2 assessments")
-        student1 = assessments['Interim Comprehensive']['f9da4c5d-dc65-42d0-a36f-5d13ba930c50'][1]['20160206']
-        student2 = assessments['Interim Comprehensive']['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b'][1]['20160108']
-        student3 = assessments['Interim Comprehensive']['dae1acf4-afb0-4013-90ba-9dcde4b25621'][1]['20160108']
+        student1 = assessments['Interim Comprehensive']['f9da4c5d-dc65-42d0-a36f-5d13ba930c50'][0]['20160206']
+        student2 = assessments['Interim Comprehensive']['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b'][0]['20160108']
+        student3 = assessments['Interim Comprehensive']['dae1acf4-afb0-4013-90ba-9dcde4b25621'][0]['20160108']
         self.assertEqual("Verda", student1['student_first_name'], "first_name")
         self.assertEqual("Mi-Ha", student2['student_first_name'], "first_name")
         self.assertEqual("Lettie", student3['student_first_name'], "first_name")

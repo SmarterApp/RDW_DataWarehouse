@@ -206,6 +206,21 @@
                         "export": true
                     },
                     {
+                        "name": "Most recent",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
+                        "index": "effectiveDate.params.effectiveDate",
+                        "field": "effectiveDate.params.effectiveDate",
+                        "width": 100,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "effectiveDate.params.effectiveDate"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
                         "name": "{{subject1}}",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
@@ -214,6 +229,21 @@
                         "formatter": "performanceBar",
                         "options": {
                             "asmt_type": "subject1"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "Most recent",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
+                        "index": "params.effectiveDateFormatted",
+                        "field": "params.effectiveDateFormatted",
+                        "width": 100,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "params.effectiveDateFormatted"
                         },
                         "sorttype": "int",
                         "align": "center",

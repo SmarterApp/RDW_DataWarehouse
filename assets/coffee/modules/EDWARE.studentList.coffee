@@ -52,6 +52,10 @@ define [
           value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.bg_color
           value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.text_color
 
+    formatEffectiveDate : (date) ->
+      if date
+        date.substr(0, 4) + '.'+ date.substr(4, 2) + '.'+ date.substr(6, 2)
+
     appendExtraInfo: (row) ->
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
@@ -62,6 +66,7 @@ define [
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
         'asmtType': encodeURI(@asmtType.toUpperCase()),
       }
+      row['params']['effectiveDateFormatted'] = @formatEffectiveDate @effectiveDate
       row['params']['effectiveDate'] ?= @effectiveDate if @effectiveDate
       row
 

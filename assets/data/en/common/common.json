@@ -208,12 +208,12 @@
                     {
                         "name": "Most recent",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
-                        "index": "effectiveDate.params.effectiveDate",
-                        "field": "effectiveDate.params.effectiveDate",
+                        "index": "params.effectiveDateFormatted",
+                        "field": "params.effectiveDateFormatted",
                         "width": 100,
                         "formatter": "showText",
                         "options": {
-                            "asmt_type": "effectiveDate.params.effectiveDate"
+                            "asmt_type": "params.effectiveDateFormatted"
                         },
                         "sorttype": "int",
                         "align": "center",

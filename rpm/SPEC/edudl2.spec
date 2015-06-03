@@ -124,6 +124,7 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-file-grabber
+%attr(755,root,root) /etc/rc.d/init.d/edudl2-report
 
 %pre
 # check if udl2 group exists and create if not
@@ -172,17 +173,24 @@ if [ ! -d /var/run/edudl2-file-grabber ]; then
     mkdir -p /var/run/edudl2-file-grabber
     chown udl2.udl2 /var/run/edudl2-file-grabber
 fi
+if [ ! -d /var/run/edudl2-report ]; then
+    mkdir -p /var/run/edudl2-report
+    chown udl2.udl2 /var/run/edudl2-report
+fi
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger
 chkconfig --add edudl2-file-grabber
+chkconfig --add edudl2-report
 chkconfig --level 2345 celeryd-udl2 off
 chkconfig --level 2345 edudl2-trigger off
 chkconfig --level 2345 edudl2-file-grabber off
+chkconfig --level 2345 edudl2-report off
 
 %preun
 chkconfig --del celeryd-udl2
 chkconfig --del edudl2-trigger
 chkconfig --del edudl2-file-grabber
+chkconfig --del edudl2-report
 
 %postun
 

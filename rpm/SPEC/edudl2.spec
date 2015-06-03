@@ -72,6 +72,10 @@ cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/hpz_client
+python setup.py clean --all
+python setup.py install
+cd -
 
 deactivate
 find virtualenv/udl2/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;

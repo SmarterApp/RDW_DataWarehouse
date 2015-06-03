@@ -208,12 +208,12 @@
                     {
                         "name": "Most recent",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
-                        "index": "params.effectiveDateFormatted",
-                        "field": "params.effectiveDateFormatted",
+                        "index": "subject1.effectiveDateFormatted",
+                        "field": "subject1.effectiveDateFormatted",
                         "width": 100,
                         "formatter": "showText",
                         "options": {
-                            "asmt_type": "params.effectiveDateFormatted"
+                            "asmt_type": "subject1.effectiveDateFormatted"
                         },
                         "sorttype": "int",
                         "align": "center",
@@ -238,12 +238,12 @@
                     {
                         "name": "Most recent",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
-                        "index": "params.effectiveDateFormatted",
-                        "field": "params.effectiveDateFormatted",
+                        "index": "subject2.effectiveDateFormatted",
+                        "field": "subject2.effectiveDateFormatted",
                         "width": 100,
                         "formatter": "showText",
                         "options": {
-                            "asmt_type": "params.effectiveDateFormatted"
+                            "asmt_type": "subject2.effectiveDateFormatted"
                         },
                         "sorttype": "int",
                         "align": "center",

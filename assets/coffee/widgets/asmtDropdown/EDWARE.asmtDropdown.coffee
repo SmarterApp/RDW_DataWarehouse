@@ -57,8 +57,6 @@ define [
         asmt.display = asmt.asmt_type
         asmtTypes[asmt.asmt_type] = (asmtTypes[asmt.asmt_type] || [])
         asmtTypes[asmt.asmt_type].push(asmt)
-        #asmtTypes.push asmt
-      console.log 'asmtTypes: ' + asmtTypes
       asmtTypes
 
     setDefaultOption: () ->

@@ -66,8 +66,9 @@ define [
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
         'asmtType': encodeURI(@asmtType.toUpperCase()),
       }
-      row['params']['effectiveDateFormatted'] = @formatEffectiveDate @effectiveDate
       row['params']['effectiveDate'] ?= @effectiveDate if @effectiveDate
+      row.subject1['effectiveDateFormatted'] = @formatEffectiveDate @effectiveDate if row.subject1
+      row.subject2['effectiveDateFormatted'] = @formatEffectiveDate @effectiveDate if row.subject2
       row
 
   class StudentDataSet

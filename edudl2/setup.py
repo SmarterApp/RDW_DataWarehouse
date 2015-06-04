@@ -20,6 +20,7 @@ requires = ['billiard==2.7.3.32',
             'edcore',
             'edworker',
             'edschema',
+            'hpz_client',
             'Jinja2==2.7.3']
 
 requires.append('pyinotify') if sys.platform == 'linux' else None

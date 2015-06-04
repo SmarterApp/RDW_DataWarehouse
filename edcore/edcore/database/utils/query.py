@@ -57,8 +57,8 @@ def get_udl_stats_by_date(start_date, end_date=None):
         udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
         s = select([udl_stats.c.tenant, udl_stats.c.file_arrived, udl_stats.c.load_start, udl_stats.c.load_end, udl_stats.c.load_status, udl_stats.c.batch_guid])
         if end_date is None:
-            s = s.where(udl_stats.c.file_arrived > start_date)
+            s = s.where(udl_stats.c.file_arrived >= start_date)
         else:
-            s = s.where(and_(udl_stats.c.file_arrived > start_date, udl_stats.c.file_arrived <= end_date))
+            s = s.where(and_(udl_stats.c.file_arrived >= start_date, udl_stats.c.file_arrived < end_date))
         results = connector.get_result(s)
     return results

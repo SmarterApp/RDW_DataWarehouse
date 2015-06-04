@@ -31,9 +31,10 @@ cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroo
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-trigger %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-file-grabber %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-report %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/udl2_settings.yaml
 
 %build
 export LANG=en_US.UTF-8
@@ -64,6 +65,10 @@ cd ${WORKSPACE}/edworker
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/hpz_client
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edudl2
 python setup.py clean --all
 python setup.py install
@@ -89,7 +94,7 @@ rm -rf %{buildroot}
 /opt/edware/conf/celeryd-udl2.conf
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/udl2_conf.yaml
-/opt/edware/conf/settings.yaml
+/opt/edware/conf/udl2_settings.yaml
 /opt/edware/edudl2/scripts/driver.py
 /opt/virtualenv/udl2/include/*
 /opt/virtualenv/udl2/lib/*
@@ -124,6 +129,7 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-file-grabber
+%attr(755,root,root) /etc/rc.d/init.d/edudl2-report
 
 %pre
 # check if udl2 group exists and create if not
@@ -172,17 +178,24 @@ if [ ! -d /var/run/edudl2-file-grabber ]; then
     mkdir -p /var/run/edudl2-file-grabber
     chown udl2.udl2 /var/run/edudl2-file-grabber
 fi
+if [ ! -d /var/run/edudl2-report ]; then
+    mkdir -p /var/run/edudl2-report
+    chown udl2.udl2 /var/run/edudl2-report
+fi
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger
 chkconfig --add edudl2-file-grabber
+chkconfig --add edudl2-report
 chkconfig --level 2345 celeryd-udl2 off
 chkconfig --level 2345 edudl2-trigger off
 chkconfig --level 2345 edudl2-file-grabber off
+chkconfig --level 2345 edudl2-report off
 
 %preun
 chkconfig --del celeryd-udl2
 chkconfig --del edudl2-trigger
 chkconfig --del edudl2-file-grabber
+chkconfig --del edudl2-report
 
 %postun
 

@@ -15,6 +15,7 @@ import os
 from edcore.utils.utils import archive_files, run_cron_job, create_daemon
 from hpz_client.frs.file_registration import register_file
 from hpz_client.frs.http_file_upload import http_file_upload
+from hpz_client.frs.config import initialize
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 import csv
@@ -179,13 +180,13 @@ if __name__ == "__main__":
     # get udl2 configuration as nested and flat dictionary
     udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
     initialize_all_db(udl2_conf, udl2_flat_conf)
+    initialize(udl2_flat_conf)
 
-    uid = udl2_conf.get(UDL_REPORT_UID)
-    email_to = udl2_conf.get(UDL_REPORT_MAIL_TO)
-    subject = udl2_conf.get(UDL_REPORT_SUBJECT)
-    mail_from = udl2_conf.get(UDL_REPORT_MAIL_FROM)
-    
-    
+    uid = udl2_flat_conf.get(UDL_REPORT_UID)
+    email_to = udl2_flat_conf.get(UDL_REPORT_MAIL_TO)
+    subject = udl2_flat_conf.get(UDL_REPORT_SUBJECT)
+    mail_from = udl2_flat_conf.get(UDL_REPORT_MAIL_FROM)
+
     generate_report_settings = {'report.enable': 'True',
                                 'report.schedule.cron.hour': hour,
                                 'report.schedule.cron.minute': '0',

@@ -34,7 +34,7 @@ cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-file-grabber %{buildr
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-report %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/udl2_settings.yaml
 
 %build
 export LANG=en_US.UTF-8
@@ -94,7 +94,7 @@ rm -rf %{buildroot}
 /opt/edware/conf/celeryd-udl2.conf
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/udl2_conf.yaml
-/opt/edware/conf/settings.yaml
+/opt/edware/conf/udl2_settings.yaml
 /opt/edware/edudl2/scripts/driver.py
 /opt/virtualenv/udl2/include/*
 /opt/virtualenv/udl2/lib/*

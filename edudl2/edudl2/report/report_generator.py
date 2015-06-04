@@ -60,7 +60,8 @@ def generate_report(uid, email_to, start_date, end_date=None, email_from='norepl
                 export_to_csv(csv_file, report_data)
                 results.append({'datestamp': datestamp, 'counts': len(report_data)})
             summary['results'] = results
-            report_file = os.path.join(tmp, 'report.zip')
+            today = datetime.datetime.today().strftime('%Y-%m-%d')
+            report_file = os.path.join(tmp, 'report_' + today + '.zip')
             # archive
             archive_files(data_dir, report_file)
             # create email content

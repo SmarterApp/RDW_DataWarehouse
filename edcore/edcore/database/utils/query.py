@@ -59,6 +59,6 @@ def get_udl_stats_by_date(start_date, end_date=None):
         if end_date is None:
             s = s.where(udl_stats.c.file_arrived >= start_date)
         else:
-            s = s.where(and_(udl_stats.c.file_arrived > start_date, udl_stats.c.file_arrived < end_date))
+            s = s.where(and_(udl_stats.c.file_arrived >= start_date, udl_stats.c.file_arrived < end_date))
         results = connector.get_result(s)
     return results

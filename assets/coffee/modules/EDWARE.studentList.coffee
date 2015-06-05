@@ -153,20 +153,26 @@ define [
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: (asmtType) ->
       @cache[asmtType] ?= {}
+      item = {}
       studentGroupByType = @assessmentsData[asmtType]
       for studentId, asmtList of studentGroupByType
-        combinedRow = []
+        item[studentId] ?= {}
         for asmtByDate in asmtList
           for asmtDate, asmt of asmtByDate
             if asmtDate isnt 'hide' && asmtDate.length == 8
+              asmtDetails = asmt
               row = new StudentModel(asmtType, asmtDate, this).init asmt
               for subjectName, subjectType of @subjectsData
                 if asmt[subjectName]
                   asmt[subjectName]['asmt_date'] = @formatDate asmtDate
                   @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
-          @cache[asmtType][@allSubjects] ?= []
-          @cache[asmtType][@allSubjects].push(row)
+                  item[studentId][subjectName] = asmt[subjectName]
+                continue if !item[studentId][subjectName]
+        # combined asmt details
+        combinedAsmts = $.extend(asmtDetails, item[studentId])
+        @cache[asmtType][@allSubjects] ?= []
+        @cache[asmtType][@allSubjects].push(combinedAsmts)
 
     formatIABData: () ->
       @cache[Constants.ASMT_TYPE.IAB] ?= {}

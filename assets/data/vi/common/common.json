@@ -195,7 +195,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Học sinh</>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 240,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -203,6 +203,21 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject1.asmt_date}}",
+                        "displayTpl": "<a class='inherit' href='#'>Hầu hết Toán học gần đây</a>",
+                        "index": "subject1.asmt_date",
+                        "field": "subject1.asmt_date",
+                        "width": 120,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "subject1.asmt_date"
+                        },
+                        "sorttype": "str",
+                        "align": "center",
+                        "title": false,
                         "export": true
                     },
                     {
@@ -216,6 +231,21 @@
                             "asmt_type": "subject1"
                         },
                         "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject2.asmt_date}}",
+                        "displayTpl": "<a class='inherit' href='#'>Hầu hết gần đây ELA/Đọc viết tổng quát</a>",
+                        "index": "subject2.asmt_date",
+                        "field": "subject2.asmt_date",
+                        "width": 120,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "subject2.asmt_date"
+                        },
+                        "sorttype": "str",
                         "align": "center",
                         "title": false,
                         "export": true
@@ -254,7 +284,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 240,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -262,6 +292,21 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject1.asmt_date}}",
+                        "displayTpl": "<a class='inherit' href='#'>Ngày chụp</a>",
+                        "index": "subject1.asmt_date",
+                        "field": "subject1.asmt_date",
+                        "width": 100,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "subject1.asmt_date"
+                        },
+                        "sorttype": "str",
+                        "align": "center",
+                        "title": false,
                         "export": true
                     },
                     {
@@ -327,7 +372,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Học sinh</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 240,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -335,6 +380,21 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject2.asmt_date}}",
+                        "displayTpl": "<a class='inherit' href='#'>Ngày chụp</a>",
+                        "index": "subject2.asmt_date",
+                        "field": "subject2.asmt_date",
+                        "width": 100,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "subject2.asmt_date"
+                        },
+                        "sorttype": "str",
+                        "align": "center",
+                        "title": false,
                         "export": true
                     },
                     {

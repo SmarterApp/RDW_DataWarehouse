@@ -195,7 +195,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Students</>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 240,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -207,13 +207,13 @@
                     },
                     {
                         "name": "Most recent",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
-                        "index": "subject1.effectiveDateFormatted",
-                        "field": "subject1.effectiveDateFormatted",
-                        "width": 100,
+                        "displayTpl": "<a class='inherit' href='#'>Most Recent Mathematics</a>",
+                        "index": "subject1.asmt_date",
+                        "field": "subject1.asmt_date",
+                        "width": 120,
                         "formatter": "showText",
                         "options": {
-                            "asmt_type": "subject1.effectiveDateFormatted"
+                            "asmt_type": "subject1.asmt_date"
                         },
                         "sorttype": "int",
                         "align": "center",
@@ -237,13 +237,13 @@
                     },
                     {
                         "name": "Most recent",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Most recent</a>",
-                        "index": "subject2.effectiveDateFormatted",
-                        "field": "subject2.effectiveDateFormatted",
-                        "width": 100,
+                        "displayTpl": "<a class='inherit' href='#'>Most Recent ELA/Literacy</a>",
+                        "index": "subject2.asmt_date",
+                        "field": "subject2.asmt_date",
+                        "width": 120,
                         "formatter": "showText",
                         "options": {
-                            "asmt_type": "subject2.effectiveDateFormatted"
+                            "asmt_type": "subject2.asmt_date"
                         },
                         "sorttype": "int",
                         "align": "center",
@@ -272,7 +272,7 @@
                         "title": false,
                         "export": false,
                         "sortable": false
-                    }
+                     }
                 ]
             }
         ],
@@ -284,7 +284,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 240,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -294,6 +294,21 @@
                         "sortorder": "asc",
                         "export": true
                     },
+                    {
+                        "name": "Date taken",
+                        "displayTpl": "<a class='inherit' href='#'>Date taken</a>",
+                        "index": "subject1.asmt_date",
+                        "field": "subject1.asmt_date",
+                        "width": 100,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "subject1.asmt_date"
+                        },
+                        "sorttype": "str",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },                    
                     {
                         "name": "{{subject1}}",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
@@ -357,7 +372,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Students</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 240,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -367,6 +382,21 @@
                         "sortorder": "asc",
                         "export": true
                     },
+                    {
+                        "name": "Date taken",
+                        "displayTpl": "<a class='inherit' href='#'>Date taken</a>",
+                        "index": "subject2.asmt_date",
+                        "field": "subject2.asmt_date",
+                        "width": 100,
+                        "formatter": "showText",
+                        "options": {
+                            "asmt_type": "subject2.asmt_date"
+                        },
+                        "sorttype": "str",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },                    
                     {
                         "name": "{{subject2}}",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",

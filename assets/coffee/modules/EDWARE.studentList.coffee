@@ -150,7 +150,7 @@ define [
 
     formatDate : (date) ->
       if date
-        date.substr(0, 4) + '.'+ date.substr(4, 2) + '.'+ date.substr(6, 2)
+        return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
 
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
@@ -162,24 +162,25 @@ define [
         item[studentId] ?= {}
         for asmtByDate in asmtList
           for asmtDate, asmt of asmtByDate
-            if asmtDate isnt 'hide' && asmtDate.length == 8
-              asmtDetails = asmt
-              row = new StudentModel(asmtType, asmtDate, this).init asmt
+            if asmtDate isnt 'hide'
               for subjectName, subjectType of @subjectsData
                 if asmt[subjectName]
-                  asmt[subjectName]['asmt_date'] = @formatDate asmtDate
-                  @cache[asmtType][subjectType] ?= []
                   if asmt.hide
                     continue
+                  asmt[subjectName]['asmt_date'] = @formatDate asmtDate
+                  row = new StudentModel(asmtType, null, this).init asmt
+                  @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
-                  item[studentId][subjectName] = asmt[subjectName]
-                continue if !item[studentId][subjectName]
-        # combined asmt details
-        combinedAsmts = $.extend(asmtDetails, item[studentId])
+                  # combine 2 subjects, add only once
+                  if !item[studentId][subjectName]
+                    item[studentId][subjectName] = asmt[subjectName]
+        if item[studentId]
+          combinedAsmts = $.extend({}, asmt, item[studentId]);
         if combinedAsmts.hide
           continue
         @cache[asmtType][@allSubjects] ?= []
         @cache[asmtType][@allSubjects].push(combinedAsmts)
+
 
     formatIABData: () ->
       @cache[Constants.ASMT_TYPE.IAB] ?= {}

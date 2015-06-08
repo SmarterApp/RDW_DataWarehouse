@@ -38,5 +38,5 @@ class TestFileRegistration(unittest.TestCase):
         self.assertEqual('a1-b2-c3-d4-e1e10', registration_id)
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', download_url)
         self.assertEqual('http://something.com/web/as', web_download_url)
-        # disable because key order of serialized dictionaly is unpredictable
-        # put_patch.assert_called_once_with('http://somehost:82/registration', '{"email": "dummy_user@phony.com", "uid": "dummy_user@phony.com"}', verify=True)
+        #disable because key order of serialized dictionaly is unpredictable
+        #put_patch.assert_called_once_with('http://somehost:82/registration', '{"email": "dummy_user@phony.com", "uid": "dummy_user@phony.com"}', verify=True)

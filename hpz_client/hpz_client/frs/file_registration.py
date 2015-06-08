@@ -9,7 +9,7 @@ from hpz_client.frs.config import Config, get_setting
 
 
 def register_file(user_id, email):
-    registration_url = get_setting(Config.HPZ_FILE_REGISTRATION_URL)
+    registration_url = get_setting(Config.HPZ_FILE_REGISTRATION_URL, 'http://localhost:6544/registration')
     registration_body = {'uid': user_id, 'email': email}
     verify_certificate = not get_setting(Config.HPZ_IGNORE_CERTIFICATE)
 

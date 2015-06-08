@@ -22,20 +22,12 @@ class DummyFile:
 
 class UploadTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls._dir = tempfile.TemporaryDirectory()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._dir.cleanup()
-
     def setUp(self):
         self.__request = DummyRequest()
         self.__request.matchdict['registration_id'] = 'a1-b2-c3-d4-e5'
         self.__request.headers['File-Name'] = 'dummy.zip'
         reg = Registry()
-        reg.settings = {'hpz.frs.upload_base_path': self._dir.name, 'hpz.frs.file_size_limit': '1024'}
+        reg.settings = {'hpz.frs.upload_base_path': '/dev/null', 'hpz.frs.file_size_limit': '1024'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 
     def tearDown(self):
@@ -44,12 +36,14 @@ class UploadTest(unittest.TestCase):
     @patch('hpz.frs.upload_service.FileRegistry.update_registration')
     @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
     @patch('shutil.copyfileobj')
+    @patch('builtins.open')
     @patch('os.path.getsize')
     @patch('hpz.frs.upload_service.logger.info')
-    def test_file_upload_service_with_default_notification(self, logger_patch, get_size_patch, copyfileobj_patch, is_file_registered_patch,
-                                                           update_registration_patch):
+    def test_file_upload_service_with_default_notification(self, logger_patch, get_size_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
+                                 update_registration_patch):
         update_registration_patch.return_value = None
         copyfileobj_patch.return_value = DummyFile()
+        open_patch.return_value.__exit__.return_value = None
         is_file_registered_patch.return_value = True
         get_size_patch.return_value = 1
         logger_patch.return_value = None
@@ -62,30 +56,41 @@ class UploadTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(update_registration_patch.called)
         self.assertTrue(copyfileobj_patch.called)
+        self.assertTrue(open_patch.called)
         self.assertTrue(is_file_registered_patch.called)
+        logger_patch.assert_called_once_with('File %s was successfully uploaded', '/dev/null/a1-b2-c3-d4-e5')
 
+    @patch('hpz.frs.upload_service.FileRegistry.update_registration')
     @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
-    def test_file_upload_service_not_registered(self, is_file_registered_patch):
-        is_file_registered_patch.return_value = False
+    def test_file_upload_service_not_registered(self, is_file_registered_patch, update_registration_patch):
+        test_logger = logging.getLogger(upload_service.__name__)
+        with mock.patch.object(test_logger, 'error') as mock_error:
 
-        self.__request.method = 'POST'
-        self.__request.POST['file'] = DummyFile()
+            update_registration_patch.return_value = False
+            is_file_registered_patch.return_value = False
 
-        response = file_upload_service_with_default_notification(None, self.__request)
+            self.__request.method = 'POST'
+            self.__request.POST['file'] = DummyFile()
 
-        self.assertEqual(response.status_code, 404)
+            response = file_upload_service_with_default_notification(None, self.__request)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(not update_registration_patch.called)
+            self.assertTrue(is_file_registered_patch.called)
+            self.assertTrue(mock_error.called)
 
     @patch('hpz.frs.upload_service.FileRegistry.update_registration')
     @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
     @patch('shutil.copyfileobj')
+    @patch('builtins.open')
     @patch('hpz.frs.upload_service.logger.error')
     @patch('os.path.getsize')
-    def test_file_creation_error(self, get_size_patch, logger_patch, copyfileobj_patch, is_file_registered_patch,
+    def test_file_creation_error(self, get_size_patch, logger_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
                                  update_registration_patch):
         update_registration_patch.return_value = True
         copyfileobj_patch.return_value = DummyFile()
         logger_patch.return_value = None
-        # open_patch.side_effect = IOError('Message')
+        open_patch.side_effect = IOError('Message')
         is_file_registered_patch.return_value = True
         get_size_patch.return_value = 1
 
@@ -93,6 +98,33 @@ class UploadTest(unittest.TestCase):
         self.__request.POST['file'] = DummyFile()
 
         response = file_upload_service_with_default_notification(None, self.__request)
+
+        logger_patch.assert_called_once_with('Cannot complete file copying due to: Message')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(not update_registration_patch.called)
+
+    @patch('hpz.frs.upload_service.FileRegistry.update_registration')
+    @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
+    @patch('shutil.copyfileobj')
+    @patch('builtins.open')
+    @patch('hpz.frs.upload_service.logger.warning')
+    @patch('os.path.getsize')
+    def test_file_size_error(self, getsize_patch, logger_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
+                             update_registration_patch):
+        update_registration_patch.return_value = True
+        is_file_registered_patch.return_value = True
+        copyfileobj_patch.return_value = DummyFile()
+        logger_patch.return_value = None
+        getsize_patch.return_value = 1025
+        open_patch.return_value.__exit__.return_value = None
+
+        self.__request.method = 'POST'
+        self.__request.POST['file'] = DummyFile()
+
+        response = file_upload_service_with_default_notification(None, self.__request)
+
+        logger_patch.assert_called_once_with('File %s exceeds recommended size limit', '/dev/null/a1-b2-c3-d4-e5')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(update_registration_patch.called)
@@ -136,4 +168,3 @@ class UploadTest(unittest.TestCase):
         self.assertTrue(not update_registration_patch.called)
         self.assertTrue(not copyfileobj_patch.called)
         self.assertTrue(not open_patch.called)
-import tempfile

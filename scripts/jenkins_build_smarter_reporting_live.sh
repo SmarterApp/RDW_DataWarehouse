@@ -367,9 +367,7 @@ function build_rpm {
 
     ENV_NAME=$(echo ${1}_env_name | tr '[:lower:]' '[:upper:]')
     echo "Sync RPM to S3"
-    if [ ! -d ${HOME}/smarter-rpms ]; then
-        mkdir ${HOME}/smarter-rpms
-    fi
+    mkdir ${HOME}/smarter-rpms
     cd ${HOME}/smarter-rpms
     mv ${HOME}/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm .
     aws s3 sync s3://smarter-dev-yum-repo/edware .

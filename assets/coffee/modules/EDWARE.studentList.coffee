@@ -97,7 +97,7 @@ define [
       if asmtType is Constants.ASMT_TYPE.IAB
         @createColumnsIAB()[viewName]
       else
-        @createColumnsSummativeInterim()[viewName]
+        @createColumnsSummativeInterim(asmtType)[viewName]
 
     createColumnsIAB: () ->
       currentGrade = @config.grade.id
@@ -132,7 +132,7 @@ define [
               break
       columnData
 
-    createColumnsSummativeInterim: () ->
+    createColumnsSummativeInterim: (asmtType) ->
       if not @data.metadata
         return
       claimsData = JSON.parse(Mustache.render(JSON.stringify(@data.metadata.claims), @data))
@@ -142,7 +142,10 @@ define [
         claim.name = @labels.asmt[claim.name]
       combinedData = $.extend(true, {}, this.data.subjects)
       combinedData.claims = claimsData
-      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
+      if asmtType == Constants.ASMT_TYPE.SUMMATIVE
+        columnData = JSON.parse(Mustache.render(JSON.stringify(@config.summative), combinedData))        
+      else
+        columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
       columnData
 
     formatDate : (date) ->

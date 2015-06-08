@@ -210,7 +210,7 @@
                         "displayTpl": "<a class='inherit' href='#'>Most Recent Mathematics</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
-                        "width": 120,
+                        "width": 140,
                         "formatter": "showText",
                         "options": {
                             "asmt_type": "subject1.asmt_date"
@@ -240,7 +240,7 @@
                         "displayTpl": "<a class='inherit' href='#'>Most Recent ELA/Literacy</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
-                        "width": 120,
+                        "width": 140,
                         "formatter": "showText",
                         "options": {
                             "asmt_type": "subject2.asmt_date"
@@ -299,7 +299,7 @@
                         "displayTpl": "<a class='inherit' href='#'>Date taken</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
-                        "width": 100,
+                        "width": 90,
                         "formatter": "showText",
                         "options": {
                             "asmt_type": "subject1.asmt_date"
@@ -387,7 +387,7 @@
                         "displayTpl": "<a class='inherit' href='#'>Date taken</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
-                        "width": 100,
+                        "width": 90,
                         "formatter": "showText",
                         "options": {
                             "asmt_type": "subject2.asmt_date"
@@ -472,6 +472,232 @@
             }
         }
     },
+    "summative": {
+        "{{subject1}}_{{subject2}}": [
+            {
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject1}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "index": "subject1.asmt_score",
+                        "field": "subject1.asmt_score",
+                        "width": 230,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject2}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "index": "subject2.asmt_score",
+                        "field": "subject2.asmt_score",
+                        "width": 230,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "",
+                        "displayTpl": "",
+                        "width": 190,
+                        "title": false,
+                        "export": false,
+                        "sortable": false
+                     }
+                ]
+            }
+        ],
+        "{{subject1}}": [
+            {
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true
+                    },                    
+                    {
+                        "name": "{{subject1}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "index": "subject1.asmt_score",
+                        "field": "subject1.asmt_score",
+                        "width": 175,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject1.0.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+                        "index": "subject1.claims.0.perf_lvl",
+                        "field": "subject1.claims.0.perf_lvl",
+                        "width": 154,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject1.1.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+                        "index": "subject1.claims.1.perf_lvl",
+                        "field": "subject1.claims.1.perf_lvl",
+                        "width": 160,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject1.2.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+                        "index": "subject1.claims.2.perf_lvl",
+                        "field": "subject1.claims.2.perf_lvl",
+                        "width": 160,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    }
+                ]
+            }
+        ],
+        "{{subject2}}": [
+            {
+                "name": "",
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true
+                    },                   
+                    {
+                        "name": "{{subject2}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "index": "subject2.asmt_score",
+                        "field": "subject2.asmt_score",
+                        "width": 175,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.0.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
+                        "index": "subject2.claims.0.perf_lvl",
+                        "field": "subject2.claims.0.perf_lvl",
+                        "width": 118,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.1.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
+                        "index": "subject2.claims.1.perf_lvl",
+                        "field": "subject2.claims.1.perf_lvl",
+                        "width": 118,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.2.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
+                        "index": "subject2.claims.2.perf_lvl",
+                        "field": "subject2.claims.2.perf_lvl",
+                        "width": 118,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.3.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
+                        "index": "subject2.claims.3.perf_lvl",
+                        "field": "subject2.claims.3.perf_lvl",
+                        "width": 120,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    }
+                ]
+            }
+        ],
+        "customViews": {
+            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}, {"name": "Interim Assessment Blocks", "display": "Interim Assessment Blocks"}],
+            "items": {
+                "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
+                "{{subject1}}": "{{subject1}} {{asmtType}}",
+                "{{subject2}}": "{{subject2}} {{asmtType}}"
+            }
+        }
+    },  
     "column_for_iab": {
         "name": "{{claim}}",
         "displayTpl": "<a class='inherit' href='#' title='{{claim}}'>{{titleText}}</a>",

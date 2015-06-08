@@ -31,6 +31,7 @@ cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroo
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-trigger %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-file-grabber %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-report %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/udl2_settings.yaml
@@ -124,6 +125,7 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-file-grabber
+%attr(755,root,root) /etc/rc.d/init.d/edudl2-report
 
 %pre
 # check if udl2 group exists and create if not

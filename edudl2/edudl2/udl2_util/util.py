@@ -8,6 +8,7 @@ from email.mime.text import MIMEText
 from jinja2 import Template
 import pkg_resources
 import smtplib
+from email.mime.multipart import MIMEMultipart
 __author__ = 'sravi'
 
 import os
@@ -68,10 +69,8 @@ def get_assessment_type(json_file_dir):
 def send_email_from_template(substitutions=None):
     if substitutions is None:
         substitutions = {}
-
-    settings = udl2_conf['mail']
-    enabled = settings.get("enabled", False)
-
+    settings = udl2_conf['mail']['udl_fail']
+    enabled = settings.get('enabled', False)
     if enabled:
         template_dir = pkg_resources.resource_filename("edudl2", "templates")
         template_filename = os.path.join(template_dir, settings["template_filename"])
@@ -80,24 +79,28 @@ def send_email_from_template(substitutions=None):
 
         template = Template(template_text)
         email_text = template.render(substitutions)
-
         message = MIMEText(email_text)
-        message["Subject"] = settings["subject"]
-        message["From"] = settings["from"]
-        message["To"] = settings["to"]
-        mail_hostname = settings["server_host"]
-        mail_port = settings.get("server_port", 465)
-        aws_mail_username = settings.get('smtp_username')
-        aws_mail_password = settings.get('smtp_password')
-        if type(mail_port) is str:
-            mail_port = int(mail_port)
+        message['From'] = settings['from']
+        message['To'] = settings['to']
+        message['Subject'] = settings['subject']
+        send_email(message)
 
-        if mail_port == 25:
-            with smtplib.SMTP(mail_hostname, mail_port) as mail:
-                mail.send_message(message)
-                mail.quit()
-        else:
-            with smtplib.SMTP_SSL(mail_hostname, mail_port) as mail:
-                mail.login(aws_mail_username, aws_mail_password)
-                mail.send_message(message)
-                mail.quit()
+
+def send_email(mime_message):
+    settings = udl2_conf['mail']
+    mail_hostname = settings['server_host']
+    mail_port = settings.get('server_port', 465)
+    aws_mail_username = settings.get('smtp_username')
+    aws_mail_password = settings.get('smtp_password')
+    if type(mail_port) is str:
+        mail_port = int(mail_port)
+
+    if mail_port == 25:
+        with smtplib.SMTP(mail_hostname, mail_port) as mail:
+            mail.send_message(mime_message)
+            mail.quit()
+    else:
+        with smtplib.SMTP_SSL(mail_hostname, mail_port) as mail:
+            mail.login(aws_mail_username, aws_mail_password)
+            mail.send_message(mime_message)
+            mail.quit()

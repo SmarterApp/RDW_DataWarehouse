@@ -215,7 +215,7 @@ if __name__ == "__main__":
     email_from = udl2_flat_conf.get(UDL_REPORT_MAIL_FROM)
     enabled = udl2_flat_conf.get(UDL_REPORT_ENABLED)
     start_date = today = datetime.datetime.today().strftime('%Y-%m-%d %H:00:00')
-    if enabled is not None and enabled.lower() == 'True':
+    if enabled is not None and enabled.lower() == 'true':
         generate_report_settings = {'report.enable': 'True',
                                     'report.schedule.cron.hour': hour,
                                     'report.schedule.cron.minute': '0',

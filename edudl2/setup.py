@@ -53,4 +53,5 @@ setup(name='edudl2',
           'docs': docs_extras, },
       entry_points="""\
       """,
+      package_data={'edudl2': ['templates/*.j2']},
       )

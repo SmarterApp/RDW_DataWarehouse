@@ -1,4 +1,4 @@
-LZ/UDL summary report for {{ start_date }}{% if end_date is defined %} - {{ end_date }} {% endif %}
+LZ/UDL summary report for {{ start_date }}(UTC){% if end_date is defined %} - {{ end_date }}(UTC){% endif %}
 {% if results %}
 {% for result in results %}
 Records for {{ result.datestamp }}: {{ result.counts }}

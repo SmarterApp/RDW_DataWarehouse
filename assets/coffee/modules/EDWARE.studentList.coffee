@@ -169,11 +169,15 @@ define [
                 if asmt[subjectName]
                   asmt[subjectName]['asmt_date'] = @formatDate asmtDate
                   @cache[asmtType][subjectType] ?= []
+                  if asmt.hide
+                    continue
                   @cache[asmtType][subjectType].push row
                   item[studentId][subjectName] = asmt[subjectName]
                 continue if !item[studentId][subjectName]
         # combined asmt details
         combinedAsmts = $.extend(asmtDetails, item[studentId])
+        if combinedAsmts.hide
+          continue
         @cache[asmtType][@allSubjects] ?= []
         @cache[asmtType][@allSubjects].push(combinedAsmts)
 

@@ -78,11 +78,6 @@ common:
       subject: UDL Task Failure
       from:
       to:
-    report:
-      uid: 1
-      mail_to: test@foo.com
-      mail_from: noreply@foo.com
-      subject: test
 
 qa:
   '[app]':

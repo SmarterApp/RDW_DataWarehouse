@@ -10,7 +10,7 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 import logging
 from hpz.frs import upload_service
-from hpz.frs.upload_service import file_upload_service_with_default_notification
+from hpz.frs.upload_service import file_upload_service
 from pyramid.registry import Registry
 
 
@@ -39,7 +39,7 @@ class UploadTest(unittest.TestCase):
     @patch('builtins.open')
     @patch('os.path.getsize')
     @patch('hpz.frs.upload_service.logger.info')
-    def test_file_upload_service_with_default_notification(self, logger_patch, get_size_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
+    def test_file_upload_service(self, logger_patch, get_size_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
                                  update_registration_patch):
         update_registration_patch.return_value = None
         copyfileobj_patch.return_value = DummyFile()
@@ -51,7 +51,7 @@ class UploadTest(unittest.TestCase):
         self.__request.method = 'POST'
         self.__request.POST['file'] = DummyFile()
 
-        response = file_upload_service_with_default_notification(None, self.__request)
+        response = file_upload_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(update_registration_patch.called)
@@ -72,7 +72,7 @@ class UploadTest(unittest.TestCase):
             self.__request.method = 'POST'
             self.__request.POST['file'] = DummyFile()
 
-            response = file_upload_service_with_default_notification(None, self.__request)
+            response = file_upload_service(None, self.__request)
 
             self.assertEqual(response.status_code, 200)
             self.assertTrue(not update_registration_patch.called)
@@ -97,7 +97,7 @@ class UploadTest(unittest.TestCase):
         self.__request.method = 'POST'
         self.__request.POST['file'] = DummyFile()
 
-        response = file_upload_service_with_default_notification(None, self.__request)
+        response = file_upload_service(None, self.__request)
 
         logger_patch.assert_called_once_with('Cannot complete file copying due to: Message')
 
@@ -122,7 +122,7 @@ class UploadTest(unittest.TestCase):
         self.__request.method = 'POST'
         self.__request.POST['file'] = DummyFile()
 
-        response = file_upload_service_with_default_notification(None, self.__request)
+        response = file_upload_service(None, self.__request)
 
         logger_patch.assert_called_once_with('File %s exceeds recommended size limit', '/dev/null/a1-b2-c3-d4-e5')
 
@@ -144,7 +144,7 @@ class UploadTest(unittest.TestCase):
         self.__request.method = 'POST'
         self.__request.POST['file'] = DummyFile()
 
-        response = file_upload_service_with_default_notification(None, __invalid_request)
+        response = file_upload_service(None, __invalid_request)
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(not update_registration_patch.called)
@@ -162,7 +162,7 @@ class UploadTest(unittest.TestCase):
         self.__request.method = 'POST'
         self.__request.POST['invalid_file'] = DummyFile()
 
-        response = file_upload_service_with_default_notification(None, self.__request)
+        response = file_upload_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(not update_registration_patch.called)

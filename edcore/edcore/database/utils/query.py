@@ -1,6 +1,5 @@
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
-from sqlalchemy.sql.expression import select, and_
 
 
 def insert_to_table(conn, table_name, values):
@@ -46,19 +45,3 @@ def update_udl_stats_by_batch_guid(batch_guid, values):
     '''
     update_records_in_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values,
                             {UdlStatsConstants.BATCH_GUID: batch_guid})
-
-
-def get_udl_stats_by_date(start_date, end_date=None):
-    '''
-    return all udl_stats records by given date
-    '''
-    results = []
-    with StatsDBConnection() as connector:
-        udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
-        s = select([udl_stats.c.tenant, udl_stats.c.file_arrived, udl_stats.c.load_start, udl_stats.c.load_end, udl_stats.c.load_status, udl_stats.c.batch_guid])
-        if end_date is None:
-            s = s.where(udl_stats.c.file_arrived > start_date)
-        else:
-            s = s.where(and_(udl_stats.c.file_arrived > start_date, udl_stats.c.file_arrived <= end_date))
-        results = connector.get_result(s)
-    return results

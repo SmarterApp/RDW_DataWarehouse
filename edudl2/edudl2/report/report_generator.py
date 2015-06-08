@@ -182,7 +182,8 @@ except Exception:
 
 
 def generate_report_for_cron(settings):
-    today = datetime.datetime.today().strftime('%Y-%m-%d %H:00:00')
+    report_hour = settings['hour']
+    today = datetime.datetime.today().strftime('%Y-%m-%d ' + str(report_hour) + ':00:00')
     start_date = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d %H:00:00')
     end_date = today
     generate_report(settings['uid'], settings['mail_to'], start_date, end_date, settings['mail_from'], settings['subject'])
@@ -191,6 +192,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate udl report')
     parser.add_argument('-i', dest='ini_file', help='Set the path to ini file', default=UDL2_DEFAULT_CONFIG_PATH_FILE)
     parser.add_argument('--hour', dest='hour', help='hour to run this script', default='10')
+    parser.add_argument('-r', dest='report_hour', help='report hour, e.g. yesterday 10am to today 10am', default='10')
     parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edudl2-report.pid',
                         help="pid file for edudl2 trigger daemon")
     parser.add_argument('-d', dest='daemon', action='store_true', default=False,
@@ -199,6 +201,7 @@ if __name__ == "__main__":
 
     config_path_file = args.ini_file
     hour = args.hour
+    report_hour = args.report_hour
     daemon_mode = args.daemon
     pid_file = args.pidfile
     if daemon_mode:
@@ -217,6 +220,7 @@ if __name__ == "__main__":
                                     'report.schedule.cron.hour': hour,
                                     'report.schedule.cron.minute': '0',
                                     'report.schedule.cron.second': '0',
+                                    'hour': report_hour,
                                     'mail_to': email_to,
                                     'subject': subject,
                                     'mail_from': email_from}

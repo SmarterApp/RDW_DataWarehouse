@@ -21,7 +21,7 @@ def put_file_registration_service(context, request):
     email = request.json_body[HPZ.EMAIL]
     registration_id = str(FileRegistry.register_request(user_id, email))
     base_url = request.registry.settings.get('hpz.frs.download_base_url')
-    url = urljoin(base_url, '/file/' + registration_id)
+    url = urljoin(base_url, '/files/' + registration_id)
     web_url = urljoin(base_url, '/download/' + registration_id)
     # We return 2 URLs - one for the rest call, and one is a browser web friendly URL
     r = {'url': url, 'web_url': web_url, 'registration_id': registration_id}

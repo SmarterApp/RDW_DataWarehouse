@@ -207,13 +207,6 @@ define [
       data = @cache[Constants.ASMT_TYPE.IAB][viewName]
       data
 
-    getLatestEffectiveDate: (asmtType) ->
-      for effectiveDate, asmt of @cache
-        for asmtCat, details of asmt
-          if asmtCat == asmtType
-            latestEffectiveDate = effectiveDate
-      latestEffectiveDate
-
     getSummativeAndInterim: (asmt, viewName) ->
       viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       asmtType = asmt.asmt_type

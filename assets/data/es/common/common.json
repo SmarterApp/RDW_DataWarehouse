@@ -206,7 +206,7 @@
                         "export": true
                     },
                     {
-                        "name": "{{subject1.asmt_date}}",
+                        "name": "Lo más reciente Matemáticas",
                         "displayTpl": "<a class='inherit' href='#'>Lo más reciente Matemáticas</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
@@ -236,7 +236,7 @@
                         "export": true
                     },
                     {
-                        "name": "{{subject2.asmt_date}}",
+                        "name": "Los más recientes ELA/Alfabetización",
                         "displayTpl": "<a class='inherit' href='#'>Los más recientes ELA/Alfabetización</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
@@ -295,7 +295,7 @@
                         "export": true
                     },
                     {
-                        "name": "subject1.asmt_date",
+                        "name": "Fecha de la toma",
                         "displayTpl": "<a class='inherit' href='#'>Fecha de la toma</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
@@ -383,7 +383,7 @@
                         "export": true
                     },
                     {
-                        "name": "{{subject2.asmt_date}}",
+                        "name": "Fecha de la toma",
                         "displayTpl": "<a class='inherit' href='#'>Fecha de la toma</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",

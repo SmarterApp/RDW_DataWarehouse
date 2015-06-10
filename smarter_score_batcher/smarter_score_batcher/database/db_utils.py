@@ -10,14 +10,13 @@ from smarter_score_batcher.error.error_file_generator import build_error_info_he
 import time
 
 
-def save_assessment(data):
+def save_assessment(conn, data):
     '''
     Save an assessment to `Constants.TSB_ASMT` table.
     '''
     parameters = {key: value for key, value in zip(data.header, data.values)}
-    with TSBDBConnection() as conn:
-        ins = conn.get_table(Constants.TSB_ASMT).insert()
-        conn.execute(ins, **parameters)
+    ins = conn.get_table(Constants.TSB_ASMT).insert()
+    conn.execute(ins, **parameters)
 
 
 def save_metadata(conn, asmtGuid, stateCode, metadata):
@@ -57,7 +56,7 @@ def get_metadata(conn, asmtGuid):
     Get assessment metadata by assessment guid. The assessment guid is passed in from XML request.
     '''
     tsb_metadata = conn.get_table(Constants.TSB_METADATA)
-    query = Select([tsb_metadata]).where(tsb_metadata.c.asmt_guid == asmtGuid).with_for_update(of=tsb_metadata)
+    query = Select([tsb_metadata]).where(tsb_metadata.c.asmt_guid == asmtGuid).with_for_update()
     return conn.get_result(query)
 
 

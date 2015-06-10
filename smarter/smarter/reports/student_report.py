@@ -34,7 +34,6 @@ def __prepare_query(connector, params):
     assessment_guid = params.get(Constants.ASSESSMENTGUID)
     student_id = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
-    #effective_date = params.get(Constants.EFFECTIVEDATE)
     date_taken = params.get(Constants.DATETAKEN)
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_year = params.get(Constants.ASMTYEAR)
@@ -126,8 +125,6 @@ def __prepare_query(connector, params):
     query = query.where(and_(fact_asmt_outcome_vw.c.student_id == student_id, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
-    #if effective_date is not None:
-    #    query = query.where(dim_asmt.c.effective_date == str(effective_date))
     if date_taken is not None:
         query = query.where(fact_asmt_outcome_vw.c.date_taken == str(date_taken))
     if asmt_type is not None:
@@ -315,10 +312,6 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
                        "type": "integer",
                        "required": True,
                        "pattern": "^[1-9][0-9]{3}$"},
-                   Constants.EFFECTIVEDATE: {
-                       "type": "integer",
-                       "required": False,
-                       "pattern": "^[1-9]{8}$"},
                    Constants.DATETAKEN: {
                        "type": "integer",
                        "required": False,

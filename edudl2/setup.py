@@ -16,11 +16,11 @@ requires = ['billiard==2.7.3.32',
             'pep8 == 1.4.6',
             'py-postgresql == 1.1.0',
             'requests == 2.2.1',
+            'Jinja2==2.7.3',
             'config',
             'edcore',
             'edworker',
-            'edschema',
-            'Jinja2==2.7.3']
+            'edschema']
 
 requires.append('pyinotify') if sys.platform == 'linux' else None
 

@@ -1,5 +1,9 @@
-LZ/UDL summary report for {{ start_date }}{% if end_date is defined %} - {{ end_date }} {% endif %}
-{% if records %}
-Records: {{ records }}
-Download summary zipped csv file from {{ hpz_web_url }}
+LZ/UDL summary report for {{ start_date }}(UTC){% if end_date is defined %} - {{ end_date }}(UTC){% endif %}
+{% if results %}
+{% for result in results %}
+Records for {{ result.datestamp }}: {{ result.counts }}
+{% endfor %}
+Please see attachment
+{% else %}
+No report
 {% endif %}

@@ -69,21 +69,22 @@ common:
         file_checksum_threshold_wait_period: 30
         file_system_scan_delay: 10
     mail:
-      enabled: False
       server_host: localhost
       server_port: 25
-      smtp_username:
-      smtp_password:
-      template_filename: udl2_error.j2
-      subject: UDL Task Failure
-      from:
-      to:
-    report:
-      uid: 1
-      mail_to: test@foo.com
-      mail_from: noreply@foo.com
-      subject: test
-
+      smtp_username: None
+      smtp_password: None
+      udl_fail:
+        enabled: False
+        template_filename: udl2_error.j2
+        subject: UDL Task Failure
+        from:
+        to:
+      udl_report:
+        enabled: False
+        subject: UDL Report
+        from: noreply@smarterbalanced.org
+        to: foo@foo.com
+      
 qa:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.

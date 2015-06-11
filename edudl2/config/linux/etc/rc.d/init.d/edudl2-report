@@ -5,7 +5,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 PIDFILE="/var/run/edudl2-report/edudl2-report.pid"
-EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.report.report_generator -d -p $PIDFILE"
+EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.report.report_generator --hour 16 -r 14 -d -p $PIDFILE"
 
 start() {
 	echo -n "Starting file grabber: "

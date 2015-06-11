@@ -13,8 +13,6 @@ from edudl2.udl2.constants import Constants
 import tempfile
 import os
 from edcore.utils.utils import archive_files, run_cron_job, create_daemon
-from hpz_client.frs.file_registration import register_file
-from hpz_client.frs.http_file_upload import http_file_upload
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 import csv
@@ -24,6 +22,14 @@ import datetime
 import argparse
 import time
 import copy
+import re
+from email.mime.text import MIMEText
+from edudl2.udl2_util.util import send_email
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+from email.utils import formatdate
+from email.mime.base import MIMEBase
+from email import encoders
 
 STUDENT_ID = 'student_id'
 ASMT_GUID = 'asmt_guid'
@@ -31,42 +37,67 @@ INGESTED_RECORDS = 'ingested_records'
 
 DAILY = 'daily'
 WEEKLY = 'weekly'
-UDL_REPORT_UID = 'report.uid'
-UDL_REPORT_MAIL_TO = 'report.mail_to'
-UDL_REPORT_SUBJECT = 'report.subject'
-UDL_REPORT_MAIL_FROM = 'report.mail_from'
+UDL_REPORT_ENABLED = 'mail.udl_report.enabled'
+UDL_REPORT_UID = 'mail.udl_report.uid'
+UDL_REPORT_MAIL_TO = 'mail.udl_report.to'
+UDL_REPORT_SUBJECT = 'mail.udl_report.subject'
+UDL_REPORT_MAIL_FROM = 'mail.udl_report.from'
 
 
-def generate_report(uid, email_to, start_date, end_date=None, email_from='noreply@smarterbalanced.org', subject='my subject'):
+def generate_report(email_to, start_date, end_date=None, email_from='noreply@smarterbalanced.org', subject='my subject'):
     '''
     generate report by batch
     '''
-    report_data = create_report_data(start_date, end_date)
-    registration_id, download_url, web_download_url = register_file(uid, email_to)
-    summary = {'hpz_web_url': web_download_url, 'start_date': start_date}
+    reports_data = create_report_data(start_date, end_date)
+    summary = {'start_date': start_date}
     if end_date is not None:
         summary['end_date'] = end_date
-    reports = []
-    # register
-    if report_data:
+    if reports_data:
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = os.path.join(tmp, 'data')
             os.mkdir(data_dir)
-            csv_file = os.path.join(data_dir, 'report.csv')
-            export_to_csv(csv_file, report_data)
-            summary['records'] = len(report_data)
-            report_file = os.path.join(tmp, 'report.zip')
+            results = []
+            for datestamp in reports_data.keys():
+                report_data = reports_data[datestamp]
+                csv_file = os.path.join(data_dir, 'report_' + datestamp + '.csv')
+                export_to_csv(csv_file, report_data)
+                results.append({'datestamp': datestamp, 'counts': len(report_data)})
+            summary['results'] = results
+            today = datetime.datetime.today().strftime('%Y-%m-%d')
+            report_file = os.path.join(tmp, 'report_' + today + '.zip')
             # archive
             archive_files(data_dir, report_file)
             # create email content
             mail_content = create_email_content(summary)
-            http_file_upload(report_file, registration_id, email_from=email_from, email_subject=subject, email_content=mail_content)
+            send_report(email_to, email_from, subject, mail_content, report_file=report_file)
     else:
         # create email content
-        mail_content = create_email_content(summary, web_download_url)
+        mail_content = create_email_content(summary)
+        send_report(email_to, email_from, subject, mail_content, report_file=None)
         # send
-        http_file_upload(None, registration_id, email_from=email_from, email_subject=subject, email_content=mail_content)
     return
+
+
+def send_report(email_to, email_from, subject, mail_content, report_file=None):
+    text_message = MIMEText(mail_content)
+    if report_file is None:
+        text_message['From'] = email_from
+        text_message['To'] = email_to
+        text_message['Subject'] = subject
+        send_email(text_message)
+    else:
+        message = MIMEMultipart()
+        message['From'] = email_from
+        message['To'] = email_to
+        message['Subject'] = subject
+        mime = MIMEBase('application', "octet-stream")
+        message.attach(text_message)
+        with open(report_file, 'rb') as f:
+            mime.set_payload(f.read())
+            encoders.encode_base64(mime)
+            mime.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(report_file))
+            message.attach(mime)
+        send_email(message)
 
 
 def create_email_content(summary):
@@ -91,8 +122,7 @@ def create_report_data(start_date, end_date=None):
     '''
     Find migrate ingested batch from edware_stats
     '''
-    report = []
-    report_data = {}
+    reports = {}
     udl_stats_results = get_udl_stats_by_date(start_date, end_date=end_date)
     for udl_stats_result in udl_stats_results:
         batch_guid = udl_stats_result[UdlStatsConstants.BATCH_GUID]
@@ -100,11 +130,27 @@ def create_report_data(start_date, end_date=None):
         tenant = udl_stats_result[UdlStatsConstants.TENANT]
         if load_status == UdlStatsConstants.MIGRATE_INGESTED:
             records = get_udl_record_by_batch_guid(batch_guid, tenant)
+            report_data = {}
             for record in records:
+                '''
+                remove any duplicated records
+                '''
                 report_data[record[STUDENT_ID] + record[ASMT_GUID]] = {STUDENT_ID: record[STUDENT_ID], ASMT_GUID: record[ASMT_GUID]}
-    for key in sorted(report_data.keys()):
-        report.append(report_data[key])
-    return report
+            file_name = get_intput_file(batch_guid)
+            m = re.search('(\d+-\d+-\d+)', file_name)
+            if m:
+                datestamp = m.group(0)
+            else:
+                datestamp = 'UNKNOWN_DATE'
+            report = reports.get(datestamp, [])
+            if not report:
+                '''
+                if report is just initialized, dict does not have ref to report variable.
+                '''
+                reports[datestamp] = report
+            for key in sorted(report_data.keys()):
+                report.append(report_data[key])
+    return reports
 
 
 def get_udl_record_by_batch_guid(batch_guid, tenant):
@@ -136,11 +182,17 @@ except Exception:
 
 
 def generate_report_for_cron(settings):
-    generate_report(settings['uid'], settings['mail_to'], settings['start_date'], settings['end_date'], settings['mail_from'], settings['subject'])
+    report_hour = settings['hour']
+    today = datetime.datetime.today().strftime('%Y-%m-%d ' + str(report_hour) + ':00:00')
+    start_date = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d ' + str(report_hour) + ':00:00')
+    end_date = today
+    generate_report(settings['mail_to'], start_date, end_date, settings['mail_from'], settings['subject'])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate udl report')
     parser.add_argument('-i', dest='ini_file', help='Set the path to ini file', default=UDL2_DEFAULT_CONFIG_PATH_FILE)
+    parser.add_argument('--hour', dest='hour', help='hour to run this script', default='10')
+    parser.add_argument('-r', dest='report_hour', help='report hour, e.g. yesterday 10am to today 10am', default='10')
     parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edudl2-report.pid',
                         help="pid file for edudl2 trigger daemon")
     parser.add_argument('-d', dest='daemon', action='store_true', default=False,
@@ -148,6 +200,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     config_path_file = args.ini_file
+    hour = args.hour
+    report_hour = args.report_hour
     daemon_mode = args.daemon
     pid_file = args.pidfile
     if daemon_mode:
@@ -156,32 +210,21 @@ if __name__ == "__main__":
     udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
     initialize_all_db(udl2_conf, udl2_flat_conf)
 
-    uid = udl2_conf.get(UDL_REPORT_UID)
-    email_to = udl2_conf.get(UDL_REPORT_MAIL_TO)
-    subject = udl2_conf.get(UDL_REPORT_SUBJECT)
-    mail_from = udl2_conf.get(UDL_REPORT_MAIL_FROM)
-    today = datetime.date.today()
-    end = None
-    start = today
-    generate_report_settings = {'report.enable': 'True',
-                                'report.schedule.cron.hour': '1',
-                                'report.schedule.cron.minute': '0',
-                                'report.schedule.cron.second': '0',
-                                'uid': uid,
-                                'mail_to': email_to,
-                                'subject': subject,
-                                'mail_from': mail_from,
-                                'start_date': start,
-                                'end_date': None}
-    run_cron_job(copy.deepcopy(generate_report_settings), 'report.', generate_report_for_cron)
+    email_to = udl2_flat_conf.get(UDL_REPORT_MAIL_TO)
+    subject = udl2_flat_conf.get(UDL_REPORT_SUBJECT)
+    email_from = udl2_flat_conf.get(UDL_REPORT_MAIL_FROM)
+    enabled = udl2_flat_conf.get(UDL_REPORT_ENABLED)
+    start_date = today = datetime.datetime.today().strftime('%Y-%m-%d %H:00:00')
+    if enabled is not None and enabled.lower() == 'true':
+        generate_report_settings = {'report.enable': 'True',
+                                    'report.schedule.cron.hour': hour,
+                                    'report.schedule.cron.minute': '0',
+                                    'report.schedule.cron.second': '0',
+                                    'hour': report_hour,
+                                    'mail_to': email_to,
+                                    'subject': subject,
+                                    'mail_from': email_from}
+        run_cron_job(copy.deepcopy(generate_report_settings), 'report.', generate_report_for_cron)
 
-    one_week = datetime.timedelta(weeks=1)
-    start = today - one_week
-    end = today
-    generate_report_settings['report.schedule.cron.day_of_week'] = '6'
-    generate_report_settings['report.schedule.cron.hour'] = '2'
-    generate_report_settings['end_date'] = end
-    run_cron_job(generate_report_settings, 'report.', generate_report_for_cron)
-
-    while True:
-        time.sleep(1)
+        while True:
+            time.sleep(1)

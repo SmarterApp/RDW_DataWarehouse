@@ -10,7 +10,6 @@ dependencies = [
     'edschema',
     'edcore',
     'edworker',
-    'hpz_client',
     'config']
 
 

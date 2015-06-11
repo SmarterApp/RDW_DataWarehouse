@@ -5,7 +5,7 @@ Created on Jan 21, 2015
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPOk, HTTPServerError
-from smarter_score_batcher.tasks import health_check
+from smarter_score_batcher.tasks.health_check import health_check
 import pyramid.threadlocal
 from sqlalchemy.sql.expression import select
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection

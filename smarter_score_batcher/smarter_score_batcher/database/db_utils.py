@@ -145,12 +145,12 @@ def delete_assessments(assessment_id, tsb_asmt_rec_ids, tsb_error_rec_ids):
                 if tsb_error_rec_ids:
                     tsb_error = conn.get_table(Constants.TSB_ERROR)
                     conn.execute(tsb_error.delete().where(tsb_error.c.tsb_error_rec_id.in_(tsb_error_rec_ids)))
-        
+
                 # delete meta data in database
                 if tsb_asmt_rec_ids:
                     tsb_asmt = conn.get_table(Constants.TSB_ASMT)
                     conn.execute(tsb_asmt.delete().where(tsb_asmt.c.tsb_asmt_rec_id.in_(tsb_asmt_rec_ids)))
-        
+
                 # delete assessment data in database
                 if assessment_id:
                     tsb_metadata = conn.get_table(Constants.TSB_METADATA)

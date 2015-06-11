@@ -48,7 +48,6 @@ def process_assessment_data(root, meta):
                 transaction.rollback()
                 time.sleep(1)
         retry -= 1
-                    
 
 
 def process_item_level_data(root, meta, csv_file_path):

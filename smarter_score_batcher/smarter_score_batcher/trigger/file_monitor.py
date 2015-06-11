@@ -213,9 +213,10 @@ class FileEncryption:
         '''
 
         def _save_metadata(assessment_id, output_dir):
-            metadata = get_metadata(asmtGuid=assessment_id)
-            if not metadata:
-                return
+            with TSBDBConnection() as conn:
+                metadata = get_metadata(conn, asmtGuid=assessment_id)
+                if not metadata:
+                    return
             filepath = os.path.join(output_dir, assessment_id + Extensions.JSON)
             content = json.loads(metadata[0][Constants.CONTENT])
             with open(filepath, mode='w') as f:

@@ -97,6 +97,7 @@ define [
       displayValue: displayValue
       labels: options.colModel.labels
       columnName: options.colModel.label
+      displayDate: rowObject.dateTaken
     }
 
   showText = (value, options, rowObject) ->

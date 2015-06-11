@@ -167,6 +167,7 @@ define [
                 if asmt[subjectName]
                   if asmt.hide
                     continue
+                  asmt.dateTaken = asmtDate
                   asmt[subjectName]['asmt_date'] = @formatDate asmtDate
                   row = new StudentModel(asmtType, null, this).init asmt
                   @cache[asmtType][subjectType] ?= []

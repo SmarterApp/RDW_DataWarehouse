@@ -41,13 +41,13 @@ define [
       # Hide buttons based on whether any selection is already made
       # Only perform when compare mode is active
       if this.compareMode
-        if this.getRowsCount() > 0
+        if this.getUniqueRowsCount() > 0
           this.showCompareEnabledButtons()
         else
           this.hideCompareSection()
       else
         # We may reach to this state when user selects some checkbox, and then submit a filter that cause grid to re-render
-        if this.getRowsCount() is 0
+        if this.getUniqueRowsCount() is 0
           this.hideCompareSection()
         else
           # This happens when grid re-renders and we need to reapply selected rows with checkboxes to true and update its text
@@ -118,12 +118,12 @@ define [
       $(document).on 'click', '.removeStickyChainIcon', () ->
         rowId = $(this).data('id')
         # Uncheck the checkbox in the grid
-        element = $('#sticky_' + rowId)
-        element.attr('checked', false)
+        elements = $('.sticky_' + rowId)
+        elements.attr('checked', false)
         # We need to explicitly remove the rows
         # because we may run into the case where the row isn't loaded in the grid
         self.removeRowFromSelectedRows rowId
-        self.uncheckedEvent element
+        self.uncheckedEvent elements
         $('.stickyChainScrollable').html(self.getStickyChainContent().html())
 
       # On logout, clear storage
@@ -138,19 +138,22 @@ define [
     clearSelectedRows: () ->
       this.selectedRows = {}
 
-    getRows: () ->
+    # Keep dates taken
+    getUniqueRows: () ->
       keys = []
-      for key, value of this.selectedRows
-        keys.push(key)
+      for key, data of this.selectedRows
+        item = {}
+        item[key] = { dates : data.dates }
+        keys.push(item)
       keys
 
-    getRowsCount: () ->
-      @getRows().length
+    getUniqueRowsCount: () ->
+      @getUniqueRows().length
 
     # rows have been selected, compare the selections
     compare: () ->
       this.compareMode = true
-      this.updateSelection() if this.getRowsCount() > 0
+      this.updateSelection() if this.getUniqueRowsCount() > 0
 
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
@@ -166,21 +169,30 @@ define [
       this.resetCompareRowControls()
 
     # Given a row in the grid, add its value to selectedRows
+    # for multi row student case, add dates
     addCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
-      this.selectedRows[info.id] = info.name
+      if !this.selectedRows[info.id]
+        this.selectedRows[info.id] = { name: info.name, dates: [] }
+      this.selectedRows[info.id].dates.push(info.date)
 
     # Given a row in the grid, remove its value from selectedRows
+    # for multi row student case, check date
     removeCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
-      this.removeRowFromSelectedRows info.id
+      dates = this.selectedRows[info.id].dates
+      i = dates.indexOf(info.date)
+      if i isnt -1
+        dates.splice i, 1
+      if dates.length is 0
+        this.removeRowFromSelectedRows info.id
 
     removeRowFromSelectedRows: (id) ->
       delete this.selectedRows[id]
 
     # Returns the id and name of a row
     getCurrentRowInfo: (row) ->
-      {'id': $(row).data('value'), 'name': $(row).data('name')}
+      {'id': $(row).data('value'), 'name': $(row).data('name'), 'date': $(row).data('date')}
 
     getSelectedRowsFromStorage: () ->
       # When this gets called, it means we should read from storage
@@ -189,9 +201,10 @@ define [
       rows = this.getDataForReport()
       this.selectedRows = {}
       for row in rows
-        this.selectedRows[row] = ""
+        for key, data of row
+          this.selectedRows[key] = { name: '', dates: data.dates }
       this.compareMode = rows.length > 0
-      this.getRows()
+      this.getUniqueRows()
 
     getFilteredInfo: (allData, columnField) ->
       # client passes in data and this will return rows that user have selected and whether stickyCompare is enabled
@@ -201,11 +214,18 @@ define [
       selectedRows = @getSelectedRowsFromStorage()
       if selectedRows.length is 0
         return {'data': allData, 'enabled': false }
-      for data in allData
-        if String(data.rowId) in selectedRows
-          returnData.push data
-          # We need to repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
-          @selectedRows[data.rowId] = data[columnField]
+      # for multi row student case, add dates
+      for item in allData
+        for row in selectedRows
+          for key, data of row
+            if String(item.rowId) is key
+              for date in data.dates
+                if String(date) == item.dateTaken
+                  returnData.push item
+              # Repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
+              newItem = {}
+              newItem.name = item[columnField]
+              @selectedRows[key] = { name: item[columnField], dates: data.dates }
       return {'data': returnData, 'enabled': selectedRows.length > 0}
 
 
@@ -223,7 +243,7 @@ define [
     # Reset compare mode depending on whether any rows are selected
     updateSelection: () ->
       this.saveSelectedRowsToStorage()
-      if this.getRowsCount() is 0 and this.compareMode
+      if this.getUniqueRowsCount() is 0 and this.compareMode
         this.compareMode = false
         this.hideCompareSection()
       # calls a callback function (render grid)
@@ -234,7 +254,7 @@ define [
       data = this.getDataFromStorage()
       reportData = data[this.reportType]
       reportData = {} if not reportData
-      reportData[this.getKey()] = this.getRows()
+      reportData[this.getKey()] = this.getUniqueRows()
       data[this.reportType] = reportData
       this.storage.save data
 
@@ -261,7 +281,7 @@ define [
     resetCompareRowControls: () ->
       text = this.labels.filter
       labelNameKey = this.displayType
-      count = this.getRowsCount()
+      count = this.getUniqueRowsCount()
       if count > 0
         labelNameKey = this.getDisplayTypes() if count > 1
         countText = count + " " + this.labels[labelNameKey]
@@ -303,7 +323,7 @@ define [
     showCompareEnabledButtons: () ->
       this.showCompareSection()
       this.stickyShowAllBtn.text(this.labels.show_all + " " + this.labels[this.getDisplayTypes()])
-      count = this.getRowsCount()
+      count = this.getUniqueRowsCount()
       text = this.labels.viewing + " " + String(count) + " "
       if count > 1 then text += this.labels[this.getDisplayTypes()] else text += this.labels[this.displayType]
       this.stickyEnabledDescription.text(text)
@@ -313,9 +333,9 @@ define [
     getStickyChainContent: ()->
       reverse = {}
       names = []
-      for key, value of this.selectedRows
-        reverse[value] = key
-        names.push value
+      for key, data of this.selectedRows
+        reverse[data.name] = key
+        names.push data.name
       names = names.sort()
       idx = 0
       scrollable =$('<div class="stickyChainScrollable"></div>')

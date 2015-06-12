@@ -80,7 +80,7 @@ define [
       if asmtType is Constants.ASMT_TYPE.IAB
         @formatIABData()
       else
-        @formatAssessmentsData()
+        @formatAssessmentsData(asmtType)
 
     getColumnData: (viewName) ->
       asmtType = edwarePreferences.getAsmtType() || Constants.ASMT_TYPE.SUMMATIVE
@@ -97,7 +97,7 @@ define [
       if asmtType is Constants.ASMT_TYPE.IAB
         @createColumnsIAB()[viewName]
       else
-        @createColumnsSummativeInterim()[viewName]
+        @createColumnsSummativeInterim(asmtType)[viewName]
 
     createColumnsIAB: () ->
       currentGrade = @config.grade.id
@@ -132,7 +132,7 @@ define [
               break
       columnData
 
-    createColumnsSummativeInterim: () ->
+    createColumnsSummativeInterim: (asmtType) ->
       if not @data.metadata
         return
       claimsData = JSON.parse(Mustache.render(JSON.stringify(@data.metadata.claims), @data))
@@ -142,32 +142,45 @@ define [
         claim.name = @labels.asmt[claim.name]
       combinedData = $.extend(true, {}, this.data.subjects)
       combinedData.claims = claimsData
-      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
+      if asmtType == Constants.ASMT_TYPE.SUMMATIVE
+        columnData = JSON.parse(Mustache.render(JSON.stringify(@config.summative), combinedData))        
+      else
+        columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
       columnData
+
+    formatDate : (date) ->
+      if date
+        return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
 
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
-    formatAssessmentsData: () ->
-      for effectiveDate, assessments of @assessmentsData
-        @cache[effectiveDate] ?= {}
-        for asmtType, studentList of assessments
-          @cache[effectiveDate][asmtType] ?= {}
-          for studentId, assessment of studentList
-            continue if assessment.hide
-            row = new StudentModel(asmtType, effectiveDate, this).init assessment
-            showAllSubjects = false
-            # push to each subject view
-            for subjectName, subjectType of @subjectsData
-              continue if not row[subjectName] or row[subjectName].hide
-              @cache[effectiveDate][asmtType][subjectType] ?= []
-              @cache[effectiveDate][asmtType][subjectType].push row
-              showAllSubjects = true
+    formatAssessmentsData: (asmtType) ->
+      @cache[asmtType] ?= {}
+      item = {}
+      studentGroupByType = @assessmentsData[asmtType]
+      for studentId, asmtList of studentGroupByType
+        item[studentId] ?= {}
+        for asmtByDate in asmtList
+          for asmtDate, asmt of asmtByDate
+            if asmtDate isnt 'hide'
+              for subjectName, subjectType of @subjectsData
+                if asmt[subjectName]
+                  if asmt.hide
+                    continue
+                  asmt[subjectName]['asmt_date'] = @formatDate asmtDate
+                  row = new StudentModel(asmtType, null, this).init asmt
+                  @cache[asmtType][subjectType] ?= []
+                  @cache[asmtType][subjectType].push row
+                  # combine 2 subjects, add only once
+                  if !item[studentId][subjectName]
+                    item[studentId][subjectName] = asmt[subjectName]
+        if item[studentId]
+          combinedAsmts = $.extend({}, asmt, item[studentId]);
+        if combinedAsmts.hide
+          continue
+        @cache[asmtType][@allSubjects] ?= []
+        @cache[asmtType][@allSubjects].push(combinedAsmts)
 
-            continue if not showAllSubjects
-            # push to conjunct Math_ELA view
-            @cache[effectiveDate][asmtType][@allSubjects] ?= []
-            allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
-            allsubjects.push row  if row not in allsubjects
 
     formatIABData: () ->
       @cache[Constants.ASMT_TYPE.IAB] ?= {}
@@ -196,14 +209,9 @@ define [
 
     getSummativeAndInterim: (asmt, viewName) ->
       viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
-      effectiveDate = asmt.effective_date
       asmtType = asmt.asmt_type
-      data = @cache[effectiveDate]?[asmtType]?[viewName]
-      if data
-        for item in data
-          item.assessments = item[asmtType]
+      data = @cache[asmtType][viewName]
       data
-
 
   class StudentGrid
 
@@ -433,12 +441,13 @@ define [
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
+      asmtType = edwarePreferences.getAsmtType()
+      # asmtData a list of asmt objects
       asmtData = @studentsDataSet.getAsmtData(viewName, @params)
       columns = @studentsDataSet.getColumns(viewName)
       fieldName = Constants.INDEX_COLUMN.LOS
       filteredInfo = @stickyCompare.getFilteredInfo(asmtData, fieldName)
 
-      asmtType = edwarePreferences.getAsmtType()
       scrollable = asmtType isnt Constants.ASMT_TYPE.IAB
       self = this
       edwareGrid.create {

@@ -20,11 +20,15 @@ define [
       currentYear = edwarePreferences.getAsmtYearPreference()
       latestYear = []
       otherYears = []
-      for v in @dropdownValues
+
+      for x,y of @dropdownValues
+
+        # always the first one
+        v = y[0]
         if v.asmt_period_year is currentYear
-          latestYear.push v
+            latestYear.push v
         else
-          otherYears.push v
+            otherYears.push v
 
       years = []
       currentYears = []
@@ -45,12 +49,14 @@ define [
       @container.html(output)
 
     getAsmtTypes: () ->
-      asmtTypes = []
+      asmtTypes = {}
+      #asmtTypes = []
       for idx, asmt of @config.asmtTypes?.options
         asmt.asmt_year = asmt.effective_date.substr(0, 4) if asmt.effective_date
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.display = asmt.asmt_type
-        asmtTypes.push asmt
+        asmtTypes[asmt.asmt_type] = (asmtTypes[asmt.asmt_type] || [])
+        asmtTypes[asmt.asmt_type].push(asmt)
       asmtTypes
 
     setDefaultOption: () ->

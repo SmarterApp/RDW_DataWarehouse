@@ -175,6 +175,7 @@ common:
       gpg.public_key.vt: sbac_data_provider@sbac.com
       gpg.public_key.ca: sbac_data_provider@sbac.com
       #gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+      health_check.job.queue: health_check
       base_dir:
         xml: /opt/edware/raw_data
         csv: /opt/edware/item_level
@@ -185,7 +186,7 @@ common:
       async_queue: smarter_score_batcher_async
       metadata_queue: smarter_score_batcher_metadata
       celery:
-        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer', 'smarter_score_batcher.tasks.remote_metadata_writer')
+        CELERY_IMPORTS: ('smarter_score_batcher.tasks.remote_file_writer', 'smarter_score_batcher.tasks.remote_csv_writer', 'smarter_score_batcher.tasks.remote_metadata_writer', 'smarter_score_batcher.tasks.health_check')
         CELERY_RESULT_BACKEND: amqp
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 20

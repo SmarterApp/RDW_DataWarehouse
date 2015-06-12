@@ -19,6 +19,6 @@ def health_check():
             if not results:
                 return "Cannot connect to TSB DB"
     except:
-        pass
+        return "Cannot connect to TSB DB"
     heartbeat = "heartbeat:" + str(datetime.now())
     return heartbeat

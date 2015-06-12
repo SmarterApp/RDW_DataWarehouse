@@ -14,6 +14,8 @@ from smarter_score_batcher.error.exceptions import GenerateCSVException, TSBExce
 from smarter_score_batcher.error.error_codes import ErrorSource, ErrorCode
 from smarter_score_batcher.database.db_utils import save_assessment, \
     save_metadata, get_metadata
+from smarter_score_batcher.database.tsb_connector import TSBDBConnection
+import time
 
 try:
     import xml.etree.cElementTree as ET
@@ -32,9 +34,20 @@ def process_assessment_data(root, meta):
     # Create dir name based on state code and file name from asmt id
     asmtGuid, metadata = get_assessment_metadata_mapping(root)
     stateCode, data = get_assessment_mapping(root, metadata)
-    if not get_metadata(asmtGuid):
-        save_metadata(asmtGuid, stateCode, metadata)
-    save_assessment(data)
+    retry = 3
+    while retry != 0:
+        with TSBDBConnection() as conn:
+            try:
+                transaction = conn.get_transaction()
+                if not get_metadata(conn, asmtGuid):
+                    save_metadata(conn, asmtGuid, stateCode, metadata)
+                save_assessment(conn, data)
+                transaction.commit()
+                break
+            except:
+                transaction.rollback()
+                time.sleep(1)
+        retry -= 1
 
 
 def process_item_level_data(root, meta, csv_file_path):

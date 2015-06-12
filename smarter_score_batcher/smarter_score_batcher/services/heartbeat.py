@@ -7,6 +7,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from smarter_score_batcher.tasks.health_check import health_check
 import pyramid.threadlocal
+from pyramid.httpexceptions import HTTPOk
 
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
@@ -40,3 +41,4 @@ def check_celery(request):
 
     if heartbeat_message[0:9] != 'heartbeat':
         raise Exception('TSB Heartbeat Exception')
+    return HTTPOk()

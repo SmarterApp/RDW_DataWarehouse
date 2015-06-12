@@ -7,8 +7,6 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from smarter_score_batcher.tasks.health_check import health_check
 import pyramid.threadlocal
-from sqlalchemy.sql.expression import select
-from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
@@ -18,7 +16,6 @@ def heartbeat(request):
     '''
     try:
         check_celery(request)
-        check_datasource()
     except:
         return HTTPServerError()
     return HTTPOk()
@@ -43,16 +40,3 @@ def check_celery(request):
 
     if heartbeat_message[0:9] != 'heartbeat':
         raise Exception('TSB Heartbeat Exception')
-
-
-def check_datasource():
-    '''
-    GET request that executes a Select 1 and returns status of 200 if database returns results
-
-    :param request:  Pyramid request object
-    '''
-    with TSBDBConnection() as connector:
-        query = select([1])
-        results = connector.get_result(query)
-        if not results:
-            raise Exception('TSB Heartbeat Exception')

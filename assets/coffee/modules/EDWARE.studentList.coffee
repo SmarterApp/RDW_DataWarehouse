@@ -165,8 +165,8 @@ define [
             if asmtDate isnt 'hide'
               for subjectName, subjectType of @subjectsData
                 if asmt[subjectName]
-                  if asmt.hide
-                    continue
+                  continue if asmt.hide
+                  continue if asmt[subjectName].hide
                   asmt.dateTaken = asmtDate
                   asmt[subjectName]['asmt_date'] = @formatDate asmtDate
                   row = new StudentModel(asmtType, null, this).init asmt
@@ -175,12 +175,12 @@ define [
                   # combine 2 subjects, add only once
                   if !item[studentId][subjectName]
                     item[studentId][subjectName] = asmt[subjectName]
-        if item[studentId]
+        if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId]);
-        if combinedAsmts.hide
-          continue
-        @cache[asmtType][@allSubjects] ?= []
-        @cache[asmtType][@allSubjects].push(combinedAsmts)
+          if combinedAsmts.hide
+            continue
+          @cache[asmtType][@allSubjects] ?= []
+          @cache[asmtType][@allSubjects].push(combinedAsmts)
 
 
     formatIABData: () ->

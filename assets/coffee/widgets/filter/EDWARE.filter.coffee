@@ -353,14 +353,14 @@ define [
                 assessment.hide = true
               else
                 assessment.hide = false
-            # check grouping filters
-            for subject of data.subjects
-              asmt_subject = assessment[subject]
-              continue if not asmt_subject
-              if not match.grouping(asmt_subject)
-                assessment.hide = true
-              else
-                assessment.hide = false
+              # check grouping filters
+              for subject of data.subjects
+                asmt_subject = assessment[subject]
+                continue if not asmt_subject
+                if not match.grouping(asmt_subject)
+                  asmt_subject.hide = true
+                else
+                  asmt_subject.hide = false
       data
 
     return (asmtType) ->

@@ -345,7 +345,6 @@ define [
     FAOFilter = (data) ->
       # no filters applied
       return data if not filters
-
       for asmtType, studentGroupByType of data.assessments
         for studentId, asmtList of studentGroupByType
           for asmtByDate in asmtList
@@ -359,9 +358,9 @@ define [
               asmt_subject = assessment[subject]
               continue if not asmt_subject
               if not match.grouping(asmt_subject)
-                asmt_subject.hide = true
+                assessment.hide = true
               else
-                asmt_subject.hide = false
+                assessment.hide = false
       data
 
     return (asmtType) ->

@@ -235,7 +235,7 @@ def get_assessment_metadata_mapping(root):
     asmtGuid = XMLMeta(test_node, ".", "testId")
 
     mappings = [JSONMapping(asmtGuid, json_output, 'asmt_guid'),
-                JSONMapping(DateMeta(opportunity, ".", "effectiveDate"), json_output, 'effective_date'),
+                JSONMapping(DateMeta(opportunity, ".", "dateCompleted"), json_output, 'effective_date'),
                 JSONMapping(subject, json_output, 'subject'),
                 JSONMapping(asmt_type, json_output, 'asmt_type', upper_case=True),
                 JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),

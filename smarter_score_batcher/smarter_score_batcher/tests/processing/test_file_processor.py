@@ -10,6 +10,7 @@ from smarter_score_batcher.utils.constants import Constants
 from smarter_score_batcher.tests.processing.utils import read_data
 from smarter_score_batcher.processing.file_processor import process_assessment_data
 from smarter_score_batcher.database.db_utils import get_assessments, get_metadata, get_all_assessment_guids
+from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 
 
 try:
@@ -32,7 +33,8 @@ class Test(Unittest_with_tsb_sqlite):
         self.assertEqual(state_code, 'CA')
         self.assertEqual(asmt_guid, 'SBAC-FT-SomeDescription-ELA-7')
         # test metadata
-        asmt_meta = get_metadata(asmt_guid)
+        with TSBDBConnection() as conn:
+            asmt_meta = get_metadata(conn, asmt_guid)
         self.assertIsNotNone(asmt_meta)
         self.assertIsNotNone(asmt_meta[0][Constants.CONTENT])
         assessments = get_assessments(asmt_guid)

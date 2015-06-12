@@ -1,5 +1,5 @@
 <TDSReport>
-  <Test name="(SBAC)SBAC-FT-SomeDescription-ELA-7-Fall-2013-2014" subject="ELA" testId="SBAC-FT-SomeDescription-ELA-7" bankKey="200" contract="SBAC" mode="online" grade="03"
+  <Test name="(SBAC)SBAC-FT-SomeDescription-ELA-7-Fall-2013-2014" subject="ELA" testId="SBAC-FT-SomeDescription-ELA-7" bankKey="200" contract="SBAC" mode="online" grade="3"
   	assessmentType="Summative" academicYear="2014" assessmentVersion="SomeNewVersion" />
   <Examinee key="922171">
     <ExamineeAttribute context="FINAL" name="Birthdate" value="2013-08-31" contextDate="2014-04-14T11:13:41.803"/>
@@ -30,14 +30,14 @@
     <ExamineeAttribute context="INITIAL" name="Birthdate" value="" contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="INITIAL" name="GradeLevelWhenAssessed" value="03" contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeAttribute context="INITIAL" name="StudentIdentifier" value="77043c80-4b0a-11e4-916c-0800200c9a66"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="DistrictID" entityKey="709" value="CA_9999827"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="DistrictName" entityKey="709" value="This Elementary School District" contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="FINAL" name="SchoolID" entityKey="9426" value="CA_9999827_9999928" contextDate="2014-04-14T11:13:41.810" />
-    <ExamineeRelationship context="FINAL" name="SchoolName" entityKey="9426" value="My Elementary School" contextDate="2014-04-14T11:13:41.810" />
-    <ExamineeRelationship context="INITIAL" name="DistrictID" entityKey="709" value="CA_9999827"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="INITIAL" name="DistrictName" entityKey="709" value="This Elementary School District"  contextDate="2014-04-14T11:13:41.803"/>
-    <ExamineeRelationship context="INITIAL" name="SchoolID" entityKey="9426" value="CA_999927_9999928" contextDate="2014-04-14T10:48:43.433" />
-    <ExamineeRelationship context="INITIAL" name="SchoolName" entityKey="9426" value="My Elementary School" contextDate="2014-04-14T10:48:43.433" />
+    <ExamineeRelationship context="FINAL" name="ResponsibleDistrictIdentifier" entityKey="709" value="CA_9999827"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="FINAL" name="OrganizationName" entityKey="709" value="This Elementary School District" contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="FINAL" name="ResponsibleInstitutionIdentifier" entityKey="9426" value="CA_9999827_9999928" contextDate="2014-04-14T11:13:41.810" />
+    <ExamineeRelationship context="FINAL" name="NameOfInstitution" entityKey="9426" value="My Elementary School" contextDate="2014-04-14T11:13:41.810" />
+    <ExamineeRelationship context="INITIAL" name="ResponsibleDistrictIdentifier" entityKey="709" value="CA_9999827"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="INITIAL" name="OrganizationName" entityKey="709" value="This Elementary School District"  contextDate="2014-04-14T11:13:41.803"/>
+    <ExamineeRelationship context="INITIAL" name="ResponsibleInstitutionIdentifier" entityKey="9426" value="CA_999927_9999928" contextDate="2014-04-14T10:48:43.433" />
+    <ExamineeRelationship context="INITIAL" name="NameOfInstitution" entityKey="9426" value="My Elementary School" contextDate="2014-04-14T10:48:43.433" />
     <ExamineeRelationship context="INITIAL" name="StateAbbreviation" entityKey="3" value="CA"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="INITIAL" name="StateName" entityKey="3" value="California"  contextDate="2014-04-14T11:13:41.803"/>
     <ExamineeRelationship context="INITIAL" name="StudentGroupName" value="Brennan Math" contextDate="2014-09-14T10:48:43.433" />

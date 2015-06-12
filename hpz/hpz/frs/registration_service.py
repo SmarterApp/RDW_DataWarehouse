@@ -18,7 +18,7 @@ UID_PARAMETER = 'uid'
 @validate_request_info('json_body', UID_PARAMETER)
 def put_file_registration_service(context, request):
     user_id = request.json_body[UID_PARAMETER]
-    email = request.json_body[HPZ.EMAIL]
+    email = request.json_body.get(HPZ.EMAIL)
     registration_id = str(FileRegistry.register_request(user_id, email))
     base_url = request.registry.settings.get('hpz.frs.download_base_url')
     url = urljoin(base_url, '/files/' + registration_id)

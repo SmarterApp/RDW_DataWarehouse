@@ -3,10 +3,14 @@ Created on Aug 11, 2014
 
 @author: dip
 '''
-from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, DateMeta, IntegerMeta, get_claim1_mapping
+from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, get_claim1_mapping
 from zope import component
-from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager,\
+from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager, \
     get_template_key
+from smarter_score_batcher.utils.xml_utils import extract_meta_without_fallback_helper
+from smarter_score_batcher.celery import conf
+from edauth.security.utils import load_class
+import re
 
 
 class JSONHeaders:
@@ -208,7 +212,7 @@ class JSONMapping(Mapping):
         self.upper_case = upper_case
 
     def evaluate(self):
-        setattr(self.target, self.property, self.src.get_value().upper() if self.upper_case else self.src.get_value())
+        setattr(self.target, self.property, self.src.upper() if self.upper_case else self.src)
 
 
 def get_assessment_metadata_mapping(root):
@@ -217,13 +221,18 @@ def get_assessment_metadata_mapping(root):
     '''
     opportunity = root.find("./Opportunity")
     test_node = root.find("./Test")
-    subject = XMLMeta(test_node, ".", "subject")
-    grade = XMLMeta(test_node, ".", "grade")
-    asmt_type = XMLMeta(test_node, ".", "assessmentType")
-    year = XMLMeta(test_node, ".", "academicYear")
+    asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
+    subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
+    grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
+    asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
+    academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
+    effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
+
+    meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
+    meta = meta_class(True, '', '', '', academic_year, asmt_type, subject, grade, effective_date, asmt_id)
 
     meta_template_manager = component.queryUtility(IMetadataTemplateManager)
-    meta_template = meta_template_manager.get_template(get_template_key(year.get_value(), asmt_type.get_value(), grade.get_value(), subject.get_value()))
+    meta_template = meta_template_manager.get_template(get_template_key(meta.academic_year, meta.asmt_type, meta.grade, meta.subject))
 
     json_output = JSONHeaders(meta_template)
 
@@ -232,15 +241,13 @@ def get_assessment_metadata_mapping(root):
         claim1_mapping = get_claim1_mapping(opportunity)
         json_output.claim1_name = claim1_mapping
 
-    asmtGuid = XMLMeta(test_node, ".", "testId")
-
-    mappings = [JSONMapping(asmtGuid, json_output, 'asmt_guid'),
-                JSONMapping(DateMeta(opportunity, ".", "dateCompleted"), json_output, 'effective_date'),
-                JSONMapping(subject, json_output, 'subject'),
-                JSONMapping(asmt_type, json_output, 'asmt_type', upper_case=True),
-                JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
-                JSONMapping(year, json_output, 'asmt_year')]
+    mappings = [JSONMapping(meta.asmt_id, json_output, 'asmt_guid'),
+                JSONMapping(meta.effective_date, json_output, 'effective_date'),
+                JSONMapping(meta.subject, json_output, 'subject'),
+                JSONMapping(meta.asmt_type, json_output, 'asmt_type', upper_case=True),
+                JSONMapping(XMLMeta(test_node, ".", "assessmentVersion").get_value(), json_output, 'asmt_version'),
+                JSONMapping(meta.academic_year, json_output, 'asmt_year')]
 
     for m in mappings:
         m.evaluate()
-    return asmtGuid.get_value(), json_output.get_values()
+    return meta.asmt_id, json_output.get_values()

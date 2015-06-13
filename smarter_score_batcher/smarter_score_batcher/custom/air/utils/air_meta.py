@@ -16,7 +16,7 @@ def _init_asmt_id_asmt_type():
     to be efficient use hashmap to lookup asmt_type by subject
     '''
     here = os.path.abspath(os.path.dirname(__file__))
-    subject_asmt_type_file = conf.get('smarter_score_batcher.mapping.subject_asmt_type.file', os.path.join(here, '../../../../resources/mapping/subject_asmt_type.json'))
+    subject_asmt_type_file = conf.get('smarter_score_batcher.mapping.subject_asmt_type.file', os.path.join(here, '../../../../resources/mapping/testId_asmt_type.json'))
     subject_asmt_type = {}
     path = os.path.abspath(subject_asmt_type_file)
     with open(path) as f:

@@ -41,7 +41,7 @@ class TestJSONMetadata(unittest.TestCase):
 
     def test_JSONMapping(self):
         header = JSONHeaders(self.__metadata)
-        mapping = JSONMapping(DummyObj(), header, 'asmt_guid')
+        mapping = JSONMapping(DummyObj().get_value(), header, 'asmt_guid')
         mapping.evaluate()
         self.assertEqual(header.asmt_guid, 1)
 

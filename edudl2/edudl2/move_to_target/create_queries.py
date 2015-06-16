@@ -49,7 +49,7 @@ class InsertQueryBuilder:
         if distinct:
             self.distinct_expression = 'max(%s)' % self.guid_field
         else:
-            self.distinct_expression = self.guid_fieldf
+            self.distinct_expression = self.guid_field
 
     def build(self):
         from_query = "SELECT {distinct_expression}, {quoted_source_columns} " + \

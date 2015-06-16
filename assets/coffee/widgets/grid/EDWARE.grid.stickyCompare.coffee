@@ -68,7 +68,8 @@ define [
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
         if not $(this).is(':checked')
-          self.removeCurrentRow this
+          if self.removeCurrentUniqueRow this
+            self.removeCurrentRow this
           self.uncheckedEvent this
         else
           self.addCurrentRow this
@@ -198,12 +199,14 @@ define [
       this.applyCheckboxValues()
 
     # Given a row in the grid, remove its value from selectedRows
-    # for multi row student case, check date
     removeCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
-      # if edwarePreferences.isAsmtIC()
-      # if this.selectedRows[info.id].asmts[info.date]
       this.removeRowFromSelectedRows info.id
+
+    # Check all selections for the student
+    removeCurrentUniqueRow: (row) ->
+      className = $(row).data('value')
+      $('#gbox_gridTable .sticky_' + className + ':checked').length is 0
 
     removeRowFromSelectedRows: (id) ->
       delete this.selectedRows[id]

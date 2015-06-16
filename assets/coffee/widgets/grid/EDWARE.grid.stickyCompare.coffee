@@ -6,7 +6,8 @@ define [
   'text!edwareStickyCompareTemplate'
   'edwareGrid'
   'edwareEvents'
-], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid, edwareEvents) ->
+  'edwarePreferences'
+], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid, edwareEvents, edwarePreferences) ->
 
   STICKY_POPOVER_TEMPLATE = '<div class="popover stickyPopover"><div class="mask"></div><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
 
@@ -54,12 +55,12 @@ define [
           this.applyCheckboxValues()
 
     applyCheckboxValues: () ->
-      for row of this.selectedRows
-        id = "#sticky_#{row}"
-        element = $(id)
-        element.attr('checked', true)
-        $(id, '.frozen-bdiv').attr('checked', true)
-        this.checkedEvent element
+      for rowId, data of this.selectedRows
+        className = '.sticky_'+ rowId
+        els = $(className)
+        els.attr('checked', true)
+        $(className + '.frozen-bdiv').attr('checked', true)
+        this.checkedEvent els
 
     # All events related to grid filtering of rows
     bindEvents: () ->
@@ -71,6 +72,7 @@ define [
           self.uncheckedEvent this
         else
           self.addCurrentRow this
+          self.addRowsForStudent this
           self.checkedEvent this
         self.renderStickyChainRows()
 
@@ -133,7 +135,7 @@ define [
 
       $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
         # To prevent the dropdown from closing when clicking inside dropdown menu
-        e.stopPropagation();
+        e.stopPropagation()
 
     clearSelectedRows: () ->
       this.selectedRows = {}
@@ -143,7 +145,9 @@ define [
       keys = []
       for key, data of this.selectedRows
         item = {}
-        item[key] = { dates : data.dates }
+        item[key] =
+          name : data.name
+          asmts : data.asmts
         keys.push(item)
       keys
 
@@ -172,20 +176,34 @@ define [
     # for multi row student case, add dates
     addCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
+      viewName = edwarePreferences.getAsmtView()
       if !this.selectedRows[info.id]
-        this.selectedRows[info.id] = { name: info.name, dates: [] }
-      this.selectedRows[info.id].dates.push(info.date)
+        this.selectedRows[info.id] =
+          name: info.name
+      # Different asmts can be taken on the same date
+      this.selectedRows[info.id].asmts ?= {}
+      this.selectedRows[info.id].asmts[info.date] = viewName
+
+
+    # Add other rows to selectedRows
+    addRowsForStudent: (row) ->
+      info = this.getCurrentRowInfo row
+      viewName = edwarePreferences.getAsmtView()
+      studentRowEls = elements = $('.sticky_' + info.id)
+      # Add to selected rows
+      for row in studentRowEls
+        if !this.selectedRows[info.id].asmts[$(row).data('date')]
+          this.addCurrentRow row
+      # Check all rows on
+      this.applyCheckboxValues()
 
     # Given a row in the grid, remove its value from selectedRows
     # for multi row student case, check date
     removeCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
-      dates = this.selectedRows[info.id].dates
-      i = dates.indexOf(info.date)
-      if i isnt -1
-        dates.splice i, 1
-      if dates.length is 0
-        this.removeRowFromSelectedRows info.id
+      # if edwarePreferences.isAsmtIC()
+      # if this.selectedRows[info.id].asmts[info.date]
+      this.removeRowFromSelectedRows info.id
 
     removeRowFromSelectedRows: (id) ->
       delete this.selectedRows[id]
@@ -200,9 +218,13 @@ define [
       # Gets the rows selected for the current report view
       rows = this.getDataForReport()
       this.selectedRows = {}
+      viewName = edwarePreferences.getAsmtView()
       for row in rows
         for key, data of row
-          this.selectedRows[key] = { name: '', dates: data.dates }
+          this.selectedRows[key] =
+            name: ''
+          this.selectedRows[key].asmts ?= data.asmts
+          # this.selectedRows[key].asmts[date] ?= viewName
       this.compareMode = rows.length > 0
       this.getUniqueRows()
 
@@ -212,20 +234,20 @@ define [
       returnData = []
       # show all records
       selectedRows = @getSelectedRowsFromStorage()
+      viewName = edwarePreferences.getAsmtView()
       if selectedRows.length is 0
         return {'data': allData, 'enabled': false }
-      # for multi row student case, add dates
       for item in allData
         for row in selectedRows
           for key, data of row
+            # Display per date per view
             if String(item.rowId) is key
-              for date in data.dates
-                if String(date) == item.dateTaken
-                  returnData.push item
+             # and data.asmts[item.dateTaken]
+              returnData.push item
               # Repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
-              newItem = {}
-              newItem.name = item[columnField]
-              @selectedRows[key] = { name: item[columnField], dates: data.dates }
+              @selectedRows[key] =
+                name: item[columnField]
+                asmts: data.asmts
       return {'data': returnData, 'enabled': selectedRows.length > 0}
 
 

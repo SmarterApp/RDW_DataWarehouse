@@ -75,8 +75,8 @@ define [
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
-
       asmtType = edwarePreferences.getAsmtType()
+      edwarePreferences.saveAsmtIC asmtType is Constants.ASMT_TYPE.INTERIM
       if asmtType is Constants.ASMT_TYPE.IAB
         @formatIABData()
       else

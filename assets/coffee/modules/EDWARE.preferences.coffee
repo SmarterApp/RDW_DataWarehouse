@@ -120,6 +120,13 @@ define [
   getFilters = () ->
     JSON.parse(clientStorage.filterStorage.load() || "{}")
 
+  saveAsmtIC = (isAsmtIC) ->
+    savePreferences { 'isAsmtIC': isAsmtIC }
+
+  isAsmtIC = () ->
+    pref = getPreferences() || {}
+    pref['isAsmtIC']
+
   saveStateCode:saveStateCode
   getStateCode:getStateCode
   saveAsmtPreference:saveAsmtPreference
@@ -144,3 +151,5 @@ define [
   saveExpandedColumns: saveExpandedColumns
   removeExpandedColumns: removeExpandedColumns
   isExpandedColumn: isExpandedColumn
+  saveAsmtIC: saveAsmtIC
+  isAsmtIC: isAsmtIC

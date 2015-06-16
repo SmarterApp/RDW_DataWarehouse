@@ -203,7 +203,8 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
-                        "export": true
+                        "export": true,
+                        "frozen": true
                     },
                     {
                         "name": "Hầu hết Toán học gần đây",
@@ -264,14 +265,6 @@
                         "align": "center",
                         "title": false,
                         "export": true
-                    },
-                    {
-                        "name": "",
-                        "displayTpl": "",
-                        "width": 174,
-                        "title": false,
-                        "export": false,
-                        "sortable": false
                     }
                 ]
             }

@@ -97,7 +97,7 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(mapping[AssessmentHeaders.Group3Text], 'Smith Research')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentAdministrationFinishDate], '20140414')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentYear], '2014')
-        self.assertEqual(mapping[AssessmentHeaders.AssessmentType], 'Summative')
+        self.assertEqual(mapping[AssessmentHeaders.AssessmentType], 'SUMMATIVE')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentLevelForWhichDesigned], '3')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentSubtestResultScoreValue], '245.174914080214')
         self.assertEqual(mapping[AssessmentHeaders.AssessmentSubtestMinimumValue], '226')

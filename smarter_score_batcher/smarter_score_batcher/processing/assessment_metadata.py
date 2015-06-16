@@ -3,7 +3,8 @@ Created on Aug 11, 2014
 
 @author: dip
 '''
-from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, get_claim1_mapping
+from smarter_score_batcher.processing.assessment import XMLMeta, Mapping, get_claim1_mapping,\
+    ValueMeta
 from zope import component
 from smarter_score_batcher.templates.asmt_template_manager import IMetadataTemplateManager, \
     get_template_key
@@ -212,7 +213,7 @@ class JSONMapping(Mapping):
         self.upper_case = upper_case
 
     def evaluate(self):
-        setattr(self.target, self.property, self.src.upper() if self.upper_case else self.src)
+        setattr(self.target, self.property, self.src.get_value().upper() if self.upper_case else self.src.get_value())
 
 
 def get_assessment_metadata_mapping(root):
@@ -241,12 +242,12 @@ def get_assessment_metadata_mapping(root):
         claim1_mapping = get_claim1_mapping(opportunity)
         json_output.claim1_name = claim1_mapping
 
-    mappings = [JSONMapping(meta.asmt_id, json_output, 'asmt_guid'),
-                JSONMapping(meta.effective_date, json_output, 'effective_date'),
-                JSONMapping(meta.subject, json_output, 'subject'),
-                JSONMapping(meta.asmt_type, json_output, 'asmt_type', upper_case=True),
-                JSONMapping(XMLMeta(test_node, ".", "assessmentVersion").get_value(), json_output, 'asmt_version'),
-                JSONMapping(meta.academic_year, json_output, 'asmt_year')]
+    mappings = [JSONMapping(ValueMeta(meta.asmt_id), json_output, 'asmt_guid'),
+                JSONMapping(ValueMeta(meta.effective_date), json_output, 'effective_date'),
+                JSONMapping(ValueMeta(meta.subject), json_output, 'subject'),
+                JSONMapping(ValueMeta(meta.asmt_type), json_output, 'asmt_type', upper_case=True),
+                JSONMapping(XMLMeta(test_node, ".", "assessmentVersion"), json_output, 'asmt_version'),
+                JSONMapping(ValueMeta(meta.academic_year), json_output, 'asmt_year')]
 
     for m in mappings:
         m.evaluate()

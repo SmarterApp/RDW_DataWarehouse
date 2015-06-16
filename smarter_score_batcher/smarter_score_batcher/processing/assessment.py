@@ -11,6 +11,8 @@ from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 from smarter_score_batcher.error.exceptions import MetadataException
 from edcore.utils.utils import xml_datetime_convert
 import hashlib
+from edauth.security.utils import load_class
+from smarter_score_batcher.celery import conf
 
 
 class XMLMeta:
@@ -260,6 +262,14 @@ def get_assessment_mapping(root, metadata):
     accommodations = get_accommodations(opportunity)
     claims = get_claims(metadata, opportunity)
 
+    asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
+    subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
+    grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
+    asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
+    academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
+    effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
+    meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
+    meta = meta_class(True, '', '', '', academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     stateCode = XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")
     # In the order of the LZ mapping for easier maintenance
     mappings = AssessmentData([Mapping(stateCode, AssessmentHeaders.StateAbbreviation),
@@ -288,14 +298,14 @@ def get_assessment_mapping(root, metadata):
                                Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='EconomicDisadvantageStatus']", "value", "context"), AssessmentHeaders.EconomicDisadvantageStatus),
                                Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='MigrantStatus']", "value", "context"), AssessmentHeaders.MigrantStatus),
 
-                               Mapping(XMLMeta(test_node, ".", "testId"), AssessmentHeaders.AssessmentGuid),
+                               Mapping(ValueMeta(meta.asmt_id), AssessmentHeaders.AssessmentGuid),
                                Mapping(XMLMeta(opportunity, ".", "oppId"), AssessmentHeaders.AssessmentSessionLocationId),
                                Mapping(XMLMeta(opportunity, ".", "server"), AssessmentHeaders.AssessmentSessionLocation),
-                               Mapping(DateMeta(opportunity, ".", "dateCompleted"), AssessmentHeaders.AssessmentAdministrationFinishDate),
-                               Mapping(XMLMeta(test_node, ".", "academicYear"), AssessmentHeaders.AssessmentYear),
-                               Mapping(XMLMeta(test_node, ".", "assessmentType"), AssessmentHeaders.AssessmentType),
-                               Mapping(XMLMeta(test_node, ".", "subject"), AssessmentHeaders.AssessmentAcademicSubject),
-                               Mapping(XMLMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
+                               Mapping(ValueMeta(meta.effective_date), AssessmentHeaders.AssessmentAdministrationFinishDate),
+                               Mapping(ValueMeta(meta.academic_year), AssessmentHeaders.AssessmentYear),
+                               Mapping(ValueMeta(meta.asmt_type), AssessmentHeaders.AssessmentType),
+                               Mapping(ValueMeta(meta.subject), AssessmentHeaders.AssessmentAcademicSubject),
+                               Mapping(ValueMeta(meta.grade), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()
     return stateCode.get_value(), mappings
@@ -388,11 +398,6 @@ def get_accommodations(opportunity):
 
 
 def get_claims(metadata, opportunity):
-    # read metadata and map Claim1, Claim2, Claim3, and Claim4
-    # metadata = None
-    # with open(metadata_file_path) as f:
-    #     metadata_json = f.read()
-    #     metadata = json.loads(metadata_json)
 
     claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1) or get_claim1_mapping(opportunity)
     claim2_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, PerformanceMetadataConstants.CLAIM2)

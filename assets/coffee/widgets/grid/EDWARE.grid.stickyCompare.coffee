@@ -68,8 +68,8 @@ define [
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
         if not $(this).is(':checked')
-          if self.removeCurrentUniqueRow this
-            self.removeCurrentRow this
+          self.removeCurrentRow this
+          self.removeRowsForStudent this
           self.uncheckedEvent this
         else
           self.addCurrentRow this
@@ -185,7 +185,6 @@ define [
       this.selectedRows[info.id].asmts ?= {}
       this.selectedRows[info.id].asmts[info.date] = viewName
 
-
     # Add other rows to selectedRows
     addRowsForStudent: (row) ->
       info = this.getCurrentRowInfo row
@@ -203,10 +202,9 @@ define [
       info = this.getCurrentRowInfo row
       this.removeRowFromSelectedRows info.id
 
-    # Check all selections for the student
-    removeCurrentUniqueRow: (row) ->
+    removeRowsForStudent: (row) ->
       className = $(row).data('value')
-      $('#gbox_gridTable .sticky_' + className + ':checked').length is 0
+      $('#gbox_gridTable .sticky_' + className).attr('checked', false)
 
     removeRowFromSelectedRows: (id) ->
       delete this.selectedRows[id]

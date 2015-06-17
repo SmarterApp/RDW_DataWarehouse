@@ -207,8 +207,8 @@
                         "frozen": true
                     },
                     {
-                        "name": "Hầu hết Toán học gần đây",
-                        "displayTpl": "<a class='inherit' href='#'>Hầu hết Toán học gần đây</a>",
+                        "name": "Điểm môn Toán gần đây nhất",
+                        "displayTpl": "<a class='inherit' href='#'>Điểm môn Toán gần đây nhất</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
                         "width": 140,
@@ -237,8 +237,8 @@
                         "export": true
                     },
                     {
-                        "name": "Hầu hết gần đây ELA/Đọc viết tổng quát",
-                        "displayTpl": "<a class='inherit' href='#'>Hầu hết gần đây ELA/Đọc viết tổng quát</a>",
+                        "name": "Điểm môn Anh văn gần đây nhất",
+                        "displayTpl": "<a class='inherit' href='#'>Điểm môn Anh văn gần đây nhất</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
                         "width": 140,
@@ -288,8 +288,8 @@
                         "export": true
                     },
                     {
-                        "name": "Ngày chụp",
-                        "displayTpl": "<a class='inherit' href='#'>Ngày chụp</a>",
+                        "name": "Ngày thi",
+                        "displayTpl": "<a class='inherit' href='#'>Ngày thi</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
                         "width": 90,
@@ -376,8 +376,8 @@
                         "export": true
                     },
                     {
-                        "name": "Ngày chụp",
-                        "displayTpl": "<a class='inherit' href='#'>Ngày chụp</a>",
+                        "name": "Ngày thi",
+                        "displayTpl": "<a class='inherit' href='#'>Ngày thi</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
                         "width": 90,

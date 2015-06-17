@@ -5,7 +5,8 @@ define [
   "edwarePreferences"
   "edwareEvents"
   "edwareConstants"
-], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents, Constants) ->
+  "edwareUtil"
+], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents, Constants, edwareUtil) ->
 
   class EdwareAsmtDropdown
 
@@ -50,11 +51,10 @@ define [
 
     getAsmtTypes: () ->
       asmtTypes = {}
-      #asmtTypes = []
       for idx, asmt of @config.asmtTypes?.options
-        asmt.asmt_year = asmt.effective_date.substr(0, 4) if asmt.effective_date
+        asmt.asmt_year = asmt.date_taken.substr(0, 4) if asmt.date_taken
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        asmt.display = asmt.asmt_type
+        asmt.display = @getAsmtDisplayText(asmt)
         asmtTypes[asmt.asmt_type] = (asmtTypes[asmt.asmt_type] || [])
         asmtTypes[asmt.asmt_type].push(asmt)
       asmtTypes
@@ -91,6 +91,7 @@ define [
       asmt_type: $option.data('asmttype')
       asmt_guid: $option.data('asmtguid')?.toString()
       effective_date: $option.data('effectivedate')
+      date_taken: $option.data('datetaken')
       asmt_grade: $option.data('grade')
       asmt_period_year: $option.data('asmtperiodyear')
 
@@ -110,13 +111,19 @@ define [
         $IABMessage.hide()
 
     getAsmtDisplayText: (asmt)->
-      #comparingPopulations
-      if asmt.asmt_type is undefined
+      reportName = this.config.reportName
+      #comparing_populations
+      if reportName == Constants.REPORT_NAME.CPOP
         return "" if not asmt.effective_date
-      #studentList
-      asmt.asmt_from_year = asmt.asmt_period_year - 1
-      asmt.asmt_to_year = asmt.asmt_period_year
-      return Mustache.to_html @displayTemplate.selection, asmt
+      #list_of_students
+      if reportName == Constants.REPORT_NAME.LOS
+        asmt.asmt_from_year = asmt.asmt_period_year - 1
+        asmt.asmt_to_year = asmt.asmt_period_year
+        return Mustache.to_html @displayTemplate.selection, asmt
+      #student report
+      if reportName == Constants.REPORT_NAME.ISR
+        asmt.asmt_date = edwareUtil.formatDate(asmt.date_taken)
+        return Mustache.to_html @displayTemplate.default, asmt
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->

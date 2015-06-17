@@ -25,7 +25,7 @@ define [
 
   class StudentModel
 
-    constructor: (@asmtType, @effectiveDate, @dataSet) ->
+    constructor: (@asmtType, @effectiveDate, @dataSet, @asmtDate) ->
 
     init: (row) ->
       @appendColors row
@@ -60,8 +60,9 @@ define [
         "studentId": row['student_id'],
         "stateCode": row['state_code'],
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
-        'asmtType': encodeURI(@asmtType.toUpperCase()),
+        'asmtType': encodeURI(@asmtType.toUpperCase())
       }
+      row['params']['dateTaken'] ?= @asmtDate if @asmtDate
       row['params']['effectiveDate'] ?= @effectiveDate if @effectiveDate
       row
 
@@ -148,10 +149,6 @@ define [
         columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
       columnData
 
-    formatDate : (date) ->
-      if date
-        return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
-
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: (asmtType) ->
@@ -167,8 +164,8 @@ define [
                 if asmt[subjectName]
                   if asmt.hide
                     continue
-                  asmt[subjectName]['asmt_date'] = @formatDate asmtDate
-                  row = new StudentModel(asmtType, null, this).init asmt
+                  asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
+                  row = new StudentModel(asmtType, null, this, asmtDate).init asmt
                   @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once

@@ -38,8 +38,10 @@
         "25": "1",
         "26": "1"
     },
-    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Grado {{asmt_grade}} • {{asmt_type}}",
-                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
+    "asmtSelectorTemplate":{
+        "default": "{{asmt_date}} • Grado {{asmt_grade}} • {{asmt_type}}",
+        "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"
+    },
     "detailsSelection": {
         "Summative": ["Math", "ELA"],
         "Interim Comprehensive": ["Math", "ELA"],

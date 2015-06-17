@@ -139,7 +139,7 @@ define [
           claim.name = @configData.labels.asmt[claim.name]
           claim.perf_lvl_name = @configData.labels.asmt[claim.perf_lvl_name]
 
-        key = assessment.effective_date + assessment.asmt_type
+        key = assessment.date_taken + assessment.asmt_type
         @data['views'] ?= {}
         @data['views'][key] ?= []
         @data['views'][key].push assessment if @data['views'][key].length < 2
@@ -179,8 +179,8 @@ define [
             dataByName[grade][name]['previousCounter'] ?= 0
             prevCounter = dataByName[grade][name]['previousCounter']
             if prevCounter < 3
-                dataByName[grade][name]['previous'][prevCounter] = block
-                dataByName[grade][name]['previousCounter'] +=1
+              dataByName[grade][name]['previous'][prevCounter] = block
+              dataByName[grade][name]['previousCounter'] +=1
             else
               dataByName[grade][name]['hasOlder'] = true
               dataByName[grade][name]['older'] ?= []
@@ -322,6 +322,7 @@ define [
       @configData.switchView = (asmtView)->
         self.updateView(asmtView)
       @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, @params.asmtType
+      # viewName
       @getAsmtViewSelection()
 
     getCacheKey: ()->
@@ -333,13 +334,13 @@ define [
         if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
             # Important:  This is a workaround for bulk pdf generation
            key = if @params['effectiveDate'] then @params['effectiveDate'] else @params['asmtYear']
-        else 
+        else
           key = @params['asmtYear']
         return key + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
-          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then asmt['effective_date'] else + asmt['asmt_period_year']
+          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params.dateTaken else + asmt['asmt_period_year']
           return key + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
@@ -356,14 +357,17 @@ define [
           asmtType = isrAsmt['asmt_type']
           effectiveDate = isrAsmt['effective_date']
           asmtYear = isrAsmt['asmt_period_year']
+          dateTaken = isrAsmt['date_taken']
           params['asmtType'] = asmtType.toUpperCase() if asmtType
           params['effectiveDate'] = effectiveDate if effectiveDate
+          params['dateTaken'] = dateTaken if dateTaken
           params['asmtYear'] = asmtYear if asmtYear
         else
           # We save the params into storage in the case it's found in query params but not in storage
           edwarePreferences.saveAsmtForISR
             asmt_type: Constants.ASMT_TYPE[params['asmtType']]
             effective_date: params['effectiveDate']
+            date_taken: params['dateTaken']
             asmt_period_year: params['asmtYear']
       @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
       @params = params

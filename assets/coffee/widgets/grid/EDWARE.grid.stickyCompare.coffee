@@ -6,8 +6,7 @@ define [
   'text!edwareStickyCompareTemplate'
   'edwareGrid'
   'edwareEvents'
-  'edwarePreferences'
-], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid, edwareEvents, edwarePreferences) ->
+], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid, edwareEvents) ->
 
   STICKY_POPOVER_TEMPLATE = '<div class="popover stickyPopover"><div class="mask"></div><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
 
@@ -42,13 +41,13 @@ define [
       # Hide buttons based on whether any selection is already made
       # Only perform when compare mode is active
       if this.compareMode
-        if this.getUniqueRowsCount() > 0
+        if this.getRowsCount() > 0
           this.showCompareEnabledButtons()
         else
           this.hideCompareSection()
       else
         # We may reach to this state when user selects some checkbox, and then submit a filter that cause grid to re-render
-        if this.getUniqueRowsCount() is 0
+        if this.getRowsCount() is 0
           this.hideCompareSection()
         else
           # This happens when grid re-renders and we need to reapply selected rows with checkboxes to true and update its text
@@ -141,24 +140,22 @@ define [
     clearSelectedRows: () ->
       this.selectedRows = {}
 
-    # Keep dates taken
-    getUniqueRows: () ->
+    getRows: () ->
       keys = []
       for key, data of this.selectedRows
         item = {}
         item[key] =
           name : data.name
-          asmts : data.asmts
         keys.push(item)
       keys
 
-    getUniqueRowsCount: () ->
-      @getUniqueRows().length
+    getRowsCount: () ->
+      @getRows().length
 
     # rows have been selected, compare the selections
     compare: () ->
       this.compareMode = true
-      this.updateSelection() if this.getUniqueRowsCount() > 0
+      this.updateSelection() if this.getRowsCount() > 0
 
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
@@ -177,23 +174,18 @@ define [
     # for multi row student case, add dates
     addCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
-      viewName = edwarePreferences.getAsmtView()
       if !this.selectedRows[info.id]
         this.selectedRows[info.id] =
           name: info.name
-      # Different asmts can be taken on the same date
       this.selectedRows[info.id].asmts ?= {}
-      this.selectedRows[info.id].asmts[info.date] = viewName
 
     # Add other rows to selectedRows
     addRowsForStudent: (row) ->
       info = this.getCurrentRowInfo row
-      viewName = edwarePreferences.getAsmtView()
       studentRowEls = elements = $('.sticky_' + info.id)
       # Add to selected rows
       for row in studentRowEls
-        if !this.selectedRows[info.id].asmts[$(row).data('date')]
-          this.addCurrentRow row
+        this.addCurrentRow row
       # Check all rows on
       this.applyCheckboxValues()
 
@@ -211,7 +203,7 @@ define [
 
     # Returns the id and name of a row
     getCurrentRowInfo: (row) ->
-      {'id': $(row).data('value'), 'name': $(row).data('name'), 'date': $(row).data('date')}
+      {'id': $(row).data('value'), 'name': $(row).data('name')}
 
     getSelectedRowsFromStorage: () ->
       # When this gets called, it means we should read from storage
@@ -219,15 +211,13 @@ define [
       # Gets the rows selected for the current report view
       rows = this.getDataForReport()
       this.selectedRows = {}
-      viewName = edwarePreferences.getAsmtView()
       for row in rows
         for key, data of row
           this.selectedRows[key] =
             name: ''
           this.selectedRows[key].asmts ?= data.asmts
-          # this.selectedRows[key].asmts[date] ?= viewName
       this.compareMode = rows.length > 0
-      this.getUniqueRows()
+      this.getRows()
 
     getFilteredInfo: (allData, columnField) ->
       # client passes in data and this will return rows that user have selected and whether stickyCompare is enabled
@@ -235,15 +225,12 @@ define [
       returnData = []
       # show all records
       selectedRows = @getSelectedRowsFromStorage()
-      viewName = edwarePreferences.getAsmtView()
       if selectedRows.length is 0
         return {'data': allData, 'enabled': false }
       for item in allData
         for row in selectedRows
           for key, data of row
-            # Display per date per view
             if String(item.rowId) is key
-             # and data.asmts[item.dateTaken]
               returnData.push item
               # Repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
               @selectedRows[key] =
@@ -266,7 +253,7 @@ define [
     # Reset compare mode depending on whether any rows are selected
     updateSelection: () ->
       this.saveSelectedRowsToStorage()
-      if this.getUniqueRowsCount() is 0 and this.compareMode
+      if this.getRowsCount() is 0 and this.compareMode
         this.compareMode = false
         this.hideCompareSection()
       # calls a callback function (render grid)
@@ -277,7 +264,7 @@ define [
       data = this.getDataFromStorage()
       reportData = data[this.reportType]
       reportData = {} if not reportData
-      reportData[this.getKey()] = this.getUniqueRows()
+      reportData[this.getKey()] = this.getRows()
       data[this.reportType] = reportData
       this.storage.save data
 
@@ -304,7 +291,7 @@ define [
     resetCompareRowControls: () ->
       text = this.labels.filter
       labelNameKey = this.displayType
-      count = this.getUniqueRowsCount()
+      count = this.getRowsCount()
       if count > 0
         labelNameKey = this.getDisplayTypes() if count > 1
         countText = count + " " + this.labels[labelNameKey]
@@ -346,7 +333,7 @@ define [
     showCompareEnabledButtons: () ->
       this.showCompareSection()
       this.stickyShowAllBtn.text(this.labels.show_all + " " + this.labels[this.getDisplayTypes()])
-      count = this.getUniqueRowsCount()
+      count = this.getRowsCount()
       text = this.labels.viewing + " " + String(count) + " "
       if count > 1 then text += this.labels[this.getDisplayTypes()] else text += this.labels[this.displayType]
       this.stickyEnabledDescription.text(text)

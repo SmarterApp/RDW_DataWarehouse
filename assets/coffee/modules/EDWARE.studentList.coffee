@@ -76,7 +76,6 @@ define [
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
       asmtType = edwarePreferences.getAsmtType()
-      edwarePreferences.saveAsmtIC asmtType is Constants.ASMT_TYPE.INTERIM
       if asmtType is Constants.ASMT_TYPE.IAB
         @formatIABData()
       else
@@ -177,8 +176,7 @@ define [
                     item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId]);
-          if combinedAsmts.hide
-            continue
+          continue if combinedAsmts.hide
           @cache[asmtType][@allSubjects] ?= []
           @cache[asmtType][@allSubjects].push(combinedAsmts)
 

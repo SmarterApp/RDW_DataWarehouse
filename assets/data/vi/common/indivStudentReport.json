@@ -39,7 +39,8 @@
         "26": "1"
     },
     "asmtSelectorTemplate": {
-        "default": "{{asmt_date}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
+        "Summative": "{{asmt_date}} · Cấp lớp {{asmt_grade}} · {{asmt_type}}",
+        "Interim Comprehensive": "{{asmt_date}} · Cấp lớp {{asmt_grade}} · {{asmt_type}}",
         "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"
     },
     "detailsSelection": {

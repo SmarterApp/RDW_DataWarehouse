@@ -27,9 +27,9 @@ define [
         # always the first one
         v = y[0]
         if v.asmt_period_year is currentYear
-            latestYear.push v
+          latestYear.push v
         else
-            otherYears.push v
+          otherYears.push v
 
       years = []
       currentYears = []
@@ -50,13 +50,15 @@ define [
       @container.html(output)
 
     getAsmtTypes: () ->
+      reportName = this.config.reportName
       asmtTypes = {}
       for idx, asmt of @config.asmtTypes?.options
         asmt.asmt_year = asmt.date_taken.substr(0, 4) if asmt.date_taken
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.display = @getAsmtDisplayText(asmt)
-        asmtTypes[asmt.asmt_type] = (asmtTypes[asmt.asmt_type] || [])
-        asmtTypes[asmt.asmt_type].push(asmt)
+        key = if reportName is Constants.REPORT_NAME.ISR then asmt.date_taken+asmt.asmt_type else asmt.asmt_type
+        asmtTypes[key] = (asmtTypes[key] || [])
+        asmtTypes[key].push(asmt)
       asmtTypes
 
     setDefaultOption: () ->
@@ -96,7 +98,7 @@ define [
       asmt_period_year: $option.data('asmtperiodyear')
 
     setSelectedValue: (asmt) ->
-      displayText = @getAsmtDisplayText(asmt)
+      displayText = @getAsmtDisplayText(asmt, 'selection')
       $('#selectedAsmtType').html displayText
       # show iab message
       $IABMessage =  $(".IABMessage")
@@ -110,22 +112,25 @@ define [
       else
         $IABMessage.hide()
 
-    getAsmtDisplayText: (asmt)->
+    getAsmtDisplayText: (asmt, option)->
       reportName = this.config.reportName
       #comparing_populations
-      if reportName == Constants.REPORT_NAME.CPOP
+      if reportName is Constants.REPORT_NAME.CPOP
         return "" if not asmt.effective_date
       #list_of_students
-      if reportName == Constants.REPORT_NAME.LOS
+      if reportName is Constants.REPORT_NAME.LOS
         asmt.asmt_from_year = asmt.asmt_period_year - 1
         asmt.asmt_to_year = asmt.asmt_period_year
-        return Mustache.to_html @displayTemplate.selection, asmt
+        option = 'preset' if not option
+        return Mustache.to_html @displayTemplate[option], asmt
       #student report
-      if reportName == Constants.REPORT_NAME.ISR
+      if reportName is Constants.REPORT_NAME.ISR
+        asmt.asmt_from_year = asmt.asmt_period_year - 1
+        asmt.asmt_to_year = asmt.asmt_period_year
         asmt.asmt_date = edwareUtil.formatDate(asmt.date_taken)
-        return Mustache.to_html @displayTemplate.default, asmt
+        return Mustache.to_html @displayTemplate[asmt.asmt_type], asmt
 
-  # dropdownValues is an array of values to feed into dropdown
+  # dropdownValues is an object to feed into the dropdown
   (($)->
     $.fn.edwareAsmtDropdown = (config, getAsmtPreference, callbacks) ->
       # Check if only IAB is loaded for 1st time

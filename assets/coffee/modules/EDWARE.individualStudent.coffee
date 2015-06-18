@@ -218,6 +218,7 @@ define [
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
           'effective_date': edwareUtil.formatDate(assessment['effective_date']),
+          # 'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
           'desc': assessment['claims'][0]['perf_lvl_name'],
           'level': assessment['claims'][0]['perf_lvl']}
@@ -310,6 +311,7 @@ define [
     onAsmtTypeSelected: (asmt) ->
       # save assessment type
       edwarePreferences.saveAsmtForISR(asmt)
+      this.prepareParams()
       @reloadReport()
 
     renderReportActionBar: () ->
@@ -326,14 +328,14 @@ define [
       @getAsmtViewSelection()
 
     getCacheKey: ()->
-      # For summative and interim comp, it's always effectiveDate + asmtType
+      # For summative and interim comp, it's always dateTaken + asmtType
       # For iab, it's always the asmtYear + asmtType
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
         if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
             # Important:  This is a workaround for bulk pdf generation
-           key = if @params['effectiveDate'] then @params['effectiveDate'] else @params['asmtYear']
+           key = if @params['dateTaken'] then @params['dateTaken'] else @params['asmtYear']
         else
           key = @params['asmtYear']
         return key + asmtType

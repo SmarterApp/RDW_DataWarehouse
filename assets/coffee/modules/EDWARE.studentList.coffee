@@ -382,7 +382,6 @@ define [
 
     onAsmtTypeSelected: (asmt) ->
       $('.detailsItem').hide()
-      edwarePreferences.saveAsmtForISR(asmt)
       edwarePreferences.saveAsmtPreference asmt
       @params['asmtType'] = asmt.asmt_type.toUpperCase()
       @reload @params

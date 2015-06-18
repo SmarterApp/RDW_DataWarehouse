@@ -171,7 +171,6 @@ define [
       this.resetCompareRowControls()
 
     # Given a row in the grid, add its value to selectedRows
-    # for multi row student case, add dates
     addCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
       if !this.selectedRows[info.id]

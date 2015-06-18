@@ -177,7 +177,6 @@ define [
       if !this.selectedRows[info.id]
         this.selectedRows[info.id] =
           name: info.name
-      this.selectedRows[info.id].asmts ?= {}
 
     # Add other rows to selectedRows
     addRowsForStudent: (row) ->
@@ -215,7 +214,6 @@ define [
         for key, data of row
           this.selectedRows[key] =
             name: ''
-          this.selectedRows[key].asmts ?= data.asmts
       this.compareMode = rows.length > 0
       this.getRows()
 
@@ -235,7 +233,6 @@ define [
               # Repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
               @selectedRows[key] =
                 name: item[columnField]
-                asmts: data.asmts
       return {'data': returnData, 'enabled': selectedRows.length > 0}
 
 

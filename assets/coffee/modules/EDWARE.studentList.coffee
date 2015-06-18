@@ -164,8 +164,7 @@ define [
             if asmtDate isnt 'hide'
               for subjectName, subjectType of @subjectsData
                 if asmt[subjectName]
-                  continue if asmt.hide
-                  continue if asmt[subjectName].hide
+                  continue if asmt.hide or asmt[subjectName].hide
                   asmt.dateTaken = asmtDate
                   asmt[subjectName]['asmt_date'] = @formatDate asmtDate
                   row = new StudentModel(asmtType, null, this).init asmt

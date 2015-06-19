@@ -38,7 +38,7 @@ define [
 
   getAsmtType = () ->
     pref = getPreferences() || {}
-    pref["ISRAsmt"]?.asmt_type
+    pref["asmt"]?.asmt_type
 
   saveAsmtPreference = (asmt) ->
     savePreferences {"asmt" : asmt}

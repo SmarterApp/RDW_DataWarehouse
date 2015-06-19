@@ -68,7 +68,8 @@ define [
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
-        edwarePreferences.saveAsmtForISR asmt
+        if this.config.reportName is Constants.REPORT_NAME.ISR
+          edwarePreferences.saveAsmtForISR asmt
       @setSelectedValue asmt
 
     bindEvents: () ->

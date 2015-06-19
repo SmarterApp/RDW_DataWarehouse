@@ -19,6 +19,5 @@ require [
     edwarePreferences.saveStateCode(params['stateCode'])
     asmtYear = edwarePreferences.getAsmtYearPreference()
     params['asmtYear'] = asmtYear if asmtYear
-    asmt = edwarePreferences.getAsmtPreference()
-    params.asmtType = asmt?.asmt_type?.toUpperCase() || Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
+    params.asmtType = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
     params

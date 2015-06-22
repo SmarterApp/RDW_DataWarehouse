@@ -1,4 +1,4 @@
-<h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.enrl_grade}}</h2>
+<h2 class="title printContent">{{all_results.student_full_name}} | {{labels.grade}} {{all_results.asmt_grade}}</h2>
 {{#current}}
 <div class="innerBox clearfix {{asmt_subject}}">
     <div class="printHeader printContent">
@@ -7,7 +7,7 @@
             <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
-            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.asmt_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
@@ -96,7 +96,7 @@
             <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
-            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.enrl_grade}}</div>
+            <div class="title">{{all_results.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{all_results.asmt_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
@@ -111,7 +111,7 @@
             <div class="policy"><h4>{{labels.college_content_readiness}}:</h4><p>{{{printAdditionalInfo.policy_content}}}</p></div>
             {{/printAdditionalInfo.policy_content}}
             <div class="psychometric"><h4>{{labels.note}}:</h4><p>{{{printAdditionalInfo.psychometric_implications}}}</p></div>
-            <div class='disclaimerInfo printContent'></div>
+            <div class='disclaimerInfo'>{{{interimDisclaimer}}}</div>
         </div>
     </div>
     <div class="legendPopup"></div>

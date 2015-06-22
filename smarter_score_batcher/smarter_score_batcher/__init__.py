@@ -8,7 +8,7 @@ from smarter_score_batcher.utils import xsd
 from smarter_score_batcher.celery import setup_celery as setup_xml_celery, PREFIX as prefix
 from edauth import configure
 from pyramid_beaker import set_cache_regions_from_settings
-from edcore.utils.utils import set_environment_path_variable,\
+from edcore.utils.utils import set_environment_path_variable, \
     get_config_from_ini
 
 
@@ -44,7 +44,7 @@ def main(global_config, **settings):
     config.add_route('xml', '/services/xml')
     config.add_route('error', '/error')
     config.add_route('heartbeat', '/services/heartbeat')
-    config.scan()
+    config.scan(ignore=['smarter_score_batcher.custom', 'smarter_score_batcher.tests.custom'])
 
     # Set default permission
     config.set_default_permission(Permission.LOAD)

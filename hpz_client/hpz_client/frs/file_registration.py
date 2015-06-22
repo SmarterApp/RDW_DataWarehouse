@@ -8,9 +8,9 @@ from requests import put
 from hpz_client.frs.config import Config, get_setting
 
 
-def register_file(user_id):
+def register_file(user_id, email):
     registration_url = get_setting(Config.HPZ_FILE_REGISTRATION_URL)
-    registration_body = {'uid': user_id}
+    registration_body = {'uid': user_id, 'email': email}
     verify_certificate = not get_setting(Config.HPZ_IGNORE_CERTIFICATE)
 
     response = put(registration_url, json.dumps(registration_body), verify=verify_certificate)

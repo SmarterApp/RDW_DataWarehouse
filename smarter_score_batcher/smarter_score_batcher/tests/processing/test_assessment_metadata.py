@@ -55,7 +55,7 @@ class TestJSONMetadata(unittest.TestCase):
         self.assertEqual(mapping['PerformanceLevels']['Level1']['Name'], 'Minimal Understanding')
         self.assertEqual(mapping['Claims']['Claim1']['MinScore'], '0')
         self.assertEqual(mapping['ClaimsPerformanceLevel']['Level2']['Name'], 'At/Near Standard')
-        self.assertEqual(mapping['Identification']['EffectiveDate'], '20140304')
+        self.assertEqual(mapping['Identification']['EffectiveDate'], '20140414')
         self.assertEqual(mapping['Identification']['Subject'], 'ELA')
 
 if __name__ == "__main__":

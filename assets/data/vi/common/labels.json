@@ -140,7 +140,6 @@
         "unfiltered_total_assessed": "Tổng cộng được đánh giá chưa được lọc",
         "uses": "Sử dụng",
         "viewing": "Đang xem",
-        "viewing_iab": "The results below are grade <span class='grade'></span> Interim Assessment Blocks administered during the selected academic year.",
         "viewing_previous_year": "Bạn đang xem năm học trước. <a href='#'>Trở lại <span class='latestYear'>{{latestYear}}</span></a>.",
         "viewing_default_year": {
             "state": "Kết quả dưới đây là từ các đánh giá tổng hợp năm ngoái.",

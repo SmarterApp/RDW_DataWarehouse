@@ -262,7 +262,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params)
 
     # Register expected file with HPZ
-    registration_id, download_url, web_download_url = register_file(user.get_uid())
+    registration_id, download_url, web_download_url = register_file(user.get_uid(), user.get_email())
 
     # Get the name of the school
     school_name = _get_school_name(state_code, district_id, school_id)

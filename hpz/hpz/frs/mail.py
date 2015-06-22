@@ -19,7 +19,7 @@ def sendmail(mail_server, mail_port, mail_from, mail_to, mail_return_path, mail_
             template = Template(template_text)
             email_text = template.render({"hpz_url": hpz_web_url})
             message = MIMEText(email_text)
-            message["Subject"] = mail_from
+            message["Subject"] = mail_subject
             message["From"] = mail_from
             message["Return-Path"] = mail_from if mail_return_path is None else mail_return_path
             message["To"] = mail_to

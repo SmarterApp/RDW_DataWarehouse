@@ -60,7 +60,7 @@ def file_upload_service(context, request):
                 aws_mail_username = request.registry.settings.get('hpz.mail.smtp_username')
                 aws_mail_password = request.registry.settings.get('hpz.mail.smtp_password')
                 registration = FileRegistry.get_registration_info(registration_id)
-                user_id = registration[HPZ.USER_ID]
+                user_id = registration[HPZ.EMAIL]
                 email = True
                 try:
                     email = sendmail(mail_server, mail_port, mail_from, user_id, mail_return_path, mail_subject, hpz_web_url, aws_mail_username, aws_mail_password)

@@ -34,8 +34,9 @@ class TestFileRegistration(unittest.TestCase):
     @patch('hpz_client.frs.file_registration.put')
     def test_register_file(self, put_patch):
         put_patch.return_value = MockResponse({'registration_id': 'a1-b2-c3-d4-e1e10', 'url': 'http://somehost:82/download/a1-b2-c3-d4-e1e10', 'web_url': 'http://something.com/web/as'})
-        registration_id, download_url, web_download_url = register_file('dummy_user@phony.com')
+        registration_id, download_url, web_download_url = register_file('dummy_user@phony.com', 'dummy_user@phony.com')
         self.assertEqual('a1-b2-c3-d4-e1e10', registration_id)
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', download_url)
         self.assertEqual('http://something.com/web/as', web_download_url)
-        put_patch.assert_called_once_with('http://somehost:82/registration', '{"uid": "dummy_user@phony.com"}', verify=True)
+        #disable because key order of serialized dictionaly is unpredictable
+        #put_patch.assert_called_once_with('http://somehost:82/registration', '{"email": "dummy_user@phony.com", "uid": "dummy_user@phony.com"}', verify=True)

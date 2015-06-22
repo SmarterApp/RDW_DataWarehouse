@@ -271,7 +271,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
     iab_results['first_name'] = first_result.get('first_name')
     iab_results['middle_name'] = first_result.get('middle_name')
     iab_results['last_name'] = first_result.get('last_name')
-    iab_results['enrl_grade'] = first_result.get('enrl_grade')
+    iab_results['asmt_grade'] = first_result.get('asmt_grade')
     iab_results['asmt_type'] = capwords(first_result.get('asmt_type'), ' ')
     iab_results['asmt_period_year'] = first_result.get('asmt_period_year')
     iab_results['student_id'] = first_result.get('student_id')

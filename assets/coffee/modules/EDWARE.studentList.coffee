@@ -76,7 +76,6 @@ define [
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
-
       asmtType = edwarePreferences.getAsmtType()
       if asmtType is Constants.ASMT_TYPE.IAB
         @formatIABData()
@@ -162,8 +161,8 @@ define [
             if asmtDate isnt 'hide'
               for subjectName, subjectType of @subjectsData
                 if asmt[subjectName]
-                  if asmt.hide
-                    continue
+                  continue if asmt.hide or asmt[subjectName].hide
+                  asmt.dateTaken = asmtDate
                   asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
                   row = new StudentModel(asmtType, null, this, asmtDate).init asmt
                   @cache[asmtType][subjectType] ?= []
@@ -171,12 +170,11 @@ define [
                   # combine 2 subjects, add only once
                   if !item[studentId][subjectName]
                     item[studentId][subjectName] = asmt[subjectName]
-        if item[studentId]
+        if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId]);
-        if combinedAsmts.hide
-          continue
-        @cache[asmtType][@allSubjects] ?= []
-        @cache[asmtType][@allSubjects].push(combinedAsmts)
+          continue if combinedAsmts.hide
+          @cache[asmtType][@allSubjects] ?= []
+          @cache[asmtType][@allSubjects].push(combinedAsmts)
 
 
     formatIABData: () ->

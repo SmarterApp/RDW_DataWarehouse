@@ -203,11 +203,12 @@
                         },
                         "hidden": true,
                         "sortorder": "asc",
-                        "export": true
+                        "export": true,
+                        "frozen": true
                     },
                     {
-                        "name": "Lo más reciente Matemáticas",
-                        "displayTpl": "<a class='inherit' href='#'>Lo más reciente Matemáticas</a>",
+                        "name": "Prueba de matemáticas más reciente",
+                        "displayTpl": "<a class='inherit' href='#'>Prueba de matemáticas más reciente</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
                         "width": 140,
@@ -236,8 +237,8 @@
                         "export": true
                     },
                     {
-                        "name": "Los más recientes ELA/Alfabetización",
-                        "displayTpl": "<a class='inherit' href='#'>Los más recientes ELA/Alfabetización</a>",
+                        "name": "Prueba de ELA/Alfabetización más reciente",
+                        "displayTpl": "<a class='inherit' href='#'>Prueba de ELA/Alfabetización más reciente</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
                         "width": 140,
@@ -264,14 +265,6 @@
                         "align": "center",
                         "title": false,
                         "export": true
-                    },
-                    {
-                        "name": "",
-                        "displayTpl": "",
-                        "width": 174,
-                        "title": false,
-                        "export": false,
-                        "sortable": false
                     }
                 ]
             }
@@ -295,8 +288,8 @@
                         "export": true
                     },
                     {
-                        "name": "Fecha de la toma",
-                        "displayTpl": "<a class='inherit' href='#'>Fecha de la toma</a>",
+                        "name": "Fecha de administración",
+                        "displayTpl": "<a class='inherit' href='#'>Fecha de administración</a>",
                         "index": "subject1.asmt_date",
                         "field": "subject1.asmt_date",
                         "width": 90,
@@ -383,8 +376,8 @@
                         "export": true
                     },
                     {
-                        "name": "Fecha de la toma",
-                        "displayTpl": "<a class='inherit' href='#'>Fecha de la toma</a>",
+                        "name": "Fecha de administración",
+                        "displayTpl": "<a class='inherit' href='#'>Fecha de administración</a>",
                         "index": "subject2.asmt_date",
                         "field": "subject2.asmt_date",
                         "width": 90,

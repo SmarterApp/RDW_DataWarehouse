@@ -36,6 +36,10 @@ define [
     pref = getPreferences() || {}
     pref["ISRAsmt"]?.effective_date
 
+  getDateTaken = () ->
+    pref = getPreferences() || {}
+    pref["ISRAsmt"]?.date_taken
+
   getAsmtType = () ->
     pref = getPreferences() || {}
     pref["ISRAsmt"]?.asmt_type
@@ -134,6 +138,7 @@ define [
   saveAsmtYearPreference: saveAsmtYearPreference
   getAsmtYearPreference: getAsmtYearPreference
   getEffectiveDate: getEffectiveDate
+  getDateTaken: getDateTaken
   getAsmtType: getAsmtType
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR

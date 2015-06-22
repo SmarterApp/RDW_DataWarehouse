@@ -95,6 +95,11 @@ PDF_PARAMS = {
             "required": False,
             "pattern": "^[1-9]{8}$"
         },
+        Constants.DATETAKEN: {
+            "type": "integer",
+            "required": True,
+            "pattern": "^[1-9]{8}$"
+        },
         Constants.MODE: {
             "type": "string",
             "required": False,
@@ -170,6 +175,7 @@ def get_pdf_content(params, sync=False):
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     asmt_year = params.get(Constants.ASMTYEAR)
     effective_date = str(params.get(Constants.EFFECTIVEDATE)) if params.get(Constants.EFFECTIVEDATE) is not None else None
+    date_taken = str(params.get(Constants.DATETAKEN)) if params.get(Constants.DATETAKEN) is not None else None
     color_mode = params.get(Constants.MODE, Constants.GRAY).lower()
     lang = params.get(Constants.LANG, 'en').lower()
     subprocess_timeout = services.celery.TIMEOUT
@@ -202,14 +208,14 @@ def get_pdf_content(params, sync=False):
         # Get cookies and other config items
         (cookie_name, cookie_value) = get_session_cookie()
         single_generate_queue = settings.get('pdf.single_generate.queue')
-        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_ids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
+        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, date_taken, asmt_type, student_ids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
     else:
         response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
     return response
 
 
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
-                           effective_date, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
+                           effective_date, date_taken, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
                            params, single_generate_queue):
     if type(student_id) is list:
         student_id = student_id[0]
@@ -218,7 +224,7 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
     if not _has_context_for_pdf_request(state_code, student_id):
         raise ForbiddenError('Access Denied')
     url = _create_student_pdf_url(student_id, base_url, params)
-    files_by_guid = generate_isr_report_path_by_student_id(state_code, effective_date, asmt_year,
+    files_by_guid = generate_isr_report_path_by_student_id(state_code, effective_date, date_taken, asmt_year,
                                                            pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
                                                            asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
     file_name = files_by_guid[student_id]

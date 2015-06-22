@@ -10,7 +10,7 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
-def generate_isr_report_path_by_student_id(state_code, effective_date=None, asmt_year=None, pdf_report_base_dir='/', student_ids=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=True, lang='en'):
+def generate_isr_report_path_by_student_id(state_code, effective_date=None, date_taken=None, asmt_year=None, pdf_report_base_dir='/', student_ids=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=True, lang='en'):
     '''
     Get Individual Student Report absolute path by student_id.
     If the directory path does not exist, then create it.
@@ -27,7 +27,7 @@ def generate_isr_report_path_by_student_id(state_code, effective_date=None, asmt
         if asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
             query = generate_query_for_iab(connection, student_ids, asmt_year)
         else:
-            query = generate_query_for_summative_or_interim(connection, asmt_type, student_ids, effective_date, asmt_year)
+            query = generate_query_for_summative_or_interim(connection, asmt_type, student_ids, effective_date, date_taken, asmt_year)
 
         results = connection.get_result(query)
         if len(results) != len(student_ids):
@@ -58,13 +58,14 @@ def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=Non
     return dirname + (".g.pdf" if grayScale else ".pdf")
 
 
-def generate_query_for_summative_or_interim(connection, asmt_type, student_ids, effective_date, asmt_year):
+def generate_query_for_summative_or_interim(connection, asmt_type, student_ids, effective_date, date_taken, asmt_year):
     fact_table = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
     dim_asmt = connection.get_table(Constants.DIM_ASMT)
     query = Select([distinct(fact_table.c.student_id).label(Constants.STUDENT_ID),
                     fact_table.c.state_code.label(Constants.STATE_CODE),
                     dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
                     dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
+                    fact_table.c.date_taken.label(Constants.DATETAKEN),
                     fact_table.c.district_id.label(Constants.DISTRICT_ID),
                     fact_table.c.school_id.label(Constants.SCHOOL_ID),
                     fact_table.c.asmt_grade.label(Constants.ASMT_GRADE)],
@@ -74,8 +75,8 @@ def generate_query_for_summative_or_interim(connection, asmt_type, student_ids, 
                                                   dim_asmt.c.asmt_type == asmt_type,
                                                   dim_asmt.c.asmt_period_year == asmt_year))])
     query = query.where(and_(fact_table.c.rec_status == Constants.CURRENT, fact_table.c.student_id.in_(student_ids)))
-    if effective_date is not None:
-        query = query.where(and_(dim_asmt.c.effective_date == effective_date))
+    if date_taken is not None:
+        query = query.where(and_(fact_table.c.date_taken == date_taken))
     return query
 
 

@@ -58,6 +58,10 @@ define [
     pref = getPreferences() || {}
     pref['ISRAsmt']
 
+  getAsmtTypeForISR = () ->
+    pref = getAsmtForISR() || {}
+    pref?.asmt_type
+
   getAsmtView = () ->
     pref = getPreferences() || {}
     pref['asmtView']
@@ -142,6 +146,7 @@ define [
   getAsmtType: getAsmtType
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR
+  getAsmtTypeForISR: getAsmtTypeForISR
   getFilters: getFilters
   saveAsmtView: saveAsmtView
   getAsmtView: getAsmtView

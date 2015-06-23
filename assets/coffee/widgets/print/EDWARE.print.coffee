@@ -27,7 +27,7 @@ define [
     print: () ->
       @hide()
       option = $('input[name=print]:checked', @container).val()
-      asmtType = edwarePreferences.getAsmtType()
+      asmtType = edwarePreferences.getAsmtTypeForISR()
       dateTaken = edwarePreferences.getDateTaken()
       asmtYear = edwarePreferences.getAsmtYearPreference() 
       params = edwareUtil.getUrlParams()

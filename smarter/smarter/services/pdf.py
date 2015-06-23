@@ -90,15 +90,10 @@ PDF_PARAMS = {
             "required": True,
             "pattern": "^2[0-9]{3}$"
         },
-        Constants.EFFECTIVEDATE: {
-            "type": "integer",
-            "required": False,
-            "pattern": "^[1-9]{8}$"
-        },
         Constants.DATETAKEN: {
             "type": "integer",
-            "required": True,
-            "pattern": "^[1-9]{8}$"
+            "required": False,
+            "pattern": "^[0-9]{8}$"
         },
         Constants.MODE: {
             "type": "string",
@@ -174,7 +169,6 @@ def get_pdf_content(params, sync=False):
     grades = params.get(Constants.ASMTGRADE, [])
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     asmt_year = params.get(Constants.ASMTYEAR)
-    effective_date = str(params.get(Constants.EFFECTIVEDATE)) if params.get(Constants.EFFECTIVEDATE) is not None else None
     date_taken = str(params.get(Constants.DATETAKEN)) if params.get(Constants.DATETAKEN) is not None else None
     color_mode = params.get(Constants.MODE, Constants.GRAY).lower()
     lang = params.get(Constants.LANG, 'en').lower()
@@ -191,9 +185,7 @@ def get_pdf_content(params, sync=False):
         raise InvalidParameterError('Required parameter is missing')
 
     # Validate necessary assessment information
-    if asmt_type == AssessmentType.SUMMATIVE and asmt_year is None and effective_date is None:
-        raise InvalidParameterError('Required parameter is missing')
-    elif asmt_type == AssessmentType.INTERIM_COMPREHENSIVE and effective_date is None:
+    if (asmt_type == AssessmentType.SUMMATIVE or asmt_type == AssessmentType.INTERIM_COMPREHENSIVE) and asmt_year is None and date_taken is None:
         raise InvalidParameterError('Required parameter is missing')
 
     settings = pyramid.threadlocal.get_current_registry().settings
@@ -208,14 +200,14 @@ def get_pdf_content(params, sync=False):
         # Get cookies and other config items
         (cookie_name, cookie_value) = get_session_cookie()
         single_generate_queue = settings.get('pdf.single_generate.queue')
-        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, date_taken, asmt_type, student_ids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
+        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, date_taken, asmt_type, student_ids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
     else:
-        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, lang, is_grayscale, always_generate, celery_timeout, params)
     return response
 
 
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
-                           effective_date, date_taken, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
+                           date_taken, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
                            params, single_generate_queue):
     if type(student_id) is list:
         student_id = student_id[0]
@@ -224,9 +216,10 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
     if not _has_context_for_pdf_request(state_code, student_id):
         raise ForbiddenError('Access Denied')
     url = _create_student_pdf_url(student_id, base_url, params)
-    files_by_guid = generate_isr_report_path_by_student_id(state_code, effective_date, date_taken, asmt_year,
+    files_by_guid = generate_isr_report_path_by_student_id(state_code, date_taken, asmt_year,
                                                            pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
                                                            asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+    files_by_guid = files_by_guid
     file_name = files_by_guid[student_id]
     args = (cookie_value, url, file_name)
     options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
@@ -238,7 +231,7 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
 
 
 def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades,
-                         state_code, district_id, school_id, asmt_type, asmt_year, effective_date, lang,
+                         state_code, district_id, school_id, asmt_type, asmt_year, lang,
                          is_grayscale, always_generate, celery_timeout, params):
     '''
     Read pdf content from file system if it exists, else generate it
@@ -250,10 +243,11 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # If we do not have a list of student GUIDs, we need to get it
     all_guids, guids_by_grade = _create_student_ids(student_ids, grades, state_code, district_id, school_id,
-                                                    asmt_type, asmt_year, effective_date, params)
+                                                    asmt_type, asmt_year, params)
 
     # Get all file names
-    files_by_student_id = generate_isr_report_path_by_student_id(state_code, effective_date, asmt_year,
+    date_taken = None
+    files_by_student_id = generate_isr_report_path_by_student_id(state_code, date_taken, asmt_year,
                                                                  pdf_report_base_dir=pdf_base_dir,
                                                                  student_ids=all_guids, asmt_type=asmt_type,
                                                                  grayScale=is_grayscale, lang=lang)
@@ -317,8 +311,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     return Response(body=json.dumps(response), content_type=Constants.APPLICATION_JSON)
 
 
-def _create_student_ids(student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year,
-                        effective_date, params):
+def _create_student_ids(student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, params):
     '''
     create list of student guids by grades
     '''
@@ -327,8 +320,7 @@ def _create_student_ids(student_ids, grades, state_code, district_id, school_id,
     guids_by_grade = {}
     if student_ids is None:
         for grade in grades:
-            guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year,
-                                     effective_date=effective_date, grade=grade)
+            guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year, grade=grade)
             if len(guids) > 0:
                 guids_by_grade[grade] = []
                 for result in guids:
@@ -339,7 +331,7 @@ def _create_student_ids(student_ids, grades, state_code, district_id, school_id,
         if grades is not None and len(grades) == 1:
             grade = grades[0]
         guids = _get_student_ids(state_code, district_id, school_id, asmt_type, params, asmt_year=asmt_year,
-                                 effective_date=effective_date, grade=grade, student_ids=student_ids)
+                                 grade=grade, student_ids=student_ids)
         grade = 'all' if grade is None else grade
         if len(guids) > 0:
             guids_by_grade[grade] = []
@@ -535,7 +527,7 @@ def _get_archive_name(school_name, lang_code, grayscale):
 
 
 def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
-                     asmt_year=None, effective_date=None, grade=None, student_ids=None):
+                     asmt_year=None, grade=None, student_ids=None):
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -564,8 +556,6 @@ def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
             query = query.where(and_(fact_table.c.asmt_grade == grade))
         if student_ids is not None:
             query = query.where(and_(fact_table.c.student_id.in_(student_ids)))
-        if effective_date is not None:
-            query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         elif asmt_year is not None:
             query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
         else:

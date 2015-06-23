@@ -10,14 +10,14 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
-def generate_isr_report_path_by_student_id(state_code, effective_date=None, date_taken=None, asmt_year=None, pdf_report_base_dir='/', student_ids=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=True, lang='en'):
+def generate_isr_report_path_by_student_id(state_code, date_taken=None, asmt_year=None, pdf_report_base_dir='/', student_ids=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=True, lang='en'):
     '''
     Get Individual Student Report absolute path by student_id.
     If the directory path does not exist, then create it.
     For security, the directory will be created with only the owner can read-write.
     '''
-    if effective_date is None and asmt_year is None:
-        raise AttributeError('Need one of effective_date or asmt_year')
+    if date_taken is None and asmt_year is None:
+        raise AttributeError('Need one of date_taken or asmt_year')
 
     file_paths = {}
     if type(student_ids) is not list:
@@ -27,7 +27,7 @@ def generate_isr_report_path_by_student_id(state_code, effective_date=None, date
         if asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
             query = generate_query_for_iab(connection, student_ids, asmt_year)
         else:
-            query = generate_query_for_summative_or_interim(connection, asmt_type, student_ids, effective_date, date_taken, asmt_year)
+            query = generate_query_for_summative_or_interim(connection, asmt_type, student_ids, asmt_year, date_taken)
 
         results = connection.get_result(query)
         if len(results) != len(student_ids):
@@ -36,35 +36,34 @@ def generate_isr_report_path_by_student_id(state_code, effective_date=None, date
             student_id = result[Constants.STUDENT_ID]
             state_code = result[Constants.STATE_CODE]
             asmt_period_year = str(result[Constants.ASMT_PERIOD_YEAR])
-            effective_date = str(result[Constants.EFFECTIVE_DATE]) if result.get(Constants.EFFECTIVE_DATE) is not None else None
+            date_taken = str(result[Constants.DATETAKEN]) if result.get(Constants.DATETAKEN) is not None else None
             district_id = result[Constants.DISTRICT_ID]
             school_id = result[Constants.SCHOOL_ID]
             asmt_grade = result.get(Constants.ASMT_GRADE)
 
             # get absolute file path name
-            file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, asmt_type=asmt_type, grayScale=grayScale, lang=lang, effective_date=effective_date)
+            file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, asmt_type=asmt_type, grayScale=grayScale, lang=lang, date_taken=date_taken)
             file_paths[student_id] = file_path
     return file_paths
 
 
-def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_id=None, school_id=None, asmt_grade=None, student_id=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=False, lang='en', effective_date=None):
+def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_id=None, school_id=None, asmt_grade=None, student_id=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=False, lang='en', date_taken=None):
     '''
     Generate Individual Student Report absolute file path name
     '''
     dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_id, school_id)
     if asmt_grade is not None:
         dirname = os.path.join(dirname, asmt_grade)
-    dirname = os.path.join(dirname, 'isr', asmt_type, student_id + (('.' + effective_date) if effective_date is not None else '') + '.' + lang)
+    dirname = os.path.join(dirname, 'isr', asmt_type, student_id + (('.' + date_taken) if date_taken is not None else '') + '.' + lang)
     return dirname + (".g.pdf" if grayScale else ".pdf")
 
 
-def generate_query_for_summative_or_interim(connection, asmt_type, student_ids, effective_date, date_taken, asmt_year):
+def generate_query_for_summative_or_interim(connection, asmt_type, student_ids, asmt_year, date_taken):
     fact_table = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
     dim_asmt = connection.get_table(Constants.DIM_ASMT)
     query = Select([distinct(fact_table.c.student_id).label(Constants.STUDENT_ID),
                     fact_table.c.state_code.label(Constants.STATE_CODE),
                     dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
-                    dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
                     fact_table.c.date_taken.label(Constants.DATETAKEN),
                     fact_table.c.district_id.label(Constants.DISTRICT_ID),
                     fact_table.c.school_id.label(Constants.SCHOOL_ID),

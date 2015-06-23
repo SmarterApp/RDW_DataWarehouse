@@ -28,9 +28,7 @@ define [
       @hide()
       option = $('input[name=print]:checked', @container).val()
       asmtType = edwarePreferences.getAsmtType()
-      effectiveDate = edwarePreferences.getEffectiveDate()
       dateTaken = edwarePreferences.getDateTaken()
-      effectiveDate = dateTaken
       asmtYear = edwarePreferences.getAsmtYearPreference() 
       params = edwareUtil.getUrlParams()
       url = edwareUtil.getBaseURL() + "/assets/html/print.html?"
@@ -40,7 +38,6 @@ define [
       url += "&mode=color" if option is "color"
       url += "&asmtType=" + encodeURI(asmtType.toUpperCase()) if asmtType
       url += "&lang=" + edwarePreferences.getSelectedLanguage()
-      url += "&effectiveDate=" + effectiveDate if effectiveDate
       url += "&dateTaken=" + dateTaken if dateTaken
       url += "&asmtYear=" + asmtYear if asmtYear
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')

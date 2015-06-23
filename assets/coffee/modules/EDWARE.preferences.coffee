@@ -45,7 +45,7 @@ define [
 
   getAsmtPreference = () ->
     pref = getPreferences() || {}
-    pref['asmt']
+    pref['asmt']  || {}
 
   saveAsmtForISR = (asmt) ->
     savePreferences {"ISRAsmt": asmt}

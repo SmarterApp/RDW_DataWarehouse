@@ -41,6 +41,9 @@ define [
       # Test if localStorage is supported, if not, make it sessionStorage
       if this.isLongTerm and not window.localStorage
         this.isLongTerm = false
+      # No PREFIX in key for local storage since used before user_info key
+      if this.isLongTerm and window.localStorage
+        this.key = key
       this.storage = if this.isLongTerm then localStorage else sessionStorage
       this
 

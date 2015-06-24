@@ -37,15 +37,16 @@ def generate_isr_report_path_by_student_id(state_code, date_taken=None, asmt_yea
             student_id = result[Constants.STUDENT_ID]
             state_code = result[Constants.STATE_CODE]
             asmt_period_year = str(result[Constants.ASMT_PERIOD_YEAR])
-            #There will always be date taken for all results
-            date_taken = str(result[Constants.DATETAKEN])
+            date_taken = str(result[Constants.DATETAKEN]) if result.get(Constants.DATETAKEN) is not None else None
             district_id = result[Constants.DISTRICT_ID]
             school_id = result[Constants.SCHOOL_ID]
             asmt_grade = result.get(Constants.ASMT_GRADE)
+            file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, asmt_type=asmt_type, grayScale=grayScale, lang=lang, date_taken=date_taken)
 
             # get absolute file path name
-            file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_id=student_id, asmt_type=asmt_type, grayScale=grayScale, lang=lang, date_taken=date_taken)
-            if student_id in file_paths:
+            if  asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS:
+                file_paths[student_id] = file_path
+            elif asmt_type != AssessmentType.INTERIM_ASSESSMENT_BLOCKS and student_id in file_paths:
                 file_paths[student_id][date_taken] = file_path
             else:
                 file_path_by_date[date_taken] = file_path

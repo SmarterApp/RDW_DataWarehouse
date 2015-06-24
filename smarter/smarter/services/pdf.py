@@ -215,12 +215,11 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
     # Get all file names
     if not _has_context_for_pdf_request(state_code, student_id):
         raise ForbiddenError('Access Denied')
-    url = _create_student_pdf_url(student_id, base_url, params)
+    url = _create_student_pdf_url(student_id, base_url, params, date_taken)
     files_by_guid = generate_isr_report_path_by_student_id(state_code, date_taken, asmt_year,
                                                            pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
                                                            asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
-    files_by_guid = files_by_guid
-    file_name = files_by_guid[student_id]
+    file_name = files_by_guid[student_id][date_taken]
     args = (cookie_value, url, file_name)
     options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
 
@@ -253,7 +252,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
                                                                  grayScale=is_grayscale, lang=lang)
 
     # Set up a few additional variables
-    urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params)
+    urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params, files_by_student_id)
 
     # Register expected file with HPZ
     registration_id, download_url, web_download_url = register_file(user.get_uid(), user.get_email())
@@ -343,7 +342,7 @@ def _create_student_ids(student_ids, grades, state_code, district_id, school_id,
     return all_guids, guids_by_grade
 
 
-def _create_urls_by_student_id(all_guids, state_code, base_url, params):
+def _create_urls_by_student_id(all_guids, state_code, base_url, params, files_by_student_id):
     '''
     create ISR URL link for each students
     '''
@@ -356,8 +355,14 @@ def _create_urls_by_student_id(all_guids, state_code, base_url, params):
     if not _has_context_for_pdf_request(state_code, all_guids):
         raise ForbiddenError('Access Denied')
     # Create URLs
-    for student_id in all_guids:
-        urls_by_guid[student_id] = _create_student_pdf_url(student_id, base_url, params)
+    for student_id, date_path in files_by_student_id.items():
+        for date_taken in date_path:
+            if student_id in urls_by_guid:
+                urls_by_guid[student_id][date_taken] = _create_student_pdf_url(student_id, base_url, params, date_taken)
+            else:
+                url_by_date = {}
+                url_by_date[date_taken] = _create_student_pdf_url(student_id, base_url, params, date_taken)
+                urls_by_guid[student_id] = url_by_date
     return urls_by_guid
 
 
@@ -368,11 +373,12 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
     generate_tasks = []
     args = {Constants.COOKIE: cookie_value, Constants.TIMEOUT: services.celery.TIMEOUT, Constants.COOKIE_NAME: cookie_name,
             Constants.GRAYSCALE: is_grayscale, Constants.ALWAYS_GENERATE: always_generate}
-    for student_id, file_name in files_by_guid.items():
-        copied_args = copy.deepcopy(args)
-        copied_args[Constants.URL] = urls_by_guid[student_id]
-        copied_args[Constants.OUTPUTFILE] = file_name
-        generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
+    for student_id, file_name_by_date in files_by_guid.items():
+        for date_taken, file_name in file_name_by_date.items():
+            copied_args = copy.deepcopy(args)
+            copied_args[Constants.URL] = urls_by_guid[student_id][date_taken]
+            copied_args[Constants.OUTPUTFILE] = file_name
+            generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
     return generate_tasks
 
 
@@ -395,7 +401,9 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, 
             # Get the files for this grade
             file_names = []
             for student_id in student_ids:
-                file_names.append(files_by_guid[student_id])
+                filenames = files_by_guid[student_id].values()
+                for file_name in filenames:
+                    file_names.append(file_name)
 
             # Create the merge task
             merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir), immutable=True))  # @UndefinedVariable
@@ -473,9 +481,10 @@ def _has_context_for_pdf_request(state_code, student_id):
     return check_context(RolesConstants.PII, state_code, student_id)
 
 
-def _create_student_pdf_url(student_id, base_url, params):
+def _create_student_pdf_url(student_id, base_url, params, date_taken):
     params[Constants.STUDENTGUID] = student_id
     params[Constants.PDF] = "true"
+    params[Constants.DATETAKEN] = date_taken
     encoded_params = urllib.parse.urlencode(params)
     return base_url + "?%s" % encoded_params
 

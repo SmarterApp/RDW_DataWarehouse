@@ -9,6 +9,9 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 import logging
 import os
 from smarter_score_batcher.error.exceptions import MetaNamesException
+import re
+from smarter_score_batcher.celery import conf
+from edauth.security.utils import load_class
 
 try:
     import xml.etree.cElementTree as ET
@@ -24,6 +27,10 @@ class Meta:
     Object to hold parts of the folder structure
     '''
     def __init__(self, valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id):
+        if effective_date:
+            m = re.search('(\d+)-(\d+)-(\d+)', effective_date)
+            if m:
+                effective_date = m.group(1) + m.group(2) + m.group(3)
         self.__student_id = student_id
         self.__state_code = state_code
         self.__district_id = district_id
@@ -86,12 +93,13 @@ def extract_meta_names(raw_xml_string):
         root = ET.fromstring(raw_xml_string)
         state_code = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")
         student_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeAttribute/[@name='StudentIdentifier']", "value", "context")
-        district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='DistrictID']", "value", "context")
+        district_id = extract_meta_with_fallback_helper(root, "./Examinee/ExamineeRelationship/[@name='ResponsibleDistrictIdentifier']", "value", "context")
         academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
         asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
         subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
         grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
-        effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "effectiveDate")
+        effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
+
         # Get asmt id, not required for validation
         asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
         validMeta = (state_code and student_id and district_id and academic_year and asmt_type and subject and grade and effective_date)
@@ -115,6 +123,7 @@ def extract_meta_names(raw_xml_string):
                 error_msg += os.linesep + 'extract_meta_names: effective_date is missing'
             logger.error(error_msg)
             raise MetaNamesException(error_msg)
-        return Meta(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id)
+        meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
+        return meta_class(validMeta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     except ET.ParseError:
         raise EdApiHTTPPreconditionFailed("Invalid XML")

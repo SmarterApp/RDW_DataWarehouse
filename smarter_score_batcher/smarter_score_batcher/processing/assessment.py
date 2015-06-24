@@ -11,6 +11,8 @@ from smarter_score_batcher.utils.constants import PerformanceMetadataConstants
 from smarter_score_batcher.error.exceptions import MetadataException
 from edcore.utils.utils import xml_datetime_convert
 import hashlib
+from edauth.security.utils import load_class
+from smarter_score_batcher.celery import conf
 
 
 class XMLMeta:
@@ -53,6 +55,19 @@ class HashMeta(XMLMeta):
     def get_value(self):
         data = super().get_value()
         return hashlib.sha1(data.encode("utf-8")).hexdigest()
+
+
+class YesNoMeta(XMLMeta):
+
+    def get_value(self):
+        result = None
+        data = super().get_value()
+        if data and data is not None:
+            if data.lower() == "yes":
+                result = "Yes"
+            elif data.lower() == "no":
+                result = "No"
+        return result
 
 
 class ValueMeta():
@@ -247,13 +262,21 @@ def get_assessment_mapping(root, metadata):
     accommodations = get_accommodations(opportunity)
     claims = get_claims(metadata, opportunity)
 
+    asmt_type = extract_meta_without_fallback_helper(root, "./Test", "assessmentType")
+    subject = extract_meta_without_fallback_helper(root, "./Test", "subject")
+    grade = extract_meta_without_fallback_helper(root, "./Test", "grade")
+    asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
+    academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
+    effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
+    meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
+    meta = meta_class(True, '', '', '', academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     stateCode = XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")
     # In the order of the LZ mapping for easier maintenance
     mappings = AssessmentData([Mapping(stateCode, AssessmentHeaders.StateAbbreviation),
-                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictID']", "value", "context"), AssessmentHeaders.ResponsibleDistrictIdentifier),
-                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='DistrictName']", "value", "context"), AssessmentHeaders.OrganizationName),
-                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolID']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
-                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='SchoolName']", "value", "context"), AssessmentHeaders.NameOfInstitution),
+                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='ResponsibleDistrictIdentifier']", "value", "context"), AssessmentHeaders.ResponsibleDistrictIdentifier),
+                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='OrganizationName']", "value", "context"), AssessmentHeaders.OrganizationName),
+                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='ResponsibleInstitutionIdentifier']", "value", "context"), AssessmentHeaders.ResponsibleSchoolIdentifier),
+                               Mapping(XMLMeta(examinee, "./ExamineeRelationship/[@name='NameOfInstitution']", "value", "context"), AssessmentHeaders.NameOfInstitution),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='StudentIdentifier']", "value", "context"), AssessmentHeaders.StudentIdentifier),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='AlternateSSID']", "value", "context"), AssessmentHeaders.ExternalSSID),
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='FirstName']", "value", "context"), AssessmentHeaders.FirstName),
@@ -262,27 +285,27 @@ def get_assessment_mapping(root, metadata):
                                Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Sex']", "value", "context"), AssessmentHeaders.Sex),
                                Mapping(DateMeta(examinee, "./ExamineeAttribute/[@name='Birthdate']", "value", "context"), AssessmentHeaders.Birthdate),
                                Mapping(IntegerMeta(examinee, "./ExamineeAttribute/[@name='GradeLevelWhenAssessed']", "value", "context"), AssessmentHeaders.GradeLevelWhenAssessed),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='HispanicOrLatinoEthnicity']", "value", "context"), AssessmentHeaders.HispanicOrLatinoEthnicity),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='AmericanIndianOrAlaskaNative']", "value", "context"), AssessmentHeaders.AmericanIndianOrAlaskaNative),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Asian']", "value", "context"), AssessmentHeaders.Asian),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='BlackOrAfricanAmerican']", "value", "context"), AssessmentHeaders.BlackOrAfricanAmerican),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='NativeHawaiianOrOtherPacificIslander']", "value", "context"), AssessmentHeaders.NativeHawaiianOrOtherPacificIslander),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='White']", "value", "context"), AssessmentHeaders.White),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='DemographicRaceTwoOrMoreRaces']", "value", "context"), AssessmentHeaders.DemographicRaceTwoOrMoreRaces),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='IDEAIndicator']", "value", "context"), AssessmentHeaders.IDEAIndicator),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='LEPStatus']", "value", "context"), AssessmentHeaders.LEPStatus),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='Section504Status']", "value", "context"), AssessmentHeaders.Section504Status),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='EconomicDisadvantageStatus']", "value", "context"), AssessmentHeaders.EconomicDisadvantageStatus),
-                               Mapping(XMLMeta(examinee, "./ExamineeAttribute/[@name='MigrantStatus']", "value", "context"), AssessmentHeaders.MigrantStatus),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='HispanicOrLatinoEthnicity']", "value", "context"), AssessmentHeaders.HispanicOrLatinoEthnicity),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='AmericanIndianOrAlaskaNative']", "value", "context"), AssessmentHeaders.AmericanIndianOrAlaskaNative),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='Asian']", "value", "context"), AssessmentHeaders.Asian),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='BlackOrAfricanAmerican']", "value", "context"), AssessmentHeaders.BlackOrAfricanAmerican),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='NativeHawaiianOrOtherPacificIslander']", "value", "context"), AssessmentHeaders.NativeHawaiianOrOtherPacificIslander),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='White']", "value", "context"), AssessmentHeaders.White),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='DemographicRaceTwoOrMoreRaces']", "value", "context"), AssessmentHeaders.DemographicRaceTwoOrMoreRaces),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='IDEAIndicator']", "value", "context"), AssessmentHeaders.IDEAIndicator),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='LEPStatus']", "value", "context"), AssessmentHeaders.LEPStatus),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='Section504Status']", "value", "context"), AssessmentHeaders.Section504Status),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='EconomicDisadvantageStatus']", "value", "context"), AssessmentHeaders.EconomicDisadvantageStatus),
+                               Mapping(YesNoMeta(examinee, "./ExamineeAttribute/[@name='MigrantStatus']", "value", "context"), AssessmentHeaders.MigrantStatus),
 
-                               Mapping(XMLMeta(test_node, ".", "testId"), AssessmentHeaders.AssessmentGuid),
+                               Mapping(ValueMeta(meta.asmt_id), AssessmentHeaders.AssessmentGuid),
                                Mapping(XMLMeta(opportunity, ".", "oppId"), AssessmentHeaders.AssessmentSessionLocationId),
                                Mapping(XMLMeta(opportunity, ".", "server"), AssessmentHeaders.AssessmentSessionLocation),
-                               Mapping(DateMeta(opportunity, ".", "dateCompleted"), AssessmentHeaders.AssessmentAdministrationFinishDate),
-                               Mapping(XMLMeta(test_node, ".", "academicYear"), AssessmentHeaders.AssessmentYear),
-                               Mapping(XMLMeta(test_node, ".", "assessmentType"), AssessmentHeaders.AssessmentType),
-                               Mapping(XMLMeta(test_node, ".", "subject"), AssessmentHeaders.AssessmentAcademicSubject),
-                               Mapping(IntegerMeta(test_node, ".", "grade"), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
+                               Mapping(ValueMeta(meta.effective_date), AssessmentHeaders.AssessmentAdministrationFinishDate),
+                               Mapping(ValueMeta(meta.academic_year), AssessmentHeaders.AssessmentYear),
+                               Mapping(ValueMeta(meta.asmt_type), AssessmentHeaders.AssessmentType),
+                               Mapping(ValueMeta(meta.subject), AssessmentHeaders.AssessmentAcademicSubject),
+                               Mapping(ValueMeta(meta.grade), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()
     return stateCode.get_value(), mappings
@@ -375,11 +398,6 @@ def get_accommodations(opportunity):
 
 
 def get_claims(metadata, opportunity):
-    # read metadata and map Claim1, Claim2, Claim3, and Claim4
-    # metadata = None
-    # with open(metadata_file_path) as f:
-    #     metadata_json = f.read()
-    #     metadata = json.loads(metadata_json)
 
     claim1_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM1, PerformanceMetadataConstants.CLAIM1) or get_claim1_mapping(opportunity)
     claim2_mapping = getClaimMappingName(metadata, PerformanceMetadataConstants.CLAIM2, PerformanceMetadataConstants.CLAIM2)

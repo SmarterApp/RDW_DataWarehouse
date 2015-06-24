@@ -11,7 +11,7 @@ from edauth.security.user import RoleRelation
 from edcore.tests.utils.unittest_with_edcore_sqlite import get_unittest_tenant_name
 
 
-def create_test_session(roles=[], uid='dummy', tenant=None, full_name='Dummy User', expiration=None, last_access=None, idpSessionIndex='123', first_name='Dummy', last_name='User', name_id='abc', save_to_backend=False):
+def create_test_session(roles=[], uid='dummy', tenant=None, full_name='Dummy User', expiration=None, last_access=None, idpSessionIndex='123', first_name='Dummy', last_name='User', name_id='abc', save_to_backend=False, email='foo@foocom'):
     # Prepare session
     session_id = str(uuid.uuid1())
     current_datetime = datetime.now()
@@ -31,6 +31,7 @@ def create_test_session(roles=[], uid='dummy', tenant=None, full_name='Dummy Use
         relations.append(RoleRelation(role, tenant, None, None, None))
     session.set_user_context(relations)
     session.set_uid(uid)
+    session.set_email(email)
     session.set_fullName(full_name)
     session.set_firstName(first_name)
     session.set_lastName(last_name)

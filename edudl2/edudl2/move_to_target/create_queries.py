@@ -36,7 +36,8 @@ class InsertQueryBuilder:
     @op.setter
     def op(self, op):
         self._op = op
-        self.params += [bindparam('op', op)]
+        if op is not None:
+            self.params += [bindparam('op', op)]
 
     @property
     def distinct(self):
@@ -54,7 +55,7 @@ class InsertQueryBuilder:
         from_query = "SELECT {distinct_expression}, {quoted_source_columns} " + \
                      "FROM {source_schema_and_table} " + \
                      "WHERE guid_batch=':guid_batch' "
-        if self._op:
+        if self._op is not None:
             from_query += " AND op = ':op' "
         if self._distinct:
             from_query += " GROUP BY {group_by_columns}"

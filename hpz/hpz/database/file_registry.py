@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 class FileRegistry:
 
     @staticmethod
-    def register_request(user_id):
+    def register_request(user_id, email):
         registration_id = uuid4()
-        registration_info = {HPZ.REGISTRATION_ID: str(registration_id), HPZ.USER_ID: user_id}
+        registration_info = {HPZ.REGISTRATION_ID: str(registration_id), HPZ.USER_ID: user_id, HPZ.EMAIL: email}
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=HPZ.TABLE_NAME)

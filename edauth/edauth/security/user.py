@@ -21,6 +21,7 @@ class UserConstants():
     GUID = 'guid'
     STATECODE = 'stateCode'
     DISPLAYHOME = 'displayHome'
+    EMAIL = 'email'
 
 
 class RoleRelation(object):
@@ -195,6 +196,13 @@ class User(object):
         '''
         self.__info[UserConstants.UID] = uid
 
+    def set_email(self, email):
+        '''
+        @param email: email address to be set
+        @type info: string
+        '''
+        self.__info[UserConstants.EMAIL] = email
+
     def set_full_name(self, full_name):
         '''
         @param full_name: the full name to be set
@@ -278,6 +286,9 @@ class User(object):
 
     def get_uid(self):
         return self.__info[UserConstants.UID]
+
+    def get_email(self):
+        return self.__info[UserConstants.EMAIL]
 
     def get_user_context(self):
         return self.__info

@@ -25,19 +25,19 @@
     "Claims": {
         "Claim1": {
             "Name": "Reading",
-            "Mapping": "Claim1"
+            "Mapping": "SOCK_R"
         }, 
         "Claim2": {
             "Name": "Writing",
-            "Mapping": "Claim2"
+            "Mapping": "SOCK_LS"
         }, 
         "Claim3": {
             "Name": "Listening",
-            "Mapping": "Claim3"
+            "Mapping": "2-W"
         }, 
         "Claim4": {
             "Name": "Research & Inquiry",
-            "Mapping": "Claim4"
+            "Mapping": "4-CR"
         }
     }, 
     "ClaimsPerformanceLevel": {

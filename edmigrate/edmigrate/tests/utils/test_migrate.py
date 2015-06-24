@@ -50,9 +50,9 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student')), ['student_id'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_asmt')), ['asmt_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_vw')),
-                              ['asmt_guid', 'student_id'])
+                              ['asmt_guid', 'student_id', 'date_taken'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome')),
-                              ['asmt_guid', 'student_id'])
+                              ['asmt_guid', 'student_id', 'date_taken'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_inst_hier')),
                               ['state_code', 'district_id', 'school_id'])
 

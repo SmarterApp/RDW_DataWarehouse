@@ -103,7 +103,7 @@
             <img src="../images/smarter_printlogo.png" width="150" height="47" />
         </div>
         <div class="summary">
-            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
+            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.asmt_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
@@ -119,7 +119,7 @@
             <span>{{branding.tenantLabel}}</span>
         </div>
         <div class="summary">
-            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
+            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.asmt_grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.1.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.2.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.3.name}}
@@ -134,7 +134,7 @@
             <div class="policy"><h4>{{labels.college_content_readiness}}:</h4><p>{{{printAdditionalInfo.policy_content}}}</p></div>
             {{/printAdditionalInfo.policy_content}}
             <div class="psychometric"><h4>{{labels.note}}:</h4><p>{{{printAdditionalInfo.psychometric_implications}}}</p></div>
-            <div class='disclaimerInfo printContent'></div>
+            <div class='disclaimerInfo'>{{{interimDisclaimer}}}</div>
         </div>
     </div>
     <div class="legendPopup"></div>

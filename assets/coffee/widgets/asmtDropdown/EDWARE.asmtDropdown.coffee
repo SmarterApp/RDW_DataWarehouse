@@ -56,7 +56,7 @@ define [
     getAsmtTypes: () ->
       reportName = this.config.reportName
       asmtTypes = {}
-      @config.asmtTypes.options.sort @sortBy
+      @config.asmtTypes?.options.sort @sortBy
       for idx, asmt of @config.asmtTypes?.options
         asmt.asmt_year = asmt.date_taken.substr(0, 4) if asmt.date_taken
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
@@ -98,7 +98,6 @@ define [
       display: $option.data('display')
       asmt_type: $option.data('asmttype')
       asmt_guid: $option.data('asmtguid')?.toString()
-      effective_date: $option.data('effectivedate')
       date_taken: $option.data('datetaken')
       asmt_grade: $option.data('grade')
       asmt_period_year: $option.data('asmtperiodyear')
@@ -111,7 +110,7 @@ define [
       reportName = this.config.reportName
       #comparing_populations
       if reportName is Constants.REPORT_NAME.CPOP
-        return "" if not asmt.effective_date
+        return "" if not asmt.date_taken
       #list_of_students
       if reportName is Constants.REPORT_NAME.LOS
         asmt.asmt_from_year = asmt.asmt_period_year - 1

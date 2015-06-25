@@ -217,8 +217,7 @@ define [
           dataByGrade[asmt_grade] ?= []
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
-          'effective_date': edwareUtil.formatDate(assessment['effective_date']),
-          # 'date_taken': edwareUtil.formatDate(assessment['date_taken']),
+          'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
           'desc': assessment['claims'][0]['perf_lvl_name'],
           'level': assessment['claims'][0]['perf_lvl']}
@@ -343,20 +342,20 @@ define [
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
         if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
-            # Important:  This is a workaround for bulk pdf generation
-           key = if @params['dateTaken'] then @params['dateTaken'] else @params['asmtYear']
+          # Important:  This is a workaround for bulk pdf generation
+          key = if @params['dateTaken'] then @params['dateTaken'] else @params['asmtYear']
         else
           key = @params['asmtYear']
         return key + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
-          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params.dateTaken else + asmt['asmt_period_year']
+          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params['dateTaken'] else + asmt['asmt_period_year']
           return key + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
-          return asmt['effective_date'] + asmtType
+          return asmt['date_taken'] + asmtType
 
     prepareParams: () ->
       params = edwareUtil.getUrlParams()
@@ -364,20 +363,17 @@ define [
       if not @isPdf
         isrAsmt = edwarePreferences.getAsmtForISR()
         # We need to read from storage since the user might have changed selection from dropdown
-        if isrAsmt
+        if isrAsmt and Object.keys(isrAsmt).length isnt 0
           asmtType = isrAsmt['asmt_type']
-          effectiveDate = isrAsmt['effective_date']
           asmtYear = isrAsmt['asmt_period_year']
           dateTaken = isrAsmt['date_taken']
           params['asmtType'] = asmtType.toUpperCase() if asmtType
-          params['effectiveDate'] = effectiveDate if effectiveDate
           params['dateTaken'] = dateTaken if dateTaken
           params['asmtYear'] = asmtYear if asmtYear
         else
           # We save the params into storage in the case it's found in query params but not in storage
           edwarePreferences.saveAsmtForISR
             asmt_type: Constants.ASMT_TYPE[params['asmtType']]
-            effective_date: params['effectiveDate']
             date_taken: params['dateTaken']
             asmt_period_year: params['asmtYear']
       @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false

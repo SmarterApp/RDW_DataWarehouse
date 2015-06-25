@@ -63,7 +63,6 @@ define [
         'asmtType': encodeURI(@asmtType.toUpperCase())
       }
       row['params']['dateTaken'] ?= @asmtDate if @asmtDate
-      row['params']['effectiveDate'] ?= @effectiveDate if @effectiveDate
       row
 
   class StudentDataSet

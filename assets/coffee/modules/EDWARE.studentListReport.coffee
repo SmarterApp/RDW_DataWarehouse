@@ -20,9 +20,8 @@ require [
     asmtYear = edwarePreferences.getAsmtYearPreference()
     asmtType = edwarePreferences.getAsmtType()
     params['asmtYear'] = asmtYear if asmtYear
-    # if asmtType
-    #   params.asmtType = asmtType.toUpperCase()
-    # else
-    #   params.asmtType = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
-    params.asmtType = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
+    if asmtType
+      params.asmtType = asmtType.toUpperCase()
+    else
+      params.asmtType = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
     params

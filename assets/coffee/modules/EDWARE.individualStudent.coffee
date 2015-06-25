@@ -271,6 +271,7 @@ define [
 
     initialize: () ->
       @tries = 0
+      edwarePreferences.saveAsmtForISR({})
       @prepareParams()
       edwarePreferences.saveStateCode @params['stateCode']
       @isGrayscale = @params['grayscale']

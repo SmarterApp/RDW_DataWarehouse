@@ -49,9 +49,14 @@ define [
         currentYear: currentYears[0]
       @container.html(output)
 
+    # Ascending by date taken
+    sortBy: (a, b) ->
+      return if a.date_taken <= b.date_taken then 1 else -1
+
     getAsmtTypes: () ->
       reportName = this.config.reportName
       asmtTypes = {}
+      @config.asmtTypes.options.sort @sortBy
       for idx, asmt of @config.asmtTypes?.options
         asmt.asmt_year = asmt.date_taken.substr(0, 4) if asmt.date_taken
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]

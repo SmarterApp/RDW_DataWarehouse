@@ -354,15 +354,14 @@ def _create_urls_by_student_id(all_guids, state_code, base_url, params, files_by
     # Check if the user has access to PII for all of these students
     if not _has_context_for_pdf_request(state_code, all_guids):
         raise ForbiddenError('Access Denied')
-    # Create URLs
+
     for student_id, date_path in files_by_student_id.items():
         for date_taken in date_path:
+            url_by_date = {}
+            url_by_date[date_taken] = _create_student_pdf_url(student_id, base_url, params, date_taken)
             if student_id in urls_by_guid:
-                urls_by_guid[student_id][date_taken] = _create_student_pdf_url(student_id, base_url, params, date_taken)
-            else:
-                url_by_date = {}
-                url_by_date[date_taken] = _create_student_pdf_url(student_id, base_url, params, date_taken)
-                urls_by_guid[student_id] = url_by_date
+                url_by_date.update(urls_by_guid[student_id])
+            urls_by_guid[student_id] = url_by_date
     return urls_by_guid
 
 
@@ -373,6 +372,7 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
     generate_tasks = []
     args = {Constants.COOKIE: cookie_value, Constants.TIMEOUT: services.celery.TIMEOUT, Constants.COOKIE_NAME: cookie_name,
             Constants.GRAYSCALE: is_grayscale, Constants.ALWAYS_GENERATE: always_generate}
+
     for student_id, file_name_by_date in files_by_guid.items():
         for date_taken, file_name in file_name_by_date.items():
             copied_args = copy.deepcopy(args)
@@ -481,10 +481,11 @@ def _has_context_for_pdf_request(state_code, student_id):
     return check_context(RolesConstants.PII, state_code, student_id)
 
 
-def _create_student_pdf_url(student_id, base_url, params, date_taken):
+def _create_student_pdf_url(student_id, base_url, params, date_taken=None):
     params[Constants.STUDENTGUID] = student_id
     params[Constants.PDF] = "true"
-    params[Constants.DATETAKEN] = date_taken
+    if date_taken is not None:
+        params[Constants.DATETAKEN] = date_taken
     encoded_params = urllib.parse.urlencode(params)
     return base_url + "?%s" % encoded_params
 

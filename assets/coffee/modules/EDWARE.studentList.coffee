@@ -219,6 +219,8 @@ define [
       self = this
       @stickyCompare ?= new EdwareGridStickyCompare @labels, ()->
         self.updateView()
+      # Reset ISRAsmt in session storage
+      edwarePreferences.saveAsmtForISR({})
 
     reload: (@params)->
       @fetchData params

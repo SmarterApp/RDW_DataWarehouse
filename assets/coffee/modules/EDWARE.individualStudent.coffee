@@ -270,7 +270,6 @@ define [
 
     initialize: () ->
       @tries = 0
-      edwarePreferences.saveAsmtForISR({})
       @prepareParams()
       edwarePreferences.saveStateCode @params['stateCode']
       @isGrayscale = @params['grayscale']
@@ -362,7 +361,7 @@ define [
       @isPdf = params['pdf']
       if not @isPdf
         isrAsmt = edwarePreferences.getAsmtForISR()
-        # We need to read from storage since the user might have changed selection from dropdown
+        # Read from storage (dropdown change, page reload, ISR isnt reset from student list)
         if isrAsmt and Object.keys(isrAsmt).length isnt 0
           asmtType = isrAsmt['asmt_type']
           asmtYear = isrAsmt['asmt_period_year']
@@ -371,7 +370,7 @@ define [
           params['dateTaken'] = dateTaken if dateTaken
           params['asmtYear'] = asmtYear if asmtYear
         else
-          # We save the params into storage in the case it's found in query params but not in storage
+          # Save ISRasmt to storage
           edwarePreferences.saveAsmtForISR
             asmt_type: Constants.ASMT_TYPE[params['asmtType']]
             date_taken: params['dateTaken']

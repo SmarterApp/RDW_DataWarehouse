@@ -51,7 +51,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         query = select([distinct(fact_asmt_outcome_vw.c.student_id).label(Constants.STUDENT_ID),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
-                        dim_asmt.c.date_taken.label(Constants.DATETAKEN),
+                        fact_asmt_outcome_vw.c.date_taken.label(Constants.DATETAKEN),
                         dim_asmt.c.asmt_type.label(Constants.ASMT_TYPE),
                         fact_asmt_outcome_vw.c.district_id.label(Constants.DISTRICT_ID),
                         fact_asmt_outcome_vw.c.school_id.label(Constants.SCHOOL_ID),

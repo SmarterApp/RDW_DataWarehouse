@@ -73,6 +73,9 @@ define [
       matchAsmt = @dropdownValues[asmt.date_taken+asmt.asmt_type]
       asmt.asmt_grade = matchAsmt[0].asmt_grade if matchAsmt
       if $.isEmptyObject(asmt)
+        # Dropdown blank w/o data
+        # TODO|review years aval wo data
+        return false if $('.asmtSelection').length is 0
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt

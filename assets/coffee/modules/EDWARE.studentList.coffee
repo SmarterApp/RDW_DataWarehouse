@@ -163,6 +163,8 @@ define [
                   continue if asmt.hide or asmt[subjectName].hide
                   asmt.dateTaken = asmtDate
                   asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
+                  # save for Overview
+                  asmt[subjectName].dateTaken = asmtDate
                   row = new StudentModel(asmtType, null, this, asmtDate).init asmt
                   @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
@@ -171,9 +173,13 @@ define [
                     item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId]);
+          # overview has 2 dates
+          # update to the latest MATH date
+          asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
+          combinedAsmtRow = new StudentModel(asmtType, null, this, asmtDate).init combinedAsmts
           continue if combinedAsmts.hide
           @cache[asmtType][@allSubjects] ?= []
-          @cache[asmtType][@allSubjects].push(combinedAsmts)
+          @cache[asmtType][@allSubjects].push(combinedAsmtRow)
 
 
     formatIABData: () ->
@@ -411,9 +417,13 @@ define [
       edwarePreferences.saveSubjectPreference subjects
 
     updateView: (offset) ->
-      viewName = edwarePreferences.getAsmtView()
-      viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       asmtType = edwarePreferences.getAsmtType()
+      viewName = edwarePreferences.getAsmtView()
+      # set viewName if not in prefs
+      if asmtType is Constants.ASMT_TYPE.IAB
+        viewName = viewName || Constants.ASMT_VIEW.MATH
+      else
+        viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       $('#gridWrapper').removeClass().addClass("#{viewName} #{Constants.ASMT_TYPE[asmtType]}")
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName

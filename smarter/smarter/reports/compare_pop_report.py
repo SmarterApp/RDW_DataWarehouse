@@ -3,7 +3,6 @@ Created on Mar 7, 2013
 
 @author: dwu
 '''
-
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
@@ -27,13 +26,83 @@ from smarter.reports.student_administration import get_asmt_academic_years, get_
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
 from smarter.reports.helpers.aggregate_dim import get_aggregate_dim_interim
-
+import json
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
 CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
 DEFAULT_MIN_CELL_SIZE = 0
-
+# TODO this is mock data
+QUICK_LINKS = {
+  "quick_links": {
+    "districts": [
+      {
+        "name": "Daybreak School District",
+        "params": {
+          "districtId": 229,
+          "stateCode": "NC"
+        }
+      },
+      {
+        "name": "Dealfish Pademelon SD",
+        "params": {
+          "districtId": "2ce72d77-1de2-4137-a083-77935831b817",
+          "stateCode": "NC"
+        }
+      }
+    ],
+    "schools": [
+      {
+        "name": "Sunset - Eastern Elementary",
+        "params": {
+          "districtId": 228,
+          "schoolId": 242,
+          "stateCode": "NC"
+        }
+      },
+      {
+        "name": "Sunset - Western Middle",
+        "params": {
+          "districtId": 228,
+          "schoolId": 245,
+          "stateCode": "NC"
+        }
+      },
+      {
+        "name": "Sunset - Western Middle",
+        "params": {
+          "districtId": 228,
+          "schoolId": 245,
+          "stateCode": "NC"
+        }
+      },
+      {
+        "name": "Sunset - Western Middle",
+        "params": {
+          "districtId": 228,
+          "schoolId": 245,
+          "stateCode": "NC"
+        }
+      },
+      {
+        "name": "Sunset - Western Middle",
+        "params": {
+          "districtId": 228,
+          "schoolId": 245,
+          "stateCode": "NC"
+        }
+      },
+      {
+        "name": "Sunset - Western Middle",
+        "params": {
+          "districtId": 228,
+          "schoolId": 245,
+          "stateCode": "NC"
+        }
+      }
+    ]
+  }
+}
 
 @report_config(
     name=REPORT_NAME,
@@ -83,8 +152,8 @@ def get_comparing_populations_report(params):
         interim_params = deepcopy(params)
         interim_report = get_aggregate_dim_interim(subjects=report.get(Constants.SUBJECTS, []), **interim_params)
         report['records'] = get_merged_report_records(report, interim_report)
+        report['quick_links'] = json.loads(json.dumps(QUICK_LINKS))['quick_links']
     return report
-
 
 def get_merged_report_records(summative, interim):
     '''

@@ -106,6 +106,14 @@ define [
     delete pref[column]
     savePreferences {"expandedColumns": pref}
 
+  getQuickLinksState = () ->
+    pref = getPreferences()
+    pref = {} if not pref
+    pref["quickLinks"]
+
+  saveQuickLinksState = (state) ->
+    savePreferences { "quickLinks" : state }, false
+
   # Returns storage based whether long term is set to true
   getStorage = (isLongTerm) ->
     isLongTerm = if typeof isLongTerm isnt "undefined" then isLongTerm else false
@@ -144,3 +152,5 @@ define [
   saveExpandedColumns: saveExpandedColumns
   removeExpandedColumns: removeExpandedColumns
   isExpandedColumn: isExpandedColumn
+  saveQuickLinksState: saveQuickLinksState
+  getQuickLinksState: getQuickLinksState

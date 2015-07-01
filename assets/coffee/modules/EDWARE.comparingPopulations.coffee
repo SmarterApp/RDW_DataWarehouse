@@ -283,6 +283,8 @@ define [
       self = this
       @config.colorsData = @data.metadata
       @config.reportName = Constants.REPORT_NAME.CPOP
+      # Quick links
+      @config.quickLinksData = @data.quick_links
       # academic year
       @config.academicYears= {}
       @config.academicYears.options = @academicYears

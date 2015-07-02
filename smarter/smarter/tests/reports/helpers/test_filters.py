@@ -5,7 +5,7 @@ Created on Jul 16, 2013
 '''
 import unittest
 from sqlalchemy.sql.expression import true, false, null, select, \
-    BinaryExpression
+    BinaryExpression, True_
 from smarter.reports.helpers.filters import _get_filter, \
     has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, \
     FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI, \
@@ -22,26 +22,26 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
 
     def test_get_demographic_program_filter(self):
         test_filter = {}
-        true = BinaryExpression(True, True, '=')
-        false = BinaryExpression(False, False, '=')
-        none = BinaryExpression(None, None, 'IS')
+        #true = BinaryExpression(True_, True_, '=')
+        #false = BinaryExpression(False, False, '=')
+        #none = BinaryExpression(None, None, 'IS')
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
         self.assertFalse(value)
         test_filter = {FILTERS_PROGRAM_IEP: [YES]}
         value = _get_filter(FILTERS_PROGRAM_IEP, True, test_filter)
-        self.assertEqual(str(value), str(true))
+        self.assertEqual(str(value), str('1 = 1'))
         test_filter = {FILTERS_PROGRAM_IEP: [NO]}
         value = _get_filter(FILTERS_PROGRAM_IEP, False, test_filter)
-        self.assertEqual(str(value), str(false))
+        self.assertEqual(str(value), str('0 = 0'))
         test_filter = {FILTERS_PROGRAM_IEP: [NOT_STATED]}
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
-        self.assertEqual(str(value), str(none))
+        self.assertEqual(str(value), str('NULL IS NULL'))
         test_filter = {FILTERS_PROGRAM_IEP: [YES, NO, NOT_STATED]}
         value = _get_filter(FILTERS_PROGRAM_IEP, None, test_filter)
         self.assertEqual(3, len(value))
         test_filter = {FILTERS_PROGRAM_IEP: [YES, 'whatever']}
         value = _get_filter(FILTERS_PROGRAM_IEP, True, test_filter)
-        self.assertEqual(str(value), str(true))
+        self.assertEqual(str(value), str('1 = 1'))
 
     def test_has_filters_with_empty_params(self):
         self.assertFalse(has_filters({}))

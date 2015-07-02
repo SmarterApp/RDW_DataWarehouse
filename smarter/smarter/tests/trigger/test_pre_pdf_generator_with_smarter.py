@@ -23,7 +23,7 @@ class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
 
     def test_prepare_pre_pdf(self):
         results = prepare_pre_pdf(self.tenant, 'NC', '90901b70-ddaa-11e2-a95d-68a86d3c2f82')
-        self.assertEqual(380, len(results))
+        self.assertEqual(388, len(results))
 
     def test_prepare_pre_pdf_with_future_date(self):
         results = prepare_pre_pdf(self.tenant, 'NC', 'd1d7d814-ddb1-11e2-b3dd-68a86d3c2f82')

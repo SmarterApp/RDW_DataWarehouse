@@ -279,7 +279,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
                                                 urls_by_student_id)
 
     # Create the tasks to merge each PDF by grade
-    merge_tasks, merged_pdfs_by_grade, student_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
+    merge_tasks, merged_pdfs_by_grade, student_report_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
                                                                                       directory_for_merged_pdfs,
                                                                                       guids_by_grade,
                                                                                       files_by_student_id,
@@ -296,7 +296,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
                                                                                   custom_metadata,
                                                                                   directory_for_cover_sheets,
                                                                                   merged_pdfs_by_grade,
-                                                                                  student_count_by_pdf)
+                                                                                  student_report_count_by_pdf)
 
     # Create tasks to merge in cover sheets
     merge_covers_tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade,
@@ -413,7 +413,7 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, 
 
 
 def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, school_name, user_name, custom_metadata,
-                                       directory_for_covers, merged_by_grade, student_count_by_grade):
+                                       directory_for_covers, merged_by_grade, student_report_count_by_grade):
     cover_tasks = []
     cover_sheets_by_grade = {}
     cv_base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/pdfCoverPage.html')
@@ -440,7 +440,7 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
             # Update the parameters for the URL
             cv_params_this = copy.deepcopy(cv_params)
             cv_params_this['grade'] = grade
-            cv_params_this['studentCount'] = student_count_by_grade[grade]
+            cv_params_this['reportCount'] = student_report_count_by_grade[grade]
 
             # Create the cover sheet task
             cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,  # @UndefinedVariable

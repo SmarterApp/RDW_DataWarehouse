@@ -25,7 +25,7 @@ define [
 
   class StudentModel
 
-    constructor: (@asmtType, @effectiveDate, @dataSet) ->
+    constructor: (@asmtType, @effectiveDate, @dataSet, @asmtDate) ->
 
     init: (row) ->
       @appendColors row
@@ -60,9 +60,9 @@ define [
         "studentId": row['student_id'],
         "stateCode": row['state_code'],
         "asmtYear": edwarePreferences.getAsmtYearPreference(),
-        'asmtType': encodeURI(@asmtType.toUpperCase()),
+        'asmtType': encodeURI(@asmtType.toUpperCase())
       }
-      row['params']['effectiveDate'] ?= @effectiveDate if @effectiveDate
+      row['params']['dateTaken'] ?= @asmtDate if @asmtDate
       row
 
   class StudentDataSet
@@ -147,10 +147,6 @@ define [
         columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
       columnData
 
-    formatDate : (date) ->
-      if date
-        return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
-
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: (asmtType) ->
@@ -166,8 +162,10 @@ define [
                 if asmt[subjectName]
                   continue if asmt.hide or asmt[subjectName].hide
                   asmt.dateTaken = asmtDate
-                  asmt[subjectName]['asmt_date'] = @formatDate asmtDate
-                  row = new StudentModel(asmtType, null, this).init asmt
+                  asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
+                  # save for Overview
+                  asmt[subjectName].dateTaken = asmtDate
+                  row = new StudentModel(asmtType, null, this, asmtDate).init asmt
                   @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
@@ -175,9 +173,13 @@ define [
                     item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId]);
+          # overview has 2 dates
+          # update to the latest MATH date
+          asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
+          combinedAsmtRow = new StudentModel(asmtType, null, this, asmtDate).init combinedAsmts
           continue if combinedAsmts.hide
           @cache[asmtType][@allSubjects] ?= []
-          @cache[asmtType][@allSubjects].push(combinedAsmts)
+          @cache[asmtType][@allSubjects].push(combinedAsmtRow)
 
 
     formatIABData: () ->
@@ -223,6 +225,8 @@ define [
       self = this
       @stickyCompare ?= new EdwareGridStickyCompare @labels, ()->
         self.updateView()
+      # Reset ISRAsmt in session storage
+      edwarePreferences.saveAsmtForISR({})
 
     reload: (@params)->
       @fetchData params
@@ -383,7 +387,6 @@ define [
 
     onAsmtTypeSelected: (asmt) ->
       $('.detailsItem').hide()
-      edwarePreferences.saveAsmtForISR(asmt)
       edwarePreferences.saveAsmtPreference asmt
       @params['asmtType'] = asmt.asmt_type.toUpperCase()
       @reload @params
@@ -414,9 +417,13 @@ define [
       edwarePreferences.saveSubjectPreference subjects
 
     updateView: (offset) ->
-      viewName = edwarePreferences.getAsmtView()
-      viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       asmtType = edwarePreferences.getAsmtType()
+      viewName = edwarePreferences.getAsmtView()
+      # set viewName if not in prefs
+      if asmtType is Constants.ASMT_TYPE.IAB
+        viewName = viewName || Constants.ASMT_VIEW.MATH
+      else
+        viewName = viewName || Constants.ASMT_VIEW.OVERVIEW
       $('#gridWrapper').removeClass().addClass("#{viewName} #{Constants.ASMT_TYPE[asmtType]}")
       $("#subjectSelection#{viewName}").addClass('selected')
       @renderGrid viewName

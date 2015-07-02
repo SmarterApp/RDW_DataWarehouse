@@ -143,6 +143,7 @@ define [
   formatDate = (date) ->
     if not date
       return ""
+    date = date.toString()
     return "#{date[0..3]}.#{date[4..5]}.#{date[6..]}"
 
   reRenderBody = (labels) ->

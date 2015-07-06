@@ -1,22 +1,42 @@
 <div id="quickLinks_link" class="row-fluid">
-    <a href="#" id="quickLinks_open" class="pull-right">Show Quick Links &#8964;</a>
+    <div class="row-fluid">
+        <span id="quickLinks_open" class="pull-right">Show Quick Links &#8964;</span>
+    </div>
 </div>
 <div id="quickLinks_data">
     <span id="quickLinks_close" class="pull-right">&times;</span>
+    {{#isDistricts}}
     <div class="row-fluid">
-        <h4 class="span2">Your Districts <span class="lineArrow right"></span></h4>
-        <ul class="nav nav-pills">
-        {{#districts}}
-            <li><a href='{{link}}' class="btn btn-small quickLink">{{display}}</a></li>
-        {{/districts}}
-        </ul>
+        <h4 class="span2">Your Districts<span class="lineArrow right"></span></h4>
+        {{#districtRows}}
+            <div id="{{type}}_{{id}}" class="{{className}}">
+                <ul class="nav nav-pills span9">
+                {{#items}}
+                    <li><a href='{{link}}' class="btn btn-small quickLink">{{display}}</a></li>
+                {{/items}}
+                </ul>
+                {{#showMore}}
+                    <div class="span1 quickLinks_expand {{showMoreText}}" id="quickLinks_expand_{{type}}_{{id}}" data-type="{{type}}" data-id="{{id}}">more</div>
+                {{/showMore}}
+            </div>
+        {{/districtRows}}
     </div>
+    {{/isDistricts}}
+    {{#isSchools}}
     <div class="row-fluid">
-        <h4 class="span2">Your Schools <span class="lineArrow right"></span></h4>
-        <ul class="nav nav-pills">
-        {{#schools}}
-            <li><a href='{{link}}' class="btn btn-small quickLink">{{display}}</a></li>
-        {{/schools}}
-        </ul>
+        <h4 class="span2">Your Schools<span class="lineArrow right"></span></h4>
+        {{#schoolRows}}
+            <div id="{{type}}_{{id}}" class="{{className}}">
+                <ul class="nav nav-pills span9">
+                {{#items}}
+                    <li><a href='{{link}}' class="btn btn-small quickLink">{{display}}</a></li>
+                {{/items}}
+                </ul>
+                {{#showMore}}
+                    <div class="span1 quickLinks_expand {{showMoreText}}" id="quickLinks_expand_{{type}}_{{id}}" data-type="{{type}}" data-id="{{id}}">more</div>
+                {{/showMore}}
+            </div>
+        {{/schoolRows}}
     </div>
+    {{/isSchools}}
 </div>

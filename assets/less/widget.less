@@ -2259,28 +2259,32 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
 
 /* Quick links */
 #quickLinks {
-  border-bottom: solid 1px @color-B17;
-  padding: 6px 0;
+  background-color: @color-B22;
 
   /* Open btn */
   #quickLinks_open {
-    &:hover {
-      text-decoration: none;
-    }
+    cursor: pointer;
+    color: @color-A4;
+    margin-right: 20px;
   }
 
   /* Close btn */
   #quickLinks_close {
     cursor: pointer;
-    padding: 0 5px;
-
-    a { &:focus { text-decoration: none; } }
+    padding: 4px 8px 8px;
+    margin: 4px 10px 0 0;
+    font-size: 22px;
 
     &:hover {
       background-color: @color-B24;
       color: @color-C16;
     }
   }
+
+  /* More/less */
+  .more { display: block; }
+
+  .less { display: none; }
 
   /* Wrappers */
   #quickLinks_data,
@@ -2297,6 +2301,12 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
         opacity: 0;
         height: 0;
       }
+
+      & > div {
+        border-bottom: solid 1px @color-C19;
+        box-shadow: 0 1px 0 @color-white;
+        padding: 6px 0;
+      }
   }
 
   /* List labels */
@@ -2309,38 +2319,55 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
 
   /* Line arrow icon */
   .lineArrow.right {
-    width: 10px;
-    height: 10px;
-    border-top:  1px solid @color-C9;
-    border-right: 1px solid @color-C9;
+    width: 8px;
+    height: 8px;
+    border-top:  2px solid @color-C9;
+    border-right: 2px solid @color-C9;
     transform: rotate(54deg) skew(20deg);
     position: relative;
-    right: 10px;
-    top: 12px;
+    right: 34px;
+    top: 14px;
   }
 
   /* Lists */
-  ul {
-    margin: 0;
-  }
+  ul { margin: 0; }
 
   /* List items */
   .quickLink {
     background-color: @color-white;
     background-image: none;
-    border: solid 1px @color-B15;
+    border: 0;
+    box-shadow: 0 1px 1px @color-B3;
     border-radius: 3px;
     color: @color-B2;
-    width: 132px;
+    width: 140px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: auto 10px 4px auto;
 
     &:hover {
-      background-color: #949494;
-      color: white;
-      text-shadow: 0 1px 1px rgba(11, 11, 11, 0.75);
+      color: @color-A2;
+      background-color: #e8f6fb;
     }
+  }
+
+  /* More/less */
+  .quickLinks_expand {
+    cursor: pointer;
+    color: @color-A4;
+    font-size: 12px;
+    margin: 0 38px 0 0;
+    display: flex;
+    align-items: flex-end;
+    line-height: 1;
+    float: right;
+  }
+
+  /* Adjust for X sign */
+  #quickLinks_expand_districts_1,
+  #quickLinks_expand_schools_1 {
+    margin: 0;
   }
 }
 

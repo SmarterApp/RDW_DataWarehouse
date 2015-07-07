@@ -12,7 +12,7 @@ requires = [
     'requests == 2.2.1',
     "requests_toolbelt",
     'edcore',
-    "Jinja2==2.7.3",]
+    "Jinja2==2.7.3"]
 
 setup(name='hpz_client',
       version='0.1',

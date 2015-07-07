@@ -61,6 +61,15 @@ class SbacIdentityParser(IdentityParser):
         if 'uid' in __attributes:
             if __attributes['uid']:
                 session.set_uid(__attributes['uid'][0])
+        # get uid
+        if 'mail' in __attributes:
+            if __attributes['mail']:
+                session.set_email(__attributes['mail'][0])
+            else:
+                #Amplify SSO does not have email in SAML response
+                session.set_email(__attributes['uid'][0])
+        else:
+            session.set_email(__attributes['uid'][0])
 
         # get guid
         guid = __attributes.get('guid')

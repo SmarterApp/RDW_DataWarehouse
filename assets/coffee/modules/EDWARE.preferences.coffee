@@ -36,16 +36,20 @@ define [
     pref = getPreferences() || {}
     pref["ISRAsmt"]?.effective_date
 
+  getDateTaken = () ->
+    pref = getPreferences() || {}
+    pref["ISRAsmt"]?.date_taken
+
   getAsmtType = () ->
     pref = getPreferences() || {}
-    pref["ISRAsmt"]?.asmt_type
+    pref["asmt"]?.asmt_type
 
   saveAsmtPreference = (asmt) ->
     savePreferences {"asmt" : asmt}
 
   getAsmtPreference = () ->
     pref = getPreferences() || {}
-    pref['asmt']
+    pref['asmt']  || {}
 
   saveAsmtForISR = (asmt) ->
     savePreferences {"ISRAsmt": asmt}
@@ -53,6 +57,10 @@ define [
   getAsmtForISR = () ->
     pref = getPreferences() || {}
     pref['ISRAsmt']
+
+  getAsmtTypeForISR = () ->
+    pref = getAsmtForISR() || {}
+    pref?.asmt_type
 
   getAsmtView = () ->
     pref = getPreferences() || {}
@@ -134,9 +142,11 @@ define [
   saveAsmtYearPreference: saveAsmtYearPreference
   getAsmtYearPreference: getAsmtYearPreference
   getEffectiveDate: getEffectiveDate
+  getDateTaken: getDateTaken
   getAsmtType: getAsmtType
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR
+  getAsmtTypeForISR: getAsmtTypeForISR
   getFilters: getFilters
   saveAsmtView: saveAsmtView
   getAsmtView: getAsmtView

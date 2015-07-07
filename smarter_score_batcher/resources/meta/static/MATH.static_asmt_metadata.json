@@ -25,15 +25,15 @@
     "Claims": {
         "Claim1": {
             "Name": "Concepts & Procedures",
-            "Mapping": "Claim1"
+            "Mapping": "1"
         }, 
         "Claim2": {
             "Name": "Problem Solving and Modeling & Data Analysis",
-            "Mapping": "Claim2"
+            "Mapping": "SOCK_2"
         }, 
         "Claim3": {
             "Name": "Communicating Reasoning",
-            "Mapping": "Claim3"
+            "Mapping": "3"
         },
         "Claim4": {
             "Name": "",

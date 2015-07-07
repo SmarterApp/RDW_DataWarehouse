@@ -139,7 +139,7 @@ define [
           claim.name = @configData.labels.asmt[claim.name]
           claim.perf_lvl_name = @configData.labels.asmt[claim.perf_lvl_name]
 
-        key = assessment.effective_date + assessment.asmt_type
+        key = assessment.date_taken + assessment.asmt_type
         @data['views'] ?= {}
         @data['views'][key] ?= []
         @data['views'][key].push assessment if @data['views'][key].length < 2
@@ -179,8 +179,8 @@ define [
             dataByName[grade][name]['previousCounter'] ?= 0
             prevCounter = dataByName[grade][name]['previousCounter']
             if prevCounter < 3
-                dataByName[grade][name]['previous'][prevCounter] = block
-                dataByName[grade][name]['previousCounter'] +=1
+              dataByName[grade][name]['previous'][prevCounter] = block
+              dataByName[grade][name]['previousCounter'] +=1
             else
               dataByName[grade][name]['hasOlder'] = true
               dataByName[grade][name]['older'] ?= []
@@ -245,11 +245,19 @@ define [
         self.loadPrintMedia()
         self.fetchData()
 
+    loadDisclaimer: () ->
+      if @isPdf
+        asmtType = if @params['asmtType'] then @params['asmtType'].toUpperCase() else edwarePreferences.getAsmtType()
+      #Display only for 2 asmt types
+      if (typeof asmtType is 'string') and (asmtType.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
+        this.configData.interimDisclaimer
+
     loadPage: (template) ->
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @dataFactory ?= new DataFactory()
       @data = @dataFactory.createDataProcessor(data, @configData, @isGrayscale, @isBlock).process()
       @data.labels = @configData.labels
+      @data.interimDisclaimer = @loadDisclaimer()
       @grade = @data.context.items[4]
       @academicYears = data.asmt_period_year
       @subjectsData = @data.subjects
@@ -310,6 +318,7 @@ define [
     onAsmtTypeSelected: (asmt) ->
       # save assessment type
       edwarePreferences.saveAsmtForISR(asmt)
+      this.prepareParams()
       @reloadReport()
 
     renderReportActionBar: () ->
@@ -322,48 +331,49 @@ define [
       @configData.switchView = (asmtView)->
         self.updateView(asmtView)
       @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, @params.asmtType
+      # viewName
       @getAsmtViewSelection()
 
     getCacheKey: ()->
-      # For summative and interim comp, it's always effectiveDate + asmtType
+      # For summative and interim comp, it's always dateTaken + asmtType
       # For iab, it's always the asmtYear + asmtType
       if @isPdf
         asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
         asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
         if asmtType isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
-            # Important:  This is a workaround for bulk pdf generation
-           key = if @params['effectiveDate'] then @params['effectiveDate'] else @params['asmtYear']
-        else 
+          # Important:  This is a workaround for bulk pdf generation
+          key = if @params['dateTaken'] then @params['dateTaken'] else @params['asmtYear']
+        else
           key = @params['asmtYear']
         return key + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
         if asmt and asmt['asmt_type']
-          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then asmt['effective_date'] else + asmt['asmt_period_year']
+          key = if asmt['asmt_type'] isnt Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'] then @params['dateTaken'] else + asmt['asmt_period_year']
           return key + asmt['asmt_type']
         else
           asmt = @data.asmt_administration[0]
           asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
-          return asmt['effective_date'] + asmtType
+          return asmt['date_taken'] + asmtType
 
     prepareParams: () ->
       params = edwareUtil.getUrlParams()
       @isPdf = params['pdf']
       if not @isPdf
         isrAsmt = edwarePreferences.getAsmtForISR()
-        # We need to read from storage since the user might have changed selection from dropdown
-        if isrAsmt
+        # Read from storage (dropdown change, page reload, ISR isnt reset from student list)
+        if isrAsmt and Object.keys(isrAsmt).length isnt 0
           asmtType = isrAsmt['asmt_type']
-          effectiveDate = isrAsmt['effective_date']
           asmtYear = isrAsmt['asmt_period_year']
+          dateTaken = isrAsmt['date_taken']
           params['asmtType'] = asmtType.toUpperCase() if asmtType
-          params['effectiveDate'] = effectiveDate if effectiveDate
+          params['dateTaken'] = dateTaken if dateTaken
           params['asmtYear'] = asmtYear if asmtYear
         else
-          # We save the params into storage in the case it's found in query params but not in storage
+          # Save ISRasmt to storage
           edwarePreferences.saveAsmtForISR
             asmt_type: Constants.ASMT_TYPE[params['asmtType']]
-            effective_date: params['effectiveDate']
+            date_taken: params['dateTaken']
             asmt_period_year: params['asmtYear']
       @isBlock = if params['asmtType'] is 'INTERIM ASSESSMENT BLOCKS' then true else false
       @params = params
@@ -373,7 +383,7 @@ define [
         viewName = @getAsmtViewSelection()
         $("#subjectSelection#{viewName}").addClass('selected')
         $("#individualStudentContent").removeClass("Math").removeClass("ELA").addClass(viewName)
-  
+
     reloadReport: () ->
       # Decide if we have the data or needs to retrieve from backend
       # It is possible to enter an infinite loop if the cacheKey has a mismatch

@@ -37,8 +37,8 @@ def generate_performance_metadata(xml_string):
             plevel = performancelevel.attrib['plevel']
             scaledlo = performancelevel.attrib['scaledlo']
             scaledhi = performancelevel.attrib['scaledhi']
-            int_scaledlo = int(scaledlo) if type(scaledlo) is str else scaledlo
-            int_scaledhi = int(scaledhi) if type(scaledhi) is str else scaledhi
+            int_scaledlo = int(float(scaledlo)) if type(scaledlo) is str else scaledlo
+            int_scaledhi = int(float(scaledhi)) if type(scaledhi) is str else scaledhi
             cutpoint = 'set_level' + plevel + '_cutPoint'
             getattr(performanceMedadata, cutpoint)(int_scaledlo)
             if min_value is None or min_value > int_scaledlo:

@@ -18,9 +18,10 @@ require [
   mergeWithPreference = (params)->
     edwarePreferences.saveStateCode(params['stateCode'])
     asmtYear = edwarePreferences.getAsmtYearPreference()
+    asmtType = edwarePreferences.getAsmtType()
     params['asmtYear'] = asmtYear if asmtYear
-    asmt = edwarePreferences.getAsmtPreference()
-    # save preference for ISR
-    edwarePreferences.saveAsmtForISR(asmt)
-    params.asmtType = asmt?.asmt_type?.toUpperCase() || Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
+    if asmtType
+      params.asmtType = asmtType.toUpperCase()
+    else
+      params.asmtType = Constants.ASMT_TYPE.SUMMATIVE.toUpperCase()
     params

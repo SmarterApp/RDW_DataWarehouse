@@ -39,6 +39,9 @@ class Session:
     def get_uid(self):
         return self.__user.get_uid()
 
+    def get_email(self):
+        return self.__user.get_email()
+
     def get_roles(self):
         return self.__user.get_roles()
 
@@ -77,6 +80,12 @@ class Session:
         @param uid: the uid
         '''
         self.__user.set_uid(uid)
+
+    def set_email(self, email):
+        '''
+        @param uid: the uid
+        '''
+        self.__user.set_email(email)
 
     def set_user_context(self, context):
         self.__user.set_context(context)

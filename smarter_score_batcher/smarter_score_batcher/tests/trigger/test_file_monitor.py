@@ -73,6 +73,7 @@ class TestFileMonitor(Unittest_with_tsb_sqlite):
             pass
 
     def tearDown(self):
+        super().tearDown()
         if os.path.exists(self.__workspace):
             shutil.rmtree(self.__workspace)
         if os.path.exists(self.__staging):

@@ -41,10 +41,6 @@ def generate_file_path(items_root_dir, extension=None, state_code=None, asmt_yea
     effective_date = xml_datetime_convert(effective_date)
     if type(asmt_grade) is int:
         asmt_grade = str(asmt_grade)
-    elif type(asmt_grade) is str:
-        if asmt_grade.isnumeric():
-            asmt_grade = int(asmt_grade)
-            asmt_grade = str(asmt_grade)
     path = items_root_dir
     if state_code is not None:
         path = os.path.join(path, state_code.upper())

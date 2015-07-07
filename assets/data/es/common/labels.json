@@ -26,6 +26,7 @@
         "compare": "Comparar",
         "count": "Contar",
         "date": "Fecha",
+        "date_taken": "Fecha de administración",
         "deselect_all": "Anular la selección",
         "description": "Descripción",
         "details": "Detalles",
@@ -139,7 +140,6 @@
         "unfiltered_total_assessed": "Total evaluado sin filtrar",
         "uses": "Usos",
         "viewing": "Vista",
-        "viewing_iab": "The results below are grade <span class='grade'></span> Interim Assessment Blocks administered during the selected academic year.",
         "viewing_previous_year": "Usted está viendo un año académico anterior. <a href='#'>Regrese al <span class='latestYear'>{{latestYear}}</span></a>.",
         "viewing_default_year": {
             "state": "Los siguientes resultados son de las evaluaciones acumulativas del año pasado.",

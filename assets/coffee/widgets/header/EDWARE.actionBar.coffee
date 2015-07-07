@@ -36,7 +36,8 @@ define [
       @createAsmtDropdown(years)
 
     createQuickLinks: () ->
-      $('#quickLinks').createEdwareQuickLinks @config.quickLinksData
+      if !$.isEmptyObject(@config.quickLinksData)
+        $('#quickLinks').createEdwareQuickLinks @config.quickLinksData
 
     createDetailSelection: () ->
       asmt = edwarePreferences.getAsmtPreference()

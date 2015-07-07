@@ -107,8 +107,7 @@ define [
     savePreferences {"expandedColumns": pref}
 
   getQuickLinksState = () ->
-    pref = getPreferences()
-    pref = {} if not pref
+    pref = getPreferences() || {}
     pref["quickLinks"]
 
   saveQuickLinksState = (state) ->

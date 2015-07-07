@@ -9,6 +9,10 @@ define [
 
   class EdwareQuickLinks
 
+    SHOW_NEXT_ROW =
+      MORE: 'more'
+      LESS: 'less'
+
     constructor: (@container, @data) ->
       @dataRows = @processData()
       @initialize()
@@ -16,7 +20,6 @@ define [
       @bindEvents()
 
     initialize: () ->
-      # Up to 4 per row
       # districtRows = [ { districts: [ { type : x, id: x, items: [{display: x, link: y }], className: y, showMore: true, showMoreText: 'more' } } ]
       output = Mustache.to_html quickLinksTemplate,
         districtRows: @dataRows.districts
@@ -42,23 +45,29 @@ define [
       output = {}
       for key, list of @data
         output[key] ?= []
-        items = []
-        i = 0
-        for item, index in list
-          link = 'comparingPopulations.html?stateCode=' + item.params.stateCode + '&districtId=' + item.params.districtId
-          link += '&schoolId=' + item.params.schoolId if item.params.schoolId
-          i = index
-          items.push
-            display: item.name
-            link: link
-        item =
-          items : items
-          type : key
-          id : i
-          className: 'more'
-          showMore: items.length >= 4,
-          showMoreText: 'more'
-        output[key].push(item)
+        # Spit list in groups of 4
+        splitItems = (list.splice(0, 4) while list.length)
+        # Build rows with 4 items per row
+        # with unique type-id for div id
+        for group, groupIndex in splitItems
+          items = []
+          for item, index in group
+            link = 'comparingPopulations.html?stateCode=' + item.params.stateCode + '&districtId=' + item.params.districtId
+            link += '&schoolId=' + item.params.schoolId if item.params.schoolId
+            items.push
+              display: item.name
+              link: link
+          item =
+            items : items
+            type : key
+            id : groupIndex
+            # Always show the 1st row
+            className: if groupIndex is 0 then SHOW_NEXT_ROW.MORE else SHOW_NEXT_ROW.LESS
+            # Display more/less in case of additional items
+            showNextRow: splitItems[groupIndex+1] isnt undefined
+            # Display more/less text in case of additional items
+            showNextRowText: if splitItems[groupIndex+1] then SHOW_NEXT_ROW.MORE else SHOW_NEXT_ROW.LESS
+          output[key].push(item)
       output
 
     # Assign a class to an el
@@ -81,15 +90,20 @@ define [
         edwarePreferences.saveQuickLinksState true
 
       $('.quickLinks_expand').click ->
-        type = $(this).data('type')
-        id = $(this).data('id')+1
-        # check current status
-        isOpen = if $(this).html()=='more' then 'more' else 'less'
-        # change the class/copy
-        update = if isOpen=='more' then 'less' else 'more'
-        $(this).html(update)
-        # change el
-        $('#'+type+'_'+id).attr('class', update)
+        el = $(this)
+        type = el.data('type')
+        # Next row id
+        id = el.data('id')+1
+        copy = el.find('.copy').html()
+        # Check current class
+        rowClass = if copy == SHOW_NEXT_ROW.MORE then SHOW_NEXT_ROW.MORE else SHOW_NEXT_ROW.LESS
+        # Reverse copy
+        linkCopy = if copy == SHOW_NEXT_ROW.MORE then SHOW_NEXT_ROW.LESS else SHOW_NEXT_ROW.MORE
+        # Update el
+        el.empty()
+        $('<span class="copy">'+linkCopy+'</span><span class="'+linkCopy+'"></span>').appendTo(el)
+        # Change row class
+        $('#'+type+'_'+id).attr('class', rowClass)
 
   (($)->
     $.fn.createEdwareQuickLinks = (data) ->

@@ -15,9 +15,9 @@
                     <li><a href='{{link}}' class="btn btn-small quickLink">{{display}}</a></li>
                 {{/items}}
                 </ul>
-                {{#showMore}}
-                    <div class="span1 quickLinks_expand {{showMoreText}}" id="quickLinks_expand_{{type}}_{{id}}" data-type="{{type}}" data-id="{{id}}">more</div>
-                {{/showMore}}
+                {{#showNextRow}}
+                    <div class="span1 quickLinks_expand" id="quickLinks_expand_{{type}}_{{id}}" data-type="{{type}}" data-id="{{id}}"><span class="copy">{{showNextRowText}}</span><span class="{{showNextRowText}}"></span></div>
+                {{/showNextRow}}
             </div>
         {{/districtRows}}
     </div>
@@ -32,9 +32,9 @@
                     <li><a href='{{link}}' class="btn btn-small quickLink">{{display}}</a></li>
                 {{/items}}
                 </ul>
-                {{#showMore}}
-                    <div class="span1 quickLinks_expand {{showMoreText}}" id="quickLinks_expand_{{type}}_{{id}}" data-type="{{type}}" data-id="{{id}}">more</div>
-                {{/showMore}}
+                {{#showNextRow}}
+                    <div class="span1 quickLinks_expand" id="quickLinks_expand_{{type}}_{{id}}" data-type="{{type}}" data-id="{{id}}"><span class="copy">{{showNextRowText}}</span><span class="{{showNextRowText}}"></span></div>
+                {{/showNextRow}}
             </div>
         {{/schoolRows}}
     </div>

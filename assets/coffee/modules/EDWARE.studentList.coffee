@@ -378,7 +378,7 @@ define [
       studentIDs = []
       studentItems = @stickyCompare.getRows()
       for item in studentItems
-        studentIDs.push(Object.keys(item))
+        studentIDs.push.apply(studentIDs, Object.keys(item))
       params["studentId"] = studentIDs if studentIDs.length isnt 0
       params
 

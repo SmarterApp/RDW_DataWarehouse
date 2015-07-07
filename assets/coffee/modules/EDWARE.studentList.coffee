@@ -142,7 +142,7 @@ define [
       combinedData = $.extend(true, {}, this.data.subjects)
       combinedData.claims = claimsData
       if asmtType == Constants.ASMT_TYPE.SUMMATIVE
-        columnData = JSON.parse(Mustache.render(JSON.stringify(@config.summative), combinedData))        
+        columnData = JSON.parse(Mustache.render(JSON.stringify(@config.summative), combinedData))
       else
         columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
       columnData
@@ -172,7 +172,7 @@ define [
                   if !item[studentId][subjectName]
                     item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
-          combinedAsmts = $.extend({}, asmt, item[studentId]);
+          combinedAsmts = $.extend({}, asmt, item[studentId])
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
@@ -375,7 +375,10 @@ define [
 
     getReportParams: () ->
       params = {}
-      studentIDs = @stickyCompare.getRows()
+      studentIDs = []
+      studentItems = @stickyCompare.getRows()
+      for item in studentItems
+        studentIDs.push(Object.keys(item))
       params["studentId"] = studentIDs if studentIDs.length isnt 0
       params
 
@@ -472,7 +475,7 @@ define [
       $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateTotalNumber: (total) ->
-      total = (if total isnt `undefined` then total else 0)
+      total = (if total isnt 'undefined' then total else 0)
       reportType = Constants.REPORT_TYPE.GRADE
       display = "#{total} #{@labels.next_level[reportType]},"
       $('#total_number').text display

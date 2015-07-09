@@ -5,7 +5,8 @@ define [
   "edwarePreferences"
   "edwareEvents"
   "edwareConstants"
-], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents, Constants) ->
+  "edwareUtil"
+], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents, Constants, edwareUtil) ->
 
   class EdwareAsmtDropdown
 
@@ -20,17 +21,24 @@ define [
       currentYear = edwarePreferences.getAsmtYearPreference()
       latestYear = []
       otherYears = []
-      for v in @dropdownValues
+
+      for x,y of @dropdownValues
+
+        # always the first one
+        v = y[0]
         if v.asmt_period_year is currentYear
           latestYear.push v
         else
           otherYears.push v
 
       years = []
+      currentYears = []
       if @config.years
         for year in @config.years
           if year.value isnt currentYear
             years.push year
+          else
+            currentYears.push year
 
       output = Mustache.to_html AsmtDropdownTemplate,
         latestYear: latestYear
@@ -38,25 +46,41 @@ define [
         hasOtherYears: otherYears.length > 0
         academicYears: years
         hasOtherAcademicYears: years.length > 0
+        currentYear: currentYears[0]
       @container.html(output)
 
+    # Ascending by date taken
+    sortBy: (a, b) ->
+      return if a.date_taken <= b.date_taken then 1 else -1
+
     getAsmtTypes: () ->
-      asmtTypes = []
+      reportName = this.config.reportName
+      asmtTypes = {}
+      @config.asmtTypes?.options.sort @sortBy
       for idx, asmt of @config.asmtTypes?.options
-        asmt.asmt_year = asmt.effective_date.substr(0, 4) if asmt.effective_date
+        asmt.asmt_year = asmt.date_taken.substr(0, 4) if asmt.date_taken
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.display = @getAsmtDisplayText(asmt)
-        asmtTypes.push asmt
+        key = if reportName is Constants.REPORT_NAME.ISR then asmt.date_taken+asmt.asmt_type else asmt.asmt_type
+        asmtTypes[key] = (asmtTypes[key] || [])
+        asmtTypes[key].push(asmt)
       asmtTypes
 
     setDefaultOption: () ->
       # set default option, comment out for now
-      asmt = @getAsmtPreference() #edwarePreferences.getAsmtPreference()
+      asmt = @getAsmtPreference()
+      # For ISR, need also the grade
+      matchAsmt = @dropdownValues[asmt.date_taken+asmt.asmt_type]
+      asmt.asmt_grade = matchAsmt[0].asmt_grade if matchAsmt
       if $.isEmptyObject(asmt)
+        # Dropdown blank w/o data
+        # TODO|review years aval wo data
+        return false if $('.asmtSelection').length is 0
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
-        edwarePreferences.saveAsmtForISR asmt
+        if this.config.reportName is Constants.REPORT_NAME.ISR
+          edwarePreferences.saveAsmtForISR asmt
       @setSelectedValue asmt
 
     bindEvents: () ->
@@ -80,28 +104,33 @@ define [
       display: $option.data('display')
       asmt_type: $option.data('asmttype')
       asmt_guid: $option.data('asmtguid')?.toString()
-      effective_date: $option.data('effectivedate')
+      date_taken: $option.data('datetaken')
       asmt_grade: $option.data('grade')
       asmt_period_year: $option.data('asmtperiodyear')
 
     setSelectedValue: (asmt) ->
-      displayText = @getAsmtDisplayText(asmt)
+      displayText = @getAsmtDisplayText(asmt, 'selection')
       $('#selectedAsmtType').html displayText
 
-    getAsmtDisplayText: (asmt)->
-      # Format for interim blocks is different
-      if asmt.asmt_type is Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS']
+    getAsmtDisplayText: (asmt, option)->
+      reportName = this.config.reportName
+      #comparing_populations
+      if reportName is Constants.REPORT_NAME.CPOP
+        return "" if not asmt.date_taken
+      #list_of_students
+      if reportName is Constants.REPORT_NAME.LOS
         asmt.asmt_from_year = asmt.asmt_period_year - 1
         asmt.asmt_to_year = asmt.asmt_period_year
+        option = 'preset' if not option
+        return Mustache.to_html @displayTemplate[option], asmt
+      #student report
+      if reportName is Constants.REPORT_NAME.ISR
+        asmt.asmt_from_year = asmt.asmt_period_year - 1
+        asmt.asmt_to_year = asmt.asmt_period_year
+        asmt.asmt_date = edwareUtil.formatDate(asmt.date_taken)
         return Mustache.to_html @displayTemplate[asmt.asmt_type], asmt
-      return "" if not asmt.effective_date
-      effective_date = asmt.effective_date.toString()
-      asmt.asmt_year = effective_date.substr(0, 4)
-      asmt.asmt_month = effective_date.substr(4, 2)
-      asmt.asmt_day = effective_date.substr(6, 2)
-      Mustache.to_html @displayTemplate['default'], asmt
 
-  # dropdownValues is an array of values to feed into dropdown
+  # dropdownValues is an object to feed into the dropdown
   (($)->
     $.fn.edwareAsmtDropdown = (config, getAsmtPreference, callbacks) ->
       # Check if only IAB is loaded for 1st time

@@ -345,22 +345,16 @@ define [
     FAOFilter = (data) ->
       # no filters applied
       return data if not filters
-
-      for effectiveDate, assessment of data.assessments
-        for asmtType, studentList of assessment
-          for studentId, assessment of studentList
-            if not match.demographics(assessment)
-              assessment.hide = true
-            else
-              assessment.hide = false
-            # check grouping filters
-            for subject of data.subjects
-              asmt_subject = assessment[subject]
-              continue if not asmt_subject
-              if not match.grouping(asmt_subject)
-                asmt_subject.hide = true
-              else
-                asmt_subject.hide = false
+      for asmtType, studentGroupByType of data.assessments
+        for studentId, asmtList of studentGroupByType
+          for asmtByDate in asmtList
+            for asmtDate, assessment of asmtByDate
+              assessment.hide = if not match.demographics(assessment) then true else false
+              # check grouping filters
+              for subject of data.subjects
+                asmt_subject = assessment[subject]
+                continue if not asmt_subject
+                asmt_subject.hide = if not match.grouping(asmt_subject) then true else false
       data
 
     return (asmtType) ->

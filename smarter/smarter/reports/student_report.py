@@ -19,7 +19,7 @@ from smarter.reports.helpers.constants import AssessmentType
 from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.reports.student_administration import get_asmt_administration_years
+from smarter.reports.student_administration import get_asmt_administration_years_isr
 from smarter.security.tenant import validate_user_tenant
 from smarter_common.security.constants import RolesConstants
 
@@ -34,7 +34,7 @@ def __prepare_query(connector, params):
     assessment_guid = params.get(Constants.ASSESSMENTGUID)
     student_id = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
-    effective_date = params.get(Constants.EFFECTIVEDATE)
+    date_taken = params.get(Constants.DATETAKEN)
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_year = params.get(Constants.ASMTYEAR)
 
@@ -49,10 +49,10 @@ def __prepare_query(connector, params):
                                 fact_asmt_outcome_vw.c.district_id.label('district_id'),
                                 fact_asmt_outcome_vw.c.school_id.label('school_id'),
                                 fact_asmt_outcome_vw.c.state_code.label('state_code'),
+                                fact_asmt_outcome_vw.c.date_taken.label('date_taken'),
                                 dim_asmt.c.asmt_subject.label('asmt_subject'),
                                 dim_asmt.c.asmt_period.label('asmt_period'),
                                 dim_asmt.c.asmt_period_year.label('asmt_period_year'),
-                                dim_asmt.c.effective_date.label('effective_date'),
                                 dim_asmt.c.asmt_type.label('asmt_type'),
                                 dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                 dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -125,8 +125,8 @@ def __prepare_query(connector, params):
     query = query.where(and_(fact_asmt_outcome_vw.c.student_id == student_id, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
-    if effective_date is not None:
-        query = query.where(dim_asmt.c.effective_date == str(effective_date))
+    if date_taken is not None:
+        query = query.where(fact_asmt_outcome_vw.c.date_taken == str(date_taken))
     if asmt_type is not None:
         query = query.where(dim_asmt.c.asmt_type == asmt_type)
     if asmt_year is not None:
@@ -312,7 +312,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
                        "type": "integer",
                        "required": True,
                        "pattern": "^[1-9][0-9]{3}$"},
-                   Constants.EFFECTIVEDATE: {
+                   Constants.DATETAKEN: {
                        "type": "integer",
                        "required": False,
                        "pattern": "^[1-9]{8}$"},
@@ -352,7 +352,7 @@ def get_student_report(params):
         asmt_grade = first_student['asmt_grade']
         student_name = format_full_name(first_student['first_name'], first_student['middle_name'], first_student['last_name'])
         context = get_breadcrumbs_context(state_code=state_code, district_id=district_id, school_id=school_id, asmt_grade=asmt_grade, student_name=student_name)
-        student_report_asmt_administration = get_asmt_administration_years(state_code, student_ids=student_id)
+        student_report_asmt_administration = get_asmt_administration_years_isr(state_code, student_ids=student_id)
 
         # color metadata
         custom_metadata_map = get_custom_metadata(result[0].get(Constants.STATE_CODE), None)

@@ -54,12 +54,12 @@ define [
           this.applyCheckboxValues()
 
     applyCheckboxValues: () ->
-      for row of this.selectedRows
-        id = "#sticky_#{row}"
-        element = $(id)
-        element.attr('checked', true)
-        $(id, '.frozen-bdiv').attr('checked', true)
-        this.checkedEvent element
+      for rowId, data of this.selectedRows
+        className = '.sticky_'+ rowId
+        els = $(className)
+        els.attr('checked', true)
+        $(className + '.frozen-bdiv').attr('checked', true)
+        this.checkedEvent els
 
     # All events related to grid filtering of rows
     bindEvents: () ->
@@ -68,9 +68,11 @@ define [
       $(document).on 'click', '.stickyCheckbox', () ->
         if not $(this).is(':checked')
           self.removeCurrentRow this
+          self.removeRowsForStudent this
           self.uncheckedEvent this
         else
           self.addCurrentRow this
+          self.addRowsForStudent this
           self.checkedEvent this
         self.renderStickyChainRows()
 
@@ -118,12 +120,12 @@ define [
       $(document).on 'click', '.removeStickyChainIcon', () ->
         rowId = $(this).data('id')
         # Uncheck the checkbox in the grid
-        element = $('#sticky_' + rowId)
-        element.attr('checked', false)
+        elements = $('.sticky_' + rowId)
+        elements.attr('checked', false)
         # We need to explicitly remove the rows
         # because we may run into the case where the row isn't loaded in the grid
         self.removeRowFromSelectedRows rowId
-        self.uncheckedEvent element
+        self.uncheckedEvent elements
         $('.stickyChainScrollable').html(self.getStickyChainContent().html())
 
       # On logout, clear storage
@@ -133,15 +135,18 @@ define [
 
       $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
         # To prevent the dropdown from closing when clicking inside dropdown menu
-        e.stopPropagation();
+        e.stopPropagation()
 
     clearSelectedRows: () ->
       this.selectedRows = {}
 
     getRows: () ->
       keys = []
-      for key, value of this.selectedRows
-        keys.push(key)
+      for key, data of this.selectedRows
+        item = {}
+        item[key] =
+          name : data.name
+        keys.push(item)
       keys
 
     getRowsCount: () ->
@@ -168,12 +173,28 @@ define [
     # Given a row in the grid, add its value to selectedRows
     addCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
-      this.selectedRows[info.id] = info.name
+      if !this.selectedRows[info.id]
+        this.selectedRows[info.id] =
+          name: info.name
+
+    # Add other rows to selectedRows
+    addRowsForStudent: (row) ->
+      info = this.getCurrentRowInfo row
+      studentRowEls = elements = $('.sticky_' + info.id)
+      # Add to selected rows
+      for row in studentRowEls
+        this.addCurrentRow row
+      # Check all rows on
+      this.applyCheckboxValues()
 
     # Given a row in the grid, remove its value from selectedRows
     removeCurrentRow: (row) ->
       info = this.getCurrentRowInfo row
       this.removeRowFromSelectedRows info.id
+
+    removeRowsForStudent: (row) ->
+      className = $(row).data('value')
+      $('#gbox_gridTable .sticky_' + className).attr('checked', false)
 
     removeRowFromSelectedRows: (id) ->
       delete this.selectedRows[id]
@@ -189,7 +210,9 @@ define [
       rows = this.getDataForReport()
       this.selectedRows = {}
       for row in rows
-        this.selectedRows[row] = ""
+        for key, data of row
+          this.selectedRows[key] =
+            name: ''
       this.compareMode = rows.length > 0
       this.getRows()
 
@@ -201,11 +224,14 @@ define [
       selectedRows = @getSelectedRowsFromStorage()
       if selectedRows.length is 0
         return {'data': allData, 'enabled': false }
-      for data in allData
-        if String(data.rowId) in selectedRows
-          returnData.push data
-          # We need to repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
-          @selectedRows[data.rowId] = data[columnField]
+      for item in allData
+        for row in selectedRows
+          for key, data of row
+            if String(item.rowId) is key
+              returnData.push item
+              # Repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
+              @selectedRows[key] =
+                name: item[columnField]
       return {'data': returnData, 'enabled': selectedRows.length > 0}
 
 
@@ -313,9 +339,9 @@ define [
     getStickyChainContent: ()->
       reverse = {}
       names = []
-      for key, value of this.selectedRows
-        reverse[value] = key
-        names.push value
+      for key, data of this.selectedRows
+        reverse[data.name] = key
+        names.push data.name
       names = names.sort()
       idx = 0
       scrollable =$('<div class="stickyChainScrollable"></div>')

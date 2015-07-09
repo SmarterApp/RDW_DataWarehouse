@@ -52,9 +52,23 @@ define [
           value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.bg_color
           value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.text_color
 
+    # Convert date to difference
+    formatDate: (s) ->
+      # YYYY-MM-DDThh:mmTZD, T05:00:00 is timezone
+      dStr = "#{s[0..3]}-#{s[4..5]}-#{s[6..]}T05:00:00"
+      # difference of max representable time
+      # and date passed (since Epoch) in milliseconds
+      # 2147490000000 is (2038-01-19)
+      eT = 2147490000000
+      eT -= new Date(dStr).getTime()
+      #Max epoch date has 13 digits
+      dateWithPadding = "000000000000" + eT
+      dateWithPadding.substr(dateWithPadding.length-13)
+
     appendExtraInfo: (row) ->
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
+      row['student_full_name_date_taken'] = row['student_full_name'] + ' ' + @formatDate(row['dateTaken'])
       # This is for links in drill down
       row['params'] = {
         "studentId": row['student_id'],

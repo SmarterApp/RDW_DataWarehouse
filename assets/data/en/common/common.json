@@ -275,7 +275,7 @@
                     {
                         "name": "Students",
                         "displayTpl": "<a href='#' class='inherit'>Students</a>",
-                        "index": "student_full_name",
+                        "index": "student_full_name_date_taken",
                         "field": "student_full_name",
                         "width": 240,
                         "style": "ui-ellipsis bold",
@@ -363,7 +363,7 @@
                     {
                         "name": "Students",
                         "displayTpl": "<a href='#' class='inherit'>Students</a>",
-                        "index": "student_full_name",
+                        "index": "student_full_name_date_taken",
                         "field": "student_full_name",
                         "width": 240,
                         "style": "ui-ellipsis bold",

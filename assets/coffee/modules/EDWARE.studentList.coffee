@@ -60,7 +60,7 @@ define [
       # and date passed (since Epoch) in milliseconds
       # 2147490000000 is (2038-01-19)
       eT = 2147490000000
-      eT = eT - new Date(dStr).getTime()
+      eT -= new Date(dStr).getTime()
       #Max epoch date has 13 digits
       dateWithPadding = "000000000000" + eT
       dateWithPadding.substr(dateWithPadding.length-13)

@@ -170,6 +170,7 @@ define [
       displayPopover: not options.colModel.expanded  # Only show popover when not expanded
       oldResultsClass: if not isExpanded then "hasOlderResults" else ""
       student_full_name: rowObject.student_full_name
+      student_full_name_date_taken: rowObject.student_full_name_date_taken
       prev: columnData
       asmtType: subject.asmt_type,
       asmtSubjectText: asmt_subject_text

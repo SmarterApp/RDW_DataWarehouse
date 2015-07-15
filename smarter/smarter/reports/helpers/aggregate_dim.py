@@ -10,6 +10,8 @@ from sqlalchemy.sql.expression import distinct, or_
 from edapi.cache import cache_region
 from copy import deepcopy
 
+CACHE_REGION_PUBLIC_SHORTLIVED = 'public.shortlived'
+
 
 def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subjects={}):
     records = {}
@@ -57,7 +59,7 @@ def get_aggregate_dim_cache_route_cache_key(stateCode, districtId, schoolId, asm
     return tuple(cache_args)
 
 
-@cache_region(['public.shortlived'], router=get_aggregate_dim_cache_route, key_generator=get_aggregate_dim_cache_route_cache_key)
+@cache_region([CACHE_REGION_PUBLIC_SHORTLIVED], router=get_aggregate_dim_cache_route, key_generator=get_aggregate_dim_cache_route_cache_key)
 def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subject_key=None, subject=None):
     '''
     Query for institution or grades that have asmts for the year provided

@@ -234,7 +234,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('asmt_status', String(2), nullable=False),
                                   )
 
-    Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_guid, unique=False)
+    Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_guid, assessment_outcome_vw.c.date_taken, unique=False)
     Index('fact_asmt_outcome_vw_asmt_subj_typ_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_type, unique=False)
     # Filtering related indices
     Index('fact_asmt_outcome_vw_grade_idx', assessment_outcome_vw.c.asmt_grade, unique=False)
@@ -309,7 +309,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      Column('asmt_status', String(2), nullable=False),
                                      )
 
-    Index('fact_block_asmt_outcome_student_idx', assessment_block_outcome.c.student_id, assessment_block_outcome.c.asmt_guid, unique=False)
+    Index('fact_block_asmt_outcome_student_idx', assessment_block_outcome.c.student_id, assessment_block_outcome.c.asmt_guid, assessment_block_outcome.c.date_taken, unique=False)
     Index('fact_block_asmt_outcome_report_idx', assessment_block_outcome.c.state_code, assessment_block_outcome.c.school_id, assessment_block_outcome.c.district_id, assessment_block_outcome.c.asmt_year, assessment_block_outcome.c.rec_status, assessment_block_outcome.c.asmt_type, assessment_block_outcome.c.asmt_grade, assessment_block_outcome.c.asmt_subject, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
@@ -371,7 +371,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                MetaColumn('batch_guid', String(36), nullable=False),
                                )
 
-    Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_id, assessment_outcome.c.asmt_guid, unique=False)
+    Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_id, assessment_outcome.c.asmt_guid, assessment_outcome.c.date_taken, unique=False)
 
     student_registration = Table('student_reg', metadata,
                                  Column('student_reg_rec_id', BigInteger, primary_key=True),

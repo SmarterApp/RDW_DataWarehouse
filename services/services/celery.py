@@ -53,7 +53,7 @@ def setup_global_settings(settings):
     MAX_RETRIES = int(settings.get('pdf.retries_allowed', MAX_RETRIES))
     RETRY_DELAY = int(settings.get('pdf.retry_delay', RETRY_DELAY))
     PDFUNITE_TIMEOUT = int(settings.get('pdf.merge.pdfunite_timeout', PDFUNITE_TIMEOUT))
-    JAVASCRIPT_DELAY = int(settings.get('pdf.javascript_delay', JAVASCRIPT_DELAY))
+    JAVASCRIPT_DELAY = int(settings.get('pdf.wkhtmltopdf.javascript_delay', JAVASCRIPT_DELAY))
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)

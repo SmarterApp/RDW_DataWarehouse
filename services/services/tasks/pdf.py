@@ -10,7 +10,7 @@ import sys
 import logging
 import subprocess
 import urllib.parse
-from services.celery import celery, PDFUNITE_TIMEOUT
+from services.celery import celery, PDFUNITE_TIMEOUT, JAVASCRIPT_DELAY
 from services.exceptions import PdfGenerationError, PDFUniteError
 from edcore.exceptions import NotForWindowsException, RemoteCopyError
 from edcore.utils.utils import archive_files
@@ -27,7 +27,7 @@ import uuid
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
 pdfunite_procs = ['pdfunite']
-pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
+pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', str(JAVASCRIPT_DELAY), '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 cover_sheet_pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '1000']
 
 OK = 0

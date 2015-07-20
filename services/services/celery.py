@@ -16,7 +16,7 @@ MINIMUM_FILE_SIZE = 80000
 # pdfunite timeout
 PDFUNITE_TIMEOUT = 3000
 
-# javascript delaty default 
+# javascript delay default 
 JAVASCRIPT_DELAY = 6000
 
 # delay in retry. Default to 5 seconds

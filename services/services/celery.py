@@ -7,8 +7,8 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
 from hpz_client.frs.config import initialize as initialize_hpz
 
-# default timeout 20 seconds
-TIMEOUT = 20
+# default timeout 60 seconds
+TIMEOUT = 60
 # default number of pdf generation retries
 MAX_RETRIES = 1
 # minimum file size of pdf generated

@@ -53,7 +53,7 @@ define [
       @container.focuslost ()->
         self.hide()
 
-      $('.reminderMessage a').click ->
+      $('.reminderMessage a').unbind('click').click ->
         value = self.latestYear
         edwarePreferences.saveAsmtYearPreference(value)
         self.callback(value)

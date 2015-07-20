@@ -42,11 +42,11 @@ def _rsync(*args, **kwargs):
         s3_to_glacier_after_days = int(settings.get('file-grabber.args.archive_s3_to_glacier_after_days', '30'))
         s3_prefix = settings.get('file-grabber.args.archive_s3_prefix')
         private_key = settings.get('file-grabber.args.private_key')
-        rsync_command.append("-e")
-        rsync_command.append("ssh -o StrictHostKeyChecking=no")
+        rsync_ssh = "ssh -o StrictHostKeyChecking=no"
         if private_key is not None:
-            rsync_command.append("-e")
-            rsync_command.append(" -i " + private_key)
+            rsync_ssh += " -i " + private_key
+        rsync_command.append("-e")
+        rsync_command.append(rsync_ssh)
 
         if not remote_dir.endswith('/'):
             remote_dir += '/'

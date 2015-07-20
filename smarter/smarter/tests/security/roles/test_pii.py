@@ -83,7 +83,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(self.tenant, self.user, query)
             result = connection.get_result(query)
-            self.assertEqual(1221, len(result))
+            self.assertEqual(1228, len(result))
 
     def test_add_context_with_tenant(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -99,7 +99,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
             result = connection.get_result(query)
-            self.assertEqual(1221, len(result))
+            self.assertEqual(1228, len(result))
 
     def test_add_context_with_state_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -116,7 +116,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
             self.assertIsNotNone(query._whereclause)
             result = connection.get_result(query)
-            self.assertEqual(len(result), 1221)
+            self.assertEqual(len(result), 1228)
 
     def test_add_context_with_district_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -132,7 +132,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
             result = connection.get_result(query)
-            self.assertEqual(340, len(result))
+            self.assertEqual(344, len(result))
 
     def test_add_context_with_school_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -148,7 +148,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
             result = connection.get_result(query)
-            self.assertEqual(234, len(result))
+            self.assertEqual(238, len(result))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

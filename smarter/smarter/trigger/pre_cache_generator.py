@@ -123,8 +123,8 @@ def precached_task(settings):
         tenant = udl_stats_result.get(UdlStatsConstants.TENANT)
         state_code = tenant_to_state_code.get(tenant)
         batch_guid = udl_stats_result.get(UdlStatsConstants.BATCH_GUID)
-        fact_outcome_results = prepare_pre_cache(tenant, state_code, batch_guid)
-        triggered_success = trigger_precache(tenant, state_code, fact_outcome_results, filter_settings)
+        fact_results = prepare_pre_cache(tenant, state_code, batch_guid)
+        triggered_success = trigger_precache(tenant, state_code, fact_results, filter_settings)
         if triggered_success:
             update_ed_stats_for_precached(udl_stats_result[UdlStatsConstants.REC_ID])
 

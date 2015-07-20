@@ -3,10 +3,14 @@ Created on Jun 20, 2013
 
 @author: dip
 '''
-from smarter.reports.compare_pop_report import ComparingPopReport,\
+from smarter.reports.compare_pop_report import ComparingPopReport, \
     get_comparing_populations_cache_key, get_comparing_populations_cache_route
 from edapi.cache import region_invalidate
 from smarter.reports.student_administration import get_asmt_academic_years
+from smarter.reports.helpers.aggregate_dim import _get_aggregate_dim_for_interim, \
+    CACHE_REGION_PUBLIC_SHORTLIVED, get_aggregate_dim_cache_route_cache_key
+from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.filters import has_filters
 
 
 class CacheTrigger(object):
@@ -46,7 +50,13 @@ class CacheTrigger(object):
         region_name = get_comparing_populations_cache_route(report)
         args = get_comparing_populations_cache_key(report)
         flush_report_in_cache_region(report.get_report, region_name, *args)
-        report.get_report()
+        r = report.get_report()
+        if not has_filters(filters):
+            subjects = r.get(Constants.SUBJECTS, [])
+            for subject_key in subjects.keys():
+                args = get_aggregate_dim_cache_route_cache_key(self.state_code, district_id, None, year, self.tenant, subject_key, subjects[subject_key])
+                flush_report_in_cache_region(_get_aggregate_dim_for_interim, CACHE_REGION_PUBLIC_SHORTLIVED, *args)
+                _get_aggregate_dim_for_interim(self.state_code, district_id, None, year, self.tenant, subject_key, subjects[subject_key])
 
     def recache_district_view_report(self, district_id):
         '''

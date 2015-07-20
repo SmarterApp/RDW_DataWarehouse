@@ -38,8 +38,11 @@
         "25": "1",
         "26": "1"
     },
-    "asmtSelectorTemplate": {"default": "{{asmt_year}}.{{asmt_month}}.{{asmt_day}} • Cấp lớp {{asmt_grade}} • {{asmt_type}}",
-                             "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"},
+    "asmtSelectorTemplate": {
+        "Summative": "{{asmt_date}} · Cấp lớp {{asmt_grade}} · {{asmt_type}}",
+        "Interim Comprehensive": "{{asmt_date}} · Cấp lớp {{asmt_grade}} · {{asmt_type}}",
+        "Interim Assessment Blocks": "{{asmt_from_year}} - {{asmt_to_year}} · {{asmt_type}}"
+    },
     "detailsSelection": {
         "Summative": ["Math", "ELA"],
         "Interim Comprehensive": ["Math", "ELA"],

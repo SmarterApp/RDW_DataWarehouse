@@ -6,7 +6,7 @@ Created on Oct 21, 2014
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, select
+from sqlalchemy.sql.expression import and_, select, desc
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
 from smarter.reports.helpers.assessments import get_claims, get_cut_points, \
@@ -71,7 +71,7 @@ def get_list_of_students_fao(params):
                                      fact_asmt_outcome_vw.c.enrl_grade.label('enrollment_grade'),
                                      fact_asmt_outcome_vw.c.asmt_grade.label('asmt_grade'),
                                      dim_asmt.c.asmt_subject.label('asmt_subject'),
-                                     dim_asmt.c.effective_date.label('effective_date'),
+                                     fact_asmt_outcome_vw.c.date_taken.label('date_taken'),
                                      fact_asmt_outcome_vw.c.asmt_score.label('asmt_score'),
                                      fact_asmt_outcome_vw.c.asmt_score_range_min.label('asmt_score_range_min'),
                                      fact_asmt_outcome_vw.c.asmt_score_range_max.label('asmt_score_range_max'),
@@ -155,7 +155,7 @@ def get_list_of_students_fao(params):
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmtGrade))
 
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
+        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(desc(fact_asmt_outcome_vw.c.date_taken))
         return connector.get_result(query)
 
 
@@ -219,13 +219,14 @@ def format_assessments_fao(results, subjects_map):
     assessments = {}
     # Formatting data for Front End
     for result in results:
-        effectiveDate = result['effective_date']  # e.g. 20140401
-        asmtDict = assessments.get(effectiveDate, {})
+        dateTaken = result['date_taken']  # e.g. 20140401
         asmtType = capwords(result['asmt_type'], ' ')  # Summative, Interim
-        asmtList = asmtDict.get(asmtType, {})
+        asmtDict = assessments.get(asmtType, {})
+        studentDataByDate = {}
         studentId = result['student_id']  # e.g. student_1
+        asmtList = asmtDict.get(studentId, [])
 
-        student = asmtList.get(studentId, {})
+        student = {}
         student['student_id'] = studentId
         student['student_first_name'] = result['first_name']
         student['student_middle_name'] = result['middle_name']
@@ -249,9 +250,9 @@ def format_assessments_fao(results, subjects_map):
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
-
         student[subject] = assessment
-        asmtList[studentId] = student
-        asmtDict[asmtType] = asmtList
-        assessments[effectiveDate] = asmtDict
+        studentDataByDate[dateTaken] = student
+        asmtList.append(studentDataByDate)
+        asmtDict[studentId] = asmtList
+        assessments[asmtType] = asmtDict
     return assessments

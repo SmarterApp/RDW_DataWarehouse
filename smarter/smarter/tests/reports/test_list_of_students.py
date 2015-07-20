@@ -81,10 +81,10 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertTrue('subject1' in claims)
 
         assessments = results['assessments']
-        self.assertEqual(3, len(assessments), "3 assessments")
-        student1 = assessments['20160106']['Interim Comprehensive']['f9da4c5d-dc65-42d0-a36f-5d13ba930c50']
-        student2 = assessments['20160106']['Interim Comprehensive']['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
-        student3 = assessments['20160106']['Interim Comprehensive']['dae1acf4-afb0-4013-90ba-9dcde4b25621']
+        self.assertEqual(2, len(assessments), "2 assessments")
+        student1 = assessments['Interim Comprehensive']['f9da4c5d-dc65-42d0-a36f-5d13ba930c50'][0]['20160206']
+        student2 = assessments['Interim Comprehensive']['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b'][0]['20160108']
+        student3 = assessments['Interim Comprehensive']['dae1acf4-afb0-4013-90ba-9dcde4b25621'][0]['20160108']
         self.assertEqual("Verda", student1['student_first_name'], "first_name")
         self.assertEqual("Mi-Ha", student2['student_first_name'], "first_name")
         self.assertEqual("Lettie", student3['student_first_name'], "first_name")
@@ -109,7 +109,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
         self.assertTrue('asmt_administration' in results, "asmt_administration is missing")
-        self.assertEquals(len(results['asmt_administration']), 3, "should have 3 different test")
+        self.assertEqual(len(results['asmt_administration']), 2, "should have 2 different test")
 
     def test_ELA_only(self):
         testParam = {}
@@ -163,17 +163,17 @@ class TestLOS(Unittest_with_edcore_sqlite):
     def test_LOS_with_filters(self):
         testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}
         results = get_list_of_students_report(testParam)
-        self.assertEqual(len(results['assessments']), 3)
+        self.assertEqual(len(results['assessments']), 2)
 
         testParam['gender'] = ['not_stated']
         results = get_list_of_students_report(testParam)
-        self.assertEqual(len(results['assessments']), 3)
+        self.assertEqual(len(results['assessments']), 2)
 
     def test_asmt_type(self):
         testParam = {'asmtGrade': '3', 'stateCode': 'NC', 'districtId': '228', 'schoolId': '242', 'asmtYear': '2015'}
         results = get_list_of_students_report(testParam)
-        self.assertEqual(len(results['assessments']), 3)
-        self.assertIsNotNone(results['assessments']['20150106']['Interim Comprehensive']['cad811ad-9b08-4dd1-aa10-52360b80ff7f']['subject2'])
+        self.assertEqual(len(results['assessments']), 2)
+        self.assertEqual(len(results['assessments']['Interim Comprehensive']['cad811ad-9b08-4dd1-aa10-52360b80ff7f']), 2)
 
     def test_get_group_filters(self):
         groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None, 'group_3_id': None, 'group_4_id': None, 'group_5_id': None, 'group_6_id': None, 'group_7_id': None,

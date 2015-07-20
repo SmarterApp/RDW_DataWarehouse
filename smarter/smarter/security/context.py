@@ -75,6 +75,26 @@ def get_current_context(params):
     return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts, 'src_extracts': src_extracts, 'audit_xml_extracts': audit_xml_extracts, 'item_extracts': item_lvl_extracts}
 
 
+def get_user_context_for_role(tenant, role, req_params):
+    '''
+    return user context relationships for a particular role and tenant
+    @tenant - tenant the user requested
+    @role - a user role to get context for
+    @req_params - request params to infer state from
+    '''
+    user_context = __get_user_info().get_context()
+    state_code = req_params.get(Constants.STATECODE)
+    params =  {Constants.STATECODE: state_code}
+    districts = []
+    
+    context_districts = user_context.get_chain(tenant, role, params)['guid']
+    if context_districts:
+        for district_id in context_districts:
+            params = {Constants.STATECODE: state_code, Constants.DISTRICTGUID: district_id}
+            params.update({'guid': user_context.get_chain(tenant, role, params)['guid']})
+            districts.append({'params': params})
+    return districts
+
 def get_current_request_context(origin_func):
     '''
     Decorator to return current user context

@@ -27,82 +27,13 @@ from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
 from smarter.reports.helpers.aggregate_dim import get_aggregate_dim_interim
 import json
+from smarter.reports.helpers.user_preferences import get_user_close_context
+from smarter_common.security.constants import RolesConstants
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
 CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
 DEFAULT_MIN_CELL_SIZE = 0
-# TODO this is mock data
-QUICK_LINKS = {
-  "quick_links": {
-    "districts": [
-      {
-        "name": "Daybreak School District",
-        "params": {
-          "districtId": 229,
-          "stateCode": "NC"
-        }
-      },
-      {
-        "name": "Dealfish Pademelon SD",
-        "params": {
-          "districtId": "2ce72d77-1de2-4137-a083-77935831b817",
-          "stateCode": "NC"
-        }
-      }
-    ],
-    "schools": [
-      {
-        "name": "Sunset - Eastern Elementary",
-        "params": {
-          "districtId": 228,
-          "schoolId": 242,
-          "stateCode": "NC"
-        }
-      },
-      {
-        "name": "Sunset - Western Middle",
-        "params": {
-          "districtId": 228,
-          "schoolId": 245,
-          "stateCode": "NC"
-        }
-      },
-      {
-        "name": "Sunset - Western Middle",
-        "params": {
-          "districtId": 228,
-          "schoolId": 245,
-          "stateCode": "NC"
-        }
-      },
-      {
-        "name": "Sunset - Western Middle",
-        "params": {
-          "districtId": 228,
-          "schoolId": 245,
-          "stateCode": "NC"
-        }
-      },
-      {
-        "name": "Sunset - Western Middle",
-        "params": {
-          "districtId": 228,
-          "schoolId": 245,
-          "stateCode": "NC"
-        }
-      },
-      {
-        "name": "Sunset - Western Middle",
-        "params": {
-          "districtId": 228,
-          "schoolId": 245,
-          "stateCode": "NC"
-        }
-      }
-    ]
-  }
-}
 
 @report_config(
     name=REPORT_NAME,
@@ -126,6 +57,11 @@ QUICK_LINKS = {
             "type": "integer",
             "required": False,
             "pattern": "^[1-9][0-9]{3}$"
+        },
+        Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND: {
+            "type": "integer",
+            "required": False,
+            "pattern": "^[0-9]{1}$"
         }
     }, FILTERS_CONFIG))
 @validate_user_tenant
@@ -152,7 +88,7 @@ def get_comparing_populations_report(params):
         interim_params = deepcopy(params)
         interim_report = get_aggregate_dim_interim(subjects=report.get(Constants.SUBJECTS, []), **interim_params)
         report['records'] = get_merged_report_records(report, interim_report)
-        report['quick_links'] = json.loads(json.dumps(QUICK_LINKS))['quick_links']
+        report['quick_links'] = get_user_close_context(params, school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 10)) 
     return report
 
 def get_merged_report_records(summative, interim):

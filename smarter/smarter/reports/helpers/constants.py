@@ -35,6 +35,7 @@ class Constants():
     ASMTYEAR = 'asmtYear'
     ASMTGUID = 'asmtGuid'
     ITEMID = 'itemId'
+    QUICK_LINKS_SCHOOL_ROLLUP_BOUND = "ql_sr"
     ASMT_TYPE = 'asmt_type'
     ASMT_GRADE = 'asmt_grade'
     ASMT_GRADE_NAME = 'asmt_grade_name'
@@ -133,3 +134,7 @@ class Constants():
     ASSESSMENTS = 'assessments'
     INTERIM_ASSESSMENT_BLOCKS = 'interim_assessment_blocks'
     ASMT_CLAIM_1_NAME = 'asmt_claim_1_name'
+    PARAMS = 'params'
+    SCHOOLS = 'schools'
+    DISTRICTS = 'districts'
+    GUID = 'guid'

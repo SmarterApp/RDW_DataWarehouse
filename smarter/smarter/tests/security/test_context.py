@@ -158,7 +158,7 @@ class TestContext(Unittest_with_edcore_sqlite):
     def test_get_user_context_for_role(self):
         context = get_user_context_for_role(get_unittest_tenant_name(), RolesConstants.PII, {'stateCode': 'NC'})
         self.assertEqual(context[0]['params']['districtId'], '228')
-        self.assertEqual(context[0]['params']['guid'], ['242', '245'])
+        self.assertEqual(sorted(context[0]['params']['guid']), ['242', '245'])
 
     def test_consortium_level(self):
         dummy_session = create_test_session([RolesConstants.PII])

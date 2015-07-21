@@ -60,7 +60,7 @@ def get_names(tenant, state_code, district_id, school_id):
 def get_district_level_context_names(tenant, state_code, district_id):
     if state_code:
         with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connector:
-            dim_inst_hier = connector.get_table('dim_inst_hier')
+            dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
             # Limit result count to one
             # We limit the results to one since we'll get multiple rows with the same values
             # Think of the case of querying for state name and id, we'll get all the schools in that state

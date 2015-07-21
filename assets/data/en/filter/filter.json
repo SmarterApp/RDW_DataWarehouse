@@ -7,27 +7,27 @@
         "options" : [
             {
                 "label" : "Grade 3",
-                "value" : "3"
+                "value" : "03"
             },
             {
                 "label" : "Grade 4",
-                "value" : "4"
+                "value" : "04"
             },
             {
                 "label" : "Grade 5",
-                "value" : "5"
+                "value" : "05"
             },
             {
                 "label" : "Grade 6",
-                "value" : "6"
+                "value" : "06"
             },
             {
                 "label" : "Grade 7",
-                "value" : "7"
+                "value" : "07"
             },
             {
                 "label" : "Grade 8",
-                "value" : "8"
+                "value" : "08"
             },
             {
                 "label" : "Grade 11",

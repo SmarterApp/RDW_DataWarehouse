@@ -217,7 +217,7 @@ define [
           dataByGrade[asmt_grade] ?= []
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
-          'effective_date': edwareUtil.formatDate(assessment['effective_date']),
+          'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
           'desc': assessment['claims'][0]['perf_lvl_name'],
           'level': assessment['claims'][0]['perf_lvl']}

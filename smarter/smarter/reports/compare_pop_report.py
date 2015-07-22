@@ -27,7 +27,7 @@ from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
 from smarter.reports.helpers.aggregate_dim import get_aggregate_dim_interim
 import json
-from smarter.reports.helpers.user_preferences import get_user_close_context
+from smarter.reports.user_preferences import get_user_close_context
 from smarter_common.security.constants import RolesConstants
 
 REPORT_NAME = "comparing_populations"

@@ -51,6 +51,7 @@ class Constants():
     STUDENT_ID = 'student_id'
     DATETAKEN = 'dateTaken'
     EFFECTIVE_DATE = 'effective_date'
+    DATE_TAKEN = 'date_taken'
     GUID = 'guid'
     PERCENTAGE = 'percentage'
     COUNT = 'count'

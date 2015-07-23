@@ -89,7 +89,7 @@ def get_district_level_context_names(tenant, state_code, district_id):
                             dim_inst_hier.c.district_name.label(Constants.DISTRICT_NAME),
                             dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME),
                             dim_inst_hier.c.school_id.label(Constants.SCHOOL_ID)],
-                           from_obj=[dim_inst_hier], limit=1)
+                           from_obj=[dim_inst_hier])
 
             query = query.where(and_(dim_inst_hier.c.rec_status == Constants.CURRENT))
             query = query.where(and_(dim_inst_hier.c.state_code == state_code))

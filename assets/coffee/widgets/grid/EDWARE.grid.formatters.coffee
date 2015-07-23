@@ -153,19 +153,19 @@ define [
     return '' if not subject
     asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_type]
     columnData = subject[names[1]]
-    effective_date = names[2]
+    date_taken = names[2]
 
     perf_lvl_name = ""
     if columnData
         for data in columnData
-          date = data.effective_date
+          date = data.date_taken
           data.display_effective_date = edwareUtil.formatDate(date)
-          if date is effective_date
+          if date is date_taken
             perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
             value = data[names[3]][names[4]]['perf_lvl']
     isExpanded = options.colModel.expanded
     labels = options.colModel.labels
-    dateText = { text: if isExpanded then effective_date else labels['latest_result'] }
+    dateText = { text: if isExpanded then date_taken else labels['latest_result'] }
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       displayPopover: not options.colModel.expanded  # Only show popover when not expanded
       oldResultsClass: if not isExpanded then "hasOlderResults" else ""

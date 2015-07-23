@@ -118,12 +118,12 @@ define [
       for subject, columns of @data.interim_assessment_blocks
         subjectName = @data.subjects[subject]
         for claim in @config.interimAssessmentBlocksOrdering[subject][currentGrade.replace(/^0+/,'')]
-          effective_dates = columns[claim]
-          if not effective_dates
+          dates_taken = columns[claim]
+          if not dates_taken
             continue
           isExpanded = edwarePreferences.isExpandedColumn(claim)
-          for effective_date, i in effective_dates
-            titleText = if isExpanded then edwareUtil.formatDate(effective_date) else claim
+          for date_taken, i in dates_taken
+            titleText = if isExpanded then edwareUtil.formatDate(date_taken) else claim
             if titleText.length > 27
               titleText = titleText[..27] + "..."
             iab_column_details = {
@@ -132,11 +132,11 @@ define [
               subjectText: Constants.SUBJECT_TEXT[subject]
               claim: claim
               expanded: isExpanded
-              numberOfColumns: Object.keys(effective_dates).length
-              effectiveDate: effective_date
+              numberOfColumns: Object.keys(dates_taken).length
+              date_taken: date_taken
               i: i
               width: if isExpanded then 98 else 140
-              effectiveDateText: if isExpanded then effective_date else @labels['latest_result']
+              effectiveDateText: if isExpanded then date_taken else @labels['latest_result']
             }
             column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
             columnData[subjectName][0].items.push column

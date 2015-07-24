@@ -209,7 +209,7 @@
                     {
                         "name": "Most Recent Mathematics",
                         "displayTpl": "<a class='inherit' href='#'>Most Recent Mathematics</a>",
-                        "index": "subject1.asmt_date",
+                        "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
                         "width": 140,
                         "formatter": "showText",
@@ -239,7 +239,7 @@
                     {
                         "name": "Most Recent ELA/Literacy",
                         "displayTpl": "<a class='inherit' href='#'>Most Recent ELA/Literacy</a>",
-                        "index": "subject2.asmt_date",
+                        "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
                         "width": 140,
                         "formatter": "showText",
@@ -290,7 +290,7 @@
                     {
                         "name": "Date taken",
                         "displayTpl": "<a class='inherit' href='#'>Date taken</a>",
-                        "index": "subject1.asmt_date",
+                        "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
                         "width": 90,
                         "formatter": "showText",
@@ -378,7 +378,7 @@
                     {
                         "name": "Date taken",
                         "displayTpl": "<a class='inherit' href='#'>Date taken</a>",
-                        "index": "subject2.asmt_date",
+                        "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
                         "width": 90,
                         "formatter": "showText",

@@ -25,7 +25,7 @@ define [
 
   class StudentModel
 
-    constructor: (@asmtType, @effectiveDate, @dataSet, @asmtDate) ->
+    constructor: (@asmtType, @dataSet, @asmtDate) ->
 
     init: (row) ->
       @appendColors row
@@ -136,7 +136,7 @@ define [
               date_taken: date_taken
               i: i
               width: if isExpanded then 98 else 140
-              effectiveDateText: if isExpanded then date_taken else @labels['latest_result']
+              dateTakenText: if isExpanded then date_taken else @labels['latest_result']
             }
             column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
             columnData[subjectName][0].items.push column
@@ -179,7 +179,7 @@ define [
                   asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
                   # save for Overview
                   asmt[subjectName].dateTaken = asmtDate
-                  row = new StudentModel(asmtType, null, this, asmtDate).init asmt
+                  row = new StudentModel(asmtType, this, asmtDate).init asmt
                   @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
@@ -190,7 +190,7 @@ define [
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
-          combinedAsmtRow = new StudentModel(asmtType, null, this, asmtDate).init combinedAsmts
+          combinedAsmtRow = new StudentModel(asmtType, this, asmtDate).init combinedAsmts
           continue if combinedAsmts.hide
           @cache[asmtType][@allSubjects] ?= []
           @cache[asmtType][@allSubjects].push(combinedAsmtRow)
@@ -201,7 +201,7 @@ define [
       for asmtType, studentList of @assessmentsData
         for studentId, assessment of studentList
           continue if assessment.hide
-          row = new StudentModel(Constants.ASMT_TYPE.IAB, null, this).init assessment
+          row = new StudentModel(Constants.ASMT_TYPE.IAB, this).init assessment
           # push to each subject view
           for subjectName, subjectType of @subjectsData
             continue if not row[subjectName] or row[subjectName].hide

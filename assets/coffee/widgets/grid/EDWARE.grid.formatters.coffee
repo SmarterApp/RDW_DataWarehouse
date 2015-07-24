@@ -159,7 +159,7 @@ define [
     if columnData
         for data in columnData
           date = data.date_taken
-          data.display_effective_date = edwareUtil.formatDate(date)
+          data.display_date_taken = edwareUtil.formatDate(date)
           if date is date_taken
             perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
             value = data[names[3]][names[4]]['perf_lvl']
@@ -179,7 +179,7 @@ define [
       columnName: options.colModel.label
       parentName: $(options.colModel.parentLabel).text()
       perfLevel: perf_lvl_name
-      effectiveDateText: dateText
+      dateTakenText: dateText
       export: 'edwareExportColumn' if options.colModel.export
     }
 

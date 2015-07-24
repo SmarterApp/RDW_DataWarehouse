@@ -32,10 +32,6 @@ define [
     asmtYear = pref[pref["stateCode"] + "asmtYear"]
     asmtYear || parseInt(edwareUtil.getUrlParams()["asmtYear"])
 
-  getEffectiveDate = () ->
-    pref = getPreferences() || {}
-    pref["ISRAsmt"]?.effective_date
-
   getDateTaken = () ->
     pref = getPreferences() || {}
     pref["ISRAsmt"]?.date_taken
@@ -141,7 +137,6 @@ define [
   saveInterimInfo:saveInterimInfo
   saveAsmtYearPreference: saveAsmtYearPreference
   getAsmtYearPreference: getAsmtYearPreference
-  getEffectiveDate: getEffectiveDate
   getDateTaken: getDateTaken
   getAsmtType: getAsmtType
   saveAsmtForISR: saveAsmtForISR

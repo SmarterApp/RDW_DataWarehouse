@@ -217,7 +217,6 @@
                             "asmt_type": "subject1.asmt_date"
                         },
                         "sorttype": "str",
-                        "secondarysort": "student_full_name",
                         "align": "center",
                         "title": false,
                         "export": true

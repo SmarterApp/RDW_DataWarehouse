@@ -200,11 +200,6 @@ define [
       colModelItem.formatter = (edwareGridFormatters[column.formatter] || column.formatter) if column.formatter
       colModelItem.formatoptions = column.options if column.options
       colModelItem.sorttype = column.sorttype if column.sorttype
-
-      if column.secondarysort
-        colModelItem.sorttype = (cell, row)->
-            cell + '_' + row[column.secondarysort]
-      
       colModelItem.sortable = column.sortable
       colModelItem.align = column.align if column.align
       colModelItem.labels = this.options.labels

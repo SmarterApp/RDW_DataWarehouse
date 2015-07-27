@@ -57,11 +57,6 @@ DEFAULT_MIN_CELL_SIZE = 0
             "type": "integer",
             "required": False,
             "pattern": "^[1-9][0-9]{3}$"
-        },
-        Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND: {
-            "type": "integer",
-            "required": False,
-            "pattern": "^[0-9]{1}$"
         }
     }, FILTERS_CONFIG))
 @validate_user_tenant
@@ -88,7 +83,7 @@ def get_comparing_populations_report(params):
         interim_params = deepcopy(params)
         interim_report = get_aggregate_dim_interim(subjects=report.get(Constants.SUBJECTS, []), **interim_params)
         report['records'] = get_merged_report_records(report, interim_report)
-        report['quick_links'] = get_user_close_context(params, school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 10)) 
+        report['quick_links'] = get_user_close_context(params) 
     return report
 
 def get_merged_report_records(summative, interim):

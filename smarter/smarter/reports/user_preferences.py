@@ -29,9 +29,9 @@ REPORT_NAME='quick_links'
         }
     })
 def get_quick_links(params):
-    return {'quick_links' : get_user_close_context(params, school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 10))}
+    return {'quick_links' : get_user_close_context(params, school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 9))}
 
-def get_user_close_context(request_params, school_rollup_bound=10, tenant=None):
+def get_user_close_context(request_params, school_rollup_bound=9, tenant=None):
     '''
     Get user's context relationships
     @request_params query params to infer tenant and state from

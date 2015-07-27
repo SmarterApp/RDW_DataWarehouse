@@ -3,9 +3,10 @@ define [
   "mustache"
   "text!quickLinksTemplate"
   "edwarePreferences"
+  "edwareDataProxy"
   "edwareEvents"
   "edwareConstants"
-], ($, Mustache, quickLinksTemplate, edwarePreferences, edwareEvents, Constants) ->
+], ($, Mustache, quickLinksTemplate, edwarePreferences, edwareDataProxy, edwareEvents, Constants) ->
 
   class EdwareQuickLinks
 
@@ -13,20 +14,25 @@ define [
       MORE: 'more'
       LESS: 'less'
 
-    constructor: (@container, @data) ->
-      @dataRows = @processData()
+    constructor: (@container) ->
       @initialize()
-      @setDefaultOptions()
-      @bindEvents()
 
     initialize: () ->
-      # districtRows = [ { districts: [ { type : x, id: x, items: [{display: x, link: y }], className: y, showMore: true, showMoreText: 'more' } } ]
-      output = Mustache.to_html quickLinksTemplate,
-        districtRows: @dataRows.districts
-        isDistricts: @dataRows.districts.length > 0
-        schoolRows: @dataRows.schools
-        isSchools: @dataRows.schools.length > 0
-      @container.html(output)
+      self = this
+      params = stateCode: edwarePreferences.getStateCode()
+
+      loadingData = this.fetchData params
+      loadingData.done((data) ->
+        self.dataRows = self.processData(data.quick_links)
+        output = Mustache.to_html quickLinksTemplate,
+            districtRows: self.dataRows.districts
+            isDistricts: self.dataRows.districts.length > 0
+            schoolRows: self.dataRows.schools
+            isSchools: self.dataRows.schools.length > 0
+        self.container.html(output)
+        self.setDefaultOptions()
+        self.bindEvents()
+      )
 
     setDefaultOptions: () ->
       # Set quicklink display state
@@ -35,15 +41,22 @@ define [
       state = true if state is undefined
       @setViewOption state
 
+    fetchData: (params)->
+      options =
+        method: "POST"
+        params: params
+
+      edwareDataProxy.getDatafromSource "/data/quick_links", options
+
     # Set elements to states
     setViewOption: (state) ->
       @toggle '#quickLinks_data', state
       @toggle '#quickLinks_link', !state
 
     # Process data
-    processData: () ->
+    processData: (data) ->
       output = {}
-      for key, list of @data
+      for key, list of data
         output[key] ?= []
         # Spit list in groups of 4
         splitItems = (list.splice(0, 4) while list.length)
@@ -106,8 +119,8 @@ define [
         $('#'+type+'_'+id).attr('class', rowClass)
 
   (($)->
-    $.fn.createEdwareQuickLinks = (data) ->
-      new EdwareQuickLinks(@, data)
+    $.fn.createEdwareQuickLinks = () ->
+      new EdwareQuickLinks(@)
   ) jQuery
 
   EdwareQuickLinks: EdwareQuickLinks

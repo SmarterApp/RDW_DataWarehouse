@@ -12,6 +12,9 @@ require [
   edwareDataProxy.getDataForReport(reportName).done (reportConfig) ->
     # Create population grid
     populationGrid = new edwareComparingPopulations.PopulationGrid(reportConfig)
+
+    edwarePreferences.saveQuickLinksRollupBound reportConfig.quickLinksRollupBound
+
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (filterConfigs) ->
       # move config to filter widget

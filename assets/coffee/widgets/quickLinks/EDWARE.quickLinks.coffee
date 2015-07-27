@@ -19,7 +19,9 @@ define [
 
     initialize: () ->
       self = this
-      params = stateCode: edwarePreferences.getStateCode()
+      params =
+          stateCode: edwarePreferences.getStateCode()
+          ql_sr: edwarePreferences.getQuickLinksRollupBound()
 
       loadingData = this.fetchData params
       loadingData.done((data) ->

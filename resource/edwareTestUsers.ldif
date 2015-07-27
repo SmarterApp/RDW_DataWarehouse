@@ -752,7 +752,7 @@ uid: aeinstein
 userPassword:: e1NTSEF9Y2UxZHFvc1ZTdGRWMTZ2cnRSd0pJVW4vaGNWVzUyWXgK
  Q==
 
-dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=mkgandhi,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -776,7 +776,7 @@ uid: mkgandhi
 userPassword:: e1NTSEF9Z1Ixb2FYYzJsZzJOS0NtNGw3MDNnbnhmVkUrcnFhcmcK
  Q==
 
-dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=ohopkins,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -797,7 +797,7 @@ uid: ohopkins
 userPassword:: e1NTSEF9bFRRUUZyWklyL2t3TDMzT1o3RWxBMU9Vd2hpcW5sN0YK
  Q==
 
-dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=ehorton,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -822,7 +822,7 @@ uid: ehorton
 userPassword:: e1NTSEF9QS9FcE9HZjdpRXlTV1kzOStwNkxZTmtmSUhMWUJ1anoK
  Q==
 
-dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+dn: uid=dmiles,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -1004,6 +1004,11 @@ member: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 member: uid=dcarter,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 member: uid=mturner,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 member: uid=ahope,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=mkgandhi,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=ohopkins,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=ehorton,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=dmiles,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+
 
 dn: cn=Consortium_Education_Administrator_2,ou=groups,ou=cat,ou=environment,
  dc=edwdc,dc=net
@@ -1032,6 +1037,7 @@ objectClass: top
 objectClass: groupOfNames
 cn: State_Education_Administrator_1
 member: uid=jmollica,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+member: uid=aeinstein,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=District_Education_Administrator_2,ou=groups,ou=cat,ou=environment,dc
  =edwdc,dc=net

@@ -61,7 +61,7 @@ define [
         asmt.asmt_year = asmt.date_taken.substr(0, 4) if asmt.date_taken
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.display = @getAsmtDisplayText(asmt)
-        key = if reportName is Constants.REPORT_NAME.ISR then asmt.date_taken+asmt.asmt_type else asmt.asmt_type
+        key = if reportName is Constants.REPORT_NAME.ISR then String(asmt.asmt_period_year)+asmt.date_taken+asmt.asmt_type else asmt.asmt_type
         asmtTypes[key] = (asmtTypes[key] || [])
         asmtTypes[key].push(asmt)
       asmtTypes

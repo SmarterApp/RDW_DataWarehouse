@@ -357,30 +357,6 @@ uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
  Q==
 
-dn: uid=tosako@amplify.com,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-objectClass: top
-objectClass: inetOrgPerson
-objectClass: organizationalPerson
-objectClass: person
-objectClass: sbac
-cn: Osako, Takashi
-sn: Osako
-sbacUUID: ed81c400-8874-4a96-b6fd-3573b3c3000b
-sbacTenancyChain: ||Consortium_Administrator|||SBAC|||||||||||||
-sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
-sbacTenancyChain: ||PII|||SBAC|||||||||||||
-sbacTenancyChain: ||SAREXTRACTS|||SBAC|||||||||||||
-sbacTenancyChain: ||SRSEXTRACTS|||SBAC|||||||||||||
-sbacTenancyChain: ||SRCEXTRACTS|||SBAC|||||||||||||
-sbacTenancyChain: ||SUPER_USER|||SBAC|||||||||||||
-sbacTenancyChain: ||AUDITXML|||SBAC|||||||||||||
-sbacTenancyChain: ||IIRDEXTRACTS|||SBAC|||||||||||||
-sbacTenancyChain: ||ASMTDATALOAD|||SBAC||||||||||||
-givenName: Takashi
-uid: tosako@ampfliy.com
-userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
- Q==
-
 dn: uid=smagnusson,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
@@ -754,6 +730,121 @@ uid: rwilson
 userPassword:: e1NTSEF9a2tHRGhUSUhmYVA2WlpaRUpaSFFQVHNUWnp5ZlhkLzNDRUFFc2c9P
  Q==
 
+dn: uid=aeinstein,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: sbac
+cn: Albert Einstein
+sn: Einstein
+sbacUUID: fb5499e0-bf63-11e3-8a33-0800200c9a77
+sbacTenancyChain: ||District_Administrator||||||cat|NC|||||||||
+sbacTenancyChain: ||State_Administrator||||||dog|CA|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||dog|CA|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+sbacTenancyChain: ||PII||||||dog|CA|||228|Sunset School District|||245|Sunset - Western Middle|
+sbacTenancyChain: ||PII||||||dog|CA|||229|Daybreak School District|||242|Sunset - Eastern Elementary|
+givenName: Albert
+uid: aeinstein
+userPassword:: e1NTSEF9Y2UxZHFvc1ZTdGRWMTZ2cnRSd0pJVW4vaGNWVzUyWXgK
+ Q==
+
+dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: sbac
+cn: Mk Gandhi
+sn: Gandhi
+sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||moon|FL|||||||||
+sbacTenancyChain: ||PII||||||moon|FL|||df642d3c-4065-4254-bb5d-57601483aeab|Caribe District|||4d823030-e603-41d9-ad6d-c7ff6507fe37|Moradon Center|
+sbacTenancyChain: ||PII||||||moon|FL|||840b8d69-b446-4cc8-8227-c6bee1669cca|Harrier Central School District|||5adccc30-923a-4cbd-865b-9e01661b0667|Sigeonore High|
+sbacTenancyChain: ||PII||||||moon|FL|||dd12004f-1e30-412d-a419-020483a18987|Mapuro Free School District|||00c74ad4-9cae-4aae-8f55-5578b8845b0d|Topollton Center|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||735ef99c-f09b-45ef-8402-9a78865061a9|Adenbell Middle|
+sbacTenancyChain: ||PII||||||moon|FL|||175f89bb-e76f-4112-a6cc-27b21e25dba7|Potoroo County Schools|||aaec573d-febf-49ce-a499-5cb0fea31683|Glas Learning Center|
+sbacTenancyChain: ||PII||||||moon|FL|||d16b843e-f965-457a-b9e2-f27959dd4051|Serval Municipal Schools|||ddd77780-75cd-4082-9687-ae826f42ae08|Feedstown High School|
+sbacTenancyChain: ||PII||||||moon|FL|||9d002b7d-6b9d-4607-99f9-fd25907dba05|Shrew School District|||5b3664e9-541a-4f62-afdf-87c4fb3a5b39|Colcomit Spring High|
+sbacTenancyChain: ||PII||||||moon|FL|||fee11bf5-5cd4-486a-9970-7bc704fc20fb|Whale Public School District|||e06eb317-3afc-43a5-bfe9-5c8aa15bc379|Berwick Ctr|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+givenName: Mk
+uid: mkgandhi
+userPassword:: e1NTSEF9Z1Ixb2FYYzJsZzJOS0NtNGw3MDNnbnhmVkUrcnFhcmcK
+ Q==
+
+dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: sbac
+cn: Ollie Hopkins
+sn: Hopkins
+sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||moon|FL|||||||||
+sbacTenancyChain: ||PII||||||moon|FL|||df642d3c-4065-4254-bb5d-57601483aeab|Caribe District|||||
+sbacTenancyChain: ||PII||||||moon|FL|||840b8d69-b446-4cc8-8227-c6bee1669cca|Harrier Central School District|||||
+sbacTenancyChain: ||PII||||||moon|FL|||dd12004f-1e30-412d-a419-020483a18987|Mapuro Free School District|||||
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||||
+sbacTenancyChain: ||PII||||||moon|FL|||175f89bb-e76f-4112-a6cc-27b21e25dba7|Potoroo County Schools|||||
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+givenName: Ollie
+uid: ohopkins
+userPassword:: e1NTSEF9bFRRUUZyWklyL2t3TDMzT1o3RWxBMU9Vd2hpcW5sN0YK
+ Q==
+
+dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: sbac
+cn: Ed Horton
+sn: Horton
+sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||moon|FL|||||||||
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||735ef99c-f09b-45ef-8402-9a78865061a9|Adenbell Middle|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||25804ee9-9588-4263-a363-04890d60401c|Belcampbel Primary|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||788d276e-6ef4-4214-92a9-9367ad253f19|Bogalo Islandy Community Middle|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||6cb6bbf4-b8f1-45d6-8697-27c719a65e60|Bringeluket Elementary|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||20480765-dd5f-4e74-8e2a-5a6358823e70|Capearlins Primary|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||6f95d40c-204c-42a0-94d3-8d5be591d129|Carborgen Elementary|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||e7e16338-48f3-4fa8-b34a-cf5ccec19b14|Cooksook High School|
+sbacTenancyChain: ||PII||||||moon|FL|||3bcd9af7-dc4c-4e9d-83d0-d280549ca650|Petunia Community School District|||f9a0390d-d9f2-4a23-bbba-a35c45d13a09|Darrion Jr Middle|
+sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+givenName: Ed
+uid: ehorton
+userPassword:: e1NTSEF9QS9FcE9HZjdpRXlTV1kzOStwNkxZTmtmSUhMWUJ1anoK
+ Q==
+
+dn: uid=rfield,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: sbac
+cn: Darrel Miles
+sn: Miles
+sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
+sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
+sbacTenancyChain: ||PII||||||cat|NC|||||||735ef99c-f09b-45ef-8402-9a78865061a9|Adenbell Middle|
+sbacTenancyChain: ||PII||||||cat|NC|||||||25804ee9-9588-4263-a363-04890d60401c|Belcampbel Primary|
+sbacTenancyChain: ||PII||||||cat|NC|||||||788d276e-6ef4-4214-92a9-9367ad253f19|Bogalo Islandy Community Middle|
+sbacTenancyChain: ||PII||||||cat|NC|||||||6cb6bbf4-b8f1-45d6-8697-27c719a65e60|Bringeluket Elementary|
+sbacTenancyChain: ||PII||||||cat|NC|||||||20480765-dd5f-4e74-8e2a-5a6358823e70|Capearlins Primary|
+sbacTenancyChain: ||PII||||||cat|NC|||||||f9a0390d-d9f2-4a23-bbba-a35c45d13a09|Darrion Jr Middle|
+sbacTenancyChain: ||PII||||||cat|NC|||||||9068999c-bcf7-4f6a-92b8-b7da898e9c0c|Guayama HS|
+sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+givenName: Darrel
+uid: dmiles
+userPassword:: e1NTSEF9eWlPMVZDb3lEZlM2NnhjenNFcVcxR1d1QjBZV21yMVIK
+ Q==
+
 dn: uid=mdavis,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: top
 objectClass: inetOrgPerson
@@ -955,7 +1046,6 @@ objectClass: top
 objectClass: groupOfNames
 cn: District_Education_Administrator_1
 member: uid=gman,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
-member: uid=tosako@amplify.com,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
 dn: cn=School_Education_Administrator_2,ou=groups,ou=cat,ou=environment,dc=e
  dwdc,dc=net

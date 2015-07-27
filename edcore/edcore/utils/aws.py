@@ -38,8 +38,7 @@ class S3_buckup:
         # upload file
         if os.path.exists(src_file):
             key = self.__bucket.new_key(archive_name)
-            with open(src_file) as f:
-                key.set_contents_from_file(f)
+            key.set_contents_from_filename(src_file)
             key.close()
         else:
             return False

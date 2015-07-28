@@ -121,6 +121,13 @@ define [
   saveQuickLinksState = (state) ->
     savePreferences { "quickLinks" : state }, false
 
+  getQuickLinksRollupBound = () ->
+    pref = getPreferences() || {}
+    pref["quickLinksRollupBound"]
+
+  saveQuickLinksRollupBound = (quickLinksRollupBound) ->
+    savePreferences {"quickLinksRollupBound": quickLinksRollupBound}
+
   # Returns storage based whether long term is set to true
   getStorage = (isLongTerm) ->
     isLongTerm = if typeof isLongTerm isnt "undefined" then isLongTerm else false
@@ -163,3 +170,5 @@ define [
   isExpandedColumn: isExpandedColumn
   saveQuickLinksState: saveQuickLinksState
   getQuickLinksState: getQuickLinksState
+  saveQuickLinksRollupBound:saveQuickLinksRollupBound
+  getQuickLinksRollupBound:getQuickLinksRollupBound

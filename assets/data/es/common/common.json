@@ -209,7 +209,7 @@
                     {
                         "name": "Prueba de matemáticas más reciente",
                         "displayTpl": "<a class='inherit' href='#'>Prueba de matemáticas más reciente</a>",
-                        "index": "subject1.asmt_date",
+                        "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
                         "width": 140,
                         "formatter": "showText",
@@ -239,7 +239,7 @@
                     {
                         "name": "Prueba de ELA/Alfabetización más reciente",
                         "displayTpl": "<a class='inherit' href='#'>Prueba de ELA/Alfabetización más reciente</a>",
-                        "index": "subject2.asmt_date",
+                        "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
                         "width": 140,
                         "formatter": "showText",
@@ -290,7 +290,7 @@
                     {
                         "name": "Fecha de administración",
                         "displayTpl": "<a class='inherit' href='#'>Fecha de administración</a>",
-                        "index": "subject1.asmt_date",
+                        "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
                         "width": 90,
                         "formatter": "showText",
@@ -378,7 +378,7 @@
                     {
                         "name": "Fecha de administración",
                         "displayTpl": "<a class='inherit' href='#'>Fecha de administración</a>",
-                        "index": "subject2.asmt_date",
+                        "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
                         "width": 90,
                         "formatter": "showText",

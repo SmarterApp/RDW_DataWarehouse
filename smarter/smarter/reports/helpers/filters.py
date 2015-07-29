@@ -114,7 +114,7 @@ FILTERS_CONFIG = {
         "required": False,
         "items": {
             "type": "string",
-            "pattern": "^(03|04|05|06|07|08|11)$"
+            "pattern": "^(3|4|5|6|7|8|11)$"
         }
     },
     FILTERS_SEX: {

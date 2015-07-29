@@ -185,7 +185,7 @@ define [
         paramName = $(this).data('name')
         paramValues = []
         $(this).find('input:checked').each () ->
-          paramValues.push String(this.value)
+          paramValues.push String($(this).data('value'))
         params[paramName] = paramValues if paramValues.length > 0
       params
 

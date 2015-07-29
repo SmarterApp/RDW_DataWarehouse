@@ -66,7 +66,6 @@ def get_list_of_students_iab(params):
                                      fact_block_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                                      fact_block_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                      dim_asmt.c.asmt_subject.label('asmt_subject'),
-                                     dim_asmt.c.effective_date.label('effective_date'),
                                      fact_block_asmt_outcome.c.date_taken.label('date_taken'),
                                      dim_asmt.c.asmt_type.label('asmt_type'),
                                      dim_asmt.c.asmt_score_min.label('asmt_score_min'),

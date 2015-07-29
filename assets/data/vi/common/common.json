@@ -695,7 +695,7 @@
         "name": "{{claim}}",
         "displayTpl": "<a class='inherit' href='#' title='{{claim}}'>{{titleText}}</a>",
         "index": "{{subject}}.{{{claim}}}.{{i}}.claims.0.perf_lvl",
-        "field": "{{subject}}.{{{claim}}}.{{date_taken}}.claims.0.perf_lvl",
+        "field": "{{subject}}.{{{claim}}}.{{dateTakenText}}.claims.0.perf_lvl",
         "width": "{{width}}",
         "formatter": "showPerfLevelIAB",
         "sorttype": "int",

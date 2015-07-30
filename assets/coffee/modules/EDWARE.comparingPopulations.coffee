@@ -22,7 +22,7 @@ define [
   "edwareContextSecurity"
 ], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
-  POPULATION_BAR_WIDTH = 145
+  POPULATION_BAR_WIDTH = 120
 
   SUBJECT_HEADERS = {
     "Math": "results.subject1.sortedValue"

@@ -154,7 +154,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertTrue(context['src_extracts']['all'])
         self.assertFalse(context['item_extracts']['all'])
         self.assertTrue(context['audit_xml_extracts']['all'])
-        
+
     def test_get_user_context_for_role(self):
         context = get_user_context_for_role(get_unittest_tenant_name(), RolesConstants.PII, {'stateCode': 'NC'})
         self.assertEqual(context[0]['params']['districtId'], '228')

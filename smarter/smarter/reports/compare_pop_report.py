@@ -35,6 +35,7 @@ CACHE_REGION_PUBLIC_DATA = 'public.data'
 CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
 DEFAULT_MIN_CELL_SIZE = 0
 
+
 @report_config(
     name=REPORT_NAME,
     params=merge_dict({
@@ -83,8 +84,9 @@ def get_comparing_populations_report(params):
         interim_params = deepcopy(params)
         interim_report = get_aggregate_dim_interim(subjects=report.get(Constants.SUBJECTS, []), **interim_params)
         report['records'] = get_merged_report_records(report, interim_report)
-        report['quick_links'] = get_user_close_context(params) 
+        report['quick_links'] = get_user_close_context(params)
     return report
+
 
 def get_merged_report_records(summative, interim):
     '''

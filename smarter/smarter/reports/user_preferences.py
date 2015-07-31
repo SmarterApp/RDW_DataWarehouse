@@ -84,7 +84,8 @@ def get_names(tenant, state_code, district_id, school_id):
         context_name = context_name[Constants.SCHOOLS].get(school_id, None)
         if not context_name:
             return None
-    return {Constants.NAME: context_name[Constants.NAME]}
+    name = context_name.get(Constants.NAME)
+    return {Constants.NAME: name} if name is not None else None
 
 
 @cache_region('public.shortlived')

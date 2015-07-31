@@ -42,7 +42,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), "NC", "228", "242")])
         dummy_session.set_uid('a5ddfe12-740d-4487-9179-de70f6ac33be')
-        
+
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def tearDown(self):
@@ -55,26 +55,25 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         self.assertEqual('Sunset School District', results['name'])
         self.assertEqual(1, len(results['schools']))
         self.assertEqual('Sunset - Eastern Elementary', results['schools']['242']['name'])
-        
+
     def test_get_user_close_context(self):
-        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'} # exisitng school
+        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}  # existing school
         results = get_user_close_context(params, tenant=get_unittest_tenant_name())
         self.assertEqual('Sunset School District', results['districts'][0]['name'])
         self.assertEqual(1, len(results['schools']))
         self.assertEqual('Sunset - Eastern Elementary', results['schools'][0]['name'])
 
     def test_school_rollup_bound(self):
-        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'} # exisitng school
-        results = get_user_close_context(params, tenant=get_unittest_tenant_name(), school_rollup_bound = 0)
+        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}  # existing school
+        results = get_user_close_context(params, tenant=get_unittest_tenant_name(), school_rollup_bound=0)
         self.assertEqual('Sunset School District', results['districts'][0]['name'])
         self.assertEqual(0, len(results['schools']))
-        
-        
+
     def test_get_names(self):
         # not existing school
         results = get_names(get_unittest_tenant_name(), 'NC', '228', '-1')
         self.assertIsNone(results)
-        # existing school 
+        # existing school
         results = get_names(get_unittest_tenant_name(), 'NC', '228', '242')
         self.assertIsNotNone(results)
 

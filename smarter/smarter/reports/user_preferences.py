@@ -12,7 +12,8 @@ from sqlalchemy.sql import and_, select
 from edcore.security.tenant import get_tenant_by_state_code
 from edapi.decorators import report_config
 
-REPORT_NAME='quick_links'
+REPORT_NAME = 'quick_links'
+
 
 @report_config(
     name=REPORT_NAME,
@@ -34,7 +35,10 @@ REPORT_NAME='quick_links'
         }
     })
 def get_quick_links(params):
-    return {'quick_links' : get_user_close_context(params, district_rollup_bound = params.get(Constants.QUICK_LINKS_DISTRICT_ROLLUP_BOUND, 9), school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 9))}
+    return {'quick_links': get_user_close_context(params,
+            district_rollup_bound=params.get(Constants.QUICK_LINKS_DISTRICT_ROLLUP_BOUND, 9),
+            school_rollup_bound=params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 9))}
+
 
 def get_user_close_context(request_params, district_rollup_bound=9, school_rollup_bound=9, tenant=None):
     '''
@@ -47,14 +51,14 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
     context = get_user_context_for_role(tenant, RolesConstants.PII, request_params)
     districts = []
     schools = []
-    
-    def __get_names(distrcit_item, school_id = None):
+
+    def __get_names(distrcit_item, school_id=None):
         return get_names(tenant, state_code, x[Constants.DISTRICTGUID], school_id)
-    
+
     for item in context:
         x = item[Constants.PARAMS]
         context_names = __get_names(x)
-        # if found matching institution id in tenant's data 
+        # if found matching institution id in tenant's data
         if context_names:
             close_schools = x.pop(Constants.GUID, None)
             if close_schools:
@@ -70,17 +74,18 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
             item.update(context_names)
             if len(context) < district_rollup_bound:
                 districts.append(item)
-    return {Constants.DISTRICTS: districts[:district_rollup_bound-1], Constants.SCHOOLS: schools[:school_rollup_bound-1]}
+    return {Constants.DISTRICTS: districts[:district_rollup_bound - 1], Constants.SCHOOLS: schools[:school_rollup_bound - 1]}
+
 
 def get_names(tenant, state_code, district_id, school_id):
     context_name = get_district_level_context_names(tenant, state_code, district_id)
-    
+
     if school_id:
         context_name = context_name[Constants.SCHOOLS].get(school_id, None)
         if not context_name:
             return None
     return {Constants.NAME: context_name[Constants.NAME]}
-    
+
 
 @cache_region('public.shortlived')
 def get_district_level_context_names(tenant, state_code, district_id):
@@ -107,5 +112,3 @@ def get_district_level_context_names(tenant, state_code, district_id):
                 schools = {r[Constants.SCHOOL_ID]: {Constants.NAME: r[Constants.SCHOOL_NAME], Constants.SCHOOLGUID: r[Constants.SCHOOL_ID]} for r in results}
                 return {Constants.NAME: results[0][Constants.DISTRICT_NAME], 'schools': schools}
     return {}
-                
-                

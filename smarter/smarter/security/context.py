@@ -84,9 +84,9 @@ def get_user_context_for_role(tenant, role, req_params):
     '''
     user_context = __get_user_info().get_context()
     state_code = req_params.get(Constants.STATECODE)
-    params =  {Constants.STATECODE: state_code}
+    params = {Constants.STATECODE: state_code}
     districts = []
-    
+
     context_districts = user_context.get_chain(tenant, role, params)['guid']
     if context_districts:
         for district_id in context_districts:
@@ -94,6 +94,7 @@ def get_user_context_for_role(tenant, role, req_params):
             params.update({'guid': user_context.get_chain(tenant, role, params)['guid']})
             districts.append({'params': params})
     return districts
+
 
 def get_current_request_context(origin_func):
     '''

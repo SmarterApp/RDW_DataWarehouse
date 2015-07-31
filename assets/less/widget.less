@@ -2260,6 +2260,7 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
 /* Quick links */
 #quickLinks {
   background-color: @color-B22;
+  position: relative;
 
   /* Open btn */
   #quickLinks_open {
@@ -2270,6 +2271,8 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
 
   /* Close btn */
   #quickLinks_close {
+    position: absolute;
+    right: 0;
     cursor: pointer;
     padding: 4px 8px 8px;
     margin: 4px 10px 0 0;
@@ -2377,7 +2380,7 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
     cursor: pointer;
     color: @color-A2;
     font-size: 12px;
-    margin: 0 38px 0 0;
+    margin: -7px 38px 0 0;
     display: flex;
     align-items: flex-end;
     line-height: 1;

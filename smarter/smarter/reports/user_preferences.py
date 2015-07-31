@@ -70,7 +70,7 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
             item.update(context_names)
             if len(context) < district_rollup_bound:
                 districts.append(item)
-    return {Constants.DISTRICTS: districts, Constants.SCHOOLS: schools}
+    return {Constants.DISTRICTS: districts[:district_rollup_bound-1], Constants.SCHOOLS: schools[:school_rollup_bound-1]}
 
 def get_names(tenant, state_code, district_id, school_id):
     context_name = get_district_level_context_names(tenant, state_code, district_id)

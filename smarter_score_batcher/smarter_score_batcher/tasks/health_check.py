@@ -2,6 +2,10 @@ from smarter_score_batcher.celery import celery
 from datetime import datetime
 from sqlalchemy.sql.expression import select
 from smarter_score_batcher.database.tsb_connector import TSBDBConnection
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 @celery.task(name='tasks.tsb.health_check')
@@ -18,7 +22,9 @@ def health_check():
             results = connector.get_result(query)
             if not results:
                 return "Cannot connect to TSB DB"
+            logger.info("Heartbeat DB connection works fine.")
     except:
+        logger.error("Heartbeat cannot connect to TSB DB.")
         return "Cannot connect to TSB DB"
     heartbeat = "heartbeat:" + str(datetime.now())
     return heartbeat

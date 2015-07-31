@@ -11,6 +11,10 @@ from edschema.database.connector import DBConnection
 from services.tasks import health_check
 import pyramid.threadlocal
 from edcore.database import get_data_source_names
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
@@ -41,11 +45,14 @@ def check_celery(request):
         celery_response = health_check.apply_async(queue=queue)
         heartbeat_message = celery_response.get(timeout=timeout)
     except Exception as e:
+        logger.error("Heartbeat failed at celery. Check RabbitMQ and Celery.")
         return HTTPServerError()
 
     if heartbeat_message[0:9] == 'heartbeat':
+        logger.info("Heartbeat celery module works fine.")
         return HTTPOk()
     else:
+        logger.error("Heartbeat failed at celery. Check RabbitMQ and Celery.")
         return HTTPServerError()
 
 
@@ -65,5 +72,7 @@ def check_datasource(request):
         results = None
 
     if results and len(results) > 0:
+        logger.info("Heartbeat database connection works fine.")
         return HTTPOk()
+    logger.error("Heartbeat failed at database connection.")
     return HTTPServerError()

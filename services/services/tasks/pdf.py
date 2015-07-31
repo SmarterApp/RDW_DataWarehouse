@@ -27,7 +27,7 @@ import uuid
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
 pdfunite_procs = ['pdfunite']
-pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
+pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 cover_sheet_pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '1000']
 
 OK = 0
@@ -63,6 +63,8 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
     try:
         prepare_path(outputfile)
         wkhtmltopdf_option = copy.deepcopy(options)
+        wkhtmltopdf_option.append('--javascript-delay')
+        wkhtmltopdf_option.append(str(services.celery.JAVASCRIPT_DELAY))
         if grayscale:
             wkhtmltopdf_option += ['-g']
         wkhtmltopdf_option += ['--cookie', cookie_name, cookie, url, outputfile]

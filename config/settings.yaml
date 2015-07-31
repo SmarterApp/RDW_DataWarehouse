@@ -99,7 +99,9 @@ common:
       single_generate.queue: single_pdf_gen
       health_check.job.queue: health_check
       merge:
-         pdfunite_timeout: 3600
+          pdfunite_timeout: 3600
+      wkhtmltopdf:
+          javascript_delay: 6000
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security

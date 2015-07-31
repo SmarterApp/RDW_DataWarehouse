@@ -69,6 +69,9 @@ define [
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
       row['student_full_name_date_taken'] = row['student_full_name'] + ' ' + @formatDate(row['dateTaken']) if this.asmtType is Constants.ASMT_TYPE.INTERIM
+      row['subject1.asmt_date_full_name'] = row['subject1']['asmt_date'] + ' ' + row['student_full_name'] if row.subject1
+      row['subject2.asmt_date_full_name'] = row['subject2']['asmt_date'] + ' ' + row['student_full_name'] if row.subject2
+      
       # This is for links in drill down
       row['params'] = {
         "studentId": row['student_id'],

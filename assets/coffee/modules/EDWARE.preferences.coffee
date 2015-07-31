@@ -62,6 +62,10 @@ define [
     pref = getAsmtForISR() || {}
     pref?.asmt_type
 
+  getAsmtYearForISR = () ->
+    pref = getAsmtForISR() || {}
+    pref?.asmt_period_year
+
   getAsmtView = () ->
     pref = getPreferences() || {}
     pref['asmtView']
@@ -168,6 +172,7 @@ define [
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR
   getAsmtTypeForISR: getAsmtTypeForISR
+  getAsmtYearForISR: getAsmtYearForISR
   getFilters: getFilters
   saveAsmtView: saveAsmtView
   getAsmtView: getAsmtView

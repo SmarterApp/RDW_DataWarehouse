@@ -121,12 +121,19 @@ define [
   saveQuickLinksState = (state) ->
     savePreferences { "quickLinks" : state }, false
 
-  getQuickLinksRollupBound = () ->
+  getQuickLinksSchoolBound = () ->
     pref = getPreferences() || {}
-    pref["quickLinksRollupBound"]
+    pref["quickLinksSchoolBound"]
 
-  saveQuickLinksRollupBound = (quickLinksRollupBound) ->
-    savePreferences {"quickLinksRollupBound": quickLinksRollupBound}
+  saveQuickLinksSchoolBound = (quickLinksSchoolBound) ->
+    savePreferences {"quickLinksSchoolBound": quickLinksSchoolBound}
+
+  getQuickLinksDistrictBound = () ->
+    pref = getPreferences() || {}
+    pref["quickLinksDistrictBound"]
+
+  saveQuickLinksDistrictBound = (quickLinksDistrictBound) ->
+    savePreferences {"quickLinksDistrictBound": quickLinksDistrictBound}
 
   # Returns storage based whether long term is set to true
   getStorage = (isLongTerm) ->
@@ -170,5 +177,7 @@ define [
   isExpandedColumn: isExpandedColumn
   saveQuickLinksState: saveQuickLinksState
   getQuickLinksState: getQuickLinksState
-  saveQuickLinksRollupBound:saveQuickLinksRollupBound
-  getQuickLinksRollupBound:getQuickLinksRollupBound
+  saveQuickLinksSchoolBound:saveQuickLinksSchoolBound
+  getQuickLinksSchoolBound:getQuickLinksSchoolBound
+  saveQuickLinksDistrictBound:saveQuickLinksDistrictBound
+  getQuickLinksDistrictBound:getQuickLinksDistrictBound

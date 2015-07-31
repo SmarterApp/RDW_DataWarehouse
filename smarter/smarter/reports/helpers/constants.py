@@ -35,7 +35,8 @@ class Constants():
     ASMTYEAR = 'asmtYear'
     ASMTGUID = 'asmtGuid'
     ITEMID = 'itemId'
-    QUICK_LINKS_SCHOOL_ROLLUP_BOUND = "ql_sr"
+    QUICK_LINKS_SCHOOL_ROLLUP_BOUND = "ql_school_bound"
+    QUICK_LINKS_DISTRICT_ROLLUP_BOUND = "ql_district_bound"
     ASMT_TYPE = 'asmt_type'
     ASMT_GRADE = 'asmt_grade'
     ASMT_GRADE_NAME = 'asmt_grade_name'

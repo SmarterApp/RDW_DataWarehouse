@@ -26,12 +26,17 @@ REPORT_NAME='quick_links'
             "type": "integer",
             "required": False,
             "pattern": "^[0-9]{1}$"
+        },
+        Constants.QUICK_LINKS_DISTRICT_ROLLUP_BOUND: {
+            "type": "integer",
+            "required": False,
+            "pattern": "^[0-9]{1}$"
         }
     })
 def get_quick_links(params):
-    return {'quick_links' : get_user_close_context(params, school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 9))}
+    return {'quick_links' : get_user_close_context(params, district_rollup_bound = params.get(Constants.QUICK_LINKS_DISTRICT_ROLLUP_BOUND, 9), school_rollup_bound = params.get(Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND, 9))}
 
-def get_user_close_context(request_params, school_rollup_bound=9, tenant=None):
+def get_user_close_context(request_params, district_rollup_bound=9, school_rollup_bound=9, tenant=None):
     '''
     Get user's context relationships
     @request_params query params to infer tenant and state from
@@ -63,7 +68,8 @@ def get_user_close_context(request_params, school_rollup_bound=9, tenant=None):
                             school.update(name)
                             schools.append(school)
             item.update(context_names)
-            districts.append(item)
+            if len(context) < district_rollup_bound:
+                districts.append(item)
     return {Constants.DISTRICTS: districts, Constants.SCHOOLS: schools}
 
 def get_names(tenant, state_code, district_id, school_id):

@@ -280,10 +280,10 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # Create the tasks to merge each PDF by grade
     merge_tasks, merged_pdfs_by_grade, student_report_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
-                                                                                      directory_for_merged_pdfs,
-                                                                                      guids_by_grade,
-                                                                                      files_by_student_id,
-                                                                                      school_name, lang, is_grayscale)
+                                                                                             directory_for_merged_pdfs,
+                                                                                             guids_by_grade,
+                                                                                             files_by_student_id,
+                                                                                             school_name, lang, is_grayscale)
 
     # Get metadata for tenant branding
     custom_metadata = get_custom_metadata(state_code)

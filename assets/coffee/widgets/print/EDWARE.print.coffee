@@ -29,7 +29,7 @@ define [
       option = $('input[name=print]:checked', @container).val()
       asmtType = edwarePreferences.getAsmtTypeForISR()
       dateTaken = edwarePreferences.getDateTaken()
-      asmtYear = edwarePreferences.getAsmtYearPreference() 
+      asmtYear = edwarePreferences.getAsmtYearForISR()
       params = edwareUtil.getUrlParams()
       url = edwareUtil.getBaseURL() + "/assets/html/print.html?"
       url += 'studentId=' + params['studentId']

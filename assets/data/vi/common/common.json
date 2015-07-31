@@ -209,7 +209,7 @@
                     {
                         "name": "Điểm môn Toán gần đây nhất",
                         "displayTpl": "<a class='inherit' href='#'>Điểm môn Toán gần đây nhất</a>",
-                        "index": "subject1.asmt_date",
+                        "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
                         "width": 140,
                         "formatter": "showText",
@@ -239,7 +239,7 @@
                     {
                         "name": "Điểm môn Anh văn gần đây nhất",
                         "displayTpl": "<a class='inherit' href='#'>Điểm môn Anh văn gần đây nhất</a>",
-                        "index": "subject2.asmt_date",
+                        "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
                         "width": 140,
                         "formatter": "showText",
@@ -290,7 +290,7 @@
                     {
                         "name": "Ngày thi",
                         "displayTpl": "<a class='inherit' href='#'>Ngày thi</a>",
-                        "index": "subject1.asmt_date",
+                        "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
                         "width": 90,
                         "formatter": "showText",
@@ -378,7 +378,7 @@
                     {
                         "name": "Ngày thi",
                         "displayTpl": "<a class='inherit' href='#'>Ngày thi</a>",
-                        "index": "subject2.asmt_date",
+                        "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
                         "width": 90,
                         "formatter": "showText",

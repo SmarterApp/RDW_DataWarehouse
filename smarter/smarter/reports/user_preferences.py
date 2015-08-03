@@ -55,9 +55,6 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
     def __get_names(distrcit_item, school_id=None):
         return get_names(tenant, state_code, x[Constants.DISTRICTGUID], school_id)
 
-    def __item_key_for_sort(item):
-        return item['name']
-
     for item in context:
         x = item[Constants.PARAMS]
         context_names = __get_names(x)
@@ -77,8 +74,8 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
             item.update(context_names)
             if len(context) < district_rollup_bound:
                 districts.append(item)
-    sorted_schools = sorted(schools, key=__item_key_for_sort)
-    sorted_districts = sorted(districts, key=__item_key_for_sort)
+    sorted_schools = sorted(schools, key=lambda school: school['name'])
+    sorted_districts = sorted(districts, key=lambda district: district['name'])
     return {Constants.DISTRICTS: sorted_districts, Constants.SCHOOLS: sorted_schools}
 
 

@@ -21,7 +21,8 @@ define [
       self = this
       params =
           stateCode: edwarePreferences.getStateCode()
-          ql_sr: edwarePreferences.getQuickLinksRollupBound()
+          ql_school_bound: edwarePreferences.getQuickLinksSchoolBound()
+          ql_district_bound: edwarePreferences.getQuickLinksDistrictBound()
 
       loadingData = this.fetchData params
       loadingData.done((data) ->

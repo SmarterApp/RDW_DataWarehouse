@@ -57,14 +57,14 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         self.assertEqual('Sunset - Eastern Elementary', results['schools']['242']['name'])
 
     def test_get_user_close_context(self):
-        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}  # exisitng school
+        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}  # existing school
         results = get_user_close_context(params, tenant=get_unittest_tenant_name())
         self.assertEqual('Sunset School District', results['districts'][0]['name'])
         self.assertEqual(1, len(results['schools']))
         self.assertEqual('Sunset - Eastern Elementary', results['schools'][0]['name'])
 
     def test_school_rollup_bound(self):
-        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}  # exisitng school
+        params = {'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}  # existing school
         results = get_user_close_context(params, tenant=get_unittest_tenant_name(), school_rollup_bound=0)
         self.assertEqual('Sunset School District', results['districts'][0]['name'])
         self.assertEqual(0, len(results['schools']))

@@ -13,7 +13,8 @@ require [
     # Create population grid
     populationGrid = new edwareComparingPopulations.PopulationGrid(reportConfig)
 
-    edwarePreferences.saveQuickLinksRollupBound reportConfig.quickLinksRollupBound
+    edwarePreferences.saveQuickLinksSchoolBound reportConfig.quickLinksSchoolRollupBound
+    edwarePreferences.saveQuickLinksDistrictBound reportConfig.quickLinksDistrictRollupBound
 
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (filterConfigs) ->

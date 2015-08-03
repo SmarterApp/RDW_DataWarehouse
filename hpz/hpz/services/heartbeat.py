@@ -10,8 +10,10 @@ from hpz.database.hpz_connector import get_hpz_connection
 from sqlalchemy.sql.expression import select
 import os
 import uuid
+import logging
 
 
+logger = logging.getLogger(__name__)
 HEARTBAET_FILE_SIZE = 1024
 
 
@@ -22,6 +24,7 @@ def heartbeat(request):
     '''
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
     if check_database() and check_file_write(base_upload_path):
+        logger.info('HPZ Heartbeat works fine.')
         return HTTPOk()
     return HTTPServerError()
 
@@ -38,6 +41,7 @@ def check_database():
             if len(results) > 0:
                 database_ok = True
     except Exception as e:
+        logger.error('HPZ Heartbeat failed. Check DB connection.')
         pass
     return database_ok
 
@@ -57,6 +61,7 @@ def check_file_write(base_upload_path):
         if fstat.st_size == HEARTBAET_FILE_SIZE:
             file_ok = True
     except:
+        logger.error('HPZ Heartbeat failed at file write. Check %s folder ownership and permissions', base_upload_path)
         pass
     finally:
         if os.path.exists(heartbeat_file_path):

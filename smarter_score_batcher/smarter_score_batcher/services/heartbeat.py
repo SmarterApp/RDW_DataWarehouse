@@ -44,7 +44,7 @@ def check_celery(request):
     heartbeat_message = celery_response.get(timeout=timeout)
 
     if heartbeat_message[0:9] != 'heartbeat':
-        logger.error("Heartbeat failed")
+        logger.error("TSB Heartbeat failed. Check TSB worker.")
         raise Exception('TSB Heartbeat Exception. Check TSB worker.')
     logger.info("Heartbeat works fine.")
     return HTTPOk()

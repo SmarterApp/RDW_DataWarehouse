@@ -38,6 +38,9 @@ import pyramid
 from batch.pdf.pdf_generator import PDFGenerator
 from services.constants import ServicesConstants
 from smarter.reports.helpers.metadata import get_custom_metadata
+import logging
+
+logger = logging.getLogger(__name__)
 
 KNOWN_REPORTS = ['indivStudentReport.html']
 
@@ -125,6 +128,7 @@ def async_pdf_service(context, request):
     '''
     This is for backward compitibility and batch PDFs.
     '''
+    logger.info('PDF request made')
     return send_pdf_request(request.validated_params)
 
 
@@ -136,6 +140,7 @@ def sync_pdf_service(context, request):
 
     :param request:  Pyramid request object
     '''
+    logger.info('PDF request made')
     return send_pdf_request(request.validated_params, sync=True)
 
 
@@ -148,13 +153,17 @@ def send_pdf_request(params, sync=False):
     try:
         response = get_pdf_content(params, sync)
     except InvalidParameterError as e:
+        logger.error('PDF generation : invaid parameter')
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
+        logger.error('PDF generation : access forbidden')
         raise EdApiHTTPForbiddenAccess(e.msg)
     except (PdfGenerationError, TimeoutError) as e:
+        logger.error('PDF generation for Extraction failed')
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # if celery get task got timed out...
+        logger.error('PDF generation : celery timeout')
         raise EdApiHTTPInternalServerError("Internal Error")
 
     return response
@@ -178,14 +187,17 @@ def get_pdf_content(params, sync=False):
     # Validate report type
     report = pyramid.threadlocal.get_current_request().matchdict[Constants.REPORT]
     if report not in KNOWN_REPORTS:
+        logger.error('PDF generation : unknown report')
         raise EdApiHTTPNotFound("Not Found")
 
     # Check that we have either a list of student GUIDs or a district/school/grade combination in the params
     if student_ids is None and (district_id is None or school_id is None or grades is None):
+        logger.error('PDF generation : Required parameter is missing')
         raise InvalidParameterError('Required parameter is missing')
 
     # Validate necessary assessment information
     if (asmt_type == AssessmentType.SUMMATIVE or asmt_type == AssessmentType.INTERIM_COMPREHENSIVE) and asmt_year is None and date_taken is None:
+        logger.error('PDF generation : Required parameters asmt_year and date_taken is missing')
         raise InvalidParameterError('Required parameter is missing')
 
     settings = pyramid.threadlocal.get_current_registry().settings
@@ -209,6 +221,7 @@ def get_pdf_content(params, sync=False):
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
                            date_taken, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
                            params, single_generate_queue):
+    logger.info('Getting single PDF content')
     if type(student_id) is list:
         student_id = student_id[0]
 
@@ -237,6 +250,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     :param params: python dict that contains query parameters from the request
     '''
+    logger.info('Getting bulk PDF content')
     # Get the user
     user = authenticated_userid(get_current_request())
 
@@ -497,7 +511,7 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
     the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
-
+    logger.info('Start bulk PDF generation')
     workflow = chain(group(gen_tasks),
                      group_separator.subtask(immutable=True),  # @UndefinedVariable
                      group(merge_tasks),
@@ -597,6 +611,8 @@ def _get_school_name(state_code, district_id, school_id):
         # Return the result
         results = connector.get_result(query)
         if len(results) == 1:
+            logger.info('Bulk PDF : School name found')
             return results[0][Constants.SCHOOL_NAME]
         else:
+            logger.error('Bulk PDF : School name not found')
             raise InvalidParameterError('School name cannot be found')

@@ -25,7 +25,7 @@ define [
 
   class StudentModel
 
-    constructor: (@asmtType, @effectiveDate, @dataSet, @asmtDate) ->
+    constructor: (@asmtType, @dataSet, @asmtDate) ->
 
     init: (row) ->
       @appendColors row
@@ -121,12 +121,12 @@ define [
       for subject, columns of @data.interim_assessment_blocks
         subjectName = @data.subjects[subject]
         for claim in @config.interimAssessmentBlocksOrdering[subject][currentGrade.replace(/^0+/,'')]
-          effective_dates = columns[claim]
-          if not effective_dates
+          dates_taken = columns[claim]
+          if not dates_taken
             continue
           isExpanded = edwarePreferences.isExpandedColumn(claim)
-          for effective_date, i in effective_dates
-            titleText = if isExpanded then edwareUtil.formatDate(effective_date) else claim
+          for date_taken, i in dates_taken
+            titleText = if isExpanded then edwareUtil.formatDate(date_taken) else claim
             if titleText.length > 27
               titleText = titleText[..27] + "..."
             iab_column_details = {
@@ -135,15 +135,15 @@ define [
               subjectText: Constants.SUBJECT_TEXT[subject]
               claim: claim
               expanded: isExpanded
-              numberOfColumns: Object.keys(effective_dates).length
-              effectiveDate: effective_date
+              numberOfColumns: Object.keys(dates_taken).length
+              date_taken: date_taken
               i: i
               width: if isExpanded then 98 else 140
-              effectiveDateText: if isExpanded then effective_date else @labels['latest_result']
+              dateTakenText: if isExpanded then date_taken else @labels['latest_result']
             }
             column = JSON.parse(Mustache.render(JSON.stringify(@config.column_for_iab), iab_column_details))
             columnData[subjectName][0].items.push column
-            # only show latest effective date if not expanded
+            # only show latest date taken if not expanded
             if not isExpanded
               break
       columnData
@@ -182,7 +182,7 @@ define [
                   asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
                   # save for Overview
                   asmt[subjectName].dateTaken = asmtDate
-                  row = new StudentModel(asmtType, null, this, asmtDate).init asmt
+                  row = new StudentModel(asmtType, this, asmtDate).init asmt
                   @cache[asmtType][subjectType] ?= []
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
@@ -193,7 +193,7 @@ define [
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
-          combinedAsmtRow = new StudentModel(asmtType, null, this, asmtDate).init combinedAsmts
+          combinedAsmtRow = new StudentModel(asmtType, this, asmtDate).init combinedAsmts
           continue if combinedAsmts.hide
           @cache[asmtType][@allSubjects] ?= []
           @cache[asmtType][@allSubjects].push(combinedAsmtRow)
@@ -204,7 +204,7 @@ define [
       for asmtType, studentList of @assessmentsData
         for studentId, assessment of studentList
           continue if assessment.hide
-          row = new StudentModel(Constants.ASMT_TYPE.IAB, null, this).init assessment
+          row = new StudentModel(Constants.ASMT_TYPE.IAB, this).init assessment
           # push to each subject view
           for subjectName, subjectType of @subjectsData
             continue if not row[subjectName] or row[subjectName].hide

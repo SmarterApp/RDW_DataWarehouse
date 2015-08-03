@@ -158,7 +158,7 @@ def __prepare_query_iab(connector, params):
                                 dim_asmt.c.asmt_subject.label('asmt_subject'),
                                 dim_asmt.c.asmt_period.label('asmt_period'),
                                 dim_asmt.c.asmt_period_year.label('asmt_period_year'),
-                                dim_asmt.c.effective_date.label('effective_date'),
+                                fact_block_asmt_outcome.c.date_taken.label('date_taken'),
                                 dim_asmt.c.asmt_type.label('asmt_type'),
                                 dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                 dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -202,7 +202,7 @@ def __prepare_query_iab(connector, params):
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if asmt_year is not None:
         query = query.where(fact_block_asmt_outcome.c.asmt_year == asmt_year)
-    query = query.order_by(dim_asmt.c.asmt_subject.desc(), fact_block_asmt_outcome.c.asmt_grade.desc(), dim_asmt.c.effective_date.desc())
+    query = query.order_by(dim_asmt.c.asmt_subject.desc(), fact_block_asmt_outcome.c.asmt_grade.desc(), fact_block_asmt_outcome.c.date_taken.desc())
     return query
 
 
@@ -286,7 +286,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
         subject = result['asmt_subject']
         subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=False, include_min_max_scores=False, include_indexer=False)
         subject_list['grade'] = result.get('asmt_grade')
-        subject_list['effective_date'] = result.get('effective_date')
+        subject_list['date_taken'] = result.get('date_taken')
         subject_data[subjects_map.get(subject)].append(subject_list)
     # Create map from subject to all value for it's type
     for k, v in subject_data.items():

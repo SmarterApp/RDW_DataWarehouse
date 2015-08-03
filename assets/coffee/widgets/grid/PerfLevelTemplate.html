@@ -1,7 +1,7 @@
 <div class="screenreader">
 	{{asmtType}} {{columnName}} {{perfLevel}}
 	{{#displayPopover}} {{student_full_name}} {{columnName}}
-	{{#prev}}{{display_effective_date}} {{claims.0.perf_lvl_name}}
+	{{#prev}}{{display_date_taken}} {{claims.0.perf_lvl_name}}
 	{{/prev}} {{/displayPopover}}
 </div>
 <div class='{{export}}'>
@@ -25,7 +25,7 @@
 						{{#prev}}
 						<td>
 						<div class="takenDate oldDateResults">
-							{{display_effective_date}}
+							{{display_date_taken}}
 						</div><i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
 						{{/prev}}
 					</tr>
@@ -35,6 +35,6 @@
 	</div>
 	{{/displayPopover}}
 	</div>
-	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} {{#effectiveDateText}}- {{text}} {{/effectiveDateText}}- {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
-	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} {{#effectiveDateText}}- {{text}} {{/effectiveDateText}}- {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
+	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} {{#dateTakenText}}- {{text}} {{/dateTakenText}}- {{labels.performance_level_number}}' data-export-value='{{perfLevelNumber}}'></span>
+	<span class='edwareExportField' data-export-name='{{asmtSubjectText}} - {{columnName}} {{#dateTakenText}}- {{text}} {{/dateTakenText}}- {{labels.performance_level}}' data-export-value='{{perfLevel}}'></span>
 </div>

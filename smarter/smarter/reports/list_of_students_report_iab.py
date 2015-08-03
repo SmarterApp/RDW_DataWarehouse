@@ -66,7 +66,7 @@ def get_list_of_students_iab(params):
                                      fact_block_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                                      fact_block_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                      dim_asmt.c.asmt_subject.label('asmt_subject'),
-                                     dim_asmt.c.effective_date.label('effective_date'),
+                                     fact_block_asmt_outcome.c.date_taken.label('date_taken'),
                                      dim_asmt.c.asmt_type.label('asmt_type'),
                                      dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                      dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -122,7 +122,7 @@ def get_list_of_students_iab(params):
         if asmtGrade is not None:
             query = query.where(and_(fact_block_asmt_outcome.c.asmt_grade == asmtGrade))
 
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(dim_asmt.c.effective_date.desc())
+        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(fact_block_asmt_outcome.c.date_taken.desc())
         return connector.get_result(query)
 
 
@@ -137,12 +137,12 @@ def get_IAB_claims(results, subjects):
                 claim_name = claim_names.get(subject_name, dict())
                 temp = claim_name.get(claim, set())
                 for asmt in assessments:
-                    temp.add(asmt["effective_date"])
+                    temp.add(asmt["date_taken"])
                 claim_name[claim] = temp
                 claim_names[subject_name] = claim_name
     for subject_name, claims in claim_names.items():
-        for claim_name, effective_dates in claims.items():
-            claim_names[subject_name][claim_name] = sorted(list(effective_dates), reverse=True)
+        for claim_name, dates_taken_on in claims.items():
+            claim_names[subject_name][claim_name] = sorted(list(dates_taken_on), reverse=True)
     return claim_names
 
 
@@ -154,7 +154,7 @@ def format_assessments_iab(results, subjects_map):
     assessments = {}
     # Formatting data for Front End
     for result in results:
-        effectiveDate = result['effective_date']  # e.g. 20140401
+        date_taken = result['date_taken']  # e.g. 20140401
         studentId = result['student_id']  # e.g. student_1
         student = assessments.get(studentId, {})
         if not student:
@@ -172,7 +172,7 @@ def format_assessments_iab(results, subjects_map):
             if result['group_{count}_id'.format(count=i)] is not None:
                 student['group'].add(result['group_{count}_id'.format(count=i)])
 
-        assessment = {Constants.EFFECTIVE_DATE: effectiveDate}
+        assessment = {Constants.DATE_TAKEN: date_taken}
         assessment['asmt_grade'] = result['asmt_grade']
         claims = assessment.get('claims', [])
         claim = get_claims(number_of_claims=1, result=result, include_scores=False, include_names=True)[0]
@@ -182,10 +182,10 @@ def format_assessments_iab(results, subjects_map):
 
         subject = subjects_map[result['asmt_subject']]
         claim_dict = student.get(subject, {})
-        effectiveDate_data = claim_dict.get(claim_name, [])
+        date_taken_data = claim_dict.get(claim_name, [])
 
-        effectiveDate_data.append(assessment)
-        claim_dict[claim_name] = effectiveDate_data
+        date_taken_data.append(assessment)
+        claim_dict[claim_name] = date_taken_data
         student[subject] = claim_dict
         assessments[studentId] = student
 

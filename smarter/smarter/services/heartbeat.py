@@ -51,7 +51,7 @@ def check_celery(request):
     if heartbeat_message[0:9] == 'heartbeat':
         return HTTPOk()
     else:
-        logger.error("Heartbeat failed at celery. Check RabbitMQ and Celery. %s", str(e))
+        logger.error("Heartbeat failed at celery. Check RabbitMQ and Celery.")
         return HTTPServerError()
 
 

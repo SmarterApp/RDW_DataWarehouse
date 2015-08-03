@@ -606,7 +606,6 @@ def _get_school_name(state_code, district_id, school_id):
         # Return the result
         results = connector.get_result(query)
         if len(results) == 1:
-            logger.info('Bulk PDF : School name found')
             return results[0][Constants.SCHOOL_NAME]
         else:
             logger.error('Bulk PDF : School name not found')

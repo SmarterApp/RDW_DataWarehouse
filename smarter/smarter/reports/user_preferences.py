@@ -26,12 +26,12 @@ REPORT_NAME = 'quick_links'
         Constants.QUICK_LINKS_SCHOOL_ROLLUP_BOUND: {
             "type": "integer",
             "required": False,
-            "pattern": "^[0-9]{1}$"
+            "pattern": "^[0-9]*$"
         },
         Constants.QUICK_LINKS_DISTRICT_ROLLUP_BOUND: {
             "type": "integer",
             "required": False,
-            "pattern": "^[0-9]{1}$"
+            "pattern": "^[0-9]*$"
         }
     })
 def get_quick_links(params):

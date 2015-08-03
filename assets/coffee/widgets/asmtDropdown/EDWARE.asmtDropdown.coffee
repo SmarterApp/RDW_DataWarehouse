@@ -70,7 +70,7 @@ define [
       # set default option, comment out for now
       asmt = @getAsmtPreference()
       # For ISR, need also the grade
-      matchAsmt = @dropdownValues[asmt.date_taken+asmt.asmt_type]
+      matchAsmt = @dropdownValues[asmt.asmt_type+asmt.asmt_period_year+asmt.date_taken]
       asmt.asmt_grade = matchAsmt[0].asmt_grade if matchAsmt
       if $.isEmptyObject(asmt)
         # Dropdown blank w/o data

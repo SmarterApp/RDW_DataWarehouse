@@ -160,6 +160,7 @@ def get_extract_service(context, request):
     try:
         params = convert_query_string_to_dict_arrays(request.GET)
     except Exception as e:
+        logger.error("Extraction pre-condition failed. %s", str(e))
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)
 

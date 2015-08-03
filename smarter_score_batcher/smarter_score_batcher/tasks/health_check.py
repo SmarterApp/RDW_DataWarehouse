@@ -5,7 +5,7 @@ from smarter_score_batcher.database.tsb_connector import TSBDBConnection
 import logging
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('smarter_score_batcher')
 
 
 @celery.task(name='tasks.tsb.health_check')
@@ -22,7 +22,6 @@ def health_check():
             results = connector.get_result(query)
             if not results:
                 return "Cannot connect to TSB DB"
-            logger.info("Heartbeat DB connection works fine.")
     except:
         logger.error("Heartbeat cannot connect to TSB DB.")
         return "Cannot connect to TSB DB"

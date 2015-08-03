@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPOk
 import logging
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('smarter_score_batcher')
 
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
@@ -46,5 +46,4 @@ def check_celery(request):
     if heartbeat_message[0:9] != 'heartbeat':
         logger.error("TSB Heartbeat failed. Check TSB worker.")
         raise Exception('TSB Heartbeat Exception. Check TSB worker.')
-    logger.info("Heartbeat works fine.")
     return HTTPOk()

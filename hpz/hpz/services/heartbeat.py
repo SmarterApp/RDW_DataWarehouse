@@ -13,7 +13,7 @@ import uuid
 import logging
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('hpz')
 HEARTBAET_FILE_SIZE = 1024
 
 
@@ -24,7 +24,6 @@ def heartbeat(request):
     '''
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
     if check_database() and check_file_write(base_upload_path):
-        logger.info('HPZ Heartbeat works fine.')
         return HTTPOk()
     return HTTPServerError()
 
@@ -41,7 +40,7 @@ def check_database():
             if len(results) > 0:
                 database_ok = True
     except Exception as e:
-        logger.error('HPZ Heartbeat failed. Check DB connection.')
+        logger.error('HPZ Heartbeat failed. Check DB connection.' + str(e))
         pass
     return database_ok
 

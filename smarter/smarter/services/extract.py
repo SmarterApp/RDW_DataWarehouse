@@ -20,7 +20,7 @@ import logging
 from smarter.reports.helpers.filters import FILTERS_CONFIG
 from edcore.utils.utils import merge_dict
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('smarter')
 
 TENANT_EXTRACT_PARAMS = {
     "type": "object",
@@ -145,7 +145,6 @@ def post_extract_service(context, request):
     :param request:  Pyramid request object
     '''
     params = convert_query_string_to_dict_arrays(request.json_body)
-    logger.info('Extract request made')
     return send_extraction_request(params)
 
 
@@ -162,7 +161,6 @@ def get_extract_service(context, request):
         params = convert_query_string_to_dict_arrays(request.GET)
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
-    logger.info('Extract request made')
     return send_extraction_request(params)
 
 
@@ -197,16 +195,15 @@ def send_extraction_request(params):
             response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
     # TODO: currently we dont' even throw any of these exceptions
     except ExtractionError as e:
-        logger.error('Request for Extraction failed')
+        logger.error('Request for Extraction failed. %s', str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except TimeoutError as e:
         # if celery timed out...
-        logger.error('Extraction celery timeout')
+        logger.error('Extraction celery timeout. %s', str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # uknown exception was thrown.  Most likely configuration issue.
-        logger.error('Unknown exception during extraction. Check configuration.')
-        logger.error(str(e))
+        logger.error('Unknown exception during extraction. Check configuration. %s', str(e))
         raise
     return response
 
@@ -219,7 +216,6 @@ def generate_zip_file_name(asmt_year, asmt_grade, asmt_type, asmt_subject):
         School-level: ASMT_<subject>_<type>_<timestamp>.zip
         Grade-level:  ASMT_<grade>_<subject>_<type>_<timestamp>.zip
     '''
-    logger.info('Extracts : Generating name for zip file.')
     asmt_subject.sort()
     asmtSubjects = '_'.join(asmt_subject)
     identifier = '_GRADE_' + str(asmt_grade[0]) if len(asmt_grade) == 1 and asmt_grade[0] is not None else ''

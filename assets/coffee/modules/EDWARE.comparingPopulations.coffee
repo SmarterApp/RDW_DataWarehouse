@@ -22,7 +22,7 @@ define [
   "edwareContextSecurity"
 ], ($, bootstrap, Mustache, edware, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
-  POPULATION_BAR_WIDTH = 145
+  POPULATION_BAR_WIDTH = 120
 
   SUBJECT_HEADERS = {
     "Math": "results.subject1.sortedValue"
@@ -417,7 +417,7 @@ define [
           summary = this.summaryData.results[subject]
           if summary and subjectData
             summaryDataAlignment = summary.intervals[0].percentage + summary.intervals[1].percentage
-            subjectData.alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
+            subjectData.alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 30
             subjectData.alignment =  (((summaryDataAlignment - 100 + subjectData.sortedValue) * POPULATION_BAR_WIDTH) / 100) + 10
       data
 

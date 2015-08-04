@@ -53,7 +53,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         tenant = get_unittest_tenant_name()
         results = get_district_level_context_names(tenant, 'NC', '228')
         self.assertEqual('Sunset School District', results['name'])
-        self.assertEqual(1, len(results['schools']))
+        self.assertEqual(3, len(results['schools']))
         self.assertEqual('Sunset - Eastern Elementary', results['schools']['242']['name'])
 
     def test_get_user_close_context(self):

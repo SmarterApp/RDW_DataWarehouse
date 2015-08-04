@@ -49,6 +49,18 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
     state_code = request_params.get(Constants.STATECODE)
     tenant = tenant if tenant else get_tenant_by_state_code(state_code)
     context = get_user_context_for_role(tenant, RolesConstants.PII, request_params)
+    contextGeneral = get_user_context_for_role(tenant, RolesConstants.GENERAL, request_params)
+    contextMap = {x[Constants.DISTRICTGUID]: x for x in context}
+    contextGeneralMap = {x[Constants.DISTRICTGUID]: x for x in contextGeneral}
+    
+    # copy missing schools from general
+    for key in contextMap:
+        if contextGeneralMap[key]:
+            guids = set(contextMap[key][Constants.GUID])
+            guids.expand(contextGeneralMap[key][Constants.GUID]) 
+            contextMap[key][Constants.GUID] = guids
+    context = contextGeneral.update(contextMap.values())        
+    
     districts = []
     schools = []
 

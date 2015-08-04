@@ -74,7 +74,9 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
             item.update(context_names)
             if len(context) < district_rollup_bound:
                 districts.append(item)
-    return {Constants.DISTRICTS: districts, Constants.SCHOOLS: schools}
+    sorted_schools = sorted(schools, key=lambda school: school['name'])
+    sorted_districts = sorted(districts, key=lambda district: district['name'])
+    return {Constants.DISTRICTS: sorted_districts, Constants.SCHOOLS: sorted_schools}
 
 
 def get_names(tenant, state_code, district_id, school_id):

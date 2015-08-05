@@ -10,7 +10,7 @@ Url: https://github.wgenhq.net/Ed-Ware-SBAC/edware
 
 BuildRequires:	python3
 BuildRequires:	python3-libs
-Requires:	postgresql-devel
+Requires:	postgresql-devel python3-libs
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0

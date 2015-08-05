@@ -22,8 +22,8 @@ def health_check():
             results = connector.get_result(query)
             if not results:
                 return "Cannot connect to TSB DB"
-    except:
-        logger.error("Heartbeat cannot connect to TSB DB.")
+    except Exception as e:
+        logger.error("Heartbeat cannot connect to TSB DB: %s", str(e))
         return "Cannot connect to TSB DB"
     heartbeat = "heartbeat:" + str(datetime.now())
     return heartbeat

@@ -45,13 +45,13 @@ def check_celery(request):
         celery_response = health_check.apply_async(queue=queue)
         heartbeat_message = celery_response.get(timeout=timeout)
     except Exception as e:
-        logger.error("Heartbeat failed at celery. Check RabbitMQ and Celery. %s", str(e))
+        logger.error("Heartbeat failed at celery. Check celery. %s", str(e))
         return HTTPServerError()
 
     if heartbeat_message[0:9] == 'heartbeat':
         return HTTPOk()
     else:
-        logger.error("Heartbeat failed at celery. Check RabbitMQ and Celery.")
+        logger.error("Heartbeat failed at celery. Check celery.")
         return HTTPServerError()
 
 
@@ -61,16 +61,18 @@ def check_datasource(request):
 
     :param request:  Pyramid request object
     '''
+    error_msg = ''
     try:
         results = None
         for datasource_name in get_data_source_names():
             with DBConnection(name=datasource_name) as connector:
                 query = select([1])
                 results = connector.get_result(query)
-    except Exception:
+    except Exception as e:
+        error_msg = str(e)
         results = None
 
     if results and len(results) > 0:
         return HTTPOk()
-    logger.error("Heartbeat failed at database connection.")
+    logger.error("Heartbeat failed at database connection. %s", error_msg)
     return HTTPServerError()

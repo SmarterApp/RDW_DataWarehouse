@@ -59,8 +59,8 @@ def check_file_write(base_upload_path):
         fstat = os.stat(heartbeat_file_path)
         if fstat.st_size == HEARTBAET_FILE_SIZE:
             file_ok = True
-    except:
-        logger.error('HPZ Heartbeat failed at file write. Check %s folder ownership and permissions', base_upload_path)
+    except Exception as e:
+        logger.error('HPZ Heartbeat failed at file write. %s', str(e))
         pass
     finally:
         if os.path.exists(heartbeat_file_path):

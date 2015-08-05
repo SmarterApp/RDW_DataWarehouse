@@ -787,11 +787,11 @@ sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
 sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
 sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
 sbacTenancyChain: ||PII||||||cat|NC|||229|Daybreak School District|||936|Daybreak - Western Elementary|
-sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
-sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 sbacTenancyChain: ||PII||||||cat|NC|||228|Sunset School District|||242|Sunset - Eastern Elementary|
 sbacTenancyChain: ||PII||||||cat|NC|||c912df4b-acdf-40ac-9a91-f66aefac7851|Swallow Harrier District|||429804d2-50db-4e0e-aa94-96ed8a36d7d5|Blobfish Pintail Sch|
-sbacTenancyChain: ||PII||||||cat|NC|||490|Johnston School District|||||
+sbacTenancyChain: ||GENERAL||||||cat|NC|||490|Johnston School District|||||
 sbacTenancyChain: ||PII||||||cat|NC|||713|Cabarrus School District|||343|Carbarus - Elementary School|
 sbacTenancyChain: ||PII||||||cat|NC|||329|Dawn School District|||836|Dawn Central High|
 sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
@@ -833,10 +833,10 @@ sn: Agni
 sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
 sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
 sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
-sbacTenancyChain: ||PII||||||cat|NC|||229|Daybreak School District|||936|Daybreak - Western Elementary|
-sbacTenancyChain: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
-sbacTenancyChain: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-sbacTenancyChain: ||PII||||||cat|NC|||228|Sunset School District|||242|Sunset - Eastern Elementary|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||229|Daybreak School District|||936|Daybreak - Western Elementary|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||228|Sunset School District|||242|Sunset - Eastern Elementary|
 sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 givenName: Ra
 uid: ragni
@@ -880,13 +880,9 @@ sn: Miles
 sbacUUID: 0d9573e0-bf64-11e3-8a33-0800200c9a66
 sbacTenancyChain: ||Teacher||||||cat|NC|||||||||
 sbacTenancyChain: ||ALLSTATES|||SBAC|||||||||||||
-sbacTenancyChain: ||PII||||||cat|NC|||||||735ef99c-f09b-45ef-8402-9a78865061a9|Adenbell Middle|
-sbacTenancyChain: ||PII||||||cat|NC|||||||25804ee9-9588-4263-a363-04890d60401c|Belcampbel Primary|
-sbacTenancyChain: ||PII||||||cat|NC|||||||788d276e-6ef4-4214-92a9-9367ad253f19|Bogalo Islandy Community Middle|
-sbacTenancyChain: ||PII||||||cat|NC|||||||6cb6bbf4-b8f1-45d6-8697-27c719a65e60|Bringeluket Elementary|
-sbacTenancyChain: ||PII||||||cat|NC|||||||20480765-dd5f-4e74-8e2a-5a6358823e70|Capearlins Primary|
-sbacTenancyChain: ||PII||||||cat|NC|||||||f9a0390d-d9f2-4a23-bbba-a35c45d13a09|Darrion Jr Middle|
-sbacTenancyChain: ||PII||||||cat|NC|||||||9068999c-bcf7-4f6a-92b8-b7da898e9c0c|Guayama HS|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||228|Sunset School District|||242|Sunset - Eastern Elementary|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||228|Sunset School District|||245|Sunset - Western Middle|
+sbacTenancyChain: ||GENERAL||||||cat|NC|||228|Sunset School District|||248|Sunset Central High|
 sbacTenancyChain: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 givenName: Darrel
 uid: dmiles

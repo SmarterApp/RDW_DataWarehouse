@@ -38,6 +38,9 @@ import pyramid
 from batch.pdf.pdf_generator import PDFGenerator
 from services.constants import ServicesConstants
 from smarter.reports.helpers.metadata import get_custom_metadata
+import logging
+
+logger = logging.getLogger('smarter')
 
 KNOWN_REPORTS = ['indivStudentReport.html']
 
@@ -148,13 +151,17 @@ def send_pdf_request(params, sync=False):
     try:
         response = get_pdf_content(params, sync)
     except InvalidParameterError as e:
+        logger.error('PDF generation : invaid parameter. %s', str(e))
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
+        logger.error('PDF generation : access forbidden. %s', str(e))
         raise EdApiHTTPForbiddenAccess(e.msg)
     except (PdfGenerationError, TimeoutError) as e:
+        logger.error('PDF generation failed. %s', str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # if celery get task got timed out...
+        logger.error('PDF generation : celery timeout. %s', str(e))
         raise EdApiHTTPInternalServerError("Internal Error")
 
     return response
@@ -178,14 +185,17 @@ def get_pdf_content(params, sync=False):
     # Validate report type
     report = pyramid.threadlocal.get_current_request().matchdict[Constants.REPORT]
     if report not in KNOWN_REPORTS:
+        logger.error('PDF generation : unknown report')
         raise EdApiHTTPNotFound("Not Found")
 
     # Check that we have either a list of student GUIDs or a district/school/grade combination in the params
     if student_ids is None and (district_id is None or school_id is None or grades is None):
+        logger.error('PDF generation : Required parameter is missing')
         raise InvalidParameterError('Required parameter is missing')
 
     # Validate necessary assessment information
     if (asmt_type == AssessmentType.SUMMATIVE or asmt_type == AssessmentType.INTERIM_COMPREHENSIVE) and asmt_year is None and date_taken is None:
+        logger.error('PDF generation : Required parameters asmt_year and date_taken is missing')
         raise InvalidParameterError('Required parameter is missing')
 
     settings = pyramid.threadlocal.get_current_registry().settings
@@ -497,7 +507,6 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
     the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
-
     workflow = chain(group(gen_tasks),
                      group_separator.subtask(immutable=True),  # @UndefinedVariable
                      group(merge_tasks),
@@ -599,4 +608,5 @@ def _get_school_name(state_code, district_id, school_id):
         if len(results) == 1:
             return results[0][Constants.SCHOOL_NAME]
         else:
+            logger.error('Bulk PDF : School name not found')
             raise InvalidParameterError('School name cannot be found')

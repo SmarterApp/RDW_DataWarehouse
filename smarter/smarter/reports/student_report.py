@@ -22,6 +22,10 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_asmt_administration_years_isr
 from smarter.security.tenant import validate_user_tenant
 from smarter_common.security.constants import RolesConstants
+import logging
+
+
+logger = logging.getLogger('smarter')
 
 
 REPORT_NAME = 'individual_student_report'
@@ -343,6 +347,7 @@ def get_student_report(params):
         query = query_function[asmt_type](connection, params)
         result = connection.get_result(query)
         if not result:
+            logger.error("Individual student report: there are no results for student id : %s", student_id)
             raise NotFoundException("There are no results for student id {0}".format(student_id))
         records = [record for record in result if record['asmt_period_year'] == academic_year]
         first_student = records[0] if len(records) > 0 else result[0]

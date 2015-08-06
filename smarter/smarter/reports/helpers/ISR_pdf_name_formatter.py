@@ -8,6 +8,10 @@ from sqlalchemy.sql.expression import Select, and_, distinct
 from edapi.exceptions import NotFoundException
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
+import logging
+
+
+logger = logging.getLogger('smarter')
 
 
 def generate_isr_report_path_by_student_id(state_code, date_taken=None, asmt_year=None, pdf_report_base_dir='/', student_ids=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=True, lang='en'):
@@ -31,6 +35,7 @@ def generate_isr_report_path_by_student_id(state_code, date_taken=None, asmt_yea
 
         results = connection.get_result(query)
         if len(results) < len(student_ids):
+            logger.error("PDF error: Results count is less than student count.")
             raise NotFoundException("Result count should be more than or equal to student count")
         for result in results:
             file_path_by_date = {}

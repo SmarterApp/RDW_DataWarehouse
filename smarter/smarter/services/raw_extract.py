@@ -17,7 +17,7 @@ from smarter.reports.helpers.filters import FILTERS_CONFIG
 from datetime import datetime
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('smarter')
 
 RAW_EXTRACT_PARAMS = {
     "type": "object",
@@ -85,6 +85,7 @@ def get_raw_data_service(context, request):
         params[Constants.ASMTSUBJECT] = params[Constants.ASMTSUBJECT][0]
         params[Constants.ASMTGRADE] = params[Constants.ASMTGRADE][0]
     except Exception as e:
+        logger.error('Raw extract : precondition failed. %s', str(e))
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)
 
@@ -107,13 +108,15 @@ def send_extraction_request(params):
         results = process_async_item_or_raw_extraction_request(params, extract_type=ExtractType.rawData)
         response = Response(body=json.dumps(results), content_type='application/json')
     except ExtractionError as e:
+        logger.error('Request for Raw Extraction failed. %s', str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except TimeoutError as e:
         # if celery timed out...
+        logger.error('Raw Extraction celery timeout, %s', str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # uknown exception was thrown.  Most likely configuration issue.
-        logger.error(str(e))
+        logger.error('Unknown exception during raw extraction. Check configuration. %s', str(e))
         raise
     return response
 

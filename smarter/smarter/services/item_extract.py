@@ -20,7 +20,9 @@ from smarter.reports.helpers.filters import FILTERS_CONFIG
 from datetime import datetime
 import logging
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger('smarter')
+
 
 ITEM_EXTRACT_PARAMS = {
     "type": "object",
@@ -98,6 +100,7 @@ def get_item_extract_service(context, request):
         params[Constants.ASMTSUBJECT] = params[Constants.ASMTSUBJECT][0]
         params[Constants.ASMTGRADE] = params[Constants.ASMTGRADE][0]
     except Exception as e:
+        logger.error("Item extract : pre-condition failed. %s", str(e))
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)
 
@@ -121,13 +124,15 @@ def send_extraction_request(params):
         response = Response(body=json.dumps(results), content_type='application/json')
     # TODO: currently we dont' even throw any of these exceptions
     except ExtractionError as e:
+        logger.error("Item extract : extraction failed. %s", str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except TimeoutError as e:
         # if celery timed out...
+        logger.error("Item extract : timeout. %s", str(e))
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # uknown exception was thrown.  Most likely configuration issue.
-        logger.error(str(e))
+        logger.error("Item extract : Unknown exception. Check configuration. %s", str(e))
         raise
     return response
 

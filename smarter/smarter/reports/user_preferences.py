@@ -56,8 +56,9 @@ def get_user_close_context(request_params, district_rollup_bound=9, school_rollu
     # copy missing schools from general
     for key in contextMap:
         if key in contextGeneralMap:
-            guids = set(contextMap[key][Constants.PARAMS][Constants.GUID])
-            guids.expand(contextGeneralMap[key][Constants.PARAMS][Constants.GUID]) 
+            guids = contextMap[key][Constants.PARAMS][Constants.GUID]
+            guids.extend(contextGeneralMap[key][Constants.PARAMS][Constants.GUID]) 
+            guids = set(guids)
             contextMap[key][Constants.PARAMS][Constants.GUID] = guids
     contextGeneralMap.update(contextMap)
     context = contextGeneralMap.values()    

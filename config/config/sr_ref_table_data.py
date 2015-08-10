@@ -26,7 +26,7 @@ ref_table_conf = {
         ('1', 'lz_csv', 'lastorsurname', 'stg_sbac_stu_reg', 'name_student_last', 'clean', None),
         ('1', 'lz_csv', 'sex', 'stg_sbac_stu_reg', 'sex_student', 'srGender', None),
         ('1', 'lz_csv', 'birthdate', 'stg_sbac_stu_reg', 'birthdate_student', 'srDate', None),
-        ('1', 'lz_csv', 'gradelevelwhenassessed', 'stg_sbac_stu_reg', 'grade_enrolled', 'clean', None),
+        ('1', 'lz_csv', 'gradelevelwhenassessed', 'stg_sbac_stu_reg', 'grade_enrolled', 'grade', None),
         ('1', 'lz_csv', 'hispanicorlatinoethnicity', 'stg_sbac_stu_reg', 'dmg_eth_hsp', 'srYn', None),
         ('1', 'lz_csv', 'americanindianoralaskanative', 'stg_sbac_stu_reg', 'dmg_eth_ami', 'srYn', None),
         ('1', 'lz_csv', 'asian', 'stg_sbac_stu_reg', 'dmg_eth_asn', 'srYn', None),

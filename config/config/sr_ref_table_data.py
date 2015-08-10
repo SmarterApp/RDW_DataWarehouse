@@ -111,7 +111,6 @@ ref_table_conf = {
         ('4', 'int_sbac_stu_reg', 'dmg_prg_504', 'student_reg', 'dmg_prg_504', None, None),
         ('4', 'int_sbac_stu_reg', 'dmg_sts_ecd', 'student_reg', 'dmg_sts_ecd', None, None),
         ('4', 'int_sbac_stu_reg', 'dmg_sts_mig', 'student_reg', 'dmg_sts_mig', None, None),
-        ('4', 'int_sbac_stu_reg', 'code_confirm', 'student_reg', 'confirm_code', None, None),
         ('4', 'int_sbac_stu_reg', 'code_language', 'student_reg', 'language_code', None, None),
         ('4', 'int_sbac_stu_reg', 'eng_prof_lvl', 'student_reg', 'eng_prof_lvl', None, None),
         ('4', 'int_sbac_stu_reg', 'us_school_entry_date', 'student_reg', 'us_school_entry_date', None, None),

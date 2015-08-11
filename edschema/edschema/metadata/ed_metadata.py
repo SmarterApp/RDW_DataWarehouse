@@ -227,6 +227,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
                                   Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
+                                  Column('ind_valid', Boolean, nullable=True),
+                                  Column('ind_complete', Boolean, nullable=True),
                                   MetaColumn('from_date', String(8), nullable=False),
                                   MetaColumn('to_date', String(8), nullable=True),
                                   MetaColumn('rec_status', String(1), nullable=False),
@@ -302,13 +304,15 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                      Column('acc_streamline_mode', SmallInteger, nullable=False),
                                      Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
+                                     Column('ind_valid', Boolean, nullable=True),
+                                     Column('ind_complete', Boolean, nullable=True),
                                      MetaColumn('from_date', String(8), nullable=False),
                                      MetaColumn('to_date', String(8), nullable=True),
                                      MetaColumn('rec_status', String(1), nullable=False),
                                      MetaColumn('batch_guid', String(36), nullable=False),
                                      Column('asmt_status', String(2), nullable=False),
                                      )
-
+    
     Index('fact_block_asmt_outcome_student_idx', assessment_block_outcome.c.student_id, assessment_block_outcome.c.asmt_guid, assessment_block_outcome.c.date_taken, unique=False)
     Index('fact_block_asmt_outcome_report_idx', assessment_block_outcome.c.state_code, assessment_block_outcome.c.school_id, assessment_block_outcome.c.district_id, assessment_block_outcome.c.asmt_year, assessment_block_outcome.c.rec_status, assessment_block_outcome.c.asmt_type, assessment_block_outcome.c.asmt_grade, assessment_block_outcome.c.asmt_subject, unique=False)
 
@@ -365,6 +369,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                Column('acc_streamline_mode', SmallInteger, nullable=False),
                                Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
+                               Column('ind_valid', Boolean, nullable=True),
+                               Column('ind_complete', Boolean, nullable=True),
                                MetaColumn('from_date', String(8), nullable=False),
                                MetaColumn('to_date', String(8), nullable=True),
                                MetaColumn('rec_status', String(2), nullable=False),

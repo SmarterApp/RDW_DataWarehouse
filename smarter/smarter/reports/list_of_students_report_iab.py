@@ -19,6 +19,7 @@ from smarter.reports.student_administration import get_asmt_administration_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from smarter.reports.helpers.assessments import get_claims
 import collections
+from sqlalchemy.sql.functions import func
 
 
 def get_list_of_students_report_iab(params):
@@ -106,8 +107,10 @@ def get_list_of_students_iab(params):
                                      dim_asmt.c.asmt_claim_perf_lvl_name_1.label('asmt_claim_perf_lvl_name_1'),
                                      dim_asmt.c.asmt_claim_perf_lvl_name_2.label('asmt_claim_perf_lvl_name_2'),
                                      dim_asmt.c.asmt_claim_perf_lvl_name_3.label('asmt_claim_perf_lvl_name_3'),
-                                     fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl')],
-                                    from_obj=[fact_block_asmt_outcome
+                                     fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                     func.coalesce(fact_block_asmt_outcome.c.ind_valid, True).label('valid'),
+                                     func.coalesce(fact_block_asmt_outcome.c.ind_complete, True).label('complete')],
+                                  from_obj=[fact_block_asmt_outcome
                                               .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_block_asmt_outcome.c.state_code == stateCode)
@@ -167,6 +170,8 @@ def format_assessments_iab(results, subjects_map):
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
             student['group'] = set()  # for student group filter
+            student['valid'] = result['valid']
+            student['complete'] = result['complete']
 
         for i in range(1, 11):
             if result['group_{count}_id'.format(count=i)] is not None:

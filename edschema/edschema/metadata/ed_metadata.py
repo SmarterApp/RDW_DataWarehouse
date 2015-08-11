@@ -407,7 +407,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('dmg_prg_504', Boolean, nullable=True),
                                  Column('dmg_sts_ecd', Boolean, nullable=True),
                                  Column('dmg_sts_mig', Boolean, nullable=True),
-                                 Column('confirm_code', String(50), nullable=False),
+                                 Column('confirm_code', String(50), nullable=True),
                                  Column('language_code', String(3), nullable=True),
                                  Column('eng_prof_lvl', String(20), nullable=True),
                                  Column('us_school_entry_date', String(10), nullable=True),

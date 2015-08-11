@@ -161,7 +161,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                    'guid_student', 'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last',
                                    'birthdate_student', 'sex_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
                                    'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_multi_race', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd',
-                                   'dmg_sts_mig', 'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date',
+                                   'dmg_sts_mig', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date',
                                    'lep_exit_date', 't3_program_type', 'prim_disability_type', 'created_date', 'guid_batch']
         expected_source_columns_with_tran_rule = ['substr("A".name_state, 1, 50)', 'substr("A".code_state, 1, 2)',
                                                   'substr("A".guid_district, 1, 40)', 'substr("A".name_district, 1, 60)', 'substr("A".guid_school, 1, 40)',
@@ -173,7 +173,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                                   'cast("A".dmg_eth_blk as bool)', 'cast("A".dmg_eth_pcf as bool)', 'cast("A".dmg_eth_wht as bool)',
                                                   'cast("A".dmg_multi_race as bool)', 'cast("A".dmg_prg_iep as bool)', 'cast("A".dmg_prg_lep as bool)',
                                                   'cast("A".dmg_prg_504 as bool)', 'cast("A".dmg_sts_ecd as bool)', 'cast("A".dmg_sts_mig as bool)',
-                                                  'substr("A".code_confirm, 1, 50)', 'substr("A".code_language, 1, 3)', 'substr("A".eng_prof_lvl, 1, 20)',
+                                                  'substr("A".code_language, 1, 3)', 'substr("A".eng_prof_lvl, 1, 20)',
                                                   'substr("A".us_school_entry_date, 1, 10)', 'substr("A".lep_entry_date, 1, 10)',
                                                   'substr("A".lep_exit_date, 1, 10)', 'substr("A".t3_program_type, 1, 27)',
                                                   'substr("A".prim_disability_type, 1, 3)', '"A".created_date',

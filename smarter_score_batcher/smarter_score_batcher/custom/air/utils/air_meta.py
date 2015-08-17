@@ -42,7 +42,7 @@ class AIRMeta(Meta):
         if asmt_type.upper() != AssessmentType.SUMMATIVE:
             asmt = self.subject_asmt_type.get(asmt_id.upper())
             asmt_type = asmt.get(ASMT_TYPE) if asmt is not None else None
-            self.testLabe = asmt.get(TEST_LABEL) if asmt is not None else None
+            self.testLabel = asmt.get(TEST_LABEL) if asmt is not None else None
             if not asmt_type or asmt_type is None:
                 '''
                 if no asmt_type found, then raise Exception
@@ -52,7 +52,7 @@ class AIRMeta(Meta):
 
     @property
     def test_label(self):
-        return self.testLabe
+        return self.testLabel
 
 
 class TSBAIRUnknownAsmtTypeException(TSBException):

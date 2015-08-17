@@ -438,10 +438,5 @@ def get_claims(metadata, opportunity):
 
 
 def get_claim1_mapping(opportunity):
-    # if no claims mapping found, we take the first non-Overall
-    # score element with measureLabel 'ScaleScore' and map to claim1
-    claims = opportunity.findall("./Score/[@measureLabel='ScaleScore']") or []
-    claims = [claim for claim in claims if claim.get('measureOf') != 'Overall']
-    if len(claims) != 1:
-        return None
-    return claims[0].get('measureOf')
+    # if no claims mapping found, we take the first Overall, this is most lieky IAB
+    return 'Overall'

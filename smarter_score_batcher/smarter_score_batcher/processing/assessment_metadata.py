@@ -240,6 +240,8 @@ def get_assessment_metadata_mapping(root):
     # attach claim1 information if it doesn't exist
     if not json_output.claim1_name:
         claim1_mapping = get_claim1_mapping(opportunity)
+        if not claim1_mapping or claim1_mapping is not None:
+            claim1_mapping = meta.test_label
         json_output.claim1_name = claim1_mapping
 
     mappings = [JSONMapping(ValueMeta(meta.asmt_id), json_output, 'asmt_guid'),

@@ -141,8 +141,8 @@ def get_list_of_students_fao(params):
                                      fact_asmt_outcome_vw.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
                                      fact_asmt_outcome_vw.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
                                      fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
-                                     func.coalesce(fact_asmt_outcome_vw.c.ind_valid, True).label('valid'),
-                                     func.coalesce(fact_asmt_outcome_vw.c.ind_complete, True).label('complete')],
+                                     fact_asmt_outcome_vw.c.asmt_status.label('asmt_status'),
+                                     func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
                                    from_obj=[fact_asmt_outcome_vw
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
@@ -238,7 +238,7 @@ def format_assessments_fao(results, subjects_map):
         student['state_code'] = result['state_code']
         student['demographic'] = get_student_demographic(result)
         student[Constants.ROWID] = result['student_id']
-        student['valid'] = result['valid']
+        student['asmt_status'] = result['asmt_status']
         student['complete'] = result['complete']
 
         subject = subjects_map[result['asmt_subject']]

@@ -4,7 +4,7 @@ Created on Jan 13, 2013
 @author: tosako
 '''
 from string import capwords
-from sqlalchemy.sql.expression import and_, case
+from sqlalchemy.sql.expression import and_
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from edapi.exceptions import NotFoundException
@@ -23,7 +23,6 @@ from smarter.reports.student_administration import get_asmt_administration_years
 from smarter.security.tenant import validate_user_tenant
 from smarter_common.security.constants import RolesConstants
 import logging
-from sqlalchemy.sql.elements import literal_column
 from sqlalchemy.sql.functions import func
 
 
@@ -125,8 +124,8 @@ def __prepare_query(connector, params):
                                 fact_asmt_outcome_vw.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
                                 fact_asmt_outcome_vw.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
                                 fact_asmt_outcome_vw.c.acc_streamline_mode.label('acc_streamline_mode'),
-                                func.coalesce(fact_asmt_outcome_vw.c.ind_valid, True).label('valid'),
-                                func.coalesce(fact_asmt_outcome_vw.c.ind_complete, True).label('complete')],
+                                fact_asmt_outcome_vw.c.asmt_status.label('asmt_status'),
+                                func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
                                 from_obj=[fact_asmt_outcome_vw
                                           .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
@@ -202,8 +201,8 @@ def __prepare_query_iab(connector, params):
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
-                                func.coalesce(fact_block_asmt_outcome.c.ind_valid, True).label('valid'),
-                                func.coalesce(fact_block_asmt_outcome.c.ind_complete, True).label('complete')],
+                                fact_block_asmt_outcome.c.asmt_status.label('asmt_status'),
+                                func.coalesce(fact_block_asmt_outcome.c.complete, True).label('complete')],
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)

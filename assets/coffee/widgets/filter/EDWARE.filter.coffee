@@ -135,7 +135,6 @@ define [
         filterArrow = this.filterArrow
         this.tagPanelWrapper.slideUp 'slow', ->
           filterArrow.hide()
-          edwareGrid.adjustHeight()
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()

@@ -11,6 +11,10 @@ import os
 from edcore.database.utils.constants import AssessmentType
 
 
+ASMT_TYPE = 'asmt_type'
+TEST_LABEL = 'test_label'
+
+
 def _init_asmt_id_asmt_type():
     '''
     to be efficient use hashmap to lookup asmt_type by subject
@@ -22,9 +26,9 @@ def _init_asmt_id_asmt_type():
     with open(path) as f:
         json_subject_asmt_type = json.load(f)
         for asmt_type in json_subject_asmt_type.keys():
-            subjects = json_subject_asmt_type[asmt_type]
-            for subject in subjects:
-                subject_asmt_type[subject.upper()] = asmt_type
+            testIds = json_subject_asmt_type[asmt_type]
+            for testId, testLabel in testIds.items():
+                subject_asmt_type[testId.upper()] = {ASMT_TYPE: asmt_type, TEST_LABEL: testLabel}
     return subject_asmt_type
 
 
@@ -36,13 +40,19 @@ class AIRMeta(Meta):
 
     def __init__(self, valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id):
         if asmt_type.upper() != AssessmentType.SUMMATIVE:
-            asmt_type = self.subject_asmt_type.get(asmt_id.upper())
+            asmt = self.subject_asmt_type.get(asmt_id.upper())
+            asmt_type = asmt.get(ASMT_TYPE) if asmt is not None else None
+            self.testLabe = asmt.get(TEST_LABEL) if asmt is not None else None
             if not asmt_type or asmt_type is None:
                 '''
                 if no asmt_type found, then raise Exception
                 '''
                 raise TSBAIRUnknownAsmtTypeException('No asmt_type for asmt_id[' + asmt_id + ']')
         super().__init__(valid_meta, student_id, state_code, district_id, academic_year, asmt_type, subject, grade, effective_date, asmt_id)
+
+    @property
+    def test_label(self):
+        return self.testLabe
 
 
 class TSBAIRUnknownAsmtTypeException(TSBException):

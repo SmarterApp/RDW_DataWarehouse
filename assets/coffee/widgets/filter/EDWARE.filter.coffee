@@ -128,7 +128,8 @@ define [
          self.cancel self
 
     closeFilter: (callback) ->
-      this.filterPanel.slideUp 'slow'
+      this.filterPanel.slideUp 'slow', ->
+        edwareGrid.adjustHeight()
       $(this.filterTrigger).removeClass('active')
       $('a', this.filterTrigger).focus()
       noTags = $(this.tagPanel).is(':empty')
@@ -136,9 +137,6 @@ define [
         filterArrow = this.filterArrow
         this.tagPanelWrapper.slideUp 'slow', ->
           filterArrow.hide()
-          setTimeout(->
-            edwareGrid.adjustHeight()
-          , 2000)
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()

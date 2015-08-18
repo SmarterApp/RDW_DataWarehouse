@@ -123,6 +123,7 @@ define [
          filterPanel.slideDown 'slow'
          # highlight trigger
          $(this.filterTrigger).addClass('active')
+         edwareGrid.adjustHeight()
       else
          self.cancel self
 
@@ -135,6 +136,9 @@ define [
         filterArrow = this.filterArrow
         this.tagPanelWrapper.slideUp 'slow', ->
           filterArrow.hide()
+          setTimeout(->
+            edwareGrid.adjustHeight()
+          , 2000)
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()

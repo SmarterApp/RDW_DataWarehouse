@@ -172,29 +172,31 @@ def load_fact_asmt_outcome(datasource_name=''):
         # Look through metadata and upload available imports with the same and and ext csv
         # use transaction.
         # if importing is okay. then commit the transaction; otherwise, roll back
-        with connection.get_transaction() as _:
-            connection.execute("INSERT INTO " +
-                               "    " + fao + " " +
-                               ("(SELECT " if metadata.schema is not None else "SELECT ") +
-                               "     asmt_outcome_vw_rec_id, asmt_rec_id, student_rec_id, inst_hier_rec_id, " +
-                               "     asmt_guid, student_id, state_code, district_id, school_id, " +
-                               "     where_taken_id, where_taken_name, asmt_grade, enrl_grade, " +
-                               "     date_taken, date_taken_day, " +
-                               "     date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, " +
-                               "     asmt_score_range_max, asmt_perf_lvl, asmt_claim_1_score, " +
-                               "     asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, " +
-                               "     asmt_claim_1_perf_lvl, asmt_claim_2_score, asmt_claim_2_score_range_min, " +
-                               "     asmt_claim_2_score_range_max, asmt_claim_2_perf_lvl, asmt_claim_3_score, " +
-                               "     asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, " +
-                               "     asmt_claim_3_perf_lvl, asmt_claim_4_score, asmt_claim_4_score_range_min, " +
-                               "     asmt_claim_4_score_range_max, asmt_claim_4_perf_lvl, acc_asl_video_embed, " +
-                               "     acc_noise_buffer_nonembed, acc_print_on_demand_items_nonembed, acc_braile_embed, acc_closed_captioning_embed, " +
-                               "     acc_text_to_speech_embed, acc_abacus_nonembed, " +
-                               "     acc_alternate_response_options_nonembed, acc_calculator_nonembed, " +
-                               "     acc_multiplication_table_nonembed, acc_print_on_demand_nonembed, " +
-                               "     acc_read_aloud_nonembed, acc_scribe_nonembed, acc_speech_to_text_nonembed, " +
-                               "     acc_streamline_mode, from_date, to_date, rec_status, batch_guid " +
-                               " FROM " +
-                               "     " + fao_vw + " " +
-                               (")" if metadata.schema is not None else ""))
+        #=======================================================================
+        # with connection.get_transaction() as _:
+        #     connection.execute("INSERT INTO " +
+        #                        "    " + fao + " " +
+        #                        ("(SELECT " if metadata.schema is not None else "SELECT ") +
+        #                        "     asmt_outcome_vw_rec_id, asmt_rec_id, student_rec_id, inst_hier_rec_id, " +
+        #                        "     asmt_guid, student_id, state_code, district_id, school_id, " +
+        #                        "     where_taken_id, where_taken_name, asmt_grade, enrl_grade, " +
+        #                        "     date_taken, date_taken_day, " +
+        #                        "     date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, " +
+        #                        "     asmt_score_range_max, asmt_perf_lvl, asmt_claim_1_score, " +
+        #                        "     asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, " +
+        #                        "     asmt_claim_1_perf_lvl, asmt_claim_2_score, asmt_claim_2_score_range_min, " +
+        #                        "     asmt_claim_2_score_range_max, asmt_claim_2_perf_lvl, asmt_claim_3_score, " +
+        #                        "     asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, " +
+        #                        "     asmt_claim_3_perf_lvl, asmt_claim_4_score, asmt_claim_4_score_range_min, " +
+        #                        "     asmt_claim_4_score_range_max, asmt_claim_4_perf_lvl, acc_asl_video_embed, " +
+        #                        "     acc_noise_buffer_nonembed, acc_print_on_demand_items_nonembed, acc_braile_embed, acc_closed_captioning_embed, " +
+        #                        "     acc_text_to_speech_embed, acc_abacus_nonembed, " +
+        #                        "     acc_alternate_response_options_nonembed, acc_calculator_nonembed, " +
+        #                        "     acc_multiplication_table_nonembed, acc_print_on_demand_nonembed, " +
+        #                        "     acc_read_aloud_nonembed, acc_scribe_nonembed, acc_speech_to_text_nonembed, " +
+        #                        "     acc_streamline_mode, from_date, to_date, rec_status, batch_guid " +
+        #                        " FROM " +
+        #                        "     " + fao_vw + " " +
+        #                        (")" if metadata.schema is not None else ""))
+        #=======================================================================
     return __success

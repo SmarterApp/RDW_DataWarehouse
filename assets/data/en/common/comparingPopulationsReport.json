@@ -21,6 +21,8 @@
     "proficiencyAscending": "(achievement: <b>least</b> to <b>most</b>)",
     "proficiencyDescending": "(achievement: <b>most</b> to <b>least</b>)",
     "subjectTemplate": "<a class='inherit' href='#' data-export-name='{{#perfLevel}}{{subject}} Level {{.}} Count, {{subject}} Level {{.}} Percentage, {{/perfLevel}}'><b>{{subject}}</b></a>",
+    "quickLinksSchoolRollupBound": 9,
+    "quickLinksDistrictRollupBound": 9,
     "searchPlaceholder" : {
         "state": {
             "text": "Enter district",

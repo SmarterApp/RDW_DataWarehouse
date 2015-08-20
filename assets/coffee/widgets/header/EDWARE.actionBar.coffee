@@ -13,12 +13,13 @@ define [
   "edwareConstants"
   "edwareUtil"
   "edwareYearDropdown"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareUtil, edwareYearDropdown) ->
+  "edwareQuickLinks"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareUtil, edwareYearDropdown, edwareQuickLinks) ->
 
   class ReportActionBar
 
     constructor: (@container, @config, asmt_type) ->
-      @asmtType = {asmt_type: asmt_type} if asmt_type isnt `undefined`
+      @asmtType = {asmt_type: asmt_type} if asmt_type isnt 'undefined'
       @initialize()
       @bindEvents()
 
@@ -30,8 +31,12 @@ define [
       @legend ?= @createLegend()
       @printer ?= @createPrint()
       years = edwareUtil.getAcademicYears @config.academicYears?.options
+      @createQuickLinks()
       @createAcademicYear(years)
       @createAsmtDropdown(years)
+
+    createQuickLinks: () ->
+      $('#quickLinks').createEdwareQuickLinks()
 
     createDetailSelection: () ->
       asmt = edwarePreferences.getAsmtPreference()

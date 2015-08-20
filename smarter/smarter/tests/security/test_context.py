@@ -11,7 +11,7 @@ from pyramid.testing import DummyRequest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.security.context import check_context, select_with_context,\
-    get_current_context
+    get_current_context, get_user_context_for_role
 
 # Import the roles below so test can run as a standalone
 from edauth.tests.test_helper.create_session import create_test_session
@@ -154,6 +154,11 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertTrue(context['src_extracts']['all'])
         self.assertFalse(context['item_extracts']['all'])
         self.assertTrue(context['audit_xml_extracts']['all'])
+
+    def test_get_user_context_for_role(self):
+        context = get_user_context_for_role(get_unittest_tenant_name(), RolesConstants.PII, {'stateCode': 'NC'})
+        self.assertEqual(context[0]['params']['districtId'], '228')
+        self.assertEqual(sorted(context[0]['params']['guid']), ['242', '245'])
 
     def test_consortium_level(self):
         dummy_session = create_test_session([RolesConstants.PII])

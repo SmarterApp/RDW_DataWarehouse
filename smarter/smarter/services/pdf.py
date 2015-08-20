@@ -86,7 +86,9 @@ PDF_PARAMS = {
         Constants.ASMTTYPE: {
             "type": "string",
             "required": False,
-            "pattern": "^(" + AssessmentType.INTERIM_ASSESSMENT_BLOCKS + "|" + AssessmentType.SUMMATIVE + "|" + AssessmentType.INTERIM_COMPREHENSIVE + ")$",
+            "pattern": "^(" + AssessmentType.INTERIM_ASSESSMENT_BLOCKS + "|" +
+                    AssessmentType.SUMMATIVE + "|" +
+                    AssessmentType.INTERIM_COMPREHENSIVE + ")$",
         },
         Constants.ASMTYEAR: {
             "type": "integer",

@@ -27,11 +27,14 @@ define [
       loadingData = this.fetchData params
       loadingData.done((data) ->
         self.dataRows = self.processData(data.quick_links)
+        districts = self.dataRows.districts
+        schools = self.dataRows.schools
         output = Mustache.to_html quickLinksTemplate,
-            districtRows: self.dataRows.districts
-            isDistricts: self.dataRows.districts.length > 0
-            schoolRows: self.dataRows.schools
-            isSchools: self.dataRows.schools.length > 0
+            districtRows: districts
+            isDistricts: districts.length > 0
+            schoolRows: schools
+            isSchools: schools.length > 0
+        self.container.show() if districts.length > 0 or schools.length > 0
         self.container.html(output)
         self.setDefaultOptions()
         self.bindEvents()

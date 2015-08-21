@@ -268,6 +268,8 @@ def get_assessment_mapping(root, metadata):
     asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
     academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
     effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
+    completed = extract_meta_without_fallback_helper(root, "./Opportunity", "completed")
+    standardized = extract_meta_without_fallback_helper(root, "./Opportunity", "standardized")
     meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
     meta = meta_class(True, '', '', '', academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     stateCode = XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")

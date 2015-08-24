@@ -142,8 +142,8 @@ ref_table_conf = {
         ('1', 'lz_csv', 'AccommodationSpeechToText', 'stg_sbac_asmt_outcome', 'AccommodationSpeechToText', 'clean', None),
         ('1', 'lz_csv', 'AccommodationStreamlineMode', 'stg_sbac_asmt_outcome', 'AccommodationStreamlineMode', 'clean', None),
         ('1', 'lz_csv', 'AccommodationNoiseBuffer', 'stg_sbac_asmt_outcome', 'AccommodationNoiseBuffer', 'clean', None),
-        ('1', 'lz_csv', 'assessmentstatus', 'stg_sbac_asmt_outcome', 'assessmentstatus', 'clean', None),
-        ('1', 'lz_csv', 'completestatus', 'stg_sbac_asmt_outcome', 'completestatus', 'clean', None),
+        ('1', 'lz_csv', 'AssessmentStatus', 'stg_sbac_asmt_outcome', 'AssessmentStatus', 'clean', None),
+        ('1', 'lz_csv', 'CompleteStatus', 'stg_sbac_asmt_outcome', 'CompleteStatus', 'clean', None),
         ('1', 'lz_csv', 'Op', 'stg_sbac_asmt_outcome', 'op', 'option', None),
         # Staging to Integration
         ('3', 'stg_sbac_asmt_outcome', 'record_sid', 'int_sbac_asmt_outcome', 'record_sid', None, None),
@@ -254,8 +254,8 @@ ref_table_conf = {
         ('3', 'stg_sbac_asmt_outcome', 'AccommodationSpeechToText', 'int_sbac_asmt_outcome', 'acc_speech_to_text_nonembed', None, "to_number({src_column}, '99999')"),
         ('3', 'stg_sbac_asmt_outcome', 'AccommodationStreamlineMode', 'int_sbac_asmt_outcome', 'acc_streamline_mode', None, "to_number({src_column}, '99999')"),
         ('3', 'stg_sbac_asmt_outcome', 'AccommodationNoiseBuffer', 'int_sbac_asmt_outcome', 'acc_noise_buffer_nonembed', None, "to_number({src_column}, '99999')"),
-        ('3', 'stg_sbac_asmt_outcome', 'assessmentstatus', 'int_sbac_asmt_outcome', 'asmt_status', 'clean', "coalesce({src_column}, 'OK')"),
-        ('3', 'stg_sbac_asmt_outcome', 'completestatus', 'int_sbac_asmt_outcome', 'complete', 'clean', "coalesce({src_column}, 'True')"),
+        ('3', 'stg_sbac_asmt_outcome', 'AssessmentStatus', 'int_sbac_asmt_outcome', 'asmt_status', None, "coalesce({src_column}, 'OK')"),
+        ('3', 'stg_sbac_asmt_outcome', 'CompleteStatus', 'int_sbac_asmt_outcome', 'complete', None, "coalesce(cast({src_column} as bool), 'True')"),
         
         # Integration to Target
         ('4', 'int_sbac_asmt', 'record_sid', 'dim_asmt', 'asmt_rec_id', None, None),

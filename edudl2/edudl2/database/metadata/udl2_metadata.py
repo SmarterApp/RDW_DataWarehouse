@@ -191,7 +191,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('accommodationnoisebuffer', String(256), nullable=True),
                                   Column('guid_batch', String(256), nullable=False),
                                   Column('assessmentstatus', String(2), nullable=True),
-                                  Column('completestatus', Boolean, nullable=True),
+                                  Column('completestatus', String(4), nullable=True),
                                   )
 
     err_list = Table('err_list', metadata,
@@ -342,7 +342,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
                                   Column('guid_batch', String(36), CheckConstraint("guid_batch != ''"), nullable=False),
                                   Column('asmt_status', String(2), nullable=False, server_default='OK'),
-                                  Column('complete', String(2), nullable=False, server_default=sqlalchemy.sql.expression.false()),
+                                  Column('complete', Boolean, nullable=False, server_default=sqlalchemy.sql.expression.false()),
                                   )
 
     int_sbac_stu_reg = Table('int_sbac_stu_reg', metadata,

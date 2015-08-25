@@ -142,7 +142,7 @@ ref_table_conf = {
         ('1', 'lz_csv', 'AccommodationSpeechToText', 'stg_sbac_asmt_outcome', 'AccommodationSpeechToText', 'clean', None),
         ('1', 'lz_csv', 'AccommodationStreamlineMode', 'stg_sbac_asmt_outcome', 'AccommodationStreamlineMode', 'clean', None),
         ('1', 'lz_csv', 'AccommodationNoiseBuffer', 'stg_sbac_asmt_outcome', 'AccommodationNoiseBuffer', 'clean', None),
-        ('1', 'lz_csv', 'AssessmentStatus', 'stg_sbac_asmt_outcome', 'AssessmentStatus', 'clean', None),
+        ('1', 'lz_csv', 'AssessmentStatus', 'stg_sbac_asmt_outcome', 'AssessmentStatus', 'asmtStatus', None),
         ('1', 'lz_csv', 'CompleteStatus', 'stg_sbac_asmt_outcome', 'CompleteStatus', 'clean', None),
         ('1', 'lz_csv', 'Op', 'stg_sbac_asmt_outcome', 'op', 'option', None),
         # Staging to Integration

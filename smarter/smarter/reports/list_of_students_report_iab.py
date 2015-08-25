@@ -169,8 +169,6 @@ def format_assessments_iab(results, subjects_map):
             student['demographic'] = get_student_demographic(result)
             student[Constants.ROWID] = result['student_id']
             student['group'] = set()  # for student group filter
-            student['asmt_status'] = result['asmt_status']
-            student['complete'] = result['complete']
 
         for i in range(1, 11):
             if result['group_{count}_id'.format(count=i)] is not None:
@@ -178,6 +176,8 @@ def format_assessments_iab(results, subjects_map):
 
         assessment = {Constants.DATE_TAKEN: date_taken}
         assessment['asmt_grade'] = result['asmt_grade']
+        assessment['asmt_status'] = result['asmt_status']
+        assessment['complete'] = result['complete']
         claims = assessment.get('claims', [])
         claim = get_claims(number_of_claims=1, result=result, include_scores=False, include_names=True)[0]
         claims.append(claim)

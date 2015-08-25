@@ -238,8 +238,6 @@ def format_assessments_fao(results, subjects_map):
         student['state_code'] = result['state_code']
         student['demographic'] = get_student_demographic(result)
         student[Constants.ROWID] = result['student_id']
-        student['asmt_status'] = result['asmt_status']
-        student['complete'] = result['complete']
 
         subject = subjects_map[result['asmt_subject']]
         assessment = student.get(subject, {})
@@ -255,6 +253,10 @@ def format_assessments_fao(results, subjects_map):
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
+        
+        assessment['asmt_status'] = result['asmt_status']
+        assessment['complete'] = result['complete']
+        
         student[subject] = assessment
         studentDataByDate[dateTaken] = student
         asmtList.append(studentDataByDate)

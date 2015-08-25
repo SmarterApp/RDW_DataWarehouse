@@ -46,35 +46,35 @@
   </Examinee>
   <Opportunity server="562299-SBASQL8" database="CASBAC_SHARD_2013sp" clientName="California" key="71A3EE01-F215-4CCD-B74D-DF1097A01A0C" oppId="1855629"
   	startDate="2014-04-14T10:49:08.437" status="completed" opportunity="1" statusDate="2014-04-14T11:13:40.900" dateCompleted="2014-04-14T11:13:40.900" pauseCount="0" itemCount="6" ftCount="6" abnormalStarts="0"
-  	gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1"
+  	gracePeriodRestarts="0" taId="NA" taName="Ringnell, Brandi" sessionId="BLUE-5752-4" windowId="California" windowOpportunity="1" completed="False" standardized="IN"
   	assessmentParticipantSessionPlatformUserAgent="Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405" effectiveDate="2014-03-04">
     <Segment id="(SBAC)SBAC-FT-SomeDescriptionS1-ELA-7-Fall-2013-2014" position="1" formKey="200-10545" formId="SBAC-FT-Perf-7-Math-SomeDesc-2" algorithm="fixedform" algorithmVersion="1"/>
-    <Accommodation type="AmericanSignLanguage" value="Do not show ASL videos" code="TDS_ASL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD_Stim&amp;TDS_PoD_Item" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="ClosedCaptioning" value="CC1" code="TDS_ClosedCap0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Language" value="Braille" code="ENU-Braille" segment="0" context="INITIAL"  contextDate="2014-04-14T11:13:41.803"/>
-    <Accommodation type="StreamlinedInterface" value="Standard Test Shell" code="TDS_TS_Modern" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="TextToSpeech" value="None" code="TDS_TTS0" segment="0" context="FINAL"  contextDate="2014-04-14T11:13:41.803"/>
-    <Accommodation type="NonEmbeddedAccommodations" value="None" code="NEA_Abacus" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="NonEmbeddedAccommodations" value="None" code="NEA_AR" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="NonEmbeddedAccommodations" value="None" code="NEA_RA_Stimuli" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="ColorChoices" value="Black on White" code="TDS_CC0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Strikethrough" value="True" code="TDS_ST1" segment="2" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="System Volume Control" value="Show widget" code="TDS_SVC1" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Audio Playback Controls" value="Play Stop and Pause" code="TDS_APC_PSP" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810"/>
-    <Accommodation type="Calculator" value="Scientific" code="TDS_CalcSciInv" segment="0" context="INITIAL"  contextDate="2014-04-14T11:13:41.803"/>
-    <Accommodation type="Color Choices" value="Black on White" code="TDS_CC0" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810"/>
-    <Accommodation type="Expandable Passages" value="Expandable Passages On" code="TDS_ExpandablePassages1" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810"/>
-    <Accommodation type="Passage Font Size" value="14pt" code="TDS_F_S14" segment="0" context="INITIAL" contextDate="2014-04-14T11:13:41.810"/>
-    <Accommodation type="Language" value="Braille" code="ENU-Braille" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810"/>
-    <Accommodation type="Non-Embedded Designated Supports" value="None" code="NEDS0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Audio Playback Controls" value="Play Stop and Pause" code="TDS_APC_PSP" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Tutorial" value="True" code="TDS_T1" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Test Progress Indicator" value="Show indicator as a fraction and adjust to test length" code="TDS_TPI_ResponsesFix" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="TTS Pausing" value="TTS Pausing On" code="TDS_TTSPause1" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="TTX Business Rules" value="A203" code="TDS_TTX_A203" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
-    <Accommodation type="Word List" value="No Glossary" code="TDS_WL0" segment="0" context="FINAL" contextDate="2014-04-14T11:13:41.810" />
+    <Accommodation type="AmericanSignLanguage" value="Do not show ASL videos" code="TDS_ASL0" segment="0" />
+    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD0" segment="0" />
+    <Accommodation type="PrintOnDemand" value="None" code="TDS_PoD_Stim&amp;TDS_PoD_Item" segment="0" />
+    <Accommodation type="ClosedCaptioning" value="CC1" code="TDS_ClosedCap0" segment="0" />
+    <Accommodation type="Language" value="Braille" code="ENU-Braille" segment="0" />
+    <Accommodation type="StreamlinedInterface" value="Standard Test Shell" code="TDS_TS_Modern" segment="0" />
+    <Accommodation type="TextToSpeech" value="None" code="TDS_TTS0" segment="0" />
+    <Accommodation type="NonEmbeddedAccommodations" value="None" code="NEA_Abacus" segment="0" />
+    <Accommodation type="NonEmbeddedAccommodations" value="None" code="NEA_AR" segment="0" />
+    <Accommodation type="NonEmbeddedAccommodations" value="None" code="NEA_RA_Stimuli" segment="0" />
+    <Accommodation type="ColorChoices" value="Black on White" code="TDS_CC0" segment="0" />
+    <Accommodation type="Strikethrough" value="True" code="TDS_ST1" segment="2" />
+    <Accommodation type="System Volume Control" value="Show widget" code="TDS_SVC1" segment="0" />
+    <Accommodation type="Audio Playback Controls" value="Play Stop and Pause" code="TDS_APC_PSP" segment="0" />
+    <Accommodation type="Calculator" value="Scientific" code="TDS_CalcSciInv" segment="0" />
+    <Accommodation type="Color Choices" value="Black on White" code="TDS_CC0" segment="0" />
+    <Accommodation type="Expandable Passages" value="Expandable Passages On" code="TDS_ExpandablePassages1" segment="0" />
+    <Accommodation type="Passage Font Size" value="14pt" code="TDS_F_S14" segment="0" />
+    <Accommodation type="Language" value="Braille" code="ENU-Braille" segment="0" />
+    <Accommodation type="Non-Embedded Designated Supports" value="None" code="NEDS0" segment="0" />
+    <Accommodation type="Audio Playback Controls" value="Play Stop and Pause" code="TDS_APC_PSP" segment="0" />
+    <Accommodation type="Tutorial" value="True" code="TDS_T1" segment="0" />
+    <Accommodation type="Test Progress Indicator" value="Show indicator as a fraction and adjust to test length" code="TDS_TPI_ResponsesFix" segment="0" />
+    <Accommodation type="TTS Pausing" value="TTS Pausing On" code="TDS_TTSPause1" segment="0" />
+    <Accommodation type="TTX Business Rules" value="A203" code="TDS_TTX_A203" segment="0" />
+    <Accommodation type="Word List" value="No Glossary" code="TDS_WL0" segment="0" />
     <Score measureOf="Overall" measureLabel="ScaleScore" value="245.174914080214" standardError="19.3617008392283" />
     <Score measureOf="Overall" measureLabel="PerformanceLevel" value="2" />
     <Score measureOf="Claim1Reading" measureLabel="ScaleScore" value="352.897" standardError="619.751" />
@@ -184,13 +184,19 @@
         &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/p&gt;
       </Response>
       <ScoreInfo scorePoint="4" scoreDimension="overall" scoreStatus="Scored">
-        <ScoreRationale>Some information here about the score</ScoreRationale>
+          <ScoreRationale>
+              <Message>
+                  Some information here about the score
+              </Message>
+            </ScoreRationale>
         <SubScoreList>
       	<ScoreInfo scorePoint="2" scoreDimension="Conventions" scoreStatus="Scored">
         	<SubScoreList />
       	</ScoreInfo>
       	<ScoreInfo scorePoint="1" scoreDimension="Purpose" scoreStatus="Scored">
-        	<ScoreRationale>Possibly some information here about this dimension score</ScoreRationale>
+            <ScoreRationale>
+                <Message>Possibly some information here about this dimension score</Message>
+            </ScoreRationale>
         	<SubScoreList />
       	</ScoreInfo>
       	<ScoreInfo scorePoint="1" scoreDimension="Evidence" scoreStatus="Scored">
@@ -202,7 +208,9 @@
     <Item position="9" segmentId="(SBAC)SBAC-FT-SomeDescriptionS2-ELA-7-Fall-2013-2014" bankKey="200" key="4609" operational="1" isSelected="1" format="MS" score="0" scoreStatus="SCORED" adminDate="2014-04-24T12:27:26.203" numberVisits="1" mimeType="text/plain" strand="SC-ES" contentLevel="SC-ES|4.I|1|d" pageNumber="3" pageVisits="1" pageTime="0" dropped="0">
       <Response date="2014-04-24T12:32:46.377">A,B,C,F</Response>
       <ScoreInfo scorePoint="0" scoreDimension="overall" scoreStatus="Scored">
-        <ScoreRationale>A,F</ScoreRationale>
+          <ScoreRationale>
+              <Message>A,F</Message>
+          </ScoreRationale>
         <SubScoreList />
       </ScoreInfo>
     </Item>

@@ -21,6 +21,8 @@
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
     "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",
     "subjectTemplate": "<a class='inherit' href='#' data-export-name='{{#perfLevel}}{{subject}} Nivel {{.}} Conteo, {{subject}} Nivel {{.}} Porcentaje, {{/perfLevel}}'><b>{{subject}}</b></a>",
+    "quickLinksSchoolRollupBound": 9,
+    "quickLinksDistrictRollupBound": 9,
     "searchPlaceholder" : {
         "state": {
             "text": "Ingresar el distrito",

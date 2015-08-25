@@ -21,6 +21,8 @@
     "proficiencyAscending": "(achievement: <b>kém nhất</b> to <b>cao nhất</b>)",
     "proficiencyDescending": "(achievement: <b>cao nhất</b> to <b>kém nhất</b>)",
     "subjectTemplate": "<a class='inherit' href='#' data-export-name='{{#perfLevel}}{{subject}} Cấp {{.}} Đếm, {{subject}} Cấp {{.}} Tỷ lệ phần trăm, {{/perfLevel}}'><b>{{subject}}</b></a>",
+    "quickLinksSchoolRollupBound": 9,
+    "quickLinksDistrictRollupBound": 9,
     "searchPlaceholder" : {
         "state": {
             "text": "Nhập học khu",

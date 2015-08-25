@@ -82,6 +82,10 @@ class Meta:
     def valid_meta(self):
         return self.__valid_meta
 
+    @property
+    def test_label(self):
+        return None
+
 
 def extract_meta_names(raw_xml_string):
     '''

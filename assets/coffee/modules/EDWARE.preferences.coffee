@@ -114,6 +114,27 @@ define [
     delete pref[column]
     savePreferences {"expandedColumns": pref}
 
+  getQuickLinksState = () ->
+    pref = getPreferences() || {}
+    pref["quickLinks"]
+
+  saveQuickLinksState = (state) ->
+    savePreferences { "quickLinks" : state }, false
+
+  getQuickLinksSchoolBound = () ->
+    pref = getPreferences() || {}
+    pref["quickLinksSchoolBound"]
+
+  saveQuickLinksSchoolBound = (quickLinksSchoolBound) ->
+    savePreferences {"quickLinksSchoolBound": quickLinksSchoolBound}
+
+  getQuickLinksDistrictBound = () ->
+    pref = getPreferences() || {}
+    pref["quickLinksDistrictBound"]
+
+  saveQuickLinksDistrictBound = (quickLinksDistrictBound) ->
+    savePreferences {"quickLinksDistrictBound": quickLinksDistrictBound}
+
   # Returns storage based whether long term is set to true
   getStorage = (isLongTerm) ->
     isLongTerm = if typeof isLongTerm isnt "undefined" then isLongTerm else false
@@ -154,3 +175,9 @@ define [
   saveExpandedColumns: saveExpandedColumns
   removeExpandedColumns: removeExpandedColumns
   isExpandedColumn: isExpandedColumn
+  saveQuickLinksState: saveQuickLinksState
+  getQuickLinksState: getQuickLinksState
+  saveQuickLinksSchoolBound:saveQuickLinksSchoolBound
+  getQuickLinksSchoolBound:getQuickLinksSchoolBound
+  saveQuickLinksDistrictBound:saveQuickLinksDistrictBound
+  getQuickLinksDistrictBound:getQuickLinksDistrictBound

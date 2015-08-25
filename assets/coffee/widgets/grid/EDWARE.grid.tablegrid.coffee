@@ -285,17 +285,17 @@ define [
 
   adjustHeight = () ->
     # adjust grid height based on visible region
-    $("#gview_gridTable > .ui-jqgrid-bdiv").css {
+    el = $("#gview_gridTable > .ui-jqgrid-bdiv")
+    el.css {
       'min-height': 100
-      'max-height': calculateHeight()
+      'max-height': calculateHeight(el)
     }
 
-  calculateHeight = () ->
+  calculateHeight = (el) ->
+    topOffset = el.offset()
     height = 0
-    for component in COMPONENTS_SELECTORS
-      $component = $(component)
-      height += $component.height() if $component.is(':visible')
-    window.innerHeight - height
+    height = window.innerHeight - topOffset.top if topOffset
+    height
 
   beforePrint = () ->
     $('#gridTable').eagerLoad()

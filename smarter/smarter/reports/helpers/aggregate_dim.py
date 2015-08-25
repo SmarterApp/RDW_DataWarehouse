@@ -13,7 +13,7 @@ from copy import deepcopy
 CACHE_REGION_PUBLIC_SHORTLIVED = 'public.shortlived'
 
 
-def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subjects={}):
+def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subjects={}, **args):
     records = {}
     for subject_key in subjects.keys():
         subject = subjects[subject_key]

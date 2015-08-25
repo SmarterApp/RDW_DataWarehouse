@@ -123,11 +123,13 @@ define [
          filterPanel.slideDown 'slow'
          # highlight trigger
          $(this.filterTrigger).addClass('active')
+         edwareGrid.adjustHeight()
       else
          self.cancel self
 
     closeFilter: (callback) ->
-      this.filterPanel.slideUp 'slow'
+      this.filterPanel.slideUp 'slow', ->
+        edwareGrid.adjustHeight()
       $(this.filterTrigger).removeClass('active')
       $('a', this.filterTrigger).focus()
       noTags = $(this.tagPanel).is(':empty')
@@ -135,7 +137,6 @@ define [
         filterArrow = this.filterArrow
         this.tagPanelWrapper.slideUp 'slow', ->
           filterArrow.hide()
-          edwareGrid.adjustHeight()
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()
@@ -185,7 +186,7 @@ define [
         paramName = $(this).data('name')
         paramValues = []
         $(this).find('input:checked').each () ->
-          paramValues.push String($(this).data('value'))
+          paramValues.push String(this.value)
         params[paramName] = paramValues if paramValues.length > 0
       params
 

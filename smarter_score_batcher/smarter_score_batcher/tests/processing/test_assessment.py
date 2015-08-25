@@ -189,10 +189,10 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(claims[3].evaluate(), '0')
         # all claims should be empty except claim1
         # claim1
-        self.assertEqual(claims[4].evaluate(), '403.416')
-        self.assertEqual(claims[5].evaluate(), '199')
-        self.assertEqual(claims[6].evaluate(), '607')
-        self.assertEqual(claims[7].evaluate(), '2')
+        self.assertEqual(claims[4].evaluate(), None)
+        self.assertEqual(claims[5].evaluate(), '0')
+        self.assertEqual(claims[6].evaluate(), '0')
+        self.assertEqual(claims[7].evaluate(), None)
         # claim2
         self.assertEqual(claims[8].evaluate(), None)
         self.assertEqual(claims[9].evaluate(), '0')
@@ -208,14 +208,6 @@ class TestCSVMetadata(unittest.TestCase):
         self.assertEqual(claims[17].evaluate(), '0')
         self.assertEqual(claims[18].evaluate(), '0')
         self.assertEqual(claims[19].evaluate(), None)
-
-    def test_iab_get_claims_exception(self):
-        data = read_data("assessment.xml")
-        opportunity = ET.fromstring(data).find("./Opportunity")
-        here = os.path.abspath(os.path.dirname(__file__))
-        static_metadata = os.path.join(here, '..', 'resources', 'meta', 'default', 'interim assessment blocks', 'MATH.default_asmt_metadata.json')
-        metadata = self.load_metadata(static_metadata)
-        self.assertRaises(MetadataException, get_claims, metadata, opportunity)
 
     def load_metadata(self, metadata_file_path):
         # read metadata and map Claim1, Claim2, Claim3, and Claim4

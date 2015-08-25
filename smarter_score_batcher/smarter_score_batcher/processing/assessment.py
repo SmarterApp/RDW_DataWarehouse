@@ -210,6 +210,8 @@ class AssessmentHeaders:
     AccommodationSpeechToText = 'AccommodationSpeechToText'
     AccommodationStreamlineMode = 'AccommodationStreamlineMode'
     AccommodationNoiseBuffer = 'AccommodationNoiseBuffer'
+    AssessmentStatus = 'AssessmentStatus'
+    CompletedStatus = 'CompletedStatus'
 
 
 class AssessmentData:
@@ -307,6 +309,8 @@ def get_assessment_mapping(root, metadata):
                                Mapping(ValueMeta(meta.academic_year), AssessmentHeaders.AssessmentYear),
                                Mapping(ValueMeta(meta.asmt_type), AssessmentHeaders.AssessmentType),
                                Mapping(ValueMeta(meta.subject), AssessmentHeaders.AssessmentAcademicSubject),
+                               Mapping(ValueMeta(completed), AssessmentHeaders.AssessmentStatus),
+                               Mapping(ValueMeta(standardized), AssessmentHeaders.CompletedStatus),
                                Mapping(ValueMeta(meta.grade), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()

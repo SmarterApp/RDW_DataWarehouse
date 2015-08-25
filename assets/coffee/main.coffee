@@ -63,6 +63,7 @@ require {
 
     # widgets
     edwareYearDropdown: 'widgets/academicYear/EDWARE.yearDropdown',
+    edwareQuickLinks: 'widgets/quickLinks/EDWARE.quickLinks',
 
     # templates
     edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
@@ -103,6 +104,7 @@ require {
     YearDropdownTemplate: 'widgets/academicYear/template.html',
     SearchBoxTemplate: 'widgets/search/SearchBoxTemplate.html',
     SearchResultTemplate: 'widgets/search/SearchResultTemplate.html',
+    quickLinksTemplate: 'widgets/quickLinks/template.html',
   },
   shim: {
     'jqGrid': {

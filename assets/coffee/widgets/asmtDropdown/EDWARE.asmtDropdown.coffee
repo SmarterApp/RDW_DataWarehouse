@@ -51,7 +51,7 @@ define [
 
     # Ascending by date taken
     sortBy: (a, b) ->
-      return if a.date_taken <= b.date_taken then 1 else -1
+      return if a.date_taken < b.date_taken then 1 else if a.date_taken > b.date_taken then -1 else 0
 
     getAsmtTypes: () ->
       reportName = this.config.reportName

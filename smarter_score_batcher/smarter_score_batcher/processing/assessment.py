@@ -210,6 +210,8 @@ class AssessmentHeaders:
     AccommodationSpeechToText = 'AccommodationSpeechToText'
     AccommodationStreamlineMode = 'AccommodationStreamlineMode'
     AccommodationNoiseBuffer = 'AccommodationNoiseBuffer'
+    AssessmentStatus = 'AssessmentStatus'
+    CompletedStatus = 'CompletedStatus'
 
 
 class AssessmentData:
@@ -268,6 +270,8 @@ def get_assessment_mapping(root, metadata):
     asmt_id = extract_meta_without_fallback_helper(root, "./Test", "testId")
     academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
     effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
+    completeStatus = extract_meta_without_fallback_helper(root, "./Opportunity", "completeStatus")
+    validStatus = extract_meta_without_fallback_helper(root, "./Opportunity", "validStatus")
     meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
     meta = meta_class(True, '', '', '', academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     stateCode = XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")
@@ -305,6 +309,8 @@ def get_assessment_mapping(root, metadata):
                                Mapping(ValueMeta(meta.academic_year), AssessmentHeaders.AssessmentYear),
                                Mapping(ValueMeta(meta.asmt_type), AssessmentHeaders.AssessmentType),
                                Mapping(ValueMeta(meta.subject), AssessmentHeaders.AssessmentAcademicSubject),
+                               Mapping(ValueMeta(validStatus), AssessmentHeaders.AssessmentStatus),
+                               Mapping(ValueMeta(completeStatus), AssessmentHeaders.CompletedStatus),
                                Mapping(ValueMeta(meta.grade), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()
@@ -438,10 +444,5 @@ def get_claims(metadata, opportunity):
 
 
 def get_claim1_mapping(opportunity):
-    # if no claims mapping found, we take the first non-Overall
-    # score element with measureLabel 'ScaleScore' and map to claim1
-    claims = opportunity.findall("./Score/[@measureLabel='ScaleScore']") or []
-    claims = [claim for claim in claims if claim.get('measureOf') != 'Overall']
-    if len(claims) != 1:
-        return None
-    return claims[0].get('measureOf')
+    # if no claims mapping found, we take the first Overall, this is most lieky IAB
+    return 'Overall'

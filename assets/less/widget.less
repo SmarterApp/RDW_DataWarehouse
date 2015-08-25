@@ -1960,7 +1960,7 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
                             }
 
     .dropdown-menu::before {
-      position: absolute;;
+      position: absolute;
       top: -10px;
       left: 30px;
       border-bottom-color: rgba(0, 0, 0, 0.2);
@@ -2256,6 +2256,163 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
     cursor: not-allowed;
   }
 }
+
+/* Quick links */
+#quickLinks {
+  background-color: @color-B22;
+  position: relative;
+
+  /* Open btn */
+  #quickLinks_open {
+    cursor: pointer;
+    color: @color-A4;
+    margin-right: 20px;
+  }
+
+  /* Close btn */
+  #quickLinks_close {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    padding: 4px 8px 8px;
+    margin: 4px 10px 0 0;
+    font-size: 22px;
+
+    &:hover {
+      background-color: @color-B24;
+      color: @color-C16;
+    }
+  }
+
+  /* List wrapper */
+  div {
+    /*    
+    &.more { display: block; }
+    &.less { display: none; }
+    */
+
+    &.more,
+    &.less {
+      transition: opacity 0.5s;
+    }
+
+    &.more {
+      opacity: 1;
+      height: 20px;
+      overflow: inherit;
+    }
+
+    &.less {
+      opacity: 0;
+      height: 1px;
+      overflow: hidden;
+    }
+  }
+
+  /* Wrappers */
+  #quickLinks_data,
+  #quickLinks_link {
+      transition: opacity 0.5s;
+      overflow: hidden;
+
+      &.open {
+        opacity: 1;
+        height: 100%;
+      }
+
+      &.close {
+        opacity: 0;
+        height: 0;
+      }
+
+      & > div {
+        border-bottom: solid 1px @color-C19;
+        box-shadow: 0 1px 0 @color-white;
+        padding: 6px 0;
+      }
+  }
+
+  /* List labels */
+  h4 {
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 38px;
+    text-indent: 12px;
+  }
+
+  /* Line arrow icon */
+  .lineArrow.right {
+    width: 8px;
+    height: 8px;
+    border-top:  2px solid @color-C9;
+    border-right: 2px solid @color-C9;
+    transform: rotate(54deg) skew(20deg);
+    position: relative;
+    right: 34px;
+    top: 14px;
+  }
+
+  /* Lists */
+  ul { margin: 2px 0 0 0; }
+
+  /* List items */
+  .quickLink {
+    background-color: @color-white;
+    background-image: none;
+    border: 0;
+    box-shadow: 0 1px 1px @color-B3;
+    border-radius: 3px;
+    color: @color-B2;
+    width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: auto 10px 4px auto;
+
+    &:hover {
+      color: @color-A2;
+      background-color: #e8f6fb;
+    }
+  }
+
+  /* More/less */
+  .quickLinks_expand {
+    cursor: pointer;
+    color: @color-A2;
+    font-size: 12px;
+    margin: -7px 38px 0 0;
+    display: flex;
+    align-items: flex-end;
+    line-height: 1;
+    float: right;
+
+    .more,
+    .less {
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+
+    .more {
+      border-width: 10px 6px 0 6px;
+      border-color: @color-A2 transparent transparent transparent;
+      margin: 0 0 -1px 4px;
+    }
+
+    .less {
+      border-width: 0px 6px 10px 6px;
+      border-color: transparent transparent @color-A2 transparent;
+      margin: 0 0 2px 4px;
+    }
+  }
+
+  /* Adjust for X sign */
+  #quickLinks_expand_districts_1,
+  #quickLinks_expand_schools_1 {
+    margin: 0;
+  }
+}
+
 
 #infoBar {
 

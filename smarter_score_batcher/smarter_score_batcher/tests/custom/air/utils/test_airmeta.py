@@ -11,11 +11,11 @@ from smarter_score_batcher.custom.air.utils.air_meta import AIRMeta,\
 class Test(unittest.TestCase):
 
     def testAirMeta(self):
-        airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'summative', 'subject', 'grade', 'effective_date', 'SBAC-ICA-FIXED-G3E-ELA-3')
+        airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'summative', 'subject', 'grade', 'effective_date', 'SBAC-ICA-FIXED-G3E-COMBINED')
         self.assertEqual("SUMMATIVE", airMeta.asmt_type)
-        airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'interim', 'subject', 'grade', 'effective_date', 'SBAC-ICA-FIXED-G3E-ELA-3')
+        airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'interim', 'subject', 'grade', 'effective_date', 'SBAC-ICA-FIXED-G3E-COMBINED')
         self.assertEqual("INTERIM COMPREHENSIVE", airMeta.asmt_type)
-        airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'interim', 'subject', 'grade', 'effective_date', 'sbac-ICA-FIXED-G3E-ELA-3')
+        airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'interim', 'subject', 'grade', 'effective_date', 'SBAC-ICA-FIXED-G3E-COMBINED')
         self.assertEqual("INTERIM COMPREHENSIVE", airMeta.asmt_type)
         airMeta = AIRMeta(True, 'student_id', 'state_code', 'district_id', 'academic_year', 'interim', 'subject', 'grade', 'effective_date', 'SBAC-IAB-FIXED-G11E-ListenInterpet-ELA-11')
         self.assertEqual("INTERIM ASSESSMENT BLOCKS", airMeta.asmt_type)

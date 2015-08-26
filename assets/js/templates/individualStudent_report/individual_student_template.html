@@ -77,6 +77,16 @@
                 {{/claims}}
             </div>
         </div>
+        {{^current.0.complete}}
+        <div class="partialTestWarning">
+            <div class="content">
+                <div class="edware-icon-partial">&#x25D2;</div>
+                <div class="partial-warning-text">
+                    <strong>Partial Test.</strong> The student did not answer all questions on this test and all unanswered questions have been reported as incorrect.
+                </div>
+            </div>
+        </div>
+        {{/current.0.complete}}
         {{#accommodations}}
         <div class="accommodationSection clearfix">
             <div class="content">

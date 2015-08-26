@@ -480,6 +480,8 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', "'99991231'", 'fact_asmt_outcome', 'to_date', None, None),
         ('4', 'int_sbac_asmt_outcome', 'op', 'fact_asmt_outcome', 'rec_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_batch', 'fact_asmt_outcome', 'batch_guid', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome', 'asmt_status', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'complete', 'fact_asmt_outcome', 'complete', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome_vw', 'asmt_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'complete', 'fact_asmt_outcome_vw', 'complete', None, None),
         # Interim Assessment Blocks

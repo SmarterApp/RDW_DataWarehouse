@@ -191,7 +191,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('accommodationnoisebuffer', String(256), nullable=True),
                                   Column('guid_batch', String(256), nullable=False),
                                   Column('assessmentstatus', String(2), nullable=True),
-                                  Column('completestatus', String(4), nullable=True),
+                                  Column('completestatus', String(5), nullable=True),
                                   )
 
     err_list = Table('err_list', metadata,

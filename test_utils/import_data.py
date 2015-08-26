@@ -52,8 +52,9 @@ def update_state(tenant, state_code, state_name):
         dim_inst_hier = connection.get_table("dim_inst_hier")
         fact_asmt = connection.get_table("fact_asmt_outcome")
         fact_asmt_vw = connection.get_table("fact_asmt_outcome_vw")
+        fact_block_asmt_outcome = connection.get_table("fact_block_asmt_outcome")
         fact_student_reg = connection.get_table("student_reg")
-        tables = [dim_inst_hier, fact_asmt, fact_asmt_vw, fact_student_reg]
+        tables = [dim_inst_hier, fact_asmt, fact_asmt_vw, fact_student_reg, fact_block_asmt_outcome]
         for table in tables:
             stmt = update(table).values(state_code=state_code)
             connection.execute(stmt)
@@ -73,8 +74,15 @@ def update_aca_year(tenant):
                                                                                      fact_asmt.c.date_taken_day: '6',
                                                                                      fact_asmt.c.date_taken_month: '1',
                                                                                      fact_asmt.c.date_taken_year: '2015'})
+        fact_block_asmt = connection.get_table("fact_block_asmt_outcome")
+        fact_block_query = update(fact_block_asmt).where(fact_block_asmt.c.asmt_year == '2016').values({fact_block_asmt.c.asmt_year: '2015',
+                                                                                     fact_block_asmt.c.date_taken: '20150106',
+                                                                                     fact_block_asmt.c.date_taken_day: '6',
+                                                                                     fact_block_asmt.c.date_taken_month: '1',
+                                                                                     fact_block_asmt.c.date_taken_year: '2015'})
         connection.execute(dim_query)
         connection.execute(fact_query)
+        connection.execute(fact_block_query)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Import csv')

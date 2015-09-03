@@ -11,6 +11,7 @@ define [
   'text!edwareFormatterPerformanceBarTemplate'
   'text!edwareFormatterPopulationBarTemplate'
   'text!edwareFormatterSummaryTemplate'
+  'text!edwareFormatterStatusTemplate'
   'text!edwareFormatterTextTemplate'
   'text!edwareFormatterTooltipTemplate'
   'text!edwareFormatterTotalPopulationTemplate'
@@ -18,9 +19,11 @@ define [
   'edwareContextSecurity'
   'edwareConstants'
   'edwareUtil'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants, edwareUtil) ->
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterStatusTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants, edwareUtil) ->
 
   SUMMARY_TEMPLATE = edwareFormatterSummaryTemplate
+
+  STATUS_TEMPLATE = edwareFormatterStatusTemplate
 
   POPULATION_BAR_TEMPLATE = edwareFormatterPopulationBarTemplate
 
@@ -53,6 +56,13 @@ define [
   showTooltip = (options, displayValue) ->
     (rowId, val, rawObject, cm, rdata) ->
       'title="' + displayValue + '"'
+
+  showStatus = (value, options, rowObject) ->
+    return Mustache.to_html STATUS_TEMPLATE, {
+        cssClass: options.colModel.formatoptions.style
+        subTitle: rowObject.subtitle
+        value: value
+    }
 
   showlink = (value, options, rowObject) ->
     exportable = options.colModel.export #check if export current field
@@ -304,6 +314,7 @@ define [
 
   showlink: showlink
   showText: showText
+  showStatus: showStatus
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   showPerfLevel: showPerfLevel

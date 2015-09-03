@@ -34,6 +34,7 @@ from email import encoders
 STUDENT_ID = 'student_id'
 ASMT_GUID = 'asmt_guid'
 INGESTED_RECORDS = 'ingested_records'
+DATE_TAKEN = 'date_taken'
 
 DAILY = 'daily'
 WEEKLY = 'weekly'
@@ -112,7 +113,7 @@ def create_email_content(summary):
 
 def export_to_csv(file_path, report_data):
     with open(file_path, 'w') as f:
-        fieldnames = [STUDENT_ID, ASMT_GUID]
+        fieldnames = [STUDENT_ID, ASMT_GUID, DATE_TAKEN]
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         writer.writeheader()
         writer.writerows(report_data)
@@ -135,7 +136,7 @@ def create_report_data(start_date, end_date=None):
                 '''
                 remove any duplicated records
                 '''
-                report_data[record[STUDENT_ID] + record[ASMT_GUID]] = {STUDENT_ID: record[STUDENT_ID], ASMT_GUID: record[ASMT_GUID]}
+                report_data[record[STUDENT_ID] + record[ASMT_GUID] + record[DATE_TAKEN]] = {STUDENT_ID: record[STUDENT_ID], ASMT_GUID: record[ASMT_GUID], DATE_TAKEN: record[DATE_TAKEN]}
             file_name = get_intput_file(batch_guid)
             m = re.search('(\d+-\d+-\d+)', file_name)
             if m:
@@ -158,8 +159,8 @@ def get_udl_record_by_batch_guid(batch_guid, tenant):
     with get_prod_connection(tenant=tenant) as connection:
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
         fact_block_asmt_outcome = connection.get_table('fact_block_asmt_outcome')
-        select_fao = select([fact_asmt_outcome.c.student_id.label(STUDENT_ID), fact_asmt_outcome.c.asmt_guid.label(ASMT_GUID)]).where(and_(fact_asmt_outcome.c.batch_guid == batch_guid, fact_asmt_outcome.c.rec_status == 'C'))
-        select_fbao = select([fact_block_asmt_outcome.c.student_id.label(STUDENT_ID), fact_block_asmt_outcome.c.asmt_guid.label(ASMT_GUID)]).where(and_(fact_block_asmt_outcome.c.batch_guid == batch_guid, fact_block_asmt_outcome.c.rec_status == 'C'))
+        select_fao = select([fact_asmt_outcome.c.student_id.label(STUDENT_ID), fact_asmt_outcome.c.asmt_guid.label(ASMT_GUID), fact_asmt_outcome.c.date_taken.label(DATE_TAKEN)]).where(and_(fact_asmt_outcome.c.batch_guid == batch_guid, fact_asmt_outcome.c.rec_status == 'C'))
+        select_fbao = select([fact_block_asmt_outcome.c.student_id.label(STUDENT_ID), fact_block_asmt_outcome.c.asmt_guid.label(ASMT_GUID), fact_block_asmt_outcome.c.date_taken.label(DATE_TAKEN)]).where(and_(fact_block_asmt_outcome.c.batch_guid == batch_guid, fact_block_asmt_outcome.c.rec_status == 'C'))
         records = connection.get_result(select_fao.union(select_fbao))
     return records
 

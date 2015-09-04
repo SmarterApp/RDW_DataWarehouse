@@ -467,6 +467,7 @@ class QueryHelper():
             .where(and_(self._fact_asmt_outcome_vw.c.state_code == self._state_code,
                         self._fact_asmt_outcome_vw.c.asmt_type == self._asmt_type,
                         self._fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT,
+                        self._fact_asmt_outcome_vw.c.asmt_status == Constants.ASMT_STATUS_OK,
                         self._fact_asmt_outcome_vw.c.asmt_year == self._asmt_year))\
             .group_by(self._fact_asmt_outcome_vw.c.asmt_subject,
                       self._fact_asmt_outcome_vw.c.inst_hier_rec_id,

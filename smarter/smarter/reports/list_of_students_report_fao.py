@@ -6,7 +6,7 @@ Created on Oct 21, 2014
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, select, desc
+from sqlalchemy.sql.expression import and_, desc
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
 from smarter.reports.helpers.assessments import get_claims, get_cut_points, \
@@ -22,6 +22,7 @@ from smarter.reports.student_administration import get_asmt_administration_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from smarter_common.security.constants import RolesConstants
 from string import capwords
+from sqlalchemy.sql.functions import func
 
 
 def get_list_of_students_report_fao(params):
@@ -139,8 +140,10 @@ def get_list_of_students_fao(params):
                                      fact_asmt_outcome_vw.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
                                      fact_asmt_outcome_vw.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
                                      fact_asmt_outcome_vw.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
-                                     fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
-                                    from_obj=[fact_asmt_outcome_vw
+                                     fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
+                                     fact_asmt_outcome_vw.c.asmt_status.label('asmt_status'),
+                                     func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
+                                   from_obj=[fact_asmt_outcome_vw
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
@@ -250,6 +253,10 @@ def format_assessments_fao(results, subjects_map):
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
+        
+        assessment['asmt_status'] = result['asmt_status']
+        assessment['complete'] = result['complete']
+        
         student[subject] = assessment
         studentDataByDate[dateTaken] = student
         asmtList.append(studentDataByDate)

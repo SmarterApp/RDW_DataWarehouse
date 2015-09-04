@@ -141,7 +141,9 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome_vw.c.acc_read_aloud_nonembed.label(fact_asmt_outcome_vw_label.get('acc_read_aloud_nonembed', 'acc_read_aloud_nonembed')),
                                     fact_asmt_outcome_vw.c.acc_scribe_nonembed.label(fact_asmt_outcome_vw_label.get('acc_scribe_nonembed', 'acc_scribe_nonembed')),
                                     fact_asmt_outcome_vw.c.acc_speech_to_text_nonembed.label(fact_asmt_outcome_vw_label.get('acc_speech_to_text_nonembed', 'acc_speech_to_text_nonembed')),
-                                    fact_asmt_outcome_vw.c.acc_streamline_mode.label(fact_asmt_outcome_vw_label.get('acc_streamline_mode', 'acc_streamline_mode'))],
+                                    fact_asmt_outcome_vw.c.acc_streamline_mode.label(fact_asmt_outcome_vw_label.get('acc_streamline_mode', 'acc_streamline_mode')),
+                                    fact_asmt_outcome_vw.c.asmt_status.label(fact_asmt_outcome_vw_label.get('asmt_status', 'asmt_status')),
+                                    fact_asmt_outcome_vw.c.complete.label(fact_asmt_outcome_vw_label.get('complete', 'complete'))],
                                     from_obj=[fact_asmt_outcome_vw
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id,
@@ -283,7 +285,9 @@ def get_extract_assessment_query_iab(params):
                                     fact_block_asmt_outcome.c.acc_read_aloud_nonembed.label(fact_block_asmt_outcome_label.get('acc_read_aloud_nonembed', 'acc_read_aloud_nonembed')),
                                     fact_block_asmt_outcome.c.acc_scribe_nonembed.label(fact_block_asmt_outcome_label.get('acc_scribe_nonembed', 'acc_scribe_nonembed')),
                                     fact_block_asmt_outcome.c.acc_speech_to_text_nonembed.label(fact_block_asmt_outcome_label.get('acc_speech_to_text_nonembed', 'acc_speech_to_text_nonembed')),
-                                    fact_block_asmt_outcome.c.acc_streamline_mode.label(fact_block_asmt_outcome_label.get('acc_streamline_mode', 'acc_streamline_mode'))],
+                                    fact_block_asmt_outcome.c.acc_streamline_mode.label(fact_block_asmt_outcome_label.get('acc_streamline_mode', 'acc_streamline_mode')),
+                                    fact_block_asmt_outcome.c.asmt_status.label(fact_block_asmt_outcome_label.get('asmt_status', 'asmt_status')),
+                                    fact_block_asmt_outcome.c.complete.label(fact_block_asmt_outcome_label.get('complete', 'complete'))],
                                     from_obj=[fact_block_asmt_outcome
                                               .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id,

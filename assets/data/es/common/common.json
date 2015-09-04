@@ -500,6 +500,21 @@
                         "export": true
                     },
                     {
+                        "name": "Status",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "index": "subject1.complete",
+                        "field": "subject1.complete",
+                        "width": 80,
+                        "formatter": "showStatus",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "sortable": false,
+                        "align": "center",
+                        "title": false,
+                        "export": false
+                    },
+                    {
                         "name": "{{subject2}}",
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",

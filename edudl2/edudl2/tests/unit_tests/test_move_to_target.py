@@ -109,7 +109,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             all_records = helper.find_all()
             self.assertIsNotNone(all_records, "Find all should return some value")
             actual_rows = all_records.fetchall()
-            self.assertEqual(len(actual_rows), 896, "Find all should return all records")
+            self.assertEqual(len(actual_rows), 900, "Find all should return all records")
 
     def test_handle_record_upsert_find_by_natural_key(self):
         table_name = 'dim_student'

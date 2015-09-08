@@ -57,11 +57,14 @@ define [
     (rowId, val, rawObject, cm, rdata) ->
       'title="' + displayValue + '"'
 
-  showStatus = (value, options, rowObject) ->
+  showStatus = (complete, options, rowObject) ->
+    subjectName = options['colModel']['formatoptions']['asmt_type']
+    subjectAssmt = rowObject[subjectName]
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
-        value: value
+        complete: complete
+        valid: subjectAssmt['asmt_status'] == "OK"
     }
 
   showlink = (value, options, rowObject) ->

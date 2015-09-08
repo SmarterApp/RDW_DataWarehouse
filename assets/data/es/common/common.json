@@ -530,9 +530,23 @@
                         "export": true
                     },
                     {
+                        "name": "Status",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "field": "subject2.complete",
+                        "width": 80,
+                        "formatter": "showStatus",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "sortable": false,
+                        "align": "center",
+                        "title": false,
+                        "export": false
+                    },
+                    {
                         "name": "",
                         "displayTpl": "",
-                        "width": 190,
+                        "width": 30,
                         "title": false,
                         "export": false,
                         "sortable": false

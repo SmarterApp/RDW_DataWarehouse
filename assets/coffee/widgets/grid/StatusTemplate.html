@@ -1,3 +1,8 @@
 <div>
-    <span>{{value}}</span>
+    {{^complete}}
+    <div class="edware-icon-partial">&#x25D2;</div>
+    {{/complete}}
+    {{^valid}}
+    <i class="icon-ban-circle"></i>
+    {{/valid}}
 </div>

@@ -1,8 +1,11 @@
 <div>
     {{^complete}}
-    <div class="edware-icon-partial">&#x25D2;</div>
+    <span class="edware-icon-partial">&#x25D2;</span>
     {{/complete}}
+    {{#valid}}
+    <span class="edware-icon-standardized">&#x24E2;</span>
+    {{/valid}}
     {{^valid}}
-    <i class="icon-ban-circle"></i>
+    <span class="edware-icon-invalid">&#x20E0;</span>
     {{/valid}}
 </div>

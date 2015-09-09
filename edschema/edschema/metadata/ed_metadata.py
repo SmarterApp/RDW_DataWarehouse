@@ -232,10 +232,10 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   MetaColumn('to_date', String(8), nullable=True),
                                   MetaColumn('rec_status', String(1), nullable=False),
                                   MetaColumn('batch_guid', String(36), nullable=False),
-                                  Column('asmt_status', String(2), nullable=False),
+                                  Column('administration_condition', String(2), nullable=True),
                                   )
 
-    Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_guid, assessment_outcome_vw.c.date_taken, assessment_outcome_vw.c.asmt_status, unique=False)
+    Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_guid, assessment_outcome_vw.c.date_taken, assessment_outcome_vw.c.administration_condition, unique=False)
     Index('fact_asmt_outcome_vw_asmt_subj_typ_idx', assessment_outcome_vw.c.student_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_type, unique=False)
     # Filtering related indices
     Index('fact_asmt_outcome_vw_grade_idx', assessment_outcome_vw.c.asmt_grade, unique=False)
@@ -246,8 +246,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_vw_mig_idx', assessment_outcome_vw.c.dmg_sts_mig, unique=False)
     Index('fact_asmt_outcome_vw_iep_idx', assessment_outcome_vw.c.dmg_prg_iep, unique=False)
     Index('fact_asmt_outcome_vw_sex_idx', assessment_outcome_vw.c.sex, unique=False)
-    Index('fact_asmt_outcome_vw_cpop_stateview_idx', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, assessment_outcome_vw.c.district_id, assessment_outcome_vw.c.asmt_grade, assessment_outcome_vw.c.asmt_status, unique=False)
-    Index('fact_asmt_outcome_vw_cpop_not_stated_count_idx', assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.district_id, assessment_outcome_vw.c.school_id, assessment_outcome_vw.c.dmg_prg_iep, assessment_outcome_vw.c.dmg_prg_504, assessment_outcome_vw.c.dmg_prg_lep, assessment_outcome_vw.c.dmg_sts_mig, assessment_outcome_vw.c.asmt_grade, assessment_outcome_vw.c.dmg_eth_derived, assessment_outcome_vw.c.sex, assessment_outcome_vw.c.asmt_status, unique=False)
+    Index('fact_asmt_outcome_vw_cpop_stateview_idx', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, assessment_outcome_vw.c.district_id, assessment_outcome_vw.c.asmt_grade, assessment_outcome_vw.c.administration_condition, unique=False)
+    Index('fact_asmt_outcome_vw_cpop_not_stated_count_idx', assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.district_id, assessment_outcome_vw.c.school_id, assessment_outcome_vw.c.dmg_prg_iep, assessment_outcome_vw.c.dmg_prg_504, assessment_outcome_vw.c.dmg_prg_lep, assessment_outcome_vw.c.dmg_sts_mig, assessment_outcome_vw.c.asmt_grade, assessment_outcome_vw.c.dmg_eth_derived, assessment_outcome_vw.c.sex, assessment_outcome_vw.c.administration_condition, unique=False)
 
     assessment_block_outcome = Table('fact_block_asmt_outcome', metadata,
                                      Column('asmt_outcome_rec_id', BigInteger, primary_key=True),
@@ -308,7 +308,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                      MetaColumn('to_date', String(8), nullable=True),
                                      MetaColumn('rec_status', String(1), nullable=False),
                                      MetaColumn('batch_guid', String(36), nullable=False),
-                                     Column('asmt_status', String(2), nullable=False),
+                                     Column('administration_condition', String(2), nullable=True),
                                      )
 
     Index('fact_block_asmt_outcome_student_idx', assessment_block_outcome.c.student_id, assessment_block_outcome.c.asmt_guid, assessment_block_outcome.c.date_taken, unique=False)
@@ -372,7 +372,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                MetaColumn('to_date', String(8), nullable=True),
                                MetaColumn('rec_status', String(2), nullable=False),
                                MetaColumn('batch_guid', String(36), nullable=False),
-                               Column('asmt_status', String(2), nullable=False),
+                               Column('administration_condition', String(2), nullable=True),
                                )
 
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_id, assessment_outcome.c.asmt_guid, assessment_outcome.c.date_taken, unique=False)

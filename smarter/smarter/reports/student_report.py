@@ -124,7 +124,7 @@ def __prepare_query(connector, params):
                                 fact_asmt_outcome_vw.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
                                 fact_asmt_outcome_vw.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
                                 fact_asmt_outcome_vw.c.acc_streamline_mode.label('acc_streamline_mode'),
-                                fact_asmt_outcome_vw.c.asmt_status.label('asmt_status'),
+                                fact_asmt_outcome_vw.c.administration_condition.label('administration_condition'),
                                 func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
                                 from_obj=[fact_asmt_outcome_vw
                                           .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
@@ -201,7 +201,7 @@ def __prepare_query_iab(connector, params):
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
-                                fact_block_asmt_outcome.c.asmt_status.label('asmt_status'),
+                                fact_block_asmt_outcome.c.administration_condition.label('administration_condition'),
                                 func.coalesce(fact_block_asmt_outcome.c.complete, True).label('complete')],
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))

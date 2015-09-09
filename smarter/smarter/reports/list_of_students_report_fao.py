@@ -141,7 +141,7 @@ def get_list_of_students_fao(params):
                                      fact_asmt_outcome_vw.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
                                      fact_asmt_outcome_vw.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
                                      fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
-                                     fact_asmt_outcome_vw.c.asmt_status.label('asmt_status'),
+                                     fact_asmt_outcome_vw.c.administration_condition.label('administration_condition'),
                                      func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
                                    from_obj=[fact_asmt_outcome_vw
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
@@ -254,7 +254,7 @@ def format_assessments_fao(results, subjects_map):
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
         
-        assessment['asmt_status'] = result['asmt_status']
+        assessment['administration_condition'] = result['administration_condition']
         assessment['complete'] = result['complete']
         
         student[subject] = assessment

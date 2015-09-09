@@ -107,7 +107,7 @@ def get_list_of_students_iab(params):
                                      dim_asmt.c.asmt_claim_perf_lvl_name_2.label('asmt_claim_perf_lvl_name_2'),
                                      dim_asmt.c.asmt_claim_perf_lvl_name_3.label('asmt_claim_perf_lvl_name_3'),
                                      fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
-                                     fact_block_asmt_outcome.c.asmt_status.label('asmt_status'),
+                                     fact_block_asmt_outcome.c.administration_condition.label('administration_condition'),
                                      func.coalesce(fact_block_asmt_outcome.c.complete, True).label('complete')],
                                   from_obj=[fact_block_asmt_outcome
                                               .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
@@ -176,7 +176,7 @@ def format_assessments_iab(results, subjects_map):
 
         assessment = {Constants.DATE_TAKEN: date_taken}
         assessment['asmt_grade'] = result['asmt_grade']
-        assessment['asmt_status'] = result['asmt_status']
+        assessment['administration_condition'] = result['administration_condition']
         assessment['complete'] = result['complete']
         claims = assessment.get('claims', [])
         claim = get_claims(number_of_claims=1, result=result, include_scores=False, include_names=True)[0]

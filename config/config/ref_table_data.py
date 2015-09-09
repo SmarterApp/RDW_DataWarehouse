@@ -424,6 +424,8 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', "'99991231'", 'fact_asmt_outcome_vw', 'to_date', None, None),
         ('4', 'int_sbac_asmt_outcome', 'op', 'fact_asmt_outcome_vw', 'rec_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_batch', 'fact_asmt_outcome_vw', 'batch_guid', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome_vw', 'asmt_status', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'complete', 'fact_asmt_outcome_vw', 'complete', None, None),
         ('4', 'int_sbac_asmt_outcome', 'record_sid', 'fact_asmt_outcome', 'asmt_outcome_rec_id', None, None),
         ('4', 'int_sbac_asmt_outcome', '-1', 'fact_asmt_outcome', 'asmt_rec_id', None, None),
         ('4', 'int_sbac_asmt_outcome', '-1', 'fact_asmt_outcome', 'student_rec_id', None, None),
@@ -480,8 +482,9 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', "'99991231'", 'fact_asmt_outcome', 'to_date', None, None),
         ('4', 'int_sbac_asmt_outcome', 'op', 'fact_asmt_outcome', 'rec_status', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_batch', 'fact_asmt_outcome', 'batch_guid', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome_vw', 'asmt_status', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'complete', 'fact_asmt_outcome_vw', 'complete', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'asmt_status', 'fact_asmt_outcome', 'asmt_status', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'complete', 'fact_asmt_outcome', 'complete', None, None),
+
         # Interim Assessment Blocks
         ('4', 'int_sbac_asmt_outcome', 'record_sid', 'fact_block_asmt_outcome', 'asmt_outcome_rec_id', None, None),
         ('4', 'int_sbac_asmt_outcome', '-1', 'fact_block_asmt_outcome', 'asmt_rec_id', None, None),

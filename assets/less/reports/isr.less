@@ -56,7 +56,7 @@ body.isr {
     } 
   }
 
-  .claimsSection, .accommodationSection, .partialTestWarning {
+  .claimsSection, .accommodationSection, .warning {
     padding: 0px 24px;
 
     h3 {
@@ -169,18 +169,25 @@ body.isr {
       }
     }
   }
-  .partialTestWarning {
+  .warning {
       margin-top: 10px;
       .content {
         background: #EAEAEA;
         padding: 10px;
       }
-      .edware-icon-partial {
+      .edware-icon-partial, .edware-icon-invalid, .edware-icon-standardized {
           color: #761C3A;
           font-size: 25px;
-          line-height: 25px;
+          line-height: 21px;
       }
-      .partial-warning-text {
+      .edware-icon-standardized {
+          font-weight: 800;
+          color: #376294;
+      }
+      .edware-icon-invalid {
+          line-height: 14px;
+      }
+      .text {
           font-size: 13px;
           line-height: 14px;
           color: black;

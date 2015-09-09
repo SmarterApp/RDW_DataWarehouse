@@ -113,7 +113,9 @@ define [
         assessment.score_bg_color = performance_level.bg_color
         assessment.score_name = @configData.labels.asmt.perf_lvl_name[assessment.asmt_perf_lvl]
 
-        assessment.complete = @configData.complete
+        #Remove this before it goes to prod
+        assessment.complete = false
+        assessment.valid = true
 
         # set level-based overall ald content
         overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject][this.configData.overall_ald_grade_buckets[assessment.asmt_grade]][assessment.asmt_perf_lvl], assessment)

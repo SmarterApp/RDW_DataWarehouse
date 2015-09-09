@@ -78,15 +78,38 @@
             </div>
         </div>
         {{^current.0.complete}}
-        <div class="partialTestWarning">
+        <div class="warning partial-test">
             <div class="content">
                 <div class="edware-icon-partial">&#x25D2;</div>
-                <div class="partial-warning-text">
+                <div class="text">
                     <strong>Partial Test.</strong> The student did not answer all questions on this test and all unanswered questions have been reported as incorrect.
                 </div>
             </div>
         </div>
         {{/current.0.complete}}
+        {{^current.0.valid}}
+        <div class="warning invalid-test">
+            <div class="content">
+                <div class='edware-icon-invalid'>&#x20E0;</div>
+                <div class="text">
+                    <strong>Invalid Test - </strong> The scores in this assessment should be used with caution as the tests were administered under conditions that resulted in a score that may not be accurate representation of the student's achievement.
+                    
+                </div>
+            </div>
+        </div>
+        {{/current.0.valid}}
+        {{#current.0.valid}}
+        <div class="warning standardized-text">
+            <div class="content">
+                <div class='edware-icon-standardized'>&#x24E2;</div>
+                <div class="text">
+                    <strong>Standard Test - </strong> Lorem Ipsum blach blach.
+                    
+
+                </div>
+            </div>
+        </div>
+        {{/current.0.valid}}
         {{#accommodations}}
         <div class="accommodationSection clearfix">
             <div class="content">

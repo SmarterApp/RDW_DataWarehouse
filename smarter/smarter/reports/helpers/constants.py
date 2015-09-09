@@ -19,7 +19,7 @@ class Constants():
     constants for reports
     '''
 
-    ASMT_STATUS_OK = 'OK'
+    ADMINISTRATION_CONDITION_OK = 'OK'
     EFFECTIVEDATE = 'effectiveDate'
     SL = 'sl'
     PDF = 'pdf'

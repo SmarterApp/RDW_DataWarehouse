@@ -308,7 +308,7 @@ define [
             trigger: "manual"
             container: '#content'
             placement: (tip, element) ->
-              edwareUtil.popupPlacement(element, 400, 220)
+              edwareUtil.popupPlacement(element, 400, 320)
             title: ->
               elem.parent().find(".losTooltip .js-popupTitle").html()
             template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'

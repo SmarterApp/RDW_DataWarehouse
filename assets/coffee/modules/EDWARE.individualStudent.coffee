@@ -449,7 +449,7 @@ define [
           container: "#content"
           trigger: "hover"
           placement: (tip, element) ->
-            edwareUtil.popupPlacement(element, 400, 276)
+            edwareUtil.popupPlacement(element, 400, 376)
           title: ->
             e = $(this)
             e.parent().parent().find(".header").find("h4").html()

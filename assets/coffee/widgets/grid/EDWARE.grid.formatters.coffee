@@ -59,12 +59,12 @@ define [
 
   showStatus = (complete, options, rowObject) ->
     subjectName = options['colModel']['formatoptions']['asmt_type']
-    subjectAssmt = rowObject[subjectName]
+    subjectAsmt = rowObject[subjectName]
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
         complete: complete
-        valid: subjectAssmt['asmt_status'] == "OK"
+        valid: subjectAsmt['asmt_status'] == "OK"
     }
 
   showlink = (value, options, rowObject) ->
@@ -221,6 +221,8 @@ define [
 
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject[subject_type]
+    complete = subject.complete
+    valid = if subject.asmt_status == "OK" then true else false
     score_ALD = getScoreALD(subject)
     asmt_subject_text = getSubjectText(subject)
     student_name = getStudentName()
@@ -233,6 +235,8 @@ define [
       labels: options.colModel.labels
       score_ALD: score_ALD
       asmt_perf_lvl: asmt_perf_lvl
+      complete: complete
+      valid: valid
       confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
       rowId: rowId
     }

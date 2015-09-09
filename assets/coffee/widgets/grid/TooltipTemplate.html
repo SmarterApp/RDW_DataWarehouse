@@ -1,6 +1,30 @@
 {{#subject}}
 <div class='losTooltip hide'>
     <div class='js-popupTitle hide'>{{student_name}} | {{asmt_subject_text}} {{labels.overall_score}}</div>
+    {{^complete}}
+    <div class='tooltip-message'>
+        <div class='edware-icon-partial'>&#x25D2;</div>
+        <div class='text'>
+            <strong>Partial Test - </strong> The student did not answer all questions on this test and all unanswered questions have been reported as incorrect.
+        </div>
+    </div>
+    {{/complete}}
+    {{#valid}}
+    <div class='tooltip-message'>
+        <div class='edware-icon-standardized'>&#x24E2;</div>
+        <div class='text'>
+            <strong>Standard Test - </strong> Lorem Ipsum blach blach.
+        </div>
+    </div>
+    {{/valid}}
+    {{^valid}}
+    <div class='tooltip-message'>
+        <div class='edware-icon-invalid'>&#x20E0;</div>
+        <div class='text'>
+            <strong>Invalid Test - </strong> The scores in this assessment should be used with caution as the tests were administered under conditions that resulted in a score that may not be accurate representation of the student's achievement.
+        </div>
+    </div>
+    {{/valid}}
     <div class='summary'>
         <div class='title left'>{{labels.overall_score}}</div>
         <div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'>

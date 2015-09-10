@@ -173,7 +173,7 @@ def format_assessments_iab(results, subjects_map):
             student['group'] = set()  # for student group filter
 
         for i in range(1, 11):
-            if result['group_{count}_id'.format(count=i)] is not None:
+            if result.get('group_{count}_id'.format(count=i)) is not None:
                 student['group'].add(result['group_{count}_id'.format(count=i)])
 
         assessment = {Constants.DATE_TAKEN: date_taken}

@@ -6,7 +6,7 @@ Created on Oct 21, 2014
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, desc
+from sqlalchemy.sql.expression import and_, desc, or_
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
 from smarter.reports.helpers.assessments import get_claims, get_cut_points, \
@@ -151,13 +151,17 @@ def get_list_of_students_fao(params):
         query = query.where(and_(fact_asmt_outcome_vw.c.district_id == districtId))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmtYear))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, params)
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmtGrade))
-
+        query = query.where(and_(or_(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE]), (or_(fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_INVALID,
+                                                                                                             fact_asmt_outcome_vw.c.administration_condition == None))),
+                                    and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])), (or_(fact_asmt_outcome_vw.c.administration_condition == None,
+                                                                                                                        fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
+                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED,
+                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_INVALID]))))))
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(desc(fact_asmt_outcome_vw.c.date_taken))
         return connector.get_result(query)
 
@@ -247,13 +251,11 @@ def format_assessments_fao(results, subjects_map):
                 assessment['group'].append(result['group_{count}_id'.format(count=i)])
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
-
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_score_range_min'] = result['asmt_score_range_min']
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
-        
         assessment['administration_condition'] = result['administration_condition']
         assessment['complete'] = result['complete']
         

@@ -320,7 +320,7 @@ define [
         'mouseleave focusout': ->
           elem = $(this)
           elem.popover("hide")
-      , ".asmtScore"
+      , ".asmtScore, .status-flags"
 
       # Show iab popover
       $document.on

@@ -40,6 +40,8 @@ define [
   PERFORMANCE_BAR_TEMPLATE = edwareFormatterPerformanceBarTemplate
 
   PERF_LEVEL_TEMPLATE = edwareFormatterPerfLevelTemplate
+  
+  self = @
 
   #
   # * EDWARE grid formatters
@@ -60,10 +62,12 @@ define [
   showStatus = (complete, options, rowObject) ->
     subjectName = options['colModel']['formatoptions']['asmt_type']
     subjectAsmt = rowObject[subjectName]
+    toolTip = getTooltip(rowObject, options)
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
         complete: complete
+        toolTip: toolTip
         valid: subjectAsmt['asmt_status'] == "OK"
     }
 
@@ -199,47 +203,55 @@ define [
       export: 'edwareExportColumn' if options.colModel.export
     }
 
-  performanceBar = (value, options, rowObject) ->
+  getScoreALD = (subject, perf_lvl_name) ->
+    return '' if not subject
+    if not subject.asmt_perf_lvl then "" else perf_lvl_name[subject.asmt_perf_lvl]
 
-    getScoreALD = (subject) ->
-      return '' if not subject
-      if not subject.asmt_perf_lvl then "" else options.colModel.labels.asmt.perf_lvl_name[subject.asmt_perf_lvl]
+  getStudentName = (rowObject) ->
+    name = rowObject.student_first_name if rowObject.student_first_name
+    name = name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
+    name = name + " " + rowObject.student_last_name if rowObject.student_last_name
+    name
 
-    getStudentName = () ->
-      name = rowObject.student_first_name if rowObject.student_first_name
-      name = name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
-      name = name + " " + rowObject.student_last_name if rowObject.student_last_name
-      name
+  getAsmtPerfLvl = (subject) ->
+    return '' if not subject
+    subject.asmt_perf_lvl || ''
 
-    getAsmtPerfLvl = (subject) ->
-      return '' if not subject
-      subject.asmt_perf_lvl || ''
+  getSubjectText = (subject) ->
+    return '' if not subject
+    Constants.SUBJECT_TEXT[subject.asmt_type]
 
-    getSubjectText = (subject) ->
-      return '' if not subject
-      Constants.SUBJECT_TEXT[subject.asmt_type]
-
+  getTooltip = (rowObject, options) ->
     subject_type = options.colModel.formatoptions.asmt_type
+    student_name = getStudentName(rowObject)
+    asmt_subject_text = getSubjectText(subject)
     subject = rowObject[subject_type]
+    score_ALD = getScoreALD(subject, options.colModel.labels.asmt)
+    asmt_perf_lvl = getAsmtPerfLvl(subject)
     complete = subject.complete
     valid = if subject.asmt_status == "OK" then true else false
-    score_ALD = getScoreALD(subject)
-    asmt_subject_text = getSubjectText(subject)
-    student_name = getStudentName()
-    asmt_perf_lvl = getAsmtPerfLvl(subject)
     rowId = rowObject.rowId + subject_type
-    toolTip = Mustache.to_html TOOLTIP_TEMPLATE, {
-      student_name: student_name
-      asmt_subject_text: asmt_subject_text
-      subject: subject
-      labels: options.colModel.labels
-      score_ALD: score_ALD
-      asmt_perf_lvl: asmt_perf_lvl
-      complete: complete
-      valid: valid
-      confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
-      rowId: rowId
+    Mustache.to_html TOOLTIP_TEMPLATE, {
+        student_name: student_name
+        asmt_subject_text: asmt_subject_text
+        subject: subject
+        labels: options.colModel.labels
+        score_ALD: score_ALD
+        asmt_perf_lvl: asmt_perf_lvl
+        complete: complete
+        valid: valid
+        confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
+        rowId: rowId
     }
+
+
+  performanceBar = (value, options, rowObject) ->
+    subject_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject[subject_type]
+    rowId = rowObject.rowId + subject_type
+    asmt_subject_text = getSubjectText(subject)
+
+    toolTip = getTooltip(rowObject, options)
     # hack to remove html tag in name
     columnName = removeHTMLTags(options.colModel.label)
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {

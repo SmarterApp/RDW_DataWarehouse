@@ -209,7 +209,7 @@
 						<xs:attribute name="windowId" use="required" />
 						<xs:attribute name="windowOpportunity" type="NullableUInt" />
 						<xs:attribute name="completeStatus" />
-						<xs:attribute name="validStatus" />
+						<xs:attribute name="administrationCondition" />
 						<xs:attribute name="dateForceCompleted" type="NullableDateTime" />
 						<xs:attribute name="qaLevel" />
             <!-- new field requested for open source -->

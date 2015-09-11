@@ -210,7 +210,7 @@ class AssessmentHeaders:
     AccommodationSpeechToText = 'AccommodationSpeechToText'
     AccommodationStreamlineMode = 'AccommodationStreamlineMode'
     AccommodationNoiseBuffer = 'AccommodationNoiseBuffer'
-    ValidStatus = 'ValidStatus'
+    AdministrationCondition = 'AdministrationCondition'
     CompletedStatus = 'CompletedStatus'
 
 
@@ -271,7 +271,7 @@ def get_assessment_mapping(root, metadata):
     academic_year = extract_meta_without_fallback_helper(root, "./Test", "academicYear")
     effective_date = extract_meta_without_fallback_helper(root, "./Opportunity", "dateCompleted")
     completeStatus = extract_meta_without_fallback_helper(root, "./Opportunity", "completeStatus")
-    validStatus = extract_meta_without_fallback_helper(root, "./Opportunity", "validStatus")
+    administrationCondition = extract_meta_without_fallback_helper(root, "./Opportunity", "administrationCondition")
     meta_class = load_class(conf.get('smarter_score_batcher.class.meta', 'smarter_score_batcher.utils.meta.Meta'))
     meta = meta_class(True, '', '', '', academic_year, asmt_type, subject, grade, effective_date, asmt_id)
     stateCode = XMLMeta(examinee, "./ExamineeRelationship/[@name='StateAbbreviation']", "value", "context")
@@ -309,7 +309,7 @@ def get_assessment_mapping(root, metadata):
                                Mapping(ValueMeta(meta.academic_year), AssessmentHeaders.AssessmentYear),
                                Mapping(ValueMeta(meta.asmt_type), AssessmentHeaders.AssessmentType),
                                Mapping(ValueMeta(meta.subject), AssessmentHeaders.AssessmentAcademicSubject),
-                               Mapping(ValueMeta(validStatus), AssessmentHeaders.ValidStatus),
+                               Mapping(ValueMeta(administrationCondition), AssessmentHeaders.AdministrationCondition),
                                Mapping(ValueMeta(completeStatus), AssessmentHeaders.CompletedStatus),
                                Mapping(ValueMeta(meta.grade), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)

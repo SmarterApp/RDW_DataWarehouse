@@ -63,12 +63,18 @@ define [
     subjectName = options['colModel']['formatoptions']['asmt_type']
     subjectAsmt = rowObject[subjectName]
     toolTip = getTooltip(rowObject, options)
+    subject = rowObject[subject_type]
+    standardized = if subject.administration_condition == "SD" \
+        or (subject.hasInterim and subject.administration_condition == "") \
+        then true else false
+    invalid = (subject.administration_condition == "IN")
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
         complete: complete
         toolTip: toolTip
-        valid: subjectAsmt['asmt_status'] == "OK"
+        invalid: invalid
+        standardized: standardized
     }
 
   showlink = (value, options, rowObject) ->
@@ -229,7 +235,10 @@ define [
     score_ALD = getScoreALD(subject, options.colModel.labels.asmt)
     asmt_perf_lvl = getAsmtPerfLvl(subject)
     complete = subject.complete
-    valid = if subject.asmt_status == "OK" then true else false
+    standardized = if subject.administration_condition == "SD" \
+        or (subject.hasInterim and subject.administration_condition == "") \
+        then true else false
+    invalid = (subject.administration_condition == "IN" || subject.administration_condition == "NS")
     rowId = rowObject.rowId + subject_type
     Mustache.to_html TOOLTIP_TEMPLATE, {
         student_name: student_name
@@ -239,7 +248,8 @@ define [
         score_ALD: score_ALD
         asmt_perf_lvl: asmt_perf_lvl
         complete: complete
-        valid: valid
+        standardized: standardized
+        invalid: invalid
         confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
         rowId: rowId
     }

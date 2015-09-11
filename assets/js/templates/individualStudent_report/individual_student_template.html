@@ -87,7 +87,7 @@
             </div>
         </div>
         {{/current.0.complete}}
-        {{^current.0.valid}}
+        {{#current.0.invalid}}
         <div class="warning invalid-test">
             <div class="content">
                 <div class='edware-icon-invalid'>&#x20E0;</div>
@@ -97,8 +97,8 @@
                 </div>
             </div>
         </div>
-        {{/current.0.valid}}
-        {{#current.0.valid}}
+        {{/current.0.invalid}}
+        {{#current.0.standardized}}
         <div class="warning standardized-text">
             <div class="content">
                 <div class='edware-icon-standardized'>&#x24E2;</div>
@@ -109,7 +109,7 @@
                 </div>
             </div>
         </div>
-        {{/current.0.valid}}
+        {{/current.0.standardized}}
         {{#accommodations}}
         <div class="accommodationSection clearfix">
             <div class="content">

@@ -113,9 +113,16 @@ define [
         assessment.score_bg_color = performance_level.bg_color
         assessment.score_name = @configData.labels.asmt.perf_lvl_name[assessment.asmt_perf_lvl]
 
-        #Remove this before it goes to prod
-        assessment.complete = false
-        assessment.valid = true
+        asmtType = assessment.asmt_type
+        if (typeof asmtType is 'string') and (asmtType.toUpperCase() in [Constants.ASMT_TYPE['INTERIM COMPREHENSIVE'].toUpperCase(), Constants.ASMT_TYPE['INTERIM ASSESSMENT BLOCKS'].toUpperCase()])
+            assessment.hasInterim = true
+        else
+            assessment.hasInterim = false
+        assessment.invalid = (assessment.administration_condition == "IN" || assessment.administration_condition == "NS")
+        assessment.standardized = if assessment.administration_condition == "SD" \
+            or (assessment.hasInterim and assessment.administration_condition == "") \
+            then true else false
+        
 
         # set level-based overall ald content
         overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject][this.configData.overall_ald_grade_buckets[assessment.asmt_grade]][assessment.asmt_perf_lvl], assessment)

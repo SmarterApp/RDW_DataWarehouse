@@ -211,7 +211,7 @@ class AssessmentHeaders:
     AccommodationStreamlineMode = 'AccommodationStreamlineMode'
     AccommodationNoiseBuffer = 'AccommodationNoiseBuffer'
     AdministrationCondition = 'AdministrationCondition'
-    CompletedStatus = 'CompletedStatus'
+    CompleteStatus = 'CompleteStatus'
 
 
 class AssessmentData:
@@ -310,7 +310,7 @@ def get_assessment_mapping(root, metadata):
                                Mapping(ValueMeta(meta.asmt_type), AssessmentHeaders.AssessmentType),
                                Mapping(ValueMeta(meta.subject), AssessmentHeaders.AssessmentAcademicSubject),
                                Mapping(ValueMeta(administrationCondition), AssessmentHeaders.AdministrationCondition),
-                               Mapping(ValueMeta(completeStatus), AssessmentHeaders.CompletedStatus),
+                               Mapping(ValueMeta(completeStatus), AssessmentHeaders.CompleteStatus),
                                Mapping(ValueMeta(meta.grade), AssessmentHeaders.AssessmentLevelForWhichDesigned)],
                               claims, groups, accommodations)
     mappings.evaluate()

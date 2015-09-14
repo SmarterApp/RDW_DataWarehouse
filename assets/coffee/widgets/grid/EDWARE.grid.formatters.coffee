@@ -60,6 +60,7 @@ define [
       'title="' + displayValue + '"'
 
   showStatus = (complete, options, rowObject) ->
+    subject_type = options.colModel.formatoptions.asmt_type
     subjectName = options['colModel']['formatoptions']['asmt_type']
     subjectAsmt = rowObject[subjectName]
     toolTip = getTooltip(rowObject, options)
@@ -233,10 +234,8 @@ define [
     score_ALD = getScoreALD(subject, options.colModel.labels.asmt)
     asmt_perf_lvl = getAsmtPerfLvl(subject)
     complete = subject.complete
-    standardized = if subject.administration_condition == "SD" \
-        or (subject.hasInterim and subject.administration_condition == "") \
-        then true else false
-    invalid = (subject.administration_condition == "IN" || subject.administration_condition == "NS")
+    standardized = (subject.administration_condition == "SD")
+    invalid = (subject.administration_condition == "IN")
     rowId = rowObject.rowId + subject_type
     Mustache.to_html TOOLTIP_TEMPLATE, {
         student_name: student_name

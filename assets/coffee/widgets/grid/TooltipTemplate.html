@@ -5,7 +5,7 @@
     <div class='tooltip-message'>
         <div class='edware-icon-partial'>&#x25D2;</div>
         <div class='text'>
-            <strong>Partial Test - </strong> The student did not answer all questions on this test and all unanswered questions have been reported as incorrect.
+            <strong>{{labels.partial_test_label}} - </strong> {{labels.partial_test_text}}
         </div>
     </div>
     {{/complete}}
@@ -13,7 +13,7 @@
     <div class='tooltip-message'>
         <div class='edware-icon-standardized'>&#x24E2;</div>
         <div class='text'>
-            <strong>Standard Test - </strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus orci vitae nibh pretium blandit. Quisque tempor quam ipsum, nec scelerisque turpis tristique id. 
+            <strong>{{labels.standard_test_label}} - </strong> {{labels.standard_test_text}}
         </div>
     </div>
     {{/standardized}}
@@ -21,7 +21,7 @@
     <div class='tooltip-message'>
         <div class='edware-icon-invalid'>&#x20E0;</div>
         <div class='text'>
-            <strong>Invalid Test - </strong> The scores in this assessment should be used with caution as the tests were administered under conditions that resulted in a score that may not be accurate representation of the student's achievement.
+            <strong>{{labels.invalid_test_label}} - </strong> {{labels.invalid_test_text}}
         </div>
     </div>
     {{/invalid}}

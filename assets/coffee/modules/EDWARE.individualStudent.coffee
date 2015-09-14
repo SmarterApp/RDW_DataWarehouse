@@ -118,7 +118,7 @@ define [
             assessment.hasInterim = true
         else
             assessment.hasInterim = false
-        assessment.invalid = (assessment.administration_condition == "IN" || assessment.administration_condition == "NS")
+        assessment.invalid = assessment.administration_condition == "IN"
         assessment.standardized = if assessment.administration_condition == "SD" \
             or (assessment.hasInterim and assessment.administration_condition == "") \
             then true else false

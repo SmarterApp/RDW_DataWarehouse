@@ -64,9 +64,7 @@ define [
     subjectAsmt = rowObject[subjectName]
     toolTip = getTooltip(rowObject, options)
     subject = rowObject[subject_type]
-    standardized = if subject.administration_condition == "SD" \
-        or (subject.hasInterim and subject.administration_condition == "") \
-        then true else false
+    standardized = (subject.administration_condition == "SD")
     invalid = (subject.administration_condition == "IN")
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style

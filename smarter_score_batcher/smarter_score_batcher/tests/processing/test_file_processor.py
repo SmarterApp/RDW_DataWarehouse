@@ -43,7 +43,7 @@ class Test(Unittest_with_tsb_sqlite):
         guids, rows, headers = assessments
         self.assertEqual(len(guids), 1)
         self.assertEqual(len(rows), 1)
-        self.assertEqual(len(headers), 88)
+        self.assertEqual(len(headers), 90)
 
 
 if __name__ == "__main__":

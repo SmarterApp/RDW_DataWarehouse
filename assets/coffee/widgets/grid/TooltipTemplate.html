@@ -3,7 +3,7 @@
     <div class='js-popupTitle hide'>{{student_name}} | {{asmt_subject_text}} {{labels.overall_score}}</div>
     {{^complete}}
     <div class='tooltip-message'>
-        <div class='edware-icon-partial'>&#x25D2;</div>
+        <div class='edware-icon-partial edware-icon-large'></div>
         <div class='text'>
             <strong>{{labels.partial_test_label}} - </strong> {{labels.partial_test_text}}
         </div>
@@ -11,7 +11,7 @@
     {{/complete}}
     {{#standardized}}
     <div class='tooltip-message'>
-        <div class='edware-icon-standardized'>&#x24E2;</div>
+        <div class='edware-icon-standardized edware-icon-large'></div>
         <div class='text'>
             <strong>{{labels.standard_test_label}} - </strong> {{labels.standard_test_text}}
         </div>
@@ -19,7 +19,7 @@
     {{/standardized}}
     {{#invalid}}
     <div class='tooltip-message'>
-        <div class='edware-icon-invalid'>&#x20E0;</div>
+        <div class='edware-icon-invalid edware-icon-large'></div>
         <div class='text'>
             <strong>{{labels.invalid_test_label}} - </strong> {{labels.invalid_test_text}}
         </div>

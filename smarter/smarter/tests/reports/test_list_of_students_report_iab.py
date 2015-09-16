@@ -4,7 +4,6 @@ Created on Oct 21, 2014
 @author: tosako
 '''
 import unittest
-import mock
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from pyramid.security import Allow
@@ -70,8 +69,8 @@ class Test(Unittest_with_edcore_sqlite):
         self.assertEqual(5, len(subject1))
         self.assertEqual(1, len(claim))
 
-    @mock.patch('smarter.reports.list_of_students_report_iab.get_student_demographic')
-    @mock.patch('smarter.reports.list_of_students_report_iab.get_claims')
+    @unittest.mock.patch('smarter.reports.list_of_students_report_iab.get_student_demographic')
+    @unittest.mock.patch('smarter.reports.list_of_students_report_iab.get_claims')
     def test_format_assessments_iab(self, mock_get_claims, mock_get_student_demographic):
         mock_get_claims.return_value = [{'name': 'claim'}]
         result = dmg_map.copy()

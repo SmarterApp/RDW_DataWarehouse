@@ -617,7 +617,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 320,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -641,6 +641,20 @@
                         "align": "center",
                         "title": false,
                         "export": true
+                    },
+                    {
+                        "name": "Status",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "field": "subject1.complete",
+                        "width": 60,
+                        "formatter": "showStatus",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "sortable": false,
+                        "align": "center",
+                        "title": false,
+                        "export": false
                     },
                     {
                         "name": "{{claims.subject1.0.name}}",
@@ -671,7 +685,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
                         "index": "subject1.claims.2.perf_lvl",
                         "field": "subject1.claims.2.perf_lvl",
-                        "width": 160,
+                        "width": 111,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -690,7 +704,7 @@
                         "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
                         "index": "student_full_name",
                         "field": "student_full_name",
-                        "width": 330,
+                        "width": 320,
                         "style": "ui-ellipsis bold",
                         "formatter": "showlink",
                         "options": {
@@ -716,11 +730,25 @@
                         "export": true
                     },
                     {
+                        "name": "Status",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "field": "subject2.complete",
+                        "width": 60,
+                        "formatter": "showStatus",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "sortable": false,
+                        "align": "center",
+                        "title": false,
+                        "export": false
+                    },
+                    {
                         "name": "{{claims.subject2.0.name}}",
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
                         "index": "subject2.claims.0.perf_lvl",
                         "field": "subject2.claims.0.perf_lvl",
-                        "width": 118,
+                        "width": 100,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -732,7 +760,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
                         "index": "subject2.claims.1.perf_lvl",
                         "field": "subject2.claims.1.perf_lvl",
-                        "width": 118,
+                        "width": 100,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -744,7 +772,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
                         "index": "subject2.claims.2.perf_lvl",
                         "field": "subject2.claims.2.perf_lvl",
-                        "width": 118,
+                        "width": 100,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -756,7 +784,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
                         "index": "subject2.claims.3.perf_lvl",
                         "field": "subject2.claims.3.perf_lvl",
-                        "width": 120,
+                        "width": 125,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",

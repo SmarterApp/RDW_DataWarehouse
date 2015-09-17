@@ -231,7 +231,7 @@ define [
     student_name = getStudentName(rowObject)
     asmt_subject_text = getSubjectText(subject)
     subject = rowObject[subject_type]
-    score_ALD = getScoreALD(subject, options.colModel.labels.asmt)
+    score_ALD = getScoreALD(subject, options.colModel.labels.asmt.perf_lvl_name)
     asmt_perf_lvl = getAsmtPerfLvl(subject)
     complete = subject.complete
     standardized = (subject.administration_condition == "SD")

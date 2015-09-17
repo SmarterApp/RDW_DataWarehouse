@@ -489,7 +489,7 @@
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>Toán học tổng quát</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
-                        "width": 230,
+                        "width": 176,
                         "formatter": "performanceBar",
                         "options": {
                             "asmt_type": "subject1"
@@ -518,7 +518,7 @@
                         "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Đọc viết tổng quát</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
-                        "width": 230,
+                        "width": 176,
                         "formatter": "performanceBar",
                         "options": {
                             "asmt_type": "subject2"
@@ -545,7 +545,7 @@
                     {
                         "name": "",
                         "displayTpl": "",
-                        "width": 30,
+                        "width": 138,
                         "title": false,
                         "export": false,
                         "sortable": false

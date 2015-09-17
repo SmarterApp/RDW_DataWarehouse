@@ -77,26 +77,6 @@
                 {{/claims}}
             </div>
         </div>
-        {{^current.0.complete}}
-        <div class="warning partial-test">
-            <div class="content">
-                <div class="edware-icon-partial edware-icon-large"></div>
-                <div class="text">
-                    <strong>{{labels.partial_test_label}} - </strong> {{labels.partial_test_text}}
-                </div>
-            </div>
-        </div>
-        {{/current.0.complete}}
-        {{#current.0.invalid}}
-        <div class="warning invalid-test">
-            <div class="content">
-                <div class='edware-icon-invalid edware-icon-large'></div>
-                <div class="text">
-                    <strong>{{labels.invalid_test_label}} - </strong> {{labels.invalid_test_text}}
-                </div>
-            </div>
-        </div>
-        {{/current.0.invalid}}
         {{#current.0.standardized}}
         <div class="warning standardized-text">
             <div class="content">
@@ -107,6 +87,26 @@
             </div>
         </div>
         {{/current.0.standardized}}
+        {{#current.0.invalid}}
+        <div class="warning invalid-test">
+            <div class="content">
+                <div class='edware-icon-invalid edware-icon-large'></div>
+                <div class="text">
+                    <strong>{{labels.invalid_test_label}} - </strong> {{labels.invalid_test_text}}
+                </div>
+            </div>
+        </div>
+        {{/current.0.invalid}}
+        {{^current.0.complete}}
+        <div class="warning partial-test">
+            <div class="content">
+                <div class="edware-icon-partial edware-icon-large"></div>
+                <div class="text">
+                    <strong>{{labels.partial_test_label}} - </strong> {{labels.partial_test_text}}
+                </div>
+            </div>
+        </div>
+        {{/current.0.complete}}
         {{#accommodations}}
         <div class="accommodationSection clearfix">
             <div class="content">

@@ -1,14 +1,6 @@
 {{#subject}}
 <div class='losTooltip hide'>
     <div class='js-popupTitle hide'>{{student_name}} | {{asmt_subject_text}} {{labels.overall_score}}</div>
-    {{^complete}}
-    <div class='tooltip-message'>
-        <div class='edware-icon-partial edware-icon-large'></div>
-        <div class='text'>
-            <strong>{{labels.partial_test_label}} - </strong> {{labels.partial_test_text}}
-        </div>
-    </div>
-    {{/complete}}
     {{#standardized}}
     <div class='tooltip-message'>
         <div class='edware-icon-standardized edware-icon-large'></div>
@@ -25,6 +17,14 @@
         </div>
     </div>
     {{/invalid}}
+    {{^complete}}
+    <div class='tooltip-message'>
+        <div class='edware-icon-partial edware-icon-large'></div>
+        <div class='text'>
+            <strong>{{labels.partial_test_label}} - </strong> {{labels.partial_test_text}}
+        </div>
+    </div>
+    {{/complete}}
     <div class='summary'>
         <div class='title left'>{{labels.overall_score}}</div>
         <div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'>

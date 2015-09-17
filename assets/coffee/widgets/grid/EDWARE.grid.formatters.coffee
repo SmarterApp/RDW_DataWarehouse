@@ -61,10 +61,11 @@ define [
 
   showStatus = (complete, options, rowObject) ->
     subject_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject[subject_type]
+    if !subject then return ""
     subjectName = options['colModel']['formatoptions']['asmt_type']
     subjectAsmt = rowObject[subjectName]
     toolTip = getTooltip(rowObject, options)
-    subject = rowObject[subject_type]
     standardized = (subject.administration_condition == "SD")
     invalid = (subject.administration_condition == "IN")
     return Mustache.to_html STATUS_TEMPLATE, {
@@ -228,9 +229,9 @@ define [
 
   getTooltip = (rowObject, options) ->
     subject_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject[subject_type]
     student_name = getStudentName(rowObject)
     asmt_subject_text = getSubjectText(subject)
-    subject = rowObject[subject_type]
     score_ALD = getScoreALD(subject, options.colModel.labels.asmt.perf_lvl_name)
     asmt_perf_lvl = getAsmtPerfLvl(subject)
     complete = subject.complete
@@ -258,7 +259,7 @@ define [
     rowId = rowObject.rowId + subject_type
     asmt_subject_text = getSubjectText(subject)
 
-    toolTip = getTooltip(rowObject, options)
+    toolTip = getTooltip(rowObject, options) if subject
     # hack to remove html tag in name
     columnName = removeHTMLTags(options.colModel.label)
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {

@@ -124,7 +124,7 @@ define [
         # hide error message
         $this.closest('.section').removeClass('error')
         display = $this.data('label')
-        value = $this.data('value')
+        value = $this.attr('data-value')
         $dropdown = $this.closest('.btn-group')
         $dropdown.find('.dropdown-menu').attr('data-value', value)
         # display selected option

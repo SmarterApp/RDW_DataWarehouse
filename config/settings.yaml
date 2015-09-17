@@ -1325,7 +1325,7 @@ jenkins_dev:
       policy.secure: False
       skip.verify: False
       saml:
-        issuer_name: 'http://localhost:6543/sp.xml'
+        issuer_name: 'http://localhost/sp.xml'
         idp_server_login_url: 'http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
         idp_server_logout_url: 'http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0

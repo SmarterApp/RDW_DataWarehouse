@@ -238,7 +238,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject1.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -282,7 +282,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject2.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -347,7 +347,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject1.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -449,7 +449,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject2.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -557,7 +557,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject1.complete",
                         "width": 80,
                         "formatter": "showStatus",
@@ -586,7 +586,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject2.complete",
                         "width": 80,
                         "formatter": "showStatus",
@@ -644,7 +644,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject1.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -731,7 +731,7 @@
                     },
                     {
                         "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Status</a>",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
                         "field": "subject2.complete",
                         "width": 60,
                         "formatter": "showStatus",

@@ -75,6 +75,9 @@ define [
         toolTip: toolTip
         invalid: invalid
         standardized: standardized
+        columnName: 'Status'
+        complete: complete
+        export: 'edwareExportColumn' if options.colModel.export
     }
 
   showlink = (value, options, rowObject) ->

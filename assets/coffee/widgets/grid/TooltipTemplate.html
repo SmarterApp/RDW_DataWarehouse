@@ -44,8 +44,3 @@
 </div>
 <div id="{{rowId}}" class='screenreader' aria-hidden="true">{{asmt_subject_text}} {{labels.overall_score}} {{subject.asmt_score}} {{score_ALD}} {{labels.error_band}} {{subject.asmt_score_range_min}} to {{subject.asmt_score_range_max}}</div>
 {{/subject}}
-{{^subject}}
-<span class='edwareExportField' data-export-value='' data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
-<span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
-<span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
-{{/subject}}

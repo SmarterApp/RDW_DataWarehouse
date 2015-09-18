@@ -1,4 +1,4 @@
-<div class="status-flags">
+<div class="status-flags {{cssClass}} {{export}}">
     {{#standardized}}
     <span class="edware-icon-standardized"></span>
     {{/standardized}}
@@ -9,4 +9,5 @@
     <span class="edware-icon-partial"></span>
     {{/complete}}
     {{{toolTip}}}
+    <span class='edwareExportField' data-export-value='{{complete}}' data-export-name='{{columnName}}'></span>
 </div>

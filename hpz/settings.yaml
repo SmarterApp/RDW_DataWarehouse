@@ -131,10 +131,10 @@ jenkins_dev:
         download_base_url: http://localhost:81/
     auth:
       saml:
-        idp_server_login_url: http://jenkins.dev.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://jenkins.dev.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://jenkins.dev.smarterbalanced.org:8080/OpenAM-11.0.0
-        issuer_name: 'http://jenkins.dev.smarterbalanced.org:81'
+        idp_server_login_url:  http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url:  http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier:  http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
+        issuer_name: 'http://localhost:81/sp.xml'
 
 qa:
   '[app:main]':

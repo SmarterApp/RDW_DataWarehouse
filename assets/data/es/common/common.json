@@ -248,7 +248,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "Prueba de ELA/Alfabetización más reciente",
@@ -292,7 +292,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     }
                 ]
             }
@@ -357,7 +357,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "{{claims.subject1.0.name}}",
@@ -459,7 +459,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "{{claims.subject2.0.name}}",
@@ -567,7 +567,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "{{subject2}}",
@@ -596,7 +596,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "",
@@ -654,7 +654,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "{{claims.subject1.0.name}}",
@@ -741,7 +741,7 @@
                         "sortable": false,
                         "align": "center",
                         "title": false,
-                        "export": false
+                        "export": true
                     },
                     {
                         "name": "{{claims.subject2.0.name}}",

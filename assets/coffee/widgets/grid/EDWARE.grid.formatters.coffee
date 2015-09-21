@@ -68,6 +68,14 @@ define [
     toolTip = getTooltip(rowObject, options)
     standardized = (subject.administration_condition == "SD")
     invalid = (subject.administration_condition == "IN")
+    exportValues = []
+    if !complete
+        exportValues.push("Incomplete")
+    if invalid
+        exportValues.push("Invalid")
+    if standardized
+        exportValues.push("Standardized")
+    console.warn exportValues.join(",")
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
@@ -78,6 +86,7 @@ define [
         columnName: 'Status'
         complete: complete
         export: 'edwareExportColumn' if options.colModel.export
+        exportValues: exportValues.join(",")
     }
 
   showlink = (value, options, rowObject) ->

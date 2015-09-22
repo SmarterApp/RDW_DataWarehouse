@@ -1,4 +1,3 @@
-{{#subject}}
 <div class='losTooltip hide'>
     <div class='js-popupTitle hide'>{{student_name}} | {{asmt_subject_text}} {{labels.overall_score}}</div>
     {{#standardized}}
@@ -37,10 +36,5 @@
     <div class='errorBand'>{{labels.error_band}}:
         <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
     </div>
-    <span class='edwareExportField' data-export-value='{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}'
-              data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
-    <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
-    <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
 </div>
 <div id="{{rowId}}" class='screenreader' aria-hidden="true">{{asmt_subject_text}} {{labels.overall_score}} {{subject.asmt_score}} {{score_ALD}} {{labels.error_band}} {{subject.asmt_score_range_min}} to {{subject.asmt_score_range_max}}</div>
-{{/subject}}

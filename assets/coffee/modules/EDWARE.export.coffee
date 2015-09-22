@@ -144,10 +144,10 @@ define [
 
     saveAsWindow: (data, filename, mimetype) ->
       # Suppport other browsers
-      x = window.open();
-      x.document.open(mimetype, "replace");
-      x.document.write(data);
-      x.document.close();
+      x = window.open()
+      x.document.open(mimetype, "replace")
+      x.document.write(data)
+      x.document.close()
 
     create: () ->
       # Blobs and saveAs (or saveBlob):

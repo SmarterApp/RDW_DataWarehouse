@@ -62,29 +62,24 @@ define [
   showStatus = (complete, options, rowObject) ->
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject[subject_type]
-    if !subject then return ""
-    subjectName = options['colModel']['formatoptions']['asmt_type']
-    subjectAsmt = rowObject[subjectName]
-    toolTip = getTooltip(rowObject, options)
-    standardized = (subject.administration_condition == "SD")
-    invalid = (subject.administration_condition == "IN")
+    toolTip = getTooltip(rowObject, options) if subject
+    standardized = (subject.administration_condition == "SD") if subject
+    invalid = (subject.administration_condition == "IN") if subject
     exportValues = []
-    if !complete
+    if complete == false
         exportValues.push("Incomplete")
     if invalid
         exportValues.push("Invalid")
     if standardized
         exportValues.push("Standardized")
-    console.warn exportValues.join(",")
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
-        complete: complete
+        partial: complete == false
         toolTip: toolTip
         invalid: invalid
         standardized: standardized
         columnName: 'Status'
-        complete: complete
         export: 'edwareExportColumn' if options.colModel.export
         exportValues: exportValues.join(",")
     }
@@ -235,16 +230,15 @@ define [
     return '' if not subject
     subject.asmt_perf_lvl || ''
 
-  getSubjectText = (subject) ->
-    return '' if not subject
-    Constants.SUBJECT_TEXT[subject.asmt_type]
+  getSubjectText = (subject_type) ->
+    return '' if not subject_type
+    Constants.SUBJECT_TEXT[subject_type]
 
   getTooltip = (rowObject, options) ->
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject[subject_type]
     student_name = getStudentName(rowObject)
-    asmt_subject_text = getSubjectText(subject)
-    score_ALD = getScoreALD(subject, options.colModel.labels.asmt.perf_lvl_name)
+    asmt_subject_text = getSubjectText(subject.asmt_type)
     asmt_perf_lvl = getAsmtPerfLvl(subject)
     complete = subject.complete
     standardized = (subject.administration_condition == "SD")
@@ -255,7 +249,6 @@ define [
         asmt_subject_text: asmt_subject_text
         subject: subject
         labels: options.colModel.labels
-        score_ALD: score_ALD
         asmt_perf_lvl: asmt_perf_lvl
         complete: complete
         standardized: standardized
@@ -269,14 +262,17 @@ define [
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject[subject_type]
     rowId = rowObject.rowId + subject_type
-    asmt_subject_text = getSubjectText(subject)
+    asmt_subject_text = getSubjectText(subject_type)
+    score_ALD = getScoreALD(subject, options.colModel.labels.asmt.perf_lvl_name)
 
     toolTip = getTooltip(rowObject, options) if subject
     # hack to remove html tag in name
     columnName = removeHTMLTags(options.colModel.label)
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
       subject: subject
+      labels: options.colModel.labels
       asmt_subject_text: asmt_subject_text
+      score_ALD: score_ALD
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
       columnName: columnName

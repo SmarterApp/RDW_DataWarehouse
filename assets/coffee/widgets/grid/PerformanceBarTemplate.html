@@ -11,8 +11,14 @@
     <div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>
     {{{toolTip}}}
     {{^subject}}
-    <span class='edwareExportField' data-export-value='' data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
-    <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
-    <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
+        <span class='edwareExportField' data-export-value='' data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
+        <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
+        <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
+        
+    {{/subject}}
+    {{#subject}}
+        <span class='edwareExportField' data-export-value='{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}' data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
+        <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
+        <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
     {{/subject}}
 </div>

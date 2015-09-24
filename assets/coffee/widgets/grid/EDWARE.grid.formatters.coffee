@@ -66,12 +66,12 @@ define [
     standardized = (subject.administration_condition == "SD") if subject
     invalid = (subject.administration_condition == "IN") if subject
     exportValues = []
-    if complete == false
-        exportValues.push("Incomplete")
     if invalid
         exportValues.push("Invalid")
     if standardized
         exportValues.push("Standardized")
+    if complete == false
+        exportValues.push("Incomplete")
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle

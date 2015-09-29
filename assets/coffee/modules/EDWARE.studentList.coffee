@@ -252,7 +252,13 @@ define [
     renderFilter: () ->
       self = this
       edwareDataProxy.getDataForFilter().done (configs)->
+        interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM)
         configs = self.mergeFilters(configs)
+        for key, filter of configs.filters
+            if filter.interimOnly == "true" and interimAsmt
+                configs.filters.splice(key, 1)
+            else if filter.interimOnly == "false" and not interimAsmt
+                configs.filters.splice(key, 1)
         filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
         filter.loadReport()
         filter.update {}

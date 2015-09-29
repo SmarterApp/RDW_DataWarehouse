@@ -185,6 +185,50 @@
                     "value": "NS"
                 }
             ]
+        },
+        {
+            "display" : "Invalid",
+            "tag" : "Invalid",
+            "name" : "invalid",
+            "interimOnly": "false",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "IN"
+                },{
+                    "label" : "No",
+                    "value" : "VA"
+                }
+            ]
+        },
+        {
+            "display" : "Standardized",
+            "tag" : "Standardized",
+            "name" : "standardized",
+            "interimOnly": "true",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "SD"
+                },{
+                    "label" : "No",
+                    "value" : "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Partial",
+            "tag" : "Partial",
+            "name" : "partial",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                }
+            ]
         }
     ],
     "group_template" : {

@@ -187,45 +187,45 @@
             ]
         },
         {
-            "display" : "Invalid",
-            "tag" : "Invalid",
-            "name" : "invalid",
+            "display" : "Validity",
+            "tag" : "Validity",
+            "name" : "validity",
             "interimOnly": "false",
             "options" : [
                 {
-                    "label" : "Yes",
-                    "value" : "IN"
-                },{
-                    "label" : "No",
+                    "label" : "Valid",
                     "value" : "VA"
+                },{
+                    "label" : "Invalid",
+                    "value" : "IN"
                 }
             ]
         },
         {
-            "display" : "Standardized",
-            "tag" : "Standardized",
-            "name" : "standardized",
+            "display" : "Validity",
+            "tag" : "Validity",
+            "name" : "validity",
             "interimOnly": "true",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Standardized",
                     "value" : "SD"
                 },{
-                    "label" : "No",
+                    "label" : "Non-Standardized",
                     "value" : "NS"
                 }
             ]
         },
         {
-            "display" : "Partial",
-            "tag" : "Partial",
-            "name" : "partial",
+            "display" : "Completeness",
+            "tag" : "Completeness",
+            "name" : "completeness",
             "options" : [
                 {
-                    "label" : "Yes",
+                    "label" : "Complete",
                     "value" : "Y"
                 },{
-                    "label" : "No",
+                    "label" : "Incomplete",
                     "value" : "N"
                 }
             ]

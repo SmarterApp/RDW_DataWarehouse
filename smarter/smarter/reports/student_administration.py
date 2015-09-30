@@ -106,7 +106,7 @@ def get_block_asmt_administration(state_code, district_id=None, school_id=None, 
     return results
 
 
-@cache_region('public.shortlived')
+@cache_region('public.very_shortlived')
 def get_asmt_academic_years(state_code, tenant=None, years_back=None):
     '''
     Gets academic years.
@@ -120,7 +120,7 @@ def get_asmt_academic_years(state_code, tenant=None, years_back=None):
     return list(r[Constants.ASMT_PERIOD_YEAR] for r in results)
 
 
-@cache_region('public.shortlived')
+@cache_region('public.very_shortlived')
 def get_student_reg_academic_years(state_code, tenant=None):
     with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)

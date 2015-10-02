@@ -312,6 +312,8 @@ define [
             continue
           if filterName is 'studentGroupId'
             continue
+          if filterName is 'completeness'
+            continue
           if filterName.substr(0, 5) isnt 'group' and filterName.substr(0, 5) isnt 'grade' # do not check grouping filters
             return false if assessment.demographic[filterName] not in filterValue
         return true
@@ -323,6 +325,17 @@ define [
           if groupId in subject.group
             return true
         return false
+
+      completeness: (subject) ->
+        # return true to show the record, and false to hide
+        result = false
+        return true if not filters.completeness
+        for filter in filters.completeness
+            if filter == "complete"
+                result = subject.complete == true
+            else if filter == "incomplete"
+                result = subject.complete == false
+        return result
     }
 
     IABFilter = (data) ->
@@ -351,11 +364,12 @@ define [
           for asmtByDate in asmtList
             for asmtDate, assessment of asmtByDate
               assessment.hide = if not match.demographics(assessment) then true else false
-              # check grouping filters
+              # check grouping and completeness filters
               for subject of data.subjects
                 asmt_subject = assessment[subject]
                 continue if not asmt_subject
                 asmt_subject.hide = if not match.grouping(asmt_subject) then true else false
+                asmt_subject.hide = asmt_subject.hide || !match.completeness(asmt_subject)
       data
 
     return (asmtType) ->

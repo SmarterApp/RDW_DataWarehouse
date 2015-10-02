@@ -223,10 +223,10 @@
             "options" : [
                 {
                     "label" : "Complete",
-                    "value" : "Y"
+                    "value" : "complete"
                 },{
                     "label" : "Incomplete",
-                    "value" : "N"
+                    "value" : "incomplete"
                 }
             ]
         }

@@ -187,7 +187,7 @@ define [
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
                   if !item[studentId][subjectName]
-                    item[studentId][subjectName] = asmt[subjectName]
+                      item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId])
           # overview has 2 dates

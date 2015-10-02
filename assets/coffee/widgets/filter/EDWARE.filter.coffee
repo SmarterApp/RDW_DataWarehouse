@@ -310,9 +310,7 @@ define [
           # do not check other attributes
           if not $.isArray(filterValue)
             continue
-          if filterName is 'studentGroupId'
-            continue
-          if filterName is 'completeness'
+          if filterName in ['studentGroupId', 'validity', 'completeness']
             continue
           if filterName.substr(0, 5) isnt 'group' and filterName.substr(0, 5) isnt 'grade' # do not check grouping filters
             return false if assessment.demographic[filterName] not in filterValue
@@ -335,6 +333,20 @@ define [
                 result = subject.complete == true
             else if filter == "incomplete"
                 result = subject.complete == false
+        return result
+
+      validity: (subject) ->
+        result = false
+        return true if not filters.validity
+        for filter in filters.validity
+            if filter == "NS"
+                result = subject.administration_condition == null
+            if filter == "VA"
+                result = subject.administration_condition == null
+            if filter == "IN"
+                result = subject.administration_condition == "IN"
+            if filter == "SD"
+                result = subject.administration_condition == "SD"
         return result
     }
 
@@ -370,6 +382,7 @@ define [
                 continue if not asmt_subject
                 asmt_subject.hide = if not match.grouping(asmt_subject) then true else false
                 asmt_subject.hide = asmt_subject.hide || !match.completeness(asmt_subject)
+                asmt_subject.hide = asmt_subject.hide || !match.validity(asmt_subject)
       data
 
     return (asmtType) ->

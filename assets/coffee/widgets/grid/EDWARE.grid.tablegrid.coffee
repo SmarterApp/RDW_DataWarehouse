@@ -214,6 +214,15 @@ define [
       if column.hide
         colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
           ' style="display:none;"'
+      else
+        colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
+          cell_attr_val = ''
+          if cm.formatoptions
+            subject_type = cm.formatoptions.asmt_type
+            subject = rawObject[subject_type]
+            if subject and subject.hide
+                cell_attr_val += ' class="hidden"'
+          cell_attr_val
       this.options.sortorder = column.sortorder  if column.sortorder
       this.options.sortname = column.index  if column.sortorder
       colModelItem

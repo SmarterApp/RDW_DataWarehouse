@@ -53,7 +53,7 @@ def get_cut_points(custom, asmt_meta):
     return result
 
 
-def get_claims(number_of_claims=0, result=None, include_names=False, include_scores=False, include_indexer=False, include_min_max_scores=False):
+def get_claims(number_of_claims=0, result=None, include_names=False, include_scores=False, include_indexer=False, include_min_max_scores=False, include_complete_admin_cond=False):
     '''
     Returns a list of claims information.
     If get_name_only is True, it returns only the name of the claim and its equivalence claim number name.
@@ -85,6 +85,9 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
                     claim_object['name2'] = '{{labels.claim}} ' + str(index)
                     if result['asmt_subject'] == 'Math' and index == 2:
                         claim_object['name2'] = '{{labels.claims}} 2 & 4'
+            if include_complete_admin_cond:
+                claim_object['complete'] = str(result.get('complete'.format(index)))
+                claim_object['administration_condition'] = str(result.get('administration_condition'.format(index)))
 
             claims.append(claim_object)
 

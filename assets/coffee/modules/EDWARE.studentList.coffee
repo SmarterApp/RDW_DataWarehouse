@@ -54,6 +54,7 @@ define [
 
     # Convert date to difference
     formatDate: (s) ->
+      return '' if not s
       # YYYY-MM-DDThh:mmTZD, T05:00:00 is timezone
       dStr = "#{s[0..3]}-#{s[4..5]}-#{s[6..]}T05:00:00"
       # difference of max representable time

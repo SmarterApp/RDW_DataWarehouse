@@ -330,9 +330,9 @@ define [
         return true if not filters.completeness
         for filter in filters.completeness
             if filter == "complete"
-                result = subject.complete == true
+                result = result || subject.complete == true
             else if filter == "incomplete"
-                result = subject.complete == false
+                result = result || subject.complete == false
         return result
 
       validity: (subject) ->
@@ -340,13 +340,13 @@ define [
         return true if not filters.validity
         for filter in filters.validity
             if filter == "NS"
-                result = subject.administration_condition == null
+                result = result || subject.administration_condition == null
             if filter == "VA"
-                result = subject.administration_condition == null
+                result = result || subject.administration_condition == null
             if filter == "IN"
-                result = subject.administration_condition == "IN"
+                result = result || subject.administration_condition == "IN"
             if filter == "SD"
-                result = subject.administration_condition == "SD"
+                result = result || subject.administration_condition == "SD"
         return result
     }
 

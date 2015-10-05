@@ -255,9 +255,9 @@ define [
         interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM)
         configs = self.mergeFilters(configs)
         for key, filter of configs.filters
-            if filter.interimOnly == "true" and interimAsmt
+            if filter.interimOnly == "true" and not interimAsmt
                 configs.filters.splice(key, 1)
-            else if filter.interimOnly == "false" and not interimAsmt
+            else if filter.interimOnly == "false" and interimAsmt
                 configs.filters.splice(key, 1)
         filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
         filter.loadReport()

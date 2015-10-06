@@ -187,45 +187,45 @@
             ]
         },
         {
-            "display" : "Validity",
-            "tag" : "Validity",
+            "display" : "Tính Hợp Lệ",
+            "tag" : "Tính Hợp Lệ",
             "name" : "validity",
             "interimOnly": "false",
             "options" : [
                 {
-                    "label" : "Valid",
+                    "label" : "Hợp Lệ",
                     "value" : "VA"
                 },{
-                    "label" : "Invalid",
+                    "label" : "Không Hợp Lệ",
                     "value" : "IN"
                 }
             ]
         },
         {
-            "display" : "Validity",
-            "tag" : "Validity",
+            "display" : "Tính Hợp Lệ",
+            "tag" : "Tính Hợp Lệ",
             "name" : "validity",
             "interimOnly": "true",
             "options" : [
                 {
-                    "label" : "Standardized",
+                    "label" : "Tiêu Chuẩn",
                     "value" : "SD"
                 },{
-                    "label" : "Non-Standardized",
+                    "label" : "Phi Tiêu Chuẩn",
                     "value" : "NS"
                 }
             ]
         },
         {
-            "display" : "Completeness",
-            "tag" : "Completeness",
+            "display" : "Mức Độ Hoàn Thành",
+            "tag" : "Mức Độ Hoàn Thành",
             "name" : "completeness",
             "options" : [
                 {
-                    "label" : "Complete",
+                    "label" : "Hoàn Thành",
                     "value" : "Y"
                 },{
-                    "label" : "Incomplete",
+                    "label" : "Hoàn Thành Một Phần",
                     "value" : "N"
                 }
             ]

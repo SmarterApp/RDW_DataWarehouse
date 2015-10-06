@@ -187,45 +187,45 @@
             ]
         },
         {
-            "display" : "Validity",
-            "tag" : "Validity",
+            "display" : "Validez",
+            "tag" : "Validez",
             "name" : "validity",
             "interimOnly": "false",
             "options" : [
                 {
-                    "label" : "Valid",
+                    "label" : "Válida",
                     "value" : "VA"
                 },{
-                    "label" : "Invalid",
+                    "label" : "No válida",
                     "value" : "IN"
                 }
             ]
         },
         {
-            "display" : "Validity",
-            "tag" : "Validity",
+            "display" : "Validez",
+            "tag" : "Validez",
             "name" : "validity",
             "interimOnly": "true",
             "options" : [
                 {
-                    "label" : "Standardized",
+                    "label" : "Estandarizada",
                     "value" : "SD"
                 },{
-                    "label" : "Non-Standardized",
+                    "label" : "No estandarizada",
                     "value" : "NS"
                 }
             ]
         },
         {
-            "display" : "Completeness",
-            "tag" : "Completeness",
+            "display" : "Completitud",
+            "tag" : "Completitud",
             "name" : "completeness",
             "options" : [
                 {
-                    "label" : "Complete",
+                    "label" : "Completa",
                     "value" : "Y"
                 },{
-                    "label" : "Incomplete",
+                    "label" : "Parcial",
                     "value" : "N"
                 }
             ]

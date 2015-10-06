@@ -86,7 +86,7 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
                     if result['asmt_subject'] == 'Math' and index == 2:
                         claim_object['name2'] = '{{labels.claims}} 2 & 4'
             if include_complete_admin_cond:
-                claim_object['complete'] = str(result.get('complete'.format(index)))
+                claim_object['complete'] = result.get('complete'.format(index))
                 claim_object['administration_condition'] = str(result.get('administration_condition'.format(index)))
 
             claims.append(claim_object)

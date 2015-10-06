@@ -38,6 +38,10 @@
                                 <div class="takenDate">{{mostRecent.date_taken}}</div>
                                 {{mostRecent.desc}}
                             </div>
+                            {{#mostRecent.administration_condition}}
+                            <div class="{{mostRecent.administration_condition}}"></div>
+                            {{/mostRecent.administration_condition}}
+                            <div class="{{mostRecent.complete}}"></div>
                         </div>
                     </div>
                     <span class="previousResults">{{labels.previous_results}}</span>
@@ -51,6 +55,10 @@
                                     <td>
                                         <div class="takenDate oldDateResults">{{date_taken}}</div>
                                         <i class="edware-icon-small-perf-level-{{level}}"></i>
+                                        {{#administration_condition}}
+                                        <div class="{{administration_condition}}"></div>
+                                        {{/administration_condition}}
+                                        <div class="{{complete}}"></div>
                                     </td>
                                     {{/older}}
                                 </tr>
@@ -69,6 +77,10 @@
                                 <td>
                                     <div class="takenDate oldDateResults">{{date_taken}}</div>
                                     <i class="edware-icon-small-perf-level-{{level}}"></i>
+                                    {{#administration_condition}}
+                                    <div class="{{administration_condition}}"></div>
+                                    {{/administration_condition}}
+                                    <div class="{{complete}}"></div>
                                 </td>
                                 {{/placeholder}}
                                 {{/previous}}

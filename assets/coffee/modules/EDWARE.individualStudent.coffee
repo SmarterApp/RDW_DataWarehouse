@@ -218,13 +218,17 @@ define [
         # Separate all the interim blocks by asmt_grades
         for assessment in @data.all_results[subjectAlias]
           asmt_grade = assessment['grade']
+          complete = assessment['claims'][0]['complete']
+          administration_condition = assessment['claims'][0]['administration_condition']
           dataByGrade[asmt_grade] ?= []
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
           'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
           'desc': assessment['claims'][0]['perf_lvl_name'],
-          'level': assessment['claims'][0]['perf_lvl']}
+          'level': assessment['claims'][0]['perf_lvl'],
+          'complete': 'edware-icon-partial edware-icon-small' if complete is false
+          'administration_condition': 'edware-icon-standardized edware-icon-small' if administration_condition == 'SD'}
           dataByGrade[asmt_grade].push(block_info)
         @splitByPerfBlockByName(subjectName, dataByGrade)
         subjectData['grades'] = []

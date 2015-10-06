@@ -191,6 +191,8 @@ define [
                       item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId])
+          delete combinedAsmts.subject1 if not item[studentId].subject1
+          delete combinedAsmts.subject2 if not item[studentId].subject2
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1

@@ -331,7 +331,7 @@ define [
         for filter in filters.completeness
             if filter == "complete"
                 result = result || subject.complete == true
-            else if filter == "incomplete"
+            if filter == "incomplete"
                 result = result || subject.complete == false
         return result
 

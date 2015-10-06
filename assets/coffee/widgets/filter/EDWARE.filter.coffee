@@ -339,14 +339,14 @@ define [
         result = false
         return true if not filters.validity
         for filter in filters.validity
-            if filter == "NS"
-                result = result || subject.administration_condition == null
+            if filter == "NS" #Non-standard
+                result = result || (subject.administration_condition == null || subject.administration_condition == "NS")
+            if filter == "SD" #Standard
+                result = result || subject.administration_condition == "SD"
             if filter == "VA"
-                result = result || subject.administration_condition == null
+                result = result || (subject.administration_condition == null || subject.administration_condition == "VA")
             if filter == "IN"
                 result = result || subject.administration_condition == "IN"
-            if filter == "SD"
-                result = result || subject.administration_condition == "SD"
         return result
     }
 

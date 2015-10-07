@@ -134,8 +134,7 @@ def __prepare_query(connector, params):
                                                                                                              fact_asmt_outcome_vw.c.administration_condition == None))),
                                     and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])), (or_(fact_asmt_outcome_vw.c.administration_condition == None,
                                                                                                                         fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
-                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED,
-                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_INVALID]))))))
+                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if date_taken is not None:

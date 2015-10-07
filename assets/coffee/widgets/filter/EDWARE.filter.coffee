@@ -310,7 +310,7 @@ define [
           # do not check other attributes
           if not $.isArray(filterValue)
             continue
-          if filterName in ['studentGroupId', 'validity', 'completeness']
+          if filterName in ['studentGroupId', 'validity', 'complete']
             continue
           if filterName.substr(0, 5) isnt 'group' and filterName.substr(0, 5) isnt 'grade' # do not check grouping filters
             return false if assessment.demographic[filterName] not in filterValue
@@ -324,14 +324,14 @@ define [
             return true
         return false
 
-      completeness: (subject) ->
+      complete: (subject) ->
         # return true to show the record, and false to hide
         result = false
-        return true if not filters.completeness
-        for filter in filters.completeness
-            if filter == "complete"
+        return true if not filters.complete
+        for filter in filters.complete
+            if filter == "Y"
                 result = result || subject.complete == true
-            if filter == "incomplete"
+            if filter == "N"
                 result = result || subject.complete == false
         return result
 
@@ -376,12 +376,12 @@ define [
           for asmtByDate in asmtList
             for asmtDate, assessment of asmtByDate
               assessment.hide = if not match.demographics(assessment) then true else false
-              # check grouping and completeness filters
+              # check grouping and complete filters
               for subject of data.subjects
                 asmt_subject = assessment[subject]
                 continue if not asmt_subject
                 asmt_subject.hide = if not match.grouping(asmt_subject) then true else false
-                asmt_subject.hide = asmt_subject.hide || !match.completeness(asmt_subject)
+                asmt_subject.hide = asmt_subject.hide || !match.complete(asmt_subject)
                 asmt_subject.hide = asmt_subject.hide || !match.validity(asmt_subject)
       data
 

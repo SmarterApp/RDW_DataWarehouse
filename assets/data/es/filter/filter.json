@@ -219,7 +219,7 @@
         {
             "display" : "Completitud",
             "tag" : "Completitud",
-            "name" : "completeness",
+            "name" : "complete",
             "options" : [
                 {
                     "label" : "Completa",

@@ -219,7 +219,7 @@
         {
             "display" : "Mức Độ Hoàn Thành",
             "tag" : "Mức Độ Hoàn Thành",
-            "name" : "completeness",
+            "name" : "complete",
             "options" : [
                 {
                     "label" : "Hoàn Thành",

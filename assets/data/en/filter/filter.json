@@ -219,14 +219,14 @@
         {
             "display" : "Completeness",
             "tag" : "Completeness",
-            "name" : "completeness",
+            "name" : "complete",
             "options" : [
                 {
                     "label" : "Complete",
-                    "value" : "complete"
+                    "value" : "Y"
                 },{
                     "label" : "Incomplete",
-                    "value" : "incomplete"
+                    "value" : "N"
                 }
             ]
         }

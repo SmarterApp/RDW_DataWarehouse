@@ -237,8 +237,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject1.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -281,8 +281,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject2.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -346,8 +346,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject1.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -448,8 +448,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject2.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -556,8 +556,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject1.complete",
                         "width": 80,
                         "formatter": "showStatus",
@@ -585,8 +585,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject2.complete",
                         "width": 80,
                         "formatter": "showStatus",
@@ -643,8 +643,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject1.complete",
                         "width": 60,
                         "formatter": "showStatus",
@@ -730,8 +730,8 @@
                         "export": true
                     },
                     {
-                        "name": "Status",
-                        "displayTpl": "<a class='pull-left inherit' href='#'>Status</a>",
+                        "name": "Trạng thái",
+                        "displayTpl": "<a class='pull-left inherit' href='#'>Trạng thái</a>",
                         "field": "subject2.complete",
                         "width": 60,
                         "formatter": "showStatus",

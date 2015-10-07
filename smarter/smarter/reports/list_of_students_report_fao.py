@@ -160,8 +160,7 @@ def get_list_of_students_fao(params):
                                                                                                              fact_asmt_outcome_vw.c.administration_condition == None))),
                                     and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])), (or_(fact_asmt_outcome_vw.c.administration_condition == None,
                                                                                                                         fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
-                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED,
-                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_INVALID]))))))
+                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))))
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(desc(fact_asmt_outcome_vw.c.date_taken))
         return connector.get_result(query)
 

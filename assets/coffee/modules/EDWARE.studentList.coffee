@@ -257,11 +257,15 @@ define [
       edwareDataProxy.getDataForFilter().done (configs)->
         interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM)
         configs = self.mergeFilters(configs)
-        for key, filter of configs.filters
-            if filter.interimOnly == "true" and not interimAsmt
-                configs.filters.splice(key, 1)
-            else if filter.interimOnly == "false" and interimAsmt
-                configs.filters.splice(key, 1)
+        filters = configs.filters
+        index = filters.length - 1
+        while index >= 0
+            if filters[index]
+                if filters[index].interimOnly == "true" and not interimAsmt
+                    filters.splice(index, 1)
+                else if filters[index].interimOnly == "false" and interimAsmt
+                    filters.splice(index, 1)
+            index--
         filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
         filter.loadReport()
         filter.update {}

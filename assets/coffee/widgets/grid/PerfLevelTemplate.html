@@ -8,6 +8,19 @@
     {{#perfLevelNumber}}
     <a href="#" class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"></a>
     {{/perfLevelNumber}}
+    {{#standardized}}
+    <span class="edware-icon-standardized {{oldResultsClass}}"></span>
+    {{/standardized}}
+    {{#invalid}}
+    <span class="edware-icon-invalid {{oldResultsClass}}"></span>
+    {{/invalid}}
+    {{#partial}}
+    <span class="edware-icon-partial {{oldResultsClass}}"></span>
+    {{/partial}}
+    {{^complete}}
+    <span class="edware-icon-partial {{oldResultsClass}}"></span>
+    {{/complete}}
+
     <div id= "iabPopoverContent" class="iabPopoverContent hide">
         {{#displayPopover}}
         <div class="oldResultsContent">
@@ -26,7 +39,15 @@
                             <td>
                                 <div class="takenDate oldDateResults">
                                     {{display_date_taken}}
-                            </div><i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
+                                </div>
+                                <i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
+                            {{/prev}}
+                            {{#prev}}
+                            <td>
+                                <div class="takenDate oldDateResults">
+                                    {{display_date_taken}}
+                                </div>
+                                <i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
                             {{/prev}}
                         </tr>
                     </tbody>

@@ -186,6 +186,10 @@ define [
     date_taken = names[2]
     labels = options.colModel.labels
 
+    standardized = (columnData[0].administration_condition == "SD") if columnData
+    invalid = (columnData[0].administration_condition == "IN") if columnData
+    complete = columnData[0].complete if columnData
+
     perf_lvl_name = ""
     if columnData
       #Loop backwards as collapsed columns use the last perf_lvl_name
@@ -207,6 +211,9 @@ define [
       prev: columnData
       asmtType: subject.asmt_type,
       asmtSubjectText: asmt_subject_text
+      standardized: standardized
+      invalid: invalid
+      complete: complete
       labels: labels
       perfLevelNumber: value
       columnName: options.colModel.label

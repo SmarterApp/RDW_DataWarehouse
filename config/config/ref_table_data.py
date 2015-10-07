@@ -171,7 +171,7 @@ ref_table_conf = {
         ('3', 'stg_sbac_asmt_outcome', 'LEPStatus', 'int_sbac_asmt_outcome', 'dmg_prg_lep', None, 'case {src_column} when \'\' then null else cast({src_column} as bool) end'),
         ('3', 'stg_sbac_asmt_outcome', 'Section504Status', 'int_sbac_asmt_outcome', 'dmg_prg_504', None, 'case {src_column} when \'\' then null else cast({src_column} as bool) end'),
         ('3', 'stg_sbac_asmt_outcome', 'EconomicDisadvantageStatus', 'int_sbac_asmt_outcome', 'dmg_sts_ecd', None, 'case {src_column} when \'\' then null else cast({src_column} as bool) end'),
-        ('3', 'stg_sbac_asmt_outcome', 'MigrantStatus', 'int_sbac_asmt_outcome', 'dmg_sts_mig', None, 'cast({src_column} as bool)'),
+        ('3', 'stg_sbac_asmt_outcome', 'MigrantStatus', 'int_sbac_asmt_outcome', 'dmg_sts_mig', None, 'case {src_column} when \'\' then null else cast({src_column} as bool) end'),
         ('3', 'stg_sbac_asmt_outcome', 'Group1Id', 'int_sbac_asmt_outcome', 'group_1_id', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'Group1Text', 'int_sbac_asmt_outcome', 'group_1_text', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'Group2Id', 'int_sbac_asmt_outcome', 'group_2_id', None, 'substr({src_column}, 1, {length})'),

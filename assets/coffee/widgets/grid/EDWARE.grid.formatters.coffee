@@ -213,7 +213,7 @@ define [
       asmtSubjectText: asmt_subject_text
       standardized: standardized
       invalid: invalid
-      complete: complete
+      partial: !complete
       labels: labels
       perfLevelNumber: value
       columnName: options.colModel.label

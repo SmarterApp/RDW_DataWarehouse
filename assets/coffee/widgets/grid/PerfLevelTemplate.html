@@ -14,9 +14,9 @@
     {{#invalid}}
     <i class="edware-icon-invalid edware-icon-small {{oldResultsClass}}"></i>
     {{/invalid}}
-    {{^complete}}
+    {{#partial}}
     <i class="edware-icon-partial  edware-icon-small {{oldResultsClass}}"></i>
-    {{/complete}}
+    {{/partial}}
 
     <div id= "iabPopoverContent" class="iabPopoverContent hide">
         {{#displayPopover}}
@@ -44,9 +44,9 @@
                                 {{#invalid}}
                                 <i class="edware-icon-invalid edware-icon-small"></i>
                                 {{/invalid}}
-                                {{^complete}}
+                                {{#partial}}
                                 <i class="edware-icon-partial  edware-icon-small"></i>
-                                {{/complete}}
+                                {{/partial}}
                             </td>
                             {{/prev}}
                         </tr>

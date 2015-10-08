@@ -66,12 +66,13 @@ define [
     standardized = (subject.administration_condition == "SD") if subject
     invalid = (subject.administration_condition == "IN") if subject
     exportValues = []
+    labels = options.colModel.labels
     if invalid
-        exportValues.push("Invalid")
+        exportValues.push(labels['invalid'])
     if standardized
-        exportValues.push("Standardized")
+        exportValues.push(labels['standardized'])
     if complete == false
-        exportValues.push("Incomplete")
+        exportValues.push(labels['partial'])
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
@@ -79,7 +80,7 @@ define [
         toolTip: toolTip
         invalid: invalid
         standardized: standardized
-        columnName: 'Status'
+        columnName: labels['status']
         export: 'edwareExportColumn' if options.colModel.export
         exportValues: exportValues.join(",")
     }

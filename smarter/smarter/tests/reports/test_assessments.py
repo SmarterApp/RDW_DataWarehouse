@@ -203,6 +203,25 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(claims[0]['min_score'], '2')
         self.assertEqual(claims[1]['max_score'], '5')
 
+    def test_get_claims_for_complete_admin_cond(self):
+        result = {'asmt_cut_point_name_1': 'one',
+                  'asmt_claim_1_score_range_min': 1,
+                  'asmt_claim_1_score_range_max': 4,
+                  'asmt_claim_1_score_min': 2,
+                  'asmt_claim_1_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_1_score': 2,
+                  'asmt_claim_1_name': 'name',
+                  'asmt_subject': 'ELA',
+                  'asmt_cut_point_name_2': 'two',
+                  'asmt_score_max': 500,
+                  'asmt_type': 'INTERIM',
+                  'complete': True,
+                  'administration_condition': 'SD'}
+        claims = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=False, include_min_max_scores=False, include_indexer=False, include_complete_admin_cond=True)
+        self.assertTrue(claims[0]['complete'])
+        self.assertEqual(claims[0]['administration_condition'], 'SD')
+
     def test_get_accommodations(self):
         result = {
             "acc_asl_video_embed": 0,

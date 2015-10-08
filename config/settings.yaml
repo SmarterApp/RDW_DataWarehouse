@@ -20,12 +20,13 @@ common:
 
     # pyramid_beaker configuration
     cache:
-      regions: public.data, public.filtered_data, public.shortlived, session
+      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
       type: ext:memcached
       expire: 3600 # one hour
       public.data.expire: 31556940 # year
       public.filtered_data.expire: 15552000 # six month
       public.shortlived.expire: 7776000 # three months
+      public.very_shortlived.expire: 1800 # 30 mins
       session.expire: 1200 # 20 minutes
       lock_dir: /tmp/memcache
 
@@ -1006,7 +1007,7 @@ localOpenAM:
 development:
   '[app:main]':
     cache:
-      regions: public.data, public.filtered_data, public.shortlived, session
+      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
       type: memory
       public.data.expire: 10
     # Celery config
@@ -1111,7 +1112,7 @@ development:
 test:
   '[app:main]':
     cache:
-      regions: public.data, public.filtered_data, public.shortlived, session
+      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
       type: memory
       public.data.expire: 10
       public.shortlived.expire: 10
@@ -1169,7 +1170,7 @@ test:
 integration:
   '[app:main]':
     cache:
-      regions: public.data, public.filtered_data, public.shortlived, session
+      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
       type: memory
       public.data.expire: 10
       public.shortlived.expire: 10
@@ -1351,7 +1352,7 @@ jenkins_dev:
 air:
   '[app:main]':
     cache:
-      regions: public.data, public.filtered_data, public.shortlived, session
+      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
       type: memory
       public.data.expire: 10
     # Celery config

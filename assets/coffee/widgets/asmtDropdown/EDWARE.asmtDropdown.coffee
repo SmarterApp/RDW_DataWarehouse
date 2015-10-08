@@ -105,7 +105,7 @@ define [
       asmt_type: $option.data('asmttype')
       asmt_guid: $option.data('asmtguid')?.toString()
       date_taken: $option.data('datetaken')
-      asmt_grade: $option.data('grade')
+      asmt_grade: $option.attr('data-grade')
       asmt_period_year: $option.data('asmtperiodyear')
 
     setSelectedValue: (asmt) ->

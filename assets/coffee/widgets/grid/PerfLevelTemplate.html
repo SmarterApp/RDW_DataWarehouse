@@ -4,21 +4,18 @@
     {{#prev}}{{display_date_taken}} {{claims.0.perf_lvl_name}}
     {{/prev}} {{/displayPopover}}
 </div>
-<div class='{{export}}'>
+    <div class="flag-container">
     {{#perfLevelNumber}}
     <a href="#" class="edware-icon-perf-level-{{perfLevelNumber}} {{oldResultsClass}}"></a>
     {{/perfLevelNumber}}
     {{#standardized}}
-    <span class="edware-icon-standardized {{oldResultsClass}}"></span>
+    <i class="edware-icon-standardized edware-icon-small {{oldResultsClass}}"></i>
     {{/standardized}}
     {{#invalid}}
-    <span class="edware-icon-invalid {{oldResultsClass}}"></span>
+    <i class="edware-icon-invalid edware-icon-small {{oldResultsClass}}"></i>
     {{/invalid}}
-    {{#partial}}
-    <span class="edware-icon-partial {{oldResultsClass}}"></span>
-    {{/partial}}
     {{^complete}}
-    <span class="edware-icon-partial {{oldResultsClass}}"></span>
+    <i class="edware-icon-partial  edware-icon-small {{oldResultsClass}}"></i>
     {{/complete}}
 
     <div id= "iabPopoverContent" class="iabPopoverContent hide">
@@ -40,14 +37,17 @@
                                 <div class="takenDate oldDateResults">
                                     {{display_date_taken}}
                                 </div>
-                                <i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
-                            {{/prev}}
-                            {{#prev}}
-                            <td>
-                                <div class="takenDate oldDateResults">
-                                    {{display_date_taken}}
-                                </div>
-                                <i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i></td>
+                                <i class="edware-icon-small-perf-level-{{claims.0.perf_lvl}}"></i>
+                                {{#standardized}}
+                                <i class="edware-icon-standardized edware-icon-small"></i>
+                                {{/standardized}}
+                                {{#invalid}}
+                                <i class="edware-icon-invalid edware-icon-small"></i>
+                                {{/invalid}}
+                                {{^complete}}
+                                <i class="edware-icon-partial  edware-icon-small"></i>
+                                {{/complete}}
+                            </td>
                             {{/prev}}
                         </tr>
                     </tbody>

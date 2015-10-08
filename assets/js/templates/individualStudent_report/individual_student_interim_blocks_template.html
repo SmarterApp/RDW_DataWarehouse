@@ -37,6 +37,8 @@
                             <div class="level{{mostRecent.level}}Content">
                                 <div class="takenDate">{{mostRecent.date_taken}}</div>
                                 {{mostRecent.desc}}
+                                <i class="{{mostRecent.administration_condition}}"></i>
+                                <i class="{{mostRecent.complete}}"></i>
                             </div>
                         </div>
                     </div>
@@ -51,6 +53,8 @@
                                     <td>
                                         <div class="takenDate oldDateResults">{{date_taken}}</div>
                                         <i class="edware-icon-small-perf-level-{{level}}"></i>
+                                        <i class="{{administration_condition}}"></i>
+                                        <i class="{{complete}}"></i>
                                     </td>
                                     {{/older}}
                                 </tr>
@@ -69,6 +73,8 @@
                                 <td>
                                     <div class="takenDate oldDateResults">{{date_taken}}</div>
                                     <i class="edware-icon-small-perf-level-{{level}}"></i>
+                                    <i class="{{administration_condition}}"></i>
+                                    <i class="{{complete}}"></i>
                                 </td>
                                 {{/placeholder}}
                                 {{/previous}}

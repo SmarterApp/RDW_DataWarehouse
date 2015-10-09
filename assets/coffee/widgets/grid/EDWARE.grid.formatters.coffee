@@ -186,7 +186,7 @@ define [
     columnData = subject[names[1]]
     date_taken = names[2]
     labels = options.colModel.labels
-
+    statusValues = []
     perf_lvl_name = ""
     if columnData
       #Loop backwards as collapsed columns use the last perf_lvl_name
@@ -199,11 +199,18 @@ define [
 
         data.display_date_taken = edwareUtil.formatDate(date)
         if date is date_taken or date_taken == labels['latest_result']
+          statusValues = []
           perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
           value = data[names[3]][names[4]]['perf_lvl']
           standardized = data.standardized
           invalid = data.invalid
           partial = data.partial
+          if invalid
+            statusValues.push(labels['invalid'])
+          if standardized
+            statusValues.push(labels['standardized'])
+          if partial
+            statusValues.push(labels['partial'])
 
 
     isExpanded = options.colModel.expanded
@@ -225,6 +232,7 @@ define [
       parentName: $(options.colModel.parentLabel).text()
       perfLevel: perf_lvl_name
       dateTakenText: dateText
+      status: statusValues.join(",")
       export: 'edwareExportColumn' if options.colModel.export
     }
 

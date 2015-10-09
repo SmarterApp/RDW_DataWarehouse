@@ -196,6 +196,10 @@ define [
       for i in [columnData.length - 1..0] by -1
         data = columnData[i]
         date = data.date_taken
+        data.standardized = data.administration_condition == "SD"
+        data.invalid = data.administration_condition == "IN"
+        data.partial = data.complete == false
+
         data.display_date_taken = edwareUtil.formatDate(date)
         if date is date_taken or date_taken == labels['latest_result']
           perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']

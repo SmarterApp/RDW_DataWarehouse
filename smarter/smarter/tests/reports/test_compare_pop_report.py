@@ -33,7 +33,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived,public.very_shortlived'
         }
         CacheManager(**parse_cache_config_options(cache_opts))
 
@@ -70,8 +70,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         # check grade-level results
         records = results[Constants.RECORDS]
         self.assertEqual(2, len(records), "2 grades in the list")
-        self.assertEqual('3', records[0][Constants.ID])
-        self.assertEqual('3', records[0][Constants.NAME])
+        self.assertEqual('03', records[0][Constants.ID])
+        self.assertEqual('03', records[0][Constants.NAME])
         asmt_results = records[0][Constants.RESULTS]
         self.assertEqual(2, len(asmt_results))
         subject1 = asmt_results[Constants.SUBJECT1]
@@ -310,7 +310,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[Constants.ASMTYEAR] = 2016
-        testParam[filters.FILTERS_GRADE] = ['3']
+        testParam[filters.FILTERS_GRADE] = ['03']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 0)
         self.assertEqual(len(results['records']), 1)
@@ -320,7 +320,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[Constants.ASMTYEAR] = 2016
-        testParam[filters.FILTERS_GRADE] = ['3', '6', '7', '11']
+        testParam[filters.FILTERS_GRADE] = ['03', '06', '07', '11']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 0)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 7)

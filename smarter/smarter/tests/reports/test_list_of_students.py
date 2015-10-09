@@ -28,7 +28,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived,public.very_shortlived'
         }
 
         CacheManager(**parse_cache_config_options(cache_opts))
@@ -52,7 +52,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = '3'
+        testParam['asmtGrade'] = '03'
         testParam['stateCode'] = 'AA'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
@@ -62,7 +62,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = '3'
+        testParam['asmtGrade'] = '03'
         testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
@@ -94,7 +94,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['stateCode'] = 'NC'
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = '3'
+        testParam['asmtGrade'] = '03'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
@@ -105,7 +105,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['stateCode'] = 'NC'
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = '3'
+        testParam['asmtGrade'] = '03'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
         self.assertTrue('asmt_administration' in results, "asmt_administration is missing")
@@ -115,7 +115,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = '3'
+        testParam['asmtGrade'] = '03'
         testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['ELA']
         results = get_list_of_students_report(testParam)
@@ -135,7 +135,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = '3'
+        testParam['asmtGrade'] = '03'
         testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['Math']
         results = get_list_of_students_report(testParam)
@@ -154,14 +154,14 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam['districtId'] = '228'
         testParam['schoolId'] = '242'
-        testParam['asmtGrade'] = 3
+        testParam['asmtGrade'] = '03'
         testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['Dummy']
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 0, "should return no results")
 
     def test_LOS_with_filters(self):
-        testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}
+        testParam = {'asmtGrade': '03', 'gender': ['male'], 'stateCode': 'NC', 'districtId': '228', 'schoolId': '242'}
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 2)
 
@@ -170,7 +170,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results['assessments']), 2)
 
     def test_asmt_type(self):
-        testParam = {'asmtGrade': '3', 'stateCode': 'NC', 'districtId': '228', 'schoolId': '242', 'asmtYear': '2015'}
+        testParam = {'asmtGrade': '03', 'stateCode': 'NC', 'districtId': '228', 'schoolId': '242', 'asmtYear': '2015'}
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 2)
         self.assertEqual(len(results['assessments']['Interim Comprehensive']['cad811ad-9b08-4dd1-aa10-52360b80ff7f']), 2)

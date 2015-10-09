@@ -27,7 +27,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived,public.very_shortlived'
         }
         CacheManager(**parse_cache_config_options(cache_opts))
 

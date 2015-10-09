@@ -262,23 +262,23 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(InvalidParameterError, _get_school_name, 'NC', 'Bad', 'Bad')
 
     def test_get_student_ids(self):
-        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '7')
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '07')
         self.assertEqual(len(guids), 8)
 
     def test_get_student_ids_males(self):
-        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'sex': ['male']}, '2016', '7')
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'sex': ['male']}, '2016', '07')
         self.assertEqual(len(guids), 4)
 
     def test_get_student_ids_group1(self):
-        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}, '2016', '7')
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}, '2016', '07')
         self.assertEqual(len(guids), 8)
 
     def test_get_student_ids_group2(self):
-        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']}, '2016', '7')
+        guids = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']}, '2016', '07')
         self.assertEqual(len(guids), 8)
 
     def test_get_student_ids_alphabetical(self):
-        recs = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
+        recs = _get_student_ids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '07')
         name = None
         for record in recs:
             if name is not None:
@@ -321,29 +321,29 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(end_in, True)
 
     def test_get_merged_pdf_name(self):
-        name = _get_merged_pdf_name('School', '7', 'en', False)
-        start_in = 'student_reports_School_grade_7_' in name
+        name = _get_merged_pdf_name('School', '07', 'en', False)
+        start_in = 'student_reports_School_grade_07_' in name
         end_in = '_en.pdf' in name
         self.assertEqual(start_in, True)
         self.assertEqual(end_in, True)
 
     def test_get_merged_pdf_name_grayscale(self):
-        name = _get_merged_pdf_name('School', '7', 'en', True)
-        start_in = 'student_reports_School_grade_7_' in name
+        name = _get_merged_pdf_name('School', '07', 'en', True)
+        start_in = 'student_reports_School_grade_07_' in name
         end_in = '_en.g.pdf' in name
         self.assertEqual(start_in, True)
         self.assertEqual(end_in, True)
 
     def test_get_merged_pdf_name_space_in_name(self):
-        name = _get_merged_pdf_name('School Name', '7', 'en', False)
-        start_in = 'student_reports_SchoolName_grade_7_' in name
+        name = _get_merged_pdf_name('School Name', '07', 'en', False)
+        start_in = 'student_reports_SchoolName_grade_07_' in name
         end_in = '_en.pdf' in name
         self.assertEqual(start_in, True)
         self.assertEqual(end_in, True)
 
     def test_get_merged_pdf_name_name_too_long(self):
-        name = _get_merged_pdf_name('School Name Is Very Long Thing', '7', 'en', False)
-        start_in = 'student_reports_SchoolNameIsVer_grade_7_' in name
+        name = _get_merged_pdf_name('School Name Is Very Long Thing', '07', 'en', False)
+        start_in = 'student_reports_SchoolNameIsVer_grade_07_' in name
         end_in = '_en.pdf' in name
         self.assertEqual(start_in, True)
         self.assertEqual(end_in, True)
@@ -359,36 +359,36 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_student_ids_by_guids(self):
         all_guids, guids_by_grade = _create_student_ids(['c799b218-0bfb-413d-9ec1-684cde99851d',
-                                                        '115f7b10-9e18-11e2-9e96-0800200c9a66'], ['8'], 'NC', '229',
+                                                        '115f7b10-9e18-11e2-9e96-0800200c9a66'], ['08'], 'NC', '229',
                                                         '939', AssessmentType.SUMMATIVE, '2016', {})
         self.assertEqual(len(all_guids), 2)
-        self.assertIn('8', guids_by_grade)
-        self.assertEqual(len(guids_by_grade['8']), 2)
+        self.assertIn('08', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['08']), 2)
 
     def test_create_student_ids_by_grade(self):
-        all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
+        all_guids, guids_by_grade = _create_student_ids(None, ['07', '08'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                                                         '2016', {})
         self.assertEqual(len(all_guids), 10)
-        self.assertIn('7', guids_by_grade)
-        self.assertIn('8', guids_by_grade)
-        self.assertEqual(len(guids_by_grade['7']), 8)
-        self.assertEqual(len(guids_by_grade['8']), 2)
+        self.assertIn('07', guids_by_grade)
+        self.assertIn('08', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['07']), 8)
+        self.assertEqual(len(guids_by_grade['08']), 2)
 
     def test_create_student_ids_by_grade_group(self):
-        all_guids, guids_by_grade = _create_student_ids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
+        all_guids, guids_by_grade = _create_student_ids(None, ['07', '08'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                                                         '2016',
                                                         {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(all_guids), 10)
-        self.assertIn('7', guids_by_grade)
+        self.assertIn('07', guids_by_grade)
         #self.assertNotIn('8', guids_by_grade)
-        self.assertEqual(len(guids_by_grade['7']), 8)
+        self.assertEqual(len(guids_by_grade['07']), 8)
 
     def test_create_student_ids_by_guids_no_students(self):
         self.assertRaises(InvalidParameterError, _create_student_ids, [], None, 'NC', '229', '939', AssessmentType.SUMMATIVE,
                           '2016', {})
 
     def test_create_student_ids_by_grade_no_students(self):
-        self.assertRaises(InvalidParameterError, _create_student_ids, None, ['7'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
+        self.assertRaises(InvalidParameterError, _create_student_ids, None, ['07'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                           '2016', {'sex': ['not_stated']})
 
     @patch('smarter.services.pdf.get.apply_async')

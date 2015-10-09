@@ -21,6 +21,7 @@ from smarter.reports.list_of_students_report_iab import get_list_of_students_iab
     get_list_of_students_report_iab, format_assessments_iab
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from mock import patch
 
 
 class Test(Unittest_with_edcore_sqlite):
@@ -28,7 +29,7 @@ class Test(Unittest_with_edcore_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived,public.very_shortlived'
         }
 
         CacheManager(**parse_cache_config_options(cache_opts))
@@ -48,7 +49,7 @@ class Test(Unittest_with_edcore_sqlite):
         params[Constants.STATECODE] = 'NC'
         params[Constants.DISTRICTGUID] = '229'
         params[Constants.SCHOOLGUID] = '936'
-        params[Constants.ASMTGRADE] = '3'
+        params[Constants.ASMTGRADE] = '03'
         params[Constants.ASMTSUBJECT] = ['Math']
         params[Constants.ASMTYEAR] = 2015
         results = get_list_of_students_iab(params)
@@ -59,7 +60,7 @@ class Test(Unittest_with_edcore_sqlite):
         params[Constants.STATECODE] = 'NC'
         params[Constants.DISTRICTGUID] = '229'
         params[Constants.SCHOOLGUID] = '936'
-        params[Constants.ASMTGRADE] = '3'
+        params[Constants.ASMTGRADE] = '03'
         params[Constants.ASMTSUBJECT] = ['Math']
         params[Constants.ASMTYEAR] = 2015
         los_results = get_list_of_students_report_iab(params)
@@ -69,8 +70,8 @@ class Test(Unittest_with_edcore_sqlite):
         self.assertEqual(5, len(subject1))
         self.assertEqual(1, len(claim))
 
-    @unittest.mock.patch('smarter.reports.list_of_students_report_iab.get_student_demographic')
-    @unittest.mock.patch('smarter.reports.list_of_students_report_iab.get_claims')
+    @patch('smarter.reports.list_of_students_report_iab.get_student_demographic')
+    @patch('smarter.reports.list_of_students_report_iab.get_claims')
     def test_format_assessments_iab(self, mock_get_claims, mock_get_student_demographic):
         mock_get_claims.return_value = [{'name': 'claim'}]
         result = dmg_map.copy()

@@ -21,7 +21,7 @@ from smarter.reports.list_of_students_report_iab import get_list_of_students_iab
     get_list_of_students_report_iab, format_assessments_iab
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from mock import patch
+from unittest.mock import patch
 
 
 class Test(Unittest_with_edcore_sqlite):

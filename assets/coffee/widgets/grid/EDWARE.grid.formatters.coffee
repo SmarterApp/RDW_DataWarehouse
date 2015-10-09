@@ -192,10 +192,18 @@ define [
       for i in [columnData.length - 1..0] by -1
         data = columnData[i]
         date = data.date_taken
+        data.standardized = data.administration_condition == "SD"
+        data.invalid = data.administration_condition == "IN"
+        data.partial = data.complete == false
+
         data.display_date_taken = edwareUtil.formatDate(date)
         if date is date_taken or date_taken == labels['latest_result']
           perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
           value = data[names[3]][names[4]]['perf_lvl']
+          standardized = data.standardized
+          invalid = data.invalid
+          partial = data.partial
+
 
     isExpanded = options.colModel.expanded
     dateText = { text: if isExpanded then date_taken else labels['latest_result'] }
@@ -207,6 +215,9 @@ define [
       prev: columnData
       asmtType: subject.asmt_type,
       asmtSubjectText: asmt_subject_text
+      standardized: standardized
+      invalid: invalid
+      partial: partial
       labels: labels
       perfLevelNumber: value
       columnName: options.colModel.label

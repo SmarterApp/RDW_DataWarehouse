@@ -186,10 +186,6 @@ define [
     date_taken = names[2]
     labels = options.colModel.labels
 
-    standardized = (columnData[0].administration_condition == "SD") if columnData
-    invalid = (columnData[0].administration_condition == "IN") if columnData
-    partial = columnData[0].complete == false if columnData
-
     perf_lvl_name = ""
     if columnData
       #Loop backwards as collapsed columns use the last perf_lvl_name
@@ -204,6 +200,10 @@ define [
         if date is date_taken or date_taken == labels['latest_result']
           perf_lvl_name = data[names[3]][names[4]]['perf_lvl_name']
           value = data[names[3]][names[4]]['perf_lvl']
+          standardized = data.standardized
+          invalid = data.invalid
+          partial = data.partial
+
 
     isExpanded = options.colModel.expanded
     dateText = { text: if isExpanded then date_taken else labels['latest_result'] }

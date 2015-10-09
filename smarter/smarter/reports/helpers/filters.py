@@ -18,6 +18,8 @@ FILTERS_PROGRAM_LEP = 'dmgPrgLep'
 FILTERS_PROGRAM_ECD = 'dmgStsEcd'
 FILTERS_PROGRAM_MIG = 'dmgStsMig'
 
+FILTERS_COMPLETE = 'complete'
+
 FILTERS_ETHNICITY_AMERICAN = '4'
 FILTERS_ETHNICITY_ASIAN = '2'
 FILTERS_ETHNICITY_BLACK = '1'
@@ -125,6 +127,14 @@ FILTERS_CONFIG = {
             "pattern": "^(" + FILTERS_SEX_MALE + "|" + FILTERS_SEX_FEMALE + "|" + FILTERS_SEX_NOT_STATED + ")$"
         }
     },
+    FILTERS_COMPLETE: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^(" + YES + "|" + NO + "|" + NOT_STATED + ")$",
+        }
+    },
     FILTERS_GROUP: {
         "type": "array",
         "required": False,
@@ -199,6 +209,9 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, filters):
         filter_sex = filters.get(FILTERS_SEX)
         if filter_sex is not None:
             query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
+        filter_complete = filters.get(FILTERS_COMPLETE)
+        if filter_complete is not None:
+            query = query.where(fact_asmt_outcome_vw.c.complete.in_(filter_complete))
         filter_group = filters.get(FILTERS_GROUP)
         if filter_group is not None:
             query = query.where((dim_student.c.group_1_id.in_(filter_group)) | (dim_student.c.group_2_id.in_(filter_group)) | (dim_student.c.group_3_id.in_(filter_group)) | (dim_student.c.group_4_id.in_(filter_group)) | (dim_student.c.group_5_id.in_(filter_group)) | (dim_student.c.group_6_id.in_(filter_group)) | (dim_student.c.group_7_id.in_(filter_group)) | (dim_student.c.group_8_id.in_(filter_group)) | (dim_student.c.group_9_id.in_(filter_group)) | (dim_student.c.group_10_id.in_(filter_group)))

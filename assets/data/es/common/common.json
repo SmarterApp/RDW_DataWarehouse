@@ -267,7 +267,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' style='width: 120px'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 176,
@@ -320,7 +320,7 @@
                         "displayTpl": "<a class='inherit' href='#'>Fecha de administración</a>",
                         "index": "subject1.asmt_date_full_name",
                         "field": "subject1.asmt_date",
-                        "width": 90,
+                        "width": 100,
                         "formatter": "showText",
                         "options": {
                             "asmt_type": "subject1.asmt_date"
@@ -376,7 +376,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
                         "index": "subject1.claims.1.perf_lvl",
                         "field": "subject1.claims.1.perf_lvl",
-                        "width": 105,
+                        "width": 115,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -422,7 +422,7 @@
                         "displayTpl": "<a class='inherit' href='#'>Fecha de administración</a>",
                         "index": "subject2.asmt_date_full_name",
                         "field": "subject2.asmt_date",
-                        "width": 90,
+                        "width": 100,
                         "formatter": "showText",
                         "options": {
                             "asmt_type": "subject2.asmt_date"
@@ -434,7 +434,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' style='width: 120px'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 175,
@@ -571,7 +571,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' style='width: 120px'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 176,
@@ -661,7 +661,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
                         "index": "subject1.claims.0.perf_lvl",
                         "field": "subject1.claims.0.perf_lvl",
-                        "width": 154,
+                        "width": 145,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -685,7 +685,7 @@
                         "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
                         "index": "subject1.claims.2.perf_lvl",
                         "field": "subject1.claims.2.perf_lvl",
-                        "width": 111,
+                        "width": 120,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
                         "align": "center",
@@ -716,7 +716,7 @@
                     },   
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#' style='width: 120px'>ELA/Alfabetización general</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 175,

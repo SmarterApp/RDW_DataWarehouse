@@ -121,7 +121,7 @@
         "sort_by": "Sort By",
         "state": "State",
         "standard_test_label": "Standard Test",
-        "standard_test_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus orci vitae nibh pretium blandit. Quisque tempor quam ipsum, nec scelerisque turpis tristique id.",
+        "standard_test_text": "This score was derived from an assessment that was administered in a standardized manner. It is appropriate to compare this score with other scores administered in the same standardized manner.",
         "sticky_inst_text": {
             "school": "Filter {{filterNumber}} selected school to <b>compare</b> or <b>download</b>",
             "schools": "Filter {{filterNumber}} selected schools to <b>compare</b> or <b>download</b>",

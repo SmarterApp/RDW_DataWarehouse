@@ -54,6 +54,7 @@ define [
 
     # Convert date to difference
     formatDate: (s) ->
+      return '' if not s
       # YYYY-MM-DDThh:mmTZD, T05:00:00 is timezone
       dStr = "#{s[0..3]}-#{s[4..5]}-#{s[6..]}T05:00:00"
       # difference of max representable time
@@ -187,9 +188,11 @@ define [
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
                   if !item[studentId][subjectName]
-                    item[studentId][subjectName] = asmt[subjectName]
+                      item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId])
+          delete combinedAsmts.subject1 if not item[studentId].subject1
+          delete combinedAsmts.subject2 if not item[studentId].subject2
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
@@ -252,7 +255,17 @@ define [
     renderFilter: () ->
       self = this
       edwareDataProxy.getDataForFilter().done (configs)->
+        interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM)
         configs = self.mergeFilters(configs)
+        filters = configs.filters
+        index = filters.length - 1
+        while index >= 0
+            if filters[index]
+                if filters[index].interimOnly == "true" and not interimAsmt
+                    filters.splice(index, 1)
+                else if filters[index].interimOnly == "false" and interimAsmt
+                    filters.splice(index, 1)
+            index--
         filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
         filter.loadReport()
         filter.update {}

@@ -185,6 +185,50 @@
                     "value": "NS"
                 }
             ]
+        },
+        {
+            "display" : "Tính Hợp Lệ",
+            "tag" : "Tính Hợp Lệ",
+            "name" : "validity",
+            "interimOnly": "false",
+            "options" : [
+                {
+                    "label" : "Hợp Lệ",
+                    "value" : "VA"
+                },{
+                    "label" : "Không Hợp Lệ",
+                    "value" : "IN"
+                }
+            ]
+        },
+        {
+            "display" : "Tính Hợp Lệ",
+            "tag" : "Tính Hợp Lệ",
+            "name" : "validity",
+            "interimOnly": "true",
+            "options" : [
+                {
+                    "label" : "Tiêu Chuẩn",
+                    "value" : "SD"
+                },{
+                    "label" : "Phi Tiêu Chuẩn",
+                    "value" : "NS"
+                }
+            ]
+        },
+        {
+            "display" : "Mức Độ Hoàn Thành",
+            "tag" : "Mức Độ Hoàn Thành",
+            "name" : "complete",
+            "options" : [
+                {
+                    "label" : "Hoàn Thành",
+                    "value" : "Y"
+                },{
+                    "label" : "Hoàn Thành Một Phần",
+                    "value" : "N"
+                }
+            ]
         }
     ],
     "group_template" : {

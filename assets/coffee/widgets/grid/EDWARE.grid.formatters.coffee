@@ -188,7 +188,7 @@ define [
 
     standardized = (columnData[0].administration_condition == "SD") if columnData
     invalid = (columnData[0].administration_condition == "IN") if columnData
-    partial = !columnData[0].complete if columnData
+    partial = columnData[0].complete == false if columnData
 
     perf_lvl_name = ""
     if columnData

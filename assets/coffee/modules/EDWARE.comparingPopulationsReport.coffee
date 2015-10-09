@@ -18,6 +18,14 @@ require [
 
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (filterConfigs) ->
+      # The funky while looping because splicing an array while you're for..looping
+      # it isn't a good idea
+      filters = filterConfigs.filters
+      index = filters.length - 1
+      while index >= 0
+        if filters[index] and filters[index].interimOnly
+            filters.splice(index, 1)
+        index--
       # move config to filter widget
       filter = $('#cpopFilter').edwareFilter '.filterItem', filterConfigs, (param)->
         param = mergeWithPreference(param)

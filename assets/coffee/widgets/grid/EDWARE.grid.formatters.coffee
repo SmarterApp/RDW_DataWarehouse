@@ -234,6 +234,7 @@ define [
       dateTakenText: dateText
       status: statusValues.join(",")
       export: 'edwareExportColumn' if options.colModel.export
+      IABReport: true
     }
 
   getScoreALD = (subject, perf_lvl_name) ->

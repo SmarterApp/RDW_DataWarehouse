@@ -204,7 +204,7 @@ define [
       colModelItem.align = column.align if column.align
       colModelItem.labels = this.options.labels
       colModelItem.title = column.title
-      colModelItem.classes = column.style if column.style
+      colModelItem.classes = if column.style then column.style else ""
       colModelItem.frozen = column.frozen if column.frozen
       colModelItem.export = column.export
       colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
@@ -214,6 +214,7 @@ define [
       if column.hide
         colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
           ' style="display:none;"'
+      colModelItem.classes += 'expanded' if column.expanded
       this.options.sortorder = column.sortorder  if column.sortorder
       this.options.sortname = column.index  if column.sortorder
       colModelItem

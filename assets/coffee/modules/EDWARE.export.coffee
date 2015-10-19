@@ -34,8 +34,10 @@ define [
     getSortBy: () ->
       sortName = this.table.getGridParam('sortname')
       sortedColumnId = "#jqgh_gridTable_#{sortName}".replace(/\./g, "\\.")
-      sortBy = $(sortedColumnId).first().text() || sortName.split(".")[1]
-      sortBy
+      if sortName is `undefined`
+        ""
+      else 
+        $(sortedColumnId).first().text() || sortName.split(".")[1]
 
     build: () ->
       records = [] # fixed first 10 rows

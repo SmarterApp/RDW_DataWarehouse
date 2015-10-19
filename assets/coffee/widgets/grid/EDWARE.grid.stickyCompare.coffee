@@ -201,7 +201,7 @@ define [
 
     # Returns the id and name of a row
     getCurrentRowInfo: (row) ->
-      {'id': $(row).data('value'), 'name': $(row).data('name')}
+      {'id': $(row).attr('data-value'), 'name': $(row).attr('data-name')}
 
     getSelectedRowsFromStorage: () ->
       # When this gets called, it means we should read from storage

@@ -225,7 +225,7 @@
                     "label" : "Complete",
                     "value" : "Y"
                 },{
-                    "label" : "Incomplete",
+                    "label" : "Partial",
                     "value" : "N"
                 }
             ]

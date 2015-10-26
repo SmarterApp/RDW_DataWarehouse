@@ -52,7 +52,7 @@ class CacheTrigger(object):
         flush_report_in_cache_region(report.get_report, region_name, *args)
         r = report.get_report()
         if not has_filters(filters):
-            subjects = r.get(Constants.SUBJECTS, [])
+            subjects = {Constants.SUBJECT1: Constants.MATH, Constants.SUBJECT2: Constants.ELA}
             for subject_key in subjects.keys():
                 args = get_aggregate_dim_cache_route_cache_key(self.state_code, district_id, None, year, self.tenant, subject_key, subjects[subject_key])
                 flush_report_in_cache_region(_get_aggregate_dim_for_interim, CACHE_REGION_PUBLIC_SHORTLIVED, *args)

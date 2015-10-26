@@ -82,7 +82,7 @@ def get_comparing_populations_report(params):
         report = merge_filtered_results(report, unfiltered)
     else:
         interim_params = deepcopy(params)
-        interim_report = get_aggregate_dim_interim(subjects=report.get(Constants.SUBJECTS, []), **interim_params)
+        interim_report = get_aggregate_dim_interim(subjects=report.get(Constants.SUBJECTS, {}), **interim_params)
         report['records'] = get_merged_report_records(report, interim_report)
     return report
 

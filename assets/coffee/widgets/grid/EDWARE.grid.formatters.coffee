@@ -73,6 +73,10 @@ define [
         exportValues.push(labels['standardized'])
     if complete == false
         exportValues.push(labels['partial'])
+    if options.colModel.formatoptions.asmt_type == 'subject1'
+        status=labels['mathematics']+' '+labels['status']
+    else
+        status=labels['ela_literacy']+' '+labels['status']
     return Mustache.to_html STATUS_TEMPLATE, {
         cssClass: options.colModel.formatoptions.style
         subTitle: rowObject.subtitle
@@ -80,7 +84,7 @@ define [
         toolTip: toolTip
         invalid: invalid
         standardized: standardized
-        columnName: labels['status']
+        columnName: status
         export: 'edwareExportColumn' if options.colModel.export
         exportValues: exportValues.join(",")
     }

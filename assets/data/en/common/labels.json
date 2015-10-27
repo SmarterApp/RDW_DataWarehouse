@@ -89,7 +89,7 @@
         "overall_score_indicator": "Overall Score Indicator",
         "partial": "Partial",
         "partial_test_label": "Partial Test",
-        "partial_test_text": "The student did not answer all fo the questions on this test and all unanswered questions have been reported as incorrect.",
+        "partial_test_text": "The student did not answer all of the questions on this test and all unanswered questions have been reported as incorrect.",
         "percentage": "Percentage",
         "performance_level" : "Performance Level",
         "performance_level_number" : "Performance Level Number",

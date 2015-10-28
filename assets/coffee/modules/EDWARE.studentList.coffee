@@ -30,7 +30,7 @@ define [
     init: (row) ->
       @appendColors row
       row = @appendExtraInfo row
-      row
+      $.extend(true, {}, row)
 
     appendColors: (assessment) ->
       # display asssessment type in the tooltip title
@@ -212,6 +212,15 @@ define [
           for subjectName, subjectType of @subjectsData
             continue if not row[subjectName] or row[subjectName].hide
             @cache[Constants.ASMT_TYPE.IAB][subjectType] ?= []
+            for claim_key, claims of row[subjectName]
+              if $.isArray claims
+                idx = claims.length - 1
+                while idx >= 0
+                  if claims[idx].hide is undefined or claims[idx].hide
+                    claims.splice idx, 1
+                  idx--
+                if claims.length is 0
+                  delete row[subjectName][claim_key]
             @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
 
     getAsmtData: (viewName, params)->

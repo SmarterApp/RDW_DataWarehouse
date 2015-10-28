@@ -356,16 +356,21 @@ define [
 
       for asmtType, studentList of data.assessments
         for studentId, assessment of studentList
-          if not match.demographics(assessment)
-            assessment.hide = true
-            continue
-          else
-            assessment.hide = false
-          # check grouping filters
-          if not match.grouping(assessment)
-            assessment.hide = true
-          else
-            assessment.hide = false
+          assessment.hide = if not match.demographics(assessment) then true else false
+          # check grouping and complete filters
+          break if assessment.hide
+          for subject of data.subjects
+            asmt_subject = assessment[subject]
+            continue if not asmt_subject
+            if asmt_subject.hide is undefined or asmt_subject.hide is false
+              asmt_subject.hide = true
+            if asmt_subject.hide
+              for claim_name, claims of asmt_subject
+                if $.isArray claims
+                  #break if asmt_subject.hide == false
+                  for claim in claims
+                    claim.hide = !match.complete(claim) or !match.validity(claim)
+                    asmt_subject.hide = asmt_subject.hide and claim.hide
       data
 
     FAOFilter = (data) ->
@@ -373,6 +378,7 @@ define [
       return data if not filters
       for asmtType, studentGroupByType of data.assessments
         for studentId, asmtList of studentGroupByType
+          
           for asmtByDate in asmtList
             for asmtDate, assessment of asmtByDate
               assessment.hide = if not match.demographics(assessment) then true else false

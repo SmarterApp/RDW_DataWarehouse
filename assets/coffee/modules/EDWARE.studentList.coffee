@@ -264,7 +264,7 @@ define [
     renderFilter: () ->
       self = this
       edwareDataProxy.getDataForFilter().done (configs)->
-        interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM)
+        interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM or edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.IAB)
         configs = self.mergeFilters(configs)
         filters = configs.filters
         index = filters.length - 1

@@ -3,6 +3,7 @@ from sqlalchemy import Table, Column, text
 from sqlalchemy.types import Text, Boolean, TIMESTAMP, Interval, TIME
 from sqlalchemy.types import BigInteger, SmallInteger, String
 from sqlalchemy import CheckConstraint
+import sqlalchemy.sql.expression
 
 
 def generate_udl2_metadata(schema_name=None, bind=None):
@@ -189,7 +190,8 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('accommodationstreamlinemode', String(256), nullable=True),
                                   Column('accommodationnoisebuffer', String(256), nullable=True),
                                   Column('guid_batch', String(256), nullable=False),
-                                  Column('assessmentstatus', String(2), nullable=True),
+                                  Column('administrationcondition', String(2), nullable=True),
+                                  Column('completestatus', String(5), nullable=True),
                                   )
 
     err_list = Table('err_list', metadata,
@@ -339,7 +341,8 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
                                   Column('acc_noise_buffer_nonembed', SmallInteger, nullable=False),
                                   Column('guid_batch', String(36), CheckConstraint("guid_batch != ''"), nullable=False),
-                                  Column('asmt_status', String(2), nullable=False, server_default='OK'),
+                                  Column('administration_condition', String(2), nullable=True),
+                                  Column('complete', Boolean, nullable=False, server_default=sqlalchemy.sql.expression.true()),
                                   )
 
     int_sbac_stu_reg = Table('int_sbac_stu_reg', metadata,

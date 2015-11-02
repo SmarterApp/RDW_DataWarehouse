@@ -177,7 +177,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtYear': ['2016'],
                                     'asmtType': ['SUMMATIVE'],
                                     'sex': ['male'],
-                                    'asmtGrade': ['7'],
+                                    'asmtGrade': ['07'],
                                     'studentId': ['a629ca88-afe6-468c-9dbb-92322a284602']}
         response = post_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)

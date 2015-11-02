@@ -6,7 +6,7 @@ Created on Mar 7, 2013
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
-from sqlalchemy.sql import and_
+from sqlalchemy.sql import and_, or_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from sqlalchemy.sql.expression import func
 from smarter.reports.helpers.constants import Constants, AssessmentType
@@ -467,6 +467,7 @@ class QueryHelper():
             .where(and_(self._fact_asmt_outcome_vw.c.state_code == self._state_code,
                         self._fact_asmt_outcome_vw.c.asmt_type == self._asmt_type,
                         self._fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT,
+                        or_(self._fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_STANDARDIZED, self._fact_asmt_outcome_vw.c.administration_condition == None),
                         self._fact_asmt_outcome_vw.c.asmt_year == self._asmt_year))\
             .group_by(self._fact_asmt_outcome_vw.c.asmt_subject,
                       self._fact_asmt_outcome_vw.c.inst_hier_rec_id,

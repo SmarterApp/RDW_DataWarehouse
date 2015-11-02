@@ -106,7 +106,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2018',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3',
+                  'asmtGrade': '03',
                   'extractType': 'itemLevel'}
         for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
             response = process_async_item_or_raw_extraction_request(params, extract_type)
@@ -118,9 +118,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
                   'asmtYear': '2015',
-                  'asmtGrade': '6'}
+                  'asmtGrade': '06'}
         path = get_extract_file_path(params, 'tenant', 'request_id', is_tenant_level=True)
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_6_UUUU_ABC_')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_06_UUUU_ABC_')
         self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
@@ -133,9 +133,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
-                  'asmtGrade': '1'}
+                  'asmtGrade': '01'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_1_UUUU_ABC')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_01_UUUU_ABC')
         self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
@@ -143,13 +143,13 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5_UUUU_ABC_')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_05_UUUU_ABC_')
         self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
@@ -157,7 +157,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'INTERIM ASSESSMENT BLOCKS',
                   'asmtYear': '2015',
@@ -165,7 +165,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'effective_date': '20151111',
                   'asmt_claim_1_name': 'claim / name'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5_UUUU_IAB_claimname_EFF11-11-2015')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_05_UUUU_IAB_claimname_EFF11-11-2015')
         self.assertIn(expected_path, path)
 
     def test_get_item_file_name(self):
@@ -173,9 +173,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtType': 'abc',
                   'asmtSubject': 'UUUU',
-                  'asmtGrade': '5'}
+                  'asmtGrade': '05'}
         path = get_items_extract_file_path(params, 'tenant', 'request_id')
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ITEMS_CA_2015_ABC_UUUU_GRADE_5')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ITEMS_CA_2015_ABC_UUUU_GRADE_05')
         self.assertIn(expected_path, path)
 
     def test_get_item_file_name_with_multi_parts(self):
@@ -183,10 +183,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtType': 'abc',
                   'asmtSubject': 'UUUU',
-                  'asmtGrade': '5'}
+                  'asmtGrade': '05'}
         path = get_items_extract_file_path(params, 'tenant', 'request_id', partial_no=2)
         workzone_dir = _get_extract_work_zone_base_dir()
-        expected_path = os.path.join(workzone_dir, 'tenant', 'request_id', 'data', 'part2', 'ITEMS_CA_2015_ABC_UUUU_GRADE_5')
+        expected_path = os.path.join(workzone_dir, 'tenant', 'request_id', 'data', 'part2', 'ITEMS_CA_2015_ABC_UUUU_GRADE_05')
         self.assertIn(expected_path, path)
         self.assertIn('_part2', path)
 
@@ -239,7 +239,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'districtId': [None],
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
-                  'asmtGrade': ['3'],
+                  'asmtGrade': ['03'],
                   'asmtYear': ['2016'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         response = process_extraction_request(params)
@@ -257,7 +257,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'ELA',
-                  'asmtGrade': '3'}
+                  'asmtGrade': '03'}
         for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
             response = process_async_item_or_raw_extraction_request(params, extract_type)
             self.assertIn('.zip', response['files'][0]['fileName'])
@@ -301,7 +301,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -309,7 +309,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         file_name = get_asmt_metadata_file_path(params, "tenant", "id")
         expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'id', 'data')
         self.assertIn(expected_path, file_name)
-        self.assertIn('METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)
+        self.assertIn('METADATA_ASMT_2015_CA_GRADE_05_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)
 
     def test__create_tasks_for_non_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -318,7 +318,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -337,7 +337,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -348,14 +348,14 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual(len(results), 2)
         self.assertEquals(ExtractionDataType.QUERY_CSV, results[0][TaskConstants.EXTRACTION_DATA_TYPE])
         self.assertEquals(ExtractionDataType.QUERY_JSON, results[1][TaskConstants.EXTRACTION_DATA_TYPE])
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_5')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_05')
         self.assertIn(expected_path, results[0][TaskConstants.TASK_FILE_NAME])
 
     def test__create_asmt_metadata_task(self):
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
@@ -371,7 +371,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -381,7 +381,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                                 extract_file_path=get_extract_file_path)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_05')
         self.assertIn(expected_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_non_tenant_level_json_request(self):
@@ -391,7 +391,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -400,7 +400,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=False)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_JSON, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        expceted_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json')
+        expceted_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'METADATA_ASMT_2015_CA_GRADE_05_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json')
         self.assertIn(expceted_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level(self):
@@ -410,7 +410,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -420,7 +420,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                                 extract_file_path=get_extract_file_path)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_5')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_05')
         self.assertIn(expected_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level_json_request(self):
@@ -430,7 +430,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'CA',
                   'districtId': '341',
                   'schoolId': 'asf',
-                  'asmtGrade': '5',
+                  'asmtGrade': '05',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtYear': '2015',
@@ -439,7 +439,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_JSON, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json')
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'METADATA_ASMT_2015_CA_GRADE_05_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json')
         self.assertIn(expected_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_item_level(self):
@@ -450,7 +450,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtType': 'abc',
                   'asmtSubject': 'UUUU',
-                  'asmtGrade': '5'}
+                  'asmtGrade': '05'}
         user = User()
         task = _create_new_task('request_id', user, 'tenant', params, query, extract_type=ExtractType.itemLevel, is_tenant_level=True)
         self.assertIsNotNone(task)
@@ -460,7 +460,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'NC',
                   'districtId': '228',
                   'schoolId': '242',
-                  'asmtGrade': '3',
+                  'asmtGrade': '03',
                   'asmtSubject': 'Math',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE'}
@@ -474,7 +474,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': 'NC',
                   'districtId': '228',
                   'schoolId': '242',
-                  'asmtGrade': '3',
+                  'asmtGrade': '03',
                   'asmtSubject': 'NoSubject',
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE'}
@@ -503,6 +503,6 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual('SAREXTRACTS', get_required_permission(ExtractType.studentAssessment))
 
     def test_estimate_extract_total_file_size(self):
-        params = {'asmtType': 'SUMMATIVE', 'asmtYear': '2016', 'extractType': 'itemLevel', 'stateCode': 'NC', 'asmtGrade': '5', 'asmtSubject': 'Math', 'async': 'true'}
+        params = {'asmtType': 'SUMMATIVE', 'asmtYear': '2016', 'extractType': 'itemLevel', 'stateCode': 'NC', 'asmtGrade': '05', 'asmtSubject': 'Math', 'async': 'true'}
         total = estimate_extract_total_file_size(params, 1000, ExtractType.itemLevel)
         self.assertEqual(26000, total)

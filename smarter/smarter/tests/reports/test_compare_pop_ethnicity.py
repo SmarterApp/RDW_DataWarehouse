@@ -27,7 +27,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived,public.very_shortlived'
         }
         CacheManager(**parse_cache_config_options(cache_opts))
 
@@ -80,7 +80,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 0)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_wht(self):
@@ -139,7 +139,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 0)
 
     def test_comparing_populations_ethnicity_blk_wht(self):
         testParam = {}
@@ -170,7 +170,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 3)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 3)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

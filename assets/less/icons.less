@@ -303,3 +303,57 @@
     background-image: url("../images/CpopLegendArrow.png");
     background-position: 0px 0px;
 }
+
+@backgroundPosX: -30px;
+.edware-icon-partial, .edware-icon-invalid, .edware-icon-standardized {
+    background-image: url("../images/icons/invalidPartialIcons/sprite.png");
+    width: 22px;
+    height: 22px;
+}
+
+.edware-icon-standardized {
+    background-position: @backgroundPosX -2px;
+}
+
+.edware-icon-invalid {
+    background-position: @backgroundPosX -32px;
+}
+
+.edware-icon-partial {
+    background-position: @backgroundPosX -62px;
+}
+
+.edware-icon-large {
+    width: 26px;
+    height: 26px;
+    @backgroundPosX: 0;
+    &.edware-icon-standardized {
+        background-position: @backgroundPosX 0px;
+    }
+
+    &.edware-icon-invalid {
+        background-position: @backgroundPosX -30px;
+    }
+
+    &.edware-icon-partial {
+        background-position: @backgroundPosX -60px;
+    }
+}
+
+.edware-icon-small {
+    width: 18px;
+    height: 18px;
+    background-position: -56px;
+    @backgroundPosX: -56px;
+    &.edware-icon-standardized {
+        background-position: @backgroundPosX -4px;
+    }
+
+    &.edware-icon-invalid {
+        background-position: @backgroundPosX -34px;
+    }
+
+    &.edware-icon-partial {
+        background-position: @backgroundPosX -64px;
+    }
+}

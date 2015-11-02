@@ -331,9 +331,9 @@ function import_data_from_csv {
     sed -i.bak "s/edwdbsrv4.poc.dum.edwdc.net:9999/edwdbsrv1.poc.dum.edwdc.net:5432/" ${WORKSPACE}/config/data_copy.ini
 
     python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant cat --stateCode NC --stateName "North Carolina"
-    python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant dog --stateCode CA --stateName California --updateYear
+    python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant dog --stateCode CA --stateName "California" --updateYear
     if (! $RUN_END_TO_END;) then
-        python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources/student_registration_data/ --tenant fish --stateCode VT --stateName Vermont
+        python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources/student_registration_data/ --tenant fish --stateCode VT --stateName "Vermont"
     fi
 
     echo "Generate Item Level Data"

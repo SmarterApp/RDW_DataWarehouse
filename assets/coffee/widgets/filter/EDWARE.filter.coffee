@@ -310,7 +310,7 @@ define [
           # do not check other attributes
           if not $.isArray(filterValue)
             continue
-          if filterName is 'studentGroupId'
+          if filterName in ['studentGroupId', 'validity', 'complete']
             continue
           if filterName.substr(0, 5) isnt 'group' and filterName.substr(0, 5) isnt 'grade' # do not check grouping filters
             return false if assessment.demographic[filterName] not in filterValue
@@ -323,6 +323,31 @@ define [
           if groupId in subject.group
             return true
         return false
+
+      complete: (subject) ->
+        # return true to show the record, and false to hide
+        result = false
+        return true if not filters.complete
+        for filter in filters.complete
+            if filter == "Y"
+                result = result || subject.complete == true
+            if filter == "N"
+                result = result || subject.complete == false
+        return result
+
+      validity: (subject) ->
+        result = false
+        return true if not filters.validity
+        for filter in filters.validity
+            if filter == "NS" #Non-standard
+                result = result || (subject.administration_condition == null || subject.administration_condition == "NS")
+            if filter == "SD" #Standard
+                result = result || subject.administration_condition == "SD"
+            if filter == "VA"
+                result = result || (subject.administration_condition == null || subject.administration_condition == "VA")
+            if filter == "IN"
+                result = result || subject.administration_condition == "IN"
+        return result
     }
 
     IABFilter = (data) ->
@@ -331,16 +356,21 @@ define [
 
       for asmtType, studentList of data.assessments
         for studentId, assessment of studentList
-          if not match.demographics(assessment)
-            assessment.hide = true
-            continue
-          else
-            assessment.hide = false
-          # check grouping filters
-          if not match.grouping(assessment)
-            assessment.hide = true
-          else
-            assessment.hide = false
+          assessment.hide = if not match.demographics(assessment) then true else false
+          # check grouping and complete filters
+          break if assessment.hide
+          for subject of data.subjects
+            asmt_subject = assessment[subject]
+            continue if not asmt_subject
+            if asmt_subject.hide is undefined or asmt_subject.hide is false
+              asmt_subject.hide = true
+            if asmt_subject.hide
+              for claim_name, claims of asmt_subject
+                if $.isArray claims
+                  #break if asmt_subject.hide == false
+                  for claim in claims
+                    claim.hide = !match.complete(claim) or !match.validity(claim)
+                    asmt_subject.hide = asmt_subject.hide and claim.hide
       data
 
     FAOFilter = (data) ->
@@ -348,14 +378,17 @@ define [
       return data if not filters
       for asmtType, studentGroupByType of data.assessments
         for studentId, asmtList of studentGroupByType
+          
           for asmtByDate in asmtList
             for asmtDate, assessment of asmtByDate
               assessment.hide = if not match.demographics(assessment) then true else false
-              # check grouping filters
+              # check grouping and complete filters
               for subject of data.subjects
                 asmt_subject = assessment[subject]
                 continue if not asmt_subject
                 asmt_subject.hide = if not match.grouping(asmt_subject) then true else false
+                asmt_subject.hide = asmt_subject.hide || !match.complete(asmt_subject)
+                asmt_subject.hide = asmt_subject.hide || !match.validity(asmt_subject)
       data
 
     return (asmtType) ->

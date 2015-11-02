@@ -66,7 +66,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtYear': '2015',
                   'asmtType': 'INTERIM ASSESSMENT BLOCKS',
                   'asmtSubject': 'Math',
-                  'asmt_grade': '3'}
+                  'asmt_grade': '03'}
         query = get_extract_assessment_query_iab(params)
         self.assertIsNotNone(query)
         with UnittestEdcoreDBConnection() as connection:
@@ -120,7 +120,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmt_grade': '3'}
+                  'asmt_grade': '03'}
         query = get_extract_assessment_query(params)
         self.assertIsNotNone(query)
         with UnittestEdcoreDBConnection() as connection:
@@ -148,7 +148,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         params = {'stateCode': 'NC',
                   'districtId': '229',
                   'schoolId': '939',
-                  'asmtGrade': '7',
+                  'asmtGrade': '07',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
@@ -166,7 +166,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtYear': '2019',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3',
+                  'asmtGrade': '03',
                   'extractType': 'itemLevel'}
         query = get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel)
         self.assertIsNotNone(query)
@@ -177,7 +177,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3',
+                  'asmtGrade': '03',
                   'extractType': 'itemLevel'}
         query = get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel).limit(541)
         self.assertIsNotNone(query)
@@ -188,7 +188,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3',
+                  'asmtGrade': '03',
                   'extractType': 'itemLevel'}
         query = compile_query_to_sql_text(get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel))
         self.assertIsNotNone(query)
@@ -200,7 +200,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
+                  'asmtGrade': '03'}
         query = get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel)
         self.assertIsNotNone(query)
         with UnittestEdcoreDBConnection() as connection:

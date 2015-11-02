@@ -19,6 +19,9 @@ class Constants():
     constants for reports
     '''
 
+    ADMINISTRATION_CONDITION_STANDARDIZED = 'SD'
+    ADMINISTRATION_CONDITION_NON_STANDARDIZED = 'NS'
+    ADMINISTRATION_CONDITION_INVALID = 'IN'
     EFFECTIVEDATE = 'effectiveDate'
     SL = 'sl'
     PDF = 'pdf'

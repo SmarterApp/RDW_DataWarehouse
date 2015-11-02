@@ -30,7 +30,7 @@ define [
     init: (row) ->
       @appendColors row
       row = @appendExtraInfo row
-      row
+      $.extend(true, {}, row)
 
     appendColors: (assessment) ->
       # display asssessment type in the tooltip title
@@ -54,6 +54,7 @@ define [
 
     # Convert date to difference
     formatDate: (s) ->
+      return '' if not s
       # YYYY-MM-DDThh:mmTZD, T05:00:00 is timezone
       dStr = "#{s[0..3]}-#{s[4..5]}-#{s[6..]}T05:00:00"
       # difference of max representable time
@@ -187,9 +188,11 @@ define [
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
                   if !item[studentId][subjectName]
-                    item[studentId][subjectName] = asmt[subjectName]
+                      item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId])
+          delete combinedAsmts.subject1 if not item[studentId].subject1
+          delete combinedAsmts.subject2 if not item[studentId].subject2
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1
@@ -209,6 +212,15 @@ define [
           for subjectName, subjectType of @subjectsData
             continue if not row[subjectName] or row[subjectName].hide
             @cache[Constants.ASMT_TYPE.IAB][subjectType] ?= []
+            for claim_key, claims of row[subjectName]
+              if $.isArray claims
+                idx = claims.length - 1
+                while idx >= 0
+                  if claims[idx].hide is undefined or claims[idx].hide
+                    claims.splice idx, 1
+                  idx--
+                if claims.length is 0
+                  delete row[subjectName][claim_key]
             @cache[Constants.ASMT_TYPE.IAB][subjectType].push row
 
     getAsmtData: (viewName, params)->
@@ -252,7 +264,17 @@ define [
     renderFilter: () ->
       self = this
       edwareDataProxy.getDataForFilter().done (configs)->
+        interimAsmt = (edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.INTERIM or edwarePreferences.getAsmtType() == Constants.ASMT_TYPE.IAB)
         configs = self.mergeFilters(configs)
+        filters = configs.filters
+        index = filters.length - 1
+        while index >= 0
+            if filters[index]
+                if filters[index].interimOnly == "true" and not interimAsmt
+                    filters.splice(index, 1)
+                else if filters[index].interimOnly == "false" and interimAsmt
+                    filters.splice(index, 1)
+            index--
         filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
         filter.loadReport()
         filter.update {}
@@ -308,7 +330,7 @@ define [
             trigger: "manual"
             container: '#content'
             placement: (tip, element) ->
-              edwareUtil.popupPlacement(element, 400, 220)
+              edwareUtil.popupPlacement(element, 400, 320)
             title: ->
               elem.parent().find(".losTooltip .js-popupTitle").html()
             template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -320,7 +342,7 @@ define [
         'mouseleave focusout': ->
           elem = $(this)
           elem.popover("hide")
-      , ".asmtScore"
+      , ".asmtScore, .status-flags"
 
       # Show iab popover
       $document.on

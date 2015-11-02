@@ -113,6 +113,10 @@ define [
         assessment.score_bg_color = performance_level.bg_color
         assessment.score_name = @configData.labels.asmt.perf_lvl_name[assessment.asmt_perf_lvl]
 
+        asmtType = assessment.asmt_type
+        assessment.invalid = (assessment.administration_condition == "IN")
+        assessment.standardized = (assessment.administration_condition == "SD")
+
         # set level-based overall ald content
         overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject][this.configData.overall_ald_grade_buckets[assessment.asmt_grade]][assessment.asmt_perf_lvl], assessment)
         overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
@@ -214,13 +218,17 @@ define [
         # Separate all the interim blocks by asmt_grades
         for assessment in @data.all_results[subjectAlias]
           asmt_grade = assessment['grade']
+          complete = assessment['claims'][0]['complete']
+          administration_condition = assessment['claims'][0]['administration_condition']
           dataByGrade[asmt_grade] ?= []
           grades.push(asmt_grade) if grades.indexOf(asmt_grade) < 0
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
           'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
           'desc': assessment['claims'][0]['perf_lvl_name'],
-          'level': assessment['claims'][0]['perf_lvl']}
+          'level': assessment['claims'][0]['perf_lvl'],
+          'complete': 'edware-icon-partial edware-icon-small' if complete is false
+          'administration_condition': 'edware-icon-standardized edware-icon-small' if administration_condition == 'SD'}
           dataByGrade[asmt_grade].push(block_info)
         @splitByPerfBlockByName(subjectName, dataByGrade)
         subjectData['grades'] = []
@@ -449,7 +457,7 @@ define [
           container: "#content"
           trigger: "hover"
           placement: (tip, element) ->
-            edwareUtil.popupPlacement(element, 400, 276)
+            edwareUtil.popupPlacement(element, 400, 376)
           title: ->
             e = $(this)
             e.parent().parent().find(".header").find("h4").html()

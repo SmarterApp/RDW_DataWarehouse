@@ -6,7 +6,7 @@ Created on Oct 20, 2014
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, or_
 from smarter_common.security.constants import RolesConstants
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
@@ -18,7 +18,7 @@ from smarter.reports.student_administration import get_asmt_administration_years
     get_asmt_academic_years
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from smarter.reports.helpers.assessments import get_claims
-import collections
+from sqlalchemy.sql.functions import func
 
 
 def get_list_of_students_report_iab(params):
@@ -106,8 +106,10 @@ def get_list_of_students_iab(params):
                                      dim_asmt.c.asmt_claim_perf_lvl_name_1.label('asmt_claim_perf_lvl_name_1'),
                                      dim_asmt.c.asmt_claim_perf_lvl_name_2.label('asmt_claim_perf_lvl_name_2'),
                                      dim_asmt.c.asmt_claim_perf_lvl_name_3.label('asmt_claim_perf_lvl_name_3'),
-                                     fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl')],
-                                    from_obj=[fact_block_asmt_outcome
+                                     fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                     fact_block_asmt_outcome.c.administration_condition.label('administration_condition'),
+                                     func.coalesce(fact_block_asmt_outcome.c.complete, True).label('complete')],
+                                  from_obj=[fact_block_asmt_outcome
                                               .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_block_asmt_outcome.c.state_code == stateCode)
@@ -115,6 +117,8 @@ def get_list_of_students_iab(params):
         query = query.where(and_(fact_block_asmt_outcome.c.district_id == districtId))
         query = query.where(and_(fact_block_asmt_outcome.c.asmt_year == asmtYear))
         query = query.where(and_(fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
+        query = query.where(and_(or_(fact_block_asmt_outcome.c.administration_condition == None, fact_block_asmt_outcome.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
+                                                                                                                                                   Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))
         query = query.where(and_(fact_block_asmt_outcome.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
         query = apply_filter_to_query(query, fact_block_asmt_outcome, dim_student, params)
         if asmtSubject is not None:
@@ -169,11 +173,13 @@ def format_assessments_iab(results, subjects_map):
             student['group'] = set()  # for student group filter
 
         for i in range(1, 11):
-            if result['group_{count}_id'.format(count=i)] is not None:
+            if result.get('group_{count}_id'.format(count=i)) is not None:
                 student['group'].add(result['group_{count}_id'.format(count=i)])
 
         assessment = {Constants.DATE_TAKEN: date_taken}
         assessment['asmt_grade'] = result['asmt_grade']
+        assessment['administration_condition'] = result['administration_condition']
+        assessment['complete'] = result['complete']
         claims = assessment.get('claims', [])
         claim = get_claims(number_of_claims=1, result=result, include_scores=False, include_names=True)[0]
         claims.append(claim)

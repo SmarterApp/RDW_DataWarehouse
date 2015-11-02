@@ -88,6 +88,7 @@ require {
     edwareFormatterPerformanceBarTemplate: 'widgets/grid/PerformanceBarTemplate.html',
     edwareFormatterPopulationBarTemplate: 'widgets/grid/PopulationBarTemplate.html',
     edwareFormatterSummaryTemplate: 'widgets/grid/SummaryTemplate.html',
+    edwareFormatterStatusTemplate: 'widgets/grid/StatusTemplate.html',
     edwareFormatterTextTemplate: 'widgets/grid/TextTemplate.html',
     edwareFormatterTooltipTemplate: 'widgets/grid/TooltipTemplate.html',
     edwareFormatterTotalPopulationTemplate: 'widgets/grid/TotalPopulationTemplate.html',

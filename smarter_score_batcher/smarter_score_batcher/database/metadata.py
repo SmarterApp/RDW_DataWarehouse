@@ -103,6 +103,8 @@ def generate_tsb_metadata(schema_name=None, bind=None):
                      Column('AccommodationScribe', String(50), nullable=True),
                      Column('AccommodationSpeechToText', String(50), nullable=True),
                      Column('AccommodationNoiseBuffer', String(50), nullable=True),
+                     Column('CompleteStatus', String(50), nullable=True),
+                     Column('AdministrationCondition', String(50), nullable=True),
                      UniqueConstraint('StudentIdentifier', 'AssessmentGuid')
                      )
 

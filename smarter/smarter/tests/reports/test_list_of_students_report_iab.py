@@ -10,15 +10,18 @@ from pyramid.security import Allow
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from edauth.tests.test_helper.create_session import create_test_session
 import edauth
+from smarter.reports.helpers.metadata import get_subjects_map
+from smarter.reports.helpers.filters import dmg_map
 from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.roles.pii import PII  # @UnusedImport
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.list_of_students_report_iab import get_list_of_students_iab, \
-    get_list_of_students_report_iab
+    get_list_of_students_report_iab, format_assessments_iab
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from unittest.mock import patch
 
 
 class Test(Unittest_with_edcore_sqlite):
@@ -26,7 +29,7 @@ class Test(Unittest_with_edcore_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived,public.very_shortlived'
         }
 
         CacheManager(**parse_cache_config_options(cache_opts))
@@ -46,7 +49,7 @@ class Test(Unittest_with_edcore_sqlite):
         params[Constants.STATECODE] = 'NC'
         params[Constants.DISTRICTGUID] = '229'
         params[Constants.SCHOOLGUID] = '936'
-        params[Constants.ASMTGRADE] = '3'
+        params[Constants.ASMTGRADE] = '03'
         params[Constants.ASMTSUBJECT] = ['Math']
         params[Constants.ASMTYEAR] = 2015
         results = get_list_of_students_iab(params)
@@ -57,7 +60,7 @@ class Test(Unittest_with_edcore_sqlite):
         params[Constants.STATECODE] = 'NC'
         params[Constants.DISTRICTGUID] = '229'
         params[Constants.SCHOOLGUID] = '936'
-        params[Constants.ASMTGRADE] = '3'
+        params[Constants.ASMTGRADE] = '03'
         params[Constants.ASMTSUBJECT] = ['Math']
         params[Constants.ASMTYEAR] = 2015
         los_results = get_list_of_students_report_iab(params)
@@ -66,6 +69,30 @@ class Test(Unittest_with_edcore_sqlite):
         claim = subject1['Fractions']
         self.assertEqual(5, len(subject1))
         self.assertEqual(1, len(claim))
+
+    @patch('smarter.reports.list_of_students_report_iab.get_student_demographic')
+    @patch('smarter.reports.list_of_students_report_iab.get_claims')
+    def test_format_assessments_iab(self, mock_get_claims, mock_get_student_demographic):
+        mock_get_claims.return_value = [{'name': 'claim'}]
+        result = dmg_map.copy()
+        result['first_name'] = 'Johnny'
+        result['middle_name'] = 'Drake'
+        result['last_name'] = 'Darko'
+        result['student_id'] = '923436'
+        result['date_taken'] = '20140301'
+        result['enrollment_grade'] = '3'
+        result['state_code'] = 'NC'
+        result[Constants.ROWID] = 2015
+        result['complete'] = True
+        result['administration_condition'] = "IN"
+        result['asmt_grade'] = "A"
+        result['asmt_subject'] = "Math"
+        results = [result]
+        subjects_map = {'Math':'Math'}
+        assessments = format_assessments_iab(results, subjects_map)
+        assessmentObject = assessments[AssessmentType.INTERIM_ASSESSMENT_BLOCKS][result['student_id']][result['asmt_subject']]
+        self.assertEqual(assessmentObject['claim'][0]['complete'], result['complete'])
+        self.assertEqual(assessmentObject['claim'][0]['administration_condition'], result['administration_condition'])
 
 
 if __name__ == "__main__":

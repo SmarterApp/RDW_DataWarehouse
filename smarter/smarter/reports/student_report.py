@@ -4,7 +4,7 @@ Created on Jan 13, 2013
 @author: tosako
 '''
 from string import capwords
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, or_
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from edapi.exceptions import NotFoundException
@@ -23,6 +23,7 @@ from smarter.reports.student_administration import get_asmt_administration_years
 from smarter.security.tenant import validate_user_tenant
 from smarter_common.security.constants import RolesConstants
 import logging
+from sqlalchemy.sql.functions import func
 
 
 logger = logging.getLogger('smarter')
@@ -122,11 +123,18 @@ def __prepare_query(connector, params):
                                 fact_asmt_outcome_vw.c.acc_read_aloud_nonembed.label('acc_read_aloud_nonembed'),
                                 fact_asmt_outcome_vw.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
                                 fact_asmt_outcome_vw.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
-                                fact_asmt_outcome_vw.c.acc_streamline_mode.label('acc_streamline_mode')],
+                                fact_asmt_outcome_vw.c.acc_streamline_mode.label('acc_streamline_mode'),
+                                fact_asmt_outcome_vw.c.administration_condition.label('administration_condition'),
+                                func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
                                 from_obj=[fact_asmt_outcome_vw
                                           .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
     query = query.where(and_(fact_asmt_outcome_vw.c.student_id == student_id, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+    query = query.where(and_(or_(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE]), (or_(fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_INVALID,
+                                                                                                             fact_asmt_outcome_vw.c.administration_condition == None))),
+                                    and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])), (or_(fact_asmt_outcome_vw.c.administration_condition == None,
+                                                                                                                        fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
+                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if date_taken is not None:
@@ -197,11 +205,15 @@ def __prepare_query_iab(connector, params):
                                 fact_block_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
                                 fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
-                                fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl')],
+                                fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                fact_block_asmt_outcome.c.administration_condition.label('administration_condition'),
+                                func.coalesce(fact_block_asmt_outcome.c.complete, True).label('complete')],
                                 from_obj=[fact_block_asmt_outcome
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
     query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT, dim_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
+    query = query.where(and_(or_(fact_block_asmt_outcome.c.administration_condition == None, fact_block_asmt_outcome.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
+                                                                                                                                                    Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     if asmt_year is not None:
@@ -288,7 +300,7 @@ def __arrange_results_iab(results, subjects_map, custom_metadata_map):
     for result in results:
         subject_list = {}
         subject = result['asmt_subject']
-        subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=False, include_min_max_scores=False, include_indexer=False)
+        subject_list['claims'] = get_claims(number_of_claims=1, result=result, include_names=True, include_scores=False, include_min_max_scores=False, include_indexer=False, include_complete_admin_cond=True)
         subject_list['grade'] = result.get('asmt_grade')
         subject_list['date_taken'] = result.get('date_taken')
         subject_data[subjects_map.get(subject)].append(subject_list)

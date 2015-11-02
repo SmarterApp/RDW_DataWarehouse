@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="isrInterimBlockHeader">
-    	{{#has_data}}
+        {{#has_data}}
         <span class="subject">{{asmt_subject_text}}</span>
         <span class="info">{{asmt_type}} <span class="iabYear">{{asmt_period}}</span></span>
         {{/has_data}}
@@ -24,64 +24,70 @@
     </div>
     <div style="clear:both"></div>
     <div class="contentBlocksWrapper">
-    	{{#grades}}
-    	<hr>
+        {{#grades}}
+        <hr>
         <div class="blocksSection clearfix">
             <div class="row-fluid">
-            	{{#blocks}}
+                {{#blocks}}
                 <div class="span4 claims blocks iabBlocksTable">
                     <div class="title">{{mostRecent.grade}}: <span class="blockName">{{mostRecent.name}}</span></div>
                     <div class="content">
-                    	<div class="level{{mostRecent.level}}">
-	                    	<i class="edware-icon-large-perf-level-{{mostRecent.level}}"></i>
-	                    	<div class="level{{mostRecent.level}}Content">
-	                    		<div class="takenDate">{{mostRecent.date_taken}}</div>
-	                        {{mostRecent.desc}}
-	                       </div>
-	                    </div>
+                        <div class="level{{mostRecent.level}}">
+                            <i class="edware-icon-large-perf-level-{{mostRecent.level}}"></i>
+                            <div class="level{{mostRecent.level}}Content">
+                                <div class="takenDate">{{mostRecent.date_taken}}</div>
+                                {{mostRecent.desc}}
+                                <i class="{{mostRecent.administration_condition}}"></i>
+                                <i class="{{mostRecent.complete}}"></i>
+                            </div>
+                        </div>
                     </div>
-                	<span class="previousResults">{{labels.previous_results}}</span>
-                	{{#hasOlder}}<a href='#' class="olderResults pull-right">{{labels.older_display_text}}</a>
-                	<div class="oldResultsContent hide">
-                		<span class="previousResults">{{labels.previous_results_contd}}</span>
-                		<table class="table">
-                		<tbody>
-                    		<tr>
-		                		{{#older}}
-		                			<td>
-				        			<div class="takenDate oldDateResults">{{date_taken}}</div>
-                    				<i class="edware-icon-small-perf-level-{{level}}"></i>
-                    				</td>
-				        		{{/older}}
-				        	</tr>
-				        </tbody>
-				        </table>
-		        		</div>
-                	{{/hasOlder}}
-                	<table class="table">
-                		<tbody>
-                    		<tr>
-                    			{{#previous}}
-                    			{{#placeholder}}
-                    			<td></td>
-                    			{{/placeholder}}
-                    			{{^placeholder}}
-                    			<td>
-                    			<div class="takenDate oldDateResults">{{date_taken}}</div>
-                    			<i class="edware-icon-small-perf-level-{{level}}"></i>
-                    			</td>
-                    			{{/placeholder}}
-                    			{{/previous}}
-                    			{{^previous}}
-                    			<td>{{labels.none}}</td>
-                    			<td></td>
-                    			<td></td>
-                    			{{/previous}}
-                    		</tr>
-                    	</tbody>
-                	</table>
-               </div>
-               {{/blocks}}
+                    <span class="previousResults">{{labels.previous_results}}</span>
+                    {{#hasOlder}}<a href='#' class="olderResults pull-right">{{labels.older_display_text}}</a>
+                    <div class="oldResultsContent hide">
+                        <span class="previousResults">{{labels.previous_results_contd}}</span>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    {{#older}}
+                                    <td>
+                                        <div class="takenDate oldDateResults">{{date_taken}}</div>
+                                        <i class="edware-icon-small-perf-level-{{level}}"></i>
+                                        <i class="{{administration_condition}}"></i>
+                                        <i class="{{complete}}"></i>
+                                    </td>
+                                    {{/older}}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {{/hasOlder}}
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                {{#previous}}
+                                {{#placeholder}}
+                                <td></td>
+                                {{/placeholder}}
+                                {{^placeholder}}
+                                <td>
+                                    <div class="takenDate oldDateResults">{{date_taken}}</div>
+                                    <i class="edware-icon-small-perf-level-{{level}}"></i>
+                                    <i class="{{administration_condition}}"></i>
+                                    <i class="{{complete}}"></i>
+                                </td>
+                                {{/placeholder}}
+                                {{/previous}}
+                                {{^previous}}
+                                <td>{{labels.none}}</td>
+                                <td></td>
+                                <td></td>
+                                {{/previous}}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {{/blocks}}
             </div>
         </div>
         {{/grades}}

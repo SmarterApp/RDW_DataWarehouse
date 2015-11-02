@@ -188,13 +188,13 @@ def load_fact_asmt_outcome(datasource_name=''):
                                "     asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, " +
                                "     asmt_claim_3_perf_lvl, asmt_claim_4_score, asmt_claim_4_score_range_min, " +
                                "     asmt_claim_4_score_range_max, asmt_claim_4_perf_lvl, acc_asl_video_embed, " +
-                               "     acc_noise_buffer_nonembed, acc_print_on_demand_items_nonembed, acc_braile_embed, acc_closed_captioning_embed, " +
+                               "     acc_print_on_demand_items_nonembed, acc_braile_embed, acc_closed_captioning_embed, " +
                                "     acc_text_to_speech_embed, acc_abacus_nonembed, " +
                                "     acc_alternate_response_options_nonembed, acc_calculator_nonembed, " +
                                "     acc_multiplication_table_nonembed, acc_print_on_demand_nonembed, " +
                                "     acc_read_aloud_nonembed, acc_scribe_nonembed, acc_speech_to_text_nonembed, " +
-                               "     acc_streamline_mode, from_date, to_date, rec_status, batch_guid " +
+                               "     acc_streamline_mode, acc_noise_buffer_nonembed, complete, from_date, to_date, rec_status, batch_guid, administration_condition" +
                                " FROM " +
                                "     " + fao_vw + " " +
-                               (")" if metadata.schema is not None else ""))
+                              (")" if metadata.schema is not None else ""))
     return __success

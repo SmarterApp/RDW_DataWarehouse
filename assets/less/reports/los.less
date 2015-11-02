@@ -185,7 +185,6 @@ body.los {
 }
 
 .losPopover {
-    height: 220px;
     width: 360px !important;
     padding: 0;
 
@@ -202,13 +201,12 @@ body.los {
         font-size: 13px;
         line-height: 13px;
         margin-bottom: 5px;
-        width: 40px;
         margin-top: 2px;
     }
 
     .score {
         border-radius: 5px 5px 5px 5px;
-        display: table;
+        display: block;
         font-size: 16px;
         height: 28px;
         text-align: center;
@@ -217,8 +215,7 @@ body.los {
         color: @color-white;
 
         span {
-            vertical-align: middle;
-            display: table-cell;
+            line-height: 28px;
         }
     }
 
@@ -304,6 +301,22 @@ body.los {
         }
     }
 
+    .tooltip-message {
+        .clearfix();
+        color: black;
+        background: #E9E9E9;
+        margin: auto -17px 2px;
+        padding: 7px 17px;
+        font-size: 14px;
+        line-height: 16px;
+        .edware-icon-partial, .edware-icon-standardized, .edware-icon-invalid {
+            float: left;
+        }
+        .text {
+            margin-left: 30px;
+        }
+    }
+
     .cutPointsBar {
         margin-left: 3%;
         margin-top: 50px;
@@ -351,4 +364,16 @@ body.los {
 
 .losPerfBar {
     height: 80px;
+}
+
+.edware-icon-partial, .edware-icon-invalid, .edware-icon-standardized {
+}
+
+.edware-icon-partial, .edware-icon-invalid {
+}
+
+.edware-icon-standardized {
+}
+
+.edware-icon-invalid {
 }

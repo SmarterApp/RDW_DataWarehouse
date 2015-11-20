@@ -184,9 +184,9 @@ except Exception:
 
 def generate_report_for_cron(settings):
     report_hour = settings['hour']
-    today = datetime.datetime.today().strftime('%Y-%m-%d ' + str(report_hour) + ':00:00')
+    # From yesterday report_hour to today report_hour
+    end_date = (datetime.datetime.today() - datetime.timedelta()).strftime('%Y-%m-%d ' + str(report_hour) + ':00:00')
     start_date = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d ' + str(report_hour) + ':00:00')
-    end_date = today
     generate_report(settings['mail_to'], start_date, end_date, settings['mail_from'], settings['subject'])
 
 if __name__ == "__main__":

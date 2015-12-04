@@ -95,8 +95,19 @@ define [
         column
 
     afterLoadComplete: () ->
+      this.iabSortIconHighlight()
       this.customizePosition()
       this.highlightSortLabels()
+
+    iabSortIconHighlight:() ->
+      # hightlight IAB sort icon for 1st column
+      true_asc_icon_class = $("#gridWrapper.IAB .ui-state-default .ui-jqgrid-htable #jqgh_gridTable_student_full_name .s-ico .ui-icon-asc").attr("class")
+      true_desc_icon_true = $("#gridWrapper.IAB .ui-state-default .ui-jqgrid-htable #jqgh_gridTable_student_full_name .s-ico .ui-icon-desc").attr("class")
+      # set frozen 1st column icon class to same as true hidden
+      if true_asc_icon_class?
+        $("#gridWrapper.IAB .frozen-div .ui-jqgrid-htable #jqgh_gridTable_student_full_name .s-ico .ui-icon-asc").attr("class", true_asc_icon_class)
+      if true_desc_icon_true?
+        $("#gridWrapper.IAB .frozen-div .ui-jqgrid-htable #jqgh_gridTable_student_full_name .s-ico .ui-icon-desc").attr("class", true_desc_icon_true)
 
     customizePosition: () ->
       # Move footer row to the top of the table

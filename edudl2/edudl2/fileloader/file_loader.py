@@ -98,7 +98,8 @@ def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, sta
                                    ref_table.c.stored_proc_name],
                                   from_obj=ref_table).where(ref_table.c.source_table == csv_lz_table)
     column_mapping_result = conn.execute(column_mapping_query)
-    op_column_present = check_header_contains_op(header_file)
+    op_column_present = check_header_contains_column(header_file, Constants.OP_COLUMN_NAME)
+    admin_cond_completeness_present = check_header_contains_column(header_file, Constants.COMPLETESTATUS) or check_header_contains_column(header_file, Constants.ADMINISTRATIONCONDITION)
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'',
@@ -109,6 +110,8 @@ def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, sta
     if column_mapping_result:
         for mapping in column_mapping_result:
             if mapping[1] == Constants.OP_COLUMN_NAME and not op_column_present:
+                continue
+            if mapping[1].lower() in {Constants.COMPLETESTATUS, Constants.ADMINISTRATIONCONDITION} and not admin_cond_completeness_present:
                 continue
             csv_table_columns.append(mapping[0])
             stg_columns.append(mapping[1])
@@ -180,16 +183,17 @@ def load_data_process(conn, conf):
     return time_as_seconds
 
 
-def check_header_contains_op(csv_file):
-    """Open the csv file and determine if the file contains the OP column
+def check_header_contains_column(csv_file, column):
+    """Open the csv file and determine if the file contains the column
 
     :param csv_file: the name of the csv file
-    :returns True if the file contains the 'op' column, False otherwise
+    :returns True if the file contains the column, False otherwise
     """
     with open(csv_file, 'r') as fp:
         csv_reader = csv.reader(fp)
         header = next(csv_reader)
-        return Constants.OP_COLUMN_NAME in header
+        header = [x.lower() for x in header]
+        return column.lower() in header
 
 
 def load_file(conf):

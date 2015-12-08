@@ -145,6 +145,7 @@ ref_table_conf = {
         ('1', 'lz_csv', 'AdministrationCondition', 'stg_sbac_asmt_outcome', 'AdministrationCondition', 'administrationCondition', None),
         ('1', 'lz_csv', 'CompleteStatus', 'stg_sbac_asmt_outcome', 'CompleteStatus', 'clean', None),
         ('1', 'lz_csv', 'Op', 'stg_sbac_asmt_outcome', 'op', 'option', None),
+
         # Staging to Integration
         ('3', 'stg_sbac_asmt_outcome', 'record_sid', 'int_sbac_asmt_outcome', 'record_sid', None, None),
         ('3', 'stg_sbac_asmt_outcome', 'guid_batch', 'int_sbac_asmt_outcome', 'guid_batch', None, None),
@@ -242,8 +243,8 @@ ref_table_conf = {
         ('3', 'stg_sbac_asmt_outcome', 'AccommodationStreamlineMode', 'int_sbac_asmt_outcome', 'acc_streamline_mode', None, "to_number({src_column}, '99999')"),
         ('3', 'stg_sbac_asmt_outcome', 'AccommodationNoiseBuffer', 'int_sbac_asmt_outcome', 'acc_noise_buffer_nonembed', None, "to_number({src_column}, '99999')"),
         ('3', 'stg_sbac_asmt_outcome', 'AdministrationCondition', 'int_sbac_asmt_outcome', 'administration_condition', None, None),
-        ('3', 'stg_sbac_asmt_outcome', 'CompleteStatus', 'int_sbac_asmt_outcome', 'complete', None, 'case {src_column} when \'\' then null else cast({src_column} as bool) end'),
-        
+        ('3', 'stg_sbac_asmt_outcome', 'CompleteStatus', 'int_sbac_asmt_outcome', 'complete', None, "coalesce(cast({src_column} as bool), 'True')"),
+
         # Integration to Target
         ('4', 'int_sbac_asmt', 'record_sid', 'dim_asmt', 'asmt_rec_id', None, None),
         ('4', 'int_sbac_asmt', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),

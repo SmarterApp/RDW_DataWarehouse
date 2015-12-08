@@ -127,7 +127,8 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         self.assertEqual(10, postloading_total)
 
     def test_derive_eth_function(self):
-        function_name = sr.special_rules['deriveEthnicity'][0]
+        # not used in ref_table_data.py anymore
+        '''function_name = sr.special_rules['deriveEthnicity'][0]
         # dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
         prepare_data = {'exception': {'src_column': "'sda', 'dg', 'a', 'q', 't', 'fff', 'z'", 'expected_code': -1},
                         'not stated 1': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
@@ -155,6 +156,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                     actual_value = r[0]
                     break
                 self.assertEqual(actual_value, value['expected_code'])
+        '''
 
     def test_get_column_mapping_from_stg_to_int(self):
         expected_target_columns = ['name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',
@@ -163,21 +165,26 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                    'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_multi_race', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd',
                                    'dmg_sts_mig', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date',
                                    'lep_exit_date', 't3_program_type', 'prim_disability_type', 'created_date', 'guid_batch']
-        expected_source_columns_with_tran_rule = ['substr("A".name_state, 1, 50)', 'substr("A".code_state, 1, 2)',
-                                                  'substr("A".guid_district, 1, 40)', 'substr("A".name_district, 1, 60)', 'substr("A".guid_school, 1, 40)',
-                                                  'substr("A".name_school, 1, 60)', 'substr("A".guid_student, 1, 40)',
-                                                  'substr("A".external_ssid_student, 1, 40)', 'substr("A".name_student_first, 1, 35)',
-                                                  'substr("A".name_student_middle, 1, 35)', 'substr("A".name_student_last, 1, 35)',
-                                                  'substr("A".birthdate_student, 1, 10)', 'substr("A".sex_student, 1, 10)', 'substr("A".grade_enrolled, 1, 2)',
-                                                  'cast("A".dmg_eth_hsp as bool)', 'cast("A".dmg_eth_ami as bool)', 'cast("A".dmg_eth_asn as bool)',
-                                                  'cast("A".dmg_eth_blk as bool)', 'cast("A".dmg_eth_pcf as bool)', 'cast("A".dmg_eth_wht as bool)',
-                                                  'cast("A".dmg_multi_race as bool)', 'cast("A".dmg_prg_iep as bool)', 'cast("A".dmg_prg_lep as bool)',
-                                                  'cast("A".dmg_prg_504 as bool)', 'cast("A".dmg_sts_ecd as bool)', 'cast("A".dmg_sts_mig as bool)',
-                                                  'substr("A".code_language, 1, 3)', 'substr("A".eng_prof_lvl, 1, 20)',
-                                                  'substr("A".us_school_entry_date, 1, 10)', 'substr("A".lep_entry_date, 1, 10)',
-                                                  'substr("A".lep_exit_date, 1, 10)', 'substr("A".t3_program_type, 1, 27)',
-                                                  'substr("A".prim_disability_type, 1, 3)', '"A".created_date',
-                                                  '"A".guid_batch']
+        expected_source_columns_with_tran_rule = ['substr("A".name_state, 1, 50)', 'substr("A".code_state, 1, 2)', 'substr("A".guid_district, 1, 40)',
+                                                  'substr("A".name_district, 1, 60)', 'substr("A".guid_school, 1, 40)', 'substr("A".name_school, 1, 60)',
+                                                  'substr("A".guid_student, 1, 40)', 'substr("A".external_ssid_student, 1, 40)', 'substr("A".name_student_first, 1, 35)',
+                                                  'substr("A".name_student_middle, 1, 35)', 'substr("A".name_student_last, 1, 35)', 'substr("A".birthdate_student, 1, 10)',
+                                                  'substr("A".sex_student, 1, 10)', 'substr("A".grade_enrolled, 1, 2)',
+                                                  'case "A".dmg_eth_hsp when \'\' then null else cast("A".dmg_eth_hsp as bool) end',
+                                                  'case "A".dmg_eth_ami when \'\' then null else cast("A".dmg_eth_ami as bool) end',
+                                                  'case "A".dmg_eth_asn when \'\' then null else cast("A".dmg_eth_asn as bool) end',
+                                                  'case "A".dmg_eth_blk when \'\' then null else cast("A".dmg_eth_blk as bool) end',
+                                                  'case "A".dmg_eth_pcf when \'\' then null else cast("A".dmg_eth_pcf as bool) end',
+                                                  'case "A".dmg_eth_wht when \'\' then null else cast("A".dmg_eth_wht as bool) end',
+                                                  'case "A".dmg_multi_race when \'\' then null else cast("A".dmg_multi_race as bool) end',
+                                                  'case "A".dmg_prg_iep when \'\' then null else cast("A".dmg_prg_iep as bool) end',
+                                                  'case "A".dmg_prg_lep when \'\' then null else cast("A".dmg_prg_lep as bool) end',
+                                                  'case "A".dmg_prg_504 when \'\' then null else cast("A".dmg_prg_504 as bool) end',
+                                                  'case "A".dmg_sts_ecd when \'\' then null else cast("A".dmg_sts_ecd as bool) end',
+                                                  'case "A".dmg_sts_mig when \'\' then null else cast("A".dmg_sts_mig as bool) end',
+                                                  'substr("A".code_language, 1, 3)', 'substr("A".eng_prof_lvl, 1, 20)', 'substr("A".us_school_entry_date, 1, 10)',
+                                                  'substr("A".lep_entry_date, 1, 10)', 'substr("A".lep_exit_date, 1, 10)', 'substr("A".t3_program_type, 1, 27)',
+                                                  'substr("A".prim_disability_type, 1, 3)', '"A".created_date', '"A".guid_batch']
         with get_udl_connection() as conn:
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION),

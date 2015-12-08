@@ -38,6 +38,8 @@ class Constants():
     OP_COLUMN_NAME = 'op'
     GUID_ASMT = 'guid_asmt'
     STG_GUID_ASMT = 'assessmentguid'
+    COMPLETESTATUS = 'completestatus'
+    ADMINISTRATIONCONDITION = 'administrationcondition'
 
     # load types
     LOAD_TYPE_KEY = 'Content'

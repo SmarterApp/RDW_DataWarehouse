@@ -390,7 +390,9 @@ class RecordManager():
         for record in self._tracking_record.values():
             __record = {Constants.ROWID: record.id, Constants.ID: record.id, Constants.NAME: record.name,
                         Constants.RESULTS: self.format_results(record.subjects),
-                        Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id, Constants.ISPUBLIC: self.is_public}}
+                        Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
+            if self.is_public is not None and self.is_public:
+                __record[Constants.PARAMS][Constants.ISPUBLIC] = self.is_public
             if self._districtId is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtId
             if self._schoolId is not None:

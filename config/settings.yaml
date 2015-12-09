@@ -1025,15 +1025,15 @@ development:
         max_overflow: 10
         cat:
           state_code: NC
-          schema_name: edware_sds_1_36
+          schema_name: edware_sds_1_38
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
           state_code: CA
-          schema_name: edware_sds_1_36_dog
+          schema_name: edware_sds_1_38_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         fish:
           state_code: VT
-          schema_name: edware_sds_1_36_fish
+          schema_name: edware_sds_1_38_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:

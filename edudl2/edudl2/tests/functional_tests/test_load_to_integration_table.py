@@ -15,6 +15,7 @@ from edudl2.udl2_util.database_util import get_db_connection_params
 from edudl2.udl2.constants import Constants
 from sqlalchemy.sql.expression import update
 from uuid import uuid4
+from nose.tools import nottest
 
 
 class FuncTestLoadToIntegrationTable(UDLTestHelper):
@@ -126,9 +127,10 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         postloading_total = self.postloading_count(Constants.UDL2_INTEGRATION_TABLE(load_type))
         self.assertEqual(10, postloading_total)
 
+    # not used in ref_table_data.py anymore
+    @nottest
     def test_derive_eth_function(self):
-        # not used in ref_table_data.py anymore
-        '''function_name = sr.special_rules['deriveEthnicity'][0]
+        function_name = sr.special_rules['deriveEthnicity'][0]
         # dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
         prepare_data = {'exception': {'src_column': "'sda', 'dg', 'a', 'q', 't', 'fff', 'z'", 'expected_code': -1},
                         'not stated 1': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
@@ -156,7 +158,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                     actual_value = r[0]
                     break
                 self.assertEqual(actual_value, value['expected_code'])
-        '''
 
     def test_get_column_mapping_from_stg_to_int(self):
         expected_target_columns = ['name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',

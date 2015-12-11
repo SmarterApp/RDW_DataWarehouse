@@ -14,6 +14,8 @@ from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,
 from pyramid.response import Response
 import json
 from edapi import reports
+from pyramid.security import NO_PERMISSION_REQUIRED
+from pyramid.httpexceptions import HTTPMovedPermanently
 
 MAX_REQUEST_URL_LENGTH = 2000
 
@@ -76,23 +78,13 @@ def get_report_config(request):
     return Response(body=json.dumps(report_config), content_type="application/json", allow='GET,POST,OPTIONS')
 
 
-@view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
-@view_config(route_name='report_get_option_post', renderer='json', request_method='POST', content_type="application/json",)
-def generate_report(request, validator=None):
-    '''
-    Handle GET for data resource
-
-    :param request: the request object
-    :type request: request
-    :param validator:
-    '''
-
+def generate_report(request, validator=None, prefix=''):
     # if full request URL with query string is too long
     if (len(request.url) > MAX_REQUEST_URL_LENGTH):
         return EdApiHTTPRequestURITooLong(MAX_REQUEST_URL_LENGTH)
 
     # gets the name of the report from the URL
-    reportName = request.matchdict['name']
+    reportName = prefix + request.matchdict['name']
 
     params = request.GET.copy()
 
@@ -107,3 +99,35 @@ def generate_report(request, validator=None):
     except ForbiddenError as e:
         return EdApiHTTPForbiddenAccess(e.msg)
     return report
+
+
+@view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
+@view_config(route_name='report_get_option_post', renderer='json', request_method='POST', content_type="application/json",)
+def generate_protected_report(request, validator=None):
+    '''
+    Handle GET for data resource
+
+    :param request: the request object
+    :type request: request
+    :param validator:
+    '''
+    return generate_report(request, validator=validator)
+
+
+@view_config(route_name='public_report_get_option_post', renderer='json', request_method='GET', permission=NO_PERMISSION_REQUIRED, content_type="application/json",)
+@view_config(route_name='public_report_get_option_post', renderer='json', request_method='POST', permission=NO_PERMISSION_REQUIRED, content_type="application/json",)
+def generate_public_report(request, validator=None):
+    '''
+    Handles request for /public_data/{name}
+    These end points do not require permissions
+    '''
+    return generate_report(request, validator=validator, prefix='public.')
+
+
+@view_config(route_name='public_report_short_url', permission=NO_PERMISSION_REQUIRED)
+def public_report_short_url(request, validator=None):
+    request.matchdict['name'] = 'public_short_url'
+    request.GET['sid'] = request.matchdict['sid']
+    path = generate_report(request, validator, prefix='public.')
+    url = request.application_url + path
+    return HTTPMovedPermanently(location=url, expires=0, cache_control='no-store, no-cache, must-revalidate')

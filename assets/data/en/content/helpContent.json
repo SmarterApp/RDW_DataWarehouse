@@ -185,5 +185,6 @@
          "has_data": false,
          "info": []}
     ],
-    "faq_footer": "Read more about Smarter Balanced and the new assessments at <a href='http://www.smarterbalanced.org' target='_blank'>www.smarterbalanced.org</a> or click on the Help link for more information."
+    "faq_footer": "Read more about Smarter Balanced and the new assessments at <a href='http://www.smarterbalanced.org' target='_blank'>www.smarterbalanced.org</a> or click on the Help link for more information.",
+    "public_report_info": "Aggregate (or rolled-up) reports present a view of student performance on the most recent summative assessment, by the state, district, school or grade.<br><br>These reports show different comparisons: (1) between districts in a state, (2) schools in a district, and (3) grades in a school.<br><br>The reports display multi-colored bars representing a student’s different achievement levels. (View the legend for more information on theseachievement levels). The percentages of students (providing a brief description, parenthetically, of where these percentages come from would be helpful here) and total number of students (within each state, district or school) performing at each level appear as numbers in the bars.<br><br>Read more about Smarter Balanced and the new assessments at <a href='http://www.smarterbalanced.org' target='_blank'>www.smarterbalanced.org</a>"
 }

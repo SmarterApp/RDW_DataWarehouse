@@ -4,11 +4,11 @@ define [
   "edwareDataProxy"
   "text!HelpMenuTemplate"
 ], ($, Mustache, edwareDataProxy, HelpMenuTemplate) ->
-
   class EdwareHelpMenu
 
-    constructor: (@container, @config) ->
+    constructor: (@container, @isPublic, @config) ->
       self = this
+      @HelpMenuModal = "#HelpMenuModal"
       edwareDataProxy.getDataForHelpContent().done (data) ->
         self.data = data
         self.initialize()
@@ -18,6 +18,7 @@ define [
       output = Mustache.to_html HelpMenuTemplate, {
           labels: @config.labels
           helpContent: @data
+          isPublic: @isPublic
       } 
       $(@container).html(output)
 
@@ -35,7 +36,7 @@ define [
         self.setActiveTabId $this.attr('href')
         $this.tab 'show'
       # show tab when menu modal dropdown, if any
-      $('#HelpMenuModal').on 'shown', ->
+      $(@HelpMenuModal).on 'shown', ->
         if self.activeTab
           target = tabs.find("a[href='" + self.activeTab + "']")
         else
@@ -49,24 +50,24 @@ define [
 
     show: (tabId) ->
       @setActiveTabId tabId if tabId
-      $('#HelpMenuModal').edwareModal()
+      $(@HelpMenuModal).edwareModal()
       this.setModalSize()
     
     setModalSize: () ->
       # Adjust the modal height based on window height
       windowHeight = $(window).height()
       # This is an approximate height for content area in help modal
-      height = windowHeight - 210
-      if height < 0
-        height = 1
-      content = $('#HelpMenuModal .tab-content')
-      $('#HelpMenuModal').css('height', height + 80 + 'px')
-      content.css('height', height + 'px')
-      content.css('max-height', height - 35 + 'px')
-  
+      if !@isPublic
+        height = windowHeight - 210
+        if height < 0
+          height = 1
+        $(@HelpMenuModal).css('height', height + 80 + 'px')
+        content = $(@HelpMenuModal + ' .tab-content')
+        content.css('height', height + 'px')
+        content.css('max-height', height - 35 + 'px')
 
-  create = (container, config) ->
-    new EdwareHelpMenu(container, config)
+  create = (container, isPublic, config) ->
+    new EdwareHelpMenu(container, isPublic, config)
 
   EdwareHelpMenu: EdwareHelpMenu
   create: create

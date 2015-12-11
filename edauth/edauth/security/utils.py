@@ -24,6 +24,17 @@ def deflate_base64_encode(data_byte_string):
     return base64.b64encode(compressed[2:-4])
 
 
+def deflate_url_safe_base64_encode(data_byte_string):
+    '''
+    deflate and encode string to base64
+    @param data_byte_string: the input byte string
+    @type data_byte_string: string
+    '''
+    compressed = zlib.compress(data_byte_string)
+    # Strip away the first 2 bytes (header) and 4 bytes (checksum)
+    return base64.urlsafe_b64encode(compressed[2:-4])
+
+
 def inflate_base64_decode(data_byte_string):
     '''
     inflate and decode base64 to string
@@ -31,6 +42,16 @@ def inflate_base64_decode(data_byte_string):
     @type data_byte_string: string
     '''
     base_decoded = base64.b64decode(data_byte_string)
+    return zlib.decompress(base_decoded, -15)
+
+
+def inflate_url_safe_base64_decode(data_byte_string):
+    '''
+    inflate and decode base64 to string
+    @param data_byte_string: the input byte string
+    @type data_byte_string: string
+    '''
+    base_decoded = base64.urlsafe_b64decode(data_byte_string)
     return zlib.decompress(base_decoded, -15)
 
 
@@ -100,8 +121,20 @@ class AESCipher:
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return deflate_base64_encode(iv + cipher.encrypt(self.pad_data(data)))
 
+    def encrypt_url_safe(self, s):
+        data = s.encode()
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        return deflate_url_safe_base64_encode(iv + cipher.encrypt(self.pad_data(data)))
+
     def decrypt(self, s):
         data = inflate_base64_decode(s)
+        iv = data[:self.block_size]
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        return self.unpad_data(cipher.decrypt(data[self.block_size:])).decode('UTF-8')
+
+    def decrypt_url_safe(self, s):
+        data = inflate_url_safe_base64_decode(s)
         iv = data[:self.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return self.unpad_data(cipher.decrypt(data[self.block_size:])).decode('UTF-8')

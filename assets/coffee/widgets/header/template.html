@@ -1,23 +1,54 @@
-<a href="../html/index.html" id='logo' title='Home' tabindex='1'>
+{{^isPublic}}
+<a href='../html/index.html' id='logo' title='Home' tabindex='1'>
 	<img src="{{tenantLogo}}">
 </a>
+{{/isPublic}}
+{{#isPublic}}
+<a href='../html/index.html?isPublic=true&stateCode={{stateCode}}' id='logo' title='Home' tabindex='1'>
+	<img src="{{tenantLogo}}">
+</a>
+{{/isPublic}}
 <ul class='nav navbar-nav' role="menubar">
 	<li class='pull-left tenantLabel'>{{tenantLabel}}</li>
     <li class='dropdown pull-right'>
-        <a id='user-settings' class='headerLink' data-toggle='dropdown' aria-label='Settings' role='menuitem' href='#' tabindex='5'> <i class='edware-icon-header-cog marginRight8'></i><span class="text_hi"></span>, <span id='username'></span><i class='edware-icon-globalheader-downarrow marginLeft8'></i> </a>
+        {{#isPublic}}
+        <a class='headerLink' data-toggle='dropdown' aria-label='Settings' role='menuitem' href='#' tabindex='5'>
+            <i class='icon-globe icon-white marginRight8'></i>
+            <span class='selectedLanguage'></span>
+            <i class='edware-icon-globalheader-downarrow marginLeft8'></i>
+        </a>
+        {{/isPublic}}
+        {{^isPublic}}
+        <a id='user-settings' class='headerLink' data-toggle='dropdown' aria-label='Settings' role='menuitem' href='#' tabindex='5'>
+            <i class='edware-icon-header-cog marginRight8'></i>
+            <span class="text_hi"></span>,
+            <span id='username'>{{username}}</span>
+            <i class='edware-icon-globalheader-downarrow marginLeft8'></i>
+        </a>
+        {{/isPublic}}
         <ul id='languageSelector' class="dropdown-menu" role="radiogroup">
+            {{^isPublic}}
             <div id="log_out">
                 <li class="divider"></li>
                 <div class="padTop9 padBottom4">
-                    <button id="log_out_button" type="button" class="btn btn-primary edware-btn-primary"><span class="text_logout"></span>
+                    <button id="log_out_button" type="button" class="btn btn-primary edware-btn-primary">
+                        <span class="text_logout"></span>
                     </button>
                 </div>
             </div>
+            {{/isPublic}}
         </ul>
     </li>
+    {{#isPublic}}
+    <li>
+        <a id='help' href='#' class='headerLink pull-right' tabindex='3' role='menuitem'><i class='icon-info-sign icon-white marginRight8'></i><span class="text_help"></span></a>
+    </li>
+    {{/isPublic}}
+    {{^isPublic}}
     <li>
         <a id='help' href='#' class='headerLink pull-right' tabindex='3' role='menuitem'><i class='edware-icon-header-help marginRight8'></i><span class="text_help"></span></a>
     </li>
+    {{/isPublic}}
 </ul>
 <!--This iframe is used for logout redirect.  Do not remove it.-->
 <iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>

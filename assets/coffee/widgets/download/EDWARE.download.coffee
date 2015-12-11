@@ -316,6 +316,7 @@ define [
         reportType: @reportType
         labels: this.config['labels']
         options: this.config.ExportOptions
+        isPublic: this.config.isPublic
       }
       $(@container).html output
       this.eventHandler =

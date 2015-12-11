@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
             if index == 0:
                 self.assertEqual(records[0][Constants.ID], 3)
                 self.assertEqual(records[0][Constants.NAME], 'aaa')
-                self.assertEqual(2, len(records[0][Constants.PARAMS]))
+                self.assertEqual(3, len(records[0][Constants.PARAMS]))
                 self.assertEqual(records[0][Constants.PARAMS][Constants.STATECODE], param.get(Constants.STATECODE))
                 self.assertEqual(records[0][Constants.PARAMS][Constants.ID], 3)
                 self.assertIsNone(records[0][Constants.PARAMS].get(Constants.SCHOOLGUID))
@@ -52,13 +52,13 @@ class Test(unittest.TestCase):
             elif index == 1:
                 self.assertEqual(records[1][Constants.ID], 1)
                 self.assertEqual(records[1][Constants.NAME], 'bbb')
-                self.assertEqual(2, len(records[1][Constants.PARAMS]))
+                self.assertEqual(3, len(records[1][Constants.PARAMS]))
                 self.assertEqual(records[1][Constants.PARAMS][Constants.STATECODE], param.get(Constants.STATECODE))
                 self.assertEqual(records[1][Constants.PARAMS][Constants.ID], 1)
             elif index == 2:
                 self.assertEqual(records[2][Constants.ID], 2)
                 self.assertEqual(records[2][Constants.NAME], 'ccc')
-                self.assertEqual(2, len(records[1][Constants.PARAMS]))
+                self.assertEqual(3, len(records[1][Constants.PARAMS]))
                 self.assertEqual(records[2][Constants.PARAMS][Constants.STATECODE], param.get(Constants.STATECODE))
                 self.assertEqual(records[2][Constants.PARAMS][Constants.ID], 2)
 

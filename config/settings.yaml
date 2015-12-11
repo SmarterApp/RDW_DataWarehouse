@@ -34,6 +34,7 @@ common:
     edware:
       db:
         echo: False
+      public.db.echo: False
     trigger:
       recache:
         enable: False
@@ -292,6 +293,21 @@ common:
         nc:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+    migrate_private:
+      db:
+        cat:
+          schema_name: nc
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+    migrate_public:
+      db:
+        cat:
+          schema_name: public_nc
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+      enable: True
+      schedule:
+          cron:
+            minute: '*/1'
+      recache.filter.file: ../../config/comparing_populations_precache_filters.json
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -1020,6 +1036,15 @@ development:
     smarter_score_batcher.celery:
       celery_always_eager: true
     edware:
+      public:
+        secret: public_15_secret
+        db:
+          pool_size: 20
+          max_overflow: 10
+          cat:
+            state_code: NC
+            schema_name: edware_sds_1_36
+            url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
       db:
         pool_size: 20
         max_overflow: 10

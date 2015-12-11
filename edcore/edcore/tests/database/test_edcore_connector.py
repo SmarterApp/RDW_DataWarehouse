@@ -6,8 +6,7 @@ Created on Jun 25, 2013
 import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
-from edcore.database.edcore_connector import EdCoreDBConnection,\
-    config_namespace
+from edcore.database.edcore_connector import EdCoreDBConnection
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.security.tenant import set_tenant_map
@@ -43,7 +42,7 @@ class TestEdcoreConnector(Unittest_with_edcore_sqlite):
 
     def test_get_datasource_name(self):
         name = EdCoreDBConnection.get_datasource_name('dummy')
-        self.assertEqual(name, config_namespace + '.dummy')
+        self.assertEqual(name, EdCoreDBConnection.CONFIG_NAMESPACE + '.dummy')
 
     def test_get_datasource_name_without_tenant(self):
         name = EdCoreDBConnection.get_datasource_name()
@@ -51,7 +50,7 @@ class TestEdcoreConnector(Unittest_with_edcore_sqlite):
 
     def test_get_db_config_prefix(self):
         name = EdCoreDBConnection.get_db_config_prefix('dummy')
-        self.assertEqual(name, config_namespace + '.dummy.')
+        self.assertEqual(name, EdCoreDBConnection.CONFIG_NAMESPACE + '.dummy.')
 
     def test_generate_metadata(self):
         metadata = EdCoreDBConnection.generate_metadata()

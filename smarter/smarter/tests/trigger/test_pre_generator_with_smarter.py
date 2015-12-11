@@ -19,7 +19,7 @@ class TestPreCacheGenerator(Unittest_with_edcore_sqlite):
         cache_managers.clear()
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data'
+            'cache.regions': 'public.data, public.filtered_data, unittest, public.shortlived, public.very_shortlived'
         }
         CacheManager(**parse_cache_config_options(cache_opts))
         self.tenant = get_unittest_tenant_name()

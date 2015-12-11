@@ -88,7 +88,7 @@ class Test(Unittest_with_edcore_sqlite):
         result['asmt_grade'] = "A"
         result['asmt_subject'] = "Math"
         results = [result]
-        subjects_map = {'Math':'Math'}
+        subjects_map = {'Math': 'Math'}
         assessments = format_assessments_iab(results, subjects_map)
         assessmentObject = assessments[AssessmentType.INTERIM_ASSESSMENT_BLOCKS][result['student_id']][result['asmt_subject']]
         self.assertEqual(assessmentObject['claim'][0]['complete'], result['complete'])

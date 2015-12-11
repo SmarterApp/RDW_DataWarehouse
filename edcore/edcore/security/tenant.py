@@ -7,6 +7,7 @@ Created on Jan 23, 2014
 from edcore.utils.utils import reverse_map
 
 TENANT_MAP = {}
+PUBLIC_REPORT_TENANT_MAP = {}
 
 
 def get_state_code_mapping(tenants):
@@ -29,6 +30,14 @@ def set_tenant_map(tenant_map):
     TENANT_MAP = tenant_map
 
 
+def set_tenant_map_public_reports(tenant_map):
+    '''
+    Sets the tenant to state code mapping for public reports
+    '''
+    global PUBLIC_REPORT_TENANT_MAP
+    PUBLIC_REPORT_TENANT_MAP = tenant_map
+
+
 def get_tenant_map():
     global TENANT_MAP
     return TENANT_MAP
@@ -40,6 +49,13 @@ def get_state_code_to_tenant_map():
     '''
     global TENANT_MAP
     return reverse_map(TENANT_MAP)
+
+
+def get_state_code_to_tenant_map_public_reports():
+    '''
+    Returns tenant to state code mapping for public reports
+    '''
+    return reverse_map(PUBLIC_REPORT_TENANT_MAP)
 
 
 def get_tenant_by_state_code(state_code):

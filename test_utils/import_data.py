@@ -76,10 +76,10 @@ def update_aca_year(tenant):
                                                                                      fact_asmt.c.date_taken_year: '2015'})
         fact_block_asmt = connection.get_table("fact_block_asmt_outcome")
         fact_block_query = update(fact_block_asmt).where(fact_block_asmt.c.asmt_year == '2016').values({fact_block_asmt.c.asmt_year: '2015',
-                                                                                     fact_block_asmt.c.date_taken: '20150106',
-                                                                                     fact_block_asmt.c.date_taken_day: '6',
-                                                                                     fact_block_asmt.c.date_taken_month: '1',
-                                                                                     fact_block_asmt.c.date_taken_year: '2015'})
+                                                                                                        fact_block_asmt.c.date_taken: '20150106',
+                                                                                                        fact_block_asmt.c.date_taken_day: '6',
+                                                                                                        fact_block_asmt.c.date_taken_month: '1',
+                                                                                                        fact_block_asmt.c.date_taken_year: '2015'})
         connection.execute(dim_query)
         connection.execute(fact_query)
         connection.execute(fact_block_query)

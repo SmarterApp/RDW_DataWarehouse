@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+. /opt/virtualenv/smarter/bin/activate
+TENANT=cat
+PIDFILE=$(printf "/opt/edware/run/edmigrate_public.%s.pid" ${TENANT})
+PUBLIC_REPORT="python -m public_report.copy_data -d -p $PIDFILE -t $TENANT"
+
+start() {
+	echo -n "Starting public report: "
+	daemon $PUBLIC_REPORT
+	RETVAL=$?
+}
+
+stop() {
+	echo -n "Stopping public report: "
+	killproc -p $PIDFILE
+	RETVAL=$?
+}
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	*)
+
+	echo $"Usage: public report {start|stop}"
+	exit 2
+esac
+deactivate
+exit $RETVAL

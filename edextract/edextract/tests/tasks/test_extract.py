@@ -293,7 +293,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
+                  'asmtGrade': '03'}
         query = self.__create_item_raw_extract_query(params)
         root_dir = tempfile.mkdtemp()
         archive_dir = os.path.join(root_dir, 'archive')
@@ -305,10 +305,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
             TaskConstants.ROOT_DIRECTORY: root_dir
         }
-        xml_path1 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '0513ba44-e8ec-4186-9a0e-8481e9c16206')
-        xml_path2 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '228')
-        xml_path3 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '229')
-        xml_path4 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '3', '2ce72d77-1de2-4137-a083-77935831b817')
+        xml_path1 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '03', '0513ba44-e8ec-4186-9a0e-8481e9c16206')
+        xml_path2 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '03', '228')
+        xml_path3 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '03', '229')
+        xml_path4 = os.path.join(root_dir, 'NC', '2015', 'SUMMATIVE', '20150404', 'MATH', '03', '2ce72d77-1de2-4137-a083-77935831b817')
 
         def create_files(path, filenames):
             archive_files = []

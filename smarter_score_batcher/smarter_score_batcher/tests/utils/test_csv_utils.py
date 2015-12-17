@@ -168,7 +168,7 @@ class TestCSVUtils(Unittest_with_tsb_sqlite):
         guids, rows, headers = assessments
         self.assertIsNotNone(guids)
         self.assertIsNotNone(rows)
-        self.assertEqual(len(headers), 88)
+        self.assertEqual(len(headers), 90)
 
     def test_lock_and_write_IOError(self):
         temp_file = os.path.join(self.__tempfolder.name, str(uuid.uuid4()))

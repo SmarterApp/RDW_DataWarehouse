@@ -55,7 +55,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
+                  'asmtGrade': '03'}
         query = self.__create_query(params)
         print(query)
         output = os.path.join(self.__tmp_out_dir, 'items.csv')
@@ -82,7 +82,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
+                  'asmtGrade': '03'}
         query = self.__create_query(params)
         output = os.path.join(self.__tmp_out_dir, 'items.csv')
         task_info = {Constants.TASK_ID: '01',

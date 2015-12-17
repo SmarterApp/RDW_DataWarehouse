@@ -430,8 +430,10 @@ class DoesSourceFileInExpectedFormat(object):
             file_to_validate.close()
             header_row = [column.lower() for column in header_row]
             if not self.are_eq(header_row, self.expected_csv_fields):
-                new_expected = [x for x in self.expected_csv_fields if x != 'op']
-                if not self.are_eq(header_row, new_expected):
+                # not equal when 'op', 'completestatus', 'administrationcondition' are not present
+                new_expected = [x for x in self.expected_csv_fields if x not in {Constants.OP_COLUMN_NAME, Constants.COMPLETESTATUS, Constants.ADMINISTRATIONCONDITION}]
+                new_header_row = [x for x in header_row if x not in {Constants.OP_COLUMN_NAME, Constants.COMPLETESTATUS, Constants.ADMINISTRATIONCONDITION}]
+                if not self.are_eq(new_header_row, new_expected):
                     return ErrorCode.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid
 
         except StopIteration:

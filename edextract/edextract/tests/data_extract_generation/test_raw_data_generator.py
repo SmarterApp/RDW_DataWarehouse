@@ -51,7 +51,7 @@ class TestRawDataGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqli
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
+                  'asmtGrade': '03'}
         query = self.__create_query(params)
         output_path = self.__tmp_out_dir
         task_info = {Constants.TASK_ID: '01',

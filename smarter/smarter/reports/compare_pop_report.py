@@ -188,6 +188,7 @@ def set_default_min_cell_size(default_min_cell_size):
     global DEFAULT_MIN_CELL_SIZE
     DEFAULT_MIN_CELL_SIZE = default_min_cell_size
 
+
 class ComparingPopReport(object):
     '''
     Comparing populations report

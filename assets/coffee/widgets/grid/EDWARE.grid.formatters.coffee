@@ -84,7 +84,7 @@ define [
         toolTip: toolTip
         invalid: invalid
         standardized: standardized
-        columnName: status
+        columnName: labels['status']
         export: 'edwareExportColumn' if options.colModel.export
         exportValues: exportValues.join(",")
     }
@@ -115,6 +115,9 @@ define [
     params = buildUrl(rowObject, options)
 
     buildLink = (options)->
+      if edwareUtil.isPublicReport() and options.colModel.formatoptions.id_name is "asmtGrade"
+        contextSecurity.security.permissions.pii.all = false
+        contextSecurity.apply()
       if contextSecurity.hasPIIAccess(rowObject.rowId)
         escaped = displayValue.replace /'/, "&#39;"
         "<a id='link_#{rowObject.rowId}' data-value='#{escaped}' href='#{options.colModel.formatoptions.linkUrl}?#{params}'>#{displayValue}</a>"

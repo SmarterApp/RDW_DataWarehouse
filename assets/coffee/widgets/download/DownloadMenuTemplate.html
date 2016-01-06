@@ -14,6 +14,7 @@
                     <p>{{options.export_download_curr_view.desc}}</p>
                 </div>
             </li>
+            {{^isPublic}}
             <li class="extract">
                 <label for="extract">
                     <input id="extract" type="radio" name="download" value="extract"/>
@@ -44,11 +45,13 @@
                     <p>{{options.export_bulk_pdf.desc.no_permission}}</p>
                 </div>
             </li>
+            {{/isPublic}}
             <li class="note">
                 <div>
                     <p>{{{options.note}}}</p>
                 </div>
             </li>
+            {{^isPublic}}
             <li class="stateExtract">
                 <label for="stateExtract">
                     <input id="stateExtract" type="radio" name="download" value="stateExtract"/>
@@ -58,6 +61,7 @@
                     <p>{{options.export_request_extract.desc}}</p>
                 </div>
             </li>
+            {{/isPublic}}
         </ul>
     </div>
     <div class="modal-footer">

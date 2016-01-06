@@ -6,7 +6,7 @@ Created on Oct 21, 2014
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, desc, or_
+from sqlalchemy.sql.expression import and_, desc, or_, null
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
 from smarter.reports.helpers.assessments import get_claims, get_cut_points, \
@@ -143,7 +143,7 @@ def get_list_of_students_fao(params):
                                      fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
                                      fact_asmt_outcome_vw.c.administration_condition.label('administration_condition'),
                                      func.coalesce(fact_asmt_outcome_vw.c.complete, True).label('complete')],
-                                   from_obj=[fact_asmt_outcome_vw
+                                    from_obj=[fact_asmt_outcome_vw
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
@@ -156,11 +156,13 @@ def get_list_of_students_fao(params):
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmtGrade))
-        query = query.where(and_(or_(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE]), (or_(fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_INVALID,
-                                                                                                             fact_asmt_outcome_vw.c.administration_condition == None))),
-                                    and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])), (or_(fact_asmt_outcome_vw.c.administration_condition == None,
-                                                                                                                        fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
-                                                                                                                                                                             Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))))
+        query = query.where(and_(or_(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE]),
+                                          (or_(fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_INVALID,
+                                               fact_asmt_outcome_vw.c.administration_condition == null()))),
+                                     and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])),
+                                     (or_(fact_asmt_outcome_vw.c.administration_condition == null(),
+                                          fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
+                                                                                               Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))))
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name).order_by(desc(fact_asmt_outcome_vw.c.date_taken))
         return connector.get_result(query)
 
@@ -257,7 +259,7 @@ def format_assessments_fao(results, subjects_map):
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True, include_names=False)
         assessment['administration_condition'] = result['administration_condition']
         assessment['complete'] = result['complete']
-        
+
         student[subject] = assessment
         studentDataByDate[dateTaken] = student
         asmtList.append(studentDataByDate)

@@ -11,6 +11,9 @@ from edmigrate.utils.constants import Constants
 from sqlalchemy.sql.expression import select
 import re
 from edmigrate.exceptions import NoMasterFoundException, NoNodeIDFoundException
+import os
+import sys
+import signal
 
 
 def read_ini(file):
@@ -85,6 +88,43 @@ def get_node_id_from_hostname(hostname):
     if not node_id:
         raise NoNodeIDFoundException()
     return node_id
+
+
+def create_daemon(_pidfile):
+    global pidfile
+    pidfile = _pidfile
+    if os.path.isfile(pidfile):
+        print('pid file[' + pidfile + '] still exist.  please check your system.')
+        os._exit(1)
+    if not os.path.isdir(os.path.dirname(pidfile)):
+        os.mkdir(os.path.dirname(pidfile))
+    pid = os.fork()
+    if pid == 0:
+        os.setsid()
+        with open(pidfile, 'w') as f:
+            f.write(str(os.getpid()))
+        os.chdir('/')
+        os.umask(0)
+    else:  # parent goes bye bye
+        os._exit(0)
+
+    si = os.open('/dev/null', os.O_RDONLY)
+    so = os.open('/dev/null', os.O_RDWR)
+    se = os.open('/dev/null', os.O_RDWR)
+    os.dup2(si, sys.stdin.fileno())
+    os.dup2(so, sys.stdout.fileno())
+    os.dup2(se, sys.stderr.fileno())
+    os.close(si)
+    os.close(so)
+    os.close(se)
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGHUP, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+
+def signal_handler(signal, frame):
+    os.unlink(pidfile)
+    os._exit(0)
 
 
 class Singleton(type):

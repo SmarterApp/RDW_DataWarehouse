@@ -52,6 +52,7 @@ class report_config(object):
         :param kwargs: function to accept an arbitrary number of keyword arguments.
         '''
         self.__dict__.update(kwargs)
+        self.prefix = ''
 
     def __call__(self, original_func):
         '''
@@ -66,6 +67,15 @@ class report_config(object):
             scanner.config.add_report_config((obj, original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
+
+
+class public_report_config(report_config):
+    def __init__(self, **kwargs):
+        '''
+        :param kwargs: function to accept an arbitrary number of keyword arguments.
+        '''
+        super().__init__(**kwargs)
+        self.prefix = 'public.'
 
 
 def user_info(orig_func):

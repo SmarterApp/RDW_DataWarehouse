@@ -38,6 +38,10 @@ define [
 
     params
 
+  isPublicReport = () ->
+    params = getUrlParams()
+    'isPublic' of params and params['isPublic'].toLowerCase() == "true"
+  
   # Given an user_info object, return the one role of that user from the list
   getRole = (userInfo) ->
     # roles is a list, for beta, we can assume we only have 1 role
@@ -213,6 +217,7 @@ define [
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams
+  isPublicReport: isPublicReport
   getRole: getRole
   getUserName: getUserName
   getUid: getUid

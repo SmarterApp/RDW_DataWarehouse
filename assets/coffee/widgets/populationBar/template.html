@@ -32,7 +32,16 @@
       <ul class="unstyled inline">
         {{#intervals}}
         <li>
-        <div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
+    	{{#isPublic}}
+	        <div style="width: 15px; height: 15px; background-color:{{color.bg_color}}; display: inline-block;float:left;margin-top:7px;"></div>
+	        <div style="float:left;padding-left:5px;font-size:13px;">
+	        	<div style="text-align: left;">{{labels.level}} {{level}}</div>
+	        	<div style="margin-top:-7px;text-align: left;"><strong>{{count}}</strong> ({{percentage}}%)</div>
+	    	</div>
+    	{{/isPublic}}
+    	{{^isPublic}}
+    		<div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
+    	{{/isPublic}}
                 <div class="{{export}}">
                     <span class='edwareExportField' data-export-value='{{count}}' data-export-name='{{asmt_subject_text}} {{labels.level}} {{level}} {{labels.count}}'></span>
                     <span class='edwareExportField' data-export-value='{{percentage}}%' data-export-name='{{asmt_subject_text}} {{labels.level}} {{level}} {{labels.percentage}}'></span>

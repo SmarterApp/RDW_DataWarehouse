@@ -5,19 +5,19 @@ Created on May 12, 2014
 '''
 from sqlalchemy.sql import select, and_, exists
 from smarter.reports.helpers.constants import Constants, AssessmentType
-from edcore.database.edcore_connector import EdCoreDBConnection
-from sqlalchemy.sql.expression import distinct, or_
+from sqlalchemy.sql.expression import distinct
 from edapi.cache import cache_region
 from copy import deepcopy
+from edcore.database.routing import ReportingDbConnection
 
 CACHE_REGION_PUBLIC_SHORTLIVED = 'public.shortlived'
 
 
-def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subjects={}, **args):
+def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subjects={}, is_public=False, **args):
     records = {}
     for subject_key in subjects.keys():
         subject = subjects[subject_key]
-        rows = _get_aggregate_dim_for_interim(stateCode, districtId, schoolId, asmtYear, tenant, subject_key, subject)
+        rows = _get_aggregate_dim_for_interim(stateCode, districtId, schoolId, asmtYear, tenant, subject_key, subject, is_public)
         for key in rows.keys():
             record = records.get(key)
             if record is None:
@@ -33,7 +33,7 @@ def get_aggregate_dim_interim(stateCode=None, districtId=None, schoolId=None, as
     return {Constants.RECORDS: sorted_records}
 
 
-def get_aggregate_dim_cache_route(stateCode, districtId, schoolId, asmtYear, tenant, subject_key, subject):
+def get_aggregate_dim_cache_route(stateCode, districtId, schoolId, asmtYear, tenant, subject_key, subject, *args, **kwargs):
     '''
     If school_id is present, return none - do not cache
     '''
@@ -42,7 +42,7 @@ def get_aggregate_dim_cache_route(stateCode, districtId, schoolId, asmtYear, ten
     return 'public.shortlived'
 
 
-def get_aggregate_dim_cache_route_cache_key(stateCode, districtId, schoolId, asmtYear, tenant, subject_key, subject):
+def get_aggregate_dim_cache_route_cache_key(stateCode, districtId, schoolId, asmtYear, tenant, subject_key, subject, is_public, *args, **kwargs):
     '''
     Returns cache key for get_aggregate_dim
 
@@ -56,11 +56,12 @@ def get_aggregate_dim_cache_route_cache_key(stateCode, districtId, schoolId, asm
         cache_args.append(districtId)
     cache_args.append(asmtYear)
     cache_args.append(subject)
+    cache_args.append(is_public)
     return tuple(cache_args)
 
 
 @cache_region([CACHE_REGION_PUBLIC_SHORTLIVED], router=get_aggregate_dim_cache_route, key_generator=get_aggregate_dim_cache_route_cache_key)
-def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subject_key=None, subject=None):
+def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=None, asmtYear=None, tenant=None, subject_key=None, subject=None, is_public=False):
     '''
     Query for institution or grades that have asmts for the year provided
     :param string stateCode
@@ -78,7 +79,7 @@ def _get_aggregate_dim_for_interim(stateCode=None, districtId=None, schoolId=Non
                      fact_table.c.asmt_subject == subject)
         return where
     rows = {}
-    with EdCoreDBConnection(tenant=tenant, state_code=stateCode) as connector:
+    with ReportingDbConnection(tenant=tenant, state_code=stateCode, is_public=is_public) as connector:
         # query custom metadata by state code
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)

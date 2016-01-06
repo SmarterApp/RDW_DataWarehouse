@@ -186,5 +186,6 @@
          "has_data": false,
          "info": []}
     ],
-    "faq_footer": "Conozca más acerca de Smarter Balanced y las nuevas evaluaciones en <a href='http://www.smarterbalanced.org' target='_blank'>www.smarterbalanced.org</a> o haga clic en la liga de Ayuda para obtener más información."
+    "faq_footer": "Conozca más acerca de Smarter Balanced y las nuevas evaluaciones en <a href='http://www.smarterbalanced.org' target='_blank'>www.smarterbalanced.org</a> o haga clic en la liga de Ayuda para obtener más información.",
+	"public_report_info": "Los reportes globales (o acumulados) presentan una perspectiva del desempeño del estudiante en la evaluación acumulativa más reciente, por estado, distrito, escuela o grado.<br><br>Estos reportes muestran diferentes comparaciones: (1) entre distritos en un estado, (2) escuelas en un distrito y (3) grados en una escuela.<br><br>Los reportes muestran barras multicolores que representan los distintos niveles de desempeño del estudiante. (Vea la leyenda para mayor información sobre estos niveles de desempeño). Los porcentajes de estudiantes (aquí sería útil incluir una descripción breve, entre paréntesis, de dónde provienen tales porcentajes) y el número total de estudiantes (dentro de cada estado, distrito o escuela) que se desempeñan en cada nivel, aparecen como números en las barras.<br><br>Lea más acerca de Smarter Balanced y las nuevas evaluaciones en <a href='http://www.smarterbalanced.org' target='_blank'>www.smarterbalanced.org</a>"
 }

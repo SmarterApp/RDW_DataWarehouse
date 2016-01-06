@@ -6,6 +6,7 @@ from sqlalchemy.sql.expression import and_, distinct
 from edapi.cache import cache_region
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
+from edcore.database.routing import ReportingDbConnection
 
 DEFAULT_YEAR_BACK = 1
 
@@ -107,13 +108,13 @@ def get_block_asmt_administration(state_code, district_id=None, school_id=None, 
 
 
 @cache_region('public.very_shortlived')
-def get_asmt_academic_years(state_code, tenant=None, years_back=None):
+def get_asmt_academic_years(state_code, tenant=None, years_back=None, is_public=False):
     '''
     Gets academic years.
     '''
     if not years_back or years_back <= 0:
         years_back = DEFAULT_YEAR_BACK
-    with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connection:
+    with ReportingDbConnection(tenant=tenant, state_code=state_code, is_public=is_public) as connection:
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
         query = select([dim_asmt.c.asmt_period_year]).distinct().order_by(dim_asmt.c.asmt_period_year.desc())
         results = connection.execute(query).fetchmany(size=years_back)
@@ -130,12 +131,12 @@ def get_student_reg_academic_years(state_code, tenant=None):
     return list(result[Constants.ACADEMIC_YEAR] for result in results)
 
 
-def get_default_asmt_academic_year(params):
+def get_default_asmt_academic_year(params, is_public=False):
     '''
     Get latest academic year by state code as default.
     '''
     state_code = params.get(Constants.STATECODE)
-    return get_asmt_academic_years(state_code)[0]
+    return get_asmt_academic_years(state_code, None, None, is_public)[0]
 
 
 def set_default_year_back(year_back):

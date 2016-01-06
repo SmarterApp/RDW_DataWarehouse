@@ -9,7 +9,7 @@ Created on Mar 8, 2013
 '''
 from sqlalchemy.sql import and_, select
 from smarter.reports.helpers.constants import Constants
-from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.database.routing import ReportingDbConnection
 
 STATE_NAMES = {
     'AL': 'Alabama',
@@ -66,7 +66,7 @@ STATE_NAMES = {
 }
 
 
-def get_breadcrumbs_context(state_code=None, district_id=None, school_id=None, asmt_grade=None, student_name=None, tenant=None):
+def get_breadcrumbs_context(state_code=None, district_id=None, school_id=None, asmt_grade=None, student_name=None, tenant=None, is_public=False):
     '''
     Given certain known information, returns breadcrumbs context
     It'll always return "home" breadcrumbs into results
@@ -74,7 +74,7 @@ def get_breadcrumbs_context(state_code=None, district_id=None, school_id=None, a
     formatted_results = [{'type': 'home', 'name': 'Home'}]
     results = None
     if state_code:
-        with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connector:
+        with ReportingDbConnection(tenant=tenant, state_code=state_code, is_public=is_public) as connector:
             dim_inst_hier = connector.get_table('dim_inst_hier')
             # Limit result count to one
             # We limit the results to one since we'll get multiple rows with the same values
@@ -98,7 +98,7 @@ def get_breadcrumbs_context(state_code=None, district_id=None, school_id=None, a
     if results:
         result = results[0]
         # return an hierarchical ordered list
-        formatted_results.append({'type': 'state', 'name': STATE_NAMES.get(result[Constants.STATE_CODE], 'Example State'), 'id': result[Constants.STATE_CODE]})
+        formatted_results.append({'type': 'state', 'name': STATE_NAMES.get(result[Constants.STATE_CODE], 'Example State'), 'stateCode': result[Constants.STATE_CODE], 'id': result[Constants.STATE_CODE]})
         if district_id is not None:
             formatted_results.append({'type': 'district', 'name': result[Constants.DISTRICT_NAME], 'id': district_id})
             if school_id is not None:

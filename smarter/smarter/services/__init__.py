@@ -37,3 +37,6 @@ def includeme(config):
 
     # Add extract for student assessment completion
     config.add_route('student_assessment_completion', '/services/extract/student_assessment_completion')
+
+    # Add sid generator from state_code
+    config.add_route('state_code_encrypt', '/services/tool/state_code/{state_code}')

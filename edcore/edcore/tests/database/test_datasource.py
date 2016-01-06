@@ -15,11 +15,15 @@ from edcore.database.stats_connector import StatsDBConnection
 class TestDatasource(unittest.TestCase):
 
     def setUp(self):
+        self.cleanUp()
         # Make sure we do not have sqlite in memory
         dbUtil = component.queryUtility(IDbUtil)
         self.assertIsNone(dbUtil)
 
     def tearDown(self):
+        self.cleanUp()
+
+    def cleanUp(self):
         for name in get_data_source_names():
             component.provideUtility(None, IDbUtil, name=name)
 
@@ -134,6 +138,11 @@ class TestDatasource(unittest.TestCase):
         mapping = initialize_db(EdCoreDBConnection, settings)
         self.assertIsNotNone(mapping)
         self.assertEqual('NC', mapping['dummyTenant'])
+
+    def test_initialize_db_with_no_config(self):
+        settings = {}
+        initialize_db(StatsDBConnection, settings)
+        self.assertEquals(len(get_data_source_names()), 0)
 
 
 if __name__ == "__main__":

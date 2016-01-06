@@ -32,6 +32,7 @@ define [
       data['scoreColor'] = this.legend['subject'].score_color
 
       data.labels = this.legend.labels
+      @subject.labels = this.legend.labels
       @container.html Mustache.to_html(@getTemplate(), data)
       # create color bars
       @createBar(@subject, @container)
@@ -66,7 +67,7 @@ define [
   # Legend section on comparing population report
   class CPopLegend extends Legend
 
-    constructor: (@legend) ->
+    constructor: (@legend, @isPublic) ->
       super legend, 'comparingPopulationsReport'
 
     getTemplate: ->
@@ -139,7 +140,7 @@ define [
     #
     # reportName: report name, should be one of three names: 'individual_student_report', 'list_of_students', 'comparing_populations'.
     # data: contains legend info.
-    $.fn.createLegend = (reportName, data) ->
+    $.fn.createLegend = (reportName, isPublic, data) ->
       legend = undefined
       # create legend object
       if reportName is Constants.REPORT_NAME.ISR
@@ -147,7 +148,7 @@ define [
       if reportName is Constants.REPORT_NAME.LOS
         legend = new LOSLegend(data)
       if reportName is Constants.REPORT_NAME.CPOP
-        legend = new CPopLegend(data)
+        legend = new CPopLegend(data, isPublic)
       # create legend section
       legend.create $(this) if legend
       $(this)

@@ -15,27 +15,15 @@ from smarter.reports.helpers.filters import has_filters
 
 class CacheTrigger(object):
 
-    def __init__(self, tenant, state_code, filter_config):
+    def __init__(self, tenant, state_code, filter_config, is_public=False):
         self.tenant = tenant
         self.state_code = state_code
-        self.academic_years = get_asmt_academic_years(state_code, tenant)
+        self.academic_years = get_asmt_academic_years(state_code, tenant, None, is_public)
         self.latest_year = self.academic_years[0]
         self.init_filters(tenant, filter_config)
+        self.is_public = is_public
 
-    def recache_state_view_report(self):
-        '''
-        Recache state view report for all assessment years
-        '''
-        # cache all academic years without filters
-        for year in self.academic_years:
-            self._cache_with_district_id(district_id=None,
-                                         filters={}, year=year)
-        # cache state view reports with filters, only for latest year
-        for _filter in self.__state_filters:
-            self._cache_with_district_id(district_id=None,
-                                         filters=_filter, year=self.latest_year)
-
-    def _cache_with_district_id(self, district_id, filters, year):
+    def _cache_cpop(self, district_id, school_id, filters, year):
         '''
         Flush and recache state view report for a particular year
 
@@ -44,31 +32,30 @@ class CacheTrigger(object):
         :returns: comparing populations state view report
         '''
         report = ComparingPopReport(stateCode=self.state_code,
-                                    tenant=self.tenant, asmtYear=year)
+                                    tenant=self.tenant, asmtYear=year, is_public=self.is_public)
         report.set_district_id(district_id)
+        report.set_school_id(school_id)
         report.set_filters(filters)
         region_name = get_comparing_populations_cache_route(report)
         args = get_comparing_populations_cache_key(report)
         flush_report_in_cache_region(report.get_report, region_name, *args)
         r = report.get_report()
         if not has_filters(filters):
-            subjects = {Constants.SUBJECT1: Constants.MATH, Constants.SUBJECT2: Constants.ELA}
+            subjects = r.get(Constants.SUBJECTS, [])
             for subject_key in subjects.keys():
-                args = get_aggregate_dim_cache_route_cache_key(self.state_code, district_id, None, year, self.tenant, subject_key, subjects[subject_key])
+                args = get_aggregate_dim_cache_route_cache_key(self.state_code, district_id, school_id, year, self.tenant, subject_key, subjects[subject_key], self.is_public)
                 flush_report_in_cache_region(_get_aggregate_dim_for_interim, CACHE_REGION_PUBLIC_SHORTLIVED, *args)
-                _get_aggregate_dim_for_interim(self.state_code, district_id, None, year, self.tenant, subject_key, subjects[subject_key])
+                _get_aggregate_dim_for_interim(self.state_code, district_id, school_id, year, self.tenant, subject_key, subjects[subject_key], self.is_public)
 
-    def recache_district_view_report(self, district_id):
+    def recache_cpop_report(self, district_id=None, school_id=None):
         '''
         Recache district view report for all assessment years
         '''
         # cache all academic years without filters
         for year in self.academic_years:
-            self._cache_with_district_id(district_id=district_id,
-                                         filters={}, year=year)
+            self._cache_cpop(district_id=district_id, school_id=school_id, filters={}, year=year)
         for _filter in self.__district_filters:
-            self._cache_with_district_id(district_id=district_id,
-                                         filters=_filter, year=self.latest_year)
+            self._cache_cpop(district_id=district_id, school_id=school_id, filters=_filter, year=self.latest_year)
 
     def init_filters(self, tenant, settings):
         '''

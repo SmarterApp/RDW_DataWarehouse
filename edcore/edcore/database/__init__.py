@@ -48,7 +48,9 @@ def initialize_db(connector_cls, settings, allow_schema_create=False):
             setup_tenant_db_connection(connector_cls, tenant=tenant, config=tenant_options)
             if prefix + 'state_code' in tenant_options.keys():
                 tenant_mapping[tenant] = tenant_options[prefix + 'state_code']
-    else:
+    elif len(options.keys()) > 0:
+        # Non-tenant based database configuration
+        # Make sure that we have found something from INI file for that config prefix
         prefixed_options = {}
         for key, val in options.items():
             prefixed_options[config_prefix + key] = val

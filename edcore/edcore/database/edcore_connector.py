@@ -9,17 +9,15 @@ from pyramid.threadlocal import get_current_request
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from edcore.security.tenant import get_state_code_to_tenant_map
 
-config_namespace = 'edware.db'
-
 
 class EdCoreDBConnection(DBConnection):
     '''
     DBConnector for Smarter Project
     This is used for database connection for reports
     '''
+    CONFIG_NAMESPACE = 'edware.db'
 
     def __init__(self, tenant=None, state_code=None):
-
         if tenant is None:
             # Get user's tenant from session
             __user = authenticated_userid(get_current_request())
@@ -40,7 +38,7 @@ class EdCoreDBConnection(DBConnection):
         '''
         Returns the namespace of smarter database connection
         '''
-        return config_namespace + '.'
+        return EdCoreDBConnection.CONFIG_NAMESPACE + '.'
 
     @staticmethod
     def get_datasource_name(tenant=None):

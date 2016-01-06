@@ -5,8 +5,9 @@
 define [
   'jquery'
   "mustache"
+  "edwareUtil"
   "edwareDataProxy"
-] , ($, Mustache, edwareDataProxy) ->
+] , ($, Mustache, edwareUtil, edwareDataProxy) ->
 
   BREADCRUMBS_TEMPLATE = "<ul>{{#items}}<li><a href='{{link}}' aria-label='breadcrumb {{name}}'>{{name}}</a></li>{{/items}}<ul>"
 
@@ -69,13 +70,14 @@ define [
       # Appends the current set of query parameters to build breadcrumb link
       # Sets element.link used for individual breadcrumb links
       # currentParams keeps track of existing query parameters for the rest of the breadcrumb trail
-      currentParams ?= ''
+      currentParams ?= if edwareUtil.isPublicReport() then 'isPublic=true' else ''
       if element.id
         params = staticElement.queryParam + "=" + element.id
         if currentParams.length is 0
           currentParams = params
         else
           currentParams = currentParams + "&" + params
+          currentParams = currentParams.replace /stateCode/, "sid" if edwareUtil.isPublicReport()
         element.link = staticElement.link + "?" + currentParams
       else if staticElement.link
         element.link = staticElement.link

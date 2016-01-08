@@ -47,7 +47,7 @@ def check_context(permission, state_code, student_ids):
     :param student_ids: guids of students that we want to check whether the user has context to
     :type student_ids: list
     '''
-    if len(student_ids) is 0:
+    if not student_ids:
         return False
 
     with EdCoreDBConnection(state_code=state_code) as connector:
@@ -96,7 +96,7 @@ def get_user_context_for_role(tenant, role, req_params):
     districts = []
 
     context = user_context.get_chain(tenant, role, params)
-    if context['all'] is True:
+    if context['all']:
         return districts
     context_districts = context[Constants.GUID]
     if context_districts:

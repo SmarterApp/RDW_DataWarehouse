@@ -25,6 +25,7 @@ define [
         if lang is current_lang
           input.attr('checked', true)
           $('#user-settings span.lang').text name
+          $('.headerLink .selectedLanguage').text name
         language_selections.append input
         language_selector_body.append language_selections
 

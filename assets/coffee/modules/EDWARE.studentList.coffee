@@ -31,6 +31,7 @@ define [
       @appendColors row
       row = @appendExtraInfo row
       $.extend(true, {}, row)
+      row
 
     appendColors: (assessment) ->
       # display asssessment type in the tooltip title
@@ -170,6 +171,7 @@ define [
     formatAssessmentsData: (asmtType) ->
       @cache[asmtType] ?= {}
       item = {}
+      overview_asmt_hide = {}
       studentGroupByType = @assessmentsData[asmtType]
       for studentId, asmtList of studentGroupByType
         item[studentId] ?= {}
@@ -178,6 +180,13 @@ define [
             if asmtDate isnt 'hide'
               for subjectName, subjectType of @subjectsData
                 if asmt[subjectName]
+                  if !(studentId of overview_asmt_hide)
+                    overview_asmt_by_student_hide = {subjectName: asmt.hide or asmt[subjectName].hide}
+                    overview_asmt_hide[studentId]=overview_asmt_by_student_hide
+                  else
+                    overview_asmt_by_student_hide = overview_asmt_hide[studentId]
+                    if !(subjectName of overview_asmt_by_student_hide)
+                      overview_asmt_by_student_hide[subjectName] = asmt.hide or asmt[subjectName].hide
                   continue if asmt.hide or asmt[subjectName].hide
                   asmt.dateTaken = asmtDate
                   asmt[subjectName]['asmt_date'] = edwareUtil.formatDate(asmtDate)
@@ -191,8 +200,8 @@ define [
                       item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId])
-          delete combinedAsmts.subject1 if not item[studentId].subject1
-          delete combinedAsmts.subject2 if not item[studentId].subject2
+          delete combinedAsmts.subject1 if not item[studentId].subject1 or overview_asmt_hide[studentId]["subject1"]
+          delete combinedAsmts.subject2 if not item[studentId].subject2 or overview_asmt_hide[studentId]["subject2"]
           # overview has 2 dates
           # update to the latest MATH date
           asmtDate = combinedAsmts.subject1.dateTaken if combinedAsmts.subject1

@@ -64,14 +64,22 @@ def get_current_context(params):
     user = __get_user_info()
     state_code = params.get(Constants.STATECODE)
     tenant = get_tenant_by_state_code(state_code)
-    user_context = user.get_context()
-    # Special case for pii
-    pii = user_context.get_chain(tenant, RolesConstants.PII, params) if params.get(Constants.SCHOOLGUID) else {'all': True}
-    sar_extracts = user_context.get_chain(tenant, RolesConstants.SAR_EXTRACTS, params)
-    srs_extracts = user_context.get_chain(tenant, RolesConstants.SRS_EXTRACTS, params)
-    src_extracts = user_context.get_chain(tenant, RolesConstants.SRC_EXTRACTS, params)
-    audit_xml_extracts = user_context.get_chain(tenant, RolesConstants.AUDIT_XML_EXTRACTS, params)
-    item_lvl_extracts = user_context.get_chain(tenant, RolesConstants.ITEM_LEVEL_EXTRACTS, params)
+    # This is for defaults - used in public reports
+    pii = {'all': False} if params.get(Constants.SCHOOLGUID) else {'all': True}
+    sar_extracts = False
+    srs_extracts = False
+    src_extracts = False
+    audit_xml_extracts = False
+    item_lvl_extracts = False
+    if user is not None:
+        user_context = user.get_context()
+        # Special case for pii
+        pii = user_context.get_chain(tenant, RolesConstants.PII, params) if params.get(Constants.SCHOOLGUID) else {'all': True}
+        sar_extracts = user_context.get_chain(tenant, RolesConstants.SAR_EXTRACTS, params)
+        srs_extracts = user_context.get_chain(tenant, RolesConstants.SRS_EXTRACTS, params)
+        src_extracts = user_context.get_chain(tenant, RolesConstants.SRC_EXTRACTS, params)
+        audit_xml_extracts = user_context.get_chain(tenant, RolesConstants.AUDIT_XML_EXTRACTS, params)
+        item_lvl_extracts = user_context.get_chain(tenant, RolesConstants.ITEM_LEVEL_EXTRACTS, params)
     return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts, 'src_extracts': src_extracts, 'audit_xml_extracts': audit_xml_extracts, 'item_extracts': item_lvl_extracts}
 
 
@@ -88,7 +96,7 @@ def get_user_context_for_role(tenant, role, req_params):
     districts = []
 
     context = user_context.get_chain(tenant, role, params)
-    if context['all']:
+    if context['all'] is True:
         return districts
     context_districts = context[Constants.GUID]
     if context_districts:

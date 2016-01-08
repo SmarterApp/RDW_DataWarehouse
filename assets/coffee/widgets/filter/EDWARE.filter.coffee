@@ -378,7 +378,6 @@ define [
       return data if not filters
       for asmtType, studentGroupByType of data.assessments
         for studentId, asmtList of studentGroupByType
-          
           for asmtByDate in asmtList
             for asmtDate, assessment of asmtByDate
               assessment.hide = if not match.demographics(assessment) then true else false

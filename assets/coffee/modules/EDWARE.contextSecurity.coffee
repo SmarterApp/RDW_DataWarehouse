@@ -1,9 +1,10 @@
 define [
   'jquery'
   'bootstrap'
+  'edwareUtil'
   'edwarePopover'
   'edwareConstants'
-], ($, bootstrap, edwarePopover, Constants) ->
+], ($, bootstrap, edwareUtil, edwarePopover, Constants) ->
 
   DEFAULT_PERMISSIONS = {
     pii: {
@@ -47,14 +48,16 @@ define [
 
     apply_pii_security_on_grid: () ->
       return if @permissions.pii.all
-      warningIcon = '<i class="edware-icon-warning"></i>'
-      # bind tooltips popover
-      $('a.disabled', '.ui-jqgrid').edwarePopover
-        class: "no_pii_msg"
-        placement: 'top'
-        container: '#content'
-        trigger: 'click'
-        content: warningIcon + @no_pii_msg
+      # don't show warning for public report
+      if not edwareUtil.isPublicReport()
+        warningIcon = '<i class="edware-icon-warning"></i>'
+        # bind tooltips popover
+        $('a.disabled', '.ui-jqgrid').edwarePopover
+          class: "no_pii_msg"
+          placement: 'top'
+          container: '#content'
+          trigger: 'click'
+          content: warningIcon + @no_pii_msg
 
     apply_sar_security: () ->
       return if @permissions.sar_extracts.all

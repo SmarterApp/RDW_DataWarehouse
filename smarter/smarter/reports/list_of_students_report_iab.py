@@ -6,7 +6,7 @@ Created on Oct 20, 2014
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, or_
+from sqlalchemy.sql.expression import and_, or_, null
 from smarter_common.security.constants import RolesConstants
 from smarter.reports.helpers.filters import apply_filter_to_query, \
     get_student_demographic
@@ -122,10 +122,8 @@ def get_list_of_students_iab(params):
         query = query.where(and_(fact_block_asmt_outcome.c.district_id == districtId))
         query = query.where(and_(fact_block_asmt_outcome.c.asmt_year == asmtYear))
         query = query.where(and_(fact_block_asmt_outcome.c.rec_status == Constants.CURRENT))
-        query = query\
-            .where(
-                and_(or_(fact_block_asmt_outcome.c.administration_condition.is_(None),
-                         fact_block_asmt_outcome.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED, Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))
+        query = query.where(and_(or_(fact_block_asmt_outcome.c.administration_condition == null(),
+                                     fact_block_asmt_outcome.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED, Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))
         query = query.where(and_(fact_block_asmt_outcome.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
         query = apply_filter_to_query(query, fact_block_asmt_outcome, dim_student, params)
         if asmtSubject is not None:

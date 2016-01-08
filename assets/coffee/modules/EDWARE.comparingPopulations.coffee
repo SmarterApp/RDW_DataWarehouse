@@ -65,6 +65,9 @@ define [
       this.labels = config.labels
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
+      this.isPublic = edwareUtil.isPublicReport()
+      if @isPublic
+        $('body').addClass('public_report')
       # create align button
       this.alignment = new Alignment('.alignmentCheckbox', @labels)
       # default sort
@@ -143,14 +146,14 @@ define [
 
     createHeaderAndFooter: ()->
       self = this
-      this.header ?= edwareHeader.create this.data, this.config
+      this.header ?= edwareHeader.create this.data, this.config, this.isPublic
 
     fetchData: (params)->
       options =
         method: "POST"
         params: params
-
-      edwareDataProxy.getDatafromSource "/data/comparing_populations", options
+      url = if this.isPublic then '/public_data/comparing_populations' else '/data/comparing_populations'
+      edwareDataProxy.getDatafromSource url, options
 
     # Based on query parameters, return the type of report that the user is requesting for
     getReportType: (params) ->
@@ -158,7 +161,7 @@ define [
         reportType = 'school'
       else if params['districtId']
         reportType = 'district'
-      else if params['stateCode']
+      else if params['stateCode'] || params['sid']
         reportType = 'state'
       $('body').addClass reportType
       reportType
@@ -242,7 +245,7 @@ define [
       @grid?.resetFocus?()
 
     renderBreadcrumbs: (breadcrumbsData, labels)->
-      displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
+      displayHome = if this.data.user_info then edwareUtil.getDisplayBreadcrumbsHome this.data.user_info else false
       this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType, displayHome, labels)
 
     renderReportInfo: () ->
@@ -261,6 +264,7 @@ define [
         metadata: @data.metadata
         ExportOptions: @config.ExportOptions
         param: @param
+        isPublic: @isPublic
         getReportParams: @getReportParams.bind(this), displaySearch, contextSecurity
 
     getReportParams: () ->
@@ -287,8 +291,9 @@ define [
       @config.academicYears= {}
       @config.academicYears.options = @academicYears
       @config.academicYears.callback = @onAcademicYearSelected.bind(this)
+      @config.disableQuickLinks = @isPublic
       # action bar contains academic year drop down, which needs to be reloaded
-      edwareReportActionBar.create '#actionBar', @config, () ->
+      edwareReportActionBar.create '#actionBar', @config, @isPublic, () ->
         self.reload self.param
 
     onAcademicYearSelected: (year) ->
@@ -363,7 +368,7 @@ define [
     getOverallSummaryName: () ->
         # Returns the overall summary row name based on the type of report
       if this.reportType is 'state'
-        return this.breadcrumbsData.items[1].id + ' State Overall'
+        return this.breadcrumbsData.items[1].stateCode + ' State Overall'
       else if this.reportType is 'district'
         districtName = this.breadcrumbsData.items[2].name
         districtName = $.trim districtName.replace(/(Schools)|(Public Schools)$/, '')

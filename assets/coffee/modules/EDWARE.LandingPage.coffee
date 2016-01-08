@@ -4,22 +4,17 @@ require [
   'mustache'
   'edwareDataProxy'
   'edwareModal'
-  'edwareHelpMenu'
   'text!templates/LandingPage.html'
   'edwareLanguageSelector'
   'edwareEvents'
-], ($, bootstrap, Mustache, edwareDataProxy, edwareModal, edwareHelpMenu, landingPageTemplate, edwareLanguageSelector, edwareEvents) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareModal, landingPageTemplate, edwareLanguageSelector, edwareEvents) ->
 
   edwareDataProxy.getDataForLandingPage().done (data) ->
     output = Mustache.to_html landingPageTemplate, data
     $('body').html output
-    helpMenu = edwareHelpMenu.create '.helpMenuContainer', data
     #Add language selector
     edwareLanguageSelector.create $('.languageMenu'), data
     #bind events
-    $('.helpMenu a').click (e)->
-      target = $(this).attr('href')
-      helpMenu.show target
     $('.btn-login').click ()->
       window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/index.html"
     $('.languageDropdown').click ()->

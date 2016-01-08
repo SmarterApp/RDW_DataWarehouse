@@ -52,7 +52,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         self.assertEqual('public.shortlived', get_aggregate_dim_cache_route('NC', None, None, None, None, None, None))
 
     def test_get_aggregate_dim_cache_route_cache_key(self):
-        key = get_aggregate_dim_cache_route_cache_key('NC', 'district', None, 'asmtYear', 'tenant', 'subject_key', 'subject')
+        key = get_aggregate_dim_cache_route_cache_key('NC', 'district', None, 'asmtYear', 'tenant', 'subject_key', 'subject', False)
         self.assertEqual(key[0], 'NC')
         self.assertEqual(key[1], 'district')
         self.assertEqual(key[2], 'asmtYear')

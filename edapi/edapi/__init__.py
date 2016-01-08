@@ -22,6 +22,12 @@ def includeme(config):
     # routing for the GET, POST, OPTIONS verbs
     config.add_route('report_get_option_post', '/data/{name}')
 
+    # routing for public reports
+    config.add_route('public_report_get_option_post', '/public_data/{name}')
+
+    # add public report short URL service
+    config.add_route('public_report_short_url', '/public/{sid}')
+
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)
 

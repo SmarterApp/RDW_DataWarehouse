@@ -12,15 +12,16 @@ from sqlalchemy.sql.expression import and_, select
 from smarter.reports.helpers import filters
 from sqlalchemy.sql.functions import count
 from edapi.cache import cache_region
-from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.database.routing import ReportingDbConnection
 
 
-def get_not_stated_count(params):
+def get_not_stated_count(params, is_public=False):
     not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
                          Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID),
                          Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID),
                          Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE),
-                         Constants.ASMTYEAR: params.get(Constants.ASMTYEAR)}
+                         Constants.ASMTYEAR: params.get(Constants.ASMTYEAR),
+                         Constants.ISPUBLIC: is_public}
     return ComparingPopStatReport(**not_stated_params).get_report()
 
 
@@ -59,7 +60,7 @@ class ComparingPopStatReport:
     Statistic data for Comparing Population Report. Only contains not stated students count for now.
     '''
 
-    def __init__(self, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None):
+    def __init__(self, stateCode=None, districtId=None, schoolId=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, isPublic=False):
         '''
         :param string stateCode:  State code representing the state
         :param string districtId:  Guid of the district, could be None
@@ -72,6 +73,7 @@ class ComparingPopStatReport:
         self.asmt_type = asmtType
         self.asmt_year = asmtYear
         self.tenant = tenant
+        self.is_public = isPublic
 
     @cache_region(['public.data'], router=get_comparing_populations_not_stated_cache_route, key_generator=get_comparing_populations_not_stated_cache_key)
     def get_report(self):
@@ -100,7 +102,7 @@ class ComparingPopStatReport:
         :rtype: dict
         :returns:  results from database
         '''
-        with EdCoreDBConnection(tenant=self.tenant, state_code=self.state_code) as connector:
+        with ReportingDbConnection(tenant=self.tenant, state_code=self.state_code, is_public=self.is_public) as connector:
             query = self.get_query(connector, filters)
             results = connector.get_result(query)
         return results[0].get(Constants.COUNT) if results else 0

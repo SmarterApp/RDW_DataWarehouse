@@ -18,7 +18,7 @@ define [
 
   class ReportActionBar
 
-    constructor: (@container, @config, asmt_type) ->
+    constructor: (@container, @config, @isPublic, asmt_type) ->
       @asmtType = {asmt_type: asmt_type} if asmt_type isnt 'undefined'
       @initialize()
       @bindEvents()
@@ -31,7 +31,8 @@ define [
       @legend ?= @createLegend()
       @printer ?= @createPrint()
       years = edwareUtil.getAcademicYears @config.academicYears?.options
-      @createQuickLinks()
+      create = if @config.disableQuickLinks? then not @config.disableQuickLinks else true
+      @createQuickLinks() if create
       @createAcademicYear(years)
       @createAsmtDropdown(years)
 
@@ -54,7 +55,7 @@ define [
 
     createLegend: () ->
       # create legend
-      $('.legendPopup').createLegend @config.reportName,
+      $('.legendPopup').createLegend @config.reportName, @isPublic,
         legendInfo: @config.legendInfo
         subject: @prepareSubjects()
         labels: @config.labels
@@ -134,8 +135,8 @@ define [
         self.config.switchView asmtView
 
 
-  create = (container, config, asmt_type) ->
-    new ReportActionBar(container, config, asmt_type)
+  create = (container, config, isPublic, asmt_type) ->
+    new ReportActionBar(container, config, isPublic, asmt_type)
 
   ReportActionBar: ReportActionBar
   create: create

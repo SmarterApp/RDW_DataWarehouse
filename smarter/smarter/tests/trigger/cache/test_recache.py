@@ -25,7 +25,7 @@ class TestRecache(Unittest_with_edcore_sqlite):
         cache_managers.clear()
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data, public.filtered_data, unittest, public.shortlived'
+            'cache.regions': 'public.data, public.filtered_data, unittest, public.shortlived, public.very_shortlived'
         }
         self.cache_mgr = CacheManager(**parse_cache_config_options(cache_opts))
         set_tenant_map({'tomcat': 'NC', get_unittest_tenant_name(): 'NC'})
@@ -35,21 +35,21 @@ class TestRecache(Unittest_with_edcore_sqlite):
 
     def test_recache_state_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
-        cache_trigger.recache_state_view_report()
+        cache_trigger.recache_cpop_report()
 #        self.validate_cache_has_expected_number_of_item(2)
 
     def test_recache_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
-        cache_trigger.recache_district_view_report('228')
+        cache_trigger.recache_cpop_report('228')
 #        self.validate_cache_has_expected_number_of_item(2)
 
     def test_flush_state_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
-        cache_trigger.recache_state_view_report()
+        cache_trigger.recache_cpop_report()
 
     def test_flush_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
-        cache_trigger.recache_district_view_report('228')
+        cache_trigger.recache_cpop_report('228')
 
     def test_flush_report_in_cache_region_with_empty_cache(self):
         region_invalidate(dummy_method, 'unittest', ('NC'))

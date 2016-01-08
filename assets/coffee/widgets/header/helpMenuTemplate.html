@@ -1,89 +1,154 @@
 <div id="HelpMenuModal" class="modal hide fade" tabindex="-1" role="dialog" aria-label="{{{labels.help}}} dialog" aria-hidden="true">
-    <div class="modal-header">
-        <a type="button" class="close" data-dismiss="modal" href="#" title="close help menu" aria-label="close">&times;</a>
-        <h2 class="helpText" aria-hidden="true"><i class="padBottom4 edware-icon-question-mark-grayscale"></i><span>{{{labels.help}}}</span></h2>
-        <ul class="nav nav-tabs" id="helpMenuTab" role="tablist">
-            <li class="active"><a href="#faq" aria-role="tab">{{{labels.help_tab_faq}}}</a></li>
-            <li><a href="#userGuide" aria-role="tab">{{{labels.help_tab_guide}}}</a></li>
-            <li><a href="#glossary" aria-role="tab">{{{labels.help_tab_glossary}}}</a></li>
-            <li><a href="#resources" aria-role="tab">{{{labels.help_tab_resources}}}</a></li>
-        </ul>
+{{#isPublic}}
+	<div class='modal-header'>
+		<a type="button" class="close" data-dismiss="modal" href="#" title="close help menu" aria-label="close">&times;</a>
+		<h2 class="modal-title" aria-hidden="true"><i class="padBottom4 edware-icon-info-mark-dark"></i><span> {{{labels.info}}}</span></h2>
+	</div>
+	<div class="modal-body">
+		<p>
+			{{{helpContent.public_report_info}}}
+		</p>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary edware-btn-primary" data-dismiss="modal">{{{labels.close}}}</button>
+	</div>
+{{/isPublic}}
+{{^isPublic}}
+	<div class="modal-header">
+		<a type="button" class="close" data-dismiss="modal" href="#" title="close help menu" aria-label="close">&times;</a>
+		<h2 class="helpText" aria-hidden="true"><i class="padBottom4 edware-icon-question-mark-grayscale"></i><span>{{{labels.help}}}</span></h2>
+		<ul class="nav nav-tabs" id="helpMenuTab" role="tablist">
+			<li class="active">
+				<a href="#faq" aria-role="tab">{{{labels.help_tab_faq}}}</a>
+			</li>
+			<li>
+				<a href="#userGuide" aria-role="tab">{{{labels.help_tab_guide}}}</a>
+			</li>
+			<li>
+				<a href="#glossary" aria-role="tab">{{{labels.help_tab_glossary}}}</a>
+			</li>
+			<li>
+				<a href="#resources" aria-role="tab">{{{labels.help_tab_resources}}}</a>
+			</li>
+		</ul>
 
-        <div class="tab-content">
-            <div class="tab-pane active" id="faq">
-            	{{#helpContent.faq_content}}
-            	<div class="faqHeader">{{name}}</div>
-            	<ul>
-            	{{#questions}}
-            	<li><a href="#{{key}}{{id}}">{{question}}</a></li></li>
-            	{{/questions}}
-            	</ul>
-	           	{{/helpContent.faq_content}}
-	           	<hr>
-	           	{{#helpContent.faq_content}}
-	            	<div class="faqContentHeader">{{name}}</div>
-	            	{{#questions}}
-	            	<div id="{{key}}{{id}}" class="faqQuestion">{{question}}</div><p>{{{answer}}}</p>
-	            	<div class="backToTop"><a href="#faq">{{labels.back_to_top}}</a></div>
-	            	{{/questions}}
-	           	{{/helpContent.faq_content}}
-	            <p>{{{helpContent.faq_footer}}}</p>
-            </div>
-            <div class="tab-pane" id="userGuide">
-                <ul>
-                {{#helpContent.user_guide_content}}
-                    <li>
-                        <div class="userGuideHeader">{{heading}}</div>
-                        {{{display_text}}}
-                        <br>
-                    </li>
-                {{/helpContent.user_guide_content}}
-                </ul>
-            </div>
-            <div class="tab-pane" id="glossary">
-                <div class="alphabetList">
-                    {{#helpContent.glossary_content}}
-                    {{#has_data}}
-                    <ul>
-                        <li><a href="#{{alphabet}}">{{alphabet}}</a>&nbsp;<div class="emptyLetter">|</div></li>
-                    </ul>
-                    {{/has_data}}
-                    {{^has_data}}
-                    <ul>
-                        <li><div class="emptyLetter">{{alphabet}}&nbsp;|</div></li>
-                    </ul>
-                    {{/has_data}}
-                    {{/helpContent.glossary_content}}
-                </div>
-                <div class="glossaryContent">
-                    {{#helpContent.glossary_content}}
-                    {{#has_data}}
-                    <div class="glossaryContentHeader">{{alphabet}}<hr></div>
-                    {{/has_data}}
-                    {{#info}}
-                    <ul>
-                        <div id="{{alphabet}}" class="glossaryTerm">{{info_term}}</div>
-                        <div class="glossaryDef">{{{info_def}}}</div>
-                    </ul>
-                    {{/info}}
-                    {{#has_data}}
-                    <div class="backToTop"><a href="#glossary">{{labels.back_to_top}}</a></div>
-                    {{/has_data}}
-                    {{/helpContent.glossary_content}}
-                </div>
-            </div>
-            <div class="tab-pane" id="resources">
-            	<p class='header'>{{{helpContent.resources_content.header}}}</p>
-            	<ul>
-            		{{#helpContent.resources_content.items}}
-            		<li>{{{.}}}</li>
-            		{{/helpContent.resources_content.items}}
-            	</ul>
-           	</div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <p>{{{labels.help_message}}}</p>
-    </div>
+		<div class="tab-content">
+			<div class="tab-pane active" id="faq">
+				{{#helpContent.faq_content}}
+				<div class="faqHeader">
+					{{name}}
+				</div>
+				<ul>
+					{{#questions}}
+					<li>
+						<a href="#{{key}}{{id}}">{{question}}</a>
+					</li></li>
+					{{/questions}}
+				</ul>
+				{{/helpContent.faq_content}}
+				<hr>
+				{{#helpContent.faq_content}}
+				<div class="faqContentHeader">
+					{{name}}
+				</div>
+				{{#questions}}
+				<div id="{{key}}{{id}}" class="faqQuestion">
+					{{question}}
+				</div>
+				<p>
+					{{{answer}}}
+				</p>
+				<div class="backToTop">
+					<a href="#faq">{{labels.back_to_top}}</a>
+				</div>
+				{{/questions}}
+				{{/helpContent.faq_content}}
+				<p>
+					{{{helpContent.faq_footer}}}
+				</p>
+			</div>
+			<div class="tab-pane" id="userGuide">
+				<ul>
+					{{#helpContent.user_guide_content}}
+					<li>
+						<div class="userGuideHeader">
+							{{heading}}
+						</div>
+						{{{display_text}}}
+						<br>
+					</li>
+					{{/helpContent.user_guide_content}}
+				</ul>
+			</div>
+			<div class="tab-pane" id="glossary">
+				<div class="alphabetList">
+					{{#helpContent.glossary_content}}
+					{{#has_data}}
+					<ul>
+						<li>
+							<a href="#{{alphabet}}">{{alphabet}}</a>&nbsp;
+							<div class="emptyLetter">
+								|
+							</div>
+						</li>
+					</ul>
+					{{/has_data}}
+					{{^has_data}}
+					<ul>
+						<li>
+							<div class="emptyLetter">
+								{{alphabet}}&nbsp;|
+							</div>
+						</li>
+					</ul>
+					{{/has_data}}
+					{{/helpContent.glossary_content}}
+				</div>
+				<div class="glossaryContent">
+					{{#helpContent.glossary_content}}
+					{{#has_data}}
+					<div class="glossaryContentHeader">
+						{{alphabet}}
+						<hr>
+					</div>
+					{{/has_data}}
+					{{#info}}
+					<ul>
+						<div id="{{alphabet}}" class="glossaryTerm">
+							{{info_term}}
+						</div>
+						<div class="glossaryDef">
+							{{{info_def}}}
+						</div>
+					</ul>
+					{{/info}}
+					{{#has_data}}
+					<div class="backToTop">
+						<a href="#glossary">{{labels.back_to_top}}</a>
+					</div>
+					{{/has_data}}
+					{{/helpContent.glossary_content}}
+				</div>
+			</div>
+			<div class="tab-pane" id="resources">
+				<p class='header'>
+					{{{helpContent.resources_content.header}}}
+				</p>
+				<ul>
+					{{#helpContent.resources_content.items}}
+					<li>
+						{{{.}}}
+					</li>
+					{{/helpContent.resources_content.items}}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<p>
+			{{{labels.help_message}}}
+		</p>
+	</div>
+{{/isPublic}}
 </div>
+

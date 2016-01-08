@@ -4,7 +4,7 @@ Created on Jan 13, 2013
 @author: tosako
 '''
 from string import capwords
-from sqlalchemy.sql.expression import and_, or_
+from sqlalchemy.sql.expression import and_, or_, null
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from edapi.exceptions import NotFoundException
@@ -140,9 +140,9 @@ def __prepare_query(connector, params):
     query = query\
         .where(and_(
             or_(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE]),
-                     (or_(fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_INVALID, fact_asmt_outcome_vw.c.administration_condition.is_(None)))),
+                     (or_(fact_asmt_outcome_vw.c.administration_condition == Constants.ADMINISTRATION_CONDITION_INVALID, fact_asmt_outcome_vw.c.administration_condition == null()))),
                 and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.INTERIM_COMPREHENSIVE])),
-                (or_(fact_asmt_outcome_vw.c.administration_condition.is_(None),
+                (or_(fact_asmt_outcome_vw.c.administration_condition == null(),
                      fact_asmt_outcome_vw.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED, Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))))
 
     if assessment_guid is not None:
@@ -222,7 +222,7 @@ def __prepare_query_iab(connector, params):
                                           .join(dim_student, and_(fact_block_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_block_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
     query = query.where(and_(fact_block_asmt_outcome.c.student_id == student_id, fact_block_asmt_outcome.c.rec_status == Constants.CURRENT, dim_asmt.c.asmt_type == AssessmentType.INTERIM_ASSESSMENT_BLOCKS))
-    query = query.where(and_(or_(fact_block_asmt_outcome.c.administration_condition.is_(None), fact_block_asmt_outcome.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
+    query = query.where(and_(or_(fact_block_asmt_outcome.c.administration_condition == null(), fact_block_asmt_outcome.c.administration_condition.in_([Constants.ADMINISTRATION_CONDITION_STANDARDIZED,
                                                                                                                                                        Constants.ADMINISTRATION_CONDITION_NON_STANDARDIZED]))))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)

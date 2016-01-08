@@ -23,7 +23,7 @@ EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 logger = logging.getLogger(__name__)
 
 
-def add_report_config(self, delegate, **kwargs):
+def add_report_config(self, delegate, prefix='', **kwargs):
     '''
     Saves report_config decorators to Pyramid Configurator's registry
 
@@ -36,7 +36,8 @@ def add_report_config(self, delegate, **kwargs):
 
     # Only process decorators with a name defined
     if settings.get('name') is not None:
-        self.registry[EDAPI_REPORTS_PLACEHOLDER][settings['name']] = settings
+        name = prefix + settings.get('name')
+        self.registry[EDAPI_REPORTS_PLACEHOLDER][name] = settings
 
 
 def call_report(report, params):

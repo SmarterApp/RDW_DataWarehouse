@@ -6,7 +6,7 @@ Created on Jan 24, 2014
 import unittest
 from edcore.security.tenant import get_state_code_mapping, set_tenant_map,\
     get_state_code_to_tenant_map, get_tenant_map, get_all_tenants,\
-    get_all_state_codes
+    get_all_state_codes, set_tenant_map_public_reports, get_state_code_to_tenant_map_public_reports
 import edcore.security.tenant
 
 
@@ -32,6 +32,12 @@ class TestTenant(unittest.TestCase):
         self.assertEqual(mapping['NC'], 'a')
         self.assertEqual(mapping['AB'], 'b')
 
+    def test_get_state_code_to_tenant_map_public_reports(self):
+        set_tenant_map_public_reports({'a': 'NC', 'b': 'AB'})
+        mapping = get_state_code_to_tenant_map_public_reports()
+        self.assertEqual(mapping['NC'], 'a')
+        self.assertEqual(mapping['AB'], 'b')
+
     def test_get_mapping(self):
         set_tenant_map({'a': 'NC'})
         mapping = get_tenant_map()
@@ -40,6 +46,11 @@ class TestTenant(unittest.TestCase):
     def test_set_mapping(self):
         set_tenant_map({'c': 'NC'})
         tenant_map = edcore.security.tenant.TENANT_MAP
+        self.assertEqual(tenant_map['c'], 'NC')
+
+    def test_set_mapping_public_reports(self):
+        set_tenant_map_public_reports({'c': 'NC'})
+        tenant_map = edcore.security.tenant.PUBLIC_REPORT_TENANT_MAP
         self.assertEqual(tenant_map['c'], 'NC')
 
     def test_get_all_tenants(self):

@@ -88,7 +88,7 @@ def get_user_context_for_role(tenant, role, req_params):
     districts = []
 
     context = user_context.get_chain(tenant, role, params)
-    if context['all'] == True:
+    if context['all']:
         return districts
     context_districts = context[Constants.GUID]
     if context_districts:

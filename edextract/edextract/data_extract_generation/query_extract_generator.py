@@ -93,4 +93,3 @@ def _gen_to_val_list(dict_gen):
     """
     for item in dict_gen:
         yield list(item.values())
-

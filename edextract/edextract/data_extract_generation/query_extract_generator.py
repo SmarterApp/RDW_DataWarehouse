@@ -24,8 +24,7 @@ def generate_csv(tenant, output_file, task_info, extract_args):
 
     @param tenant: Requestor's tenant ID
     @param output_file: File pathname of extract file
-    @param task_info: Task information for recording stats
-    @param extract_args: Arguments specific to generate_csv
+    @param task_info: Task information for recording stats    @param extract_args: Arguments specific to generate_csv
     """
 
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
@@ -90,9 +89,7 @@ def _gen_to_val_list(dict_gen):
     Convert a generator of dicts into a generator of lists of values for each dict.
 
     @param dict_gen: Generator of dicts
-
     @return: Generator of corresponding value lists
     """
-
     for item in dict_gen:
         yield list(item.values())

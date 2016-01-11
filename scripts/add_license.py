@@ -7,9 +7,15 @@ import os
 import io
 import argparse
 
-IGNORE_ROOT_DIRS = ['scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc']
+IGNORE_ROOT_DIRS = [
+    'scripts', 'resource', 'spike', 'sys', 'data_gen', 'pdfmaker', 'poc'
+]
 IGNORE_DIRS = ['node_modules', '3p', 'build', 'js', 'docs']
-IGNORE_EXT = ['.gpg', '.pyc', '.gz', '.png', 'md', '.txt', '.out', '.eml', '.csv', '.jar', '.egg', '.gpz', '.asc', '.ico', '.json', 'gif', '.done', '.in']
+IGNORE_EXT = [
+    '.gpg', '.pyc', '.gz', '.png', 'md', '.txt', '.out', '.eml', '.csv', '.jar',
+    '.egg', '.gpz', '.asc', '.ico', '.json', 'gif', '.done', '.in', '.pdf',
+    '.xls', '.xlsx'
+]
 IGNORE_FILES = ['random_seed', 'id_rsa', 'id_rsa.pub']
 
 
@@ -73,6 +79,10 @@ def add_license_to_sql(file, license):
 
 def add_license_to_coffee(file, license):
     add_license_style2(file, license)
+
+
+def add_license_to_jinja(file, license):
+    add_license_style2(file, license, start_comment='{#', end_comment='#}')
 
 
 def add_license_to_xml(file, license):
@@ -199,7 +209,8 @@ EXT_LICENSE = {'.py': add_license_to_python,
                '.less': add_license_to_less,
                '.css': add_license_to_css,
                '.yaml': add_license_to_yaml,
-               '.pt': add_license_to_html}
+               '.pt': add_license_to_html,
+               '.j2': add_license_to_jinja}
 LICENSE = {'Cakefile': add_license_style1,
            'wsgi_swi_template': add_license_style1,
            'wsgi_frs_template': add_license_style1,

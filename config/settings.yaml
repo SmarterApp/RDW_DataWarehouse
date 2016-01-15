@@ -557,7 +557,7 @@ qa:
       file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
       file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
       frs:
-        download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
+        download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
       ignore_certificate: True
   '[handlers]':
     keys: audit, syslog, security_event, filelog
@@ -1109,7 +1109,7 @@ development:
         file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
         file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
         frs:
-          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
 
 test:
   '[app:main]':
@@ -1169,7 +1169,7 @@ test:
         file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
         file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
         frs:
-          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
 
 jenkins_int:
   '[app:main]':
@@ -1233,7 +1233,7 @@ jenkins_int:
         file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
         file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
         frs:
-          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
 
 jenkins_dev:
   '[app:main]':

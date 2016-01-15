@@ -547,15 +547,17 @@ qa:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
-        idp_server_login_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0
+        issuer_name: http://localhost:6543/sp.xml
+        idp_server_login_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: https://auth1.qa.dum.edwdc.net/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     hpz:
-      file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
-      file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
+      file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+      file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
+      frs:
+        download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
       ignore_certificate: True
   '[handlers]':
     keys: audit, syslog, security_event, filelog
@@ -649,12 +651,12 @@ dev:
         homedir : /opt/edware/conf/gpg
         keyserver: None
     cache:
-      public.shortlived.url: dwcache0.dev.dum.edwdc.net:11211
-      public.data.url: dwcache0.dev.dum.edwdc.net:11211
-      session.url: dwcache0.dev.dum.edwdc.net:11211
-      public.filtered_data.url: dwcache0.dev.dum.edwdc.net:11211
+      public.shortlived.url: localhost:11211
+      public.data.url: localhost:11211
+      session.url: localhost:11211
+      public.filtered_data.url: localhost:11211
     pdf:
-      base.url: https://pyweb1.dev.dum.edwdc.net/assets/html/
+      base.url: http://localhost:6543/assets/html/
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
@@ -993,33 +995,6 @@ uat.pdf_generator:
     cache:
       session.expire: 300000 # 20 minutes
 
-localOpenAM:
-  '[app:main]':
-    edware:
-      db:
-        cat:
-          state_code: NC
-          schema_name: edware_sds_1_2
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          echo: False
-    edware_stats:
-      db:
-        schema_name: edware_sds_1_2
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
-    auth:
-      skip.verify: False
-      saml:
-        idp_server_login_url: http://local.slidev.org:8080/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://local.slidev.org:8080/openam/IDPSloRedirect/metaAlias/idp
-        issuer_name: http://local.slidev.org:6543/sp.xml
-        name_qualifier: http://local.slidev.org:8080/openam
-      oauth2:
-        idp_server_verify_url: http://local.slidev.org:8080/auth/oauth2/tokeninfo?realm=/
-    mode: dev
-    hpz:
-        file_registration_url: http://localhost/registration
-        file_upload_base_url: http://localhost/files
-
 development:
   '[app:main]':
     cache:
@@ -1101,12 +1076,12 @@ development:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        idp_server_login_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
+        name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
       oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
@@ -1131,8 +1106,10 @@ development:
         remote_dir: /sftp/opt/edware/staging/
         landing: /opt/edware/zones/landing/arrivals/
     hpz:
-        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
-        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
+        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
+        frs:
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
 
 test:
   '[app:main]':
@@ -1146,19 +1123,19 @@ test:
         cat:
           state_code: NC
           schema_name: edware_sds_1_34
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_functional_tests
         dog:
           state_code: CA
           schema_name: edware_sds_1_34_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_functional_tests
         fish:
           state_code: VT
           schema_name: edware_sds_1_34_fish
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_34
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
+        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_functional_tests_stats
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
@@ -1173,12 +1150,12 @@ test:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        idp_server_login_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
+        name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
     oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+        idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     # Celery config
@@ -1189,75 +1166,28 @@ test:
     migrate.celery:
       celery_always_eager: true
     hpz:
-        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
-        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
-
-integration:
-  '[app:main]':
-    cache:
-      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
-      type: memory
-      public.data.expire: 10
-      public.shortlived.expire: 10
-    edware:
-      db:
-        cat:
-          state_code: CA
-          schema_name: edware
-          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
-        dog:
-          state_code: CA
-          schema_name: edware
-          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
-        fish:
-          state_code: VT
-          schema_name: edware
-          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
-    edware_stats:
-      db:
-        schema_name: edware_stats
-        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
-    extract:
-      gpg.homedir: /opt/edware/keys
-      gpg.keyserver: None
-    extract.celery:
-        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
-    migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
-    services.celery:
-        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
-    auth:
-      skip.verify: False
-      saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
-        issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
-      oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
-    mode: dev
-    trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
-    hpz:
-        file_registration_url: http://localhost/registration
-        file_upload_base_url: http://localhost/files
+        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
+        frs:
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
 
 jenkins_int:
   '[app:main]':
     environment.PATH: /usr/local/bin:/opt/pdfunite/bin
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+      BROKER_URL: amqp://edware:edware1234@localhost:5672/services
       CELERYD_CONCURRENCY: 4
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@localhost:5672/edmigrate
     extract:
       celery:
-        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+        BROKER_URL: amqp://edware:edware1234@localhost:5672/edextract
         CELERYD_CONCURRENCY: 4
       gpg.homedir : /opt/edware/keys
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     smarter_score_batcher:
       celery:
-        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/smarter_score_batcher
+        BROKER_URL: amqp://edware:edware1234@localhost:5672/smarter_score_batcher
     edware:
       db:
         cat:
@@ -1280,28 +1210,30 @@ jenkins_int:
       policy.secure: False
       skip.verify: False
       saml:
-        issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
-        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0
-      oauth2:
-        idp_server_verify_url: http://edwappsrv4.poc.dum.edwdc.net:28080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
+        idp_server_login_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
+    oauth2:
+        idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     mode: test
     pdf:
       report_base_dir: /opt/edware/pdf
-      base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
+      base.url: http://localhost/assets/html/
       health_check.job.queue: health_check
       generate_timeout: 30
     cache:
-      public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
-      public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
-      public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
-      session.url: edwappsrv2.poc.dum.edwdc.net:11211
+      public.shortlived.url: localhost:11211
+      public.filtered_data.url: localhost:11211
+      public.data.url: localhost:11211
+      session.url: localhost:11211
     pickup:
       sftp.hostname: localhost
     hpz:
-        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
-        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
+        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
+        frs:
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
 
 jenkins_dev:
   '[app:main]':
@@ -1351,9 +1283,9 @@ jenkins_dev:
       policy.secure: False
       skip.verify: False
       saml:
-        issuer_name: 'http://localhost/sp.xml'
-        idp_server_login_url: 'http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
+        issuer_name: http://localhost:6543/sp.xml
+        idp_server_login_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
@@ -1373,52 +1305,3 @@ jenkins_dev:
     hpz:
         file_registration_url: http://localhost:81/registration
         file_upload_base_url: http://localhost:81/files
-
-air:
-  '[app:main]':
-    cache:
-      regions: public.data, public.filtered_data, public.shortlived, public.very_shortlived, session
-      type: memory
-      public.data.expire: 10
-    # Celery config
-    services.celery:
-      celery_always_eager: true
-    extract.celery:
-      celery_always_eager: true
-    migrate.celery:
-      celery_always_eager: true
-    edware:
-      db:
-        ca:
-          state_code: NC
-          schema_name: edware_sds_1_2
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-        dog:
-          state_code: CA
-          schema_name: edware_sds_1_2_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-    edware_stats:
-      db:
-        schema_name: edware_sds_1_2
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
-    auth:
-      skip.verify: False
-      saml:
-        idp_server_login_url: https://drc-dev-secure.opentestsystem.org/auth/SSORedirect/metaAlias/sbac/idp
-        idp_server_logout_url: https://drc-dev-secure.opentestsystem.org/auth/IDPSloRedirect/metaAlias/sbac/idp
-        issuer_name: http://localhost:6543/sp.xml
-        name_qualifier: http://drcamp-dev.opentestsystem.org:8080/auth
-      oauth2:
-        idp_server_verify_url: https://drc-dev-secure.opentestsystem.org/auth/oauth2/tokeninfo?realm=/sbac
-      idp:
-        metadata: ../../resource/air_idp_metadata.xml
-    # Don't cache any static contents
-    smarter.resources.static.max_age: 0
-    # Always generate pdf regardless if it exists in file system
-    pdf:
-      always_generate: True
-      health_check.job.queue: health_check
-    trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
-    hpz:
-        file_registration_url: http://localhost/registration
-        file_upload_base_url: http://localhost/files

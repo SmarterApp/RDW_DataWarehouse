@@ -554,10 +554,10 @@ qa:
       oauth2:
         idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/
     hpz:
-      file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org/registration
-      file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org/files
+      file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+      file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
       frs:
-        download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
+        download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
       ignore_certificate: True
   '[handlers]':
     keys: audit, syslog, security_event, filelog
@@ -1106,10 +1106,10 @@ development:
         remote_dir: /sftp/opt/edware/staging/
         landing: /opt/edware/zones/landing/arrivals/
     hpz:
-        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org/registration
-        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org/files
+        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
         frs:
-          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
 
 test:
   '[app:main]':
@@ -1166,10 +1166,10 @@ test:
     migrate.celery:
       celery_always_eager: true
     hpz:
-        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org/registration
-        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org/files
+        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
         frs:
-          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
 
 jenkins_int:
   '[app:main]':
@@ -1230,10 +1230,10 @@ jenkins_int:
     pickup:
       sftp.hostname: localhost
     hpz:
-        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org/registration
-        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org/files
+        file_registration_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/registration
+        file_upload_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/files
         frs:
-          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org/download
+          download_base_url: https://reportdownload-demoreporting.smarterbalanced.org:8443/download
 
 jenkins_dev:
   '[app:main]':
@@ -1283,9 +1283,9 @@ jenkins_dev:
       policy.secure: False
       skip.verify: False
       saml:
-        issuer_name: 'http://localhost/sp.xml'
-        idp_server_login_url: 'http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp'
-        idp_server_logout_url: 'http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp'
+        issuer_name: http://localhost:6543/sp.xml
+        idp_server_login_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/IDPSloRedirect/metaAlias/idp
         name_qualifier: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0
       oauth2:
         idp_server_verify_url: http://sso-dev.demoreporting.smarterbalanced.org:8080/OpenAM-11.0.0/oauth2/tokeninfo?realm=/

@@ -2406,6 +2406,13 @@ tr.ui-state-hover, tr.ui-widget-content .ui-state-hover, tr.ui-widget-header .ui
     }
   }
 
+  /* IE10+ specific styles go here */
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .quickLinks_expand {
+      margin: 10px 38px 0 0 !important;
+    }
+  }
+
   /* Adjust for X sign */
   #quickLinks_expand_districts_1,
   #quickLinks_expand_schools_1 {

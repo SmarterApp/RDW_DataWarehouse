@@ -40,6 +40,7 @@ config/development.ini
 smarter.egg-info
 .idea/
 .settings/
+venv/
 
 #########################
 # csv's will be ignored #

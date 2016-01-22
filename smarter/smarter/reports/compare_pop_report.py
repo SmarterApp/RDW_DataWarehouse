@@ -3,37 +3,38 @@ Created on Mar 7, 2013
 
 @author: dwu
 '''
-from edapi.decorators import report_config, user_info
-from smarter.reports.helpers.percentage_calc import normalize_percentages
-from sqlalchemy.sql import select
-from sqlalchemy.sql import and_, or_
-from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import func, null
-from smarter.reports.helpers.constants import Constants, AssessmentType
-from edapi.logging import audit_event
-import collections
-from smarter.reports.exceptions.parameter_exception import InvalidParameterException
-from smarter.reports.helpers.metadata import get_custom_metadata
-from edapi.cache import cache_region
-from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters, \
-    apply_filter_to_query
-from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
-from edcore.utils.utils import merge_dict
 from copy import deepcopy
 from collections import OrderedDict, namedtuple
+
+from sqlalchemy.sql import select
+from sqlalchemy.sql import and_, or_
+from sqlalchemy.sql.expression import func, null
+
+from edcore.utils.utils import merge_dict
+from edcore.database.routing import ReportingDbConnection
+
+from edapi.decorators import report_config, user_info
+from edapi.logging import audit_event
+from edapi.cache import cache_region
+
 from smarter.reports.student_administration import get_asmt_academic_years, get_default_asmt_academic_year
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
+from smarter.reports.exceptions.parameter_exception import InvalidParameterException
+from smarter.reports.helpers.percentage_calc import normalize_percentages
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+from smarter.reports.helpers.constants import Constants, AssessmentType
+from smarter.reports.helpers.metadata import get_custom_metadata
+from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from smarter.reports.helpers.aggregate_dim import get_aggregate_dim_interim
-import json
-from smarter.reports.user_preferences import get_user_close_context
-from smarter_common.security.constants import RolesConstants
-from edcore.database.routing import ReportingDbConnection
+from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters, \
+    apply_filter_to_query
+
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
 CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
-DEFAULT_MIN_CELL_SIZE = 0
+DEFAULT_MIN_CELL_SIZE = 10
 REPORT_PARAMS = merge_dict({Constants.STATECODE: {"type": "string",
                                                   "required": True,
                                                   "pattern": "^[a-zA-Z]{2}$",
@@ -273,7 +274,7 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns:  results arranged for front-end consumption
         '''
-        subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
+        subjects = OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
         custom_metadata = get_custom_metadata(param.get(Constants.STATECODE), self.tenant, self.is_public)
         record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, custom_metadata), custom_metadata, is_public=self.is_public, **param)
 
@@ -305,7 +306,7 @@ class RecordManager():
         self._districtId = districtId
         self._schoolId = schoolId
         self._subjects_map = subjects_map
-        self._tracking_record = collections.OrderedDict()
+        self._tracking_record = OrderedDict()
         self._summary = {}
         self._custom_metadata = custom_metadata
         self._asmt_level = asmt_level
@@ -350,7 +351,7 @@ class RecordManager():
         '''
         return summary of all records
         '''
-        results = collections.OrderedDict()
+        results = OrderedDict()
 
         if self._subjects_map is not None:
             for name, alias in self._subjects_map.items():

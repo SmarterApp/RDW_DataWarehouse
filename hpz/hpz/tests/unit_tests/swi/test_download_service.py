@@ -33,6 +33,7 @@ class RegistrationTest(unittest.TestCase):
 
         self.__request.method = 'GET'
         self.__request.matchdict['reg_id'] = '1234'
+        self.__request.registry.settings['mode'] = 'prod'
 
         response = download_file(None, self.__request)
 

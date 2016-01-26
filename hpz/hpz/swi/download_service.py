@@ -1,12 +1,15 @@
 import os
 import logging
+
 from pyramid.view import view_config
 from pyramid.security import authenticated_userid
-from pyramid.response import Response
+from pyramid.response import Response, FileResponse
+from pyramid.renderers import render_to_response
+
+from smarter_common.security.root_factory import Permission
+
 from hpz.database.file_registry import FileRegistry
 from hpz.database.constants import HPZ
-from pyramid.renderers import render_to_response
-from smarter_common.security.root_factory import Permission
 
 __author__ = 'okrook'
 
@@ -18,9 +21,19 @@ def download_file(context, request):
     registration_info = FileRegistry.get_registration_info(request.matchdict['reg_id'])
     file_path = registration_info[HPZ.FILE_PATH] if registration_info is not None else None
     file_name = registration_info[HPZ.FILE_NAME] if registration_info is not None else None
-    if validate_file(request):
-        headers = {'X-Sendfile': file_path, 'Content-Type': '', 'Content-Disposition': 'attachment; filename=' + file_name}
-        response = Response(headers=headers)
+
+    is_valid_file = validate_file(request)
+    dev_mode = request.registry.settings['mode'] == 'dev'
+    if is_valid_file and dev_mode:
+        response = FileResponse(file_path, request=request)
+        response.content_disposition = 'attachment; filename={}'.format(file_name)
+        logger.info('File %s was successfully served in local environment', file_path)
+    elif is_valid_file:
+        response = Response(headers={
+            'X-Sendfile': file_path,
+            'Content-Type': '',
+            'Content-Disposition': 'attachment; filename={}'.format(file_name),
+        })
         logger.info('File %s was successfully downloaded', file_path)
     else:
         response = Response(status_code=404)

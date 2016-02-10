@@ -1,0 +1,235 @@
+<TDSReport>
+    <Test grade="3" mode="online" contract="SBAC" bankKey="200" testId="SBAC-IAB-FIXED-G3E-Perf-Opinion-Beetles"
+          subject="ELA" name="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Opinion-Beetles-Winter-2014-2015" handScoreProject="0"
+          assessmentType="summative" academicYear="2015" assessmentVersion="6579"/>
+    <Examinee isDemo="0" key="152">
+        <ExamineeAttribute name="Birthdate" value="2001-07-31" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="FirstName" value="Jim" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="Sex" value="M" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="GradeLevelWhenAssessed" value="11" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="LastOrSurname" value="Valadez" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="StudentIdentifier" value="105" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="MiddleName" value="C" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="AlternateSSID" value="105" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="HispanicOrLatinoEthnicity" value="Yes" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="AmericanIndianOrAlaskaNative" value="Yes" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="Asian" value="No" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="BlackOrAfricanAmerican" value="Yes" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="White" value="Yes" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="NativeHawaiianOrOtherPacificIslander" value="Yes" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="DemographicRaceTwoOrMoreRaces" value="No" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="IDEAIndicator" value="No" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="LEPStatus" value="No" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="Section504Status" value="UNKNOWN/CANNOT PROVIDE" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="EconomicDisadvantageStatus" value="Yes" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="MigrantStatus" value="No" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="LanguageCode" value="tib" context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="EnglishLanguageProficiencLevel" value="NOPROGRESS" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="FirstEntryDateIntoUSSchool" value="2005-10-02" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="LimitedEnglishProficiencyEntryDate" value="2006-03-02" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="LEPExitDate" value="2006-04-02" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="TitleIIILanguageInstructionProgramType" value="ShelteredEnglishInstruction"
+                           context="INITIAL" contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="PrimaryDisabilityType" value="OI" context="INITIAL"
+                           contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeAttribute name="Birthdate" value="2001-07-31" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="FirstName" value="Jim" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="Sex" value="M" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="GradeLevelWhenAssessed" value="11" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="LastOrSurname" value="Valadez" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="StudentIdentifier" value="105" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="MiddleName" value="C" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="AlternateSSID" value="105" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="HispanicOrLatinoEthnicity" value="Yes" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="AmericanIndianOrAlaskaNative" value="Yes" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="Asian" value="No" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="BlackOrAfricanAmerican" value="Yes" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="White" value="Yes" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="NativeHawaiianOrOtherPacificIslander" value="Yes" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="DemographicRaceTwoOrMoreRaces" value="No" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="IDEAIndicator" value="No" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="LEPStatus" value="No" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="Section504Status" value="UNKNOWN/CANNOT PROVIDE" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="EconomicDisadvantageStatus" value="Yes" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="MigrantStatus" value="No" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="LanguageCode" value="tib" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="EnglishLanguageProficiencLevel" value="NOPROGRESS" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="FirstEntryDateIntoUSSchool" value="2005-10-02" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="LimitedEnglishProficiencyEntryDate" value="2006-03-02" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="LEPExitDate" value="2006-04-02" context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="TitleIIILanguageInstructionProgramType" value="ShelteredEnglishInstruction"
+                           context="FINAL" contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeAttribute name="PrimaryDisabilityType" value="OI" context="FINAL"
+                           contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeRelationship name="ResponsibleDistrictIdentifier" value="2222" context="INITIAL"
+                              contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeRelationship name="OrganizationName" value="UATDISTRICT2" context="INITIAL"
+                              contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeRelationship name="ResponsibleInstitutionIdentifier" value="2222" context="INITIAL"
+                              contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeRelationship name="NameOfInstitution" value="UATSCHOOL" context="INITIAL"
+                              contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeRelationship name="StateName" value="Example State" context="INITIAL"
+                              contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeRelationship name="StateAbbreviation" value="CA" context="INITIAL"
+                              contextDate="2015-07-27T19:23:33.603"/>
+        <ExamineeRelationship name="ResponsibleDistrictIdentifier" value="2222" context="FINAL"
+                              contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeRelationship name="OrganizationName" value="UATDISTRICT2" context="FINAL"
+                              contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeRelationship name="ResponsibleInstitutionIdentifier" value="2222" context="FINAL"
+                              contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeRelationship name="NameOfInstitution" value="UATSCHOOL" context="FINAL"
+                              contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeRelationship name="StateName" value="Example State" context="FINAL"
+                              contextDate="2015-07-27T19:24:27.012"/>
+        <ExamineeRelationship name="StateAbbreviation" value="CA" context="FINAL"
+                              contextDate="2015-07-27T19:24:27.012"/>
+    </Examinee>
+    <Opportunity reportingVersion="0" clientName="SBAC" qaLevel="" windowId="ANNUAL" sessionId="five-42"
+                 taName="proctor five" taId="proctor5@mailinator.com" key="f44ee557-ead5-4630-8dbf-41a56b14d573"
+                 database="session" server="ip-10-113-148-45" dateCompleted="2015-07-27T19:24:27.107"
+                 gracePeriodRestarts="0" assessmentParticipantSessionPlatformUserAgent="" ftCount="0" itemCount="4"
+                 pauseCount="0" status="scored" statusDate="2015-07-27T19:24:27.107" startDate="2015-07-27T19:23:50.006"
+                 oppId="100382" windowOpportunity="1" opportunity="1" completeStatus="PARTIAL"
+                 administrationCondition="IN" abnormalStarts="0" effectiveDate="2015-06-24">
+        <Segment id="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Op-Beetles-1-ELA-3-Winter-2014-2015" position="1"
+                 formId="IAB-G3E-PT-Op-Beetles-1-2015 ENG" formKey="200-12374" algorithm="fixedform"
+                 algorithmVersion="0"/>
+        <Segment id="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Op-Beetles-2-ELA-3-Winter-2014-2015" position="2"
+                 formId="IAB-G3E-PT-Op-Beetles-2-2015 ENG" formKey="200-12375" algorithm="fixedform"
+                 algorithmVersion="0"/>
+        <Accommodation code="ENU" type="language" value="English" segment="0"/>
+        <Accommodation code="TDS_ITM1" type="Item Tools Menu" value="On" segment="0"/>
+        <Accommodation code="TDS_Other" type="Other" value="None" segment="0"/>
+        <Accommodation code="TDS_PS_L4" type="Print Size" value="Level 4" segment="0"/>
+        <Score measureOf="Overall" measureLabel="Attempted" value="Y" standardError=""/>
+        <Score measureOf="Overall" measureLabel="ThetaScore" value="0.655889469860785"
+               standardError="0.508803198624673"/>
+        <Score measureOf="Overall" measureLabel="ScaleScore" value="2564.47531651406" standardError="43.6553144419969"/>
+        <Score measureOf="Overall" measureLabel="PerformanceLevel" value="3" standardError=""/>
+        <Item pageTime="0" pageNumber="1" pageVisits="0" numberVisits="1" format="SA"
+              adminDate="2015-07-27T19:23:53.259" clientId="" key="61118" bankKey="200" position="1"
+              contentLevel="4-CR|2-3" strand="4-CR" scoreStatus="SCORED" operational="1" dropped="0" isSelected="1"
+              score="2" mimeType="text/plain"
+              segmentId="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Op-Beetles-1-ELA-3-Winter-2014-2015">
+            <Response date="2015-07-27T19:24:09.932">q1</Response>
+            <ScoreInfo scorePoint="2" maxScore="0" scoreDimension="Overall" scoreStatus="Scored">
+                <SubScoreList>
+                    <ScoreInfo scorePoint="2" maxScore="0" scoreDimension="Initial" scoreStatus="Scored">
+                        <ScoreRationale>
+                            <Message>{"scorerID":"proctor5@mailinator.com"}</Message>
+                        </ScoreRationale>
+                    </ScoreInfo>
+                </SubScoreList>
+            </ScoreInfo>
+        </Item>
+        <Item pageTime="0" pageNumber="1" pageVisits="0" numberVisits="1" format="SA"
+              adminDate="2015-07-27T19:23:53.259" clientId="" key="61120" bankKey="200" position="2"
+              contentLevel="4-CR|4-3" strand="4-CR" scoreStatus="SCORED" operational="1" dropped="0" isSelected="1"
+              score="2" mimeType="text/plain"
+              segmentId="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Op-Beetles-1-ELA-3-Winter-2014-2015">
+            <Response date="2015-07-27T19:24:09.911">q2</Response>
+            <ScoreInfo scorePoint="2" maxScore="0" scoreDimension="Overall" scoreStatus="Scored">
+                <SubScoreList>
+                    <ScoreInfo scorePoint="2" maxScore="0" scoreDimension="Initial" scoreStatus="Scored">
+                        <ScoreRationale>
+                            <Message>{"scorerID":"proctor5@mailinator.com"}</Message>
+                        </ScoreRationale>
+                    </ScoreInfo>
+                </SubScoreList>
+            </ScoreInfo>
+        </Item>
+        <Item pageTime="0" pageNumber="1" pageVisits="0" numberVisits="1" format="MI"
+              adminDate="2015-07-27T19:23:53.259" clientId="" key="54115" bankKey="200" position="3"
+              contentLevel="4-CR|4-3|3.W.8" strand="4-CR" scoreStatus="SCORED" operational="1" dropped="0"
+              isSelected="1" score="0" mimeType="text/plain"
+              segmentId="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Op-Beetles-1-ELA-3-Winter-2014-2015">
+            <Response date="2015-07-27T19:24:09.088"> &lt;itemResponse&gt;&lt;response id="RESPONSE"&gt;&lt;value&gt;1 a&lt;/value&gt;&lt;/response&gt;&lt;/itemResponse&gt; </Response>
+            <ScoreInfo scorePoint="0" maxScore="1" scoreDimension="overall" scoreStatus="Scored">
+                <ScoreRationale>
+                    <Message>
+                        successfully scored
+                    </Message>
+                </ScoreRationale>
+            </ScoreInfo>
+        </Item>
+        <Item pageTime="0" pageNumber="2" pageVisits="0" numberVisits="1" format="WER"
+              adminDate="2015-07-27T19:24:09.975" clientId="" key="54117" bankKey="200" position="4"
+              contentLevel="2-W|7-3|3.W.1a" strand="2-W" scoreStatus="SCORED" operational="1" dropped="0" isSelected="1"
+              score="3" mimeType="text/plain"
+              segmentId="(SBAC)SBAC-IAB-FIXED-G3E-Perf-Op-Beetles-2-ELA-3-Winter-2014-2015">
+            <Response date="2015-07-27T19:24:16.034"> &lt;p&gt;q4&lt;/p&gt; </Response>
+            <ScoreInfo scorePoint="2" maxScore="0" scoreDimension="Overall" scoreStatus="Scored">
+                <SubScoreList>
+                    <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Organization/Purpose" scoreStatus="Scored">
+                        <SubScoreList>
+                            <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Initial" scoreStatus="Scored">
+                                <ScoreRationale>
+                                    <Message>{"scorerID":"proctor5@mailinator.com"}</Message>
+                                </ScoreRationale>
+                            </ScoreInfo>
+                        </SubScoreList>
+                    </ScoreInfo>
+                    <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Evidence/Elaboration" scoreStatus="Scored">
+                        <SubScoreList>
+                            <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Initial" scoreStatus="Scored">
+                                <ScoreRationale>
+                                    <Message>{"scorerID":"proctor5@mailinator.com"}</Message>
+                                </ScoreRationale>
+                            </ScoreInfo>
+                        </SubScoreList>
+                    </ScoreInfo>
+                    <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Conventions" scoreStatus="Scored">
+                        <SubScoreList>
+                            <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Initial" scoreStatus="Scored">
+                                <ScoreRationale>
+                                    <Message>{"scorerID":"proctor5@mailinator.com"}</Message>
+                                </ScoreRationale>
+                            </ScoreInfo>
+                        </SubScoreList>
+                    </ScoreInfo>
+                    <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="D" scoreStatus="Scored">
+                        <SubScoreList>
+                            <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Final" scoreStatus="Scored"/>
+                        </SubScoreList>
+                    </ScoreInfo>
+                    <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="C" scoreStatus="Scored">
+                        <SubScoreList>
+                            <ScoreInfo scorePoint="1" maxScore="0" scoreDimension="Final" scoreStatus="Scored">
+                                <ScoreRationale>
+                                    <Message>{"scorerID":"SBACItemResolutionRuleWER"}</Message>
+                                </ScoreRationale>
+                            </ScoreInfo>
+                        </SubScoreList>
+                    </ScoreInfo>
+                </SubScoreList>
+            </ScoreInfo>
+        </Item>
+    </Opportunity>
+</TDSReport>

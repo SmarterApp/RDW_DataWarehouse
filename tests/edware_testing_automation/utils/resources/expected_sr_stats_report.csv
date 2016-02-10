@@ -1,0 +1,421 @@
+State,District,School,Category,Value,AY2015 Count,AY2015 Percent of Total,AY2016 Count,AY2016 Percent of Total,Change in Count,Percent Difference in Count,Change in Percent of Total,AY2016 Matched IDs to AY2015 Count,AY2016 Matched IDs Percent of AY2015 Count
+Vermont,ALL,ALL,Total,Total,1217,100,1364,100,147,12.08,0,893,73.38
+Vermont,ALL,ALL,Sex,Male,639,52.51,705,51.69,66,10.33,-0.82,464,72.61
+Vermont,ALL,ALL,Sex,Female,578,47.49,659,48.31,81,14.01,0.82,429,74.22
+Vermont,ALL,ALL,Ethnicity,HispanicOrLatinoEthnicity,696,57.19,780,57.18,84,12.07,-0.01,517,74.28
+Vermont,ALL,ALL,Race,AmericanIndianOrAlaskaNative,8,0.66,10,0.73,2,25,0.08,6,75
+Vermont,ALL,ALL,Race,Asian,117,9.61,130,9.53,13,11.11,-0.08,85,72.65
+Vermont,ALL,ALL,Race,BlackOrAfricanAmerican,75,6.16,74,5.43,-1,-1.33,-0.74,54,72
+Vermont,ALL,ALL,Race,NativeHawaiianOrOtherPacificIslander,5,0.41,6,0.44,1,20,0.03,4,80
+Vermont,ALL,ALL,Race,White,309,25.39,355,26.03,46,14.89,0.64,220,71.2
+Vermont,ALL,ALL,Race,DemographicRaceTwoOrMoreRaces,36,2.96,40,2.93,4,11.11,-0.03,25,69.44
+Vermont,ALL,ALL,Program,IDEAIndicator,135,11.09,142,10.41,7,5.19,-0.68,104,77.04
+Vermont,ALL,ALL,Program,LEPStatus,243,19.97,310,22.73,67,27.57,2.76,203,83.54
+Vermont,ALL,ALL,Program,504Status,88,7.23,93,6.82,5,5.68,-0.41,62,70.45
+Vermont,ALL,ALL,Program,EconomicDisadvantageStatus,639,52.51,728,53.37,89,13.93,0.87,470,73.55
+Vermont,ALL,ALL,Program,MigrantStatus,42,3.45,52,3.81,10,23.81,0.36,30,71.43
+Vermont,ALL,ALL,Grade KG,Total,2,0.16,1,0.07,-1,-50,-0.09,1,50
+Vermont,ALL,ALL,Grade 01,Total,2,0.16,2,0.15,0,0,-0.02,1,50
+Vermont,ALL,ALL,Grade 02,Total,2,0.16,2,0.15,0,0,-0.02,1,50
+Vermont,ALL,ALL,Grade 03,Total,236,19.39,235,17.23,-1,-0.42,-2.16,3,1.27
+Vermont,ALL,ALL,Grade 04,Total,230,18.9,248,18.18,18,7.83,-0.72,1,0.43
+Vermont,ALL,ALL,Grade 05,Total,232,19.06,248,18.18,16,6.9,-0.88,3,1.29
+Vermont,ALL,ALL,Grade 06,Total,93,7.64,235,17.23,142,152.69,9.59,1,1.08
+Vermont,ALL,ALL,Grade 07,Total,101,8.3,95,6.96,-6,-5.94,-1.33,1,0.99
+Vermont,ALL,ALL,Grade 08,Total,82,6.74,102,7.48,20,24.39,0.74,2,2.44
+Vermont,ALL,ALL,Grade 09,Total,1,0.08,1,0.07,0,0,-0.01,0,0
+Vermont,ALL,ALL,Grade 10,Total,1,0.08,1,0.07,0,0,-0.01,0,0
+Vermont,ALL,ALL,Grade 11,Total,234,19.23,193,14.15,-41,-17.52,-5.08,4,1.71
+Vermont,ALL,ALL,Grade 12,Total,1,0.08,1,0.07,0,0,-0.01,0,0
+Vermont,Holly Tinamou County Schools,ALL,Total,Total,594,100,668,100,74,12.46,0,427,71.89
+Vermont,Holly Tinamou County Schools,ALL,Sex,Male,320,53.87,350,52.4,30,9.38,-1.48,227,70.94
+Vermont,Holly Tinamou County Schools,ALL,Sex,Female,274,46.13,318,47.6,44,16.06,1.48,200,72.99
+Vermont,Holly Tinamou County Schools,ALL,Ethnicity,HispanicOrLatinoEthnicity,353,59.43,381,57.04,28,7.93,-2.39,254,71.95
+Vermont,Holly Tinamou County Schools,ALL,Race,AmericanIndianOrAlaskaNative,2,0.34,2,0.3,0,0,-0.04,1,50
+Vermont,Holly Tinamou County Schools,ALL,Race,Asian,55,9.26,66,9.88,11,20,0.62,36,65.45
+Vermont,Holly Tinamou County Schools,ALL,Race,BlackOrAfricanAmerican,38,6.4,40,5.99,2,5.26,-0.41,29,76.32
+Vermont,Holly Tinamou County Schools,ALL,Race,NativeHawaiianOrOtherPacificIslander,3,0.51,2,0.3,-1,-33.33,-0.21,2,66.67
+Vermont,Holly Tinamou County Schools,ALL,Race,White,140,23.57,173,25.9,33,23.57,2.33,102,72.86
+Vermont,Holly Tinamou County Schools,ALL,Race,DemographicRaceTwoOrMoreRaces,17,2.86,21,3.14,4,23.53,0.28,12,70.59
+Vermont,Holly Tinamou County Schools,ALL,Program,IDEAIndicator,72,12.12,73,10.93,1,1.39,-1.19,56,77.78
+Vermont,Holly Tinamou County Schools,ALL,Program,LEPStatus,121,20.37,152,22.75,31,25.62,2.38,101,83.47
+Vermont,Holly Tinamou County Schools,ALL,Program,504Status,39,6.57,41,6.14,2,5.13,-0.43,25,64.1
+Vermont,Holly Tinamou County Schools,ALL,Program,EconomicDisadvantageStatus,308,51.85,354,52.99,46,14.94,1.14,226,73.38
+Vermont,Holly Tinamou County Schools,ALL,Program,MigrantStatus,19,3.2,23,3.44,4,21.05,0.24,13,68.42
+Vermont,Holly Tinamou County Schools,ALL,Grade KG,Total,1,0.17,1,0.15,0,0,-0.02,1,100
+Vermont,Holly Tinamou County Schools,ALL,Grade 01,Total,1,0.17,1,0.15,0,0,-0.02,1,100
+Vermont,Holly Tinamou County Schools,ALL,Grade 02,Total,1,0.17,1,0.15,0,0,-0.02,1,100
+Vermont,Holly Tinamou County Schools,ALL,Grade 03,Total,116,19.53,114,17.07,-2,-1.72,-2.46,1,0.86
+Vermont,Holly Tinamou County Schools,ALL,Grade 04,Total,112,18.86,120,17.96,8,7.14,-0.89,0,0
+Vermont,Holly Tinamou County Schools,ALL,Grade 05,Total,118,19.87,122,18.26,4,3.39,-1.6,1,0.85
+Vermont,Holly Tinamou County Schools,ALL,Grade 06,Total,36,6.06,119,17.81,83,230.56,11.75,1,2.78
+Vermont,Holly Tinamou County Schools,ALL,Grade 07,Total,45,7.58,34,5.09,-11,-24.44,-2.49,0,0
+Vermont,Holly Tinamou County Schools,ALL,Grade 08,Total,39,6.57,46,6.89,7,17.95,0.32,1,2.56
+Vermont,Holly Tinamou County Schools,ALL,Grade 09,Total,1,0.17,1,0.15,0,0,-0.02,0,0
+Vermont,Holly Tinamou County Schools,ALL,Grade 10,Total,1,0.17,1,0.15,0,0,-0.02,0,0
+Vermont,Holly Tinamou County Schools,ALL,Grade 11,Total,122,20.54,107,16.02,-15,-12.3,-4.52,1,0.82
+Vermont,Holly Tinamou County Schools,ALL,Grade 12,Total,1,0.17,1,0.15,0,0,-0.02,0,0
+Vermont,Kudu Woodcreeper Public Schools,ALL,Total,Total,623,100,696,100,73,11.72,0,466,74.8
+Vermont,Kudu Woodcreeper Public Schools,ALL,Sex,Male,319,51.2,355,51.01,36,11.29,-0.2,237,74.29
+Vermont,Kudu Woodcreeper Public Schools,ALL,Sex,Female,304,48.8,341,48.99,37,12.17,0.2,229,75.33
+Vermont,Kudu Woodcreeper Public Schools,ALL,Ethnicity,HispanicOrLatinoEthnicity,343,55.06,399,57.33,56,16.33,2.27,263,76.68
+Vermont,Kudu Woodcreeper Public Schools,ALL,Race,AmericanIndianOrAlaskaNative,6,0.96,8,1.15,2,33.33,0.19,5,83.33
+Vermont,Kudu Woodcreeper Public Schools,ALL,Race,Asian,62,9.95,64,9.2,2,3.23,-0.76,49,79.03
+Vermont,Kudu Woodcreeper Public Schools,ALL,Race,BlackOrAfricanAmerican,37,5.94,34,4.89,-3,-8.11,-1.05,25,67.57
+Vermont,Kudu Woodcreeper Public Schools,ALL,Race,NativeHawaiianOrOtherPacificIslander,2,0.32,4,0.57,2,100,0.25,2,100
+Vermont,Kudu Woodcreeper Public Schools,ALL,Race,White,169,27.13,182,26.15,13,7.69,-0.98,118,69.82
+Vermont,Kudu Woodcreeper Public Schools,ALL,Race,DemographicRaceTwoOrMoreRaces,19,3.05,19,2.73,0,0,-0.32,13,68.42
+Vermont,Kudu Woodcreeper Public Schools,ALL,Program,IDEAIndicator,63,10.11,69,9.91,6,9.52,-0.2,48,76.19
+Vermont,Kudu Woodcreeper Public Schools,ALL,Program,LEPStatus,122,19.58,158,22.7,36,29.51,3.12,102,83.61
+Vermont,Kudu Woodcreeper Public Schools,ALL,Program,504Status,49,7.87,52,7.47,3,6.12,-0.39,37,75.51
+Vermont,Kudu Woodcreeper Public Schools,ALL,Program,EconomicDisadvantageStatus,331,53.13,374,53.74,43,12.99,0.61,244,73.72
+Vermont,Kudu Woodcreeper Public Schools,ALL,Program,MigrantStatus,23,3.69,29,4.17,6,26.09,0.47,17,73.91
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade KG,Total,1,0.16,0,0,-1,-100,-0.16,0,0
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 01,Total,1,0.16,1,0.14,0,0,-0.02,0,0
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 02,Total,1,0.16,1,0.14,0,0,-0.02,0,0
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 03,Total,120,19.26,121,17.39,1,0.83,-1.88,2,1.67
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 04,Total,118,18.94,128,18.39,10,8.47,-0.55,1,0.85
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 05,Total,114,18.3,126,18.1,12,10.53,-0.2,2,1.75
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 06,Total,57,9.15,116,16.67,59,103.51,7.52,0,0
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 07,Total,56,8.99,61,8.76,5,8.93,-0.22,1,1.79
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 08,Total,43,6.9,56,8.05,13,30.23,1.14,1,2.33
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 11,Total,112,17.98,86,12.36,-26,-23.21,-5.62,3,2.68
+Vermont,Kudu Woodcreeper Public Schools,ALL,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Total,Total,89,100,91,100,2,2.25,0,56,62.92
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Sex,Male,50,56.18,47,51.65,-3,-6,-4.53,30,60
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Sex,Female,39,43.82,44,48.35,5,12.82,4.53,26,66.67
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Ethnicity,HispanicOrLatinoEthnicity,56,62.92,59,64.84,3,5.36,1.91,38,67.86
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Race,AmericanIndianOrAlaskaNative,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Race,Asian,7,7.87,4,4.4,-3,-42.86,-3.47,4,57.14
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Race,BlackOrAfricanAmerican,7,7.87,6,6.59,-1,-14.29,-1.27,5,71.43
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Race,NativeHawaiianOrOtherPacificIslander,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Race,White,19,21.35,22,24.18,3,15.79,2.83,9,47.37
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Race,DemographicRaceTwoOrMoreRaces,3,3.37,1,1.1,-2,-66.67,-2.27,1,33.33
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Program,IDEAIndicator,7,7.87,6,6.59,-1,-14.29,-1.27,4,57.14
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Program,LEPStatus,23,25.84,25,27.47,2,8.7,1.63,15,65.22
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Program,504Status,5,5.62,4,4.4,-1,-20,-1.22,3,60
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Program,EconomicDisadvantageStatus,47,52.81,48,52.75,1,2.13,-0.06,31,65.96
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Program,MigrantStatus,0,0,3,3.3,3,,3.3,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 03,Total,30,33.71,30,32.97,0,0,-0.74,0,0
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 04,Total,28,31.46,30,32.97,2,7.14,1.51,0,0
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 05,Total,31,34.83,31,34.07,0,0,-0.77,0,0
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Total,Total,88,100,89,100,1,1.14,0,59,67.05
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Sex,Male,49,55.68,43,48.31,-6,-12.24,-7.37,30,61.22
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Sex,Female,39,44.32,46,51.69,7,17.95,7.37,29,74.36
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Ethnicity,HispanicOrLatinoEthnicity,52,59.09,56,62.92,4,7.69,3.83,35,67.31
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Race,AmericanIndianOrAlaskaNative,1,1.14,1,1.12,0,0,-0.01,1,100
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Race,Asian,7,7.95,10,11.24,3,42.86,3.28,5,71.43
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Race,BlackOrAfricanAmerican,4,4.55,2,2.25,-2,-50,-2.3,2,50
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Race,NativeHawaiianOrOtherPacificIslander,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Race,White,24,27.27,20,22.47,-4,-16.67,-4.8,16,66.67
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Race,DemographicRaceTwoOrMoreRaces,3,3.41,4,4.49,1,33.33,1.09,2,66.67
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Program,IDEAIndicator,22,25,16,17.98,-6,-27.27,-7.02,15,68.18
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Program,LEPStatus,22,25,24,26.97,2,9.09,1.97,15,68.18
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Program,504Status,5,5.68,5,5.62,0,0,-0.06,4,80
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Program,EconomicDisadvantageStatus,50,56.82,49,55.06,-1,-2,-1.76,32,64
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Program,MigrantStatus,2,2.27,5,5.62,3,150,3.35,2,100
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade KG,Total,1,1.14,1,1.12,0,0,-0.01,1,100
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 01,Total,1,1.14,1,1.12,0,0,-0.01,1,100
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 02,Total,1,1.14,1,1.12,0,0,-0.01,1,100
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 03,Total,27,30.68,27,30.34,0,0,-0.34,1,3.7
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 04,Total,30,34.09,27,30.34,-3,-10,-3.75,0,0
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 05,Total,28,31.82,32,35.96,4,14.29,4.14,0,0
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Duck Tityra Sch,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Total,Total,120,100,199,100,79,65.83,0,81,67.5
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Sex,Male,62,51.67,111,55.78,49,79.03,4.11,45,72.58
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Sex,Female,58,48.33,88,44.22,30,51.72,-4.11,36,62.07
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Ethnicity,HispanicOrLatinoEthnicity,77,64.17,130,65.33,53,68.83,1.16,55,71.43
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,AmericanIndianOrAlaskaNative,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,Asian,10,8.33,13,6.53,3,30,-1.8,5,50
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,BlackOrAfricanAmerican,7,5.83,14,7.04,7,100,1.2,6,85.71
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,NativeHawaiianOrOtherPacificIslander,1,0.83,1,0.5,0,0,-0.33,0,0
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,White,25,20.83,41,20.6,16,64,-0.23,15,60
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,DemographicRaceTwoOrMoreRaces,5,4.17,6,3.02,1,20,-1.15,3,60
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,IDEAIndicator,9,7.5,25,12.56,16,177.78,5.06,7,77.78
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,LEPStatus,10,8.33,31,15.58,21,210,7.24,6,60
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,504Status,10,8.33,11,5.53,1,10,-2.81,5,50
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,EconomicDisadvantageStatus,57,47.5,103,51.76,46,80.7,4.26,41,71.93
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,MigrantStatus,5,4.17,5,2.51,0,0,-1.65,4,80
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 03,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 04,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 05,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 06,Total,36,30,119,59.8,83,230.56,29.8,1,2.78
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 07,Total,45,37.5,34,17.09,-11,-24.44,-20.41,0,0
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 08,Total,39,32.5,46,23.12,7,17.95,-9.38,1,2.56
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Total,Total,125,100,110,100,-15,-12,0,1,0.8
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Sex,Male,73,58.4,52,47.27,-21,-28.77,-11.13,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Sex,Female,52,41.6,58,52.73,6,11.54,11.13,1,1.92
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Ethnicity,HispanicOrLatinoEthnicity,77,61.6,54,49.09,-23,-29.87,-12.51,1,1.3
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Race,AmericanIndianOrAlaskaNative,1,0.8,1,0.91,0,0,0.11,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Race,Asian,14,11.2,14,12.73,0,0,1.53,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Race,BlackOrAfricanAmerican,7,5.6,6,5.45,-1,-14.29,-0.15,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Race,NativeHawaiianOrOtherPacificIslander,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Race,White,26,20.8,34,30.91,8,30.77,10.11,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Race,DemographicRaceTwoOrMoreRaces,3,2.4,3,2.73,0,0,0.33,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Program,IDEAIndicator,14,11.2,8,7.27,-6,-42.86,-3.93,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Program,LEPStatus,15,12,12,10.91,-3,-20,-1.09,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Program,504Status,8,6.4,10,9.09,2,25,2.69,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Program,EconomicDisadvantageStatus,66,52.8,68,61.82,2,3.03,9.02,1,1.52
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Program,MigrantStatus,5,4,3,2.73,-2,-40,-1.27,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 03,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 04,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 05,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 09,Total,1,0.8,1,0.91,0,0,0.11,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 10,Total,1,0.8,1,0.91,0,0,0.11,0,0
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 11,Total,122,97.6,107,97.27,-15,-12.3,-0.33,1,0.82
+Vermont,Holly Tinamou County Schools,Mato Whale HS,Grade 12,Total,1,0.8,1,0.91,0,0,0.11,0,0
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Total,Total,87,100,89,100,2,2.3,0,56,64.37
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Sex,Male,45,51.72,50,56.18,5,11.11,4.46,29,64.44
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Sex,Female,42,48.28,39,43.82,-3,-7.14,-4.46,27,64.29
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Ethnicity,HispanicOrLatinoEthnicity,48,55.17,42,47.19,-6,-12.5,-7.98,27,56.25
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Race,AmericanIndianOrAlaskaNative,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Race,Asian,11,12.64,16,17.98,5,45.45,5.33,10,90.91
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Race,BlackOrAfricanAmerican,7,8.05,4,4.49,-3,-42.86,-3.55,3,42.86
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Race,NativeHawaiianOrOtherPacificIslander,1,1.15,0,0,-1,-100,-1.15,0,0
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Race,White,18,20.69,25,28.09,7,38.89,7.4,14,77.78
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Race,DemographicRaceTwoOrMoreRaces,0,0,4,4.49,4,,4.49,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Program,IDEAIndicator,13,14.94,9,10.11,-4,-30.77,-4.83,7,53.85
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Program,LEPStatus,24,27.59,25,28.09,1,4.17,0.5,17,70.83
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Program,504Status,4,4.6,4,4.49,0,0,-0.1,4,100
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Program,EconomicDisadvantageStatus,36,41.38,31,34.83,-5,-13.89,-6.55,21,58.33
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Program,MigrantStatus,3,3.45,3,3.37,0,0,-0.08,3,100
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 03,Total,30,34.48,28,31.46,-2,-6.67,-3.02,0,0
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 04,Total,27,31.03,31,34.83,4,14.81,3.8,0,0
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 05,Total,30,34.48,30,33.71,0,0,-0.77,0,0
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Onager Olingo Elem,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Total,Total,85,100,90,100,5,5.88,0,57,67.06
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Sex,Male,41,48.24,47,52.22,6,14.63,3.99,28,68.29
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Sex,Female,44,51.76,43,47.78,-1,-2.27,-3.99,29,65.91
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Ethnicity,HispanicOrLatinoEthnicity,43,50.59,40,44.44,-3,-6.98,-6.14,24,55.81
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,AmericanIndianOrAlaskaNative,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,Asian,6,7.06,9,10,3,50,2.94,4,66.67
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,BlackOrAfricanAmerican,6,7.06,8,8.89,2,33.33,1.83,5,83.33
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,NativeHawaiianOrOtherPacificIslander,1,1.18,1,1.11,0,0,-0.07,1,100
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,White,28,32.94,31,34.44,3,10.71,1.5,22,78.57
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,DemographicRaceTwoOrMoreRaces,3,3.53,3,3.33,0,0,-0.2,3,100
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,IDEAIndicator,7,8.24,9,10,2,28.57,1.76,5,71.43
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,LEPStatus,27,31.76,35,38.89,8,29.63,7.12,23,85.19
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,504Status,7,8.24,7,7.78,0,0,-0.46,3,42.86
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,EconomicDisadvantageStatus,52,61.18,55,61.11,3,5.77,-0.07,38,73.08
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,MigrantStatus,4,4.71,4,4.44,0,0,-0.26,3,75
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 03,Total,29,34.12,29,32.22,0,0,-1.9,0,0
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 04,Total,27,31.76,32,35.56,5,18.52,3.79,0,0
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 05,Total,29,34.12,29,32.22,0,0,-1.9,1,3.45
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Total,Total,112,100,86,100,-26,-23.21,0,3,2.68
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Sex,Male,54,48.21,48,55.81,-6,-11.11,7.6,3,5.56
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Sex,Female,58,51.79,38,44.19,-20,-34.48,-7.6,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Ethnicity,HispanicOrLatinoEthnicity,54,48.21,49,56.98,-5,-9.26,8.76,1,1.85
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,AmericanIndianOrAlaskaNative,1,0.89,2,2.33,1,100,1.43,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,Asian,12,10.71,7,8.14,-5,-41.67,-2.57,1,8.33
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,BlackOrAfricanAmerican,11,9.82,4,4.65,-7,-63.64,-5.17,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,NativeHawaiianOrOtherPacificIslander,0,0,1,1.16,1,,1.16,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,White,34,30.36,23,26.74,-11,-32.35,-3.61,1,2.94
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,DemographicRaceTwoOrMoreRaces,2,1.79,2,2.33,0,0,0.54,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,IDEAIndicator,12,10.71,10,11.63,-2,-16.67,0.91,1,8.33
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,LEPStatus,14,12.5,13,15.12,-1,-7.14,2.62,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,504Status,9,8.04,7,8.14,-2,-22.22,0.1,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,EconomicDisadvantageStatus,64,57.14,44,51.16,-20,-31.25,-5.98,2,3.12
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,MigrantStatus,2,1.79,6,6.98,4,200,5.19,0,0
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 03,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 04,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 05,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 11,Total,112,100,86,100,-26,-23.21,0,3,2.68
+Vermont,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Total,Total,92,100,99,100,7,7.61,0,62,67.39
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Sex,Male,48,52.17,50,50.51,2,4.17,-1.67,33,68.75
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Sex,Female,44,47.83,49,49.49,5,11.36,1.67,29,65.91
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Ethnicity,HispanicOrLatinoEthnicity,57,61.96,59,59.6,2,3.51,-2.36,37,64.91
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,AmericanIndianOrAlaskaNative,2,2.17,1,1.01,-1,-50,-1.16,1,50
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,Asian,8,8.7,7,7.07,-1,-12.5,-1.62,5,62.5
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,BlackOrAfricanAmerican,3,3.26,4,4.04,1,33.33,0.78,3,100
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,NativeHawaiianOrOtherPacificIslander,1,1.09,1,1.01,0,0,-0.08,0,0
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,White,20,21.74,26,26.26,6,30,4.52,15,75
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,DemographicRaceTwoOrMoreRaces,1,1.09,3,3.03,2,200,1.94,1,100
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,IDEAIndicator,8,8.7,6,6.06,-2,-25,-2.64,6,75
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,LEPStatus,26,28.26,27,27.27,1,3.85,-0.99,20,76.92
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,504Status,5,5.43,8,8.08,3,60,2.65,5,100
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,EconomicDisadvantageStatus,47,51.09,58,58.59,11,23.4,7.5,34,72.34
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,MigrantStatus,1,1.09,2,2.02,1,100,0.93,0,0
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 03,Total,31,33.7,31,31.31,0,0,-2.38,1,3.23
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 04,Total,30,32.61,34,34.34,4,13.33,1.73,0,0
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 05,Total,31,33.7,34,34.34,3,9.68,0.65,1,3.23
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Total,Total,86,100,93,100,7,8.14,0,59,68.6
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Sex,Male,45,52.33,44,47.31,-1,-2.22,-5.01,28,62.22
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Sex,Female,41,47.67,49,52.69,8,19.51,5.01,31,75.61
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Ethnicity,HispanicOrLatinoEthnicity,49,56.98,53,56.99,4,8.16,0.01,31,63.27
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,AmericanIndianOrAlaskaNative,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,Asian,9,10.47,7,7.53,-2,-22.22,-2.94,6,66.67
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,BlackOrAfricanAmerican,7,8.14,8,8.6,1,14.29,0.46,7,100
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,NativeHawaiianOrOtherPacificIslander,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,White,20,23.26,24,25.81,4,20,2.55,14,70
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,DemographicRaceTwoOrMoreRaces,4,4.65,3,3.23,-1,-25,-1.43,3,75
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,IDEAIndicator,7,8.14,11,11.83,4,57.14,3.69,5,71.43
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,LEPStatus,14,16.28,22,23.66,8,57.14,7.38,10,71.43
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,504Status,9,10.47,7,7.53,-2,-22.22,-2.94,5,55.56
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,EconomicDisadvantageStatus,45,52.33,47,50.54,2,4.44,-1.79,28,62.22
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,MigrantStatus,2,2.33,4,4.3,2,100,1.98,1,50
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 01,Total,1,1.16,0,0,-1,-100,-1.16,0,0
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 02,Total,1,1.16,1,1.08,0,0,-0.09,0,0
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 03,Total,28,32.56,31,33.33,3,10.71,0.78,0,0
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 04,Total,28,32.56,32,34.41,4,14.29,1.85,0,0
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 05,Total,28,32.56,29,31.18,1,3.57,-1.38,1,3.57
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Total,Total,88,100,94,100,6,6.82,0,60,68.18
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Sex,Male,35,39.77,42,44.68,7,20,4.91,24,68.57
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Sex,Female,53,60.23,52,55.32,-1,-1.89,-4.91,36,67.92
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Ethnicity,HispanicOrLatinoEthnicity,55,62.5,59,62.77,4,7.27,0.27,37,67.27
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,AmericanIndianOrAlaskaNative,3,3.41,2,2.13,-1,-33.33,-1.28,2,66.67
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,Asian,9,10.23,9,9.57,0,0,-0.65,6,66.67
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,BlackOrAfricanAmerican,6,6.82,5,5.32,-1,-16.67,-1.5,4,66.67
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,NativeHawaiianOrOtherPacificIslander,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,White,15,17.05,18,19.15,3,20,2.1,11,73.33
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,DemographicRaceTwoOrMoreRaces,3,3.41,3,3.19,0,0,-0.22,2,66.67
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,IDEAIndicator,6,6.82,7,7.45,1,16.67,0.63,4,66.67
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,LEPStatus,25,28.41,30,31.91,5,20,3.51,18,72
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,504Status,10,11.36,6,6.38,-4,-40,-4.98,5,50
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,EconomicDisadvantageStatus,49,55.68,53,56.38,4,8.16,0.7,32,65.31
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,MigrantStatus,7,7.95,7,7.45,0,0,-0.51,6,85.71
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 03,Total,31,35.23,28,29.79,-3,-9.68,-5.44,0,0
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 04,Total,32,36.36,32,34.04,0,0,-2.32,0,0
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 05,Total,25,28.41,34,36.17,9,36,7.76,0,0
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Total,Total,89,100,91,100,2,2.25,0,59,66.29
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Sex,Male,46,51.69,49,53.85,3,6.52,2.16,31,67.39
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Sex,Female,43,48.31,42,46.15,-1,-2.33,-2.16,28,65.12
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Ethnicity,HispanicOrLatinoEthnicity,46,51.69,48,52.75,2,4.35,1.06,32,69.57
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,AmericanIndianOrAlaskaNative,0,0,1,1.1,1,,1.1,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,Asian,9,10.11,9,9.89,0,0,-0.22,6,66.67
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,BlackOrAfricanAmerican,2,2.25,3,3.3,1,50,1.05,1,50
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,NativeHawaiianOrOtherPacificIslander,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,White,31,34.83,29,31.87,-2,-6.45,-2.96,19,61.29
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,DemographicRaceTwoOrMoreRaces,1,1.12,2,2.2,1,100,1.07,1,100
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,IDEAIndicator,11,12.36,8,8.79,-3,-27.27,-3.57,5,45.45
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,LEPStatus,22,24.72,28,30.77,6,27.27,6.05,17,77.27
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,504Status,9,10.11,9,9.89,0,0,-0.22,7,77.78
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,EconomicDisadvantageStatus,47,52.81,48,52.75,1,2.13,-0.06,31,65.96
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,MigrantStatus,3,3.37,1,1.1,-2,-66.67,-2.27,1,33.33
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade KG,Total,1,1.12,0,0,-1,-100,-1.12,0,0
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 01,Total,0,0,1,1.1,1,,1.1,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 03,Total,30,33.71,31,34.07,1,3.33,0.36,1,3.33
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 04,Total,28,31.46,30,32.97,2,7.14,1.51,1,3.57
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 05,Total,30,33.71,29,31.87,-1,-3.33,-1.84,0,0
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 06,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 07,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 08,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 12,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Total,Total,156,100,233,100,77,49.36,0,111,71.15
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Sex,Male,91,58.33,122,52.36,31,34.07,-5.97,62,68.13
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Sex,Female,65,41.67,111,47.64,46,70.77,5.97,49,75.38
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Ethnicity,HispanicOrLatinoEthnicity,82,52.56,131,56.22,49,59.76,3.66,58,70.73
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,AmericanIndianOrAlaskaNative,0,0,2,0.86,2,,0.86,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,Asian,15,9.62,25,10.73,10,66.67,1.11,13,86.67
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,BlackOrAfricanAmerican,8,5.13,10,4.29,2,25,-0.84,7,87.5
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,NativeHawaiianOrOtherPacificIslander,1,0.64,2,0.86,1,100,0.22,1,100
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,White,49,31.41,62,26.61,13,26.53,-4.8,31,63.27
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,DemographicRaceTwoOrMoreRaces,8,5.13,6,2.58,-2,-25,-2.55,5,62.5
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,IDEAIndicator,19,12.18,27,11.59,8,42.11,-0.59,15,78.95
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,LEPStatus,21,13.46,38,16.31,17,80.95,2.85,15,71.43
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,504Status,7,4.49,15,6.44,8,114.29,1.95,4,57.14
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,EconomicDisadvantageStatus,79,50.64,124,53.22,45,56.96,2.58,56,70.89
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,MigrantStatus,8,5.13,9,3.86,1,12.5,-1.27,4,50
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade KG,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 01,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 02,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 03,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 04,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 05,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 06,Total,57,36.54,116,49.79,59,103.51,13.25,0,0
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 07,Total,56,35.9,61,26.18,5,8.93,-9.72,1,1.79
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 08,Total,43,27.56,56,24.03,13,30.23,-3.53,1,2.33
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 09,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 10,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 11,Total,0,0,0,0,0,,0,0,
+Vermont,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 12,Total,0,0,0,0,0,,0,0,

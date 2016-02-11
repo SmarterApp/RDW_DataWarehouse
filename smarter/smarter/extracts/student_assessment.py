@@ -1,11 +1,13 @@
-'''
+"""
 Created on Nov 1, 2013
 
 @author: ejen
-'''
+"""
+
 from sqlalchemy.sql.expression import and_, func, literal, case
 
 from edcore.database.edcore_connector import EdCoreDBConnection
+
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
 from smarter.extracts.format import get_column_mapping
@@ -20,10 +22,13 @@ __permissions = {ExtractType.itemLevel: RolesConstants.ITEM_LEVEL_EXTRACTS,
 
 
 def get_required_permission(extract_type):
-    '''
-    Queries are shared between different extracts, and permission is different based on the extract type
+    """
+    Queries are shared between different extracts, and permission is different
+    based on the extract type
     The correct permission is returned given the extract type
-    '''
+    :param extract_type: Type of extraction: Item Level, Raw Data Level,
+    Student Assessment
+    """
 
     return __permissions.get(extract_type)
 
@@ -31,8 +36,8 @@ def get_required_permission(extract_type):
 def get_extract_assessment_query(params):
     """
     private method to generate SQLAlchemy object or sql code for extraction
-
-    :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit
+    :param params: for query parameters asmt_type, asmt_subject, asmt_year,
+    limit
     """
     state_code = params.get(Constants.STATECODE)
     district_id = params.get(Constants.DISTRICTGUID)
@@ -46,7 +51,8 @@ def get_extract_assessment_query(params):
     dim_student_label = get_column_mapping(Constants.DIM_STUDENT)
     dim_inst_hier_label = get_column_mapping(Constants.DIM_INST_HIER)
     dim_asmt_label = get_column_mapping(Constants.DIM_ASMT)
-    fact_asmt_outcome_vw_label = get_column_mapping(Constants.FACT_ASMT_OUTCOME_VW)
+    fact_asmt_outcome_vw_label = get_column_mapping(
+        Constants.FACT_ASMT_OUTCOME_VW)
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -171,16 +177,19 @@ def get_extract_assessment_query(params):
         if student:
             query = query.where(and_(fact_asmt_outcome_vw.c.student_id.in_(student)))
 
-        query = apply_filter_to_query(query, fact_asmt_outcome_vw, dim_student, params)
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
+        query = apply_filter_to_query(
+            query, fact_asmt_outcome_vw, dim_student, params)
+        query = query.order_by(dim_student.c.last_name).order_by(
+            dim_student.c.first_name)
+
     return query
 
 
 def get_extract_assessment_query_iab(params):
     """
     private method to generate SQLAlchemy object or sql code for extraction
-
-    :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit
+    :param params: for query parameters asmt_type, asmt_subject, asmt_year,
+    limit
     """
     state_code = params.get(Constants.STATECODE)
     district_id = params.get(Constants.DISTRICTGUID)
@@ -194,14 +203,18 @@ def get_extract_assessment_query_iab(params):
     dim_student_label = get_column_mapping(Constants.DIM_STUDENT)
     dim_inst_hier_label = get_column_mapping(Constants.DIM_INST_HIER)
     dim_asmt_label = get_column_mapping(Constants.DIM_ASMT)
-    fact_block_asmt_outcome_label = get_column_mapping(Constants.FACT_BLOCK_ASMT_OUTCOME)
-    fact_asmt_outcome_vw_label = get_column_mapping(Constants.FACT_ASMT_OUTCOME_VW)
+    fact_block_asmt_outcome_label = get_column_mapping(
+        Constants.FACT_BLOCK_ASMT_OUTCOME)
+    fact_asmt_outcome_vw_label = get_column_mapping(
+        Constants.FACT_ASMT_OUTCOME_VW)
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
-        fact_block_asmt_outcome = connector.get_table(Constants.FACT_BLOCK_ASMT_OUTCOME)
+        fact_block_asmt_outcome = connector.get_table(
+            Constants.FACT_BLOCK_ASMT_OUTCOME)
+
         # TODO: Look at removing dim_asmt
         query = select_with_context([
             dim_asmt.c.asmt_guid.label(dim_asmt_label.get(Constants.ASMT_GUID, Constants.ASMT_GUID)),
@@ -242,12 +255,12 @@ def get_extract_assessment_query_iab(params):
             dim_student.c.group_10_id.label(dim_student_label.get('group_10_id', 'group_10_id')),
             dim_student.c.group_10_text.label(dim_student_label.get('group_10_text', 'group_10_text')),
             fact_block_asmt_outcome.c.date_taken.label(fact_block_asmt_outcome_label.get('date_taken', 'date_taken')),
-            literal("").label(fact_asmt_outcome_vw_label.get('asmt_score', 'asmt_score')),
+            fact_block_asmt_outcome.c.asmt_claim_1_score.label(fact_asmt_outcome_vw_label.get('asmt_score', 'asmt_score')),
             literal("").label(fact_asmt_outcome_vw_label.get('asmt_score_range_min', 'asmt_score_range_min')),
             literal("").label(fact_asmt_outcome_vw_label.get('asmt_score_range_max', 'asmt_score_range_max')),
-            literal("").label(fact_asmt_outcome_vw_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
-            fact_block_asmt_outcome.c.asmt_claim_1_score.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score', 'asmt_claim_1_score')),
-            fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label(fact_block_asmt_outcome_label.get('asmt_claim_1_perf_lvl', 'asmt_claim_1_perf_lvl')),
+            fact_block_asmt_outcome.c.asmt_claim_1_perf_lvl.label(fact_asmt_outcome_vw_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
+            literal("").label(fact_block_asmt_outcome_label.get('asmt_claim_1_score', 'asmt_claim_1_score')),
+            literal("").label(fact_block_asmt_outcome_label.get('asmt_claim_1_perf_lvl', 'asmt_claim_1_perf_lvl')),
             fact_block_asmt_outcome.c.asmt_claim_1_score_range_min.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_min')),
             fact_block_asmt_outcome.c.asmt_claim_1_score_range_max.label(fact_block_asmt_outcome_label.get('asmt_claim_1_score_range_max', 'asmt_claim_1_score_range_max')),
             literal("").label(fact_asmt_outcome_vw_label.get('asmt_claim_2_score', 'asmt_claim_2_score')),
@@ -320,66 +333,95 @@ def get_extract_assessment_query_iab(params):
         if student:
             query = query.where(and_(fact_block_asmt_outcome.c.student_id.in_(student)))
 
-        query = apply_filter_to_query(query, fact_block_asmt_outcome, dim_student, params)
-        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
+        query = apply_filter_to_query(
+            query, fact_block_asmt_outcome, dim_student, params)
+        query = query.order_by(dim_student.c.last_name).order_by(
+            dim_student.c.first_name)
+
     return query
 
 
 def get_extract_assessment_item_and_raw_count_query(params, extract_type):
     """
-    private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
+    private method to generate SQLAlchemy object or sql code for extraction of
+    students for item level/raw data
 
-    :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
+    :param params: for query parameters asmt_year, asmt_type, asmt_subject,
+    asmt_grade
+    :param extract_type: Type of extraction: Item Level, Raw Data Level,
+    Student Assessment
     """
     state_code = params.get(Constants.STATECODE)
 
     with EdCoreDBConnection(state_code=state_code) as connector:
-        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
-        query = select_with_context([func.count().label(Constants.COUNT)],
-                                    from_obj=[fact_asmt_outcome_vw],
-                                    permission=get_required_permission(extract_type),
-                                    state_code=state_code)
+        fact_asmt_outcome_vw = connector.get_table(
+            Constants.FACT_ASMT_OUTCOME_VW)
+        query = select_with_context([
+            func.count().label(Constants.COUNT)],
+            from_obj=[fact_asmt_outcome_vw],
+            permission=get_required_permission(extract_type),
+            state_code=state_code)
 
-        query = _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, params)
+        query = _assessment_item_and_raw_where_clause_builder(
+            query, fact_asmt_outcome_vw, params)
+
     return query
 
 
 def get_extract_assessment_item_and_raw_query(params, extract_type):
     """
-    private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
+    private method to generate SQLAlchemy object or sql code for extraction of
+    students for item level/raw data
 
-    :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
+    :param params: for query parameters asmt_year, asmt_type, asmt_subject,
+    asmt_grade
+    :param extract_type: Type of extraction: Item Level, Raw Data Level,
+    Student Assessment
     """
     state_code = params.get(Constants.STATECODE)
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        fact_asmt_outcome_vw = connector.get_table(
+            Constants.FACT_ASMT_OUTCOME_VW)
         # TODO: Look at removing dim_asmt
-        query = select_with_context([fact_asmt_outcome_vw.c.state_code,
-                                     fact_asmt_outcome_vw.c.asmt_year,
-                                     fact_asmt_outcome_vw.c.asmt_type,
-                                     dim_asmt.c.effective_date,
-                                     fact_asmt_outcome_vw.c.asmt_subject,
-                                     fact_asmt_outcome_vw.c.asmt_grade,
-                                     fact_asmt_outcome_vw.c.district_id,
-                                     fact_asmt_outcome_vw.c.student_id],
-                                    from_obj=[fact_asmt_outcome_vw
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
-                                    permission=get_required_permission(extract_type),
-                                    state_code=state_code)
-        query = _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, params)
+        query = select_with_context([
+            fact_asmt_outcome_vw.c.state_code,
+            fact_asmt_outcome_vw.c.asmt_year,
+            fact_asmt_outcome_vw.c.asmt_type,
+            dim_asmt.c.effective_date,
+            fact_asmt_outcome_vw.c.asmt_subject,
+            fact_asmt_outcome_vw.c.asmt_grade,
+            fact_asmt_outcome_vw.c.district_id,
+            fact_asmt_outcome_vw.c.student_id
+        ], from_obj=[
+            fact_asmt_outcome_vw.join(dim_asmt,
+                                      and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))
+        ], permission=get_required_permission(extract_type),
+            state_code=state_code)
+        query = _assessment_item_and_raw_where_clause_builder(
+            query, fact_asmt_outcome_vw, params)
+
     return query
 
 
-def _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw, params):
+def _assessment_item_and_raw_where_clause_builder(query, fact_asmt_outcome_vw,
+                                                  params):
     state_code = params.get(Constants.STATECODE)
     asmt_year = params.get(Constants.ASMTYEAR)
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_subject = params.get(Constants.ASMTSUBJECT)
     asmt_grade = params.get(Constants.ASMTGRADE)
-    query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code, fact_asmt_outcome_vw.c.asmt_year == asmt_year,
-                             fact_asmt_outcome_vw.c.asmt_type == asmt_type, fact_asmt_outcome_vw.c.asmt_subject == asmt_subject,
-                             fact_asmt_outcome_vw.c.asmt_grade == asmt_grade, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-    query = apply_filter_to_query(query, fact_asmt_outcome_vw, None, params)  # Filters demographics
+
+    query = query.where(and_(
+                        fact_asmt_outcome_vw.c.state_code == state_code,
+                        fact_asmt_outcome_vw.c.asmt_year == asmt_year,
+                        fact_asmt_outcome_vw.c.asmt_type == asmt_type,
+                        fact_asmt_outcome_vw.c.asmt_subject == asmt_subject,
+                        fact_asmt_outcome_vw.c.asmt_grade == asmt_grade,
+                        fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+
+    # Filters demographics
+    query = apply_filter_to_query(query, fact_asmt_outcome_vw, None, params)
+
     return query

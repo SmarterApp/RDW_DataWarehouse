@@ -108,13 +108,13 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
                                                          grayScale=True,
                                                          date_taken=date_taken)
 
-        logger.debug('pre-pdf for [%s]', file_name)  # TODO: check if we can log PII here
-
+        logger.debug('pre-pdf for [%s]', file_name)
+        logger.info('Generating pdf for student #%s', student_id)
         try:
             pdf_trigger.send_pdf_request(student_id, state_code, asmt_period_year, asmt_type, date_taken, file_name)
         except Exception:
             triggered = False
-            logger.warning('Pdf generation failed for student #%s with following error', student_id, exc_info=True)  # TODO: check if we can log PII here
+            logger.warning('Pdf generation failed for student #%s with following error', student_id, exc_info=True)
 
     return triggered
 

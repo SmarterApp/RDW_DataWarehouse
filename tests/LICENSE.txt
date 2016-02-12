@@ -1,0 +1,102 @@
+Terms of ownership and licensing for the code underlying the Smarter Balanced
+Data Warehouse and Reporting System was agreed upon as part of Contract No.
+20130211 between Amplify Education, Inc. (f/k/a Wireless Generation, Inc.) and
+the State of Washington Office of Superintendent of Public Instruction. The
+relevant sections of the General Terms and Conditions have been excerpted below:
+
+                                  Attachment A
+                         Contract for Personal Services
+                          GENERAL TERMS AND CONDITIONS
+
+11. Copyright Provisions.
+
+11.1. Definitions
+
+(a) “Acceptance” means the user acceptance testing and acceptance procedures
+described in the Proposal.
+
+(b) “Acceptance Date” means the date of Acceptance of the Reporting Platform
+pursuant to the development timeline in the Proposal, as amended by mutual
+agreement of the parties.
+
+(c) “Consortium” means the multi-state arrangement known as the “Smarter
+Balanced Assessment Consortium,” collaborating on a federally sponsored grant to
+develop a comprehensive assessment system aligned to the Common Core State
+Standards (CCSS).
+
+(d) “Custom Reports” means Consortium-specific reports that Contractor provides
+or delivers to the Consortium pursuant to this Contract, as set forth in
+Attachment D (Reporting Platform).
+
+(e) “Materials” means all items in any format and includes, but is not limited
+to, data, reports, documents, pamphlets, advertisements, books, magazines,
+surveys, studies, films, tapes, and/or sound reproductions. For clarity,
+“Materials” does not include Software.
+
+(f) “Proposal” means the Proposal to State of Washington Office of
+Superintendent of Schools on behalf of the Consortium, SBAC RFP No. 15, attached
+hereto.
+
+(g) “Reporting Platform” means the system described in Attachment D (Reporting
+Platform) to this contract.
+
+(h) “Software” means computer programs and software, including any and all
+software implementations of algorithms, models and methodologies, whether in
+source code or object code and any related documentation.
+
+11.2. Contractor Software.
+
+(a) Ownership of Contractor Software. Subject to Section 11.4 (Open License
+Roadmap) and Section 11.2(b) (License to Contractor Software), Contractor shall
+be the sole and exclusive owner and retain all rights in, including all
+intellectual property rights, in the Reporting Platform, other than Custom
+Reports, including (a) Software created or otherwise owned by Contractor prior
+to the Effective Date of this Contract and (b) Software acquired or created by
+Contractor on or after the Effective Date of the Contract, including Software
+created pursuant to this Contract.
+
+(b) License to Contractor Software. Effective on the Acceptance Date, Contractor
+shall grant and hereby grants to the Consortium Members (as defined below) a
+worldwide, non- exclusive, fully paid-up, royalty-free, perpetual license, to
+access, use, execute, reproduce, display, distribute, perform and create
+derivative works of the Contractor Software that are included in the Reporting
+Platform, including the source code to such Contractor Software. This license
+includes the right to grant sublicenses by Consortium Members to third party
+vendors solely for the purpose of performing services on behalf of such
+Consortium Member.
+
+11.3. Custom Reports and Work-for-Hire Materials.
+
+(a) Ownership. All Custom Reports and other Materials created by Contractor as
+part of this Contract (“Consortium Materials”) shall be owned solely by the
+Consortium and considered to be works made for hire (as that term is used in
+Section 101 of the United States Copyright Act, 17 U.S.C. § 101 et seq.). If any
+Consortium Materials may not be considered a work made for hire under applicable
+laws, Contractor hereby irrevocably assigns, and shall assign, to the Consortium
+without further consideration, all of Contractor’s right, title and interest in
+and to such Consortium Materials, including all intellectual property rights, in
+the Consortium Materials.
+
+(b) License to Custom Reports. Consortium shall grant and hereby grants to the
+Contractor a worldwide, non-exclusive, fully paid-up, royalty-free, perpetual
+license, with the right to grant sublicenses, to access, use, execute,
+reproduce, display, distribute, perform and create derivative works of the
+Custom Reports.
+
+11.4. Open License Roadmap.
+
+If (a) the Reporting Platform is placed into live production with all Consortium
+member education agencies existing as of August 1, 2014 (“Consortium Members”)
+within three (3) months of Acceptance, (b) the Consortium consists of at least 5
+Consortium Members on August 1, 2014, (c) the Reporting Platform continues to
+serve such Consortium Members for a period of at least twenty four (24) months
+from the Acceptance Date, and (d) APIs to access the Reporting Platform continue
+to be made available to third party vendors, including Contractor, then upon
+written approval of the Consortium or a Consortium Member, Contractor shall make
+the Reporting Platform, as it exists on the Acceptance Date (“Accepted
+Platform”), available to the public pursuant to the Apache License, Version 2.0.
+Any Consortium Member may enforce this Section 11.4 against the Contractor if
+the conditions set forth in subsections (a) to (d) have been fulfilled.
+Consortium Members are intended third party beneficiaries of this Contract. For
+the avoidance of doubt, this Section 11.4 will survive the termination or
+expiration of this Agreement.

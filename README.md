@@ -8,3 +8,6 @@ Data Warehouse - a student assessment and registration multi-tenant data store a
 
 # License
 Source code is made publicly available **for examination only**. An open source license is expected in August 2016. Please see LICENSE.md for details.
+
+# Testing
+Please look for [tests page](tests/README.md) for further details.

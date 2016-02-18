@@ -7,22 +7,27 @@ Created on May 10, 2013
 '''
 import os
 import sys
+import errno
 import logging
-import subprocess
 import urllib.parse
-from services.celery import celery
-from services.exceptions import PdfGenerationError, PDFUniteError
+import copy
+import shutil
+import uuid
+import subprocess
+from subprocess import Popen
+
+from celery.exceptions import MaxRetriesExceededError
+
 from edcore.exceptions import NotForWindowsException, RemoteCopyError
 from edcore.utils.utils import archive_files
-import copy
-from services.celery import TIMEOUT
+
 import services
-from celery.exceptions import MaxRetriesExceededError
-from subprocess import Popen
-import shutil
-from hpz_client.frs.http_file_upload import http_file_upload
+from services.celery import celery
+from services.exceptions import PdfGenerationError, PDFUniteError
+from services.celery import TIMEOUT
 from services.constants import ServicesConstants
-import uuid
+
+from hpz_client.frs.http_file_upload import http_file_upload
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
@@ -206,30 +211,47 @@ def _build_url(base_url, base_params, merged_pdf_filename):
     return url
 
 
+def _make_uniq_temp_dir(pdf_base_dir):
+    temp_dir_path = os.path.join(pdf_base_dir, '.tmp', 'partial', uuid.uuid4().hex)
+
+    try:
+        os.makedirs(temp_dir_path, mode=0o700, exist_ok=False)
+    except OSError as e:
+        # we expect that directory can already exist. in that case we just try again
+        # and re-raise the error if it's not related
+        if e.errno != errno.EEXIST:
+            log.error('Received unexpected error when tried to create unique temp dir')
+            raise
+
+        return _make_uniq_temp_dir(pdf_base_dir)
+
+    return temp_dir_path
+
+
 @celery.task(name='tasks.pdf.merge', max_retries=ServicesConstants.PDF_MERGE_MAX_RETRY, default_retry_delay=ServicesConstants.PDF_MERGE_RETRY_DELAY)
 def pdf_merge(pdf_files, out_name, pdf_base_dir, max_pdfunite_files=ServicesConstants.MAX_PDFUNITE_FILE):
-    # Prepare output file
     if os.path.exists(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
+
+    # Prepare output file
     prepare_path(out_name)
 
     # Verify that all PDFs to merge exist
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
+
     try:
         # UNIX can handle upto 1024 file descriptors in default.  To be safe we process 50 files at once.
         if len(pdf_files) > max_pdfunite_files:
-            partial_dir = os.path.join(os.sep, '.tmp', 'partial')
-            if partial_dir not in pdf_base_dir:
-                gid = uuid.uuid4()
-                pdf_base_dir = os.path.join(pdf_base_dir, '.tmp', 'partial', str(gid))
-                if os.path.exists(pdf_base_dir) is not True:
-                    os.makedirs(pdf_base_dir, mode=0o700, exist_ok=True)
-            files = _partial_pdfunite(pdf_files, pdf_base_dir, timeout=services.celery.PDFUNITE_TIMEOUT, file_limit=max_pdfunite_files)
-            _pdfunite_subprocess(files, out_name, services.celery.PDFUNITE_TIMEOUT)
-            shutil.rmtree(pdf_base_dir, ignore_errors=True)
+            pdf_temp_dir = _make_uniq_temp_dir(pdf_base_dir)
+            path_to_merged = _partial_pdfunite(pdf_files, pdf_temp_dir,
+                                               timeout=services.celery.PDFUNITE_TIMEOUT,
+                                               file_limit=max_pdfunite_files)
+
+            shutil.copyfile(path_to_merged, out_name)
+            shutil.rmtree(pdf_temp_dir, ignore_errors=True)
         elif len(pdf_files) is 1:
             # pdfunite is not callable if there is only one pdf to merge
             shutil.copyfile(pdf_files[0], out_name)
@@ -298,60 +320,52 @@ def group_separator():
     pass
 
 
+def chunker(pdf_files, chunk_size):
+    for offset in range(0, len(pdf_files), chunk_size):
+        yield pdf_files[offset:offset + chunk_size]
+
+
+def merge_files(pdf_files, output_filename, timeout):
+    try:
+        _pdfunite_subprocess(pdf_files, output_filename, timeout)
+    except PdfGenerationError:
+        log.error("Pdf generation of [%s] failed. Tried to merge following files: %s",
+                  output_filename, pdf_files)
+        raise
+
+
 def _partial_pdfunite(pdf_files, pdf_tmp_dir, file_limit=ServicesConstants.MAX_PDFUNITE_FILE, timeout=TIMEOUT):
-    files = []
-    if file_limit < 1:
+    # defyrlt: previous code supported `file_limit == 1`, but it doesn't make
+    # any sense, so it was removed
+    if file_limit < 2:
         raise PDFUniteError('file_limit must be grater than 1')
-    elif file_limit is 1:
-        for pdf_file in pdf_files:
-            partial_outputfile = _get_next_partial_outputfile_name(pdf_tmp_dir)
-            shutil.copy(pdf_file, partial_outputfile)
-            files.append(partial_outputfile)
-    else:
-        files = _read_dir(pdf_tmp_dir)
-        offset = len(files)
-        partial_outputfile = _get_next_partial_outputfile_name(pdf_tmp_dir)
-        while offset < int(len(pdf_files) / file_limit) or (offset == int(len(pdf_files) / file_limit) and int(len(pdf_files) % file_limit) > 0):
-            if offset == int(os.path.basename(partial_outputfile)):
-                if offset == int(len(pdf_files) / file_limit):
-                    partial_file_list = pdf_files[-1 * int(len(pdf_files) % file_limit):]
-                else:
-                    end = (offset + 1) * file_limit if offset is not int(len(pdf_files) / file_limit) else len(pdf_files)
-                    partial_file_list = pdf_files[offset * file_limit:end]
-                if len(partial_file_list) is 1:
-                    files.append(partial_file_list[0])
-                else:
-                    files.append(partial_outputfile)
-                    try:
-                        _pdfunite_subprocess(partial_file_list, partial_outputfile, timeout)
-                    except PdfGenerationError:
-                        # delete partial_outputfiles
-                        delete(partial_outputfile)
-                        raise
-                partial_outputfile = _get_next_partial_outputfile_name(pdf_tmp_dir)
-            offset += 1
-    return files
 
+    files = []
+    for chunk_num, chunk in enumerate(chunker(pdf_files, file_limit)):
+        if len(chunk) == 1:
+            # we shouldn't pass one file to `pdfunite` -- it's kind of already merged
+            files.append(chunk[0])
+            continue
 
-def _read_dir(pdf_tmp_dir):
-    files = [os.path.join(pdf_tmp_dir, f) for f in os.listdir(pdf_tmp_dir) if os.path.isfile(os.path.join(pdf_tmp_dir, f))]
-    if files:
-        files.sort()
-    return files
+        output_filename = os.path.join(pdf_tmp_dir, "{}.pdf".format(chunk_num))
+        merge_files(chunk, output_filename, timeout)
+        files.append(output_filename)
 
+        # this part (and the whole function) is not recursive because we don't
+        # want to run into max recursion depth error
+        # here we're merging resulting files so we never pass more files than
+        # specified in `file_limit` to the `_pdfunite_subprocess`
+        if len(files) >= file_limit:
+            range_filename = os.path.join(pdf_tmp_dir, "0-{}.pdf".format(chunk_num))
+            merge_files(files, range_filename, timeout)
+            files = [range_filename]
 
-def _get_next_partial_outputfile_name(pdf_tmp_dir):
-    '''
-    generate next partial pdf filename for pdfunite
-    '''
-    next_filename = None
-    files = _read_dir(pdf_tmp_dir)
-    if files:
-        filename = files[-1]
-        next_filename = os.path.join(pdf_tmp_dir, ('%03d' % (int(os.path.basename(filename)) + 1)))
-    else:
-        next_filename = os.path.join(pdf_tmp_dir, "001")
-    return next_filename
+    if len(files) == 1:
+        return files[0]
+
+    output_filename = os.path.join(pdf_tmp_dir, "result.pdf")
+    merge_files(files, output_filename, timeout)
+    return output_filename
 
 
 def _pdfunite_subprocess(input_files, output_file, timeout):

@@ -3,24 +3,26 @@ Created on May 14, 2013
 
 @author: dip
 '''
-import unittest
-import services
-from services.tasks.pdf import generate, OK, \
-    prepare_path, get, is_valid, delete, prepare, bulk_pdf_cover_sheet, \
-    _build_url, pdf_merge, archive, hpz_upload_cleanup, group_separator, \
-    _partial_pdfunite, _read_dir, _get_next_partial_outputfile_name, \
-    _pdfunite_subprocess, _count_pdf_pages
-from services.celery import setup_global_settings
 import platform
 import os
 import tempfile
 import shutil
-from services.exceptions import PdfGenerationError, PDFUniteError
-from edcore.exceptions import NotForWindowsException, RemoteCopyError
-from unittest.mock import patch, Mock
+import errno
+import unittest
+from unittest.mock import patch
+
 from celery.exceptions import MaxRetriesExceededError
+
+from edcore.exceptions import NotForWindowsException, RemoteCopyError
+
+import services
+from services.tasks.pdf import generate, OK, \
+    prepare_path, get, is_valid, delete, prepare, bulk_pdf_cover_sheet, \
+    _build_url, pdf_merge, archive, hpz_upload_cleanup, group_separator, \
+    _partial_pdfunite, _pdfunite_subprocess, _count_pdf_pages, _make_uniq_temp_dir
+from services.celery import setup_global_settings
+from services.exceptions import PdfGenerationError, PDFUniteError
 from services.constants import ServicesConstants
-from subprocess import Popen
 
 
 class TestCreatePdf(unittest.TestCase):
@@ -172,11 +174,12 @@ class TestCreatePdf(unittest.TestCase):
     @patch('services.tasks.pdf._partial_pdfunite')
     @patch('services.tasks.pdf.prepare_path')
     @patch('services.tasks.pdf.os.path.isfile')
-    def test_pdf_merge_more_than_max_pdf(self, mock_isfile, mock_prepare_path, mock_partial_pdfunite, mock_pdfunite_subprocess, mock_exists):
+    @patch('services.tasks.pdf.shutil.copyfile')
+    def test_pdf_merge_more_than_max_pdf(self, mock_copyfile, mock_isfile, mock_prepare_path, mock_partial_pdfunite, mock_pdfunite_subprocess, mock_exists):
         mock_isfile.return_value = True
-        mock_exists.side_effect = [False, True]
+        mock_exists.side_effect = lambda x: False
         pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
-        pdf_merge(pdffiles, '/foo/outfile', '/foo', max_pdfunite_files=2)
+        pdf_merge(pdffiles, '/tmp/foo/outfile', '/tmp/foo', max_pdfunite_files=2)
         self.assertTrue(mock_partial_pdfunite.called)
         self.assertEqual(1, mock_partial_pdfunite.call_count)
         partial_pdfunite_inputs = mock_partial_pdfunite.call_args[0][0]
@@ -273,97 +276,82 @@ class TestCreatePdf(unittest.TestCase):
         self.assertRaises(PDFUniteError, _partial_pdfunite, pdffiles, '/opt/pdf', file_limit)
 
     @patch('services.tasks.pdf.shutil.copy')
-    @patch('services.tasks.pdf._get_next_partial_outputfile_name')
-    def test_partial_pdfunite_file_limit_1(self, mock_get_next_partial_outputfile_name, mock_copy):
+    def test_partial_pdfunite_file_limit_1(self, mock_copy):
         pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
-        mock_get_next_partial_outputfile_name.side_effect = ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006', '/foo/.partial/007']
-        files = _partial_pdfunite(pdffiles, '/opt/pdf', 1)
-        self.assertEqual(files, ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006'])
-
-    @patch('services.tasks.pdf._pdfunite_subprocess')
-    @patch('services.tasks.pdf._get_next_partial_outputfile_name')
-    @patch('services.tasks.pdf._read_dir')
-    @patch('services.tasks.pdf.prepare_path')
-    def test_partial_pdfunite_file_limit_2(self, mock_prepare_path, mock_read_dir, mock_get_next_partial_outputfile_name, mock_pdfunite_subprocess):
-        mock_read_dir.return_value = []
-        mock_get_next_partial_outputfile_name.side_effect = ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006', '/foo/.partial/007']
-        pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
-        files = _partial_pdfunite(pdffiles, '/opt/pdf', 2)
-        self.assertEqual(files, ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/7'])
-
-    @patch('services.tasks.pdf._pdfunite_subprocess')
-    @patch('services.tasks.pdf._get_next_partial_outputfile_name')
-    @patch('services.tasks.pdf._read_dir')
-    @patch('services.tasks.pdf.prepare_path')
-    def test_partial_pdfunite_file_limit_2_cont(self, mock_prepare_path, mock_read_dir, mock_get_next_partial_outputfile_name, mock_pdfunite_subprocess):
-        mock_read_dir.return_value = ['/foo/.partial/000', '/foo/.partial/001']
-        mock_get_next_partial_outputfile_name.side_effect = ['/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006', '/foo/.partial/007']
-        pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
-        files = _partial_pdfunite(pdffiles, '/opt/pdf', 2)
-        self.assertEqual(files, ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/7'])
-
-    @patch('services.tasks.pdf._pdfunite_subprocess')
-    @patch('services.tasks.pdf._get_next_partial_outputfile_name')
-    @patch('services.tasks.pdf._read_dir')
-    @patch('services.tasks.pdf.prepare_path')
-    def test_partial_pdfunite_file_limit_4(self, mock_prepare_path, mock_read_dir, mock_get_next_partial_outputfile_name, mock_pdfunite_subprocess):
-        mock_read_dir.return_value = []
-        mock_get_next_partial_outputfile_name.side_effect = ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006', '/foo/.partial/007']
-        pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
-        files = _partial_pdfunite(pdffiles, '/opt/pdf', 4)
-        self.assertEqual(files, ['/foo/.partial/000', '/foo/.partial/001'])
-
-    @patch('services.tasks.pdf._pdfunite_subprocess')
-    @patch('services.tasks.pdf._get_next_partial_outputfile_name')
-    @patch('services.tasks.pdf._read_dir')
-    @patch('services.tasks.pdf.prepare_path')
-    def test_partial_pdfunite_file_limit_10(self, mock_prepare_path, mock_read_dir, mock_get_next_partial_outputfile_name, mock_pdfunite_subprocess):
-        mock_read_dir.return_value = []
-        mock_get_next_partial_outputfile_name.side_effect = ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006', '/foo/.partial/007']
-        pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
-        files = _partial_pdfunite(pdffiles, '/opt/pdf', 10)
-        self.assertEqual(files, ['/foo/.partial/000'])
+        self.assertRaises(PDFUniteError, _partial_pdfunite, pdffiles, '/opt/pdf', 1)
 
     @patch('services.tasks.pdf.delete')
     @patch('services.tasks.pdf._pdfunite_subprocess')
-    @patch('services.tasks.pdf._get_next_partial_outputfile_name')
-    @patch('services.tasks.pdf._read_dir')
     @patch('services.tasks.pdf.prepare_path')
-    def test_partial_pdfunite_Exception(self, mock_prepare_path, mock_read_dir, mock_get_next_partial_outputfile_name, mock_pdfunite_subprocess, mock_delete):
-        mock_read_dir.return_value = []
-        mock_get_next_partial_outputfile_name.side_effect = ['/foo/.partial/000', '/foo/.partial/001', '/foo/.partial/002', '/foo/.partial/003', '/foo/.partial/004', '/foo/.partial/005', '/foo/.partial/006', '/foo/.partial/007']
+    def test_partial_pdfunite_Exception(self, mock_prepare_path, mock_pdfunite_subprocess, mock_delete):
         mock_pdfunite_subprocess.side_effect = PdfGenerationError()
         pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
         self.assertRaises(PdfGenerationError, _partial_pdfunite, pdffiles, '/opt/pdf', 10)
 
-    def test_read_dir(self):
-        d = tempfile.TemporaryDirectory()
-        file1 = os.path.join(d.name, '003')
-        file2 = os.path.join(d.name, '013')
-        file3 = os.path.join(d.name, '103')
-        file4 = os.path.join(d.name, '011')
-        open(file1, 'a').close()
-        open(file2, 'a').close()
-        open(file3, 'a').close()
-        open(file4, 'a').close()
-        files = _read_dir(d.name)
-        d.cleanup()
-        self.assertEqual(files, [file1, file4, file2, file3])
+    @patch('services.tasks.pdf._pdfunite_subprocess')
+    def test_partial_pdfunite_file_limit_2_merging_files(self, _pdfunite_subprocess):
+        """ Checks that files are merged as expected and one orphan is left """
+        pdf_files = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
+        result_path = _partial_pdfunite(pdf_files, '/tmp/foo/pdf', 2)
+        self.assertEqual(result_path, '/tmp/foo/pdf/result.pdf')
 
-    def test_read_dir_empty(self):
-        d = tempfile.TemporaryDirectory()
-        files = _read_dir(d.name)
-        d.cleanup()
-        self.assertEqual(files, [])
+        self.assertEqual(_pdfunite_subprocess.call_count, 6)
+        _pdfunite_subprocess.assert_any_call(['/foo/1', '/foo/2'], '/tmp/foo/pdf/0.pdf', 60)
+        _pdfunite_subprocess.assert_any_call(['/foo/3', '/foo/4'], '/tmp/foo/pdf/1.pdf', 60)
+        _pdfunite_subprocess.assert_any_call(['/tmp/foo/pdf/0.pdf', '/tmp/foo/pdf/1.pdf'],
+                                             '/tmp/foo/pdf/0-1.pdf', 60)
 
-    @patch('services.tasks.pdf._read_dir')
-    def test_get_next_partial_outputfile_name(self, mock_read_dir):
-        mock_read_dir.return_value = []
-        next_file = _get_next_partial_outputfile_name('/foo')
-        self.assertEqual(next_file, '/foo/001')
-        mock_read_dir.return_value = ['/foo/000', '/foo/001']
-        next_file = _get_next_partial_outputfile_name('/foo')
-        self.assertEqual(next_file, '/foo/002')
+        _pdfunite_subprocess.assert_any_call(['/foo/5', '/foo/6'], '/tmp/foo/pdf/2.pdf', 60)
+        _pdfunite_subprocess.assert_any_call(['/tmp/foo/pdf/0-1.pdf', '/tmp/foo/pdf/2.pdf'],
+                                             '/tmp/foo/pdf/0-2.pdf', 60)
+
+        _pdfunite_subprocess.assert_any_call(['/tmp/foo/pdf/0-2.pdf', '/foo/7'],
+                                             '/tmp/foo/pdf/result.pdf', 60)
+
+    @patch('services.tasks.pdf._pdfunite_subprocess')
+    def test_partial_pdfunite_file_limit_5_merging_files(self, _pdfunite_subprocess):
+        """ Checks that files are merged as expected and no orphans are left """
+        pdf_files = [
+            '/foo/1',
+            '/foo/2',
+            '/foo/3',
+            '/foo/4',
+            '/foo/5',
+            '/foo/6',
+            '/foo/7',
+            '/foo/8',
+            '/foo/9',
+            '/foo/10',
+        ]
+        result_path = _partial_pdfunite(pdf_files, '/tmp/foo/pdf', 5)
+        self.assertEqual(result_path, '/tmp/foo/pdf/result.pdf')
+
+        self.assertEqual(_pdfunite_subprocess.call_count, 3)
+        _pdfunite_subprocess.assert_any_call(pdf_files[:5], '/tmp/foo/pdf/0.pdf', 60)
+        _pdfunite_subprocess.assert_any_call(pdf_files[5:], '/tmp/foo/pdf/1.pdf', 60)
+        _pdfunite_subprocess.assert_any_call(['/tmp/foo/pdf/0.pdf', '/tmp/foo/pdf/1.pdf'],
+                                             '/tmp/foo/pdf/result.pdf', 60)
+
+    @patch('services.tasks.pdf.os.makedirs')
+    def test_make_uniq_temp_dir_when_already_exists(self, makedirs):
+        makedirs.side_effect = [OSError(errno.EEXIST, "stuff happend"), False]
+        result = _make_uniq_temp_dir("/tmp/foo/pdf")
+        self.assertIn("/tmp/foo/pdf/", result)
+        self.assertEqual(makedirs.call_count, 2)
+
+    @patch('services.tasks.pdf.os.makedirs')
+    def test_make_uniq_temp_dir_when_access_denied(self, makedirs):
+        makedirs.side_effect = [OSError(errno.EACCES, "stuff happend")]
+        self.assertRaises(OSError, _make_uniq_temp_dir, "/tmp/foo/pdf")
+        self.assertEqual(makedirs.call_count, 1)
+
+    @patch('services.tasks.pdf._pdfunite_subprocess')
+    def test_partial_pdfunite_file_limit_exceeds_input_files(self, _pdfunite_subprocess):
+        pdf_files = ['/foo/1', '/foo/2']
+        result_path = _partial_pdfunite(pdf_files, '/tmp/foo/pdf', 5)
+        self.assertEqual(result_path, '/tmp/foo/pdf/0.pdf')
+        self.assertEqual(_pdfunite_subprocess.call_count, 1)
+        _pdfunite_subprocess.assert_called_with(pdf_files, '/tmp/foo/pdf/0.pdf', 60)
 
     @patch('services.tasks.pdf.Popen')
     def test_pdfunite_subprocess(self, mock_Popen):

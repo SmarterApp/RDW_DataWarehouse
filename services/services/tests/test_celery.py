@@ -3,10 +3,11 @@ Created on May 15, 2013
 
 @author: dip
 '''
-import unittest
-from services.celery import setup_celery, celery
-import services
 import os
+import unittest
+
+import services
+from services.celery import setup_celery, celery
 
 
 class TestCelery(unittest.TestCase):
@@ -29,9 +30,9 @@ class TestCelery(unittest.TestCase):
     def test_setup_celery_test_default_timeout(self):
         settings = {}
         setup_celery(settings=settings, prefix="celery")
-        self.assertEqual(services.celery.TIMEOUT, 20)
+        self.assertEqual(services.celery.TIMEOUT, 60)
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -3,42 +3,53 @@ Created on May 17, 2013
 
 @author: dip
 '''
-from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup, \
-    group_separator, bulk_pdf_cover_sheet
+import os
+import copy
+import json
+import logging
+import urllib.parse
 from urllib.parse import urljoin
+from datetime import datetime
+
+from sqlalchemy.sql import and_, select
+
+import pyramid
 from pyramid.view import view_config
 from pyramid.response import Response
-from smarter.security.context import check_context
-from edapi.exceptions import InvalidParameterError, ForbiddenError
-from edauth.security.utils import get_session_cookie
-import urllib.parse
-from sqlalchemy.sql import and_, select
+from pyramid.security import authenticated_userid
+from pyramid.threadlocal import get_current_request
+
+from celery.canvas import group, chain
+
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.security.context import select_with_context
-from smarter.reports.helpers.filters import apply_filter_to_query
+from edcore.utils.utils import to_bool, merge_dict
+
+from edauth.security.utils import get_session_cookie
+
+from edapi.decorators import validate_params
+from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
+
+import services.celery
+from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup, \
+    group_separator, bulk_pdf_cover_sheet
+from services.constants import ServicesConstants
 from services.exceptions import PdfGenerationError
+
+from hpz_client.frs.file_registration import register_file
+
+from batch.pdf.pdf_generator import PDFGenerator
+
+from smarter_common.security.constants import RolesConstants
+
+from smarter.reports.helpers.metadata import get_custom_metadata
+from smarter.reports.helpers.filters import apply_filter_to_query
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_id
 from smarter.reports.helpers.constants import AssessmentType, Constants
 from smarter.reports.helpers.filters import FILTERS_CONFIG
-import services.celery
-from edapi.decorators import validate_params
-from edcore.utils.utils import to_bool, merge_dict
-from hpz_client.frs.file_registration import register_file
-from celery.canvas import group, chain
-from pyramid.security import authenticated_userid
-from pyramid.threadlocal import get_current_request
-import copy
-from datetime import datetime
-import json
-import os
-from smarter_common.security.constants import RolesConstants
-import pyramid
-from batch.pdf.pdf_generator import PDFGenerator
-from services.constants import ServicesConstants
-from smarter.reports.helpers.metadata import get_custom_metadata
-import logging
+from smarter.security.context import check_context
+from smarter.security.context import select_with_context
 
 logger = logging.getLogger('smarter')
 
@@ -196,7 +207,8 @@ def get_pdf_content(params, sync=False):
         raise InvalidParameterError('Required parameter is missing')
 
     # Validate necessary assessment information
-    if (asmt_type == AssessmentType.SUMMATIVE or asmt_type == AssessmentType.INTERIM_COMPREHENSIVE) and asmt_year is None and date_taken is None:
+    if ((asmt_type == AssessmentType.SUMMATIVE or asmt_type == AssessmentType.INTERIM_COMPREHENSIVE) and
+            asmt_year is None and date_taken is None):
         logger.error('PDF generation : Required parameters asmt_year and date_taken is missing')
         raise InvalidParameterError('Required parameter is missing')
 
@@ -212,15 +224,25 @@ def get_pdf_content(params, sync=False):
         # Get cookies and other config items
         (cookie_name, cookie_value) = get_session_cookie()
         single_generate_queue = settings.get('pdf.single_generate.queue')
-        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, date_taken, asmt_type, student_ids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
+        response = get_single_pdf_content(
+            pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout,
+            state_code, asmt_year, date_taken, asmt_type, student_ids, lang,
+            is_grayscale, always_generate, celery_timeout, params, single_generate_queue
+        )
     else:
-        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_ids, grades, state_code, district_id, school_id, asmt_type, asmt_year, lang, is_grayscale, always_generate, celery_timeout, params)
+        response = get_bulk_pdf_content(
+            settings, pdf_base_dir, base_url, subprocess_timeout, student_ids,
+            grades, state_code, district_id, school_id, asmt_type, asmt_year,
+            lang, is_grayscale, always_generate, celery_timeout, params
+        )
+
     return response
 
 
-def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
-                           date_taken, asmt_type, student_id, lang, is_grayscale, always_generate, celery_timeout,
-                           params, single_generate_queue):
+def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout,
+                           state_code, asmt_year, date_taken, asmt_type, student_id, lang,
+                           is_grayscale, always_generate, celery_timeout, params, single_generate_queue):
+
     if type(student_id) is list:
         student_id = student_id[0]
 
@@ -229,15 +251,23 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
         raise ForbiddenError('Access Denied')
     url = _create_student_pdf_url(student_id, base_url, params, date_taken)
     files_by_guid = generate_isr_report_path_by_student_id(state_code, date_taken, asmt_year,
-                                                           pdf_report_base_dir=pdf_base_dir, student_ids=[student_id],
-                                                           asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+                                                           pdf_report_base_dir=pdf_base_dir,
+                                                           student_ids=[student_id],
+                                                           asmt_type=asmt_type,
+                                                           grayScale=is_grayscale,
+                                                           lang=lang)
+
     file_name = files_by_guid[student_id][date_taken]
     args = (cookie_value, url, file_name)
-    options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
+    options = {
+        'cookie_name': cookie_name,
+        'timeout': subprocess_timeout,
+        'grayscale': is_grayscale,
+        'always_generate': always_generate,
+    }
 
-    celery_response = get.apply_async(args=args, kwargs=options, queue=single_generate_queue)  # @UndefinedVariable
+    celery_response = get.apply_async(args=args, kwargs=options, queue=single_generate_queue)
     pdf_stream = celery_response.get(timeout=celery_timeout)
-
     return Response(body=pdf_stream, content_type=Constants.APPLICATION_PDF)
 
 
@@ -253,15 +283,18 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     user = authenticated_userid(get_current_request())
 
     # If we do not have a list of student GUIDs, we need to get it
-    all_guids, guids_by_grade = _create_student_ids(student_ids, grades, state_code, district_id, school_id,
-                                                    asmt_type, asmt_year, params)
+    all_guids, guids_by_grade = _create_student_ids(student_ids, grades, state_code,
+                                                    district_id, school_id, asmt_type,
+                                                    asmt_year, params)
 
     # Get all file names
     date_taken = None
     files_by_student_id = generate_isr_report_path_by_student_id(state_code, date_taken, asmt_year,
                                                                  pdf_report_base_dir=pdf_base_dir,
-                                                                 student_ids=all_guids, asmt_type=asmt_type,
-                                                                 grayScale=is_grayscale, lang=lang)
+                                                                 student_ids=all_guids,
+                                                                 asmt_type=asmt_type,
+                                                                 grayScale=is_grayscale,
+                                                                 lang=lang)
 
     # Set up a few additional variables
     urls_by_student_id = _create_urls_by_student_id(all_guids, state_code, base_url, params, files_by_student_id)
@@ -281,42 +314,60 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     archive_file_path = os.path.join(directory_for_zip, archive_file_name)
 
     # Create JSON response
-    response = {Constants.FILES: [{Constants.FILENAME: archive_file_name, Constants.DOWNLOAD_URL: download_url, Constants.WEB_DOWNLOAD_URL: web_download_url}]}
+    response = {
+        Constants.FILES: [
+            {
+                Constants.FILENAME: archive_file_name,
+                Constants.DOWNLOAD_URL: download_url,
+                Constants.WEB_DOWNLOAD_URL: web_download_url
+            }
+        ]
+    }
 
     # Generate cookie
     pdfGenerator = PDFGenerator(settings)
 
     # Create the tasks for each individual student PDF file we want to merge
-    generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name, is_grayscale, always_generate, files_by_student_id,
+    generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value,
+                                                pdfGenerator.cookie_name,
+                                                is_grayscale,
+                                                always_generate,
+                                                files_by_student_id,
                                                 urls_by_student_id)
 
     # Create the tasks to merge each PDF by grade
-    merge_tasks, merged_pdfs_by_grade, student_report_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
-                                                                                             directory_for_merged_pdfs,
-                                                                                             guids_by_grade,
-                                                                                             files_by_student_id,
-                                                                                             school_name, lang, is_grayscale)
+    merge_tasks, merged_pdfs_by_grade, student_report_count_by_pdf = _create_pdf_merge_tasks(
+        pdf_base_dir,
+        directory_for_merged_pdfs,
+        guids_by_grade,
+        files_by_student_id,
+        school_name,
+        lang,
+        is_grayscale
+    )
 
     # Get metadata for tenant branding
     custom_metadata = get_custom_metadata(state_code)
 
     # Create tasks for cover sheets
-    cover_sheet_tasks, cover_sheets_by_grade = _create_cover_sheet_generate_tasks(pdfGenerator.cookie_value,
-                                                                                  pdfGenerator.cookie_name,
-                                                                                  is_grayscale, school_name,
-                                                                                  user._User__info['name']['fullName'],
-                                                                                  custom_metadata,
-                                                                                  directory_for_cover_sheets,
-                                                                                  merged_pdfs_by_grade,
-                                                                                  student_report_count_by_pdf)
+    cover_sheet_tasks, cover_sheets_by_grade = _create_cover_sheet_generate_tasks(
+        pdfGenerator.cookie_value,
+        pdfGenerator.cookie_name,
+        is_grayscale, school_name,
+        user._User__info['name']['fullName'],
+        custom_metadata,
+        directory_for_cover_sheets,
+        merged_pdfs_by_grade,
+        student_report_count_by_pdf
+    )
 
     # Create tasks to merge in cover sheets
     merge_covers_tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade,
                                                        directory_to_archive, pdf_base_dir)
 
     # Start the bulk merge
-    _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks,
-                cover_sheet_tasks, merge_covers_tasks, pdf_base_dir)
+    _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks,
+                merge_tasks, cover_sheet_tasks, merge_covers_tasks, pdf_base_dir)
 
     # Return the JSON response while the bulk merge runs asynchronously
     return Response(body=json.dumps(response), content_type=Constants.APPLICATION_JSON)
@@ -382,8 +433,13 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
     create celery tasks to prepare pdf files.
     '''
     generate_tasks = []
-    args = {Constants.COOKIE: cookie_value, Constants.TIMEOUT: services.celery.TIMEOUT, Constants.COOKIE_NAME: cookie_name,
-            Constants.GRAYSCALE: is_grayscale, Constants.ALWAYS_GENERATE: always_generate}
+    args = {
+        Constants.COOKIE: cookie_value,
+        Constants.TIMEOUT: services.celery.TIMEOUT,
+        Constants.COOKIE_NAME: cookie_name,
+        Constants.GRAYSCALE: is_grayscale,
+        Constants.ALWAYS_GENERATE: always_generate,
+    }
 
     for student_id, file_name_by_date in files_by_guid.items():
         for date_taken, file_name in file_name_by_date.items():
@@ -418,7 +474,7 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, 
                     file_names.append(file_name)
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir), immutable=True))  # @UndefinedVariable
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir), immutable=True))
             bulk_paths[grade] = bulk_path
             counts_by_grade[grade] = len(file_names)
     return merge_tasks, bulk_paths, counts_by_grade
@@ -437,12 +493,15 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
         'studentCount': '',
         'grade': ''
     }
+
     if is_grayscale:
         cv_params['gray'] = True
+
     branding = custom_metadata.get(Constants.BRANDING)
     if branding:
         cv_params['tenant_logo'] = branding.get('image')
         cv_params['tenant_label'] = branding.get('display')
+
     if merged_by_grade:
         for grade, merged_path in merged_by_grade.items():
             # Create cover sheet output name and path
@@ -510,14 +569,14 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
     the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
     workflow = chain(group(gen_tasks),
-                     group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     group_separator.subtask(immutable=True),
                      group(merge_tasks),
-                     group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     group_separator.subtask(immutable=True),
                      group(cover_tasks),
-                     group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     group_separator.subtask(immutable=True),
                      group(merge_covers_tasks),
-                     archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),  # @UndefinedVariable
-                     hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable
+                     archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),
+                     hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir), immutable=True))
     workflow.apply_async()
 
 
@@ -559,13 +618,19 @@ def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
             fact_table = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
         # Build select
-        query = select_with_context([fact_table.c.student_id.label(Constants.STUDENT_ID),
-                                     dim_student.c.first_name,
-                                     dim_student.c.last_name],
-                                    from_obj=[fact_table
-                                              .join(dim_student, and_(fact_table.c.student_rec_id == dim_student.c.student_rec_id))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_table.c.asmt_rec_id))],
-                                    permission=RolesConstants.PII, state_code=state_code).distinct()
+        query = select_with_context(
+            [fact_table.c.student_id.label(Constants.STUDENT_ID), dim_student.c.first_name, dim_student.c.last_name],
+            from_obj=[
+                fact_table
+                .join(dim_student, and_(
+                    fact_table.c.student_rec_id == dim_student.c.student_rec_id,
+                    dim_student.c.rec_status == Constants.CURRENT,
+                ))
+                .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_table.c.asmt_rec_id, dim_asmt.c.rec_status == Constants.CURRENT))
+            ],
+            permission=RolesConstants.PII,
+            state_code=state_code,
+        ).distinct()
 
         # Add where clauses
         query = query.where(fact_table.c.state_code == state_code)
@@ -573,14 +638,17 @@ def _get_student_ids(state_code, district_id, school_id, asmt_type, params,
         query = query.where(and_(fact_table.c.district_id == district_id))
         query = query.where(and_(fact_table.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_table.c.asmt_type == asmt_type))
+
         if grade is not None:
             query = query.where(and_(fact_table.c.asmt_grade == grade))
+
         if student_ids is not None:
             query = query.where(and_(fact_table.c.student_id.in_(student_ids)))
         elif asmt_year is not None:
             query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
         else:
             raise InvalidParameterError('Need one of date_taken or asmt_year')
+
         query = apply_filter_to_query(query, fact_table, dim_student, params)
 
         # Add order by clause

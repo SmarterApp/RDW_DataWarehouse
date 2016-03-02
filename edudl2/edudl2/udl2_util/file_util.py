@@ -1,8 +1,8 @@
-__author__ = 'abrien'
-
 import os
 import shutil
 import glob
+
+__author__ = 'abrien'
 
 
 def extract_file_name(file_path):
@@ -135,3 +135,12 @@ def convert_path_to_list(path):
             break
     folders.reverse()
     return folders
+
+
+def open_udl_file(path, *args, **kwargs):
+    """
+    Just a function that calls `open` with specific encoding.
+    We need this in order to change the encoding in __only__ one place.
+    This function should be used to open all of the files inside of udl.
+    """
+    return open(path, *args, encoding='utf-8', **kwargs)

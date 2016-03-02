@@ -1,12 +1,16 @@
 from __future__ import absolute_import
+
+import json
+
 from celery.utils.log import get_task_logger
+
+from edcore.notification.constants import Constants
+
+from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import celery
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
-from edudl2.udl2 import message_keys as mk
 from edudl2.udl2_util import file_util
-import json
 from edudl2.udl2_util.util import merge_to_udl2stat_notification
-from edcore.notification.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -24,7 +28,7 @@ def task(incoming_msg):
     expanded_dir = tenant_directory_paths.get(mk.EXPANDED)
     err_file = file_util.get_file_type_from_dir('.err', expanded_dir)
     if err_file is not None:
-        with open(err_file) as f:
+        with file_util.open_udl_file(err_file) as f:
             json_data = f.read()
             error_json = json.loads(json_data)
             content = error_json['content']

@@ -11,14 +11,30 @@ EDMIGRATED="python -m edmigrate.main -d -p $PIDFILE -t nc"
 start() {
 	echo -n "Starting edmigrate: "
 	daemon $EDMIGRATED
+	echo
 	RETVAL=$?
 }
 
 stop() {
 	echo -n "Stopping edmigrate: "
 	killproc -p $PIDFILE
+	echo
 	RETVAL=$?
 }
+
+check_status() {
+    echo -n "Checking edmigrate is running..."
+    PID=`ps aux | grep edmigrate | grep -v grep | awk '{print $2}'`
+    if [ -z "$PID" ];
+    then
+        echo -n "edmigrate is not running"
+        echo
+    else
+        echo -n "edmigrate is running (pid $PID)"
+        echo
+    fi
+}
+
 case $1 in
 	start)
 		start
@@ -26,9 +42,16 @@ case $1 in
 	stop)
 		stop
 	;;
+	restart)
+	    stop
+	    start
+	;;
+	status)
+	    check_status
+	;;
 	*)
 
-	echo $"Usage: edmigrate {start|stop}"
+	echo $"Usage: edmigrate {start|stop|restart|status}"
 	exit 2
 esac
 deactivate

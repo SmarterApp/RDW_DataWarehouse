@@ -10,16 +10,32 @@ PIDFILE=$(printf "/opt/edware/run/edmigrate_public.%s.pid" ${TENANT})
 PUBLIC_REPORT="python -m public_report.copy_data -d -p $PIDFILE -t $TENANT"
 
 start() {
-	echo -n "Starting public report: "
+	echo -n "Starting public_report_transfer: "
 	daemon $PUBLIC_REPORT
+	echo
 	RETVAL=$?
 }
 
 stop() {
-	echo -n "Stopping public report: "
+	echo -n "Stopping public_report_transfer: "
 	killproc -p $PIDFILE
+	echo
 	RETVAL=$?
 }
+
+check_status() {
+    echo -n "Checking public_report_transfer is running..."
+    PID=`ps aux | grep copy_data | grep -v grep | awk '{print $2}'`
+    if [ -z "$PID" ];
+    then
+        echo -n "public_report_transfer is not running"
+        echo
+    else
+        echo -n "public_report_transfer is running (pid $PID)"
+        echo
+    fi
+}
+
 case $1 in
 	start)
 		start
@@ -27,9 +43,16 @@ case $1 in
 	stop)
 		stop
 	;;
+	restart)
+	    stop
+	    start
+	;;
+	status)
+	    check_status
+	;;
 	*)
 
-	echo $"Usage: public report {start|stop}"
+	echo $"Usage: public_report_transfer {start|stop|restart|status}"
 	exit 2
 esac
 deactivate

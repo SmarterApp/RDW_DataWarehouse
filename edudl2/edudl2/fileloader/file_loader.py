@@ -1,14 +1,16 @@
 import datetime
 import csv
-import random
 import logging
+
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.sql.expression import select
+
 import edudl2.udl2.message_keys as mk
-from edudl2.udl2.constants import Constants
 import edudl2.fileloader.prepare_queries as queries
-from edudl2.udl2_util.database_util import execute_udl_queries
+from edudl2.udl2.constants import Constants
 from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.udl2_util.database_util import execute_udl_queries
+from edudl2.udl2_util.file_util import open_udl_file
 
 
 DATA_TYPE_IN_FDW_TABLE = 'text'
@@ -34,12 +36,12 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
     By default, the header type for all columns is 'text'.
     '''
     # get ordered header names from input csv_header_file
-    with open(csv_header_file) as csv_obj:
+    with open_udl_file(csv_header_file) as csv_obj:
         reader = csv.reader(csv_obj)
         header_names_in_header_file = next(reader)
         header_types = [DATA_TYPE_IN_FDW_TABLE] * len(header_names_in_header_file)
 
-    #Case insensitive
+    # Case insensitive
     lowered_headers_in_file = [header.lower() for header in header_names_in_header_file]
     # verify headers in csv header file also exist in ref_table
     header_names_in_ref_table = get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table)
@@ -189,7 +191,7 @@ def check_header_contains_column(csv_file, column):
     :param csv_file: the name of the csv file
     :returns True if the file contains the column, False otherwise
     """
-    with open(csv_file, 'r') as fp:
+    with open_udl_file(csv_file, 'r') as fp:
         csv_reader = csv.reader(fp)
         header = next(csv_reader)
         header = [x.lower() for x in header]

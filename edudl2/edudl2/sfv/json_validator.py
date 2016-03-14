@@ -1,8 +1,10 @@
-import json
 import os
+import json
+
 from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.sfv import sfv_util
 from edudl2.udl2.constants import Constants
+from edudl2.udl2_util.file_util import open_udl_file
 
 
 class JsonValidator():
@@ -53,7 +55,7 @@ class IsValidJsonFile(object):
         @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         '''
         complete_path = os.path.join(dir_path, file_name)
-        with open(complete_path) as f:
+        with open_udl_file(complete_path) as f:
             try:
                 json.load(f)
                 return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
@@ -85,7 +87,7 @@ class HasExpectedFormat(object):
         '''
 
         complete_path = os.path.join(dir_path, file_name)
-        with open(complete_path) as f:
+        with open_udl_file(complete_path) as f:
             json_object = json.load(f)
             mapping = self.mapping
             for field in mapping.keys():

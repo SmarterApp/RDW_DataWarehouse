@@ -1,9 +1,13 @@
-import json
 import os
+import json
 import logging
+
 from requests.structures import CaseInsensitiveDict
 
+from edudl2.udl2_util.file_util import open_udl_file
+
 __author__ = 'tshewchuk'
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +45,7 @@ def get_attribute_value_from_json_keypath(json_file_path, *attribute_key_path):
 
     attribute_value = None
 
-    with open(json_file_path) as json_file:
+    with open_udl_file(json_file_path) as json_file:
         try:
             json_object = json.load(json_file, object_hook=CaseInsensitiveDict)
             attribute_value = json_object

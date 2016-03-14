@@ -15,12 +15,15 @@ Created on May 16, 2013
 '''
 
 import json
+
+from psycopg2.extensions import QuotedString
+from sqlalchemy.sql.expression import select, and_
+
 import edudl2.udl2_util.database_util as db_util
 from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
-from sqlalchemy.sql.expression import select, and_
-from psycopg2.extensions import QuotedString
 from edudl2.udl2.constants import Constants
+from edudl2.udl2_util.file_util import open_udl_file
 
 
 def load_json(conf):
@@ -44,7 +47,7 @@ def read_json_file(json_file):
     @rtype: dict
     '''
 
-    with open(json_file, 'r') as jf:
+    with open_udl_file(json_file, 'r') as jf:
         return json.load(jf)
 
 

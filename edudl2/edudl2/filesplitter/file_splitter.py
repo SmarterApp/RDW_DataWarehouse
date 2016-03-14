@@ -3,7 +3,8 @@ import csv
 import math
 import itertools
 from uuid import uuid4
-from edudl2.udl2_util.file_util import create_directory
+
+from edudl2.udl2_util.file_util import create_directory, open_udl_file
 
 
 def validate_file(file_name):
@@ -28,7 +29,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
             raise Exception('Unable to split invalid file')
         create_directory(output_dir)
 
-        with open(file_name) as csvfile:
+        with open_udl_file(file_name) as csvfile:
             data = csv.reader(csvfile, delimiter=delimiter)
             header = next(data)
             # Get the total number of records
@@ -46,7 +47,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
                 csvfile.seek(0)
                 # Generate file names that will be loaded into fdw
                 output_file = os.path.join(output_dir, 'part_' + str(uuid4()) + '.csv')
-                with open(output_file, 'w') as writerfile:
+                with open_udl_file(output_file, 'w') as writerfile:
                     row_count = 0
                     start = row_limit * (i - 1) + 1
                     end = i * row_limit + 1
@@ -59,7 +60,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
 
         # save headers to output dir
         header_path = os.path.join(output_dir, 'headers.csv')
-        with open(header_path, 'w') as csv_header_file:
+        with open_udl_file(header_path, 'w') as csv_header_file:
             header_writer = csv.writer(csv_header_file, delimiter=delimiter)
             header_writer.writerow(header)
             csv_header_file.flush()  # EJ, make sure the file is writtend into disk. this happens only when benchmark prints frames

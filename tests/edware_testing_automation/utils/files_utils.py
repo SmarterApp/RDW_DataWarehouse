@@ -18,4 +18,4 @@ def find_file(path, extension='.zip', timeout=20):
                     return path + '/' + next_file
         time.sleep(0.5)
     raise FileUtilsException(
-            "Unable to find file with '{e}' extension by the following path: {path}".format(e=extension, path=path))
+        "Unable to find file with '{e}' extension by the following path: {path}".format(e=extension, path=path))

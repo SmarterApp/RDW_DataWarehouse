@@ -45,10 +45,6 @@ class DatabaseTestHelper(EdTestBase):
         results = self.select_from_table(table_name)
         self.assertIsNotNone(len(results), 'Error: Table {0} is empty'.format(table_name))
 
-    ###############################################################################################################
-    ###  HELPER FUNCTIONS FOR CONSTRUCTING THE SQL QUERIES
-    ###############################################################################################################
-
     # query: select table_name from information_schema.tables where table_schema = schema_name;
     def get_tables(self):
         with DBConnection(name=DatabaseTestHelper.datasource_name) as connector:

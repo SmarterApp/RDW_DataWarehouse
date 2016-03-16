@@ -4,6 +4,7 @@ Created on May 16, 2013
 @author: nparoha
 '''
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class ContextSecurity(SessionShareHelper):
@@ -11,7 +12,6 @@ class ContextSecurity(SessionShareHelper):
         SessionShareHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_landing_page_login_page()
 
     def test_teacher2_authorized_access(self):
@@ -25,7 +25,7 @@ class ContextSecurity(SessionShareHelper):
         self.drill_down_navigation("942", "ui-jqgrid-ftable")
         self.drill_down_navigation("11", "jqgfirstrow")
         students = ["Cogswell, Martin "]
-        grid_table = self.driver.find_element_by_id("gridTable")
+        grid_table = browser().find_element_by_id("gridTable")
         length = len(grid_table.find_elements_by_tag_name("tr")) - 1
         assert length == 1, ("Expected '%s' of students but found '%s'", ('number_students', 'length'))
 
@@ -34,7 +34,7 @@ class ContextSecurity(SessionShareHelper):
         self.enter_login_credentials("radams", "radams1234")
         # Click on the CA from state map
         self.check_redirected_requested_page("state_selection_map")
-        self.assertEqual(str(self.driver.find_element_by_id("titleString").text),
+        self.assertEqual(str(browser().find_element_by_id("titleString").text),
                          "Select state to start exploring Smarter Balanced test results",
                          "State selection page title not found")
         self.check_tenant_logo('smarterHeader_logo')
@@ -50,7 +50,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Marie Donohue | Grade 03")
 
         # Click on the NC from state map
-        self.driver.find_element_by_partial_link_text("Home").click()
+        browser().find_element_by_partial_link_text("Home").click()
         self.check_redirected_requested_page("state_selection_map")
         self.select_state_from_map("765.6", "North Carolina")
         self.drill_down_navigation("0513ba44-e8ec-4186-9a0e-8481e9c16206", "ui-jqgrid-ftable")
@@ -64,7 +64,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Victor P. Daniels | Grade 05")
 
         # Click on the VT from state map
-        self.driver.find_element_by_partial_link_text("Home").click()
+        browser().find_element_by_partial_link_text("Home").click()
         self.check_redirected_requested_page("state_selection_map")
         self.select_state_from_map("800", "Vermont")
         self.drill_down_navigation("2ce72d77-1de2-4137-a083-77935831b817", "ui-jqgrid-ftable")
@@ -83,7 +83,7 @@ class ContextSecurity(SessionShareHelper):
         # log in as consortium user with SAS and SRS permission but no PII permission
         self.enter_login_credentials("cmiller", "cmiller1234")
         self.check_redirected_requested_page("state_selection_map")
-        self.assertEqual(str(self.driver.find_element_by_id("titleString").text),
+        self.assertEqual(str(browser().find_element_by_id("titleString").text),
                          "Select state to start exploring Smarter Balanced test results",
                          "State selection page title not found")
         # Click on CA from state map
@@ -93,7 +93,7 @@ class ContextSecurity(SessionShareHelper):
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
         self.check_no_pii_message("03")
 
-        self.driver.find_element_by_partial_link_text("Home").click()
+        browser().find_element_by_partial_link_text("Home").click()
         self.check_redirected_requested_page("state_selection_map")
         # Click on the NC from state map
         self.select_state_from_map("765.6", "North Carolina")
@@ -102,7 +102,7 @@ class ContextSecurity(SessionShareHelper):
         self.drill_down_navigation("248", "ui-jqgrid-ftable")
         self.check_no_pii_message("11")
 
-        self.driver.find_element_by_partial_link_text("Home").click()
+        browser().find_element_by_partial_link_text("Home").click()
         self.check_redirected_requested_page("state_selection_map")
         self.select_state_from_map("800", "Vermont")
         print("Drill down navigation from state list to the list of students")
@@ -115,7 +115,7 @@ class ContextSecurity(SessionShareHelper):
         # Test as consortium admin who has PII access of CA and VT and general access for NC
         self.enter_login_credentials("swhite", "swhite1234")
 
-        self.assertEqual(str(self.driver.find_element_by_id("titleString").text),
+        self.assertEqual(str(browser().find_element_by_id("titleString").text),
                          "Select state to start exploring Smarter Balanced test results",
                          "State selection page title not found")
         # Click on CA from state map
@@ -128,7 +128,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Eric Morre | Grade 03")
 
         # Clik on Home link to go back to state map
-        self.driver.find_element_by_partial_link_text("Home").click()
+        browser().find_element_by_partial_link_text("Home").click()
         self.check_redirected_requested_page("state_selection_map")
         # Click on the NC from state map
         self.select_state_from_map("765.6", "North Carolina")
@@ -136,9 +136,9 @@ class ContextSecurity(SessionShareHelper):
         self.drill_down_navigation("248", "ui-jqgrid-ftable")
         self.check_no_pii_message("11")
 
-        self.driver.find_element_by_partial_link_text("Home").click()
+        browser().find_element_by_partial_link_text("Home").click()
         self.check_redirected_requested_page("state_selection_map")
-        all_states = self.driver.find_element_by_id("map").find_elements_by_tag_name("rect")
+        all_states = browser().find_element_by_id("map").find_elements_by_tag_name("rect")
         found = False
         # Click on the VT from state map
         self.select_state_from_map("800", "Vermont")
@@ -233,7 +233,7 @@ class ContextSecurity(SessionShareHelper):
         # Click on 'Daniels, Victor P.' student link from list of students
         self.drill_down_navigation("jqg24", "overallScoreSection")
         self.check_page_header("Victor P. Daniels | Grade 05")
-        self.driver.find_element_by_partial_link_text("Ropefish Lynx Public Schools").click()
+        browser().find_element_by_partial_link_text("Ropefish Lynx Public Schools").click()
         self.check_redirected_requested_page("district_view_sds")
         self.select_academic_year("2015")
         # Click on 'Hickory Cornetfish Jr Middle' school link from list of districts
@@ -267,7 +267,7 @@ class ContextSecurity(SessionShareHelper):
         # Click on 'Daniels, Victor P.' student link from list of students
         self.drill_down_navigation("jqg24", "overallScoreSection")
         self.check_page_header("Victor P. Daniels | Grade 05")
-        self.driver.find_element_by_partial_link_text("North Carolina").click()
+        browser().find_element_by_partial_link_text("North Carolina").click()
         self.check_redirected_requested_page("state_view_sds")
         # Click on 'Daybreak school district' school link from list of districts
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
@@ -304,7 +304,7 @@ class ContextSecurity(SessionShareHelper):
         # Click on 'Daniels, Victor P.' student link from list of students
         self.drill_down_navigation("jqg24", "overallScoreSection")
         self.check_page_header("Victor P. Daniels | Grade 05")
-        self.driver.find_element_by_partial_link_text("North Carolina").click()
+        browser().find_element_by_partial_link_text("North Carolina").click()
         self.check_redirected_requested_page("state_view_sds")
         # Click on 'Dealfish Pademelon SD' district link from list of districts
         self.drill_down_navigation("2ce72d77-1de2-4137-a083-77935831b817", "ui-jqgrid-ftable")
@@ -362,6 +362,3 @@ class ContextSecurity(SessionShareHelper):
         self.close_file_download_popup(export_popup)
         # Click on 'Grade 4' school link from list of grades
         self.check_no_pii_message("04")
-
-    def tearDown(self):
-        self.driver.quit()

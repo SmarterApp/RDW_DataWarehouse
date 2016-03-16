@@ -1,10 +1,6 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-__author__ = 'vnatarajan'
-
 from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
@@ -19,7 +15,6 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
     ''' setUp: Open webpage '''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         # login as a parent
         # self.enter_login_credentials("arice", "arice1234")
@@ -27,9 +22,6 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_redirected_requested_page("state_view_sds")
         # Select Spanish language
         self.select_language("es")
-
-    def tearDown(self):
-        self.driver.quit()
 
     def test_grade_3_individual_student_report_Spanish(self):
         cutpoints = [1200, 1400, 1800, 2100, 2400]
@@ -51,25 +43,25 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_overall_score_summary(1, 'ELA/Literacy', '2200', "Nivel 4")
         self.check_current_subject_view("Mathematics")
 
-        math_assmnt_info = self.driver.find_element_by_class_name("sidebar")
+        math_assmnt_info = browser().find_element_by_class_name("sidebar")
         self.assertIn('Mathematics', math_assmnt_info.text)
         self.assertIn('Summative 2015 - 2016', math_assmnt_info.text)
         self.assertIn('Fecha de administración: 4/10/2016', math_assmnt_info.text)
 
-        math_perf_bar = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "confidenceLevel")
+        math_perf_bar = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "confidenceLevel")
         math_overall_score = 1800
         self.check_overall_score_perf_bar(math_perf_bar, math_overall_score)
         self.check_cutpoints_perf_bar(math_perf_bar, cutpoints)
         self.check_colors_perf_bar(math_perf_bar, expected_color_codes)
 
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1800, "rgba(106, 165, 6, 1)", "Puntuación general",
                                      "Nivel 3")
 
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos futuros."
         # math_overall_score_content = unicode(math_overall_score_content.decode("iso-8859-4"))
         # To update the assessmentSummarySection dictionary: From 'assesmentSummary' class: {class name: text}
@@ -77,8 +69,8 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
             "psychometric": u"Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
-        math_claim_content = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "claimsSection").find_elements_by_class_name("claims")
+        math_claim_content = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "claimsSection").find_elements_by_class_name("claims")
         self.check_claim_contents(math_claim_content[0], "Below Standard", str("Conceptos y procedimientos"),
                                   u"Los estudiantes pueden explicar y aplicar conceptos matemáticos y realizar procedimientos matemáticos con precisión y dominio.")
         self.check_claim_contents(math_claim_content[1], "At/Near Standard ",
@@ -91,43 +83,43 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
                                        'Modo de optimizar',
                                        'Pasajes/estímulos impresos', 'Reguladores de ruido',
                                        'Tabla de multiplicación', 'Ábaco']
-        acc_title = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "accommodationSection").find_element_by_class_name("content").find_element_by_tag_name("h4")
+        acc_title = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "accommodationSection").find_element_by_class_name("content").find_element_by_tag_name("h4")
         self.assertIn(str("Adaptaciones"), str(acc_title.text), 'Accomodations header in the section not found.')
-        math_all_acc_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "accommodationSection").find_element_by_class_name("section")
+        math_all_acc_section = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "accommodationSection").find_element_by_class_name("section")
         accom_text = u"Las siguientes adaptaciones se hicieron disponibles:"
         self.language_check_accommodations_sections(accom_text, math_all_acc_section, math_expected_accomodations)
 
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
 
-        ela_assmnt_info = self.driver.find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar")
+        ela_assmnt_info = browser().find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar")
         self.assertIn('ELA/Literacy', ela_assmnt_info.text)
         self.assertIn('Summative 2015 - 2016', ela_assmnt_info.text)
         self.assertIn('Fecha de administración: 4/10/2016', ela_assmnt_info.text)
 
-        ela_perf_bar = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("confidenceLevel")
+        ela_perf_bar = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("confidenceLevel")
         ela_overall_score = 2200
         self.check_overall_score_perf_bar(ela_perf_bar, ela_overall_score)
         self.check_cutpoints_perf_bar(ela_perf_bar, cutpoints)
         self.check_colors_perf_bar(ela_perf_bar, expected_color_codes)
 
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 2200, "rgba(35, 124, 203, 1)", "Puntuación general",
                                      "Nivel 4")
 
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "El estudiante ha excedido el estándar de rendimiento y demuestra un progreso avanzado hacia el dominio del conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos futuros."
         ela_left_pane_content = {
             "psychometric": u"Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
-        ela_claim_content = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("claimsSection").find_elements_by_class_name("claims")
+        ela_claim_content = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("claimsSection").find_elements_by_class_name("claims")
         self.check_claim_contents(ela_claim_content[0], "Above Standard", "Lectura",
                                   u"Los estudiantes pueden leer con atención y de manera analítica para comprender un rango de textos literarios e informativos de complejidad ascendente.")
         self.check_claim_contents(ela_claim_content[1], "Below Standard", "Escritura",
@@ -141,9 +133,9 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
                                       'Pasajes/estímulos impresos',
                                       'Reguladores de ruido', 'Respuesta alternativa', 'Texto a habla',
                                       'Voz a texto']
-        ela_all_acc_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("accommodationSection").find_element_by_class_name(
-                "section")
+        ela_all_acc_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("accommodationSection").find_element_by_class_name(
+            "section")
         accom_ela_text = u"Las siguientes adaptaciones se hicieron disponibles:"
         self.language_check_accommodations_sections(accom_ela_text, ela_all_acc_section, ela_expected_accomodations)
 
@@ -167,8 +159,8 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_overall_score_summary(0, 'Mathematics', '1967', "Nivel 3")
         self.check_isr_overall_score_summary(1, 'ELA/Literacy', '1373', "Nivel 1")
 
-        math_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "El estudiante ha cumplido con el estándar de rendimiento y demuestra un progreso hacia el dominio del conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
         math_left_pane_content = {
             "psychometric": u"Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."}
@@ -176,8 +168,8 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
 
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "El estudiante no ha alcanzado el estándar de rendimiento y necesita una mejora sustancial para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
         ela_left_pane_content = {
             "psychometric": u"Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante."}
@@ -194,8 +186,8 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_overall_score_summary(0, 'Mathematics', '2399', "Nivel 4")
         self.check_isr_overall_score_summary(1, 'ELA/Literacy', '1428', "Nivel 2")
 
-        math_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "El estudiante ha excedido el estándar de rendimiento y demuestra el conocimiento y las destrezas en matemáticas necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
         math_left_pane_content = {
             "psychometric": u"Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante.",
@@ -204,8 +196,8 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
 
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "El estudiante casi alcanza el estándar de rendimiento y tal vez requiera un mayor desarrollo para demostrar el conocimiento y las destrezas en artes del lenguaje/alfabetización necesarios para el éxito en cursos universitarios acreditados de nivel básico después de la escuela secundaria."
         ela_left_pane_content = {
             "psychometric": u"Los niveles de rendimiento representan las calificaciones de los estudiantes en la evaluación y las fortalezas y las áreas de oportunidad de los estudiantes. Los resultados del examen son una de muchas medidas del rendimiento académico de un estudiante.",
@@ -218,10 +210,10 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
 
         # Check any random CA 11th grader gets the default higher ed link
         print("Grade 11 Individual Student Report: Testing higher ed link for CA")
-        current_url = self.driver.current_url
+        current_url = browser().current_url
         domain = current_url.split("/assets/")
         california_url = domain[0] + "/assets/html/comparingPopulations.html?stateCode=CA"
-        self.driver.get(california_url)
+        browser().get(california_url)
         # # Click on district
         # self.drill_down_navigation("229", "ui-jqgrid-ftable")
         # self.drill_down_navigation("942", "ui-jqgrid-ftable")
@@ -230,7 +222,7 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
         # self.drill_down_navigation("jqg20", "overallScoreSection")
         # print("Check that default higher-ed link appears for CA")
         # left_pane_content = u"Los colegios y las universidades pueden usar las puntuaciones de Smarter Balanced como evidencia de la preparación del estudiante para los cursos de nivel de entrada que tienen crédito. Para mayor información, visite http://www.smarterbalanced.org/higher-education/"
-        # content_text = self.driver.find_element_by_id("individualStudentContent").find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar").find_element_by_class_name("policy").text
+        # content_text = browser().find_element_by_id("individualStudentContent").find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar").find_element_by_class_name("policy").text
         # self.assertIn(left_pane_content, content_text), "Left lane CA content area not found."
 
     def test_download_popup_content(self):
@@ -257,9 +249,3 @@ class LanguageIndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.assertEqual(export_popup.find_element_by_class_name("note").find_element_by_tag_name("p").text,
                          'Nota: Las descargas de arriba reflejarán cualquier selección que haya hecho, incluyendo el año académico, evaluaciones y filtros.',
                          "text is not proper")
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

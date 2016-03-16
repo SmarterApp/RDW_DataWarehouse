@@ -10,9 +10,10 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
 
 
 class IndividualStudentHelper(SessionShareHelper):
@@ -41,11 +42,11 @@ class IndividualStudentHelper(SessionShareHelper):
         overall_score = section.find_element_by_class_name("indicator")
         self.assertEqual(score, int(overall_score.text)), "Incorrect overall score for the assessment"
         self.assertEqual(color_code, str(
-                overall_score.value_of_css_property(
-                        "background-color"))), "Overall Score background color is incorrect."
+            overall_score.value_of_css_property(
+                "background-color"))), "Overall Score background color is incorrect."
         # Validate the text "Overall" is displayed
         self.assertEqual(overall, section.find_element_by_class_name(
-                "overallText").text), "Word 'Overall' did not appear on the report."
+            "overallText").text), "Word 'Overall' did not appear on the report."
         # Validate the ALD descriptor and its text color
         ald_description = section.find_element_by_class_name("overallDesc")
         self.assertEqual(color_code,
@@ -57,7 +58,7 @@ class IndividualStudentHelper(SessionShareHelper):
     def check_content_areas(self, section, overall_score_content_area_text, assessment_summary_content_areas):
         # Overall score content area for each assessment
         self.assertIn(overall_score_content_area_text, section.find_element_by_class_name(
-                "info2").text), "Overall score content area text incorrectly displayed."
+            "info2").text), "Overall score content area text incorrectly displayed."
         # Assessment Summary content areas for each assessment
         for key in assessment_summary_content_areas.keys():
             content_text = section.find_element_by_class_name("sidebar").find_element_by_class_name(key).text
@@ -80,7 +81,7 @@ class IndividualStudentHelper(SessionShareHelper):
         assert (claim_name in actual_claim_name), "Claim content name not found"
         # Validate that the ALD descriptor is available under each content area for each assessment
         self.assertIn(custom_claim_content_text, section.find_element_by_class_name(
-                "content").text), "ALD description not found in the content area"
+            "content").text), "ALD description not found in the content area"
 
     # Check claim contents tooltip that is displayed on mouse over on the claim contents arrow box on ISR
     def check_claim_tooltip(self, claim_section, popup_header, claim_name, claim_score, claim_content, error_band):
@@ -88,48 +89,43 @@ class IndividualStudentHelper(SessionShareHelper):
         OBSOLETE FUNCTION - NO LONGER USED
         Note: The Claim tooltip was removed.
         '''
-        self.driver.maximize_window()
+        browser().maximize_window()
         element_to_click = claim_section.find_element_by_class_name("scoreBoxUpper")
         loc = element_to_click.location
         script = "window.scrollTo(%s, %s);" % (loc['x'], loc['y'])
-        self.driver.execute_script(script)
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        browser().execute_script(script)
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
-        try:
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "claimsPopover")))
-        except:
-            self.driver.save_screenshot('/tmp/popover.png')
-            self.assertTrue(False, "Error in viewing the tooltip")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "claimsPopover")))
 
         # Validate the pop up header
-        popover_inner = self.driver.find_element_by_class_name('claimsPopover').find_element_by_class_name(
-                "popover-inner")
+        popover_inner = browser().find_element_by_class_name('claimsPopover').find_element_by_class_name(
+            "popover-inner")
         self.assertEqual(popup_header, str(popover_inner.find_element_by_class_name(
-                "popover-title").text)), "Claim tooltip header incorrectly displayed"
+            "popover-title").text)), "Claim tooltip header incorrectly displayed"
         # Validate the claim content
         claims_tooltip = popover_inner.find_element_by_class_name("claimToolTipSection")
         assert (
             claim_content in str(claims_tooltip.text)), "Claim content text incorrectly displayed n the tooltip summary"
         # Validate the claim title
         assert (claim_name in str(claims_tooltip.find_element_by_class_name(
-                "title").text)), "Claim Name incorrectly displayed on the tooltip summary"
+            "title").text)), "Claim Name incorrectly displayed on the tooltip summary"
         ## Validate the claim score displayed in the header
         assert (claim_score in str(claims_tooltip.find_element_by_class_name(
-                "score").text)), "Claim Score incorrectly displayed on the tooltip summary"
+            "score").text)), "Claim Score incorrectly displayed on the tooltip summary"
 
         # Validate the claim score displayed on the progress bar
         assert (claim_score in str(claims_tooltip.find_element_by_class_name("claimsBar").find_element_by_class_name(
-                "claim_score").text)), "Claim score incorrectly displayed on the tooltip progress bar"
+            "claim_score").text)), "Claim score incorrectly displayed on the tooltip progress bar"
         ## Validate the Minimum and maximum range on the progress bar
         assert ("1200" in str(claims_tooltip.find_element_by_class_name("cutPointsBar").find_element_by_class_name(
-                "startPoint").text)), "Claim score incorrectly displayed on the tooltip progress bar"
+            "startPoint").text)), "Claim score incorrectly displayed on the tooltip progress bar"
         assert ("2400" in str(claims_tooltip.find_element_by_class_name("cutPointsBar").find_element_by_class_name(
-                "endPoint").text)), "Claim score incorrectly displayed on the tooltip progress bar"
+            "endPoint").text)), "Claim score incorrectly displayed on the tooltip progress bar"
 
         # Validate the Error Band displayed on the tooltip
         assert (error_band in str(claims_tooltip.find_element_by_class_name(
-                "errorBand").text)), "Error Band incorrectly displayed on the tooltip"
+            "errorBand").text)), "Error Band incorrectly displayed on the tooltip"
 
     def check_isr_legend_popup(self):
         '''
@@ -168,7 +164,7 @@ class IndividualStudentHelper(SessionShareHelper):
                          "Disclaimer in ISR legend popup incorrectly displayed.")
 
         ald_table = legend.find_element_by_class_name('span7').find_element_by_tag_name(
-                'table').find_elements_by_tag_name('td')
+            'table').find_elements_by_tag_name('td')
         expected_ald_levels = ['Level 1', 'Level 2', 'Level 3', 'Level 4']
         actual_ald_levels = []
         for each in ald_table:
@@ -232,7 +228,7 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                          "Disclaimer in ISR legend popup incorrectly displayed.")
 
         ald_table = legend.find_element_by_class_name('span7').find_element_by_tag_name(
-                'table').find_elements_by_tag_name('td')
+            'table').find_elements_by_tag_name('td')
         expected_ald_levels = ['Nivel 1', 'Nivel 2', 'Nivel 3', 'Nivel 4']
         actual_ald_levels = []
         for each in ald_table:
@@ -261,11 +257,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         LEGEND_ERR_BAND_HEADER = "Error Band:"
         LEGEND_ERR_BAND_DESC = "Smarter Balanced tests try to provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would be very likely to achieve if they were to take the test multiple times. It is similar to the “margin of error” that newspapers report for public opinion surveys."
         err_band_section = popup.find_element_by_class_name("popover-content").find_element_by_class_name(
-                "span7").find_element_by_class_name("error_band_wrapper")
+            "span7").find_element_by_class_name("error_band_wrapper")
         # Validate the Error band section header and description
         self.assertIn(LEGEND_ERR_BAND_HEADER, err_band_section.text,
                       'Error: Error Band section header: {0} is not found in Legend popup'.format(
-                              LEGEND_ERR_BAND_HEADER))
+                          LEGEND_ERR_BAND_HEADER))
 
     #        self.assertIn(LEGEND_ERR_BAND_DESC, str(err_band_section.text), 'Error: Error Band section description: {0} is not found in Legend popup'.format(LEGEND_ERR_BAND_DESC))
 
@@ -290,7 +286,7 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                       'Error: Supporting Score Details header is not found in Legend popup')
         # Validate the Claim Score performance level table headers and contents
         legend_claim_section = popup.find_element_by_class_name("popover-content").find_element_by_class_name(
-                "span7").find_element_by_tag_name("table")
+            "span7").find_element_by_tag_name("table")
 
         # Validate the table headers
         table_header = legend_claim_section.find_element_by_tag_name("thead").find_elements_by_tag_name("th")
@@ -317,10 +313,10 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         ;param asmt_selection: Assessment type selection: 'Summative' or 'Interim Comprehensive'
         :type asmt_selection: string
          '''
-        self.driver.find_element_by_id("actionBar").find_element_by_class_name("asmtDropdown").find_element_by_tag_name(
-                "button").click()
-        asmt_dropdown_options = self.driver.find_element_by_class_name("asmtDropdown").find_element_by_class_name(
-                "dropdown-menu")
+        browser().find_element_by_id("actionBar").find_element_by_class_name("asmtDropdown").find_element_by_tag_name(
+            "button").click()
+        asmt_dropdown_options = browser().find_element_by_class_name("asmtDropdown").find_element_by_class_name(
+            "dropdown-menu")
         # asmt_dropdown_options.find_element_by_link_text(asmt_selection).click()
         options = asmt_dropdown_options.find_elements_by_css_selector("li[data-asmttype='" + asmt_selection + "']")
         for each in options:
@@ -329,12 +325,12 @@ It is similar to the \"margin of error\" that newspapers report for public opini
 
         self.check_redirected_requested_page("individual_student_report")
         self.check_selected_asmt_type_isr(asmt_selection)
-        self.driver.maximize_window()
-        element_to_click = self.driver.find_element_by_class_name("sidebar")
+        browser().maximize_window()
+        element_to_click = browser().find_element_by_class_name("sidebar")
         loc = element_to_click.location
         script = "window.scrollTo(%s, %s);" % (loc['x'], loc['y'])
-        self.driver.execute_script(script)
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        browser().execute_script(script)
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         time.sleep(5)
         hover_mouse.click()
         time.sleep(10)
@@ -345,25 +341,20 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         ;param selected_asmt_type: Assessment type selection
         :type selected_asmt_type: string
          '''
-        selected_assessment_view = self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "asmtDropdown").find_element_by_id("selectedAsmtType").text
+        selected_assessment_view = browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "asmtDropdown").find_element_by_id("selectedAsmtType").text
         self.assertIn(selected_asmt_type, selected_assessment_view), "Incorrect assessment type selected"
 
     def check_isr_report_info_popup(self):
         '''
         Validates the Report Info text displayed on the mouseover overlay in Individual Student report
         '''
-        element_to_click = self.driver.find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
-        time.sleep(3)
-        try:
-            WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_class_name("reportInfoPopover"))
-        except:
-            self.driver.save_screenshot('/tmp/report_info.png')
-            self.assertTrue(False, "Error in viewing the report info popover")
-        popover_content = self.driver.find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
-                "popover-content")
+        wait_for(lambda driver: driver.find_element_by_class_name("reportInfoPopover"))
+        popover_content = browser().find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
+            "popover-content")
         # Validate the section headers in the report info pop over
         report_info_headers = popover_content.find_elements_by_tag_name("h4")
         self.assertEqual("Purpose:", str(report_info_headers[0].text),
@@ -406,17 +397,12 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         Validates the Report Info text displayed on the mouseover overlay in Individual Student report
         '''
         time.sleep(3)
-        element_to_click = self.driver.find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
-        time.sleep(3)
-        try:
-            WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_class_name("reportInfoPopover"))
-        except:
-            self.driver.save_screenshot('/tmp/report_info.png')
-            self.assertTrue(False, "Error in viewing the report info popover")
-        popover_content = self.driver.find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
-                "popover-content")
+        wait_for(lambda driver: driver.find_element_by_class_name("reportInfoPopover"))
+        popover_content = browser().find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
+            "popover-content")
         # Validate the section headers in the report info pop over
         report_info_headers = popover_content.find_elements_by_tag_name("h4")
         self.assertEqual(u"Propósito:", report_info_headers[0].text), "Purpose header not found in report info pop over"
@@ -454,7 +440,7 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         :param ald_level: ALD description
         :type ald_level: string
         '''
-        report_info_score_sections = self.driver.find_element_by_id("infoBar").find_elements_by_class_name("overall")
+        report_info_score_sections = browser().find_element_by_id("infoBar").find_elements_by_class_name("overall")
 
         self.assertIn(subject, str(report_info_score_sections[sequence].text),
                       "Subject text not found in Overall score summary in Report info bar")
@@ -467,23 +453,22 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         '''
         Validates the print option in the Report Action bar and the different options available to print
         '''
-        assert self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "printItem"), "Print option not found in the Report info navigation bar"
-        self.driver.save_screenshot('/tmp/isr_pdf1.png')
-        self.driver.find_element_by_id("actionBar").find_element_by_class_name("printLabel").click()
-        self.driver.save_screenshot('/tmp/isr_pdf2.png')
-        time.sleep(3)
+        assert browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "printItem"), "Print option not found in the Report info navigation bar"
+        add_screen_to_report('/tmp/isr_pdf1.png')
+        browser().find_element_by_id("actionBar").find_element_by_class_name("printLabel").click()
+        add_screen_to_report('/tmp/isr_pdf2.png')
         try:
-            WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_id("PrintModal"))
-        # print_popup = self.driver.find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id("PrintModal")
+            wait_for(lambda driver: driver.find_element_by_id("PrintModal"))
+        # print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id("PrintModal")
         except:
             print("Timeout in opening the Print pop up window")
-        self.driver.save_screenshot('/tmp/isr_pdf3.png')
-        print_popup = self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "printItem").find_element_by_id("PrintModal")
+        add_screen_to_report('/tmp/isr_pdf3.png')
+        print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "printItem").find_element_by_id("PrintModal")
         self.assertIn("Print", str(
-                self.driver.find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id(
-                        "PrintModal").find_element_by_id("myModalLabel").text), "Print popup header not found")
+            browser().find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id(
+                "PrintModal").find_element_by_id("myModalLabel").text), "Print popup header not found")
         print_options = print_popup.find_element_by_class_name("modal-body").find_elements_by_tag_name("li")
         self.assertEqual("Color", print_options[1].text, "Color print option not found")
         self.assertEqual("Grayscale (use for black & white printing)", print_options[0].text,
@@ -499,28 +484,28 @@ It is similar to the \"margin of error\" that newspapers report for public opini
             except NoSuchElementException:
                 return False
 
-        WebDriverWait(self.driver, 15).until(is_modal_window_present)
+        wait_for(is_modal_window_present)
 
     def language_check_isr_print_pdf_options(self, print_popup_text):
         '''
         Validates the print option in the Report Action bar and the different options available to print
         '''
-        assert self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "printItem"), "Print option not found in the Report info navigation bar"
-        self.driver.save_screenshot('/tmp/isr_pdf1.png')
-        self.driver.find_element_by_id("actionBar").find_element_by_class_name("printLabel").click()
-        self.driver.save_screenshot('/tmp/isr_pdf2.png')
+        assert browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "printItem"), "Print option not found in the Report info navigation bar"
+        add_screen_to_report('/tmp/isr_pdf1.png')
+        browser().find_element_by_id("actionBar").find_element_by_class_name("printLabel").click()
+        add_screen_to_report('/tmp/isr_pdf2.png')
         time.sleep(3)
         try:
-            WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_id("PrintModal"))
-        # print_popup = self.driver.find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id("PrintModal")
+            wait_for(lambda driver: driver.find_element_by_id("PrintModal"))
+        # print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id("PrintModal")
         except:
             print("Timeout in opening the Print pop up window")
-        self.driver.save_screenshot('/tmp/isr_pdf3.png')
-        print_popup = self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "printItem").find_element_by_id("PrintModal")
-        self.assertIn(print_popup_text['head'], self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "printItem").find_element_by_id("PrintModal").find_element_by_id("myModalLabel").text,
+        add_screen_to_report('/tmp/isr_pdf3.png')
+        print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "printItem").find_element_by_id("PrintModal")
+        self.assertIn(print_popup_text['head'], browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "printItem").find_element_by_id("PrintModal").find_element_by_id("myModalLabel").text,
                       "Print popup header not found")
         print_options = print_popup.find_element_by_class_name("modal-body").find_elements_by_tag_name("li")
         self.assertEqual(print_popup_text['message_2'], print_options[1].text, "Color print option not found")
@@ -559,13 +544,13 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         ;param selected_asmt_type: Assessment type selection: 'Summative' or 'Interim Comprehensive'
         :type selected_asmt_type: string
          '''
-        #        self.assertIn(selected_asmt_type, unicode(self.driver.find_element_by_id("actionBar").find_element_by_class_name("asmtDropdown").find_element_by_id("selectedAsmtType").text)), "Incorrect assessment type selected"
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        #        self.assertIn(selected_asmt_type, unicode(browser().find_element_by_id("actionBar").find_element_by_class_name("asmtDropdown").find_element_by_id("selectedAsmtType").text)), "Incorrect assessment type selected"
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown_value = dropdown.find_element_by_id("selectedAsmtType").text
         self.assertEqual(expected_value, dropdown_value, "Current opportunity selector is invalid on ISR.")
 
     def select_opportunity_isr(self, selection):
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         all_options = dropdown.find_element_by_class_name("asmtDropdownMenu").find_elements_by_tag_name('li')
         optionFound = False
@@ -582,65 +567,53 @@ It is similar to the \"margin of error\" that newspapers report for public opini
 
     def select_iab_subject(self, selection):
         if selection == "Mathematics":
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
-                    "subjectSelectionMath").click()
+            browser().find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
+                "subjectSelectionMath").click()
             subject = "Math"
         elif selection == "ELA/Literacy":
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
-                    "subjectSelectionELA").click()
+            browser().find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
+                "subjectSelectionELA").click()
             subject = "ELA"
         else:
             self.assertTrue(False, "Invalid selection for IAB assessments.")
-        try:
-            WebDriverWait(self.driver, 20).until(lambda driver: str(
-                    driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                            subject).find_element_by_class_name("isrInterimBlockHeader").find_element_by_class_name(
-                            "subject").text) == selection, message="Unable to switch the subject view in IAB")
-        except:
-            self.driver.save_screenshot('/tmp/iab_switch_view.png')
-            self.assertTrue(False, "Error in switching the subject view for IAB.")
+
+        wait_for(lambda driver: str(driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
+            subject).find_element_by_class_name("isrInterimBlockHeader").find_element_by_class_name(
+            "subject").text) == selection, message="Unable to switch the subject view in IAB")
 
     def select_subject_view(self, selection):
         if selection == "Mathematics":
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
-                    "subjectSelectionMath").click()
+            browser().find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
+                "subjectSelectionMath").click()
             section_id = "assessmentSection0"
         elif selection == "ELA/Literacy":
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
-                    "subjectSelectionELA").click()
+            browser().find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
+                "subjectSelectionELA").click()
             section_id = "assessmentSection1"
         else:
             self.assertTrue(False, "Invalid selection for subject view selection.")
-        try:
-            WebDriverWait(self.driver, 20).until(lambda driver: str(
-                    driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                            section_id).find_element_by_class_name("sidebar").find_element_by_tag_name(
-                            "h1").text) == selection,
-                                                 message="Unable to switch the subject view in ISR")
-        except:
-            self.driver.save_screenshot('/tmp/isr_switch_view.png')
-            self.assertTrue(False, "Error in switching the subject view in ISR")
+
+        wait_for(lambda driver: str(driver.find_element_by_id("individualStudentContent").find_element_by_id(
+            section_id).find_element_by_class_name("sidebar").find_element_by_tag_name(
+            "h1").text) == selection,
+                 message="Unable to switch the subject view in ISR")
 
     def select_subject_view_one(self, selection):
         if selection == "Mathematics":
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
-                    "subjectSelectionMath").click()
+            browser().find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
+                "subjectSelectionMath").click()
             section_id = "assessmentSection0"
         elif selection == "ELA/Literacy":
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
-                    "subjectSelectionELA").click()
+            browser().find_element_by_id("actionBar").find_element_by_class_name("detailsItem").find_element_by_id(
+                "subjectSelectionELA").click()
             section_id = "assessmentSection0"
         else:
             self.assertTrue(False, "Invalid selection for subject view selection.")
-        try:
-            WebDriverWait(self.driver, 20).until(lambda driver: str(
-                    driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                            section_id).find_element_by_class_name("sidebar").find_element_by_tag_name(
-                            "h1").text) == selection,
-                                                 message="Unable to switch the subject view in ISR")
-        except:
-            self.driver.save_screenshot('/tmp/isr_switch_view.png')
-            self.assertTrue(False, "Error in switching the subject view in ISR")
+
+        wait_for(lambda driver: str(driver.find_element_by_id("individualStudentContent").find_element_by_id(
+            section_id).find_element_by_class_name("sidebar").find_element_by_tag_name(
+            "h1").text) == selection,
+                 message="Unable to switch the subject view in ISR")
 
     def verify_iab_title_score(self, iab_block, grade, block_name, effective_date, performance):
         self.assertIn(grade, str(iab_block.find_element_by_class_name("title").text),
@@ -655,8 +628,8 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                       "IAB performance name not displayed on the IAB block.")
         performance_image = "edware-icon-large-perf-" + self.get_performance_level_image_name(performance)
         self.assertIsNotNone(
-                iab_block.find_element_by_class_name("content").find_element_by_class_name(performance_image),
-                "Performance level image not found")
+            iab_block.find_element_by_class_name("content").find_element_by_class_name(performance_image),
+            "Performance level image not found")
 
     def verify_iab_previous_results(self, iab_block, num_results, prev_results):
         self.assertEqual("PREVIOUS RESULTS", str(iab_block.find_element_by_class_name("previousResults").text),
@@ -699,25 +672,19 @@ It is similar to the \"margin of error\" that newspapers report for public opini
     def verify_iab_older_results(self, iab_block, num_results, older_results):
         self.assertEqual("OLDER...", str(iab_block.find_element_by_class_name("olderResults").text),
                          "OLDER link not found in the IAB block")
-        self.driver.maximize_window()
+        browser().maximize_window()
         element_to_click = iab_block.find_element_by_class_name("olderResults")
         loc = element_to_click.location
         script = "window.scrollTo(%s, %s);" % (loc['x'], loc['y'])
-        self.driver.execute_script(script)
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        browser().execute_script(script)
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
-        try:
-            time.sleep(5)
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_element_located((By.ID, "iabPopoverContent")))
-        except:
-            self.driver.save_screenshot('/tmp/popover.png')
-            self.assertTrue(False, "Error in viewing the iabPopoverContent")
-        popover = self.driver.find_element_by_id("iabPopoverContent")
+        wait_for(expected_conditions.visibility_of_element_located((By.ID, "iabPopoverContent")))
+        popover = browser().find_element_by_id("iabPopoverContent")
         self.assertEqual("PREVIOUS RESULTS CONT'D", str(popover.find_element_by_class_name("previousResults").text),
                          "Previous results cont'd text not found in the IAB block older popover.")
 
-        table = self.driver.find_element_by_id("iabPopoverContent").find_element_by_class_name("table")
+        table = browser().find_element_by_id("iabPopoverContent").find_element_by_class_name("table")
         all_older_results = table.find_elements_by_class_name("takenDate")
 
         self.assertEqual(num_results, len(all_older_results),
@@ -761,8 +728,8 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                       "IAB performance name not displayed on the IAB block.")
         performance_image = "edware-icon-large-perf-" + self.get_performance_level_image_name(performance)
         self.assertIsNotNone(
-                iab_block.find_element_by_class_name("content").find_element_by_class_name(performance_image),
-                "Performance level image not found")
+            iab_block.find_element_by_class_name("content").find_element_by_class_name(performance_image),
+            "Performance level image not found")
         if standardized_icon != "None":
             try:
                 iab_block.find_element_by_class_name("level2Content").find_element_by_class_name(standardized_icon)
@@ -829,25 +796,19 @@ It is similar to the \"margin of error\" that newspapers report for public opini
     def verify_iab_older_results_comp_valid(self, iab_block, num_results, older_results):
         self.assertEqual("OLDER...", str(iab_block.find_element_by_class_name("olderResults").text),
                          "OLDER link not found in the IAB block")
-        self.driver.maximize_window()
+        browser().maximize_window()
         element_to_click = iab_block.find_element_by_class_name("olderResults")
         loc = element_to_click.location
         script = "window.scrollTo(%s, %s);" % (loc['x'], loc['y'])
-        self.driver.execute_script(script)
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        browser().execute_script(script)
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
-        try:
-            time.sleep(5)
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_element_located((By.ID, "iabPopoverContent")))
-        except:
-            self.driver.save_screenshot('/tmp/popover.png')
-            self.assertTrue(False, "Error in viewing the iabPopoverContent")
-        popover = self.driver.find_element_by_id("iabPopoverContent")
+        wait_for(expected_conditions.visibility_of_element_located((By.ID, "iabPopoverContent")))
+        popover = browser().find_element_by_id("iabPopoverContent")
         self.assertEqual("PREVIOUS RESULTS CONT'D", str(popover.find_element_by_class_name("previousResults").text),
                          "Previous results cont'd text not found in the IAB block older popover.")
 
-        table = self.driver.find_element_by_id("iabPopoverContent").find_element_by_class_name("table")
+        table = browser().find_element_by_id("iabPopoverContent").find_element_by_class_name("table")
         all_older_results = table.find_elements_by_class_name("takenDate")
         all_older_date = table.text
         self.assertEqual(num_results, len(all_older_results),

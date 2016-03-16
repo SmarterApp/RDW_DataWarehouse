@@ -3,11 +3,11 @@ Created on Feb 24, 2014
 
 @author: nparoha, bpatel
 '''
-import unittest
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class TestUdlIntegration(ComparingPopulationsHelper, LosHelper, IndividualStudentHelper):
@@ -17,7 +17,6 @@ class TestUdlIntegration(ComparingPopulationsHelper, LosHelper, IndividualStuden
         IndividualStudentHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -32,7 +31,7 @@ class TestUdlIntegration(ComparingPopulationsHelper, LosHelper, IndividualStuden
     def validate_state_view(self):
         print("Validate page headers,breadcrumb and user information")
         self.assertEqual("North Carolina", str(
-                self.driver.find_element_by_id("breadcrumb").text)), "Breadcrumb for state 'North Carolina' not found"
+            browser().find_element_by_id("breadcrumb").text)), "Breadcrumb for state 'North Carolina' not found"
         self.check_headers("Susan Hall", "Log Out")
         self.check_page_header("Districts in North Carolina")
 
@@ -167,16 +166,8 @@ class TestUdlIntegration(ComparingPopulationsHelper, LosHelper, IndividualStuden
 
         self.check_page_header("Irene Cooper | Grade 05")
         self.check_isr_overall_score_summary(0, 'Mathematics', '1994', "Level 3")
-        overallScoreEla = self.driver.find_element_by_id("individualStudentContent").find_elements_by_class_name(
-                "overallScoreSection")
+        overallScoreEla = browser().find_element_by_id("individualStudentContent").find_elements_by_class_name(
+            "overallScoreSection")
         math_score = overallScoreEla[0]
         self.check_overall_Score_ald(math_score, 1994, "rgba(106, 165, 6, 1)", "Overall Score", "Level 3")
         print("INDIVIDUAL STUDENT REPORT validation passed")
-
-    def tearDown(self):
-        self.driver.quit()
-
-
-if __name__ == "__main__":
-    # import unittest
-    unittest.main()

@@ -5,6 +5,7 @@ Created on Feb 21, 2014
 '''
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class TestInterimOnly(LosHelper, ComparingPopulationsHelper):
@@ -13,13 +14,9 @@ class TestInterimOnly(LosHelper, ComparingPopulationsHelper):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
-
-    def tearDown(self):
-        self.driver.quit()
 
     def test_interim_only_flow1(self):
         # Drill down from state level to a district that only has interim results #
@@ -67,10 +64,10 @@ class TestInterimOnly(LosHelper, ComparingPopulationsHelper):
 
     def get_cpop_columns(self, row_type, list_id, link_text):
         if row_type is "grid":
-            all_columns = self.driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(
-                    list_id).find_elements_by_tag_name("td")
+            all_columns = browser().find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(
+                list_id).find_elements_by_tag_name("td")
         elif row_type is "overall":
-            all_columns = self.driver.find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name("td")
+            all_columns = browser().find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name("td")
         self.assertIn(link_text, str(all_columns[0].text)), "Incorrect Name displayed."
         return all_columns
 

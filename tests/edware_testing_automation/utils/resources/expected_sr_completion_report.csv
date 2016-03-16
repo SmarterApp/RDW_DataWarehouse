@@ -1,197 +1,421 @@
-State,District,School,Category,Value,AY2012 Count of Registered Students,AY2012 Count of Students Assessed by Summative Math,AY2012 Percent of Registered Students Assessed by Summative Math,AY2012 Count of Students Assessed by Summative ELA,AY2012 Percent of Registered Students Assessed by Summative ELA,AY2012 Count of Students Assessed by Interim Comprehensive Math,AY2012 Percent of Registered Students Assessed by Interim Comprehensive Math,AY2012 Count of Students Assessed by Interim Comprehensive ELA,AY2012 Percent of Registered Students Assessed by Interim Comprehensive ELA
-Vermont,ALL,ALL,Total,Total,1543,1475,95.59,1501,97.28,200,12.96,205,13.29
-Vermont,ALL,ALL,Sex,Male,809,772,95.43,787,97.28,102,12.61,103,12.73
-Vermont,ALL,ALL,Sex,Female,734,703,95.78,714,97.28,98,13.35,102,13.9
-Vermont,ALL,ALL,Ethnicity,HispanicOrLatinoEthnicity,854,819,95.9,827,96.84,115,13.47,114,13.35
-Vermont,ALL,ALL,Race,AmericanIndianOrAlaskaNative,12,9,75,12,100,0,0,1,8.33
-Vermont,ALL,ALL,Race,Asian,125,120,96,123,98.4,12,9.6,12,9.6
-Vermont,ALL,ALL,Race,BlackOrAfricanAmerican,110,107,97.27,105,95.45,17,15.45,16,14.55
-Vermont,ALL,ALL,Race,NativeHawaiianOrOtherPacificIslander,8,8,100,8,100,1,12.5,1,12.5
-Vermont,ALL,ALL,Race,White,428,406,94.86,420,98.13,54,12.62,60,14.02
-Vermont,ALL,ALL,Race,DemographicRaceTwoOrMoreRaces,35,33,94.29,34,97.14,3,8.57,3,8.57
-Vermont,ALL,ALL,Program,IDEAIndicator,150,141,94,146,97.33,17,11.33,19,12.67
-Vermont,ALL,ALL,Program,LEPStatus,353,335,94.9,339,96.03,45,12.75,47,13.31
-Vermont,ALL,ALL,Program,504Status,91,89,97.8,89,97.8,13,14.29,14,15.38
-Vermont,ALL,ALL,Program,EconomicDisadvantageStatus,838,802,95.7,810,96.66,106,12.65,107,12.77
-Vermont,ALL,ALL,Program,MigrantStatus,66,63,95.45,66,100,9,13.64,11,16.67
-Vermont,ALL,ALL,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,ALL,ALL,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,ALL,ALL,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,ALL,ALL,Grade 03,Total,250,241,96.4,242,96.8,0,0,0,0
-Vermont,ALL,ALL,Grade 04,Total,240,230,95.83,236,98.33,0,0,0,0
-Vermont,ALL,ALL,Grade 05,Total,220,214,97.27,214,97.27,0,0,0,0
-Vermont,ALL,ALL,Grade 06,Total,210,200,95.24,205,97.62,200,95.24,205,97.62
-Vermont,ALL,ALL,Grade 07,Total,138,126,91.3,132,95.65,0,0,0,0
-Vermont,ALL,ALL,Grade 08,Total,226,215,95.13,221,97.79,0,0,0,0
-Vermont,ALL,ALL,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,ALL,ALL,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,ALL,ALL,Grade 11,Total,259,249,96.14,251,96.91,0,0,0,0
-Vermont,ALL,ALL,Grade 12,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,ALL,Total,Total,836,803,96.05,814,97.37,103,12.32,103,12.32
-Vermont,Noctule Kongoni District,ALL,Sex,Male,455,437,96.04,443,97.36,50,10.99,50,10.99
-Vermont,Noctule Kongoni District,ALL,Sex,Female,381,366,96.06,371,97.38,53,13.91,53,13.91
-Vermont,Noctule Kongoni District,ALL,Ethnicity,HispanicOrLatinoEthnicity,459,441,96.08,444,96.73,63,13.73,61,13.29
-Vermont,Noctule Kongoni District,ALL,Race,AmericanIndianOrAlaskaNative,3,1,33.33,3,100,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Race,Asian,76,75,98.68,76,100,4,5.26,4,5.26
-Vermont,Noctule Kongoni District,ALL,Race,BlackOrAfricanAmerican,59,57,96.61,57,96.61,9,15.25,8,13.56
-Vermont,Noctule Kongoni District,ALL,Race,NativeHawaiianOrOtherPacificIslander,5,5,100,5,100,1,20,1,20
-Vermont,Noctule Kongoni District,ALL,Race,White,232,222,95.69,227,97.84,26,11.21,29,12.5
-Vermont,Noctule Kongoni District,ALL,Race,DemographicRaceTwoOrMoreRaces,20,19,95,20,100,2,10,2,10
-Vermont,Noctule Kongoni District,ALL,Program,IDEAIndicator,80,76,95,77,96.25,13,16.25,13,16.25
-Vermont,Noctule Kongoni District,ALL,Program,LEPStatus,191,180,94.24,184,96.34,24,12.57,23,12.04
-Vermont,Noctule Kongoni District,ALL,Program,504Status,42,42,100,42,100,8,19.05,8,19.05
-Vermont,Noctule Kongoni District,ALL,Program,EconomicDisadvantageStatus,441,422,95.69,429,97.28,53,12.02,53,12.02
-Vermont,Noctule Kongoni District,ALL,Program,MigrantStatus,41,41,100,41,100,7,17.07,7,17.07
-Vermont,Noctule Kongoni District,ALL,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,ALL,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,ALL,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,ALL,Grade 03,Total,133,129,96.99,129,96.99,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Grade 04,Total,125,119,95.2,123,98.4,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Grade 05,Total,128,125,97.66,125,97.66,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Grade 06,Total,106,103,97.17,103,97.17,103,97.17,103,97.17
-Vermont,Noctule Kongoni District,ALL,Grade 07,Total,86,79,91.86,84,97.67,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Grade 08,Total,132,126,95.45,129,97.73,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,ALL,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,ALL,Grade 11,Total,126,122,96.83,121,96.03,0,0,0,0
-Vermont,Noctule Kongoni District,ALL,Grade 12,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,ALL,Total,Total,707,672,95.05,687,97.17,97,13.72,102,14.43
-Vermont,Tamandua Mouflon Schools,ALL,Sex,Male,354,335,94.63,344,97.18,52,14.69,53,14.97
-Vermont,Tamandua Mouflon Schools,ALL,Sex,Female,353,337,95.47,343,97.17,45,12.75,49,13.88
-Vermont,Tamandua Mouflon Schools,ALL,Ethnicity,HispanicOrLatinoEthnicity,395,378,95.7,383,96.96,52,13.16,53,13.42
-Vermont,Tamandua Mouflon Schools,ALL,Race,AmericanIndianOrAlaskaNative,9,8,88.89,9,100,0,0,1,11.11
-Vermont,Tamandua Mouflon Schools,ALL,Race,Asian,49,45,91.84,47,95.92,8,16.33,8,16.33
-Vermont,Tamandua Mouflon Schools,ALL,Race,BlackOrAfricanAmerican,51,50,98.04,48,94.12,8,15.69,8,15.69
-Vermont,Tamandua Mouflon Schools,ALL,Race,NativeHawaiianOrOtherPacificIslander,3,3,100,3,100,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Race,White,196,184,93.88,193,98.47,28,14.29,31,15.82
-Vermont,Tamandua Mouflon Schools,ALL,Race,DemographicRaceTwoOrMoreRaces,15,14,93.33,14,93.33,1,6.67,1,6.67
-Vermont,Tamandua Mouflon Schools,ALL,Program,IDEAIndicator,70,65,92.86,69,98.57,4,5.71,6,8.57
-Vermont,Tamandua Mouflon Schools,ALL,Program,LEPStatus,162,155,95.68,155,95.68,21,12.96,24,14.81
-Vermont,Tamandua Mouflon Schools,ALL,Program,504Status,49,47,95.92,47,95.92,5,10.2,6,12.24
-Vermont,Tamandua Mouflon Schools,ALL,Program,EconomicDisadvantageStatus,397,380,95.72,381,95.97,53,13.35,54,13.6
-Vermont,Tamandua Mouflon Schools,ALL,Program,MigrantStatus,25,22,88,25,100,2,8,4,16
-Vermont,Tamandua Mouflon Schools,ALL,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,ALL,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,ALL,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,ALL,Grade 03,Total,117,112,95.73,113,96.58,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Grade 04,Total,115,111,96.52,113,98.26,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Grade 05,Total,92,89,96.74,89,96.74,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Grade 06,Total,104,97,93.27,102,98.08,97,93.27,102,98.08
-Vermont,Tamandua Mouflon Schools,ALL,Grade 07,Total,52,47,90.38,48,92.31,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Grade 08,Total,94,89,94.68,92,97.87,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,ALL,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,ALL,Grade 11,Total,133,127,95.49,130,97.74,0,0,0,0
-Vermont,Tamandua Mouflon Schools,ALL,Grade 12,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Total,Total,126,122,96.83,121,96.03,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Sex,Male,67,66,98.51,62,92.54,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Sex,Female,59,56,94.92,59,100,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Ethnicity,HispanicOrLatinoEthnicity,55,52,94.55,54,98.18,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Race,AmericanIndianOrAlaskaNative,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Race,Asian,14,14,100,14,100,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Race,BlackOrAfricanAmerican,10,10,100,9,90,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Race,White,47,46,97.87,44,93.62,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Race,DemographicRaceTwoOrMoreRaces,2,2,100,2,100,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Program,IDEAIndicator,11,10,90.91,10,90.91,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Program,LEPStatus,13,13,100,12,92.31,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Program,504Status,7,7,100,7,100,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Program,EconomicDisadvantageStatus,66,64,96.97,63,95.45,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Program,MigrantStatus,2,2,100,2,100,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 03,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 04,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 05,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 06,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 07,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 08,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 11,Total,126,122,96.83,121,96.03,0,0,0,0
-Vermont,Noctule Kongoni District,Acacia Guenon High School,Grade 12,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Total,Total,710,681,95.92,693,97.61,103,14.51,103,14.51
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Sex,Male,388,371,95.62,381,98.2,50,12.89,50,12.89
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Sex,Female,322,310,96.27,312,96.89,53,16.46,53,16.46
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Ethnicity,HispanicOrLatinoEthnicity,404,389,96.29,390,96.53,63,15.59,61,15.1
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Race,AmericanIndianOrAlaskaNative,3,1,33.33,3,100,0,0,0,0
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Race,Asian,62,61,98.39,62,100,4,6.45,4,6.45
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Race,BlackOrAfricanAmerican,49,47,95.92,48,97.96,9,18.37,8,16.33
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Race,NativeHawaiianOrOtherPacificIslander,5,5,100,5,100,1,20,1,20
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Race,White,185,176,95.14,183,98.92,26,14.05,29,15.68
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Race,DemographicRaceTwoOrMoreRaces,18,17,94.44,18,100,2,11.11,2,11.11
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Program,IDEAIndicator,69,66,95.65,67,97.1,13,18.84,13,18.84
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Program,LEPStatus,178,167,93.82,172,96.63,24,13.48,23,12.92
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Program,504Status,35,35,100,35,100,8,22.86,8,22.86
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Program,EconomicDisadvantageStatus,375,358,95.47,366,97.6,53,14.13,53,14.13
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Program,MigrantStatus,39,39,100,39,100,7,17.95,7,17.95
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 03,Total,133,129,96.99,129,96.99,0,0,0,0
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 04,Total,125,119,95.2,123,98.4,0,0,0,0
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 05,Total,128,125,97.66,125,97.66,0,0,0,0
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 06,Total,106,103,97.17,103,97.17,103,97.17,103,97.17
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 07,Total,86,79,91.86,84,97.67,0,0,0,0
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 08,Total,132,126,95.45,129,97.73,0,0,0,0
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 11,Total,0,0,,0,,0,,0,
-Vermont,Noctule Kongoni District,Marina Willow Ctr,Grade 12,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Total,Total,324,312,96.3,315,97.22,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Sex,Male,156,148,94.87,151,96.79,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Sex,Female,168,164,97.62,164,97.62,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Ethnicity,HispanicOrLatinoEthnicity,182,174,95.6,177,97.25,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Race,AmericanIndianOrAlaskaNative,4,4,100,4,100,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Race,Asian,19,19,100,18,94.74,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Race,BlackOrAfricanAmerican,25,24,96,24,96,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Race,NativeHawaiianOrOtherPacificIslander,2,2,100,2,100,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Race,White,90,87,96.67,88,97.78,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Race,DemographicRaceTwoOrMoreRaces,9,9,100,8,88.89,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Program,IDEAIndicator,35,34,97.14,34,97.14,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Program,LEPStatus,91,89,97.8,86,94.51,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Program,504Status,24,24,100,22,91.67,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Program,EconomicDisadvantageStatus,172,165,95.93,165,95.93,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Program,MigrantStatus,12,12,100,12,100,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 03,Total,117,112,95.73,113,96.58,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 04,Total,115,111,96.52,113,98.26,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 05,Total,92,89,96.74,89,96.74,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 06,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 07,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 08,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 11,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Antshrike Holly Sch,Grade 12,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Total,Total,383,360,93.99,372,97.13,97,25.33,102,26.63
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Sex,Male,198,187,94.44,193,97.47,52,26.26,53,26.77
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Sex,Female,185,173,93.51,179,96.76,45,24.32,49,26.49
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Ethnicity,HispanicOrLatinoEthnicity,213,204,95.77,206,96.71,52,24.41,53,24.88
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Race,AmericanIndianOrAlaskaNative,5,4,80,5,100,0,0,1,20
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Race,Asian,30,26,86.67,29,96.67,8,26.67,8,26.67
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Race,BlackOrAfricanAmerican,26,26,100,24,92.31,8,30.77,8,30.77
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Race,NativeHawaiianOrOtherPacificIslander,1,1,100,1,100,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Race,White,106,97,91.51,105,99.06,28,26.42,31,29.25
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Race,DemographicRaceTwoOrMoreRaces,6,5,83.33,6,100,1,16.67,1,16.67
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Program,IDEAIndicator,35,31,88.57,35,100,4,11.43,6,17.14
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Program,LEPStatus,71,66,92.96,69,97.18,21,29.58,24,33.8
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Program,504Status,25,23,92,25,100,5,20,6,24
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Program,EconomicDisadvantageStatus,225,215,95.56,216,96,53,23.56,54,24
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Program,MigrantStatus,13,10,76.92,13,100,2,15.38,4,30.77
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade KG,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 01,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 02,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 03,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 04,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 05,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 06,Total,104,97,93.27,102,98.08,97,93.27,102,98.08
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 07,Total,52,47,90.38,48,92.31,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 08,Total,94,89,94.68,92,97.87,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 09,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 10,Total,0,0,,0,,0,,0,
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 11,Total,133,127,95.49,130,97.74,0,0,0,0
-Vermont,Tamandua Mouflon Schools,Trogon Rhinoceros High,Grade 12,Total,0,0,,0,,0,,0,
+State,District,School,Category,Value,AY2016 Count of Registered Students,AY2016 Count of Students Assessed by Summative Math,AY2016 Percent of Registered Students Assessed by Summative Math,AY2016 Count of Students Assessed by Summative ELA,AY2016 Percent of Registered Students Assessed by Summative ELA,AY2016 Count of Students Assessed by Interim Comprehensive Math,AY2016 Percent of Registered Students Assessed by Interim Comprehensive Math,AY2016 Count of Students Assessed by Interim Comprehensive ELA,AY2016 Percent of Registered Students Assessed by Interim Comprehensive ELA
+North Carolina,ALL,ALL,Total,Total,1364,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Sex,Male,705,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Sex,Female,659,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Ethnicity,HispanicOrLatinoEthnicity,780,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Race,AmericanIndianOrAlaskaNative,10,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Race,Asian,130,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Race,BlackOrAfricanAmerican,74,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Race,NativeHawaiianOrOtherPacificIslander,6,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Race,White,355,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Race,DemographicRaceTwoOrMoreRaces,40,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Program,IDEAIndicator,142,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Program,LEPStatus,310,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Program,504Status,93,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Program,EconomicDisadvantageStatus,728,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Program,MigrantStatus,52,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Grade KG,Total,1,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,ALL,ALL,Grade 10,Total,1,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Grade 11,Total,193,0,0,0,0,0,0,0,0
+North Carolina,ALL,ALL,Grade 12,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Total,Total,668,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Sex,Male,350,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Sex,Female,318,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Ethnicity,HispanicOrLatinoEthnicity,381,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Race,AmericanIndianOrAlaskaNative,2,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Race,Asian,66,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Race,BlackOrAfricanAmerican,40,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Race,NativeHawaiianOrOtherPacificIslander,2,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Race,White,173,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Race,DemographicRaceTwoOrMoreRaces,21,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Program,IDEAIndicator,73,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Program,LEPStatus,152,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Program,504Status,41,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Program,EconomicDisadvantageStatus,354,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Program,MigrantStatus,23,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Grade KG,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,ALL,Grade 10,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Grade 11,Total,107,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,ALL,Grade 12,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Total,Total,696,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Sex,Male,355,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Sex,Female,341,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Ethnicity,HispanicOrLatinoEthnicity,399,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Race,AmericanIndianOrAlaskaNative,8,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Race,Asian,64,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Race,BlackOrAfricanAmerican,34,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Race,NativeHawaiianOrOtherPacificIslander,4,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Race,White,182,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Race,DemographicRaceTwoOrMoreRaces,19,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Program,IDEAIndicator,69,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Program,LEPStatus,158,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Program,504Status,52,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Program,EconomicDisadvantageStatus,374,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Program,MigrantStatus,29,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 11,Total,86,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,ALL,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Total,Total,91,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Sex,Male,47,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Sex,Female,44,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Ethnicity,HispanicOrLatinoEthnicity,59,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Race,AmericanIndianOrAlaskaNative,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Race,Asian,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Race,BlackOrAfricanAmerican,6,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Race,White,22,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Race,DemographicRaceTwoOrMoreRaces,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Program,IDEAIndicator,6,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Program,LEPStatus,25,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Program,504Status,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Program,EconomicDisadvantageStatus,48,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Program,MigrantStatus,3,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Basil Caribou Elementary,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Total,Total,89,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Sex,Male,43,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Sex,Female,46,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Ethnicity,HispanicOrLatinoEthnicity,56,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Race,AmericanIndianOrAlaskaNative,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Race,Asian,10,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Race,BlackOrAfricanAmerican,2,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Race,White,20,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Race,DemographicRaceTwoOrMoreRaces,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Program,IDEAIndicator,16,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Program,LEPStatus,24,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Program,504Status,5,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Program,EconomicDisadvantageStatus,49,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Program,MigrantStatus,5,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade KG,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Duck Tityra Sch,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Total,Total,199,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Sex,Male,111,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Sex,Female,88,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Ethnicity,HispanicOrLatinoEthnicity,130,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,AmericanIndianOrAlaskaNative,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,Asian,13,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,BlackOrAfricanAmerican,14,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,NativeHawaiianOrOtherPacificIslander,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,White,41,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Race,DemographicRaceTwoOrMoreRaces,6,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,IDEAIndicator,25,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,LEPStatus,31,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,504Status,11,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,EconomicDisadvantageStatus,103,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Program,MigrantStatus,5,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Jacobin Vicuna MS,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Total,Total,110,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Sex,Male,52,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Sex,Female,58,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Ethnicity,HispanicOrLatinoEthnicity,54,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Race,AmericanIndianOrAlaskaNative,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Race,Asian,14,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Race,BlackOrAfricanAmerican,6,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Race,White,34,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Race,DemographicRaceTwoOrMoreRaces,3,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Program,IDEAIndicator,8,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Program,LEPStatus,12,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Program,504Status,10,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Program,EconomicDisadvantageStatus,68,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Program,MigrantStatus,3,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 10,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 11,Total,107,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Mato Whale HS,Grade 12,Total,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Total,Total,89,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Sex,Male,50,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Sex,Female,39,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Ethnicity,HispanicOrLatinoEthnicity,42,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Race,AmericanIndianOrAlaskaNative,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Race,Asian,16,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Race,BlackOrAfricanAmerican,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Race,White,25,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Race,DemographicRaceTwoOrMoreRaces,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Program,IDEAIndicator,9,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Program,LEPStatus,25,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Program,504Status,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Program,EconomicDisadvantageStatus,31,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Program,MigrantStatus,3,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Onager Olingo Elem,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Total,Total,90,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Sex,Male,47,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Sex,Female,43,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Ethnicity,HispanicOrLatinoEthnicity,40,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,AmericanIndianOrAlaskaNative,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,Asian,9,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,BlackOrAfricanAmerican,8,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,NativeHawaiianOrOtherPacificIslander,1,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,White,31,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Race,DemographicRaceTwoOrMoreRaces,3,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,IDEAIndicator,9,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,LEPStatus,35,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,504Status,7,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,EconomicDisadvantageStatus,55,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Program,MigrantStatus,4,0,0,0,0,0,0,0,0
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Holly Tinamou County Schools,Snowdrop Duiker Elem,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Total,Total,86,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Sex,Male,48,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Sex,Female,38,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Ethnicity,HispanicOrLatinoEthnicity,49,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,AmericanIndianOrAlaskaNative,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,Asian,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,BlackOrAfricanAmerican,4,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,NativeHawaiianOrOtherPacificIslander,1,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,White,23,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Race,DemographicRaceTwoOrMoreRaces,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,IDEAIndicator,10,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,LEPStatus,13,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,504Status,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,EconomicDisadvantageStatus,44,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Program,MigrantStatus,6,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 11,Total,86,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Cavy Woodcreeper HS,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Total,Total,99,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Sex,Male,50,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Sex,Female,49,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Ethnicity,HispanicOrLatinoEthnicity,59,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,AmericanIndianOrAlaskaNative,1,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,Asian,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,BlackOrAfricanAmerican,4,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,NativeHawaiianOrOtherPacificIslander,1,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,White,26,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Race,DemographicRaceTwoOrMoreRaces,3,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,IDEAIndicator,6,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,LEPStatus,27,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,504Status,8,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,EconomicDisadvantageStatus,58,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Program,MigrantStatus,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Grizzly Ironwood Primary,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Total,Total,93,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Sex,Male,44,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Sex,Female,49,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Ethnicity,HispanicOrLatinoEthnicity,53,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,AmericanIndianOrAlaskaNative,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,Asian,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,BlackOrAfricanAmerican,8,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,White,24,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Race,DemographicRaceTwoOrMoreRaces,3,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,IDEAIndicator,11,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,LEPStatus,22,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,504Status,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,EconomicDisadvantageStatus,47,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Program,MigrantStatus,4,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Marmoset Chimpanzee Elem,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Total,Total,94,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Sex,Male,42,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Sex,Female,52,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Ethnicity,HispanicOrLatinoEthnicity,59,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,AmericanIndianOrAlaskaNative,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,Asian,9,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,BlackOrAfricanAmerican,5,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,White,18,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Race,DemographicRaceTwoOrMoreRaces,3,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,IDEAIndicator,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,LEPStatus,30,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,504Status,6,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,EconomicDisadvantageStatus,53,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Program,MigrantStatus,7,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Meerkat Caribou Elem,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Total,Total,91,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Sex,Male,49,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Sex,Female,42,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Ethnicity,HispanicOrLatinoEthnicity,48,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,AmericanIndianOrAlaskaNative,1,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,Asian,9,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,BlackOrAfricanAmerican,3,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,NativeHawaiianOrOtherPacificIslander,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,White,29,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Race,DemographicRaceTwoOrMoreRaces,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,IDEAIndicator,8,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,LEPStatus,28,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,504Status,9,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,EconomicDisadvantageStatus,48,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Program,MigrantStatus,1,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Saltator Kinkajou Elementary,Grade 12,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Total,Total,233,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Sex,Male,122,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Sex,Female,111,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Ethnicity,HispanicOrLatinoEthnicity,131,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,AmericanIndianOrAlaskaNative,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,Asian,25,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,BlackOrAfricanAmerican,10,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,NativeHawaiianOrOtherPacificIslander,2,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,White,62,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Race,DemographicRaceTwoOrMoreRaces,6,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,IDEAIndicator,27,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,LEPStatus,38,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,504Status,15,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,EconomicDisadvantageStatus,124,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Program,MigrantStatus,9,0,0,0,0,0,0,0,0
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade KG,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 01,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 02,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 03,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 04,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 05,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 06,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 07,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 08,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 09,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 10,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 11,Total,0,0,,0,,0,,0,
+North Carolina,Kudu Woodcreeper Public Schools,Warbler Serval Middle School,Grade 12,Total,0,0,,0,,0,,0,

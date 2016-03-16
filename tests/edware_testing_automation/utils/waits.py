@@ -14,4 +14,4 @@ def wait_function(function, seconds_to_wait=5):
             timer += 1
             time.sleep(timer)
     raise WaitExpiredException(
-            '{t} second[s] expires for "{f}" function'.format(t=seconds_to_wait, f=function.__name__))
+        '{t} second[s] expires for "{f}" function'.format(t=seconds_to_wait, f=function.__name__))

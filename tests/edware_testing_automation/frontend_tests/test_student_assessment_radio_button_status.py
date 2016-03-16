@@ -15,13 +15,9 @@ class SummativeOnlyFileDownload(ComparingPopulationsHelper, SessionShareHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
-
-    def tearDown(self):
-        self.driver.quit()
 
     def check_student_assessment_results_status(self, popup, id, attribute):
         return popup.find_element_by_id(id).get_attribute(attribute)
@@ -134,9 +130,3 @@ class SummativeOnlyFileDownload(ComparingPopulationsHelper, SessionShareHelper):
         self.assertEqual(text1, 'Download individual reports for students in this school.',
                          "The displayed text is not correct")
         self.close_file_download_popup(export_popup)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

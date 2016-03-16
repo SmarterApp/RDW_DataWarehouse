@@ -4,9 +4,9 @@ Created on Feb 4, 2014
 @author: nparoha
 '''
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
-# @unittest.skip
 class MultiTenancy(ComparingPopulationsHelper):
     '''
     Tests for Multi Tenancy to ensure that user sees information for their tenants only
@@ -15,16 +15,13 @@ class MultiTenancy(ComparingPopulationsHelper):
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
 
-    def setUp(self):
-        self.driver = self.get_driver()
-
     def test_ca_tenant_login(self):
         self.open_landing_page_login_page()
         self.enter_login_credentials("msollars", "msollars1234")
         self.check_redirected_requested_page("state_view_ca_tenant")
 
         self.assertEqual("California", str(
-                self.driver.find_element_by_id("breadcrumb").text)), "Breadcrumb for state 'North Carolina' not found"
+            browser().find_element_by_id("breadcrumb").text)), "Breadcrumb for state 'North Carolina' not found"
         self.check_headers("Matt Sollars", "Log Out")
         self.check_page_header("Districts in California")
         self.check_tenant_logo('smarterHeader_logo')
@@ -45,7 +42,7 @@ class MultiTenancy(ComparingPopulationsHelper):
         self.enter_login_credentials("vlee", "vlee1234")
         self.check_redirected_requested_page("state_view_sds")
         self.assertEqual("North Carolina", str(
-                self.driver.find_element_by_id("breadcrumb").text)), "Breadcrumb for state 'North Carolina' not found"
+            browser().find_element_by_id("breadcrumb").text)), "Breadcrumb for state 'North Carolina' not found"
         self.check_headers("Victor Lee", "Log Out")
         self.check_page_header("Districts in North Carolina")
         self.check_tenant_logo('NC')
@@ -62,6 +59,3 @@ class MultiTenancy(ComparingPopulationsHelper):
         print("TC_breadcrumbs: Validate the active links and current view in the breadcrumb trail")
         breadcrumb_list = ["North Carolina", "Sunset School District", "Sunset - Eastern Elementary", "Grade 03"]
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
-
-    def tearDown(self):
-        self.driver.quit()

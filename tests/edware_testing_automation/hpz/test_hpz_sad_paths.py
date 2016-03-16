@@ -1,6 +1,3 @@
-from edware_testing_automation.utils.preferences import preferences, HPZ
-from edware_testing_automation.utils.test_base import DOWNLOADS
-
 __author__ = 'smuhit'
 
 import os
@@ -11,6 +8,8 @@ from edware_testing_automation.frontend_tests.common_session_share_steps import 
 from edware_testing_automation.hpz.hpz_helper import HpzHelper
 from edware_testing_automation.utils.db_connector import DBConnection
 from edware_testing_automation.utils.db_utils import create_connection
+from edware_testing_automation.utils.preferences import preferences, HPZ
+from edware_testing_automation.utils.test_base import DOWNLOADS
 
 HPZ_UPLOAD_DIRECTORY = preferences(HPZ.uploads_directory) + '/'
 DOWNLOAD_DIRECTORY = DOWNLOADS + "/"
@@ -105,7 +104,6 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
         self.verify_file_location_not_in_db(reg_id)
 
     def test_download_file_not_registered(self):
-        self.driver = self.get_driver()
         self.set_headers_for_file_registration('jmacey')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
         self.check_response_code(200)
@@ -120,10 +118,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
 
         downloaded_file = DOWNLOAD_DIRECTORY + self.test_file_name
         self.assertFalse(os.path.isfile(downloaded_file))
-        self.driver.quit()
 
     def test_download_file_not_owner(self):
-        self.driver = self.get_driver()
         self.set_headers_for_file_registration('shall')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
         self.check_response_code(200)
@@ -135,10 +131,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
 
         downloaded_file = DOWNLOAD_DIRECTORY + self.test_file_name
         self.assertFalse(os.path.isfile(downloaded_file))
-        self.driver.quit()
 
     def test_download_file_still_processing(self):
-        self.driver = self.get_driver()
         self.set_headers_for_file_registration('jmacey')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
         self.check_response_code(200)
@@ -150,4 +144,3 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
 
         downloaded_file = DOWNLOAD_DIRECTORY + self.test_file_name
         self.assertFalse(os.path.isfile(downloaded_file))
-        self.driver.quit()

@@ -7,6 +7,7 @@ Created on Feb 5, 2013
 import time
 
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.utils.test_base import add_screen_to_report
 
 
 class ListOfStudents(LosHelper):
@@ -20,7 +21,6 @@ class ListOfStudents(LosHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         # login as a teacher
         self.enter_login_credentials("shall", "shall1234")
@@ -28,7 +28,7 @@ class ListOfStudents(LosHelper):
 
     def test_list_of_students(self):
         print(
-                "Comparing Populations: Daybreak Western Elementary - Grade 3 school view displaying the List of Students")
+            "Comparing Populations: Daybreak Western Elementary - Grade 3 school view displaying the List of Students")
         print("TC_drill_down_navigation: From state list to the list of students")
         # Click on 'Daybreak School District' link from list of states
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
@@ -181,8 +181,8 @@ class ListOfStudents(LosHelper):
         self.check_opportunity_selectors(["Summative", "Interim Comprehensive", "Interim Assessment Blocks"])
         self.select_opportunity_los('Interim Assessment Blocks')
         self.check_iab_column_headers(
-                ['Students', 'Algebra and Functions - Line...', 'Algebra and Functions - Poly...', 'Geometry - Circles',
-                 'Making Inferences and Justif...'])
+            ['Students', 'Algebra and Functions - Line...', 'Algebra and Functions - Poly...', 'Geometry - Circles',
+             'Making Inferences and Justif...'])
         self.check_current_subject_view("Mathematics")
         self.validate_interim_disclaimer()
         time.sleep(5)
@@ -203,12 +203,12 @@ class ListOfStudents(LosHelper):
         self.select_academic_year_los(6, "2015 - 2016")
         self.check_current_selected_opportunity('2015 - 2016 · Summative')
         self.total_los_records(3)
-        self.driver.save_screenshot('/tmp/test_iab_expand_columns.png')
+        add_screen_to_report('/tmp/test_iab_expand_columns.png')
         # self.check_opportunity_selectors(['2015.04.04 · Summative', '2015.01.06 · Interim Comprehensive', '2014.09.02 · Interim Comprehensive', '2014 - 2015 · Interim Assessment Blocks'])
         self.select_opportunity_los('Interim Assessment Blocks')
         self.check_iab_column_headers(
-                ['Students', 'Algebra and Functions - Line...', 'Algebra and Functions - Poly...', 'Geometry - Circles',
-                 'Making Inferences and Justif...'])
+            ['Students', 'Algebra and Functions - Line...', 'Algebra and Functions - Poly...', 'Geometry - Circles',
+             'Making Inferences and Justif...'])
         self.check_current_subject_view("Mathematics")
         self.validate_interim_disclaimer()
         # self.validate_iab_disclaimer("grade 11")
@@ -233,12 +233,3 @@ class ListOfStudents(LosHelper):
         actual_icon.click()
 
     ''' tearDown: Close webpage '''
-
-    def tearDown(self):
-        self.driver.quit()
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

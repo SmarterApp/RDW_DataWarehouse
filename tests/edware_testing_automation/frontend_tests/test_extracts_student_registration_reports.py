@@ -5,26 +5,22 @@
 import fnmatch
 import os
 import shutil
-import unittest
 from time import sleep
-
-from nose.plugins.attrib import attr
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.test_base import DOWNLOADS, UNZIPPED
 
 UNZIPPED_FILE_PATH = UNZIPPED + '/'
 DOWNLOAD_FILE_PATH = DOWNLOADS + '/'
 
 
-@unittest.skip
 class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_vt_tenant")
         if os.path.exists(UNZIPPED_FILE_PATH):
             shutil.rmtree(UNZIPPED_FILE_PATH)
@@ -35,7 +31,6 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
         self.files_to_cleanup_at_end = []
 
     def tearDown(self):
-        self.driver.quit()
         if os.path.exists(UNZIPPED_FILE_PATH):
             shutil.rmtree(UNZIPPED_FILE_PATH)
         if os.path.exists(DOWNLOAD_FILE_PATH):
@@ -44,7 +39,7 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
             if os.path.exists(file_to_delete):
                 os.remove(file_to_delete)
 
-    @attr('hpz')
+    # @attr('hpz')
     def test_student_registration_statistics_report(self):
         # Test the student registration statistics report
         self.enter_login_credentials("jmacey", "jmacey1234")
@@ -62,7 +57,7 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
         # Download the file from the provided url and unzip the extract
         url = self.get_download_url_student(80)
         sleep(3)
-        self.driver.get(url)
+        browser().get(url)
         sleep(10)
         for file in os.listdir(DOWNLOAD_FILE_PATH):
             if file.endswith(".zip"):
@@ -84,7 +79,7 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
                                      'expected_sr_stats_report.csv')
         self.validate_csv_files_match(expected_file, csv_file_path)
 
-    @attr('hpz')
+    # @attr('hpz')
     def test_student_assessment_completion_report(self):
         # Test the Student Assessment Completion report
         self.enter_login_credentials("jmacey", "jmacey1234")
@@ -102,7 +97,7 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
         url = self.get_download_url_student(80)
         sleep(3)
         print(url)
-        self.driver.get(url)
+        browser().get(url)
         sleep(20)
         for file in os.listdir(DOWNLOAD_FILE_PATH):
             if file.endswith(".zip"):
@@ -122,7 +117,7 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
         self.assertEqual(len(csv_filenames), 1, 'Unexpected number of csv files found')
         csv_file = csv_filenames[0]
         csv_file_path = os.path.join(UNZIPPED_FILE_PATH, csv_file)
-        self.validate_sr_completion_report_csv_headers(2012, csv_file_path)
+        self.validate_sr_completion_report_csv_headers(2016, csv_file_path)
         expected_file = os.path.join(os.path.dirname(__file__), '..', 'utils', 'resources',
                                      'expected_sr_completion_report.csv')
         self.validate_csv_files_match(expected_file, csv_file_path)

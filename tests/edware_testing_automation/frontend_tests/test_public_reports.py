@@ -1,11 +1,9 @@
-__author__ = 'vnatarajan'
-
 from edware_testing_automation.frontend_tests.public_report_helper import PublicReportHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class PublicReports(PublicReportHelper):
-    elements = {"Find": "id=SearchBoxTemplate"
-                }
+    elements = {"Find": "id=SearchBoxTemplate"}
 
     def __init__(self, *args, **kwargs):
         PublicReportHelper.__init__(self, *args, **kwargs)
@@ -13,15 +11,8 @@ class PublicReports(PublicReportHelper):
     ''' setUp: Open webpage '''
 
     def setUp(self):
-        self.driver = self.get_driver()
-        try:
-            self.open_requested_page_redirects_login_page("state_view_sds_public_report")
-            self.check_redirected_requested_page("state_view_sds_public_report")
-        except:
-            self.tearDown()
-
-    def tearDown(self):
-        self.driver.quit()
+        self.open_requested_page_redirects_login_page("state_view_sds_public_report")
+        self.check_redirected_requested_page("state_view_sds_public_report")
 
     def test_public_report_sunset_no_access_to_grade_view(self):
         self.check_breadcrumb_hierarchy_links(["North Carolina"])
@@ -40,4 +31,4 @@ class PublicReports(PublicReportHelper):
         self.check_pr_grade_acess("03")
 
     def _click_by_text(self, text):
-        self.driver.find_element_by_xpath("//a[contains(text(), '{text}')]".format(text=text)).click()
+        browser().find_element_by_xpath("//a[contains(text(), '{text}')]".format(text=text)).click()

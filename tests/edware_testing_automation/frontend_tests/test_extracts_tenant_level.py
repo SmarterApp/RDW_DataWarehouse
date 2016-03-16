@@ -7,17 +7,16 @@ import os
 import shutil
 import time
 
-from nose.plugins.attrib import attr
-
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.test_base import DOWNLOADS, UNZIPPED
 
 UNZIPPED_FILE_PATH = UNZIPPED + '/'
 DOWNLOAD_FILE_PATH = DOWNLOADS + '/'
 
 
-@attr('hpz')
+# @attr('hpz')
 class PickUpZoneExtract(ComparingPopulationsHelper, ExtractsHelper):
     '''
     Tests for Comparing Population report - State view that displays the 'List of Districts'
@@ -29,7 +28,6 @@ class PickUpZoneExtract(ComparingPopulationsHelper, ExtractsHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -43,7 +41,6 @@ class PickUpZoneExtract(ComparingPopulationsHelper, ExtractsHelper):
         self.files_to_cleanup_at_end = []
 
     def tearDown(self):
-        self.driver.quit()
         if os.path.exists(UNZIPPED_FILE_PATH):
             shutil.rmtree(UNZIPPED_FILE_PATH)
         if os.path.exists(DOWNLOAD_FILE_PATH):
@@ -60,7 +57,7 @@ class PickUpZoneExtract(ComparingPopulationsHelper, ExtractsHelper):
         # Validate the success message and get the download url
         url = self.get_download_url(300)
         time.sleep(3)
-        self.driver.get(url)
+        browser().get(url)
         time.sleep(15)
         if os.listdir(DOWNLOAD_FILE_PATH):
             for file in os.listdir(DOWNLOAD_FILE_PATH):

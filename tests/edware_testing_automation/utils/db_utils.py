@@ -42,8 +42,8 @@ def import_long_live_sessions(schema_name, datasource_name=''):
 
                 # Inserts to the table one row at a time
                 check_existing = connector.get_result(
-                        select([user_session.c.session_id], from_obj=[user_session]).where(
-                                user_session.c.session_id == new_row['session_id']))
+                    select([user_session.c.session_id], from_obj=[user_session]).where(
+                        user_session.c.session_id == new_row['session_id']))
                 if len(check_existing) == 0:
                     connector.execute(user_session.insert().values(**new_row))
                 else:

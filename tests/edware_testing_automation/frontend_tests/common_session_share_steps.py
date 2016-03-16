@@ -11,11 +11,11 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 
 from edware_testing_automation.frontend_tests.driver_helper import scroll_to_element
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.preferences import preferences, URL
-from edware_testing_automation.utils.test_base import EdTestBase, DOWNLOADS
+from edware_testing_automation.utils.test_base import EdTestBase, DOWNLOADS, add_screen_to_report, wait_for
 
 
 class SessionShareHelper(EdTestBase):
@@ -35,48 +35,38 @@ class SessionShareHelper(EdTestBase):
         public_report = False
 
         if requested_page == "list_of_students":
-            self.driver.get(self.get_url() + preferences(URL.list_of_students))
+            browser().get(self.get_url() + preferences(URL.list_of_students))
         elif requested_page == "individual_student_report":
-            self.driver.get(self.get_url() + preferences(URL.individual_student))
+            browser().get(self.get_url() + preferences(URL.individual_student))
         elif requested_page == 'state_view_sds':
-            self.driver.get(self.get_url() + preferences(URL.state_view_sds))
+            browser().get(self.get_url() + preferences(URL.state_view_sds))
         elif requested_page == 'state_view_ca_tenant':
-            self.driver.get(self.get_url() + preferences(URL.state_view_ca_tenant))
+            browser().get(self.get_url() + preferences(URL.state_view_ca_tenant))
         elif requested_page == 'state_view_vt_tenant':
-            self.driver.get(self.get_url() + preferences(URL.state_view_vt_tenant))
+            browser().get(self.get_url() + preferences(URL.state_view_vt_tenant))
         elif requested_page == "district_view":
-            self.driver.get(self.get_url() + preferences(URL.list_of_schools_sds))
+            browser().get(self.get_url() + preferences(URL.list_of_schools_sds))
         elif requested_page == "school_view":
-            self.driver.get(self.get_url() + preferences(URL.list_of_grades))
+            browser().get(self.get_url() + preferences(URL.list_of_grades))
         elif requested_page == "hpz download url":
-            self.driver.get(url)
+            browser().get(url)
         elif requested_page == "state_view_sds_public_report":
-            self.driver.get(self.get_url() + preferences(URL.state_view_sds_public_report))
+            browser().get(self.get_url() + preferences(URL.state_view_sds_public_report))
             public_report = True
-        try:
-            if not public_report:
-                WebDriverWait(self.driver, 25).until(
-                        expected_conditions.visibility_of_element_located((By.ID, "IDToken1")))
-            else:
-                WebDriverWait(self.driver, 25).until(
-                        expected_conditions.visibility_of_element_located((By.CLASS_NAME, "academicYearText")))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in re directing to the login page")
+        if not public_report:
+            wait_for(expected_conditions.visibility_of_element_located((By.ID, "IDToken1")))
+        else:
+            wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "academicYearText")))
 
     def open_landing_page_login_page(self):
         '''
         Opens the landing page from the utils.test_base.py and validates that it contains the login button. It clicks the Login button and validates that the login page opens up.
         '''
-        self.driver.get(self.get_url() + preferences(URL.landing_page))
-        contentLoginBtn = self.driver.find_element_by_xpath('//*[@id="content"]/div/div/button')
+        browser().get(self.get_url() + preferences(URL.landing_page))
+        contentLoginBtn = browser().find_element_by_xpath('//*[@id="content"]/div/div/button')
         self.assertIsNotNone(contentLoginBtn, "Content body should contain a login button")
         contentLoginBtn.click()
-        try:
-            WebDriverWait(self.driver, 25).until(expected_conditions.visibility_of_element_located((By.ID, "IDToken1")))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in re directing to the login page")
+        wait_for(expected_conditions.visibility_of_element_located((By.ID, "IDToken1")))
 
     def enter_login_credentials(self, username, password):
         '''
@@ -86,7 +76,7 @@ class SessionShareHelper(EdTestBase):
         :param password: Password
         :type password: string
         '''
-        login_page = self.driver.find_element_by_class_name("box-content")
+        login_page = browser().find_element_by_class_name("box-content")
         login_page.find_element_by_id("IDToken1").send_keys(username)
         login_page.find_element_by_id("IDToken2").send_keys(password)
         login_page.find_element_by_name("Login.Submit").click()
@@ -94,12 +84,12 @@ class SessionShareHelper(EdTestBase):
         # Maybe add a flag somewhere and only expect an alert if we're moving from http to https
         # For now, just lower implicity wait to 1s then switch it back to 10
         try:
-            self.driver.implicitly_wait(1)
-            alert = self.driver.switch_to_alert()
+            browser().implicitly_wait(1)
+            alert = browser().switch_to_alert()
             alert.accept()
         except:
             print("No security alert found.")
-        self.driver.implicitly_wait(10)
+        browser().implicitly_wait(10)
 
     def check_redirected_requested_page(self, requested_page):
         '''
@@ -117,12 +107,8 @@ class SessionShareHelper(EdTestBase):
             verify_element_present = "academicYearText"
         else:
             verify_element_present = "ui-jqgrid-view"
-        try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, verify_element_present)))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in redirecting back to the requested page after login.")
+
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, verify_element_present)))
 
     def drill_down_navigation(self, link_id, class_name_reloaded_view):
         '''
@@ -132,15 +118,11 @@ class SessionShareHelper(EdTestBase):
         :param class_name_reloaded_view: Class name unique to the report to verify successful page load
         :type class_name_reloaded_view: string
         '''
-        try:
-            link_func = lambda driver: driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(link_id)
-            link_obj = WebDriverWait(self.driver, 25).until(link_func)
-            link = WebDriverWait(self.driver, 25).until(lambda d: link_obj.find_element_by_tag_name("a"))
-            scroll_to_element(self.driver, link).click()
-            WebDriverWait(self.driver, 25).until(lambda d: d.find_element_by_class_name(class_name_reloaded_view))
-        except Exception as e:
-            self.driver.save_screenshot('/tmp/drill_screenshot.png')
-            raise e
+        link_func = lambda driver: driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(link_id)
+        link_obj = wait_for(link_func)
+        link = wait_for(lambda d: link_obj.find_element_by_tag_name("a"))
+        scroll_to_element(browser(), link).click()
+        wait_for(lambda d: d.find_element_by_class_name(class_name_reloaded_view))
 
     def check_headers(self, header1, header2):
         '''
@@ -150,8 +132,8 @@ class SessionShareHelper(EdTestBase):
         :param header2: Log Out link text
         :type header2: string
         '''
-        headers = self.driver.find_elements_by_class_name("topLinks")
-        assert self.driver.find_element_by_id("logo") is not None, "Logo not found"
+        headers = browser().find_elements_by_class_name("topLinks")
+        assert browser().find_element_by_id("logo") is not None, "Logo not found"
         for each in headers:
             assert each.find_element_by_class_name("user").text == header1, "User link not found in the header"
             print("Passed Scenario: Found 'User' link in the page header.")
@@ -164,7 +146,7 @@ class SessionShareHelper(EdTestBase):
         :param links:  list of all the breadcrumbs expected to appear on the page in the same order
         :type header1: list
         '''
-        breadcrumbs = self.driver.find_element_by_id("breadcrumb").find_elements_by_tag_name("a")
+        breadcrumbs = browser().find_element_by_id("breadcrumb").find_elements_by_tag_name("a")
         actual_links = []
         for breadcrumb in breadcrumbs:
             actual_links.append(str(breadcrumb.text))
@@ -179,7 +161,7 @@ class SessionShareHelper(EdTestBase):
         :param current_view:  Name of the State/District/School/Grade/Student currently viewed
         :type current_view: string
         '''
-        breadcrumbs = self.driver.find_elements_by_css_selector("#breadcrumb a")
+        breadcrumbs = browser().find_elements_by_css_selector("#breadcrumb a")
         trail_text = str(breadcrumbs[-1].text)
         self.assertIn(current_view, trail_text, "Current view not found in the breadcrumb trail")
 
@@ -189,7 +171,7 @@ class SessionShareHelper(EdTestBase):
         :param page_header: expected value of the page header
         :type page_header: string
         '''
-        actual_header = self.driver.find_element_by_id("infoBar").find_element_by_class_name("title").text
+        actual_header = browser().find_element_by_id("infoBar").find_element_by_class_name("title").text
         self.assertIn(page_header, str(actual_header)), "Page header incorrectly displayed"
 
     def get_rgba_equivalent(self, hex_color):
@@ -230,7 +212,7 @@ class SessionShareHelper(EdTestBase):
         :type expected_footers: dict
         '''
         for key in expected_footers.keys():
-            footer_content_text = self.driver.find_element_by_id("footer").find_element_by_id(key).text
+            footer_content_text = browser().find_element_by_id("footer").find_element_by_id(key).text
             self.assertEqual(expected_footers[key], str(footer_content_text)), "Footer content area not found"
 
     def check_help_popup(self):
@@ -241,12 +223,12 @@ class SessionShareHelper(EdTestBase):
         expected_tabs = ['FAQ', 'User Guide', 'Glossary', 'Resources']
         actual_tabs = []
         self.open_help_footer_popup_window()
-        popover = self.driver.find_element_by_id("HelpMenuModal")
+        popover = browser().find_element_by_id("HelpMenuModal")
         self.assertEqual(str(popover.find_element_by_class_name("helpText").text), "Help", "Help text title not found")
         # Check the Help pop up contents
         self.assertIn(
-                "If you require assistance, or have questions, comments, or concerns, please contact your state help desk.",
-                str(popover.find_element_by_class_name("modal-footer").text), "Help text not found.")
+            "If you require assistance, or have questions, comments, or concerns, please contact your state help desk.",
+            str(popover.find_element_by_class_name("modal-footer").text), "Help text not found.")
 
         help_tabs = popover.find_element_by_id("helpMenuTab").find_elements_by_tag_name("li")
         for each in help_tabs:
@@ -268,12 +250,12 @@ class SessionShareHelper(EdTestBase):
         expected_tabs = ['Preguntas frecuentes', 'Guía del usuario', 'Glosario', 'Recursos']
         actual_tabs = []
         self.open_help_footer_popup_window()
-        popover = self.driver.find_element_by_id("HelpMenuModal")
+        popover = browser().find_element_by_id("HelpMenuModal")
         self.assertEqual(popover.find_element_by_class_name("helpText").text, "Ayuda", "Help text title not found")
         # Check the Help pop up contents
         self.assertIn(
-                'Si requiere asistencia o tiene preguntas, comentarios o inquietudes, por favor contacte al servicio de asistencia de su estado.',
-                popover.find_element_by_class_name("modal-footer").text, "Help text not found.")
+            'Si requiere asistencia o tiene preguntas, comentarios o inquietudes, por favor contacte al servicio de asistencia de su estado.',
+            popover.find_element_by_class_name("modal-footer").text, "Help text not found.")
 
         help_tabs = popover.find_element_by_id("helpMenuTab").find_elements_by_tag_name("li")
         for each in help_tabs:
@@ -288,23 +270,23 @@ class SessionShareHelper(EdTestBase):
         print("Passed Scenario: Footer - Help")
 
     def check_user_guide(self, popup):
-        self.driver.find_element_by_link_text("User Guide").click()
+        browser().find_element_by_link_text("User Guide").click()
         user_guide = popup.find_element_by_id("userGuide")
         # expected_pdf_href = "/data/smarter_balanced_reporting_user_guide.pdf"
-        # actual_pdf_href = str(self.driver.find_element_by_link_text("Download the User Guide").get_attribute("href"))
+        # actual_pdf_href = str(browser().find_element_by_link_text("Download the User Guide").get_attribute("href"))
         # self.assertTrue(expected_pdf_href in actual_pdf_href)
 
         expected_headers = ['General User Guide', 'California User Guide']
         actual_headers = []
         user_guide_headers = user_guide.find_elements_by_class_name("userGuideHeader")
-        # user_guide_headers = self.driver.find_element_by_id("userGuide").find_element_by_class_name("userGuideHeader").text
+        # user_guide_headers = browser().find_element_by_id("userGuide").find_element_by_class_name("userGuideHeader").text
         for each in user_guide_headers:
             actual_headers.append(each.text)
         self.assertEqual(expected_headers, actual_headers, "User guid headers not found in the section")
         expected_general_href = u"http://www.smarterapp.org/specs/Reporting-UserGuide.html"
-        # actual_pdf_href = self.driver.find_element_by_link_text("Download the User Guide").get_attribute("href")
+        # actual_pdf_href = browser().find_element_by_link_text("Download the User Guide").get_attribute("href")
         actual_general_href = popup.find_element_by_link_text(
-                "www.smarterapp.org/specs/Reporting-UserGuide.html").get_attribute("href")
+            "www.smarterapp.org/specs/Reporting-UserGuide.html").get_attribute("href")
         self.assertTrue(expected_general_href in actual_general_href)
 
         expected_ca_href = u"http://caaspp.org"
@@ -317,19 +299,19 @@ class SessionShareHelper(EdTestBase):
         self.assertTrue('California educators should visit' in general_user_guide)
 
     def check_user_guide_sp(self, popup):
-        self.driver.find_element_by_link_text(u"Guía del usuario").click()
+        browser().find_element_by_link_text(u"Guía del usuario").click()
         user_guide = popup.find_element_by_id("userGuide")
         expected_headers = ['Guía para el usuario general', 'Guía para el usuario en California']
         actual_headers = []
         user_guide_headers = user_guide.find_elements_by_class_name("userGuideHeader")
-        # user_guide_headers = self.driver.find_element_by_id("userGuide").find_element_by_class_name("userGuideHeader").text
+        # user_guide_headers = browser().find_element_by_id("userGuide").find_element_by_class_name("userGuideHeader").text
         for each in user_guide_headers:
             actual_headers.append(each.text)
         self.assertEqual(expected_headers, actual_headers, "User guid headers not found in the section")
         expected_general_href = u"http://www.smarterapp.org/specs/Reporting-UserGuide.html"
-        # actual_pdf_href = self.driver.find_element_by_link_text("Download the User Guide").get_attribute("href")
+        # actual_pdf_href = browser().find_element_by_link_text("Download the User Guide").get_attribute("href")
         actual_general_href = popup.find_element_by_link_text(
-                "www.smarterapp.org/specs/Reporting-UserGuide.html").get_attribute("href")
+            "www.smarterapp.org/specs/Reporting-UserGuide.html").get_attribute("href")
         self.assertTrue(expected_general_href in actual_general_href)
 
         expected_ca_href = u"http://caaspp.org"
@@ -340,11 +322,11 @@ class SessionShareHelper(EdTestBase):
         general_user_guide = user_guide_section.text
         self.assertTrue('Los educadores del estado de California deben visitar ' in general_user_guide)
         self.assertTrue(
-                ' para tener acceso a la guía del usuario, exclusiva para California, del Sistema de Reportes de Evaluaciones Provisionales.' in general_user_guide)
+            ' para tener acceso a la guía del usuario, exclusiva para California, del Sistema de Reportes de Evaluaciones Provisionales.' in general_user_guide)
 
     def check_glossary(self):
-        self.driver.find_element_by_link_text("Glossary").click()
-        glossary = self.driver.find_element_by_id("HelpMenuModal").find_element_by_id("glossary")
+        browser().find_element_by_link_text("Glossary").click()
+        glossary = browser().find_element_by_id("HelpMenuModal").find_element_by_id("glossary")
         alphabetlist = glossary.find_element_by_class_name("alphabetList")
         content = glossary.find_element_by_class_name("glossaryContent")
         self.assertEqual(27, len(alphabetlist.find_elements_by_tag_name("ul")), "Glossary index incorrectly displayed.")
@@ -362,8 +344,8 @@ class SessionShareHelper(EdTestBase):
                          "14 Back to Top links not found in content.")
 
     def check_glossary_sp(self):
-        self.driver.find_element_by_link_text("Glosario").click()
-        glossary = self.driver.find_element_by_id("HelpMenuModal").find_element_by_id("glossary")
+        browser().find_element_by_link_text("Glosario").click()
+        glossary = browser().find_element_by_id("HelpMenuModal").find_element_by_id("glossary")
         alphabetlist = glossary.find_element_by_class_name("alphabetList")
         content = glossary.find_element_by_class_name("glossaryContent")
         self.assertEqual(27, len(alphabetlist.find_elements_by_tag_name("ul")), "Glossary index incorrectly displayed.")
@@ -466,8 +448,8 @@ class SessionShareHelper(EdTestBase):
         self.assertEqual(u"¿Quién tiene acceso a los datos de nivel escolar?", for_educators_qs[0].text,
                          "For educator question 1 not found")
         self.assertEqual(
-                u"¿Cómo puedo tener acceso al sistema de reportes para ver las calificaciones de mis estudiantes?",
-                for_educators_qs[1].text, "For educator question 2 not found")
+            u"¿Cómo puedo tener acceso al sistema de reportes para ver las calificaciones de mis estudiantes?",
+            for_educators_qs[1].text, "For educator question 2 not found")
         self.assertEqual(u"¿Dónde puedo encontrar recursos que me ayuden a comprender el uso del sistema de reportes?",
                          for_educators_qs[2].text, "For educator question 3 not found")
         self.assertEqual(u"¿Qué me dirán los reportes acerca del desempeño de mi escuela o mi distrito?",
@@ -497,42 +479,41 @@ class SessionShareHelper(EdTestBase):
         '''
         Click on the resources tab from the help popover and validate the contents
         '''
-        self.driver.find_element_by_link_text("Resources").click()
-        assert self.driver.find_element_by_link_text("Score Report Modules").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=60411"
-        assert self.driver.find_element_by_link_text("ELA/Literacy Instructional Modules").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=20"
-        assert self.driver.find_element_by_link_text("ELA/Literacy Instructional Modules").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=157"
-        assert self.driver.find_element_by_link_text("Assessment Literacy Modules").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19"
+        browser().find_element_by_link_text("Resources").click()
+        assert browser().find_element_by_link_text("Score Report Modules").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=60411"
+        assert browser().find_element_by_link_text("ELA/Literacy Instructional Modules").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=20"
+        assert browser().find_element_by_link_text("ELA/Literacy Instructional Modules").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=157"
+        assert browser().find_element_by_link_text("Assessment Literacy Modules").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19"
 
     def check_resource_sp(self):
         '''
         Click on the resources tab from the help popover and validate the contents
         '''
-        self.driver.find_element_by_link_text("Recursos").click()
-        self.assertEqual(self.driver.find_element_by_class_name('header').text,
+        browser().find_element_by_link_text("Recursos").click()
+        self.assertEqual(browser().find_element_by_class_name('header').text,
                          'Actualmente, se están desarrollando recursos para educadores en la Biblioteca Digital. Los tópicos de esos recursos incluyen:',
                          "Displayed text is not correct")
-        assert self.driver.find_element_by_link_text("Módulos de reportes de puntuaciones").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=60411"
-        assert self.driver.find_element_by_link_text("ELA/Módulos de instrucción de alfabetización").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=20"
-        assert self.driver.find_element_by_link_text("Módulos de instrucción de matemáticas").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=157"
-        assert self.driver.find_element_by_link_text("Módulos de evaluación de alfabetización").get_attribute(
-                "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19"
+        assert browser().find_element_by_link_text("Módulos de reportes de puntuaciones").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=60411"
+        assert browser().find_element_by_link_text("ELA/Módulos de instrucción de alfabetización").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=20"
+        assert browser().find_element_by_link_text("Módulos de instrucción de matemáticas").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=157"
+        assert browser().find_element_by_link_text("Módulos de evaluación de alfabetización").get_attribute(
+            "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19"
 
     def open_help_footer_popup_window(self):
         '''
         Click on the footer button and validate that the pop up window opens and the correct popup header is displayed
         '''
-        # assert self.driver.find_element_by_id("header").find_element_by_class_name("nav navbar-nav").find_element_by_id("help"), "Help Button not found in the footer"
-        self.driver.find_element_by_id("help").click()
+        # assert browser().find_element_by_id("header").find_element_by_class_name("nav navbar-nav").find_element_by_id("help"), "Help Button not found in the footer"
+        browser().find_element_by_id("help").click()
         try:
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_element_located((By.ID, "HelpMenuModal")))
+            wait_for(expected_conditions.visibility_of_element_located((By.ID, "HelpMenuModal")))
         except:
             print("Timeout in opening the Help pop up window")
 
@@ -540,18 +521,16 @@ class SessionShareHelper(EdTestBase):
         '''
         Click on the hide button and validate that the pop up window closes
         '''
-        WebDriverWait(self.driver, 10).until(
-                expected_conditions.visibility_of_element_located((By.ID, "HelpMenuModal")))
+        wait_for(expected_conditions.visibility_of_element_located((By.ID, "HelpMenuModal")))
 
-        assert self.driver.find_element_by_id("HelpMenuModal").find_element_by_class_name(
-                "close").is_displayed(), "Hide button not available on pop up window."
-        # self.driver.set_window_size(1024, 768)
-        self.driver.find_element_by_id("HelpMenuModal").find_element_by_class_name("close").click()
+        assert browser().find_element_by_id("HelpMenuModal").find_element_by_class_name(
+            "close").is_displayed(), "Hide button not available on pop up window."
+        # browser().set_window_size(1024, 768)
+        browser().find_element_by_id("HelpMenuModal").find_element_by_class_name("close").click()
         # Set it to 1s so that find_element will not wait for 10s to find that the popover is gone
-        self.driver.implicitly_wait(1)
+        browser().implicitly_wait(1)
         try:
-            WebDriverWait(self.driver, 5).until(
-                    expected_conditions.invisibility_of_element_located((By.ID, "HelpMenuModal")))
+            wait_for(expected_conditions.invisibility_of_element_located((By.ID, "HelpMenuModal")))
         except:
             raise AssertionError("Unable to close Help pop-up")
 
@@ -559,14 +538,10 @@ class SessionShareHelper(EdTestBase):
         '''
         Validate that the custom error page is displayed and valid custom error text appears on the page.
         '''
-        try:
-            WebDriverWait(self.driver, 20).until(lambda driver: driver.find_element_by_partial_link_text("link"))
-            self.assertEqual("You've reached this page in error. Please follow this link to re-enter the site.",
-                             str(self.driver.find_element_by_id("content").text)), "Incorrect Error Message Found"
-            print("Valid Error Page found.")
-        except:
-            self.driver.save_screenshot('/tmp/error_page_screenshot.png')
-            self.assertTrue(False, "Failed to redirect to the Error page.")
+        wait_for(lambda driver: driver.find_element_by_partial_link_text("link"))
+        self.assertEqual("You've reached this page in error. Please follow this link to re-enter the site.",
+                         str(browser().find_element_by_id("content").text)), "Incorrect Error Message Found"
+        print("Valid Error Page found.")
 
     def check_los_legend_section(self, popover):
         # Validate the legend header
@@ -640,8 +615,8 @@ class SessionShareHelper(EdTestBase):
             each_row_column_values = each.find_elements_by_tag_name("td")
             each_row = []
             each_row.append(str(
-                    each_row_column_values[0].find_element_by_class_name("edware-icon-ALD-color").value_of_css_property(
-                            "background-color")))
+                each_row_column_values[0].find_element_by_class_name("edware-icon-ALD-color").value_of_css_property(
+                    "background-color")))
             each_row.append(str(each_row_column_values[1].text))
             each_row.append(str(each_row_column_values[2].text))
             actual_ald_rows.append(each_row)
@@ -666,8 +641,8 @@ class SessionShareHelper(EdTestBase):
         ;param selected_asmt_type: Assessment type selection: 'Summative' or 'Interim Comprehensive'
         :type selected_asmt_type: string
          '''
-        self.assertIn(selected_asmt_type, self.driver.find_element_by_class_name("asmtDropdown").find_element_by_id(
-                "selectedAsmtType").text), "Incorrect assessment type selected"
+        self.assertIn(selected_asmt_type, browser().find_element_by_class_name("asmtDropdown").find_element_by_id(
+            "selectedAsmtType").text), "Incorrect assessment type selected"
 
     def check_selected_asmt_type_los(self, selected_asmt_type):
         '''
@@ -675,21 +650,16 @@ class SessionShareHelper(EdTestBase):
         ;param selected_asmt_type: Assessment type selection: 'Math & ELA Summative' ; 'Math Summative'; 'ELA Summative'; 'Math & ELA Interim Comp.'; 'Math Interim Comp.'; 'ELA Interim Comp.'
         :type selected_asmt_type: string
          '''
-        self.assertIn(selected_asmt_type, self.driver.find_element_by_class_name("asmtDropdown").find_element_by_id(
-                "selectedAsmtType").text), "Incorrect assessment type selected"
+        self.assertIn(selected_asmt_type, browser().find_element_by_class_name("asmtDropdown").find_element_by_id(
+            "selectedAsmtType").text), "Incorrect assessment type selected"
 
     def check_no_data_msg(self):
         '''
         Checks the error message when no data is found.
          '''
-        try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.ID, "errorMessage")))
-            self.assertEqual(str(self.driver.find_element_by_id("content").find_element_by_id("errorMessage").text),
-                             "There is no data available for your request."), "Incorrect ''No Data' message displayed."
-        except:
-            self.driver.save_screenshot('/tmp/no_data_error_page_screenshot.png')
-            self.assertTrue(False, "Failed to redirect to the Error page.")
+        wait_for(expected_conditions.visibility_of_element_located((By.ID, "errorMessage")))
+        self.assertEqual(str(browser().find_element_by_id("content").find_element_by_id("errorMessage").text),
+                         "There is no data available for your request."), "Incorrect ''No Data' message displayed."
 
     def open_file_download_popup(self, heading='Download'):
         '''
@@ -697,9 +667,9 @@ class SessionShareHelper(EdTestBase):
         return export_popup: Export popup window webdriver element
         type export_popup: Webdriver Element
         '''
-        assert self.driver.find_element_by_id("infoBar").find_element_by_class_name(
-                "download"), "Download option not found in the Report info navigation bar"
-        self.driver.find_element_by_class_name("downloadIcon").click()
+        assert browser().find_element_by_id("infoBar").find_element_by_class_name(
+            "download"), "Download option not found in the Report info navigation bar"
+        browser().find_element_by_class_name("downloadIcon").click()
 
         def find_pop_up(driver):
             modal = driver.find_element_by_id("DownloadMenuModal")
@@ -708,11 +678,10 @@ class SessionShareHelper(EdTestBase):
             return None
 
         try:
-            pop_up = WebDriverWait(self.driver, 20) \
-                .until(find_pop_up, message="Clicking download icon should display backdrop")
+            pop_up = wait_for(find_pop_up, message="Clicking download icon should display backdrop")
             # time.sleep(10)
             self.assertIn(heading, str(
-                    pop_up.find_element_by_class_name("modal-header").find_element_by_id("myModalLabel").text),
+                pop_up.find_element_by_class_name("modal-header").find_element_by_id("myModalLabel").text),
                           "Export popup header not found")
             return pop_up
         except Exception as e:
@@ -724,13 +693,13 @@ class SessionShareHelper(EdTestBase):
         return export_popup: Export popup window webdriver element
         type export_popup: Webdriver Element
         '''
-        self.driver.find_element_by_class_name("downloadIcon").click()
+        browser().find_element_by_class_name("downloadIcon").click()
         time.sleep(5)
-        self.driver.switch_to_default_content()
-        self.driver.switch_to_active_element()
-        self.driver.find_element_by_xpath("//*[@id='extract']").click()
+        browser().switch_to_default_content()
+        browser().switch_to_active_element()
+        browser().find_element_by_xpath("//*[@id='extract']").click()
         time.sleep(5)
-        self.driver.find_element_by_xpath("//*[@id='exportButton']").click()
+        browser().find_element_by_xpath("//*[@id='exportButton']").click()
 
     def check_export_options(self, popover, expected_options):
         '''
@@ -787,17 +756,15 @@ class SessionShareHelper(EdTestBase):
         elif export_selection == 'District-level reports & extracts':
             class_name = 'csv'
         selection = popup.find_element_by_id('DownloadMenuModal').find_element_by_class_name(
-                class_name).find_element_by_tag_name("input")
+            class_name).find_element_by_tag_name("input")
         if not (selection.is_selected()):
             selection.click()
         popup.find_element_by_id('DownloadMenuModal').find_element_by_class_name(
-                "modal-footer").find_element_by_tag_name("button").click()
+            "modal-footer").find_element_by_tag_name("button").click()
         if export_selection == "State-level reports & extracts'":
             try:
-                WebDriverWait(self.driver, 10).until(
-                        lambda driver: driver.find_element_by_class_name("CSVDownloadContainer").find_element_by_id(
-                                "CSVModal"))
-            # csv_options = self.driver.find_element_by_class_name("CSVDownloadContainer").find_element_by_id("CSVModal").find_element_by_class_name("csv_options_table").find_elements_by_tag_name("tr")
+                wait_for(lambda d: d.find_element_by_class_name("CSVDownloadContainer").find_element_by_id("CSVModal"))
+            # csv_options = browser().find_element_by_class_name("CSVDownloadContainer").find_element_by_id("CSVModal").find_element_by_class_name("csv_options_table").find_elements_by_tag_name("tr")
             #                asmt_type_selectors = csv_options[2].find_element_by_id("asmtType").find_elements_by_tag_name("li")
             #                asmt_type_selectors[1].find_element_by_tag_name("input").click()
             #                subject_selectors = csv_options[3].find_elements_by_tag_name("li")
@@ -838,18 +805,17 @@ class SessionShareHelper(EdTestBase):
         return legend_popup: Legend popup window webdriver element
         type legend_popup: Webdriver Element
         '''
-        assert self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "legendItem"), "Legend option not found in the Action navigation bar"
+        assert browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "legendItem"), "Legend option not found in the Action navigation bar"
         self.assertEqual("Legend", str(
-                self.driver.find_element_by_id("actionBar").find_element_by_class_name("legendLabel").text),
+            browser().find_element_by_id("actionBar").find_element_by_class_name("legendLabel").text),
                          "Legend label not displayed.")
-        self.driver.find_element_by_id("actionBar").find_element_by_class_name("legendItem").click()
+        browser().find_element_by_id("actionBar").find_element_by_class_name("legendItem").click()
         try:
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "legendPopover")))
+            wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "legendPopover")))
         except:
             print("Timeout in opening the Legend pop up window")
-        return self.driver.find_element_by_class_name("legendPopover")
+        return browser().find_element_by_class_name("legendPopover")
 
     def open_legend_popup_language_sp(self):
         '''
@@ -857,18 +823,17 @@ class SessionShareHelper(EdTestBase):
         return legend_popup: Legend popup window webdriver element
         type legend_popup: Webdriver Element
         '''
-        assert self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "legendItem"), "Legend option not found in the Action navigation bar"
+        assert browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "legendItem"), "Legend option not found in the Action navigation bar"
         self.assertEqual("Leyenda", str(
-                self.driver.find_element_by_id("actionBar").find_element_by_class_name("legendLabel").text),
+            browser().find_element_by_id("actionBar").find_element_by_class_name("legendLabel").text),
                          "Legend label not displayed.")
-        self.driver.find_element_by_id("actionBar").find_element_by_class_name("legendItem").click()
+        browser().find_element_by_id("actionBar").find_element_by_class_name("legendItem").click()
         try:
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "legendPopover")))
+            wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "legendPopover")))
         except:
             print("Timeout in opening the Legend pop up window")
-        legend_popup = self.driver.find_element_by_class_name("legendPopover")
+        legend_popup = browser().find_element_by_class_name("legendPopover")
         return legend_popup
 
     def check_default_csv_file_download_options(self):
@@ -886,17 +851,17 @@ class SessionShareHelper(EdTestBase):
         EXPECTED_SUBJECT_OPTIONS = ["Math", "ELA"]
 
         # C SV File Download Options pop up window
-        csv_file_download_popup = self.driver.find_element_by_id("CSVModal")
+        csv_file_download_popup = browser().find_element_by_id("CSVModal")
         options_table = csv_file_download_popup.find_element_by_class_name(
-                "csv_options_table").find_elements_by_tag_name("tr")
+            "csv_options_table").find_elements_by_tag_name("tr")
 
         # Validate the headers
         self.assertEqual(CSV_HEADER, str(
-                csv_file_download_popup.find_element_by_class_name("modal-header").find_element_by_id(
-                    "myModalLabel").text),
+            csv_file_download_popup.find_element_by_class_name("modal-header").find_element_by_id(
+                "myModalLabel").text),
                          "CSV file download popup window header incorrectly displayed.")
         self.assertEqual(CSV_HEADER_TEXT, str(
-                csv_file_download_popup.find_element_by_class_name("modal-body").find_element_by_id("message").text),
+            csv_file_download_popup.find_element_by_class_name("modal-body").find_element_by_id("message").text),
                          "CSV file download popup text incorrectly displayed.")
 
         # Validate the CSV table options headers and options
@@ -938,7 +903,7 @@ class SessionShareHelper(EdTestBase):
         CSV_HEADER_TEXT = "Once requested your CSV will become available in 24 hours at your secured FTP site"
 
         # CSV File Download Options pop up window
-        csv_file_download_popup = self.driver.find_element_by_id("CSVModal")
+        csv_file_download_popup = browser().find_element_by_id("CSVModal")
 
         # Validate the headers
         self.assertEqual(CSV_HEADER, str(csv_file_download_popup.find_element_by_id("myModalLabel").text),
@@ -966,7 +931,7 @@ class SessionShareHelper(EdTestBase):
         CSV_HEADER_TEXT = "Once requested your CSV will become available in 24 hours at your secured FTP site"
 
         # CSV File Download Options pop up window
-        csv_file_download_popup = self.driver.find_element_by_id("CSVModal")
+        csv_file_download_popup = browser().find_element_by_id("CSVModal")
 
         # Validate the headers
         self.assertEqual(CSV_HEADER, str(csv_file_download_popup.find_element_by_id("myModalLabel").text),
@@ -993,10 +958,10 @@ class SessionShareHelper(EdTestBase):
             #        '''
             #        ## Request the files
             #        unexpected = "error" if expected == "success" else "success"
-            #        csv_file_download_popup = self.driver.find_element_by_id("CSVModal")
+            #        csv_file_download_popup = browser().find_element_by_id("CSVModal")
             #        csv_file_download_popup.find_element_by_class_name("modal-footer").find_element_by_tag_name("button").click()
             #        try:
-            #            WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element_by_class_name("CSVDownloadContainer").find_element_by_class_name("modal-body").find_element_by_class_name(expected))
+            #            wait_for(lambda driver: driver.find_element_by_class_name("CSVDownloadContainer").find_element_by_class_name("modal-body").find_element_by_class_name(expected))
             #            message = str(csv_file_download_popup.find_element_by_class_name("modal-body").find_element_by_class_name(expected).text)
             #            print message
             #            return message
@@ -1009,11 +974,11 @@ class SessionShareHelper(EdTestBase):
         Selects an option in the CSV File Download Popup
         :param expected_option: Option to select
         '''
-        csv_file_download_popup = self.driver.find_element_by_class_name("CSVDownloadContainer")
-        self.assertEqual("State Downloads", str(self.driver.find_element_by_id("myModalLabel").text),
+        csv_file_download_popup = browser().find_element_by_class_name("CSVDownloadContainer")
+        self.assertEqual("State Downloads", str(browser().find_element_by_id("myModalLabel").text),
                          "State Downloads popup header not found")
-        export_type_section = self.driver.find_element_by_class_name("modal-body").find_element_by_class_name(
-                "extractType")
+        export_type_section = browser().find_element_by_class_name("modal-body").find_element_by_class_name(
+            "extractType")
         export_label = str(export_type_section.find_element_by_tag_name("label").find_element_by_tag_name("h4").text)
         self.assertEqual("Report / export type", export_label,
                          "Report / export type section header not found in the State Dw")
@@ -1064,8 +1029,8 @@ class SessionShareHelper(EdTestBase):
 
     def close_download_container_popup(self):
         container = lambda driver: driver.find_element_by_class_name("CSVDownloadContainer")
-        container(self.driver).find_element_by_id("StateDownloadModal").find_element_by_css_selector(".close").click()
-        WebDriverWait(self.driver, 25).until(lambda d: container(d).is_displayed())
+        container(browser()).find_element_by_id("StateDownloadModal").find_element_by_css_selector(".close").click()
+        wait_for(lambda d: container(d).is_displayed())
         time.sleep(1)
 
     def check_default_academic_year(self, expected_value):
@@ -1074,8 +1039,8 @@ class SessionShareHelper(EdTestBase):
         :param expected_value: Expected default value of Academic year
         :type expected_value: String
         '''
-        actual_value = self.driver.find_element_by_id("academicYearAnchor").find_element_by_id(
-                "selectedAcademicYear").text
+        actual_value = browser().find_element_by_id("academicYearAnchor").find_element_by_id(
+            "selectedAcademicYear").text
         time.sleep(10)
         self.assertEqual(expected_value, str(actual_value),
                          "Default value in academic year field incorrectly displayed.")
@@ -1086,13 +1051,13 @@ class SessionShareHelper(EdTestBase):
         :param selection: Selection of Academic year from the dropdown field.
         :type selection: String
         '''
-        self.driver.find_element_by_id("academicYearAnchor").find_element_by_class_name(
-                "dropdown-toggle").find_element_by_class_name("edware-icon-globalheader-downarrow").click()
-        # self.driver.find_element_by_id("selectedAsmtType").click()
+        browser().find_element_by_id("academicYearAnchor").find_element_by_class_name(
+            "dropdown-toggle").find_element_by_class_name("edware-icon-globalheader-downarrow").click()
+        # browser().find_element_by_id("selectedAsmtType").click()
 
         # Validate all the academic year options displayed in the dropdown field.
-        # all_options = self.driver.find_element_by_class_name("asmtDropdown").find_elements_by_tag_name('li')
-        all_options = self.driver.find_element_by_class_name("edware-dropdown-menu").find_elements_by_tag_name('li')
+        # all_options = browser().find_element_by_class_name("asmtDropdown").find_elements_by_tag_name('li')
+        all_options = browser().find_element_by_class_name("edware-dropdown-menu").find_elements_by_tag_name('li')
         all_academic_years = []
         for each in all_options:
             all_academic_years.append(str(each.text))
@@ -1119,23 +1084,17 @@ class SessionShareHelper(EdTestBase):
             for each in all_options:
                 if each.text == "2014 - 2015":
                     each.click()
-                    time.sleep(30)
-                    try:
-                        WebDriverWait(self.driver, 25).until(
-                                expected_conditions.visibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
-                        # message = str(self.driver.find_element_by_class_name("reminderMessage").get_attribute("style"))
-                        message = str(self.driver.find_element_by_class_name("reminderMessage").text).strip("")
-                        reminder_text = "You are viewing a previous academic year. Return to 2015 - 2016."
-                        self.assertEqual("", str(
-                                self.driver.find_element_by_class_name("reminderMessage").get_attribute("style")),
-                                         "Previous academic year reminder not displayed.")
-                        self.assertIn(reminder_text,
-                                      str(self.driver.find_element_by_class_name("reminderMessage").text),
-                                      "Reminder text incorrectly displayed.")
-                        print("Switched to academic year 2015")
-                    except:
-                        self.driver.save_screenshot('/tmp/academic_yr_screenshot.png')
-                        self.assertTrue(False, "Error in loading the grid after changing academic year selector.")
+                    wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
+                    # message = str(browser().find_element_by_class_name("reminderMessage").get_attribute("style"))
+                    message = str(browser().find_element_by_class_name("reminderMessage").text).strip("")
+                    reminder_text = "You are viewing a previous academic year. Return to 2015 - 2016."
+                    self.assertEqual("", str(
+                        browser().find_element_by_class_name("reminderMessage").get_attribute("style")),
+                                     "Previous academic year reminder not displayed.")
+                    self.assertIn(reminder_text,
+                                  str(browser().find_element_by_class_name("reminderMessage").text),
+                                  "Reminder text incorrectly displayed.")
+                    print("Switched to academic year 2015")
 
                     break
         else:
@@ -1147,10 +1106,10 @@ class SessionShareHelper(EdTestBase):
         :param selection: Selection of the exam.
         :type selection: String
         '''
-        self.driver.find_element_by_id("selectedAsmtType").click()
+        browser().find_element_by_id("selectedAsmtType").click()
 
         # Validate all the academic year options displayed in the dropdown field.
-        all_options = self.driver.find_element_by_class_name("asmtDropdown").find_elements_by_tag_name('li')
+        all_options = browser().find_element_by_class_name("asmtDropdown").find_elements_by_tag_name('li')
 
         for each in all_options:
             if each.text == selection:
@@ -1158,25 +1117,24 @@ class SessionShareHelper(EdTestBase):
                 break
 
     def overall_row_no_data(self, title, math_text, ela_text):
-        overall_summary_sections = self.driver.find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name(
-                "td")
+        overall_summary_sections = browser().find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name(
+            "td")
         self.assertIn(title, str(overall_summary_sections[0].text)), "Incorrect Overall Summary Title."
         self.assertIn(math_text, str(overall_summary_sections[1].text)), "Incorrect Math overall title"
         self.assertIn(ela_text, str(overall_summary_sections[3].text)), "Incorrect ELA overall title"
 
     def check_no_pii_message(self, grade_id):
-        WebDriverWait(self.driver, 20).until(
-                lambda driver: driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(grade_id))
-        self.driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(grade_id).find_element_by_tag_name(
-                "a").click()
+        wait_for(lambda driver: driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(grade_id))
+        browser().find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(grade_id).find_element_by_tag_name(
+            "a").click()
         # Find the context security tooltip
-        popover = self.driver.find_element_by_class_name("no_pii_msg")
+        popover = browser().find_element_by_class_name("no_pii_msg")
         self.assertIsNotNone(popover.find_element_by_class_name("edware-icon-warning"))
         self.assertEqual(str(popover.text), "You do not have permission to view these students.",
                          "Context security PII restricted access message not displayed.")
 
     def check_pr_grade_acess(self, grade_id):
-        popover = self.driver.find_element_by_class_name("disabled")
+        popover = browser().find_element_by_class_name("disabled")
         self.assertEqual(str(popover.text), "Grade {g}".format(g=grade_id))
 
     def check_sar_extract_options(self, expected_asmt_types):
@@ -1187,10 +1145,10 @@ class SessionShareHelper(EdTestBase):
         '''
         # CSV File Download Options pop up window
         #        state_download_popup = self.get_state_downloads()
-        state_download_popup = self.driver.find_element_by_class_name("CSVDownloadContainer").find_element_by_id(
-                "StateDownloadModal")
+        state_download_popup = browser().find_element_by_class_name("CSVDownloadContainer").find_element_by_id(
+            "StateDownloadModal")
         export_type_sections = state_download_popup.find_element_by_class_name("modal-body").find_element_by_class_name(
-                "extractType").find_element_by_tag_name("ul").find_elements_by_tag_name("li")
+            "extractType").find_element_by_tag_name("ul").find_elements_by_tag_name("li")
         EXPORT_TYPE_INDEX_DICT = {'Student Registration Statistics': 0, 'Assessment Completion Statistics': 1,
                                   'Audit XML': 2, 'Individual Item Response Data': 3}
         for each in expected_asmt_types:
@@ -1199,7 +1157,7 @@ class SessionShareHelper(EdTestBase):
         self.close_download_container_popup()
 
     def select_state_from_map(self, attribute_rect_x, state_name):
-        all_states = self.driver.find_element_by_id("map").find_elements_by_tag_name("rect")
+        all_states = browser().find_element_by_id("map").find_elements_by_tag_name("rect")
         found = False
         for each in all_states:
             if each.get_attribute("x") == attribute_rect_x:
@@ -1318,13 +1276,13 @@ class SessionShareHelper(EdTestBase):
         '''
         Validates the Comprehensive Interim disclaimer popover content.
         '''
-        element_to_click = self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "interimDisclaimerIcon")
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        element_to_click = browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "interimDisclaimerIcon")
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
 
-        popover_content = self.driver.find_element_by_id("disclaimerPopover").find_element_by_class_name(
-                "popover-content")
+        popover_content = browser().find_element_by_id("disclaimerPopover").find_element_by_class_name(
+            "popover-content")
         # Validate the header
         interim_disclaimer_header = popover_content.find_element_by_tag_name("u")
         self.assertEqual("Important Information about Interim Assessments", str(interim_disclaimer_header.text),
@@ -1346,7 +1304,7 @@ class SessionShareHelper(EdTestBase):
 
         state_download_popup = self.get_state_downloads()
         academic_yr_section = state_download_popup.find_element_by_class_name("modal-body").find_element_by_class_name(
-                ACADEMIC_YR_EXPORT_TYPE[type])
+            ACADEMIC_YR_EXPORT_TYPE[type])
         # Click on the academic year drop down field
         menu = academic_yr_section.find_element_by_class_name("btn-extract-academic-year")
         menu.click()
@@ -1363,7 +1321,7 @@ class SessionShareHelper(EdTestBase):
     def select_state_downloads_options(self, expected_enabled_options, selection):
         state_download_popup = self.get_state_downloads()
         export_type_sections = state_download_popup.find_element_by_class_name("modal-body").find_element_by_class_name(
-                "extractType").find_element_by_tag_name("ul").find_elements_by_tag_name("li")
+            "extractType").find_element_by_tag_name("ul").find_elements_by_tag_name("li")
         EXPORT_TYPE_INDEX_DICT = {'Student Registration Statistics': 0, 'Assessment Completion Statistics': 1,
                                   'Audit XML': 2, 'Individual Item Response Data': 3}
         for each in expected_enabled_options:
@@ -1375,7 +1333,7 @@ class SessionShareHelper(EdTestBase):
         state_download_popup = self.get_state_downloads()
         # Academic year selection
         academic_yr_section = state_download_popup.find_element_by_class_name("modal-body").find_element_by_class_name(
-                'SAC')
+            'SAC')
         academic_yr_section.find_element_by_class_name("btn-extract-academic-year").click()
         elements = academic_yr_section.find_element_by_class_name("asmtYearOptions").find_elements_by_tag_name("li")
         display_yr = self.get_year_display(int(year))
@@ -1388,7 +1346,7 @@ class SessionShareHelper(EdTestBase):
 
         # Grade selection
         grade_section = state_download_popup.find_element_by_class_name("modal-body").find_element_by_css_selector(
-                ".btn-group[data-option-name='Grade']")
+            ".btn-group[data-option-name='Grade']")
         grade_section.find_element_by_class_name('dropdown-toggle').click()
         grade_options = grade_section.find_element_by_class_name('dropdown-men').find_elements_by_tag_name('li')
         found = False
@@ -1400,7 +1358,7 @@ class SessionShareHelper(EdTestBase):
 
         # Subject selection
         rawXML_classes = state_download_popup.find_element_by_class_name("modal-body").find_elements_by_class_name(
-                'rawXML')
+            'rawXML')
         subject_section = rawXML_classes[1]
         all_subjects = subject_section.find_elements_by_tag_name("input")
         if subject == "Mathematics":
@@ -1425,11 +1383,11 @@ class SessionShareHelper(EdTestBase):
         return state_download_popup: Returns the State Downloads popup window
         type state_download_popup: Webdriver Element
         '''
-        state_download_popup = self.driver.find_element_by_class_name("CSVDownloadContainer")
+        state_download_popup = browser().find_element_by_class_name("CSVDownloadContainer")
         self.assertEqual("State Downloads", str(state_download_popup.find_element_by_id("myModalLabel").text),
                          "State Downloads popup header not found")
         export_type_section = state_download_popup.find_element_by_class_name("modal-body").find_element_by_class_name(
-                "extractType")
+            "extractType")
         export_label = str(export_type_section.find_element_by_tag_name("label").find_element_by_tag_name("h4").text)
         self.assertEqual("Report / export type", export_label,
                          "Report / export type section header not found in the State Downloads popup.")
@@ -1447,7 +1405,7 @@ class SessionShareHelper(EdTestBase):
         state_download_popup = self.get_state_downloads()
         state_download_popup.find_element_by_class_name("modal-footer").find_element_by_tag_name("button").click()
         url = self.get_download_url(100)
-        self.driver.save_screenshot('/tmp/completion3.png')
+        add_screen_to_report('/tmp/completion3.png')
         return url
 
     def get_download_url_student(self, timeout):
@@ -1459,13 +1417,12 @@ class SessionShareHelper(EdTestBase):
         state_download_popup = self.get_state_downloads()
         state_download_popup.find_element_by_class_name("modal-footer").find_element_by_tag_name("button").click()
         try:
-            WebDriverWait(self.driver, timeout).until(
-                    lambda driver: driver.find_element_by_id("DownloadResponseContainer").find_element_by_id(
-                            "DownloadSuccessModal"))
+            wait_for(lambda driver: driver.find_element_by_id("DownloadResponseContainer").find_element_by_id(
+                "DownloadSuccessModal"))
         except:
             self.assertTrue(False, "Error in sending request to the server")
-        download_popup = self.driver.find_element_by_id("DownloadResponseContainer").find_element_by_id(
-                "DownloadSuccessModal")
+        download_popup = browser().find_element_by_id("DownloadResponseContainer").find_element_by_id(
+            "DownloadSuccessModal")
         #        self.assertIn("Your requested reports will be available within 24 hours.", str(download_popup.text), "Successful download request sent message not found.")
         time.sleep(25)
         url = str(download_popup.find_element_by_class_name("modal-body").find_element_by_tag_name("a").text)
@@ -1486,7 +1443,7 @@ class SessionShareHelper(EdTestBase):
             return None
 
         try:
-            download_popup = WebDriverWait(self.driver, timeout).until(find_pop_up)
+            download_popup = wait_for(find_pop_up)
             self.assertIn(u"Your requested reports will be available within 24 hours.", download_popup.text,
                           "Successful download request sent message not found.")
 
@@ -1495,7 +1452,7 @@ class SessionShareHelper(EdTestBase):
             self.assertTrue(False, "Error in sending request to the server: {error}".format(error=error))
 
     def language_selector(self, lang1, lang2, lang3):
-        lang_setting = self.driver.find_element_by_class_name("action").find_element_by_class_name("languageDropdown")
+        lang_setting = browser().find_element_by_class_name("action").find_element_by_class_name("languageDropdown")
         self.assertIsNotNone(lang_setting, "Header should contain a Language selector menu link")
         lang_setting.find_element_by_id("user-settings").click()
 
@@ -1503,22 +1460,22 @@ class SessionShareHelper(EdTestBase):
         #        self.assertTrue(langMenuModal.is_displayed(), "Clicking language menu link should display language selection menu options")
 
         lang_options = langMenuModal.find_element_by_class_name("language_selections_body").find_elements_by_tag_name(
-                "li")
+            "li")
         self.assertEqual(lang1, (lang_options[0].text), "English not found in the language selector")
         self.assertEqual(lang2, (lang_options[1].text), "Spanish not found in the language selector")
         self.assertEqual(lang3, (lang_options[2].text), "Vietnamese not found in the language selector")
 
     def check_tenant_logo(self, image_path):
-        img_element = self.driver.find_element_by_id("logo").find_element_by_tag_name("img")
+        img_element = browser().find_element_by_id("logo").find_element_by_tag_name("img")
         self.assertIn(image_path, img_element.get_attribute("src"))
 
     def check_tenant_label(self, label):
-        self.assertEqual(label, self.driver.find_element_by_class_name("tenantLabel").text)
+        self.assertEqual(label, browser().find_element_by_class_name("tenantLabel").text)
 
     def check_current_subject_view(self, selected_view):
         '''
         Validates the subject view selected.
         '''
         los_current_view = str(
-                self.driver.find_element_by_class_name("detailsItem").find_element_by_class_name("selected").text)
+            browser().find_element_by_class_name("detailsItem").find_element_by_class_name("selected").text)
         self.assertEqual(selected_view, los_current_view, "Incorrect subject view displayed.")

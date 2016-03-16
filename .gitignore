@@ -72,3 +72,10 @@ wsgi_*_hpz.conf
 .pydevproject
 
 scripts/e2e_test/output
+logs/
+.python-venv/
+nosetests.xml
+coverage.xml
+.cache/
+.erlang.cookie
+allure-report/

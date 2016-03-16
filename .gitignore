@@ -2,7 +2,6 @@
 ######################
 .DS_Store
 .DS_Store?
-*.pyc
 .egg-info?
 smarter.egg-info?
 *.egg-info
@@ -30,14 +29,11 @@ assets/test/src/*
 assets/test/js/3p/**
 assets/test/js/src/**
 assets/docs/
-node_modules
 .coverage
 edschema/edschema/database/tests/resources/tmpl
 */build/
-config/development.ini
 */docs/_build
 # Ignore udl build directory, dist, MANIFEST and *.pyc
-smarter.egg-info
 .idea/
 .settings/
 venv/
@@ -68,7 +64,7 @@ data_gen/DataGeneration/datafiles/csv
 wsgi_*_hpz.conf
 
 .project
-
+.python-version
 .pydevproject
 
 scripts/e2e_test/output

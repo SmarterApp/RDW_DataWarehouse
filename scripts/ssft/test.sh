@@ -44,6 +44,7 @@ AUTOMATION_MODULES=()
 VERBOSE=false
 
 ALLURE_DIR="allure-report"
+ALLURE_ERRORS="allure.errors"
 
 _usage(){
     echo "Usage:
@@ -139,18 +140,33 @@ _combine_allure_reports() {
     mkdir -p "$EDWARE_WORKSPACE/$ALLURE_DIR"
     for module in $@; do
         echo "Copy reports for '$module' module"
-        cp -r $EDWARE_WORKSPACE/$module/$ALLURE_DIR/* $EDWARE_WORKSPACE/$ALLURE_DIR/
+        if [ -d $EDWARE_WORKSPACE/$module/$ALLURE_DIR/ ]; then
+            (cp -r $EDWARE_WORKSPACE/$module/$ALLURE_DIR/* $EDWARE_WORKSPACE/$ALLURE_DIR/) || echo "
+        Warning! '$module' module.
+        '$EDWARE_WORKSPACE/$module/$ALLURE_DIR/' folder doesn't have XML file(s) for allure.
+            " >> $ALLURE_ERRORS
+        else
+            echo "
+        Error: Unable to find allure results for '$module' module.
+        Invalid path: $EDWARE_WORKSPACE/$module/$ALLURE_DIR/
+            " >> $ALLURE_ERRORS
+        fi
     done
 }
 
 _generate_allure_report(){
+    if [ -f $ALLURE_ERRORS ]; then
+        message_box "There are some errors during copying of allure result to '$EDWARE_WORKSPACE/$ALLURE_DI'"
+        cat $ALLURE_ERRORS
+    fi
     message_box "Generate report from $EDWARE_WORKSPACE/$ALLURE_DIR"
     allure generate --report-dir "$EDWARE_WORKSPACE/$ALLURE_DIR" "$EDWARE_WORKSPACE/$ALLURE_DIR"
     allure report open --report-dir "$EDWARE_WORKSPACE/$ALLURE_DIR"
 
 }
 _clean_up(){
-    rm -rf "$EDWARE_WORKSPACE/$ALLURE_DIR"
+    rm_dir_if_exist "$EDWARE_WORKSPACE/$ALLURE_DIR"
+    rm_file_if_exist $ALLURE_ERRORS
     rm -rf /opt/edware/zones/landing/history/*
     rm -rf /opt/edware/zones/landing/work/*
 }

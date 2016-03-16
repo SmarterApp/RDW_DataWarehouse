@@ -21,7 +21,7 @@ __ini(){
 __run(){
     echo "Starting UDL"
     cd "$EDWARE_WORKSPACE/edudl2/scripts"
-    sh start_celery.sh >> "$EDWARE_LOG_UDL 2>&1" &
+    sh start_celery.sh >> "$EDWARE_LOG_UDL" 2>&1 &
 }
 
 __stop(){

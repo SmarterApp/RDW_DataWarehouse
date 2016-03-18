@@ -8,16 +8,32 @@ PIDFILE="/var/run/edudl2-report/edudl2-report.pid"
 EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.report.report_generator --hour 16 -r 1 -d -p $PIDFILE"
 
 start() {
-	echo -n "Starting file grabber: "
+	echo -n "Starting edudl2-report: "
 	daemon --user udl2 $EDUDL2_TRIGGER
+	echo
 	RETVAL=$?
 }
 
 stop() {
-	echo -n "Stopping edudl2 trigger: "
+	echo -n "Stopping edudl2-report: "
 	killproc -p $PIDFILE
+	echo
 	RETVAL=$?
 }
+
+check_status() {
+    echo -n "Checking edudl2-report is running..."
+    PID=`ps aux | grep report_generator | grep -v grep | awk '{print $2}'`
+    if [ -z "$PID" ];
+    then
+        echo -n "edudl2-report is not running"
+        echo
+    else
+        echo -n "edudl2-report is running (pid $PID)"
+        echo
+    fi
+}
+
 case $1 in
 	start)
 		start
@@ -25,9 +41,16 @@ case $1 in
 	stop)
 		stop
 	;;
+	restart)
+	    stop
+	    start
+	;;
+	status)
+	    check_status
+	;;
 	*)
 
-	echo $"Usage: edudl2-file-grabber {start|stop}"
+	echo $"Usage: edudl2-report {start|stop|restart|status}"
 	exit 2
 esac
 exit $RETVAL

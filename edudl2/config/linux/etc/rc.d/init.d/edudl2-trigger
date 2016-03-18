@@ -8,16 +8,32 @@ PIDFILE="/var/run/edudl2-trigger/edudl2-file-trigger.pid"
 EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
 
 start() {
-	echo -n "Starting edsftp sync: "
+	echo -n "Starting edudl2-trigger: "
 	daemon --user udl2 $EDUDL2_TRIGGER
+	echo
 	RETVAL=$?
 }
 
 stop() {
 	echo -n "Stopping edudl2-trigger: "
 	killproc -p $PIDFILE
+	echo
 	RETVAL=$?
 }
+
+check_status() {
+    echo -n "Checking edudl2-trigger is running..."
+    PID=`ps aux | grep udl_trigger | grep -v grep | awk '{print $2}'`
+    if [ -z "$PID" ];
+    then
+        echo -n "edudl2-trigger is not running"
+        echo
+    else
+        echo -n "edudl2-trigger is running (pid $PID)"
+        echo
+    fi
+}
+
 case $1 in
 	start)
 		start
@@ -25,9 +41,16 @@ case $1 in
 	stop)
 		stop
 	;;
+	restart)
+	    stop
+	    start
+	;;
+	status)
+	    check_status
+	;;
 	*)
 
-	echo $"Usage: edudl2-trigger {start|stop}"
+	echo $"Usage: edudl2-trigger {start|stop|restart|status}"
 	exit 2
 esac
 exit $RETVAL

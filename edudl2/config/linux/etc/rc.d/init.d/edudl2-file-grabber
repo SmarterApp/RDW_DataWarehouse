@@ -8,16 +8,32 @@ PIDFILE="/var/run/edudl2-file-grabber/edudl2-file-grabber.pid"
 EDUDL2_TRIGGER=". /opt/virtualenv/udl2/bin/activate; python -m edudl2.udl2_util.file_grabber -d -p $PIDFILE"
 
 start() {
-	echo -n "Starting file grabber: "
+	echo -n "Starting edudl2 file grabber: "
 	daemon --user udl2 $EDUDL2_TRIGGER
+	echo
 	RETVAL=$?
 }
 
 stop() {
-	echo -n "Stopping edudl2 trigger: "
+	echo -n "Stopping edudl2 file grabber: "
 	killproc -p $PIDFILE
+	echo
 	RETVAL=$?
 }
+
+check_status() {
+    echo -n "Checking edudl2-file-grabber is running..."
+    PID=`ps aux | grep file_grabber | grep -v grep | awk '{print $2}'`
+    if [ -z "$PID" ];
+    then
+        echo -n "edudl2-file-grabber is not running"
+        echo
+    else
+        echo -n "edudl2-file-grabber is running (pid $PID)"
+        echo
+    fi
+}
+
 case $1 in
 	start)
 		start
@@ -25,9 +41,16 @@ case $1 in
 	stop)
 		stop
 	;;
+	restart)
+	    stop
+	    start
+	;;
+	status)
+	    check_status
+	;;
 	*)
 
-	echo $"Usage: edudl2-file-grabber {start|stop}"
+	echo $"Usage: edudl2-file-grabber {start|stop|restart|status}"
 	exit 2
 esac
 exit $RETVAL

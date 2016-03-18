@@ -28,7 +28,14 @@ requires = [
     'pyyaml==3.10',
     'requests == 2.2.1',
     'services',
-    'python3-memcached == 1.51']
+    'python3-memcached == 1.51',
+
+    # current version of pyramid doesn't have fixed version of WebOb in its requirements
+    # so we're fixing it here, because new versions are breaking the service
+    # (it's starting to return unexpected HTTP status codes, e.g 404 instead of 412)
+    # we should figure this out when we'll decide to upgrade pyramid version
+    'WebOb==1.5.1',
+]
 
 docs_extras = [
     'Sphinx',

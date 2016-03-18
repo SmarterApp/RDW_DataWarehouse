@@ -12,7 +12,14 @@ install_requires = [
     'requests == 2.2.1',
     'httpretty == 0.8.0',
     'psycopg2==2.5.1',
-    'boto == 2.36.0']
+    'boto == 2.36.0',
+
+    # current version of pyramid doesn't have fixed version of WebOb in its requirements
+    # so we're fixing it here, because new versions are breaking the service
+    # (it's starting to return unexpected HTTP status codes, e.g 404 instead of 412)
+    # we should figure this out when we'll decide to upgrade pyramid version
+    'WebOb==1.5.1',
+]
 
 tests_require = [
     'WebTest == 1.3.6',  # py3 compat

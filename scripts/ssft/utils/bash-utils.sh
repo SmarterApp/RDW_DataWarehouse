@@ -18,6 +18,8 @@ rm_dir_if_exist(){
     if [ -d "$1" ]; then
         echo "Remove: $1"
         rm -r "$1"
+        echo "Remove directory: $1"
+        rm -rf "$1"
     fi
 }
 
@@ -25,6 +27,8 @@ rm_file_if_exist(){
     if [ -f "$1" ]; then
         echo "Remove: $1"
         rm -r "$1"
+        echo "Remove file: $1"
+        rm -rf "$1"
     fi
 }
 

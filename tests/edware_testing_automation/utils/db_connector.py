@@ -1,8 +1,8 @@
-'''
+"""
 Created on Mar 5, 2013
 
 @author: dip
-'''
+"""
 from sqlalchemy.schema import Table
 from zope.component._api import queryUtility
 from zope.interface import Interface
@@ -31,15 +31,15 @@ class DbUtil:
 
 
 class DBConnection():
-    '''
+    """
     Inheritate this class if you are making a report class and need to access to database
     BaseReport is just managing session for your database connection and convert result to dictionary
-    '''
+    """
 
     def __init__(self, name=''):
-        '''
+        """
         name is an empty string by default
-        '''
+        """
         self.__name = name
         dbUtil = queryUtility(IDbUtil, name=name)
         engine = dbUtil.get_engine()

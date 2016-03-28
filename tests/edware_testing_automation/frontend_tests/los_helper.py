@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
-'''
+"""
 Created on Feb 11, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
 from selenium.webdriver.common.action_chains import ActionChains
@@ -12,13 +12,13 @@ from selenium.webdriver.support import expected_conditions
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 
 class LosHelper(SessionShareHelper):
-    '''
+    """
     Helper methods for List of Students Page
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
@@ -81,11 +81,11 @@ class LosHelper(SessionShareHelper):
             self.assertEqual(grid_value, columnValue, ("Header ' %s ' not found on the page") % columnValue)
 
     def check_sort(self, columns):
-        '''
+        """
         Clicks a column header to sort the column and validates the value of the first row after sorting.
         :param columns: Dictionary where key is column name that needs to be sorted and value is expected value of the first row after sorting
         :type columns: dictionary
-        '''
+        """
         # Find the grid column header and click on it to sort the column
         columns = self.__convert_column_name(columns)
         grid_headers = browser().find_element_by_class_name("jqg-second-row-header")
@@ -231,7 +231,6 @@ class LosHelper(SessionShareHelper):
         hover_mouse = ActionChains(browser()).move_to_element(element_to_mouseover)
         hover_mouse.click().perform()
 
-        #        time.sleep(10)
         ## Validate the pop up header
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "losPopover")))
         self.assertEqual(popup_header, str(
@@ -285,7 +284,7 @@ class LosHelper(SessionShareHelper):
 
     # returns a list of a column that we're interested in ##
     def __parse_grid_table(self, grid, column_name):
-        '''
+        """
         Returns a list of a column values from the grid rows for the column that we're interested in
         :param grid: LOS grid webdriver element
         :type grid: Webdriver Element
@@ -293,7 +292,7 @@ class LosHelper(SessionShareHelper):
         :type column_name: string
         :return student_list: list of all the values in the column_name
         :type student_list: list
-        '''
+        """
         grid_rows = grid.find_elements_by_tag_name("tr")
         # List of dictionaries which holds the column name and their values
         student_list = []
@@ -325,18 +324,18 @@ class LosHelper(SessionShareHelper):
         return new_columns
 
     def check_los_legend_popup(self):
-        '''
+        """
         Validates the legend popup from the Report Action Nav bar in the list of students report
-        '''
+        """
         legend_popup = self.open_legend_popup()
         self.check_los_legend_section(legend_popup)
 
     def check_los_overall_score_section(self, popup):
-        '''
+        """
         Validates the Overall Score Details section in the legend of the list of students report
         :param popup: LOS Legend popup window webdriver element
         :type popup: Webdriver Element
-        '''
+        """
         overall_score_section = popup.find_element_by_class_name("popover-content").find_element_by_class_name(
             "span7").find_element_by_id("overall_score_details")
         self.assertIn("Overall Score Details:", str(overall_score_section.text),
@@ -358,11 +357,11 @@ class LosHelper(SessionShareHelper):
                       "Numeric Score description is incorrectly displayed on LOS legend.")
 
     def check_los_claim_score_details_section(self, popup):
-        '''
+        """
         Validates the Supporting Score Details: section in the legend of the list of students report
         :param popup: LOS Legend popup window webdriver element
         :type popup: Webdriver Element
-        '''
+        """
         claim_score_section = str(
             popup.find_element_by_class_name("popover-content").find_element_by_id("claim_score_details").text)
         self.assertIn("Supporting Score Details", claim_score_section,
@@ -375,11 +374,11 @@ class LosHelper(SessionShareHelper):
                       "Performance level text is incorrectly displayed on LOS legend.")
 
     def check_los_legend_error_band_section(self, popup):
-        '''
+        """
         Validates the Error Band: section in the legend of the list of students report
         :param popup: LOS Legend popup window webdriver element
         :type popup: Webdriver Element
-        '''
+        """
         error_band_description = "Smarter Balanced tests try to provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would be very likely to achieve if they were to take the test multiple times. It is similar to the “margin of error” that newspapers report for public opinion surveys."
         error_section = popup.find_element_by_class_name("popover-content").find_element_by_id(
             "legendTemplate").find_element_by_class_name("error_band_wrapper")
@@ -390,9 +389,9 @@ class LosHelper(SessionShareHelper):
         print("Passed Legend popover validation.")
 
     def check_los_report_info(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in LOS report
-        '''
+        """
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
@@ -442,38 +441,38 @@ class LosHelper(SessionShareHelper):
         browser().implicitly_wait(1)
 
     def select_opportunity_los(self, selection):
-        '''
+        """
         Select o view from the opportunity selector dropdown from LOS report
         :param selection: Expected selection of assessment view from LOS report
         :type selection: String
-        '''
+        """
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
         dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         all_options = dropdown.find_element_by_class_name("asmtDropdownMenu").find_elements_by_class_name(
             'asmtSelection')
         for each in all_options:
-            '''
+            """
             Another way to handle the unicode encode error is to encode the expected result and then compare it with the actual text
             for eg: Replace . with &#183; in the expected text like "2016.01.01 &#183; Grade 3 &#183; Interim Comprehensive" and then
             if selection in each.text.encode('ascii', 'xmlcharrefreplace'):
-            '''
+            """
             if selection in each.text:
                 section = each
         section.click()
-        add_screen_to_report('/tmp/select_opportunity_los2.png')
+        save_screen('/tmp/select_opportunity_los2.png')
 
     def check_current_selected_opportunity(self, expected_value):
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        add_screen_to_report('/tmp/check_current_selected_opportunity2.png')
+        save_screen('/tmp/check_current_selected_opportunity2.png')
         dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown_value = dropdown.find_element_by_id("selectedAsmtType").text
         self.assertEqual(expected_value, dropdown_value, "Current opportunity selector is invalid on LOS.")
 
     def check_opportunity_selectors(self, ex_options):
-        '''
+        """
         Validate all the opportunity selector options in the LOS assessment drop down
-        '''
+        """
         dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         options = dropdown.find_element_by_class_name("asmtDropdownMenu").find_elements_by_class_name('asmtSelection')
@@ -485,16 +484,16 @@ class LosHelper(SessionShareHelper):
             actual_options.append((each.text))
         print(expected_options)
         print(actual_options)
-        add_screen_to_report('/tmp/check_opportunity_selectors1.png')
+        save_screen('/tmp/check_opportunity_selectors1.png')
         self.assertEqual(expected_options, actual_options,
                          "Opportunity selector options do not match the expected options on LOS")
         dropdown.find_element_by_tag_name("button").click()
-        add_screen_to_report('/tmp/check_opportunity_selectors2.png')
+        save_screen('/tmp/check_opportunity_selectors2.png')
 
     def select_academic_year_los(self, options, selection):
-        '''
+        """
         Select an option from the "Other Academic Years" section
-        '''
+        """
         dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         dropdown_menu = dropdown.find_element_by_tag_name("ul")
@@ -514,9 +513,9 @@ class LosHelper(SessionShareHelper):
             wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
 
     def select_academic_year_los_language(self, num_yrs, reminder_text, selection):
-        '''
+        """
         Select an option from the "Other Academic Years" section
-        '''
+        """
         dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         # self.assertEqual("OTHER ACADEMIC YEARS", str(dropdown.find_element_by_class_name("asmtDropdownMenu").find_element_by_class_name('otherAcadmicYears').text), "OTHER ACADEMIC YEARS section not found in the dropdown")
@@ -543,9 +542,9 @@ class LosHelper(SessionShareHelper):
             wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
 
     def click_latest_year_reminder_msg(self):
-        '''
+        """
         Click on the latest year link from the previous year reminder message
-        '''
+        """
         browser().find_element_by_class_name("reminderMessage").find_element_by_tag_name("a").click()
         wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
 
@@ -582,9 +581,9 @@ class LosHelper(SessionShareHelper):
         self.check_subject_headers(headers)
 
     def select_los_view(self, selection):
-        '''
+        """
         Select the view in LOS
-        '''
+        """
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
         los_views = browser().find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
         view_dict = {}
@@ -604,9 +603,9 @@ class LosHelper(SessionShareHelper):
         self.check_subject_headers(headers)
 
     def select_los_view_iab(self, selection, headers):
-        '''
+        """
         Select the IAB subject view in LOS
-        '''
+        """
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
         los_views = browser().find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
         view_dict = {}
@@ -617,9 +616,9 @@ class LosHelper(SessionShareHelper):
         self.check_subject_headers(headers)
 
     def validate_iab_disclaimer(self, grade):
-        '''
+        """
         Validates the IAB disclaimer message.
-        '''
+        """
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "IABMessage")))
         message = str(browser().find_element_by_class_name("IABMessage").text)
         iab_text = "The results below are " + grade + " Interim Assessment Blocks administered during the selected academic year."
@@ -634,7 +633,7 @@ class LosHelper(SessionShareHelper):
         self.assertEqual(expected_text, grid_heading, "The grid headings are not listed")
         # grid_headers = [elem.text for elem in browser().find_elements_by_css_selector(".ui-jqgrid-htable .jqg-second-row-header th[role='columnheader'] div") if elem.text]
         # self.assertEqual(len(expected_cols), len(grid_headers), "Invalid number of IAB columns found.")
-        add_screen_to_report('/tmp/check_iab_column_headers.png')
+        save_screen('/tmp/check_iab_column_headers.png')
 
     def select_language(self, language):
         if language == 'en':

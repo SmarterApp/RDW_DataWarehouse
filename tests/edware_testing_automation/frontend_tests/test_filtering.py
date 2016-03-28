@@ -1,33 +1,35 @@
-'''
+"""
 Created on July 22, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
 from edware_testing_automation.frontend_tests.filtering_helper import FilteringHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 
+@allure.story('Reports filtering & academic years')
 class FilteringScenarios(FilteringHelper):
-    '''
+    """
     Tests for Comparing Population report - District view that displays the 'List of Schools'
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         FilteringHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.feature('Smarter: District view')
     def test_grade_filter_no_results(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         expected_grade_filters = ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 11']
@@ -39,6 +41,7 @@ class FilteringScenarios(FilteringHelper):
         time.sleep(5)
         self.check_no_results()
 
+    @allure.feature('Smarter: District view')
     def test_grade_filter(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         filter_popup2 = self.open_filter_menu()
@@ -47,6 +50,7 @@ class FilteringScenarios(FilteringHelper):
         self.check_overall_filtered_count("24", "Out of 49 students", "23", "Out of 48 students")
         self.check_filter_bar(["Grades: 3, 11"])
 
+    @allure.feature('Smarter: School view')
     def test_ethnicity_filter(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
@@ -59,10 +63,11 @@ class FilteringScenarios(FilteringHelper):
         try:
             wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "ui-jqgrid-view")))
         except:
-            add_screen_to_report('/tmp/screenshot.png')
+            save_screen('/tmp/screenshot.png')
         self.check_filter_bar(["Race/Ethnicity: Asian"])
         self.check_overall_filtered_count("11", "Out of 89 students", "8", "Out of 77 students")
 
+    @allure.feature('Smarter: School view')
     def test_gender_filter(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
@@ -72,6 +77,7 @@ class FilteringScenarios(FilteringHelper):
         self.check_overall_filtered_count("18", "Out of 35 students", "18", "Out of 35 students")
         self.check_filter_bar(["Gender: Female"])
 
+    @allure.feature('Smarter: School view')
     def test_iep_filter(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
@@ -81,6 +87,7 @@ class FilteringScenarios(FilteringHelper):
         self.check_overall_filtered_count("17", "Out of 35 students", "17", "Out of 35 students")
         self.check_filter_bar(["IEP: Yes"])
 
+    @allure.feature('Smarter: State view')
     def test_lep_filter(self):
         filter_popup = self.open_filter_menu()
         self.select_lep_filter(filter_popup, ["No"], '5% reported "not stated"')
@@ -88,6 +95,7 @@ class FilteringScenarios(FilteringHelper):
         self.check_overall_filtered_count("66", "Out of 89 students", "55", "Out of 77 students")
         self.check_filter_bar(["LEP: No"])
 
+    @allure.feature('Smarter: State view')
     def test_504_filter(self):
         filter_popup = self.open_filter_menu()
         self.select_504_filter(filter_popup, ["Not Stated"], '3% reported "not stated"')
@@ -95,6 +103,9 @@ class FilteringScenarios(FilteringHelper):
         self.check_overall_filtered_count("3", "Out of 89 students", "3", "Out of 77 students")
         self.check_filter_bar(["504: Not Stated"])
 
+    @allure.feature('Smarter: State view')
+    @allure.feature('Smarter: District view')
+    @allure.feature('Smarter: School view')
     def test_persistence_filtering(self):
         filter_popup = self.open_filter_menu()
         self.select_grade_filter(filter_popup, ["Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7"])
@@ -132,6 +143,7 @@ class FilteringScenarios(FilteringHelper):
         time.sleep(5)
         self.check_no_results()
 
+    @allure.feature('Smarter: Grade view')
     def test_grouping_only(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")

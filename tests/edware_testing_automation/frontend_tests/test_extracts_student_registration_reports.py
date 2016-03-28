@@ -1,11 +1,13 @@
-'''
+"""
 @author: smuhit, nparoha
-'''
+"""
 
 import fnmatch
 import os
 import shutil
 from time import sleep
+
+import allure
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
@@ -16,6 +18,8 @@ UNZIPPED_FILE_PATH = UNZIPPED + '/'
 DOWNLOAD_FILE_PATH = DOWNLOADS + '/'
 
 
+@allure.feature('Smarter: State view')
+@allure.story('Download reports')
 class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
@@ -39,7 +43,6 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
             if os.path.exists(file_to_delete):
                 os.remove(file_to_delete)
 
-    # @attr('hpz')
     def test_student_registration_statistics_report(self):
         # Test the student registration statistics report
         self.enter_login_credentials("jmacey", "jmacey1234")
@@ -79,7 +82,6 @@ class StudentRegistrationStatistics(SessionShareHelper, ExtractsHelper):
                                      'expected_sr_stats_report.csv')
         self.validate_csv_files_match(expected_file, csv_file_path)
 
-    # @attr('hpz')
     def test_student_assessment_completion_report(self):
         # Test the Student Assessment Completion report
         self.enter_login_credentials("jmacey", "jmacey1234")

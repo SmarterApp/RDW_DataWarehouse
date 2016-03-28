@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
-'''
+"""
 Created on December 5, 2013
 
 @author: nparoha
-'''
+"""
 import csv
 import fnmatch
 import json
@@ -11,6 +11,8 @@ import os
 import shutil
 import time
 import zipfile
+
+import allure
 
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
@@ -22,10 +24,11 @@ UNZIPPED_FILES = UNZIPPED + '/'
 DOWNLOAD_FILES = DOWNLOADS + '/'
 
 
+@allure.story('Download reports')
 class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsHelper):
-    '''
+    """
     Raw Data Extract Tests for Comparing Population 'School View' report
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
@@ -33,9 +36,8 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
         ApiHelper.__init__(self, *args, **kwargs)
         ExtractsHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -55,6 +57,7 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
             if os.path.exists(file_to_delete):
                 os.remove(file_to_delete)
 
+    @allure.feature('Smarter: School view')
     def test_extract_raw_data_cpop_school(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")
@@ -131,6 +134,8 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
         self.check_fields_and_values(json_data, "PerformanceLevels", perf_level)
         self.check_fields_and_values(json_data, 'Claims', claims)
 
+    @allure.feature('Smarter: District view')
+    @allure.story('Summative reports view')
     def test_extract_raw_data_los(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("942", "ui-jqgrid-ftable")
@@ -220,6 +225,8 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
         self.check_fields_and_values(ela_json_data, "PerformanceLevels", perf_level)
         self.check_fields_and_values(ela_json_data, 'Claims', claims)
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Summative reports view')
     def test_multi_asmt_per_grade(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")
@@ -248,6 +255,8 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
         self.check_file_exists(json_filenames,
                                'METADATA_ASMT_2015_NC_GRADE_07_MATH_SUMMATIVE_8d10d26b-b013-4cdd-a916-5d577e895cce')
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Assessments Blocks reports view')
     def test_extract_sar_los_iab(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("248", "ui-jqgrid-ftable")
@@ -368,11 +377,11 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
     #        self.check_fields_and_values(ela_json_data, 'Claims', claims)
 
     def check_raw_zipfile_present(self, prefix):
-        '''
+        """
         Check that the csv file is downloaded in the DOWNLOAD_FILES directory
         return file: Filename
         type file: string
-        '''
+        """
         found = False
         for _file in os.listdir(DOWNLOAD_FILES):
             if fnmatch.fnmatch(_file, '*.zip'):
@@ -383,9 +392,9 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
         return _file
 
     def unzip_raw_extract_file(self, zip_file_path):
-        '''
+        """
         Unzips the zip file inside the UNZIPPED_FILES directory
-        '''
+        """
         csv_file_names = []
         json_file_names = []
         # unzip the file

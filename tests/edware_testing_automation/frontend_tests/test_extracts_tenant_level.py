@@ -1,11 +1,13 @@
-'''
+"""
 Created on November 15, 2013
 
 @author: nparoha
-'''
+"""
 import os
 import shutil
 import time
+
+import allure
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
@@ -16,18 +18,19 @@ UNZIPPED_FILE_PATH = UNZIPPED + '/'
 DOWNLOAD_FILE_PATH = DOWNLOADS + '/'
 
 
-# @attr('hpz')
+@allure.feature('Smarter: State view')
+@allure.story('Download reports')
 class PickUpZoneExtract(ComparingPopulationsHelper, ExtractsHelper):
-    '''
+    """
     Tests for Comparing Population report - State view that displays the 'List of Districts'
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")

@@ -1,9 +1,11 @@
-'''
+"""
 Created on Aug 15, 2014
 
 @author: nparoha
-'''
+"""
 import os
+
+import allure
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
@@ -13,15 +15,16 @@ here = os.path.abspath(os.path.dirname(__file__))
 PRINT_JS_FILE = os.path.abspath(os.path.join(os.path.join(here, 'print_js.js')))
 
 
+@allure.feature('Smarter: State view')
+@allure.story('Legend & info')
 class PrintCSS(ComparingPopulationsHelper, LosHelper):
     #  Tests for validating CSS of the print from browser print option
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
         LosHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")

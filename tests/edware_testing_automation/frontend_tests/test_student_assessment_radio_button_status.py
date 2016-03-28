@@ -1,20 +1,20 @@
+import allure
+
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 
 
+@allure.feature('Smarter: State view', 'Smarter: District view', 'Smarter: School view', 'Smarter: Grade view')
+@allure.story('Download reports')
+@allure.issue('US34464 Disable file download radio button for Summative assessments')
+@allure.issue('US34465 Add "Summative-only" text to file download modal')
 class SummativeOnlyFileDownload(ComparingPopulationsHelper, SessionShareHelper):
-    """
-    US34464 Disable file download radio button for Summative assessments
-    US34465 Add "Summative-only" text to file download modal
-    """
-
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
         SessionShareHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")

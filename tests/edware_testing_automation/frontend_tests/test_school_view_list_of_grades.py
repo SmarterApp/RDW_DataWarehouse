@@ -1,31 +1,35 @@
-'''
+"""
 Created on March 15, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
+import allure
 from selenium.webdriver.common.action_chains import ActionChains
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
+@allure.feature('Smarter: School view')
 class ListOfGrades(ComparingPopulationsHelper):
-    '''
+    """
     Tests for Comparing Population report - School view that displays the 'List of Grades'
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.story('Overall and grade\'s statistic')
+    @allure.story('Legend & info')
+    @allure.story('Download reports')
     def test_sunset_eastern_elementary_list_of_grades(self):
         print("Comparing Populations: Sunset - Eastern Elementary school view displaying the List of Grades")
 
@@ -90,6 +94,8 @@ class ListOfGrades(ComparingPopulationsHelper):
         self.check_cpop_legend_popup()
         self.check_cpop_report_info_school_view()
 
+    @allure.story('Overall and grade\'s statistic')
+    @allure.story('Legend & info')
     def test_sunset_east_elemt_academic_year(self):
         print("TC_academic_year 2015")
         # Click on 'Sunset School District' link from list of states
@@ -110,9 +116,9 @@ class ListOfGrades(ComparingPopulationsHelper):
         self.check_cpop_legend_popup()
 
     def check_cpop_report_info_school_view(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in cpop-school view report
-        '''
+        """
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name(
             "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)

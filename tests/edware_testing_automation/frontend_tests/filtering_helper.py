@@ -1,8 +1,8 @@
-'''
+"""
 Created on July 22, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
 from selenium.webdriver.common.by import By
@@ -15,20 +15,20 @@ from edware_testing_automation.utils.test_base import wait_for
 
 
 class FilteringHelper(ComparingPopulationsHelper, LosHelper):
-    '''
+    """
     Helper methods for filtering on the comparing populations report page - State / District / School view
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
         LosHelper.__init__(self, *args, **kwargs)
 
     def open_filter_menu(self):
-        '''
+        """
         Verifies that the filter option is available and clicks on it to open the filtering menu
         :return filter_popup: returns the filter popup window back to the calling method
         :type filter_popup: webdriver element
-        '''
+        """
         self.assertEqual("Filter", str(browser().find_element_by_id("actionBar").find_element_by_class_name(
             "filterItem").find_element_by_class_name("filterLabel").text),
                          "Filter label not found on the actions bar")
@@ -45,11 +45,11 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
             self.assertTrue(False, "Error in opening the filter menu.")
 
     def close_filter_menu(self, filter_popup, action):
-        '''
+        """
         Verifies that the filter option is available and clicks on it to open the filtering menu
         :return filter_popup: returns the filter popup window back to the calling method
         :type filter_popup: webdriver element
-        '''
+        """
         if action is "apply":
             filter_popup.find_element_by_id("submit-btn").click()
         elif action is "cancel":
@@ -61,7 +61,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
             self.assertTrue(False, "Invalid action passed in the close_filter_menu method")
 
     def get_filter_dropdown(self, filter_menu, filter_option):
-        '''
+        """
         Returns the respective filter webdriver element
         :param filter_menu: Filter popup window
         :type filter_menu: Webdriver element
@@ -69,7 +69,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type filter_option: string
         :return filter_dropdown: returns the filter dropdown element to the calling method
         :type filter_dropdown: webdriver element
-        '''
+        """
         all_filters_dropdown = filter_menu.find_elements_by_class_name("filter-wrapper")
         if filter_option is "lep":
             return all_filters_dropdown[0]
@@ -95,13 +95,13 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
             self.assertTrue(False, "Invalid filter option passed in get_filter_dropdown method.")
 
     def check_filter_dropdown_menu(self, selected_filter, expected_menu):
-        '''
+        """
         Validates the options and text displayed in the filter dropdown
         :param selected_filter: Selected Filter popup window
         :type selected_filter: Webdriver element
         :param expected_menu: list of strings where each element indicates the option / text displayed in the dropdown menu in the same order
         :type expected_menu: list
-        '''
+        """
         actual_menu = []
         selected_filter.find_element_by_class_name("caret").click()
         all_options = selected_filter.find_elements_by_tag_name("li")
@@ -110,7 +110,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.assertEqual(expected_menu, actual_menu, "Filter drop down options incorrectly displayed.")
 
     def select_desired_filter(self, filter_popup, filter_dropdown, selection):
-        '''
+        """
         Selects the desired option in the filter
         :param filter_popup: Selected Filter popup window
         :type filter_popup: Webdriver element
@@ -118,7 +118,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type filter_dropdown: Webdriver element
         :param selection: list of strings where each element indicates the option to be selected in the filter dropdown menu
         :type selection: list
-        '''
+        """
         all_filtering_options = {}
         all_options = filter_dropdown.find_elements_by_tag_name("li")
         for each in all_options:
@@ -127,10 +127,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
             all_filtering_options[each].find_element_by_tag_name("input").click()
         filter_dropdown.find_element_by_class_name("caret").click()
 
-    '''
-    Methods specific to each filter
-    '''
-
+    # Methods specific to each filter
     def check_grade_filter_menu(self, filter_popup, expected_grade_filters):
         actual_grade_filters = []
         grade_filters = filter_popup.find_element_by_class_name("grade_range").find_elements_by_tag_name("label")
@@ -147,14 +144,14 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
             grade_options[each].find_element_by_tag_name("input").click()
 
     def select_gender_filter(self, filter_popup, selection):
-        '''
+        """
         Validates the gender filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
         :param selection: list of strings where each string is the filter selection. Can select one or more filtering options.
         :type selection: list
         :type not_stated_percentage: string
-        '''
+        """
         gender_filter = self.get_filter_dropdown(filter_popup, "sex")
         wait_for(lambda driver: gender_filter.find_element_by_class_name("display"))
         self.assertEqual("Gender", str(gender_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
@@ -184,7 +181,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.select_desired_filter(filter_popup, completeness_filter, selection)
 
     def select_iep_filter(self, filter_popup, selection, not_stated_percentage):
-        '''
+        """
         Validates the IEP filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
@@ -192,7 +189,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type selection: list
         :param not_stated_percentage: Not stated percentage text for the IEP filter
         :type not_stated_percentage: string
-        '''
+        """
         iep_filter = self.get_filter_dropdown(filter_popup, "iep")
         wait_for(lambda driver: iep_filter.find_element_by_class_name("display"))
         self.assertEqual("IEP", str(iep_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
@@ -204,13 +201,13 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.select_desired_filter(filter_popup, iep_filter, selection)
 
     def select_grouping_filter(self, filter_popup, selection, expected_grouping_options):
-        '''
+        """
         Validates the Student Group filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
         :param selection: list of strings where each string is the filter selection. Can select one or more filtering options.
         :type selection: list
-        '''
+        """
         grouping_filter = self.get_filter_dropdown(filter_popup, "grouping")
         wait_for(lambda driver: grouping_filter.find_element_by_class_name("display"))
         self.assertEqual("Student Group",
@@ -220,7 +217,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.select_desired_filter(filter_popup, grouping_filter, selection)
 
     def select_lep_filter(self, filter_popup, selection, not_stated_percentage):
-        '''
+        """
         Validates the LEP filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
@@ -228,7 +225,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type selection: list
         :param not_stated_percentage: Not stated percentage text for the LEP filter
         :type not_stated_percentage: string
-        '''
+        """
         lep_filter = self.get_filter_dropdown(filter_popup, "lep")
         wait_for(lambda driver: lep_filter.find_element_by_class_name("display"))
         self.assertEqual("Limited English Proficient (LEP)*",
@@ -241,7 +238,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.select_desired_filter(filter_popup, lep_filter, selection)
 
     def select_504_filter(self, filter_popup, selection, not_stated_percentage):
-        '''
+        """
         Validates the 504 filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
@@ -249,7 +246,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type selection: list
         :param not_stated_percentage: Not stated percentage text for the 504 filter
         :type not_stated_percentage: string
-        '''
+        """
         disability_filter = self.get_filter_dropdown(filter_popup, "504")
         wait_for(lambda driver: disability_filter.find_element_by_class_name("display"))
         self.assertEqual("504", str(disability_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
@@ -259,13 +256,13 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.select_desired_filter(filter_popup, disability_filter, selection)
 
     def select_migrant_filter(self, filter_popup, selection):
-        '''
+        """
         Validates the Migrant status filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
         :param selection: list of strings where each string is the filter selection. Can select one or more filtering options.
         :type selection: list
-        '''
+        """
         migrant_status_filter = self.get_filter_dropdown(filter_popup, "mig")
         wait_for(lambda driver: migrant_status_filter.find_element_by_class_name("display"))
         self.assertEqual("Migrant Status",
@@ -276,7 +273,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         self.select_desired_filter(filter_popup, migrant_status_filter, selection)
 
     def select_ethnicity_filter(self, filter_popup, selection, not_stated_percentage):
-        '''
+        """
         Validates the ethnicity filter dropdown options and selects the desired filter.
         :param filter_popup: Filter popup window
         :type filter_popup: Webdriver element
@@ -284,7 +281,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type selection: list
         :param not_stated_percentage: Not stated percentage text for the ethnicity filter
         :type not_stated_percentage: string
-        '''
+        """
         ethnicity_filter = self.get_filter_dropdown(filter_popup, "ethnicity")
         wait_for(lambda driver: ethnicity_filter.find_element_by_class_name("display"))
         self.assertEqual("Race/Ethnicity",
@@ -299,7 +296,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
     ##### VALIDATION OF FILTERING RESULTS ######
     def check_overall_filtered_count(self, math_total_students, math_unfiltered_text, ela_total_students,
                                      ela_unfiltered_text):
-        '''
+        """
         Validates the filtered count and filtered/unfiltered text in the overall row.
         :param math_total_students: Filtered Math student count
         :type math_total_students: string
@@ -309,7 +306,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type ela_total_students: string
         :param ela_unfiltered_text: unfiltered text
         :type ela_unfiltered_text: string
-        '''
+        """
         math_static_text = math_unfiltered_text.rsplit(' ', 1)[0]
         ela_static_text = ela_unfiltered_text.rsplit(' ', 1)[0]
         wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "loader")))

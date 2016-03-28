@@ -1,10 +1,12 @@
 # -*- coding: UTF-8 -*-
+import allure
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.test_base import wait_for
 
 
+@allure.feature('Smarter: Landing page')
 class LandingPageTestCase(ComparingPopulationsHelper):
     """
     Landing page unit test
@@ -64,7 +66,11 @@ class LandingPageTestCase(ComparingPopulationsHelper):
     def login_in_content(self):
         expected_content_ln1 = "Welcome to the"
         expected_content_ln2 = "Smarter Balanced Reporting System"
-        expected_content_ln3 = "The Smarter Balanced Reporting System is an interactive, online reporting platform that provides a range of reports on the Smarter Balanced summative and interim assessments. It provides clear, easy-to-understand data on student achievement and delivers intuitive and timely reports for teachers, parents and administrators to track student progress towards college content- and career-readiness."
+        expected_content_ln3 = "The Smarter Balanced Reporting System is an interactive, online reporting platform " \
+                               "that provides a range of reports on the Smarter Balanced summative and interim " \
+                               "assessments. It provides clear, easy-to-understand data on student achievement " \
+                               "and delivers intuitive and timely reports for teachers, parents and administrators " \
+                               "to track student progress towards college content- and career-readiness."
         content = browser().find_element_by_id("content").find_element_by_class_name("intro")
         self.assertIn(expected_content_ln1, str(content.text), "Content text incorrect on the landing page.")
         self.assertIn(expected_content_ln2, str(content.text), "Content text incorrect on the landing page.")
@@ -86,9 +92,9 @@ class LandingPageTestCase(ComparingPopulationsHelper):
         self.validate_each_about_section(aboutItems[2], "FAQ",
                                          "Frequently asked questions about the Smarter Balanced Reporting System")
 
-    #        ActionChains(browser()).move_to_element(aboutItems[0]).perform()
-    #        bgcolor = aboutItems[0].value_of_css_property('background-color')
-    #        self.assertEqual(bgcolor, Color.from_string('#F4F4F4').rgba, "Should display a gray background when hovering")
+        # ActionChains(browser()).move_to_element(aboutItems[0]).perform()
+        # bgcolor = aboutItems[0].value_of_css_property('background-color')
+        # self.assertEqual(bgcolor, Color.from_string('#F4F4F4').rgba, "Should display a gray background when hovering")
 
     def validate_each_about_section(self, section, header, description):
         self.assertEqual(header, str(section.find_element_by_tag_name("h2").text),

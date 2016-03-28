@@ -1,10 +1,10 @@
-'''
+"""
 Created on June 27, 2013
 
 @author: nparoha
-'''
-import time
+"""
 
+import allure
 from sqlalchemy.sql import select
 
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
@@ -14,7 +14,8 @@ from edware_testing_automation.utils.preferences import Edware
 from edware_testing_automation.utils.preferences import preferences
 
 
-class TestTrigger(ApiHelper):
+@allure.feature('Smarter: Integration with PDF pre-generation')
+class TestServicesTriggerAPI(ApiHelper):
     db_stat_url = None
     db_schema_name = None
     datasource_name = 'edware'
@@ -25,18 +26,21 @@ class TestTrigger(ApiHelper):
 
     def __init__(self, *args, **kwargs):
         ApiHelper.__init__(self, *args, **kwargs)
-        TestTrigger.db_stat_url = preferences(Edware.db_stats_main_url)
-        TestTrigger.db_schema_name = preferences(Edware.db_stats_schema)
-        create_connection(TestTrigger.db_stat_url, TestTrigger.db_schema_name,
-                          datasource_name=TestTrigger.datasource_name)
+        TestServicesTriggerAPI.db_stat_url = preferences(Edware.db_stats_main_url)
+        TestServicesTriggerAPI.db_schema_name = preferences(Edware.db_stats_schema)
+        create_connection(
+            TestServicesTriggerAPI.db_stat_url,
+            TestServicesTriggerAPI.db_schema_name,
+            datasource_name=TestServicesTriggerAPI.datasource_name
+        )
 
     def setUp(self):
         self.check_table_in_schema("udl_stats")
-        self.set_data_stat_table("udl_stats", TestTrigger.insert_row)
+        self.set_data_stat_table("udl_stats", TestServicesTriggerAPI.insert_row)
         self.check_table_not_empty("udl_stats")
 
     def tearDown(self):
-        super(TestTrigger, self).tearDown()
+        super(TestServicesTriggerAPI, self).tearDown()
         self.delete_stat_table("udl_stats")
         self.check_table_empty("udl_stats")
 
@@ -49,11 +53,9 @@ class TestTrigger(ApiHelper):
         cache_trigger = self.select_pdf_cache_trigger_col_from_table("udl_stats", "last_pre_cached")
         self.assertIsNotNone(len(cache_trigger), 'Error: column "last_pre_cached" is empty')
 
-    # @attr('pdf')
     def test_get_trigger_pdf(self):
         self.set_request_cookie('gman')
         self.send_request("GET", "/services/trigger/pdf")
-        time.sleep(10)
         self.check_response_code(200)
         elements = self._response.json()
         self.assertEqual('OK', str(elements['result']), "Invalid response message")
@@ -98,7 +100,7 @@ class TestTrigger(ApiHelper):
 
     # query: select table_name from information_schema.tables where table_schema = schema_name;
     def get_tables(self):
-        with DBConnection(name=TestTrigger.datasource_name) as connector:
+        with DBConnection(name=TestServicesTriggerAPI.datasource_name) as connector:
             metadata = connector.get_metadata()
         return metadata.tables
 
@@ -114,7 +116,7 @@ class TestTrigger(ApiHelper):
 
     # query: select * from schema_name.table_name;
     def select_from_table(self, table):
-        with DBConnection(name=TestTrigger.datasource_name) as connector:
+        with DBConnection(name=TestServicesTriggerAPI.datasource_name) as connector:
             dim_table = connector.get_table(table)
             query = select([dim_table])
             results = connector.get_result(query)
@@ -122,7 +124,7 @@ class TestTrigger(ApiHelper):
 
     # query: select column_name from schema_name.table_name
     def select_pdf_cache_trigger_col_from_table(self, table, column_name):
-        with DBConnection(name=TestTrigger.datasource_name) as connector:
+        with DBConnection(name=TestServicesTriggerAPI.datasource_name) as connector:
             dim_table = connector.get_table(table)
             if column_name is "last_pre_cached":
                 query = select([dim_table.c.last_pre_cached.label('last_pre_cached')])
@@ -131,13 +133,13 @@ class TestTrigger(ApiHelper):
             return connector.get_result(query)
 
     def delete_stat_table(self, table):
-        with DBConnection(name=TestTrigger.datasource_name) as connector:
+        with DBConnection(name=TestServicesTriggerAPI.datasource_name) as connector:
             table_name = connector.get_table(table)
             connector.execute(table_name.delete())
 
     # query: insert into schema_name.table_name (state_code,tenant,load_start,load_end,load_status,batch_guid,record_loaded_count)
     #        values('NC','cat',now(),now(),'ingested','cb28cf30-e024-11e2-a28f-0800200c9a66',1000);
     def set_data_stat_table(self, table, new_row):
-        with DBConnection(name=TestTrigger.datasource_name) as connector:
+        with DBConnection(name=TestServicesTriggerAPI.datasource_name) as connector:
             dim_table = connector.get_table(table)
             connector.execute(dim_table.insert().values(**new_row))

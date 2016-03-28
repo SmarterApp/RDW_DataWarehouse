@@ -1,8 +1,10 @@
-'''
+"""
 Created on Feb 21, 2014
 
 @author: nparoha
-'''
+"""
+import allure
+
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
@@ -18,6 +20,8 @@ class TestInterimOnly(LosHelper, ComparingPopulationsHelper):
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Comprehensive reports view')
     def test_interim_only_flow1(self):
         # Drill down from state level to a district that only has interim results #
         swallow_harrier_all_columns = self.get_cpop_columns("grid", "c912df4b-acdf-40ac-9a91-f66aefac7851",
@@ -56,6 +60,8 @@ class TestInterimOnly(LosHelper, ComparingPopulationsHelper):
                     "Teems, Bradley J."]
         self.check_student_record(students)
 
+    @allure.feature('Smarter: District view')
+    @allure.story('Overall and school\'s statistic')
     def test_insufficient_data(self):
         # Drill down to District level
         self.drill_down_navigation("229", "ui-jqgrid-ftable")

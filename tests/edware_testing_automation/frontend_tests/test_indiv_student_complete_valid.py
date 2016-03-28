@@ -1,5 +1,7 @@
 import time
 
+import allure
+
 from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
@@ -14,22 +16,23 @@ PARTIAL_TEST_MESSAGE = "Partial Test - The student did not answer all of the que
                        "all unanswered questions have been reported as incorrect."
 
 
+@allure.feature('Smarter: Student view')
 class IndividualStudentReport(IndividualStudentHelper, LosHelper):
-    '''
+    """
     Tests for Individual Student Report
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         IndividualStudentHelper.__init__(self, *args, **kwargs)
         LosHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open webpage '''
-
     def setUp(self):
+        """ setUp: Open webpage """
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("gman", "gman1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.story('Summative reports view', 'Legend & info')
     def test_individual_student_report_invalid_summative(self):
         cutpoints = [1200, 1400, 1800, 2100, 2400]
         expected_color_codes = ["rgba(187, 35, 28, 1)", "rgba(228, 201, 4, 1)", "rgba(106, 165, 6, 1)",
@@ -168,6 +171,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_legend_popup()
         self.check_isr_report_info_popup()
 
+    @allure.story('Summative reports view')
     def test_individual_student_report_invalid_and_partial_summative(self):
         # Click on 'Sunset - Western Middle - Grade 7' school link from list of districts
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -207,6 +211,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_warning_message(warnings[0], "edware-icon-invalid edware-icon-large", INVALID_TEST_MESSAGE)
         self.check_warning_message(warnings[1], "edware-icon-partial edware-icon-large", PARTIAL_TEST_MESSAGE)
 
+    @allure.story('Interim Comprehensive reports view', 'Legend & info')
     def test_individual_student_report_standard_ica(self):
         # Click on 'Sunset - Eastern Elementary - Grade 3' school link from list of schools
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -229,6 +234,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         contens = math_content_area.find_element_by_class_name("warning")
         self.check_warning_message(contens, "edware-icon-standardized edware-icon-large", STANDARD_TEST_MESSAGE)
 
+    @allure.story('Interim Comprehensive reports view')
     def test_individual_student_report_standard_and_partial_ica(self):
         # Click on 'Sunset - Eastern Elementary - Grade 3' school link from list of schools
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -258,6 +264,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         contens = ela_content_area.find_element_by_class_name("warning")
         self.check_warning_message(contens, "edware-icon-partial edware-icon-large", PARTIAL_TEST_MESSAGE)
 
+    @allure.story('Interim Assessments Blocks reports view', 'Legend & info')
     def test_individual_student_report_standard_and_partical_iab(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         # Click on 'Sunset - Central High' school link from list of districts

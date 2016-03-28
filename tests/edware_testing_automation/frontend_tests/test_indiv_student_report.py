@@ -1,34 +1,37 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on Feb 27, 2013
 
 @author: nparoha
-'''
+"""
 import time
+
+import allure
 
 from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
+@allure.feature('Smarter: Student view')
 class IndividualStudentReport(IndividualStudentHelper, LosHelper):
-    '''
+    """
     Tests for Individual Student Report
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         IndividualStudentHelper.__init__(self, *args, **kwargs)
         LosHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open webpage '''
-
     def setUp(self):
+        """ setUp: Open webpage """
         self.open_requested_page_redirects_login_page("state_view_sds")
         # login as a parent
         # self.enter_login_credentials("arice", "arice1234")
         self.enter_login_credentials("gman", "gman1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.story('Summative reports view', 'Legend & info')
     def test_individual_student_report(self):
         cutpoints = [1200, 1400, 1800, 2100, 2400]
         expected_color_codes = ["rgba(187, 35, 28, 1)", "rgba(228, 201, 4, 1)", "rgba(106, 165, 6, 1)",
@@ -145,6 +148,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_legend_popup()
         self.check_isr_report_info_popup()
 
+    @allure.story('Summative reports view')
     def test_grade_8_individual_student_report(self):
         # Click on 'Sunset - Western Middle - Grade 8' school link from list of districts
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -175,6 +179,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
         self.check_content_areas(ela_section, ela_overall_score_content, ela_left_pane_content)
 
+    @allure.story('Summative reports view')
     def test_grade_11_individual_student_report(self):
         # Click on 'Sunset - Central High - Grade 11' link from list of states
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -224,6 +229,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.assertIn(left_pane_content,
                       str(content_text.encode('ascii', 'xmlcharrefreplace'))), "Left lane CA content area not found."
 
+    @allure.story('Summative reports view', 'Legend & info')
     def test_individual_student_report_summative(self):
         cutpoints = [1200, 1400, 1800, 2100, 2400]
         expected_color_codes = ["rgba(187, 35, 28, 1)", "rgba(228, 201, 4, 1)", "rgba(106, 165, 6, 1)",
@@ -324,6 +330,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_legend_popup()
         self.check_isr_report_info_popup()
 
+    @allure.story('Summative reports view', 'Interim Comprehensive reports view')
     def test_isr_switch_views(self):
         # Click on 'Sunset - Eastern Elementary - Grade 3' link from list of states
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -376,6 +383,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.assertIn('Date Taken: 12/13/2015', math_info.text)
         self.validate_interim_disclaimer()
 
+    @allure.story('Interim Assessments Blocks reports view')
     def test_iab_math_ela(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         # Click on 'Sunset - Central High' school link from list of districts
@@ -422,6 +430,7 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
                                           {"2015.01.15": "At/Near Standard"}])
         self.verify_iab_older_results(ela_iab_blocks[4], 1, [{"2015.01.14": "Below Standard"}])
 
+    @allure.story('Interim Assessments Blocks reports view')
     def test_iab_ela_only(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         # Click on 'Sunset - Central High- Grade 11' school link from list of districts

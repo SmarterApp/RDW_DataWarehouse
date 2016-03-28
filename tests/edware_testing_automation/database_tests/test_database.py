@@ -1,21 +1,22 @@
-'''
+"""
 Created on Feb 13, 2013
 
 @author: nparoha
-'''
+"""
+import allure
+
 from edware_testing_automation.database_tests.database_helper import DatabaseTestHelper
 
 
+@allure.feature('Third-party dependencies: postgres')
+@allure.story('US12918: Data service - new schema and report refactoring')
 class EdTestDatabase(DatabaseTestHelper):
+
     def __init__(self, *args, **kwargs):
         DatabaseTestHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
         super(EdTestDatabase, self).setUp()
-
-    '''
-    US12918: Data service - new schema and report refactoring
-    '''
 
     def test_new_schema(self):
         print("TC_test_new_schema: Test new schema.")

@@ -1,8 +1,8 @@
-'''
+"""
 Created on Feb 4, 2013
 
 @author: dip, nparoha
-'''
+"""
 import fnmatch
 import html.parser
 import json
@@ -27,23 +27,23 @@ def handle_timeout(func, timeout=60):
             try:
                 func(*args, **kwargs)
                 break  # executed successfully
-            except AssertionError:
+            except AssertionError as error:
                 if start_time > timeout:
-                    raise
+                    raise error
             except Exception as e:
                 logger.error(e)  # something bad happened
-                raise
-            # sleep 2 seconds
-            time.sleep(2)
-            start_time += 2
+                raise e
+            # sleep 1 seconds
+            time.sleep(1)
+            start_time += 1
 
     return wrap
 
 
 class ApiHelper(EdTestBase):
-    '''
+    """
     Helper methods for EdApi calls
-    '''
+    """
     db_url = None
     db_schema_name = None
     datasource_name = 'edauth'
@@ -61,13 +61,13 @@ class ApiHelper(EdTestBase):
 
     # Makes http requests
     def send_request(self, verb, end_point, base='', use_base=True):
-        '''
+        """
         Makes restful requests as per the verb passed.
         :param verb:  Any one of the given http verbs: OPTIONS, GET, POST, DE:LETE
         :type verb: string
         :param end_point: appends the end point to the url from test.ini file to make the request
         :type end_point: string
-        '''
+        """
         if not base and use_base:
             base = self.get_url()
         verb = verb.upper()
@@ -85,34 +85,34 @@ class ApiHelper(EdTestBase):
             print("Error: Entered an invalid request verb: " + verb)
 
     def send_post(self, url, data=None):
-        '''
+        """
         POST request for non-json content body
         :param url: http url
         :type url:string
         :param data: data to post in the payload
         :type data: string
-        '''
+        """
         self._response = requests.post(url, data=data, **self._request_header)
 
     def send_xml_post(self, end_point, data, base=None):
-        '''
+        """
         POST request for XML content body
         :param end_point: http endpoint
         :type end_point:string
         :param data: data to post in the payload
         :type data: string
-        '''
+        """
         if not base:
             base = self.get_tsb_url()
         print(base + end_point)
         self._response = requests.post(base + end_point, data, **self._request_header)
 
     def set_request_cookie(self, user_id):
-        '''
+        """
         POST request for non-json content body
         :param user_id: userid used to send the request
         :type user_id:string
-        '''
+        """
         # Assumes password is always user_id + 1234
         password = user_id + '1234'
 
@@ -160,9 +160,9 @@ class ApiHelper(EdTestBase):
         self._request_header['cookies'] = cookie_value
 
     def authenticate_with_oauth(self, user_id):
-        '''
+        """
         Retrieve access token from SSO using oauth and sets the request header to use it in bearer
-        '''
+        """
         password = user_id + '1234'
         oauth_server = preferences(Default.idp_host) + '&username={user_id}&password={password}'.format(user_id=user_id,
                                                                                                         password=password)
@@ -203,13 +203,13 @@ class ApiHelper(EdTestBase):
 
     # Checks fields for every item in the body
     def check_each_item_in_list_for_fields(self, elements, expected_fields):
-        '''
+        """
         Checks fields for every item in the body
         :param elements:  Part of the json body where you need to valid the expected response fields
         :type elements: json element
         :param expected_fields: list of string where each item represents the response field in the json response
         :type expected_fields: list
-        '''
+        """
         for row in elements:
             self.__check_number_of_fields(row, expected_fields)
             self.__check_contains_fields(row, expected_fields)
@@ -228,13 +228,13 @@ class ApiHelper(EdTestBase):
         self.__check_response_field_or_values(item, expected_key_values, True, actual=actual)
 
     def check_fields(self, body, expected_fields):
-        '''
+        """
         Checks every field from the expected_fields in the body
         :param body:  Part of the json body where you need to validate the expected response fields
         :type body: json response body
         :param expected_fields: list of string where each item represents the response field name
         :type expected_fields: list
-        '''
+        """
         for row in expected_fields:
             self.assertIn(row, body, "{0} is not found".format(row))
 
@@ -315,11 +315,11 @@ class ApiHelper(EdTestBase):
         self.__check_number_of_fields(body, expected_fields)
 
     def check_downloaded_zipfile_present(self, prefix):
-        '''
+        """
         Check that the csv file is downloaded in the /tmp/downloads/ directory
         return file: Filename
         type file: string
-        '''
+        """
 
         def filter_file():
             for item in os.listdir(DOWNLOADS):
@@ -330,11 +330,11 @@ class ApiHelper(EdTestBase):
         return wait_function(filter_file)
 
     def get_pdf_file_name(self, unzipped_dir):
-        '''
+        """
         Gets the.pdf file names from the unzipped_files
         :return [pdf_file_names]: list of pdf file names
         :type [pdf_file_names]: list
-        '''
+        """
         pdf_file_names = []
         for file in os.listdir(unzipped_dir):
             if fnmatch.fnmatch(file, '*.pdf'):
@@ -342,11 +342,11 @@ class ApiHelper(EdTestBase):
         return pdf_file_names
 
     def get_csv_file_name(self, unzipped_dir):
-        '''
+        """
         Gets the.csv file names from the unzipped_files
         :return [csv_file_names]: list of csv file names
         :type [csv_file_names]: list
-        '''
+        """
         csv_file_names = []
         for file in os.listdir(unzipped_dir):
             if fnmatch.fnmatch(file, '*.csv'):

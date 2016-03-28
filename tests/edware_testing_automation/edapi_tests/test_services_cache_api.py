@@ -1,20 +1,17 @@
-'''
+"""
 Created on June 4, 2013
 
 @author: nparoha
-'''
+"""
+import allure
+
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
 
 
-class TestDelete(ApiHelper):
+@allure.feature('Smarter: Integration with Cache warmer')
+class TestServicesCacheAPI(ApiHelper):
     def __init__(self, *args, **kwargs):
         ApiHelper.__init__(self, *args, **kwargs)
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
 
     def test_delete_data(self):
         self.set_request_cookie('gman')

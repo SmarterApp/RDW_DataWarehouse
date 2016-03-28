@@ -1,16 +1,25 @@
-'''
+"""
 Created on Feb 4, 2014
 
 @author: nparoha
-'''
+"""
+import allure
+
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
+@allure.feature(
+    'Smarter: State view',
+    'Smarter: District view',
+    'Smarter: School view',
+    'Smarter: Grade view'
+)
+@allure.story('Legend & info')
 class MultiTenancy(ComparingPopulationsHelper):
-    '''
+    """
     Tests for Multi Tenancy to ensure that user sees information for their tenants only
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)

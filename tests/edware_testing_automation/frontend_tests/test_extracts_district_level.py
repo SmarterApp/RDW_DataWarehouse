@@ -1,6 +1,8 @@
 import os
 import shutil
 
+import allure
+
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
@@ -12,7 +14,8 @@ UNZIPPED_FILES = UNZIPPED + '/'
 DOWNLOAD_FILES = DOWNLOADS + '/'
 
 
-# @attr('hpz')
+@allure.feature('Smarter: District view')
+@allure.story('Download reports')
 class TestExtractDistrictlevel(ComparingPopulationsHelper, ExtractsHelper):
     """
    Tests for Comparing Population report - State view that displays the 'List of Districts'

@@ -1,28 +1,28 @@
-'''
+"""
 Created on May 20, 2013
 
 @author: nparoha
-'''
+"""
 import os
 import time
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.preferences import preferences, Edware
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 _pdfs = preferences(Edware.report_dir)
 
 
-# @attr('pdf')
-class PdfTest(SessionShareHelper):
+@allure.feature('Smarter: Student view')
+@allure.story('Print report')
+class PrintPdfTest(SessionShareHelper):
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
-
-    ''' setUp: Open webpage '''
 
     def setUp(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
@@ -34,7 +34,7 @@ class PdfTest(SessionShareHelper):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
         self.drill_down_navigation("03", "jqgfirstrow")
-        add_screen_to_report('/tmp/test_color_pdf.png')
+        save_screen('/tmp/test_color_pdf.png')
         # Click on 'Lettie L Hose' student link from list of students
         self.drill_down_navigation("jqg26", "overallScoreSection")
 
@@ -89,6 +89,6 @@ class PdfTest(SessionShareHelper):
         else:
             print("incorrect pdf color specified")
         option.click()
-        add_screen_to_report('/tmp/pdf_debug.png')
+        save_screen('/tmp/pdf_debug.png')
         print_button = print_popover.find_element_by_class_name("modal-footer").find_element_by_class_name("btn")
         print_button.click()

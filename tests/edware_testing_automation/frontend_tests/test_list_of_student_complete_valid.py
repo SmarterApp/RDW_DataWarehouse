@@ -10,13 +10,9 @@ class CompleteValid(LosHelper):
         LosHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("gman", "gman1234")
         self.check_redirected_requested_page("state_view_sds")
-
-    def tearDown(self):
-        self.driver.quit()
 
     def test_cv_summative_los(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -87,8 +83,8 @@ class CompleteValid(LosHelper):
         self.check_headers("Guy Man", "Log Out")
         self.check_page_header("Assessment Results for Grade 03")
         self.check_subject_headers(
-                ["Students", "Most Recent Mathematics", "Mathematics Overall", "Status", "Most Recent ELA/Literacy",
-                 "ELA/Literacy Overall", "Status"])
+            ["Students", "Most Recent Mathematics", "Mathematics Overall", "Status", "Most Recent ELA/Literacy",
+             "ELA/Literacy Overall", "Status"])
         student_record = self.find_student_row("Curl, Rocco")
         overall_score_swim_lanes = ["#BB231C", "#e4c904", "#6aa506", "#237ccb"]
         self.check_los_overall_score_swim_lanes(student_record, "Math", 1732, "#e4c904", overall_score_swim_lanes)
@@ -143,7 +139,3 @@ class CompleteValid(LosHelper):
             "subject1.Algebra and Functions - Polynomials Functions.Latest result.claims.0.perf_lvl": "edware-icon-perf-level-1"
         }
         self.check_student_information(student_record, 'Sanders, Rachel')
-
-    if __name__ == '__main__':
-        import unittest
-        unittest.main()

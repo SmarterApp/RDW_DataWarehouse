@@ -15,7 +15,7 @@ class HpzHelper(ApiHelper):
 
     def set_headers_for_file_upload(self, file_name, file_name_with_path):
         stream = MultipartEncoder(
-                fields={'file': (file_name, open(file_name_with_path, 'rb'), 'application/octet-stream')})
+            fields={'file': (file_name, open(file_name_with_path, 'rb'), 'application/octet-stream')})
         self.set_non_json_payload(stream)
         self.set_request_header('Content-Type', stream.content_type)
         self.update_request_header('File-Name', file_name)

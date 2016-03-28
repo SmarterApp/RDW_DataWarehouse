@@ -5,7 +5,6 @@ Created on June 27, 2013
 '''
 import time
 
-from nose.plugins.attrib import attr
 from sqlalchemy.sql import select
 
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
@@ -50,7 +49,7 @@ class TestTrigger(ApiHelper):
         cache_trigger = self.select_pdf_cache_trigger_col_from_table("udl_stats", "last_pre_cached")
         self.assertIsNotNone(len(cache_trigger), 'Error: column "last_pre_cached" is empty')
 
-    @attr('pdf')
+    # @attr('pdf')
     def test_get_trigger_pdf(self):
         self.set_request_cookie('gman')
         self.send_request("GET", "/services/trigger/pdf")

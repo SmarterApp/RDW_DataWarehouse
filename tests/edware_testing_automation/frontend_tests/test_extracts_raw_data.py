@@ -22,7 +22,6 @@ UNZIPPED_FILES = UNZIPPED + '/'
 DOWNLOAD_FILES = DOWNLOADS + '/'
 
 
-# @unittest.skip("skipping this test temporarily.")
 class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsHelper):
     '''
     Raw Data Extract Tests for Comparing Population 'School View' report
@@ -37,7 +36,6 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -49,7 +47,6 @@ class RawDataExtract(ComparingPopulationsHelper, LosHelper, ApiHelper, ExtractsH
         self.files_to_cleanup_at_end = []
 
     def tearDown(self):
-        self.driver.quit()
         if os.path.exists(UNZIPPED_FILES):
             shutil.rmtree(UNZIPPED_FILES)
         if os.path.exists(DOWNLOAD_FILES):

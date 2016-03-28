@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+import time
+
+from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
+from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+
 STANDARD_TEST_MESSAGE = "Standard Test - This score was derived from an assessment that was administered in a " \
                         "standardized manner. It is appropriate to compare this score with other scores " \
                         "administered in the same standardized manner."
@@ -7,11 +12,6 @@ INVALID_TEST_MESSAGE = "Invalid Test - The scores in this assessment should be u
                        "representation of the student's achievement."
 PARTIAL_TEST_MESSAGE = "Partial Test - The student did not answer all of the questions on this test and " \
                        "all unanswered questions have been reported as incorrect."
-
-import time
-
-from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
-from edware_testing_automation.frontend_tests.los_helper import LosHelper
 
 
 class IndividualStudentReport(IndividualStudentHelper, LosHelper):
@@ -26,7 +26,6 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
     ''' setUp: Open webpage '''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("gman", "gman1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -52,25 +51,25 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_overall_score_summary(1, 'ELA/Literacy', '1800', "Level 3")
         self.check_current_subject_view("Mathematics")
 
-        math_assmnt_info = self.driver.find_element_by_class_name("sidebar")
+        math_assmnt_info = browser().find_element_by_class_name("sidebar")
         self.assertIn('Mathematics', math_assmnt_info.text)
         self.assertIn('Summative 2015 - 2016', math_assmnt_info.text)
         self.assertIn('Date Taken: 4/10/2016', math_assmnt_info.text)
 
-        math_perf_bar = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "confidenceLevel")
+        math_perf_bar = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "confidenceLevel")
         math_overall_score = 1338
         self.check_overall_score_perf_bar(math_perf_bar, math_overall_score)
         self.check_cutpoints_perf_bar(math_perf_bar, cutpoints)
         self.check_colors_perf_bar(math_perf_bar, expected_color_codes)
 
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1338, "rgba(187, 35, 28, 1)", "Overall Score",
                                      "Level 1")
 
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has not met the achievement standard and needs substantial " \
                                      "improvement to demonstrate the knowledge and skills in mathematics needed " \
                                      "for likely success in entry-level credit-bearing college coursework after " \
@@ -82,8 +81,8 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
                             "student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
-        math_claim_content = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "claimsSection").find_elements_by_class_name("claims")
+        math_claim_content = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "claimsSection").find_elements_by_class_name("claims")
         bs_message = "Students can explain and apply mathematical concepts and " \
                      "carry out mathematical procedures with precision and fluency."
         self.check_claim_contents(math_claim_content[0], "Below Standard", "Concepts & Procedures", bs_message)
@@ -101,35 +100,35 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_warning_message(contents, "edware-icon-invalid edware-icon-large", INVALID_TEST_MESSAGE)
         math_expected_accomodations = ['Abacus', 'Alternative Response', 'American Sign Language', 'Calculator',
                                        'Printed passages/stimuli', 'Streamline Mode']
-        acc_title = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "accommodationSection").find_element_by_class_name("content").find_element_by_tag_name("h4")
+        acc_title = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "accommodationSection").find_element_by_class_name("content").find_element_by_tag_name("h4")
         self.assertIn("Accommodations", str(acc_title.text), 'Accomodations header in the section not found.')
-        math_all_acc_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "accommodationSection").find_element_by_class_name("section")
+        math_all_acc_section = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "accommodationSection").find_element_by_class_name("section")
         self.check_accomodations_sections(math_all_acc_section, math_expected_accomodations)
 
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
 
-        ela_assmnt_info = self.driver.find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar")
+        ela_assmnt_info = browser().find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar")
         self.assertIn('ELA/Literacy', ela_assmnt_info.text)
         self.assertIn('Summative 2015 - 2016', ela_assmnt_info.text)
         self.assertIn('Date Taken: 4/10/2016', ela_assmnt_info.text)
 
-        ela_perf_bar = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("confidenceLevel")
+        ela_perf_bar = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("confidenceLevel")
         ela_overall_score = 1800
         self.check_overall_score_perf_bar(ela_perf_bar, ela_overall_score)
         self.check_cutpoints_perf_bar(ela_perf_bar, cutpoints)
         self.check_colors_perf_bar(ela_perf_bar, expected_color_codes)
 
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1800, "rgba(106, 165, 6, 1)", "Overall Score",
                                      "Level 3")
 
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has met the achievement standard and demonstrates progress " \
                                     "toward mastery of the knowledge and skills in English language arts/literacy " \
                                     "needed for likely success in entry-level credit-bearing college coursework " \
@@ -141,8 +140,8 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         }
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
-        ela_claim_content = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("claimsSection").find_elements_by_class_name("claims")
+        ela_claim_content = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("claimsSection").find_elements_by_class_name("claims")
         self.check_claim_contents(ela_claim_content[0], "Above Standard", "Reading",
                                   "Students can read closely and analytically to comprehend a "
                                   "range of increasingly complex literary and informational texts.")
@@ -160,9 +159,9 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         ela_expected_accomodations = ['American Sign Language', 'Noise Buffers', 'Printed items',
                                       'Printed passages/stimuli',
                                       'Scribe', 'Speech-to-text', 'Streamline Mode', 'Text-to-speech']
-        ela_all_acc_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("accommodationSection").find_element_by_class_name(
-                "section")
+        ela_all_acc_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("accommodationSection").find_element_by_class_name(
+            "section")
         self.check_accomodations_sections(ela_all_acc_section, ela_expected_accomodations)
 
         self.check_help_popup()
@@ -186,13 +185,13 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
 
-        ela_assmnt_info = self.driver.find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar")
+        ela_assmnt_info = browser().find_element_by_id("assessmentSection1").find_element_by_class_name("sidebar")
         self.assertIn('ELA/Literacy', ela_assmnt_info.text)
         self.assertIn('Summative 2015 - 2016', ela_assmnt_info.text)
         self.assertIn('Date Taken: 4/10/2016', ela_assmnt_info.text)
 
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has not met the achievement standard and needs substantial " \
                                     "improvement to demonstrate the knowledge and skills in English language " \
                                     "arts/literacy needed for likely success in entry-level credit-bearing " \
@@ -225,8 +224,8 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_overall_score_summary(0, 'Mathematics', '1732', "Level 2")
         self.check_isr_overall_score_summary(1, 'ELA/Literacy', '1539', "Level 2")
         self.check_current_subject_view("Mathematics")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         contens = math_content_area.find_element_by_class_name("warning")
         self.check_warning_message(contens, "edware-icon-standardized edware-icon-large", STANDARD_TEST_MESSAGE)
 
@@ -247,15 +246,15 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_isr_overall_score_summary(0, 'Mathematics', '1560', "Level 2")
         self.check_isr_overall_score_summary(1, 'ELA/Literacy', '1239', "Level 1")
         self.check_current_subject_view("Mathematics")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         warnings = math_content_area.find_element_by_class_name("contentWrapper").find_elements_by_class_name("warning")
         self.check_warning_message(warnings[0], "edware-icon-standardized edware-icon-large", STANDARD_TEST_MESSAGE)
         self.check_warning_message(warnings[1], "edware-icon-partial edware-icon-large", PARTIAL_TEST_MESSAGE)
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         contens = ela_content_area.find_element_by_class_name("warning")
         self.check_warning_message(contens, "edware-icon-partial edware-icon-large", PARTIAL_TEST_MESSAGE)
 
@@ -277,8 +276,8 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.check_selected_asmt_type_isr("2014 - 2015 · Interim Assessment Blocks")
         self.validate_interim_disclaimer()
 
-        math_iab_blocks = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "Math").find_element_by_class_name("blocksSection").find_elements_by_class_name('blocks')
+        math_iab_blocks = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "Math").find_element_by_class_name("blocksSection").find_elements_by_class_name('blocks')
         self.assertEqual(17, len(math_iab_blocks), "Invalid number of IAB's found")
         # Validate an IAB with 5 assessment results
         self.verify_iab_title_score_comp_valid(math_iab_blocks[0], "Grade 11:",
@@ -301,11 +300,11 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.verify_iab_previous_results(math_iab_blocks[6], 0, [])
 
         self.select_iab_subject("ELA/Literacy")
-        iab_header = str(self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "ELA").find_element_by_class_name("isrInterimBlockHeader").find_element_by_class_name("info").text)
+        iab_header = str(browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "ELA").find_element_by_class_name("isrInterimBlockHeader").find_element_by_class_name("info").text)
         self.assertEqual("Interim Assessment Blocks 2014 - 2015", iab_header, "IAB header incorrectly displayed.")
-        ela_iab_blocks = self.driver.find_element_by_id("individualStudentContent").find_element_by_class_name(
-                "ELA").find_element_by_class_name("blocksSection").find_elements_by_class_name('blocks')
+        ela_iab_blocks = browser().find_element_by_id("individualStudentContent").find_element_by_class_name(
+            "ELA").find_element_by_class_name("blocksSection").find_elements_by_class_name('blocks')
         self.assertEqual(9, len(ela_iab_blocks), "Invalid number of IAB's found")
         # Validate an IAB with 5 assessment results
         self.verify_iab_title_score(ela_iab_blocks[4], "Grade 11:", "Edit/Revise", "2015.01.18", "Below Standard")
@@ -327,12 +326,3 @@ class IndividualStudentReport(IndividualStudentHelper, LosHelper):
         self.verify_iab_older_results_comp_valid(ela_iab_blocks[3], 2,
                                                  [["2015.01.09", "Below Standard", "Standardized"],
                                                   ["2015.01.08", "At/Near Standard", "Standardized", "Partial"]])
-
-    def tearDown(self):
-        self.driver.quit()
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

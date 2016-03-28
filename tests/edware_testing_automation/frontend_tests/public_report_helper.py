@@ -1,10 +1,9 @@
-__author__ = 'vnatarajan'
-
 import time
 
 from selenium.common.exceptions import NoSuchElementException
 
 from edware_testing_automation.frontend_tests.filtering_helper import FilteringHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class PublicReportHelper(FilteringHelper):
@@ -39,10 +38,10 @@ class PublicReportHelper(FilteringHelper):
         time.sleep(7)
         expected_error_msg = 'There is no data available for your request.'
         self.assertEqual(expected_error_msg,
-                         str(self.driver.find_element_by_id("content").find_element_by_id("errorMessage").text),
+                         str(browser().find_element_by_id("content").find_element_by_id("errorMessage").text),
                          "Error message not found")
         # clear the filter selection
-        self.driver.find_element_by_class_name('selectedFilterGroup').find_element_by_tag_name('a').click()
+        browser().find_element_by_class_name('selectedFilterGroup').find_element_by_tag_name('a').click()
 
         # dowload popup checking
         self.check_download_popup()
@@ -63,7 +62,7 @@ class PublicReportHelper(FilteringHelper):
         self.check_export_options(download_popup, ['Current view'])
         self.assertEqual(self.get_element(download_locators['download_header']).text, download_texts['download'],
                          "Wrong header in download popup")
-        text = self.driver.find_element_by_class_name("desc_block").text
+        text = browser().find_element_by_class_name("desc_block").text
         self.assertEqual(text, download_texts['download_description'], "Download description is not correct")
         self.assertEqual(self.get_element(download_locators['note']).text, download_texts['note'],
                          "Download note is not correct")
@@ -82,9 +81,9 @@ class PublicReportHelper(FilteringHelper):
         locator_type, locator = locator.split('=')
         try:
             if locator_type == 'class':
-                return self.driver.find_element_by_class_name(locator)
+                return browser().find_element_by_class_name(locator)
             elif locator_type == 'id':
-                return self.driver.find_element_by_id(locator)
+                return browser().find_element_by_id(locator)
             else:
                 self.assertRaises("Provide correct element type")
         except NoSuchElementException:

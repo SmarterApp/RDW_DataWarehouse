@@ -9,9 +9,10 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
 
 
 class LosHelper(SessionShareHelper):
@@ -24,25 +25,25 @@ class LosHelper(SessionShareHelper):
 
     ## Check logo displayed on the page ##
     def check_logo(self, logo):
-        header_bar = self.driver.find_element_by_id("header")
+        header_bar = browser().find_element_by_id("header")
         self.assertEqual(header_bar.find_element_by_id("logo").text, logo, "Logo not found")
         print("Passed Scenario: Found logo in the page header.")
 
     def check_headers(self, header1, header2):
-        header_bar = self.driver.find_element_by_id("header")
+        header_bar = browser().find_element_by_id("header")
         Help = header_bar.find_element_by_id('help')
         self.assertEqual(Help.find_element_by_class_name("text_help").text, 'Help', "Help not found in the header")
         print("Passed Scenario: Found 'Help' in the page header.")
         self.assertEqual(header_bar.find_element_by_id("username").text, header1, "Username not found in the header")
         print("Passed Scenario: Found 'User' in the page header.")
         time.sleep(1)
-        self.driver.find_element_by_id('user-settings').click()
+        browser().find_element_by_id('user-settings').click()
         self.assertEqual(header_bar.find_element_by_class_name("text_logout").text, header2,
                          "Logout not found in the header")
         print("Passed Scenario: Found 'Log Out' link in the page header.")
 
     def check_headers_language(self, header1, header2):
-        header_bar = self.driver.find_element_by_id("header")
+        header_bar = browser().find_element_by_id("header")
         Help = header_bar.find_element_by_id('help')
         if header2 == "Salir":
             self.assertEqual(Help.find_element_by_class_name("text_help").text, 'Ayuda', "Help not found in the header")
@@ -55,16 +56,16 @@ class LosHelper(SessionShareHelper):
         print("Passed Scenario: Found 'Help' in the page header.")
         self.assertEqual(header_bar.find_element_by_id("username").text, header1, "Username not found in the header")
         print("Passed Scenario: Found 'User' in the page header.")
-        self.driver.find_element_by_id('user-settings').click()
-        self.driver.implicitly_wait(1)
+        browser().find_element_by_id('user-settings').click()
+        browser().implicitly_wait(1)
         self.assertEqual(header_bar.find_element_by_class_name("text_logout").text, header2,
                          "Logout not found in the header")
         print("Passed Scenario: Found 'Log Out' link in the page header.")
 
     def check_subject_headers(self, subjects):
-        grid = self.driver.find_element_by_class_name("ui-jqgrid-hbox")
+        grid = browser().find_element_by_class_name("ui-jqgrid-hbox")
         grid_header = grid.find_element_by_class_name("jqg-second-row-header").find_elements_by_class_name(
-                "ui-th-column")
+            "ui-th-column")
         for header in grid_header:
             text = header.text
             if len(text) > 0:
@@ -72,7 +73,7 @@ class LosHelper(SessionShareHelper):
 
     def check_column_headers(self, expected_columns):
         columns = self.__convert_column_name(expected_columns)
-        grid_header = self.driver.find_element_by_class_name("jqg-second-row-header")
+        grid_header = browser().find_element_by_class_name("jqg-second-row-header")
         for columnName, columnValue in columns.items():
             element = grid_header.find_element_by_id(columnName)
             if element:
@@ -87,31 +88,31 @@ class LosHelper(SessionShareHelper):
         '''
         # Find the grid column header and click on it to sort the column
         columns = self.__convert_column_name(columns)
-        grid_headers = self.driver.find_element_by_class_name("jqg-second-row-header")
+        grid_headers = browser().find_element_by_class_name("jqg-second-row-header")
         for name, value in columns.items():
             search_element = "jqgh_" + name
             element = grid_headers.find_element_by_id(search_element)
             if element:
                 element.click()
             # Check the first element in the column after sorting
-            grid_table = self.driver.find_element_by_id("gridTable")
+            grid_table = browser().find_element_by_id("gridTable")
             grid_list = self.__parse_grid_table(grid_table, name)
             print(grid_list[0])
             print(value)
             self.assertIn(value, grid_list[0], ("Column '%s' is not sorted correctly") % name)
 
     def total_los_records(self, number_students):
-        grid_table = self.driver.find_element_by_id("gridTable")
+        grid_table = browser().find_element_by_id("gridTable")
         length = len(grid_table.find_elements_by_tag_name("tr")) - 1
         assert length == number_students, ("Expected '%s' of students but found '%s'", ('number_students', 'length'))
 
     def total_iab_los_records(self, number_students):
-        grid_table = self.driver.find_element_by_id("gridTable_frozen")
+        grid_table = browser().find_element_by_id("gridTable_frozen")
         length = len(grid_table.find_elements_by_tag_name("tr")) - 1
         assert length == number_students, ("Expected '%s' of students but found '%s'", ('number_students', 'length'))
 
     def check_student_record(self, students):
-        grid_table = self.driver.find_element_by_id("gridTable")
+        grid_table = browser().find_element_by_id("gridTable")
         # grid_list: List of dictionaries
         grid_list = self.__parse_grid_table(grid_table, "gridTable_student_full_name")
         for student in students:
@@ -121,14 +122,14 @@ class LosHelper(SessionShareHelper):
             assert found, "Student not found"
 
     def check_default_assmt_subject_selector(self, view_selector):
-        actual_field_text = self.driver.find_element_by_id("actionBar").find_element_by_class_name("asmtTypeItem").text
+        actual_field_text = browser().find_element_by_id("actionBar").find_element_by_class_name("asmtTypeItem").text
         self.assertIn("Assessment:", actual_field_text, "Assessment view selector header not found.")
-        default_subject_view = self.driver.find_element_by_class_name("asmtDropdown").find_element_by_id(
-                "selectedAsmtType")
+        default_subject_view = browser().find_element_by_class_name("asmtDropdown").find_element_by_id(
+            "selectedAsmtType")
         self.assertIn(view_selector, str(default_subject_view.text)), "Assessment subject selector not found."
 
     def change_view(self, subject_view, subject_header):
-        select = self.driver.find_element_by_class_name("asmtDropdown")
+        select = browser().find_element_by_class_name("asmtDropdown")
         select.find_element_by_class_name("dropdown-toggle").click()
         all_options = select.find_elements_by_css_selector(".asmtSelection")
         optionFound = False
@@ -137,11 +138,7 @@ class LosHelper(SessionShareHelper):
                 if option.text == subject_view:
                     optionFound = True
                     option.click()
-        try:
-            self.check_subject_headers(subject_header)
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing to the subject view page")
+        self.check_subject_headers(subject_header)
 
     # Check the student information in the grid ##
     def check_student_information(self, columns, student_name):
@@ -168,16 +165,16 @@ class LosHelper(SessionShareHelper):
         swim_lane_column = student_info.find_element_by_css_selector(searchText)
         # Validate the overall score value and the color of the overall score text
         self.assertEqual(score, int(
-                swim_lane_column.find_element_by_class_name("asmtScore").text)), "Overall score incorrectly displayed."
+            swim_lane_column.find_element_by_class_name("asmtScore").text)), "Overall score incorrectly displayed."
         self.assertEqual(self.get_rgba_equivalent(score_color), (
             swim_lane_column.find_element_by_class_name("asmtScore").value_of_css_property(
-                    "background-color"))), "Overall score appears in an incorrect color."
+                "background-color"))), "Overall score appears in an incorrect color."
 
         # Validate the overall score swim lanes
         for each in swim_lane:
             expected_swim_lane_section_colors.append(self.get_rgba_equivalent(each))
         actual_prog_bar_sections = swim_lane_column.find_element_by_class_name("progress").find_elements_by_class_name(
-                "bar")
+            "bar")
         for each in actual_prog_bar_sections:
             actual_swim_lane_section_colors.append(str(each.value_of_css_property("background-color")))
         self.assertEqual(expected_swim_lane_section_colors,
@@ -214,10 +211,10 @@ class LosHelper(SessionShareHelper):
         elif subject is "ELA":
             searchText = "td[aria-describedby*='gridTable_subject2.complete']"
         icon_column = student_info.find_element_by_css_selector(searchText)
-        hover_mouse = ActionChains(self.driver).move_to_element(icon_column)
+        hover_mouse = ActionChains(browser()).move_to_element(icon_column)
         hover_mouse.perform()
         time.sleep(3)
-        popover_content = self.driver.find_element_by_id("content").find_element_by_class_name("popover-content")
+        popover_content = browser().find_element_by_id("content").find_element_by_class_name("popover-content")
         tool_tip_message = popover_content.find_element_by_class_name("tooltip-message")
         div_tag = tool_tip_message.find_elements_by_tag_name("div")
         self.assertEqual(div_tag[0].get_attribute("class"), icon_name, "The icon is not proper")
@@ -230,58 +227,51 @@ class LosHelper(SessionShareHelper):
         element_to_mouseover = student_row.find_element_by_class_name("asmtScore")
         loc = element_to_mouseover.location
         script = "window.scrollTo(%s, %s);" % (loc['x'], loc['y'])
-        self.driver.execute_script(script)
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_mouseover)
+        browser().execute_script(script)
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_mouseover)
         hover_mouse.click().perform()
 
         #        time.sleep(10)
         ## Validate the pop up header
-        try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "losPopover")))
-            self.assertEqual(popup_header, str(
-                    self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                            "popover-title").text)), "Claim tooltip header incorrectly displayed"
-            ## Validate the Overall Score title
-            assert ("Overall Score" in str(
-                    self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                            "summary").find_element_by_class_name(
-                            "title").text)), "Overall Score title not displayed n the tooltip summary"
-            ## Validate the claim score displayed in the header
-            assert (claim_score in str(
-                    self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                            "summary").find_element_by_class_name(
-                            "score").text)), "Claim Score incorrectly displayed on the tooltip summary"
-            ## Validate the ALD Level Name
-            assert (ald_name in str(self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                    "summary").find_element_by_class_name(
-                    "description").text)), "ALD Name incorrectly displayed on the tooltip summary"
-
-            ## Validate the claim score displayed on the progress bar
-            assert (claim_score in str(
-                    self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                            "losPerfBar").find_element_by_class_name(
-                            "scoreWrapper").text)), "Claim score incorrectly displayed on the tooltip progress bar"
-            ## Validate the cut points on the progress bar
-            expected_cutpoints = [1200, 1400, 1800, 2100, 2400]
-            actual_cutpoints = []
-            for each in self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                    "losPerfBar").find_elements_by_class_name("cutPoints"):
-                actual_cutpoints.append(int(each.text))
-            self.assertEqual(actual_cutpoints,
-                             expected_cutpoints), "Incorrect cut points displayed on the tooltip progress bar."
-
-            ## Validate the Error Band displayed on the tooltip
-            assert (error_band in str(
-                    self.driver.find_element_by_class_name("popover-inner").find_element_by_class_name(
-                            "errorBand").text)), "Error Band incorrectly displayed on the tooltip"
-        except:
-            self.driver.save_screenshot('/tmp/tooltip.png')
-            self.assertTrue(False)
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "losPopover")))
+        self.assertEqual(popup_header, str(
+            browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+                "popover-title").text)), "Claim tooltip header incorrectly displayed"
+        ## Validate the Overall Score title
+        assert ("Overall Score" in str(
+            browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+                "summary").find_element_by_class_name(
+                "title").text)), "Overall Score title not displayed n the tooltip summary"
+        ## Validate the claim score displayed in the header
+        assert (claim_score in str(
+            browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+                "summary").find_element_by_class_name(
+                "score").text)), "Claim Score incorrectly displayed on the tooltip summary"
+        ## Validate the ALD Level Name
+        assert (ald_name in str(browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+            "summary").find_element_by_class_name(
+            "description").text)), "ALD Name incorrectly displayed on the tooltip summary"
+        ## Validate the claim score displayed on the progress bar
+        assert (claim_score in str(
+            browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+                "losPerfBar").find_element_by_class_name(
+                "scoreWrapper").text)), "Claim score incorrectly displayed on the tooltip progress bar"
+        ## Validate the cut points on the progress bar
+        expected_cutpoints = [1200, 1400, 1800, 2100, 2400]
+        actual_cutpoints = []
+        for each in browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+                "losPerfBar").find_elements_by_class_name("cutPoints"):
+            actual_cutpoints.append(int(each.text))
+        self.assertEqual(actual_cutpoints,
+                         expected_cutpoints), "Incorrect cut points displayed on the tooltip progress bar."
+        ## Validate the Error Band displayed on the tooltip
+        assert (error_band in str(
+            browser().find_element_by_class_name("popover-inner").find_element_by_class_name(
+                "errorBand").text)), "Error Band incorrectly displayed on the tooltip"
 
     # Looks for the student_name in the gridtable and returns the tr for the student" ##
     def find_student_row(self, student_name):
-        grid_table_list = self.driver.find_element_by_id("gridTable").find_elements_by_tag_name("tr")
+        grid_table_list = browser().find_element_by_id("gridTable").find_elements_by_tag_name("tr")
         searchText = "td[aria-describedby*='gridTable_student_full_name']"
         found = False
         for student in grid_table_list:
@@ -348,7 +338,7 @@ class LosHelper(SessionShareHelper):
         :type popup: Webdriver Element
         '''
         overall_score_section = popup.find_element_by_class_name("popover-content").find_element_by_class_name(
-                "span7").find_element_by_id("overall_score_details")
+            "span7").find_element_by_id("overall_score_details")
         self.assertIn("Overall Score Details:", str(overall_score_section.text),
                       "Overall Score Details section header is incorrectly displayed on LOS legend.")
         self.assertIn("Overall Score Indicator", str(overall_score_section.find_element_by_class_name("notes").text),
@@ -374,7 +364,7 @@ class LosHelper(SessionShareHelper):
         :type popup: Webdriver Element
         '''
         claim_score_section = str(
-                popup.find_element_by_class_name("popover-content").find_element_by_id("claim_score_details").text)
+            popup.find_element_by_class_name("popover-content").find_element_by_id("claim_score_details").text)
         self.assertIn("Supporting Score Details", claim_score_section,
                       "Claim Score title is incorrectly displayed on LOS legend.")
         self.assertIn("Above Standard", claim_score_section,
@@ -392,7 +382,7 @@ class LosHelper(SessionShareHelper):
         '''
         error_band_description = "Smarter Balanced tests try to provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would be very likely to achieve if they were to take the test multiple times. It is similar to the “margin of error” that newspapers report for public opinion surveys."
         error_section = popup.find_element_by_class_name("popover-content").find_element_by_id(
-                "legendTemplate").find_element_by_class_name("error_band_wrapper")
+            "legendTemplate").find_element_by_class_name("error_band_wrapper")
         self.assertIn("Error Band:", error_section.text,
                       "Error Band Header not displayed on the legend popup.")
         print(error_section.text)
@@ -403,17 +393,12 @@ class LosHelper(SessionShareHelper):
         '''
         Validates the Report Info text displayed on the mouseover overlay in LOS report
         '''
-        element_to_click = self.driver.find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
-        time.sleep(3)
-        try:
-            WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_class_name("reportInfoPopover"))
-        except:
-            self.driver.save_screenshot('/tmp/report_info.png')
-            self.assertTrue(False, "Error in viewing the report info popover")
-        popover_content = self.driver.find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
-                "popover-content")
+        wait_for(lambda driver: driver.find_element_by_class_name("reportInfoPopover"))
+        popover_content = browser().find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
+            "popover-content")
         # Validate the headers
         report_info_headers = popover_content.find_elements_by_tag_name("h4")
         self.assertEqual("Purpose:", str(report_info_headers[0].text),
@@ -453,8 +438,8 @@ class LosHelper(SessionShareHelper):
                          str(features_bullet_points[6].text), "Seventh features bullet point not found.")
 
         # Close the mouseover
-        self.driver.find_element_by_id('user-settings').click()
-        self.driver.implicitly_wait(1)
+        browser().find_element_by_id('user-settings').click()
+        browser().implicitly_wait(1)
 
     def select_opportunity_los(self, selection):
         '''
@@ -462,16 +447,11 @@ class LosHelper(SessionShareHelper):
         :param selection: Expected selection of assessment view from LOS report
         :type selection: String
         '''
-        try:
-            WebDriverWait(self.driver, 20).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        except:
-            self.driver.save_screenshot('/tmp/select_opportunity_los1.png')
-            self.assertTrue(False, "Error in selecting the Assessment opportunity.")
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         all_options = dropdown.find_element_by_class_name("asmtDropdownMenu").find_elements_by_class_name(
-                'asmtSelection')
+            'asmtSelection')
         for each in all_options:
             '''
             Another way to handle the unicode encode error is to encode the expected result and then compare it with the actual text
@@ -481,17 +461,12 @@ class LosHelper(SessionShareHelper):
             if selection in each.text:
                 section = each
         section.click()
-        self.driver.save_screenshot('/tmp/select_opportunity_los2.png')
+        add_screen_to_report('/tmp/select_opportunity_los2.png')
 
     def check_current_selected_opportunity(self, expected_value):
-        try:
-            WebDriverWait(self.driver, 20).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        except:
-            self.driver.save_screenshot('/tmp/iab_screenshot.png')
-            self.assertTrue(False, "Error in loading the IAB results.")
-        self.driver.save_screenshot('/tmp/check_current_selected_opportunity2.png')
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
+        add_screen_to_report('/tmp/check_current_selected_opportunity2.png')
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown_value = dropdown.find_element_by_id("selectedAsmtType").text
         self.assertEqual(expected_value, dropdown_value, "Current opportunity selector is invalid on LOS.")
 
@@ -499,7 +474,7 @@ class LosHelper(SessionShareHelper):
         '''
         Validate all the opportunity selector options in the LOS assessment drop down
         '''
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         options = dropdown.find_element_by_class_name("asmtDropdownMenu").find_elements_by_class_name('asmtSelection')
         actual_options = []
@@ -510,17 +485,17 @@ class LosHelper(SessionShareHelper):
             actual_options.append((each.text))
         print(expected_options)
         print(actual_options)
-        self.driver.save_screenshot('/tmp/check_opportunity_selectors1.png')
+        add_screen_to_report('/tmp/check_opportunity_selectors1.png')
         self.assertEqual(expected_options, actual_options,
                          "Opportunity selector options do not match the expected options on LOS")
         dropdown.find_element_by_tag_name("button").click()
-        self.driver.save_screenshot('/tmp/check_opportunity_selectors2.png')
+        add_screen_to_report('/tmp/check_opportunity_selectors2.png')
 
     def select_academic_year_los(self, options, selection):
         '''
         Select an option from the "Other Academic Years" section
         '''
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         dropdown_menu = dropdown.find_element_by_tag_name("ul")
         year_divider = dropdown_menu.find_elements_by_tag_name("li")
@@ -528,36 +503,25 @@ class LosHelper(SessionShareHelper):
         for option in dropdown_menu.find_elements_by_tag_name("li"):
             if option.text == selection:
                 option.click()
-        time.sleep(20)
         if selection == '2014 - 2015':
-            try:
-                reminder_text = "You are viewing a previous academic year. Return to 2015 - 2016."
-                # WebDriverWait(self.driver, 45).until(lambda driver: self.driver.find_element_by_class_name("reminderMessage"))
-                WebDriverWait(self.driver, 25).until(
-                        expected_conditions.visibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
-                self.assertIn(reminder_text, str(self.driver.find_element_by_class_name("reminderMessage").text),
-                              "Reminder text incorrectly displayed.")
-                # self.driver.find_element_by_class_name("reminderMessage").find_element_by_tag_name("a").click()
-            except:
-                self.driver.save_screenshot('/tmp/academic_yr_screenshot.png')
-                self.assertTrue(False, "Error in loading the grid after changing academic year selector.")
+            reminder_text = "You are viewing a previous academic year. Return to 2015 - 2016."
+            # wait_for(lambda driver: browser().find_element_by_class_name("reminderMessage"))
+            wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
+            self.assertIn(reminder_text, str(browser().find_element_by_class_name("reminderMessage").text),
+                          "Reminder text incorrectly displayed.")
+            # browser().find_element_by_class_name("reminderMessage").find_element_by_tag_name("a").click()
         elif selection == '2015 - 2016':
-            try:
-                WebDriverWait(self.driver, 15).until(
-                        expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
-            except:
-                self.driver.save_screenshot('/tmp/screenshot.png')
-                self.assertTrue(False, "Error in redirecting back to the requested page after login.")
+            wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
 
     def select_academic_year_los_language(self, num_yrs, reminder_text, selection):
         '''
         Select an option from the "Other Academic Years" section
         '''
-        dropdown = self.driver.find_element_by_class_name("asmtDropdown")
+        dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown.find_element_by_tag_name("button").click()
         # self.assertEqual("OTHER ACADEMIC YEARS", str(dropdown.find_element_by_class_name("asmtDropdownMenu").find_element_by_class_name('otherAcadmicYears').text), "OTHER ACADEMIC YEARS section not found in the dropdown")
         all_academic_year_options = dropdown.find_element_by_class_name("asmtDropdownMenu").find_elements_by_class_name(
-                'asmtYearButton')
+            'asmtYearButton')
         self.assertEqual(num_yrs, len(all_academic_year_options), "Number of academic years do not match")
         found = False
         for each in all_academic_year_options:
@@ -568,38 +532,22 @@ class LosHelper(SessionShareHelper):
         if found is False:
             self.assertTrue(False, "Error in find the academic year for selection.")
         element_to_click.click()
-        time.sleep(20)
         if selection == '2014 - 2015':
-            try:
-                # reminder_text = "You are viewing a previous academic year. Return to 2015 - 2016."
-                # WebDriverWait(self.driver, 45).until(lambda driver: self.driver.find_element_by_class_name("reminderMessage"))
-                WebDriverWait(self.driver, 25).until(
-                        expected_conditions.visibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
-                self.assertIn(reminder_text, self.driver.find_element_by_class_name("reminderMessage").text,
-                              "Reminder text incorrectly displayed.")
-                print("Switched to academic year 2015")
-            except:
-                self.driver.save_screenshot('/tmp/academic_yr_screenshot.png')
-                self.assertTrue(False, "Error in loading the grid after changing academic year selector.")
+            # reminder_text = "You are viewing a previous academic year. Return to 2015 - 2016."
+            # wait_for(lambda driver: browser().find_element_by_class_name("reminderMessage"))
+            wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
+            self.assertIn(reminder_text, browser().find_element_by_class_name("reminderMessage").text,
+                          "Reminder text incorrectly displayed.")
+            print("Switched to academic year 2015")
         elif selection == '2015 - 2016':
-            try:
-                WebDriverWait(self.driver, 15).until(
-                        expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
-            except:
-                self.driver.save_screenshot('/tmp/screenshot.png')
-                self.assertTrue(False, "Error in redirecting back to the requested page after login.")
+            wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
 
     def click_latest_year_reminder_msg(self):
         '''
         Click on the latest year link from the previous year reminder message
         '''
-        self.driver.find_element_by_class_name("reminderMessage").find_element_by_tag_name("a").click()
-        try:
-            WebDriverWait(self.driver, 15).until(
-                    expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in redirecting back to the requested page after login.")
+        browser().find_element_by_class_name("reminderMessage").find_element_by_tag_name("a").click()
+        wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "reminderMessage")))
 
     def select_tab_los_view(self, examtype, tabname):
         if examtype == "Summative":
@@ -622,13 +570,8 @@ class LosHelper(SessionShareHelper):
                 headers = ["Students", "Most Recent Mathematics", "Mathematics Overall", "Status",
                            "Most Recent ELA/Literacy", "ELA/Literacy Overall", "Status"]
 
-        try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing the view")
-        los_views = self.driver.find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
+        los_views = browser().find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
         view_dict = {}
         for each in los_views:
             view_dict[each.text] = each
@@ -636,29 +579,19 @@ class LosHelper(SessionShareHelper):
         view_dict[tabname].click()
         time.sleep(5)
 
-        try:
-            self.check_subject_headers(headers)
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing to the subject view page")
+        self.check_subject_headers(headers)
 
     def select_los_view(self, selection):
         '''
         Select the view in LOS
         '''
-        try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing the view")
-        los_views = self.driver.find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
+        los_views = browser().find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
         view_dict = {}
         for each in los_views:
             view_dict[each.text] = each
         self.assertEqual(3, len(view_dict), "3 LOS views not found")
         view_dict[selection].click()
-        time.sleep(15)
         if selection == "Mathematics":
             headers = ["Students", "Date taken", "Mathematics Overall", "Status", "Concepts & Procedures",
                        "Problem Solving and Modeling & Data Analysis", "Communicating Reasoning"]
@@ -668,64 +601,40 @@ class LosHelper(SessionShareHelper):
         elif selection == "Overview":
             headers = ["Students", "Most Recent Mathematics", "Mathematics Overall", "Status",
                        "Most Recent ELA/Literacy", "ELA/Literacy Overall"]
-        try:
-            self.check_subject_headers(headers)
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing to the subject view page")
+        self.check_subject_headers(headers)
 
     def select_los_view_iab(self, selection, headers):
         '''
         Select the IAB subject view in LOS
         '''
-        try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing the view")
-        los_views = self.driver.find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
+        los_views = browser().find_element_by_class_name("detailsItem").find_elements_by_tag_name("button")
         view_dict = {}
         for each in los_views:
             view_dict[each.text] = each
         self.assertEqual(2, len(view_dict), "2 LOS views not found")
         view_dict[selection].click()
-        time.sleep(15)
-        try:
-            self.check_subject_headers(headers)
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in changing to the LOS IAB subject view page")
+        self.check_subject_headers(headers)
 
     def validate_iab_disclaimer(self, grade):
         '''
         Validates the IAB disclaimer message.
         '''
-        try:
-            WebDriverWait(self.driver, 10).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "IABMessage")))
-            message = str(self.driver.find_element_by_class_name("IABMessage").text)
-            iab_text = "The results below are " + grade + " Interim Assessment Blocks administered during the selected academic year."
-            self.assertIn(iab_text, message, "IAB Reminder text incorrectly displayed.")
-        except:
-            self.driver.save_screenshot('/tmp/iab_screenshot.png')
-            self.assertTrue(False, "Error in loading the IAB results.")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "IABMessage")))
+        message = str(browser().find_element_by_class_name("IABMessage").text)
+        iab_text = "The results below are " + grade + " Interim Assessment Blocks administered during the selected academic year."
+        self.assertIn(iab_text, message, "IAB Reminder text incorrectly displayed.")
 
     def check_iab_column_headers(self, expected_cols):
-        try:
-            WebDriverWait(self.driver, 20).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
-        except:
-            self.driver.save_screenshot('/tmp/iab_screenshot.png')
-            self.assertTrue(False, "Error in loading the IAB results.")
-        grid_heading_element = self.driver.find_element_by_class_name("ui-jqgrid-htable").find_element_by_class_name(
-                "jqg-second-row-header")
+        wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "detailsItem")))
+        grid_heading_element = browser().find_element_by_class_name("ui-jqgrid-htable").find_element_by_class_name(
+            "jqg-second-row-header")
         grid_heading = grid_heading_element.get_attribute('textContent')
         expected_text = ''.join(str(each) for each in expected_cols)
         self.assertEqual(expected_text, grid_heading, "The grid headings are not listed")
-        # grid_headers = [elem.text for elem in self.driver.find_elements_by_css_selector(".ui-jqgrid-htable .jqg-second-row-header th[role='columnheader'] div") if elem.text]
+        # grid_headers = [elem.text for elem in browser().find_elements_by_css_selector(".ui-jqgrid-htable .jqg-second-row-header th[role='columnheader'] div") if elem.text]
         # self.assertEqual(len(expected_cols), len(grid_headers), "Invalid number of IAB columns found.")
-        self.driver.save_screenshot('/tmp/check_iab_column_headers.png')
+        add_screen_to_report('/tmp/check_iab_column_headers.png')
 
     def select_language(self, language):
         if language == 'en':
@@ -738,6 +647,6 @@ class LosHelper(SessionShareHelper):
             xpath = None
             print("Please provide valid Language option")
 
-        self.driver.find_element_by_id("user-settings").click()
-        self.driver.find_element_by_xpath(xpath).click()
-        WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_id("username"))
+        browser().find_element_by_id("user-settings").click()
+        browser().find_element_by_xpath(xpath).click()
+        wait_for(lambda driver: driver.find_element_by_id("username"))

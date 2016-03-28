@@ -7,14 +7,12 @@ import csv
 import fnmatch
 import os
 import shutil
-import unittest
-
-from nose.plugins.attrib import attr
 
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
-from edware_testing_automation.utils.test_base import DOWNLOADS
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import DOWNLOADS, add_screen_to_report
 
 DOWNLOAD_DIRECTORY = DOWNLOADS + '/'
 UNZIPPED_FILE_PATH = '/tmp/item_level/'
@@ -229,9 +227,9 @@ class TestPost(ApiHelper, SessionShareHelper, ExtractsHelper):
         # from json assessments | interim comprehensive | 72d8248d-0e8f-404b-8763-a5b7bcdaf535
         # Thomas Roccos Lavalleys has taken 5 interim comprehensive exams
         self.assertEqual(
-                len(elements.get('assessments').get('Interim Comprehensive').get(
-                        '72d8248d-0e8f-404b-8763-a5b7bcdaf535')),
-                5, 'The number of interim comprehensive exam should be 5')
+            len(elements.get('assessments').get('Interim Comprehensive').get(
+                '72d8248d-0e8f-404b-8763-a5b7bcdaf535')),
+            5, 'The number of interim comprehensive exam should be 5')
         self.check_number_list_elements(elements['metadata']['cutpoints']['subject2']['cut_point_intervals'], 4)
 
     # US36575 Quick links API test
@@ -451,14 +449,14 @@ class TestPost(ApiHelper, SessionShareHelper, ExtractsHelper):
         self.set_request_cookie('shall')
         self.set_request_header("content-type", "application/json")
         self.set_payload(
-                {"districtId": "229",
-                 "schoolId": "936",
-                 "asmtGrade": ["03", "04"],
-                 "asmtYear": 2015,
-                 "asmtType": "SUMMATIVE",
-                 "lang": "en",
-                 "stateCode": "NC",
-                 "mode": "color"}
+            {"districtId": "229",
+             "schoolId": "936",
+             "asmtGrade": ["03", "04"],
+             "asmtYear": 2015,
+             "asmtType": "SUMMATIVE",
+             "lang": "en",
+             "stateCode": "NC",
+             "mode": "color"}
         )
         self.send_request("POST", "/services/pdf/indivStudentReport.html")
         self.check_response_code(200)
@@ -484,77 +482,69 @@ class TestPost(ApiHelper, SessionShareHelper, ExtractsHelper):
         down_url = response[0]['web_download_url']
         self.check_bulk_pdf_file(str(down_url), str(zipfile_name), 2)
 
-    @attr('hpz')
+    # @attr('hpz')
     def test_post_item_level_extract(self):
         self.set_request_cookie('shall')
         self.set_payload(
-                {"stateCode": "NC", "asmtYear": "2016", "asmtType": "SUMMATIVE", "asmtSubject": "Math",
-                 "asmtGrade": "03"})
+            {"stateCode": "NC", "asmtYear": "2016", "asmtType": "SUMMATIVE", "asmtSubject": "Math",
+             "asmtGrade": "03"})
         self.send_request("POST", "/services/extract/assessment_item_level")
         self.check_response_code(200)
         self.check_not_error_page()
-        self.driver = self.get_driver()
-        try:
-            self.open_requested_page_redirects_login_page("state_view_sds")
-            self.enter_login_credentials('shall', 'shall1234')
-            elements = self._response.json()['files']
-            for each in elements:
-                url = (each['web_download_url'])
-                file_name = (each['fileName'])
-                # time.sleep(10)
-                self.driver.get(url)
-                # time.sleep(5)
-                downloaded_file = DOWNLOAD_DIRECTORY + file_name
-                self.files_to_cleanup_at_end.append(downloaded_file)
-                self.unzip_file_to_directory(downloaded_file, UNZIPPED_FILE_PATH)
-                # time.sleep(5)
-                csv_file_names, _ = self.get_file_names(UNZIPPED_FILE_PATH)
-            for each in csv_file_names:
-                csv_file_path = os.path.join(UNZIPPED_FILE_PATH, each)
-                self.validate_item_level_csv_headers(csv_file_path)
-                with(open(csv_file_path)) as f:
-                    row_count = sum(1 for row in csv.reader(f))
-                    self.assertEqual(row_count, 946)
-                f.close()
-        finally:
-            self.driver.quit()
+        self.open_requested_page_redirects_login_page("state_view_sds")
+        self.enter_login_credentials('shall', 'shall1234')
+        elements = self._response.json()['files']
+        for each in elements:
+            url = (each['web_download_url'])
+            file_name = (each['fileName'])
+            # time.sleep(10)
+            browser().get(url)
+            # time.sleep(5)
+            downloaded_file = DOWNLOAD_DIRECTORY + file_name
+            self.files_to_cleanup_at_end.append(downloaded_file)
+            self.unzip_file_to_directory(downloaded_file, UNZIPPED_FILE_PATH)
+            # time.sleep(5)
+            csv_file_names, _ = self.get_file_names(UNZIPPED_FILE_PATH)
+        for each in csv_file_names:
+            csv_file_path = os.path.join(UNZIPPED_FILE_PATH, each)
+            self.validate_item_level_csv_headers(csv_file_path)
+            with(open(csv_file_path)) as f:
+                row_count = sum(1 for row in csv.reader(f))
+                self.assertEqual(row_count, 946)
+            f.close()
 
         self.assertEqual(len(csv_file_names), 3, 'expected number of csv files NOT found')
 
-    @attr('hpz')
+    # @attr('hpz')
     def test_post_raw_data_xml(self):
         self.set_request_cookie('gman')
         self.set_payload(
-                {"stateCode": "NC", "asmtYear": "2015", "asmtType": "SUMMATIVE", "asmtSubject": "ELA",
-                 "asmtGrade": "04"})
+            {"stateCode": "NC", "asmtYear": "2015", "asmtType": "SUMMATIVE", "asmtSubject": "ELA",
+             "asmtGrade": "04"})
         self.send_request("POST", "/services/extract/raw_data")
         self.check_response_code(200)
         self.check_not_error_page()
-        self.driver = self.get_driver()
-        try:
-            self.open_requested_page_redirects_login_page("state_view_sds")
-            self.enter_login_credentials('gman', 'gman1234')
-            elements = self._response.json()['files']
-            for each in elements:
-                url = (each['web_download_url'])
-                file_name = (each['fileName'])
-                print(url)
-                print(file_name)
-                # time.sleep(5)
-                self.driver.get(url)
-                # time.sleep(5)
-                self.driver.save_screenshot('/tmp/screenshot_rawdata1.png')
-                downloaded_xml_file = DOWNLOAD_DIRECTORY + file_name
-                self.files_to_cleanup_at_end.append(downloaded_xml_file)
-                # time.sleep(5)
-                self.unzip_file_to_directory(downloaded_xml_file, UNZIPPED_XML_FILE)
-            # ToDo: 0 is incorrect expectation according to logic
-            self.assertEqual(len(fnmatch.filter(os.listdir(UNZIPPED_XML_FILE), '*.xml')), 0,
-                             "Raw data XML file count is wrong")
-        finally:
-            self.driver.quit()
+        self.open_requested_page_redirects_login_page("state_view_sds")
+        self.enter_login_credentials('gman', 'gman1234')
+        elements = self._response.json()['files']
+        for each in elements:
+            url = (each['web_download_url'])
+            file_name = (each['fileName'])
+            print(url)
+            print(file_name)
+            # time.sleep(5)
+            browser().get(url)
+            # time.sleep(5)
+            add_screen_to_report('/tmp/screenshot_rawdata1.png')
+            downloaded_xml_file = DOWNLOAD_DIRECTORY + file_name
+            self.files_to_cleanup_at_end.append(downloaded_xml_file)
+            # time.sleep(5)
+            self.unzip_file_to_directory(downloaded_xml_file, UNZIPPED_XML_FILE)
+        # ToDo: 0 is incorrect expectation according to logic
+        self.assertEqual(len(fnmatch.filter(os.listdir(UNZIPPED_XML_FILE), '*.xml')), 0,
+                         "Raw data XML file count is wrong")
 
-    @attr('hpz')
+    # @attr('hpz')
     def test_post_sr_statistics_report(self):
         # self.set_request_cookie('jmacey')
         self.set_request_cookie('gman')
@@ -572,7 +562,7 @@ class TestPost(ApiHelper, SessionShareHelper, ExtractsHelper):
                                      'expected_sr_stats_report_NC.csv')
         self.check_csv_extract_matches_file(str(down_url), str(file_name), id, (expected_file))
 
-    @attr('hpz')
+    # @attr('hpz')
     def test_post_sr_completion_report(self):
         # self.set_request_cookie('jmacey')
         # self.set_payload({"academicYear": 2012, "stateCode": "VT"})
@@ -600,60 +590,47 @@ class TestPost(ApiHelper, SessionShareHelper, ExtractsHelper):
             shutil.rmtree(filepath)
 
     def check_bulk_pdf_file(self, url, file_name, num_files):
-        self.driver = self.get_driver()
-        try:
-            self.open_requested_page_redirects_login_page("state_view_sds")
-            self.enter_login_credentials('shall', 'shall1234')
-            self.check_redirected_requested_page("state_view_sds")
-            self.driver.get(url)
-            # time.sleep(40)
-            downloaded_file = DOWNLOAD_DIRECTORY + file_name
-            print(downloaded_file)
-            self.files_to_cleanup_at_end.append(downloaded_file)
-            self.check_downloaded_zipfile_present(file_name)
-            self.unzip_file_to_directory(downloaded_file, UNZIPPED_PDF_PATH)
-            pdf_file_names = self.get_pdf_file_name(UNZIPPED_PDF_PATH)
-            self.assertEqual(len(pdf_file_names), num_files, 'expected number of pdf files NOT found')
-            for each in pdf_file_names:
-                pdf_file_path = os.path.join(UNZIPPED_PDF_PATH, each)
-                pdf_file_size = os.path.getsize(pdf_file_path)
-                print("test_post_los_bulk_pdf_color: bulk pdf file size = {s}".format(s=pdf_file_size))
-                self.assertNotEqual(0, pdf_file_size, "Empty file")
-        finally:
-            self.driver.quit()
+        self.open_requested_page_redirects_login_page("state_view_sds")
+        self.enter_login_credentials('shall', 'shall1234')
+        self.check_redirected_requested_page("state_view_sds")
+        browser().get(url)
+        # time.sleep(40)
+        downloaded_file = DOWNLOAD_DIRECTORY + file_name
+        print(downloaded_file)
+        self.files_to_cleanup_at_end.append(downloaded_file)
+        self.check_downloaded_zipfile_present(file_name)
+        self.unzip_file_to_directory(downloaded_file, UNZIPPED_PDF_PATH)
+        pdf_file_names = self.get_pdf_file_name(UNZIPPED_PDF_PATH)
+        self.assertEqual(len(pdf_file_names), num_files, 'expected number of pdf files NOT found')
+        for each in pdf_file_names:
+            pdf_file_path = os.path.join(UNZIPPED_PDF_PATH, each)
+            pdf_file_size = os.path.getsize(pdf_file_path)
+            print("test_post_los_bulk_pdf_color: bulk pdf file size = {s}".format(s=pdf_file_size))
+            self.assertNotEqual(0, pdf_file_size, "Empty file")
 
     def check_csv_extract_matches_file(self, url, file_name, id, expected_file):
         print(expected_file)
         expected_csv = list(csv.reader(open(expected_file)))
 
-        self.driver = self.get_driver()
         # self.open_requested_page_redirects_login_page("state_view_vt_tenant")
         # self.enter_login_credentials('jmacey', 'jmacey1234')
         # self.check_redirected_requested_page("state_view_sds")
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials('gman', 'gman1234')
         self.check_redirected_requested_page("state_view_sds")
-        self.driver.get(url)
-        try:
-            downloaded_file = DOWNLOAD_DIRECTORY + file_name
-            print(downloaded_file)
-            self.files_to_cleanup_at_end.append(downloaded_file)
-            self.check_downloaded_zipfile_present(file_name)
-            self.unzip_file_to_directory(downloaded_file, UNZIPPED_STU_REG_FILE_PATH)
+        browser().get(url)
+        downloaded_file = DOWNLOAD_DIRECTORY + file_name
+        print(downloaded_file)
+        self.files_to_cleanup_at_end.append(downloaded_file)
+        self.check_downloaded_zipfile_present(file_name)
+        self.unzip_file_to_directory(downloaded_file, UNZIPPED_STU_REG_FILE_PATH)
 
-            csv_file_names = self.get_csv_file_name(UNZIPPED_STU_REG_FILE_PATH)
-            self.assertEqual(len(csv_file_names), 1, 'expected number of pdf files NOT found')
-            for each in csv_file_names:
-                csv_file_path = os.path.join(UNZIPPED_STU_REG_FILE_PATH, each)
-                csv_file_size = os.path.getsize(csv_file_path)
-                print("test_post_student_reg: Student registration csv file size = ", csv_file_size)
-                self.assertNotEqual(0, csv_file_size, "Empty file")
-                actual_csv = list(csv.reader(open(csv_file_path)))
-                self.assertEqual(expected_csv, actual_csv)
-        finally:
-            self.driver.quit()
-
-
-if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+        csv_file_names = self.get_csv_file_name(UNZIPPED_STU_REG_FILE_PATH)
+        self.assertEqual(len(csv_file_names), 1, 'expected number of pdf files NOT found')
+        for each in csv_file_names:
+            csv_file_path = os.path.join(UNZIPPED_STU_REG_FILE_PATH, each)
+            csv_file_size = os.path.getsize(csv_file_path)
+            print("test_post_student_reg: Student registration csv file size = ", csv_file_size)
+            self.assertNotEqual(0, csv_file_size, "Empty file")
+            actual_csv = list(csv.reader(open(csv_file_path)))
+            self.assertEqual(expected_csv, actual_csv)

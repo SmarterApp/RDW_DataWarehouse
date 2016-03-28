@@ -7,9 +7,10 @@ import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 
 from edware_testing_automation.frontend_tests.filtering_helper import FilteringHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
 
 
 class FilteringScenarios(FilteringHelper):
@@ -23,7 +24,6 @@ class FilteringScenarios(FilteringHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -55,12 +55,11 @@ class FilteringScenarios(FilteringHelper):
         self.close_filter_menu(filter_popup, "apply")
         self.check_overall_filtered_count("4", "Out of 35 students", "4", "Out of 35 students")
         self.check_filter_bar(["Race/Ethnicity: Asian"])
-        self.driver.find_element_by_link_text("North Carolina").click()
+        browser().find_element_by_link_text("North Carolina").click()
         try:
-            WebDriverWait(self.driver, 25).until(
-                    expected_conditions.visibility_of_element_located((By.CLASS_NAME, "ui-jqgrid-view")))
+            wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "ui-jqgrid-view")))
         except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
+            add_screen_to_report('/tmp/screenshot.png')
         self.check_filter_bar(["Race/Ethnicity: Asian"])
         self.check_overall_filtered_count("11", "Out of 89 students", "8", "Out of 77 students")
 
@@ -147,13 +146,10 @@ class FilteringScenarios(FilteringHelper):
         self.check_student_record(students)
         self.check_filter_bar(["Student Group: Ron Swanson, Victoria Hanson"])
 
-    #        filter2_popup = self.open_filter_menu()
-    #        self.select_grouping2_filter(filter2_popup, ['Kate Ryan'], ['Charlie Washington', 'Kate Ryan', 'Romy Liping', 'Simon Crowe', ''])
-    #        self.close_filter_menu(filter2_popup, "apply")
-    #        self.total_los_records(1)
-    #        students = ["Peterson, Linda"]
-    #        self.check_student_record(students)
-    #        self.check_filter_bar(["Student Group 1: Catherine Zones, Will Clarkson", "Student Group 2: Kate Ryan"])
-
-    def tearDown(self):
-        self.driver.quit()
+        #        filter2_popup = self.open_filter_menu()
+        #        self.select_grouping2_filter(filter2_popup, ['Kate Ryan'], ['Charlie Washington', 'Kate Ryan', 'Romy Liping', 'Simon Crowe', ''])
+        #        self.close_filter_menu(filter2_popup, "apply")
+        #        self.total_los_records(1)
+        #        students = ["Peterson, Linda"]
+        #        self.check_student_record(students)
+        #        self.check_filter_bar(["Student Group 1: Catherine Zones, Will Clarkson", "Student Group 2: Kate Ryan"])

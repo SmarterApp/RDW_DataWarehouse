@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-__author__ = 'vnatarajan'
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
 
-from selenium.webdriver.support.ui import WebDriverWait
+__author__ = 'vnatarajan'
 
 from edware_testing_automation.frontend_tests.indiv_student_helper import IndividualStudentHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
@@ -18,12 +19,8 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         LosHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("gman", "gman1234")
-
-    def tearDown(self):
-        self.driver.quit()
 
     def select_language(self, language):
         if language == 'en':
@@ -33,15 +30,11 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         elif language == "vi":
             xpath = "//*[@id='languageSelector']/div[2]/li[3]/input"  # Vietnamess Language selection
 
-        if self.driver.find_element_by_id("header").find_element_by_id("user-settings"):
-            self.driver.find_element_by_id("user-settings").click()
+        if browser().find_element_by_id("header").find_element_by_id("user-settings"):
+            browser().find_element_by_id("user-settings").click()
 
-            self.driver.find_element_by_xpath(xpath).click()
-        try:
-            WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_id("username"))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in login page")
+            browser().find_element_by_xpath(xpath).click()
+        wait_for(lambda driver: driver.find_element_by_id("username"))
 
     # test Math level-3 and ELA level-1 in grade 3 to 5
     def test_ald_messages_english_grade3_case1(self):
@@ -50,19 +43,19 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
         self.drill_down_navigation("03", "jqgfirstrow")
-        self.driver.save_screenshot('/tmp/grade3.png')
+        add_screen_to_report('/tmp/grade3.png')
         # Click on student link from list of students
         self.drill_down_navigation("jqg20", "overallScoreSection")
         breadcrumb_list = ["North Carolina", "Sunset School District", "Sunset - Eastern Elementary", "Grade 03"]
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Robert Axford")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1888, "rgba(106, 165, 6, 1)", "Overall Score",
                                      "Level 3")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -71,12 +64,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1309, "rgba(187, 35, 28, 1)", "Overall Score",
                                      "Level 1")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -93,12 +86,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Eric Morre")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1201, "rgba(187, 35, 28, 1)", "Overall Score",
                                      "Level 1")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -107,12 +100,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 2399, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -129,12 +122,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Marie Donohue")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1659, "rgba(228, 201, 4, 1)", "Overall Score",
                                      "Level 2")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -143,12 +136,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1575, "rgba(228, 201, 4, 1)", "Overall Score",
                                      "Level 2")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -165,12 +158,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Donte Hammer")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 2399, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -179,12 +172,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 2238, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -201,12 +194,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Laura Defalco")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1800, "rgba(106, 165, 6, 1)", "Overall Score",
                                      "Level 3")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -215,12 +208,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1862, "rgba(106, 165, 6, 1)", "Overall Score",
                                      "Level 3")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -238,12 +231,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Nate Archibald")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 2295, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -252,12 +245,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1876, "rgba(106, 165, 6, 1)", "Overall Score",
                                      "Level 3")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -275,12 +268,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Michele Grant")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1638, "rgba(228, 201, 4, 1)", "Overall Score",
                                      "Level 2")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -289,12 +282,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 2399, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -312,12 +305,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Kimberly Traylor")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 2100, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -326,12 +319,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1352, "rgba(187, 35, 28, 1)", "Overall Score",
                                      "Level 1")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -349,12 +342,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Jose Askew")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1883, "rgba(106, 165, 6, 1)", "Overall Score",
                                      "Level 3")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after completing high school coursework."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -363,12 +356,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 1743, "rgba(228, 201, 4, 1)", "Overall Score",
                                      "Level 2")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -386,12 +379,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.check_breadcrumb_hierarchy_links(breadcrumb_list)
         self.check_breadcrumb_trail("Angelica Richardson")
         self.check_current_subject_view("Mathematics")
-        math_overall_score_section = self.driver.find_element_by_id(
-                "individualStudentContent").find_element_by_class_name("overallScoreSection")
+        math_overall_score_section = browser().find_element_by_id(
+            "individualStudentContent").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(math_overall_score_section, 1267, "rgba(187, 35, 28, 1)", "Overall Score",
                                      "Level 1")
-        math_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection0")
+        math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection0")
         math_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
         math_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
@@ -400,19 +393,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         # check ELA
         self.select_subject_view("ELA/Literacy")
         self.check_current_subject_view("ELA/Literacy")
-        ela_overall_score_section = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1").find_element_by_class_name("overallScoreSection")
+        ela_overall_score_section = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1").find_element_by_class_name("overallScoreSection")
         self.check_overall_Score_ald(ela_overall_score_section, 2399, "rgba(35, 124, 203, 1)", "Overall Score",
                                      "Level 4")
-        ela_content_area = self.driver.find_element_by_id("individualStudentContent").find_element_by_id(
-                "assessmentSection1")
+        ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
+            "assessmentSection1")
         ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
         ela_left_pane_content = {
             "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

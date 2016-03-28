@@ -28,7 +28,6 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -228,16 +227,9 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
         return all_rows
 
     def tearDown(self):
-        self.driver.quit()
         if os.path.exists(DOWNLOADS):
             try:
                 # shutil.rmtree(DOWNLOADS)
                 pass
             except:
                 raise AssertionError("Unable to delete the downloads directory.")
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

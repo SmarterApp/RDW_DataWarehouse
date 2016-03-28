@@ -3,7 +3,6 @@ Created on Feb 4, 2013
 
 @author: dip, nparoha
 '''
-import unittest
 
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
 
@@ -67,8 +66,3 @@ class TestOptions(ApiHelper):
         # Check schoolId
         values = {'required': 'false', 'type': 'string'}
         self.check_response_fields_and_values("schoolId", values)
-
-
-if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

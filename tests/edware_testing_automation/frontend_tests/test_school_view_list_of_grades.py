@@ -8,6 +8,7 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
 class ListOfGrades(ComparingPopulationsHelper):
@@ -21,7 +22,6 @@ class ListOfGrades(ComparingPopulationsHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -113,13 +113,13 @@ class ListOfGrades(ComparingPopulationsHelper):
         '''
         Validates the Report Info text displayed on the mouseover overlay in cpop-school view report
         '''
-        element_to_click = self.driver.find_element_by_id("infoBar").find_element_by_class_name(
-                "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name(
+            "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
         time.sleep(3)
-        popover_content = self.driver.find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
-                "popover-content")
+        popover_content = browser().find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
+            "popover-content")
         # Validate the headers
         report_info_headers = popover_content.find_elements_by_tag_name("h4")
         self.assertEqual("Purpose:", str(report_info_headers[0].text),
@@ -153,6 +153,3 @@ class ListOfGrades(ComparingPopulationsHelper):
                          str(features_bullet_points[3].text), "Fourth features bullet point not found.")
         self.assertEqual("Print Individual Student Reports (PDF) for all students in the school",
                          str(features_bullet_points[4].text), "Fifth features bullet point not found.")
-
-    def tearDown(self):
-        self.driver.quit()

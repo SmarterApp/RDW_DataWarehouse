@@ -6,7 +6,6 @@ Created on Jul 7, 2014
 import fnmatch
 import os
 import shutil
-import unittest
 
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
 from edware_testing_automation.frontend_tests.filtering_helper import FilteringHelper
@@ -22,7 +21,6 @@ class TestExtractWithFilters(FilteringHelper, ExtractsHelper):
         ExtractsHelper.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -36,7 +34,6 @@ class TestExtractWithFilters(FilteringHelper, ExtractsHelper):
         self.files_to_cleanup_at_end = []
 
     def tearDown(self):
-        self.driver.quit()
         if os.path.exists(UNZIPPED_DIR):
             shutil.rmtree(UNZIPPED_DIR)
         for file_to_delete in self.files_to_cleanup_at_end:
@@ -60,7 +57,7 @@ class TestExtractWithFilters(FilteringHelper, ExtractsHelper):
 
         # export_popup = self.open_file_download_popup()
         self.open_los_download_popup()
-        # self.driver.save_screenshot('/tmp/filter_extract2.png')
+        # add_screen_to_report('/tmp/filter_extract2.png')
         # check_los_export(export_popup, ['Current view (CSV)', 'Student assessment results (CSV)', 'Printable student reports (PDF)'])
         # self.select_extract_option(export_popup, 'Student assessment results (CSV)')
         filepath = DOWNLOAD_FILES + self.check_file_download()
@@ -87,8 +84,3 @@ class TestExtractWithFilters(FilteringHelper, ExtractsHelper):
                     break
         self.assertTrue(found, "No CSV files found with the given prefix and suffix")
         return file
-
-
-if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

@@ -54,10 +54,10 @@ class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
         self.send_xml_post("/services/xml", xml_payload)
         self.check_response_code(202)
         self.check_files(
-                os.path.join(TSB_RAW_DATA_PATH, "CA/2015/SUMMATIVE/20150727/ELA/3/2222/"),
-                time.strftime('%Y%m%d'),
-                "xml",
-                1
+            os.path.join(TSB_RAW_DATA_PATH, "CA/2015/SUMMATIVE/20150727/ELA/3/2222/"),
+            time.strftime('%Y%m%d'),
+            "xml",
+            1
         )
         batcher = '/opt/edware/test/tsbBatcher.sh'
         if os.path.exists(batcher):
@@ -97,10 +97,10 @@ class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
         self.send_xml_post("/services/xml", xml_payload)
         self.check_response_code(202)
         self.check_files(
-                os.path.join(TSB_RAW_DATA_PATH, "CA/2015/SUMMATIVE/20150727/ELA/3/2222/"),
-                time.strftime('%Y%m%d'),
-                "xml",
-                2
+            os.path.join(TSB_RAW_DATA_PATH, "CA/2015/SUMMATIVE/20150727/ELA/3/2222/"),
+            time.strftime('%Y%m%d'),
+            "xml",
+            2
         )
 
         # This is for jenkins test

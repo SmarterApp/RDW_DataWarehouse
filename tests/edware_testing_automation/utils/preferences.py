@@ -38,9 +38,9 @@ class ConfigLoader(object):
             self._config.get(section, option)
         else:
             raise PreferencesException(
-                    "Unable to read data for provided input: config = {c}, section = {s}, option = {o}".format(c=config,
-                                                                                                               s=section,
-                                                                                                               o=option))
+                "Unable to read data for provided input: config = {c}, section = {s}, option = {o}".format(c=config,
+                                                                                                           s=section,
+                                                                                                           o=option))
 
 
 _section_default = "DEFAULT"
@@ -69,7 +69,6 @@ class Edware(Enum):
 
 class Default(Enum):
     host = Config(_section_default, "host")
-    driver = Config(_section_default, "driver")
     port = Config(_section_default, "port")
 
     tbs_host = Config(_section_default, "tsb_host")

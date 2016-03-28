@@ -7,10 +7,11 @@ import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import wait_for
 
 
 class FilteringHelper(ComparingPopulationsHelper, LosHelper):
@@ -28,18 +29,17 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :return filter_popup: returns the filter popup window back to the calling method
         :type filter_popup: webdriver element
         '''
-        self.assertEqual("Filter", str(self.driver.find_element_by_id("actionBar").find_element_by_class_name(
-                "filterItem").find_element_by_class_name("filterLabel").text),
+        self.assertEqual("Filter", str(browser().find_element_by_id("actionBar").find_element_by_class_name(
+            "filterItem").find_element_by_class_name("filterLabel").text),
                          "Filter label not found on the actions bar")
         try:
-            self.driver.find_element_by_id("actionBar").find_element_by_class_name("filterItem").click()
-            WebDriverWait(self.driver, 20).until(
-                    lambda driver: driver.find_element_by_id("content").find_element_by_class_name("filter"))
+            browser().find_element_by_id("actionBar").find_element_by_class_name("filterItem").click()
+            wait_for(lambda driver: driver.find_element_by_id("content").find_element_by_class_name("filter"))
             self.assertEqual("Student Filters", str(
-                    self.driver.find_element_by_class_name("filter").find_element_by_class_name("section").text),
+                browser().find_element_by_class_name("filter").find_element_by_class_name("section").text),
                              "Student Filters label not displayed on the filter popup.")
             time.sleep(5)
-            filter_popup = self.driver.find_element_by_class_name("filter")
+            filter_popup = browser().find_element_by_class_name("filter")
             return filter_popup
         except:
             self.assertTrue(False, "Error in opening the filter menu.")
@@ -55,8 +55,8 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         elif action is "cancel":
             filter_popup.find_element_by_id("cancel-btn").click()
         elif action is "label":
-            self.driver.find_element_by_class_name("gridControls").find_element_by_class_name(
-                    "filter_label").find_element_by_class_name("caret").click()
+            browser().find_element_by_class_name("gridControls").find_element_by_class_name(
+                "filter_label").find_element_by_class_name("caret").click()
         else:
             self.assertTrue(False, "Invalid action passed in the close_filter_menu method")
 
@@ -156,7 +156,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type not_stated_percentage: string
         '''
         gender_filter = self.get_filter_dropdown(filter_popup, "sex")
-        WebDriverWait(self.driver, 15).until(lambda driver: gender_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: gender_filter.find_element_by_class_name("display"))
         self.assertEqual("Gender", str(gender_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "Gender filter static text incorrectly displayed.")
         expected_gender_options = ['Male', 'Female', 'Not Stated', '']
@@ -165,7 +165,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
 
     def select_validity_filter(self, filter_popup, selection):
         validity_filter = self.get_filter_dropdown(filter_popup, "validity")
-        WebDriverWait(self.driver, 15).until(lambda driver: validity_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: validity_filter.find_element_by_class_name("display"))
         self.assertEqual("Validity",
                          str(validity_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "Validity filter static text incorrectly displayed.")
@@ -175,7 +175,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
 
     def select_completeness_filter(self, filter_popup, selection):
         completeness_filter = self.get_filter_dropdown(filter_popup, "completeness")
-        WebDriverWait(self.driver, 15).until(lambda driver: completeness_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: completeness_filter.find_element_by_class_name("display"))
         self.assertEqual("Completeness",
                          str(completeness_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "Completeness filter static text incorrectly displayed.")
@@ -194,7 +194,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type not_stated_percentage: string
         '''
         iep_filter = self.get_filter_dropdown(filter_popup, "iep")
-        WebDriverWait(self.driver, 15).until(lambda driver: iep_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: iep_filter.find_element_by_class_name("display"))
         self.assertEqual("IEP", str(iep_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "IEP filter static text incorrectly displayed.")
         expected_iep_options = ['Yes', 'No', 'Not Stated',
@@ -212,7 +212,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type selection: list
         '''
         grouping_filter = self.get_filter_dropdown(filter_popup, "grouping")
-        WebDriverWait(self.driver, 15).until(lambda driver: grouping_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: grouping_filter.find_element_by_class_name("display"))
         self.assertEqual("Student Group",
                          str(grouping_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "Student Group 1 filter static text incorrectly displayed.")
@@ -230,7 +230,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type not_stated_percentage: string
         '''
         lep_filter = self.get_filter_dropdown(filter_popup, "lep")
-        WebDriverWait(self.driver, 15).until(lambda driver: lep_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: lep_filter.find_element_by_class_name("display"))
         self.assertEqual("Limited English Proficient (LEP)*",
                          str(lep_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "LEP filter static text incorrectly displayed.")
@@ -251,7 +251,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type not_stated_percentage: string
         '''
         disability_filter = self.get_filter_dropdown(filter_popup, "504")
-        WebDriverWait(self.driver, 15).until(lambda driver: disability_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: disability_filter.find_element_by_class_name("display"))
         self.assertEqual("504", str(disability_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "504 filter static text incorrectly displayed.")
         expected_504_options = ['Yes', 'No', 'Not Stated', not_stated_percentage]
@@ -267,7 +267,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type selection: list
         '''
         migrant_status_filter = self.get_filter_dropdown(filter_popup, "mig")
-        WebDriverWait(self.driver, 15).until(lambda driver: migrant_status_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: migrant_status_filter.find_element_by_class_name("display"))
         self.assertEqual("Migrant Status",
                          str(migrant_status_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "Migrant Status filter static text incorrectly displayed.")
@@ -286,7 +286,7 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         :type not_stated_percentage: string
         '''
         ethnicity_filter = self.get_filter_dropdown(filter_popup, "ethnicity")
-        WebDriverWait(self.driver, 15).until(lambda driver: ethnicity_filter.find_element_by_class_name("display"))
+        wait_for(lambda driver: ethnicity_filter.find_element_by_class_name("display"))
         self.assertEqual("Race/Ethnicity",
                          str(ethnicity_filter.find_element_by_class_name("display").get_attribute("innerHTML")),
                          "Ethnicity filter static text incorrectly displayed.")
@@ -312,48 +312,43 @@ class FilteringHelper(ComparingPopulationsHelper, LosHelper):
         '''
         math_static_text = math_unfiltered_text.rsplit(' ', 1)[0]
         ela_static_text = ela_unfiltered_text.rsplit(' ', 1)[0]
-        try:
-            WebDriverWait(self.driver, 20).until(
-                    expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "loader")))
-            WebDriverWait(self.driver, 30).until(lambda driver: driver.find_element_by_class_name("unfilteredTotal"))
-        except:
-            self.driver.save_screenshot('/tmp/screenshot.png')
-            self.assertTrue(False, "Error in loading the grid after filtering.")
-        overall_summary_sections = self.driver.find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name(
-                "td")
+        wait_for(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, "loader")))
+        wait_for(lambda driver: driver.find_element_by_class_name("unfilteredTotal"))
+
+        overall_summary_sections = browser().find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name(
+            "td")
         self.assertIn(math_total_students, str(overall_summary_sections[2].find_element_by_class_name(
-                "studentsTotal").text)), "Total # of students for Math assessment incorrectly displayed as {%s}" % format(
-                overall_summary_sections[1].text)
+            "studentsTotal").text)), "Total # of students for Math assessment incorrectly displayed as {%s}" % format(
+            overall_summary_sections[1].text)
         self.assertIn(math_static_text, str(overall_summary_sections[2].find_element_by_class_name(
-                "unfilteredTotal").text)), "Unfiltered count text incorrectly displayed."
+            "unfilteredTotal").text)), "Unfiltered count text incorrectly displayed."
         self.assertIn("students", str(
-                overall_summary_sections[2].find_element_by_class_name("unfilteredTotal").find_element_by_class_name(
-                        "studentText").text)), "Unfiltered count text incorrectly displayed."
+            overall_summary_sections[2].find_element_by_class_name("unfilteredTotal").find_element_by_class_name(
+                "studentText").text)), "Unfiltered count text incorrectly displayed."
 
         self.assertIn(ela_total_students, str(overall_summary_sections[
                                                   4].text)), "Total # of students for ELA assessment incorrectly displayed as {%s}" % format(
-                overall_summary_sections[2].text)
+            overall_summary_sections[2].text)
         self.assertIn(ela_static_text, str(overall_summary_sections[4].find_element_by_class_name(
-                "unfilteredTotal").text)), "Unfiltered count text incorrectly displayed."
+            "unfilteredTotal").text)), "Unfiltered count text incorrectly displayed."
         self.assertIn("students", str(
-                overall_summary_sections[4].find_element_by_class_name("unfilteredTotal").find_element_by_class_name(
-                        "studentText").text)), "Unfiltered count text incorrectly displayed."
+            overall_summary_sections[4].find_element_by_class_name("unfilteredTotal").find_element_by_class_name(
+                "studentText").text)), "Unfiltered count text incorrectly displayed."
 
     def check_no_results(self):
         expected_error_msg = 'There is no data available for your request.'
         self.assertEqual(expected_error_msg,
-                         str(self.driver.find_element_by_id("content").find_element_by_id("errorMessage").text),
+                         str(browser().find_element_by_id("content").find_element_by_id("errorMessage").text),
                          "Error message not found")
 
     def check_filter_bar(self, expected_filters):
         actual_filters = []
         try:
-            WebDriverWait(self.driver, 10).until(
-                    lambda driver: driver.find_element_by_class_name("selectedFilter_panel"))
+            wait_for(lambda driver: driver.find_element_by_class_name("selectedFilter_panel"))
         except:
             self.assertTrue(False, "Error in viewing the selected filters bar.")
-        selected_panels = self.driver.find_element_by_class_name("selectedFilter_panel").find_elements_by_class_name(
-                "selectedFilterGroup")
+        selected_panels = browser().find_element_by_class_name("selectedFilter_panel").find_elements_by_class_name(
+            "selectedFilterGroup")
         for each in selected_panels:
             actual_filters.append(str(each.text))
         self.assertEqual(expected_filters, actual_filters, "Selected filters incorrectly displayed on the bar.")

@@ -8,9 +8,9 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
-# @unittest.skip("skipping this test temporarily.")
 class ListOfSchools(ComparingPopulationsHelper):
     '''
     Tests for Comparing Population report - District view that displays the 'List of Schools'
@@ -22,7 +22,6 @@ class ListOfSchools(ComparingPopulationsHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         # Login as a district education administrator
         self.enter_login_credentials("slee", "slee1234")
@@ -132,13 +131,13 @@ class ListOfSchools(ComparingPopulationsHelper):
         '''
         Validates the Report Info text displayed on the mouseover overlay in cpop-district view report
         '''
-        element_to_click = self.driver.find_element_by_id("infoBar").find_element_by_class_name(
-                "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
-        hover_mouse = ActionChains(self.driver).move_to_element(element_to_click)
+        element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name(
+            "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
+        hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
         time.sleep(3)
-        popover_content = self.driver.find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
-                "popover-content")
+        popover_content = browser().find_element_by_class_name("reportInfoPopover").find_element_by_class_name(
+            "popover-content")
         # Validate the headers
         report_info_headers = popover_content.find_elements_by_tag_name("h4")
         self.assertEqual("Purpose:", str(report_info_headers[0].text),
@@ -170,12 +169,3 @@ class ListOfSchools(ComparingPopulationsHelper):
                          str(features_bullet_points[2].text), "Third features bullet point not found.")
         self.assertEqual("Download student assessment results for further analysis",
                          str(features_bullet_points[3].text), "Fourth features bullet point not found.")
-
-    def tearDown(self):
-        self.driver.quit()
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

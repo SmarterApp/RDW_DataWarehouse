@@ -7,6 +7,7 @@ import os
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 here = os.path.abspath(os.path.dirname(__file__))
 PRINT_JS_FILE = os.path.abspath(os.path.join(os.path.join(here, 'print_js.js')))
@@ -21,21 +22,19 @@ class PrintCSS(ComparingPopulationsHelper, LosHelper):
     ''' setUp: Open web page after redirecting after logging in as a teacher'''
 
     def setUp(self):
-        self.driver = self.get_driver()
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
-        self.driver.execute_script("window.onbeforeprint();")
+        browser().execute_script("window.onbeforeprint();")
 
     def tearDown(self):
-        self.driver.execute_script("window.onafterprint();")
-        self.driver.quit()
+        browser().execute_script("window.onafterprint();")
 
     def test_print_css_cpop_state_view(self):
         with open(PRINT_JS_FILE) as f:
             src = f.read()
-        self.driver.execute_script(src)
-        cpop = self.driver.find_element_by_class_name("cpop").find_element_by_css_selector("div[role='main']")
+        browser().execute_script(src)
+        cpop = browser().find_element_by_class_name("cpop").find_element_by_css_selector("div[role='main']")
         self.check_print_header(cpop)
         self.check_print_actionbar(cpop)
 

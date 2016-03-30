@@ -1,31 +1,33 @@
 # -*- coding: UTF-8 -*-
-'''
+"""
 Created on Feb 5, 2013
 
 @author: nparoha
-'''
-import time
+"""
+
+import allure
 
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
-from edware_testing_automation.utils.test_base import add_screen_to_report
+from edware_testing_automation.utils.test_base import save_screen
 
 
+@allure.feature('Smarter: Grade view')
 class ListOfStudents(LosHelper):
-    '''
+    """
     Tests for Comparing Population report - Grade view that displays the 'List of Students'
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         LosHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         # login as a teacher
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.story('Reports filtering & academic years', 'Legend & info', 'Summative reports view')
     def test_list_of_students(self):
         print(
             "Comparing Populations: Daybreak Western Elementary - Grade 3 school view displaying the List of Students")
@@ -87,16 +89,17 @@ class ListOfStudents(LosHelper):
         print("TC_overall_score_column: Check the overall score and swim lanes in the List of students grid.")
         student_record = self.find_student_row("Dyess, Nancy")
         # TODO: Fix this.  It fails on jenkins
-        #        self.check_overall_score_tooltip("Andrews, Jennifer", "Math", "Jennifer Andrews | Math Overall Score",
+        # self.check_overall_score_tooltip("Andrews, Jennifer", "Math", "Jennifer Andrews | Math Overall Score",
         #                                         "1687", "Partial Understanding", "Error Band: 1617-1757")
         overall_score_swim_lanes = ["#BB231C", "#e4c904", "#6aa506", "#237ccb"]
-        #        self.check_los_overall_score_swim_lanes(student_record, "Math", 1687, "#e4c904", overall_score_swim_lanes)
+        # self.check_los_overall_score_swim_lanes(student_record, "Math", 1687, "#e4c904", overall_score_swim_lanes)
         self.check_los_overall_score_swim_lanes(student_record, "ELA", 1449, "#e4c904", overall_score_swim_lanes)
 
         self.check_help_popup()
         self.check_los_legend_popup()
         self.check_los_report_info()
 
+    @allure.story('Interim Comprehensive reports view')
     def test_opportunity_selector_los_ela(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")
@@ -125,6 +128,7 @@ class ListOfStudents(LosHelper):
         overall_score_swim_lanes = ["#BB231C", "#e4c904", "#6aa506", "#237ccb"]
         self.check_los_overall_score_swim_lanes(student_record, "ELA", 2085, "#6aa506", overall_score_swim_lanes)
 
+    @allure.story('Interim Comprehensive reports view')
     def test_opportunity_selector_los_math(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")
@@ -152,6 +156,7 @@ class ListOfStudents(LosHelper):
         overall_score_swim_lanes = ["#BB231C", "#e4c904", "#6aa506", "#237ccb"]
         self.check_los_overall_score_swim_lanes(student_record, "Math", 2334, "#237ccb", overall_score_swim_lanes)
 
+    @allure.story('Summative reports view')
     def test_los_academic_year(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         # Click on 'Daybreak - Western Elementary' school link from list of districts
@@ -172,6 +177,7 @@ class ListOfStudents(LosHelper):
         students_2016 = ["Dyess, Nancy"]
         self.check_student_record(students_2016)
 
+    @allure.story('Interim Assessments Blocks reports view')
     def test_iab_multi_results(self):
         # Navigate to 'Sunset-Central High - Grade 11' LOS report
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
@@ -185,7 +191,6 @@ class ListOfStudents(LosHelper):
              'Making Inferences and Justif...'])
         self.check_current_subject_view("Mathematics")
         self.validate_interim_disclaimer()
-        time.sleep(5)
         students = ["Askew, Jose",
                     "Richardson, Angelica"]
         self.check_student_record(students)
@@ -195,6 +200,7 @@ class ListOfStudents(LosHelper):
             "subject1.Geometry - Circles.Latest result.claims.0.perf_lvl": "edware-icon-perf-level-2"}
         self.check_student_information(student_record, "Askew, Jose")
 
+    @allure.story('Interim Assessments Blocks reports view')
     def test_iab_expand_columns(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("248", "ui-jqgrid-ftable")
@@ -203,7 +209,7 @@ class ListOfStudents(LosHelper):
         self.select_academic_year_los(6, "2015 - 2016")
         self.check_current_selected_opportunity('2015 - 2016 · Summative')
         self.total_los_records(3)
-        add_screen_to_report('/tmp/test_iab_expand_columns.png')
+        save_screen('/tmp/test_iab_expand_columns.png')
         # self.check_opportunity_selectors(['2015.04.04 · Summative', '2015.01.06 · Interim Comprehensive', '2014.09.02 · Interim Comprehensive', '2014 - 2015 · Interim Assessment Blocks'])
         self.select_opportunity_los('Interim Assessment Blocks')
         self.check_iab_column_headers(
@@ -212,15 +218,9 @@ class ListOfStudents(LosHelper):
         self.check_current_subject_view("Mathematics")
         self.validate_interim_disclaimer()
         # self.validate_iab_disclaimer("grade 11")
-        time.sleep(5)
         students = ['Askew, Jose', 'Richardson, Angelica']
         self.check_student_record(students)
         self.total_iab_los_records(2)
-        student_record = {
-            "subject1.Algebra and Functions - Linear Functions.20150215.claims.0.perf_lvl": "edware-icon-perf-level-1",
-            "subject1.Algebra and Functions - Quadratic Functions.20150214.claims.0.perf_lvl": "edware-icon-perf-level-1",
-            "subject1.Algebra and Functions - Trigonometric Functions.20150227.claims.0.perf_lvl": "edware-icon-perf-level-2",
-            "subject1.Mathematics Performance Task.20150225.claims.0.perf_lvl": "edware-icon-perf-level-1"}
 
     def check_iab_popover(self, student_name, column_name, latest_result, popover_headers, popover_table):
         # Check the latest result displayed in collapsed view
@@ -231,5 +231,3 @@ class ListOfStudents(LosHelper):
         self.assertIsNotNone((actual_icon), "Incorrect student value found in column '%s'" % column_name)
         # Validate the popover
         actual_icon.click()
-
-    ''' tearDown: Close webpage '''

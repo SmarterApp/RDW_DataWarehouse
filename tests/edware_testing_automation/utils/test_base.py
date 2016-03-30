@@ -1,8 +1,8 @@
-'''
+"""
 Created on Feb 4, 2013
 
 @author: nparoha
-'''
+"""
 import unittest
 
 import allure
@@ -16,8 +16,12 @@ DOWNLOADS = preferences(Default.downloads_path)
 UNZIPPED = preferences(Default.unzipped_path)
 
 
-def add_screen_to_report(name):
+def save_screen(name):
     allure.attach(name, browser().get_screenshot_as_png(), type=AttachmentType.PNG)
+
+
+def save_message(message, name='Additional information'):
+    allure.attach(name, message, type=AttachmentType.TEXT)
 
 
 def wait_for(method, seconds=60, message=''):

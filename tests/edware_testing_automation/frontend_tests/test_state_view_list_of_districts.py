@@ -1,32 +1,38 @@
-'''
+"""
 Created on March 13, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
+import allure
 from selenium.webdriver.common.action_chains import ActionChains
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
+@allure.feature('Smarter: State view')
 class ListOfDistricts(ComparingPopulationsHelper):
-    '''
+    """
     Tests for Comparing Population report - State view that displays the 'List of Districts'
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         # Login as a state education administrator
         self.enter_login_credentials("arice", "arice1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.story('Overall and district\'s statistic')
+    @allure.story('Reports filtering & academic years')
+    @allure.story('Download reports')
+    @allure.story('Align')
+    @allure.story('Legend & info')
     def test_state_view_list_of_districts(self):
         print("Comparing Districts in North Carolina on Math & ELA")
         self.assertEqual("North Carolina", str(
@@ -51,10 +57,12 @@ class ListOfDistricts(ComparingPopulationsHelper):
         self.check_default_academic_year("2015 - 2016")
 
         print("TC_overall_summary: Validate the data displayed in the overall summary in the grid")
-        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type with preceding #), section % (string type)]]
+        # Data format: [[bar section index(int type), bar section background hexadecimal color
+        # code(string type with preceding #), section % (string type)]]
         math_progress_bar = [[0, "#BB231C", "11%"], [1, "#e4c904", "39%"], [2, "#6aa506", "36%"], [3, "#237ccb", "14%"]]
         math_overall_total_Students = '89'
-        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type with preceding #), section % (string type)]]
+        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type with
+        #  preceding #), section % (string type)]]
         ela_progress_bar = [[0, "#BB231C", "20%"], [1, "#e4c904", "40%"], [2, "#6aa506", "23%"], [3, "#237ccb", "17%"]]
         ela_overall_total_Students = '77'
         self.check_overall("NC State Overall", math_progress_bar, math_overall_total_Students, ela_progress_bar,
@@ -96,11 +104,15 @@ class ListOfDistricts(ComparingPopulationsHelper):
         self.check_cpop_legend_popup()
         self.check_cpop_report_info_state_view()
 
+    @allure.story('Overall and district\'s statistic')
+    @allure.story('Reports filtering & academic years')
     def test_state_view_academic_year(self):
-        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type with preceding #), section % (string type)]]
+        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type
+        # with preceding #), section % (string type)]]
         math_progress_bar = [[0, "#BB231C", ""], [1, "#e4c904", "29%"], [2, "#6aa506", "46%"], [3, "#237ccb", "18%"]]
         math_overall_total_Students = '284'
-        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type with preceding #), section % (string type)]]
+        # Data format: [[bar section index(int type), bar section background hexadecimal color code(string type
+        # with preceding #), section % (string type)]]
         ela_progress_bar = [[0, "#BB231C", ""], [1, "#e4c904", "39%"], [2, "#6aa506", "50%"], [3, "#237ccb", ""]]
         ela_overall_total_Students = '217'
         self.select_academic_year("2015")
@@ -109,9 +121,9 @@ class ListOfDistricts(ComparingPopulationsHelper):
         print("Passed: academic year selector test")
 
     def check_cpop_report_info_state_view(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in cpop-state view report
-        '''
+        """
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name(
             "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
@@ -142,7 +154,8 @@ class ListOfDistricts(ComparingPopulationsHelper):
         self.assertEqual(use2, str(use_bullet_points[1].text), "Second use bullet point not found.")
 
         features_bullet_points = bullet_point_sections[1].find_elements_by_tag_name("li")
-        feature1 = "Align the visual display by the percentage of students in each achievement level or along the line between Level 2 and Level 3, for example."
+        feature1 = "Align the visual display by the percentage of students in each achievement level or along the " \
+                   "line between Level 2 and Level 3, for example."
         self.assertEqual(feature1, str(features_bullet_points[0].text), "First features bullet point not found.")
         self.assertEqual("Sort results by any column", str(features_bullet_points[1].text),
                          "Second features bullet point not found.")

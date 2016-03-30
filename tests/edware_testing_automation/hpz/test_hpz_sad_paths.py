@@ -1,7 +1,6 @@
-__author__ = 'smuhit'
-
 import os
 
+import allure
 from sqlalchemy.sql import select
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
@@ -59,12 +58,16 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
             result = connector.execute(query).fetchall()
             self.assertEqual(result, [(None,)])
 
+    @allure.feature('HPZ: API')
+    @allure.story('Register')
     def test_register_with_invalid_payload(self):
         self.set_payload({'blah': 'blah'})
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
         self.check_response_code(200)
         self.check_resp_list_fields(expected_fields=[])
 
+    @allure.feature('HPZ: API')
+    @allure.story('Upload', 'Register')
     def test_upload_before_registration(self):
         self.set_headers_for_file_upload(self.test_file_name, self.test_file)
         reg_id = 'non-existant-registration'
@@ -73,6 +76,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
         self.check_response_code(200)
         self.verify_registration_not_in_db(reg_id)
 
+    @allure.feature('HPZ: API')
+    @allure.story('Upload')
     def test_upload_with_no_file(self):
         self.set_headers_for_file_registration('dummy_user')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
@@ -88,6 +93,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
         self.check_response_code(200)
         self.verify_file_location_not_in_db(reg_id)
 
+    @allure.feature('HPZ: API')
+    @allure.story('Upload')
     def test_upload_with_incorrect_header(self):
         self.set_headers_for_file_registration('dummy_user')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
@@ -103,6 +110,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
         self.check_response_code(200)
         self.verify_file_location_not_in_db(reg_id)
 
+    @allure.feature('HPZ: API')
+    @allure.story('Download', 'Register')
     def test_download_file_not_registered(self):
         self.set_headers_for_file_registration('jmacey')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
@@ -119,6 +128,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
         downloaded_file = DOWNLOAD_DIRECTORY + self.test_file_name
         self.assertFalse(os.path.isfile(downloaded_file))
 
+    @allure.feature('HPZ: API')
+    @allure.story('Download')
     def test_download_file_not_owner(self):
         self.set_headers_for_file_registration('shall')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)
@@ -132,6 +143,8 @@ class HpzSadPathTests(HpzHelper, SessionShareHelper):
         downloaded_file = DOWNLOAD_DIRECTORY + self.test_file_name
         self.assertFalse(os.path.isfile(downloaded_file))
 
+    @allure.feature('HPZ: API')
+    @allure.story('Download')
     def test_download_file_still_processing(self):
         self.set_headers_for_file_registration('jmacey')
         self.send_request('PUT', base=self.base_url, end_point=self.reg_endpoint)

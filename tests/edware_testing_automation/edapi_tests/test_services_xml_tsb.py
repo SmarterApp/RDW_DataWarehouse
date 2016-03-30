@@ -1,8 +1,8 @@
-'''
+"""
 Created on Aug 12, 2014
 
 @author: nparoha
-'''
+"""
 import csv
 import json
 import os
@@ -10,6 +10,8 @@ import shutil
 import subprocess
 import tarfile
 import time
+
+import allure
 
 from edware_testing_automation.edapi_tests.api_helper import ApiHelper
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
@@ -22,7 +24,8 @@ STAGING_PATH = preferences(TSB.staging)
 XML_FILE_PATH = os.path.join(os.getcwd(), '..', 'resources')
 
 
-class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
+@allure.feature('Smarter: Integration with TSB')
+class TestTSBAPI(ApiHelper, SessionShareHelper, ExtractsHelper):
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
         ExtractsHelper.__init__(self, *args, **kwargs)
@@ -90,7 +93,6 @@ class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
         self.send_xml_post("/services/xml", xml_payload)
         self.check_response_code(202)
         # Send second request
-        time.sleep(1)
         here = os.path.abspath(os.path.dirname(__file__))
         filepath2 = os.path.abspath(os.path.join(os.path.join(here, '..'), 'resources', 'valid_tsb1.xml'))
         xml_payload = self.get_xml_content(filepath2)
@@ -107,7 +109,6 @@ class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
         batcher = '/opt/edware/test/tsbBatcher.sh'
         if os.path.exists(batcher):
             self.decrypt_untar(batcher)
-            time.sleep(10)
             csv_file = os.path.join(self.dest, 'SBAC-FT-SomeDescription-ELA-7.csv')
             self.assertTrue(os.path.exists(csv_file))
             json_file = os.path.join(self.dest, 'SBAC-FT-SomeDescription-ELA-7.json')
@@ -142,7 +143,6 @@ class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
 
     def decrypt_untar(self, batcher):
         subprocess.Popen(['sh', batcher])
-        time.sleep(5)
         staging_path = os.path.join(STAGING_PATH, 'ca')
         self.assertTrue(os.path.exists(staging_path))
         batch = None
@@ -169,13 +169,13 @@ class TestTSB(ApiHelper, SessionShareHelper, ExtractsHelper):
         self.assertEqual(len(all_files), count_of_files)
 
     def get_xml_content(self, filepath):
-        '''
+        """
         returns the XML content from the XML file
         :param filepath: XML file path
         :type filepath: string
         :return f.read(): XML data to post in the payload
         :type f.read(): string
-        '''
+        """
         f = open(filepath)
         return f.read()
 

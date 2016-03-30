@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import allure
+
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 __author__ = 'vnatarajan'
 
@@ -8,6 +10,8 @@ from edware_testing_automation.frontend_tests.indiv_student_helper import Indivi
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
 
 
+@allure.feature('Smarter: Student view')
+@allure.story('Summative reports view')
 class AldMessageTest(IndividualStudentHelper, LosHelper):
     """
     US32911: ALD Content Configurable by Grade Level
@@ -43,7 +47,7 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
         self.drill_down_navigation("03", "jqgfirstrow")
-        add_screen_to_report('/tmp/grade3.png')
+        save_screen('/tmp/grade3.png')
         # Click on student link from list of students
         self.drill_down_navigation("jqg20", "overallScoreSection")
         breadcrumb_list = ["North Carolina", "Sunset School District", "Sunset - Eastern Elementary", "Grade 03"]
@@ -56,9 +60,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 3")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
+        math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward " \
+                                     "mastery of the knowledge and skills in mathematics needed for likely success " \
+                                     "in future coursework."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."
+        }
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -70,9 +79,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 1")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
+        ela_overall_score_content = "The student has not met the achievement standard and needs substantial " \
+                                    "improvement to demonstrate the knowledge and skills in English language " \
+                                    "arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-1 and ELA level-4 in grade 3 to 5
@@ -92,9 +105,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 1")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework."
+        math_overall_score_content = "The student has not met the achievement standard and needs substantial " \
+                                     "improvement to demonstrate the knowledge and skills in mathematics needed " \
+                                     "for likely success in future coursework."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -106,9 +123,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
+        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced " \
+                                    "progress toward mastery of the knowledge and skills in English language " \
+                                    "arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-2 and ELA level-2 in grade 3 to 5
@@ -128,9 +149,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 2")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in future coursework."
+        math_overall_score_content = "The student has nearly met the achievement standard and may require " \
+                                     "further development to demonstrate the knowledge and skills in mathematics" \
+                                     " needed for likely success in future coursework."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -142,9 +167,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 2")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
+        ela_overall_score_content = "The student has nearly met the achievement standard and may require further " \
+                                    "development to demonstrate the knowledge and skills in English language " \
+                                    "arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-4 and ELA level-4 in grade 3 to 5
@@ -164,9 +193,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
+        math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced " \
+                                     "progress toward mastery of the knowledge and skills in mathematics needed " \
+                                     "for likely success in future coursework."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -178,9 +211,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
+        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced " \
+                                    "progress toward mastery of the knowledge and skills in English language " \
+                                    "arts/literacy needed for likely success in future coursework."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-3 and ELA level-3 in grade 3 to 5
@@ -200,9 +237,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 3")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in future coursework."
+        math_overall_score_content = "The student has met the achievement standard and demonstrates progress " \
+                                     "toward mastery of the knowledge and skills in mathematics needed for " \
+                                     "likely success in future coursework."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of a "
+                            "student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -214,9 +255,13 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 3")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in future coursework."
+        ela_overall_score_content = "The student has met the achievement standard and demonstrates progress " \
+                                    "toward mastery of the knowledge and skills in English language arts/literacy " \
+                                    "needed for likely success in future coursework."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-4 and ELA level-3 in grade 6-8
@@ -237,9 +282,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
+        math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced " \
+                                     "progress toward mastery of the knowledge and skills in mathematics needed " \
+                                     "for likely success in entry-level credit-bearing college coursework after " \
+                                     "high school."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -251,9 +301,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 3")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
+        ela_overall_score_content = "The student has met the achievement standard and demonstrates progress " \
+                                    "toward mastery of the knowledge and skills in English language arts/literacy " \
+                                    "needed for likely success in entry-level credit-bearing college coursework " \
+                                    "after high school."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-2 and ELA level-4 in grade 6-8
@@ -274,9 +329,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 2")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
+        math_overall_score_content = "The student has nearly met the achievement standard and may require " \
+                                     "further development to demonstrate the knowledge and skills " \
+                                     "in mathematics needed for likely success in entry-level " \
+                                     "credit-bearing college coursework after high school."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -288,9 +348,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
+        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates " \
+                                    "advanced progress toward mastery of the knowledge and skills in " \
+                                    "English language arts/literacy needed for likely success in entry-level " \
+                                    "credit-bearing college coursework after high school."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of a "
+                            "student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-4 and ELA level-1 in grade 6-8
@@ -311,9 +376,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
+        math_overall_score_content = "The student has exceeded the achievement standard and demonstrates advanced " \
+                                     "progress toward mastery of the knowledge and skills in mathematics needed for " \
+                                     "likely success in entry-level credit-bearing college coursework after " \
+                                     "high school."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -325,9 +395,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 1")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
+        ela_overall_score_content = "The student has not met the achievement standard and needs substantial " \
+                                    "improvement to demonstrate the knowledge and skills in English language " \
+                                    "arts/literacy needed for likely success in entry-level credit-bearing " \
+                                    "college coursework after high school."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-3 and ELA level-2 in High School
@@ -348,9 +423,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 3")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has met the achievement standard and demonstrates progress toward mastery of the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after completing high school coursework."
+        math_overall_score_content = "The student has met the achievement standard and demonstrates progress " \
+                                     "toward mastery of the knowledge and skills in mathematics needed for " \
+                                     "likely success in entry-level credit-bearing college coursework after " \
+                                     "completing high school coursework."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -362,9 +442,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 2")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has nearly met the achievement standard and may require further development to demonstrate the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
+        ela_overall_score_content = "The student has nearly met the achievement standard and may require further " \
+                                    "development to demonstrate the knowledge and skills in English language " \
+                                    "arts/literacy needed for likely success in entry-level credit-bearing " \
+                                    "college coursework after high school."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)
 
     # test Math level-4 and ELA level-3 in High School
@@ -385,9 +470,14 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 1")
         math_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection0")
-        math_overall_score_content = "The student has not met the achievement standard and needs substantial improvement to demonstrate the knowledge and skills in mathematics needed for likely success in entry-level credit-bearing college coursework after high school."
+        math_overall_score_content = "The student has not met the achievement standard and needs substantial " \
+                                     "improvement to demonstrate the knowledge and skills in mathematics needed " \
+                                     "for likely success in entry-level credit-bearing college coursework " \
+                                     "after high school."
         math_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's "
+                            "strengths and areas of improvement. Test results are one of many measures of "
+                            "a student's academic achievement."}
         self.check_content_areas(math_content_area, math_overall_score_content, math_left_pane_content)
 
         # check ELA
@@ -399,7 +489,12 @@ class AldMessageTest(IndividualStudentHelper, LosHelper):
                                      "Level 4")
         ela_content_area = browser().find_element_by_id("individualStudentContent").find_element_by_id(
             "assessmentSection1")
-        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates the knowledge and skills in English language arts/literacy needed for likely success in entry-level credit-bearing college coursework after high school."
+        ela_overall_score_content = "The student has exceeded the achievement standard and demonstrates " \
+                                    "the knowledge and skills in English language arts/literacy needed " \
+                                    "for likely success in entry-level credit-bearing college coursework " \
+                                    "after high school."
         ela_left_pane_content = {
-            "psychometric": "Achievement Levels illustrate how students scored on the assessment and student's strengths and areas of improvement. Test results are one of many measures of a student's academic achievement."}
+            "psychometric": "Achievement Levels illustrate how students scored on the assessment and "
+                            "student's strengths and areas of improvement. Test results are one of many "
+                            "measures of a student's academic achievement."}
         self.check_content_areas(ela_content_area, ela_overall_score_content, ela_left_pane_content)

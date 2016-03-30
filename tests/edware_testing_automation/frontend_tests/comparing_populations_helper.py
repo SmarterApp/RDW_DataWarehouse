@@ -1,8 +1,8 @@
-'''
+"""
 Created on March 11, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
 from selenium.webdriver.common.action_chains import ActionChains
@@ -11,21 +11,21 @@ from selenium.webdriver.support import expected_conditions
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 
 class ComparingPopulationsHelper(SessionShareHelper):
-    '''
+    """
     Helper methods for Comparing Populations Report Page - State / District / School viewtest_login.py
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
 
     def check_cpop_report_info(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in comparing populations report
-        '''
+        """
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
@@ -59,29 +59,29 @@ class ComparingPopulationsHelper(SessionShareHelper):
         browser().implicitly_wait(1)
 
     def check_grid_titles(self, column_index, column_title):
-        '''
+        """
         Validates the grid column headers (Math , ELA) that appear on the first row of the comparing populations grid
         :param column_index: index where the column_title is expected. possible values are 1,2
         :type column_index: integer
         :param column_title: Expected title of the column at index column_index
         :type column_title: string
-        '''
+        """
         grid_headers = browser().find_element_by_class_name("jqg-second-row-header").find_elements_by_tag_name("th")
         self.assertEqual(column_title, str(grid_headers[column_index].text)), "Grid column header not found"
 
     def check_grid_sub_headers(self, column_index, column_title):
-        '''
+        """
         Validates the header on the first column that appears on the second row of the comparing populations grid
         :param column_index: index where the column_title is expected. possible value is 0
         :type column_index: integer
         :param column_title: Expected title of the column at index column_index
         :type column_title: string
-        '''
+        """
         grid_headers = browser().find_element_by_class_name("ui-jqgrid-labels").find_elements_by_tag_name("th")
         self.assertEqual(column_title, str(grid_headers[column_index].text)), "Grid column header not found"
 
     def check_overall(self, title, math_progress_bar, math_total_students, ela_progress_bar, ela_total_students):
-        '''
+        """
         Validates the overall context summary that appears on the topmost row of the comparing populations grid
         :param title: Reference point title that appears on the first column of the overall context summary row
         :type title: string
@@ -93,7 +93,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         :type ela_progress_bar: list
         :param ela_total_students: Overall total students for ELA assessment
         :type ela_total_students: string
-        '''
+        """
         overall_summary_sections = browser().find_element_by_class_name("ui-jqgrid-ftable").find_elements_by_tag_name(
             "td")
         # check the common title "Reference point" and the custom title on the grid
@@ -106,7 +106,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
 
     def check_list_of_population(self, list_id, link_text, math_progress_bar, math_total_students, ela_progress_bar,
                                  ela_total_students):
-        '''
+        """
         Validates the data row displayed in list of population grid
         :param list_id: id of the list of population data row inside the table id = "gridTable"
         :type list_id: string
@@ -122,7 +122,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         :type ela_progress_bar: list
         :param ela_total_students: Overall total students for ELA assessment
         :type ela_total_students: string
-        '''
+        """
         grid_values = browser().find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(
             list_id).find_elements_by_tag_name("td")
         self.assertIn(link_text, str(grid_values[0].text)), "Incorrect Overall Summary Title."
@@ -131,7 +131,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
 
     def check_math_ela_columns(self, grid_values, math_progress_bar, math_total_students, ela_progress_bar,
                                ela_total_students):
-        '''
+        """
         Validates the Math and ELA progress bar and total number of students
         :param grid_values: Name of the element that appears in the first column of the list of population grid
         :type grid_values: string
@@ -143,7 +143,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         :type ela_progress_bar: list
         :param ela_total_students: Overall total students for ELA assessment
         :type ela_total_students: string
-        '''
+        """
         actual_math_bar = grid_values[1]
         self.check_progress_bar(math_progress_bar, actual_math_bar)
         self.assertIn(math_total_students,
@@ -154,14 +154,14 @@ class ComparingPopulationsHelper(SessionShareHelper):
         self.assertIn(ela_total_students, str(grid_values[4].text)), "Total # of students for ELA assessment incorrect"
 
     def check_progress_bar(self, expected_bar, actual_bar):
-        '''
+        """
         Validates the progress bar colors and percentage displayed on the bar in comparing populations report
         :param expected_bar: list of lists of each ALD section. Expected data format for math/ela_progress bar:
         [[bar section index(int type), bar section background hexadecimal color code(string type with preceding #), section % (string type)]]
         :type expected_bar: list
         :param actual_bar: webdriver element of the progress bar
         :type actual_bar: Webdriver element
-        '''
+        """
         bar_sections = actual_bar.find_elements_by_class_name("bar")
         for each in expected_bar:
             rgba_color = self.get_rgba_equivalent(each[1])
@@ -171,14 +171,14 @@ class ComparingPopulationsHelper(SessionShareHelper):
             self.assertIn(each[2], str(bar_sections[each[0]].text)), "Bar section % does not match."
 
     def check_progress_bar_tooltip_is_found(self, section, expected_legend):
-        '''
+        """
         Validates the progress bar tool tip displayed on mouse over over the progress bar in comparing populations report
         :param expected_legend: list of lists of each ALD section. Expected data format for math/ela_progress bar:
         [[bar section index(int type), bar section background hexadecimal color code(string type with preceding #), section % (string type)]]
         :type expected_legend: list
         :param section: section where you need to validate the progress bar
         :type section: string
-        '''
+        """
         element_to_click = browser().find_element_by_class_name("ui-jqgrid-ftable").find_element_by_class_name(
             "progress").find_element_by_class_name("bar")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
@@ -187,7 +187,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
 
         popover_legend = browser().find_element_by_class_name("popover-content").find_elements_by_tag_name("li")
         for each in expected_legend:
-            add_screen_to_report('/tmp/screenshot_tooltip.png')
+            save_screen('/tmp/screenshot_tooltip.png')
             rgb_color = self.get_rgb_equivalent(each[1])
             self.assertIn(rgb_color, str(popover_legend[each[0]].find_element_by_tag_name("div").get_attribute(
                 "style"))), "Tooltip legend color does not match."
@@ -198,7 +198,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         hover_mouse_out.perform()
 
     def sort_by_asmt(self, asmt, expected_top_row, expected_header):
-        '''
+        """
         Validates the sort functionality on the CPOP reports
         :param asmt: assessment to sort by. Valid options are math and ela
         :type asmt: string
@@ -208,7 +208,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         :type order: string
         :param expected_top_row: expected name of the top most row in the grid after sorting.
         :type expected_top_row: string
-        '''
+        """
         # TODO
         if asmt == 'Math':
             index = 1
@@ -217,7 +217,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         columns = browser().find_elements_by_class_name("ui-th-column")
         columns[index].find_element_by_class_name("s-ico").click()
         self.check_topmost_row(expected_top_row)
-        add_screen_to_report('/tmp/nidhi_sort_temp.png')
+        save_screen('/tmp/nidhi_sort_temp.png')
         new_columns = browser().find_elements_by_class_name("ui-th-column")
         print(str(new_columns[index].text))
         print(expected_header)
@@ -225,31 +225,31 @@ class ComparingPopulationsHelper(SessionShareHelper):
     #        self.assertIn(expected_header, str(new_columns[index].text))
 
     #    def check_sorted_topmost_row(self, expected_top_row):
-    #        '''
+    #        """
     #        Validates the top most row in the grid
     #        ;param expected_top_row: value of the first row in the list of population grid
     #        :type expected_top_row: string
-    #        '''
+    #        """
     #        grid_rows = browser().find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id("gridTable").find_elements_by_tag_name("tr")
     #        self.assertIn(expected_top_row, str(grid_rows[1].text)), "Incorrect Sorting."
 
     def sort_by_entity_name(self, sorted_value):
-        '''
+        """
         Sorts by the first column in the comparing populations grid.
         :param sorted_value: topmost row name in the grid
         :type sorted_value: string
-        '''
+        """
         browser().find_element_by_id("jqgh_gridTable_name").find_element_by_class_name("s-ico").click()
         self.check_topmost_row(sorted_value)
 
     def check_alignment(self, math_cumulutive_perc, ela_cumulative_perc):
-        '''
+        """
         Validates the alignment labels and functionality on the comparing populations report
         ;param math_cumulutive_perc: For Overall Math progress Bar: [left percentage in string format without spaces, right percentage in string format without spaces]
         :type math_cumulutive_perc: list
         ;param ela_cumulative_perc: For Overall ELA progress Bar: [left percentage in string format without spaces, right percentage in string format without spaces]
         :type ela_cumulative_perc: list
-        '''
+        """
         self.assertEqual("Align:", str(browser().find_element_by_class_name("alignLabel").text),
                          "Align Label not displayed correctly.")
         # anchor = browser().find_element_by_id("actionBar").find_element_by_class_name("alignmentItem").find_element_by_class_name("align_button_area").find_element_by_tag_name("a")
@@ -263,9 +263,9 @@ class ComparingPopulationsHelper(SessionShareHelper):
         checkboxes[1].click()
 
     def check_bars_aligned(self):
-        '''
+        """
         Validates that the progress bars are aligned on the comparing populations report
-        '''
+        """
         print("check_bars_aligned")
         asmt_columns = browser().find_element_by_class_name("ui-jqgrid-ftable")
         columns = ["td[aria-describedby*='gridTable_results.subject1.sortedValue']",
@@ -276,7 +276,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
                 "Alignment Line seperator not found")
 
     def check_cumulative_percentages(self, grid_row, math_expected_percentage, ela_expected_percentage):
-        '''
+        """
         Validates that the left and right clumulative percentages are correctly displayed on the overall progress bars when aligned on the comparing populations report
         :param grid_row: list of webdriver elements where each webdriver element represents the column in the grid.
         :type grid_row: list
@@ -284,7 +284,7 @@ class ComparingPopulationsHelper(SessionShareHelper):
         :type math_expected_percentage: list
         ;param ela_expected_percentage: For ELA progress Bar: [left percentage in string format without spaces, right percentage in string format without spaces]
         :type ela_expected_percentage: list
-        '''
+        """
         math_alignment = grid_row[1].find_element_by_class_name("alignmentHighlightSection")
         ela_alignment = grid_row[3].find_element_by_class_name("alignmentHighlightSection")
         print(math_alignment.find_element_by_class_name("populationBar").find_element_by_class_name(
@@ -300,20 +300,20 @@ class ComparingPopulationsHelper(SessionShareHelper):
             "rightPercentageTotal").text)), "Right cumulative percentage incorrectly displayed for ELA"
 
     def check_topmost_row(self, expected_top_row):
-        '''
+        """
         Validates the top most row in the grid
         ;param expected_top_row: value of the first row in the list of population grid
         :type expected_top_row: string
-        '''
+        """
         all_rows = browser().find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(
             "gridTable").find_elements_by_tag_name("tr")
         # TODO: Failed on Jenkins for some reason, cannot reproduce locally - Daniel
         # self.assertIn(expected_top_row, str(all_rows[1].text)), "Topmost row incorrectly displayed"
 
     def check_cpop_legend_popup(self, private_reports=True):
-        '''
+        """
         Validates the legend popup from the Report Action Nav bar in the comparing populations report
-        '''
+        """
         expected_color_codes = ["rgba(187, 35, 28, 1)", "rgba(228, 201, 4, 1)", "rgba(106, 165, 6, 1)",
                                 "rgba(35, 124, 203, 1)"]
         # EXPECTED_ALD_NAMES = ['MINIMAL UNDERSTANDING', 'PARTIAL UNDERSTANDING', 'ADEQUATE UNDERSTANDING', 'THOROUGH UNDERSTANDING']

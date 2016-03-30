@@ -1,11 +1,13 @@
-'''
+"""
 Created on Jul 7, 2014
 
 @author: bpatel
-'''
+"""
 import fnmatch
 import os
 import shutil
+
+import allure
 
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
 from edware_testing_automation.frontend_tests.filtering_helper import FilteringHelper
@@ -15,6 +17,8 @@ UNZIPPED_DIR = UNZIPPED + '/'
 DOWNLOAD_FILES = DOWNLOADS + '/'
 
 
+@allure.feature('Smarter: Grade view')
+@allure.story('Download reports', 'Reports filtering & academic years')
 class TestExtractWithFilters(FilteringHelper, ExtractsHelper):
     def __init__(self, *args, **kwargs):
         FilteringHelper.__init__(self, *args, **kwargs)
@@ -57,7 +61,7 @@ class TestExtractWithFilters(FilteringHelper, ExtractsHelper):
 
         # export_popup = self.open_file_download_popup()
         self.open_los_download_popup()
-        # add_screen_to_report('/tmp/filter_extract2.png')
+        # save_screen('/tmp/filter_extract2.png')
         # check_los_export(export_popup, ['Current view (CSV)', 'Student assessment results (CSV)', 'Printable student reports (PDF)'])
         # self.select_extract_option(export_popup, 'Student assessment results (CSV)')
         filepath = DOWNLOAD_FILES + self.check_file_download()

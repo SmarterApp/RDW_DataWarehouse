@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on March 7, 2013
 
 @author: nparoha
-'''
+"""
 import csv
 import os
 import time
@@ -15,23 +15,23 @@ from selenium.webdriver.support import expected_conditions
 from edware_testing_automation.frontend_tests.driver_helper import scroll_to_element
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.preferences import preferences, URL
-from edware_testing_automation.utils.test_base import EdTestBase, DOWNLOADS, add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import EdTestBase, DOWNLOADS, save_screen, wait_for
 
 
 class SessionShareHelper(EdTestBase):
-    '''
+    """
     Helper methods that will be shared across various pages
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         EdTestBase.__init__(self, *args, **kwargs)
 
     def open_requested_page_redirects_login_page(self, requested_page, url=None):
-        '''
+        """
         Opens a requested page on the browser using the methods from the utils.test_base.py and validates that it is redirected to the login page
         :param requested_page: requested page keywords: list_of_students; individual_student_report; state_view_sds; district_view; school_view
         :type requested_page: string
-        '''
+        """
         public_report = False
 
         if requested_page == "list_of_students":
@@ -59,9 +59,9 @@ class SessionShareHelper(EdTestBase):
             wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "academicYearText")))
 
     def open_landing_page_login_page(self):
-        '''
+        """
         Opens the landing page from the utils.test_base.py and validates that it contains the login button. It clicks the Login button and validates that the login page opens up.
-        '''
+        """
         browser().get(self.get_url() + preferences(URL.landing_page))
         contentLoginBtn = browser().find_element_by_xpath('//*[@id="content"]/div/div/button')
         self.assertIsNotNone(contentLoginBtn, "Content body should contain a login button")
@@ -69,13 +69,13 @@ class SessionShareHelper(EdTestBase):
         wait_for(expected_conditions.visibility_of_element_located((By.ID, "IDToken1")))
 
     def enter_login_credentials(self, username, password):
-        '''
+        """
         Enter the username and password on the login page and click on the login button.
         :param username: Username
         :type username: string
         :param password: Password
         :type password: string
-        '''
+        """
         login_page = browser().find_element_by_class_name("box-content")
         login_page.find_element_by_id("IDToken1").send_keys(username)
         login_page.find_element_by_id("IDToken2").send_keys(password)
@@ -92,11 +92,11 @@ class SessionShareHelper(EdTestBase):
         browser().implicitly_wait(10)
 
     def check_redirected_requested_page(self, requested_page):
-        '''
+        """
         Checks successful redirect to the requested page after login.
         :param requested_page: requested page keywords: list_of_students; individual_student_report; state_view_sds; district_view; school_view
         :type requested_page: string
-        '''
+        """
         if requested_page == "list_of_students":
             verify_element_present = "ui-jqgrid-hbox"
         elif requested_page == "individual_student_report":
@@ -111,13 +111,13 @@ class SessionShareHelper(EdTestBase):
         wait_for(expected_conditions.visibility_of_element_located((By.CLASS_NAME, verify_element_present)))
 
     def drill_down_navigation(self, link_id, class_name_reloaded_view):
-        '''
+        """
         Clicks an element from the table grid on the CPOP or LOS reports to drill down to the next level.
         :param link_id: id of the element to click
         :type link_id: string
         :param class_name_reloaded_view: Class name unique to the report to verify successful page load
         :type class_name_reloaded_view: string
-        '''
+        """
         link_func = lambda driver: driver.find_element_by_class_name("ui-jqgrid-bdiv").find_element_by_id(link_id)
         link_obj = wait_for(link_func)
         link = wait_for(lambda d: link_obj.find_element_by_tag_name("a"))
@@ -125,13 +125,13 @@ class SessionShareHelper(EdTestBase):
         wait_for(lambda d: d.find_element_by_class_name(class_name_reloaded_view))
 
     def check_headers(self, header1, header2):
-        '''
+        """
         Checks the user name and logout links in the who am I section.
         :param header1:  first name and last name of the user logged in
         :type header1: string
         :param header2: Log Out link text
         :type header2: string
-        '''
+        """
         headers = browser().find_elements_by_class_name("topLinks")
         assert browser().find_element_by_id("logo") is not None, "Logo not found"
         for each in headers:
@@ -141,11 +141,11 @@ class SessionShareHelper(EdTestBase):
             print("Passed Scenario: Found 'Log Out' link in the page header.")
 
     def check_breadcrumb_hierarchy_links(self, links):
-        '''
+        """
         Checks the breadcrumb links displayed on the page
         :param links:  list of all the breadcrumbs expected to appear on the page in the same order
         :type header1: list
-        '''
+        """
         breadcrumbs = browser().find_element_by_id("breadcrumb").find_elements_by_tag_name("a")
         actual_links = []
         for breadcrumb in breadcrumbs:
@@ -156,32 +156,32 @@ class SessionShareHelper(EdTestBase):
                                                                                               links=actual_links))
 
     def check_breadcrumb_trail(self, current_view):
-        '''
+        """
         Checks that the current view name appears as the inactive link in the rightmost position of the bread crumb trail
         :param current_view:  Name of the State/District/School/Grade/Student currently viewed
         :type current_view: string
-        '''
+        """
         breadcrumbs = browser().find_elements_by_css_selector("#breadcrumb a")
         trail_text = str(breadcrumbs[-1].text)
         self.assertIn(current_view, trail_text, "Current view not found in the breadcrumb trail")
 
     def check_page_header(self, page_header):
-        '''
+        """
         Validates the page header displayed on the comparing populations report
         :param page_header: expected value of the page header
         :type page_header: string
-        '''
+        """
         actual_header = browser().find_element_by_id("infoBar").find_element_by_class_name("title").text
         self.assertIn(page_header, str(actual_header)), "Page header incorrectly displayed"
 
     def get_rgba_equivalent(self, hex_color):
-        '''
+        """
         Converts from Hexadecimal color code to RGBA(saturated and unsaturated colors) color code for progress bar
         :param hex_color:  Value of the background-color attribute: "#BB231C" = Red; "#e4c904" = Yellow; "#6aa506" = Green; "#237ccb" = Blue
         :type hex_color: string
         :return rgba_color: Returns the RGBA equivalent
         :type rgba_color: string
-        '''
+        """
         HEX_RGBA_COLOR_CODE_MAP = {"#BB231C": "rgba(187, 35, 28, 1)",
                                    "#e4c904": "rgba(228, 201, 4, 1)",
                                    "#6aa506": "rgba(106, 165, 6, 1)",
@@ -191,13 +191,13 @@ class SessionShareHelper(EdTestBase):
 
     # "#BB231C" = Red; "#e4c904" = Yellow; "#6aa506" = Green; "#237ccb" = Blue
     def get_rgb_equivalent(self, hex_color):
-        '''
+        """
         Converts from Hexadecimal color code to RGB color code for tooltip
         :param hex_color:  Value of the background-color attribute: "#BB231C" = Red; "#e4c904" = Yellow; "#6aa506" = Green; "#237ccb" = Blue
         :type hex_color: string
         :return rgb_color: Returns the RGB equivalent
         :type rgb_color: string
-        '''
+        """
         HEX_RGB_COLOR_CODE_MAP = {"#BB231C": "rgb(187, 35, 28)",
                                   "#e4c904": "rgb(228, 201, 4)",
                                   "#6aa506": "rgb(106, 165, 6)",
@@ -206,19 +206,19 @@ class SessionShareHelper(EdTestBase):
         return rgb_color
 
     def check_footers(self, expected_footers):
-        '''
+        """
         Checks if all the footers are available. This method does not check the actual content within each footer
         :param expected_footers:  key = footer's id name ; Value = Footer text displayed on the footer menu bar on the report
         :type expected_footers: dict
-        '''
+        """
         for key in expected_footers.keys():
             footer_content_text = browser().find_element_by_id("footer").find_element_by_id(key).text
             self.assertEqual(expected_footers[key], str(footer_content_text)), "Footer content area not found"
 
     def check_help_popup(self):
-        '''
+        """
         Opens the help pop up from the footer and closes it.
-        '''
+        """
         # TODO modify this function after moving help popup to header bar
         expected_tabs = ['FAQ', 'User Guide', 'Glossary', 'Resources']
         actual_tabs = []
@@ -243,9 +243,9 @@ class SessionShareHelper(EdTestBase):
         print("Passed Scenario: Footer - Help")
 
     def check_help_popup_language_sp(self):
-        '''
+        """
         Opens the help pop up from the footer and closes it.
-        '''
+        """
         # TODO modify this function after moving help popup to header bar
         expected_tabs = ['Preguntas frecuentes', 'Guía del usuario', 'Glosario', 'Recursos']
         actual_tabs = []
@@ -476,9 +476,9 @@ class SessionShareHelper(EdTestBase):
         self.assertEqual(15, len(total_num_backToTopLinks), "15 BACK TO TOP links not found")
 
     def check_resource(self):
-        '''
+        """
         Click on the resources tab from the help popover and validate the contents
-        '''
+        """
         browser().find_element_by_link_text("Resources").click()
         assert browser().find_element_by_link_text("Score Report Modules").get_attribute(
             "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=60411"
@@ -490,9 +490,9 @@ class SessionShareHelper(EdTestBase):
             "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19"
 
     def check_resource_sp(self):
-        '''
+        """
         Click on the resources tab from the help popover and validate the contents
-        '''
+        """
         browser().find_element_by_link_text("Recursos").click()
         self.assertEqual(browser().find_element_by_class_name('header').text,
                          'Actualmente, se están desarrollando recursos para educadores en la Biblioteca Digital. Los tópicos de esos recursos incluyen:',
@@ -507,9 +507,9 @@ class SessionShareHelper(EdTestBase):
             "href"), "https://www.smarterbalancedlibrary.org/dlr-smart-search?smarter_balanced_keyword:7=19"
 
     def open_help_footer_popup_window(self):
-        '''
+        """
         Click on the footer button and validate that the pop up window opens and the correct popup header is displayed
-        '''
+        """
         # assert browser().find_element_by_id("header").find_element_by_class_name("nav navbar-nav").find_element_by_id("help"), "Help Button not found in the footer"
         browser().find_element_by_id("help").click()
         try:
@@ -518,9 +518,9 @@ class SessionShareHelper(EdTestBase):
             print("Timeout in opening the Help pop up window")
 
     def close_help_footer_popup_window(self):
-        '''
+        """
         Click on the hide button and validate that the pop up window closes
-        '''
+        """
         wait_for(expected_conditions.visibility_of_element_located((By.ID, "HelpMenuModal")))
 
         assert browser().find_element_by_id("HelpMenuModal").find_element_by_class_name(
@@ -535,9 +535,9 @@ class SessionShareHelper(EdTestBase):
             raise AssertionError("Unable to close Help pop-up")
 
     def check_error_msg(self):
-        '''
+        """
         Validate that the custom error page is displayed and valid custom error text appears on the page.
-        '''
+        """
         wait_for(lambda driver: driver.find_element_by_partial_link_text("link"))
         self.assertEqual("You've reached this page in error. Please follow this link to re-enter the site.",
                          str(browser().find_element_by_id("content").text)), "Incorrect Error Message Found"
@@ -585,11 +585,11 @@ class SessionShareHelper(EdTestBase):
                       str(sections[4].find_element_by_class_name("span8").text), "Disclaimer not found")
 
     def check_legend_popup_ald_section(self, popover):
-        '''
+        """
         Validates the ALD table section on the footer > legend popup window
         :param popover:  Webdriver element of the Legend popover
         :type popover: webdriver element
-        '''
+        """
         LEGEND_ALD_HEADER = "This report presents a list ofindividual student scores for a selected assessment"
         LEGEND_ALD_HEADERS = ['Color', 'Description', 'Score Range']
         LEGEND_ALD_ROWS = [["rgba(35, 124, 203, 1)", "Thorough Understanding", "2100-2400"],
@@ -623,50 +623,50 @@ class SessionShareHelper(EdTestBase):
         self.assertEqual(actual_ald_rows, LEGEND_ALD_ROWS, "ALD table rows do not match")
 
     def check_colors_perf_bar(self, section, expected_color_codes):
-        '''
+        """
         Validates the colors of sections on the performance bar
         :param section:  id of the footer option
         :type section: string
         :param expected_color_codes:  Webdriver element of the progress bar class that includes all the elements that occur along with the progress bar
         :type expected_color_codes: webdriver element
-        '''
+        """
         actual_color_codes = []
         for each in section.find_element_by_class_name("progress").find_elements_by_class_name("bar"):
             actual_color_codes.append(str(each.value_of_css_property("background-color")))
         self.assertEqual(expected_color_codes, actual_color_codes), "Incorrect colors displayed on the performance bar"
 
     def check_selected_asmt_type_cpop(self, selected_asmt_type):
-        '''
+        """
         Checks the assessment type on the cpop asmt type dropdown.
         ;param selected_asmt_type: Assessment type selection: 'Summative' or 'Interim Comprehensive'
         :type selected_asmt_type: string
-         '''
+         """
         self.assertIn(selected_asmt_type, browser().find_element_by_class_name("asmtDropdown").find_element_by_id(
             "selectedAsmtType").text), "Incorrect assessment type selected"
 
     def check_selected_asmt_type_los(self, selected_asmt_type):
-        '''
+        """
         Checks the assessment type on the LOS asmt type dropdown.
         ;param selected_asmt_type: Assessment type selection: 'Math & ELA Summative' ; 'Math Summative'; 'ELA Summative'; 'Math & ELA Interim Comp.'; 'Math Interim Comp.'; 'ELA Interim Comp.'
         :type selected_asmt_type: string
-         '''
+         """
         self.assertIn(selected_asmt_type, browser().find_element_by_class_name("asmtDropdown").find_element_by_id(
             "selectedAsmtType").text), "Incorrect assessment type selected"
 
     def check_no_data_msg(self):
-        '''
+        """
         Checks the error message when no data is found.
-         '''
+         """
         wait_for(expected_conditions.visibility_of_element_located((By.ID, "errorMessage")))
         self.assertEqual(str(browser().find_element_by_id("content").find_element_by_id("errorMessage").text),
                          "There is no data available for your request."), "Incorrect ''No Data' message displayed."
 
     def open_file_download_popup(self, heading='Download'):
-        '''
+        """
         Click on the File download button from the report info bar and validate that the pop up window opens and the correct popup header is displayed
         return export_popup: Export popup window webdriver element
         type export_popup: Webdriver Element
-        '''
+        """
         assert browser().find_element_by_id("infoBar").find_element_by_class_name(
             "download"), "Download option not found in the Report info navigation bar"
         browser().find_element_by_class_name("downloadIcon").click()
@@ -679,7 +679,6 @@ class SessionShareHelper(EdTestBase):
 
         try:
             pop_up = wait_for(find_pop_up, message="Clicking download icon should display backdrop")
-            # time.sleep(10)
             self.assertIn(heading, str(
                 pop_up.find_element_by_class_name("modal-header").find_element_by_id("myModalLabel").text),
                           "Export popup header not found")
@@ -688,11 +687,11 @@ class SessionShareHelper(EdTestBase):
             raise e
 
     def open_los_download_popup(self):
-        '''
+        """
         Click on the File download button from the report info bar and validate that the pop up window opens and the correct popup header is displayed
         return export_popup: Export popup window webdriver element
         type export_popup: Webdriver Element
-        '''
+        """
         browser().find_element_by_class_name("downloadIcon").click()
         time.sleep(5)
         browser().switch_to_default_content()
@@ -702,13 +701,13 @@ class SessionShareHelper(EdTestBase):
         browser().find_element_by_xpath("//*[@id='exportButton']").click()
 
     def check_export_options(self, popover, expected_options):
-        '''
+        """
         Validates the export options.
         :param expected_options: {Display Text : li Class name}. This dictionary contains the list of all the expected export options in the export popup window.
         :type expected_options: Dictionary
         :param popover: Export popup window webdriver element
         :type popover: Webdriver Element
-        '''
+        """
         # export_options_dict  = {Display Text : li class name}
         EXPORT_OPTIONS_DICT = {"Current view": "file", "Student assessment results": "extract",
                                "Printable student reports": "pdf", "State Downloads": "stateExtract"}
@@ -731,22 +730,22 @@ class SessionShareHelper(EdTestBase):
             self.assertEqual(each, str(text), "Export option not found")
 
     def close_file_download_popup(self, popover):
-        '''
+        """
         Closes the export popup window.
         :param popover: Export popup window webdriver element
         :type popover: Webdriver Element
-        '''
+        """
         popover.find_element_by_class_name("close").click()
         time.sleep(10)
 
     def select_extract_option(self, popup, export_selection):
-        '''
+        """
         Validates the export options. Sends the export request.
         :param popup: Export popup window webdriver element
         :type popup: Webdriver Element
         :param export_selection: Export Selection on the export pop up
         :type export_selection: string
-        '''
+        """
         if export_selection == 'Current view':
             class_name = 'file'
         elif export_selection == 'Student assessment results':
@@ -776,7 +775,6 @@ class SessionShareHelper(EdTestBase):
             #  download_dir_found = False
             #  timeout_download_dir = 0
             #  while download_dir_found is False and timeout_download_dir <= 30:
-            #      time.sleep(5)
             #      try:
             #          os.system("/tmp/downloads")
             #      except:
@@ -787,9 +785,9 @@ class SessionShareHelper(EdTestBase):
             time.sleep(10)
 
     def remove_download_dir(self):
-        '''
+        """
         Removes the /tmp/downloads directory that is used by Webdriver Custom Firefox Proifle for saving the file downloads.
-        '''
+        """
         if os.path.exists(DOWNLOADS):
             try:
                 os.removedirs(DOWNLOADS)
@@ -800,11 +798,11 @@ class SessionShareHelper(EdTestBase):
             print("Downloading other file.")
 
     def open_legend_popup(self):
-        '''
+        """
         Opens the legend popup from the Navigation action bar
         return legend_popup: Legend popup window webdriver element
         type legend_popup: Webdriver Element
-        '''
+        """
         assert browser().find_element_by_id("actionBar").find_element_by_class_name(
             "legendItem"), "Legend option not found in the Action navigation bar"
         self.assertEqual("Legend", str(
@@ -818,11 +816,11 @@ class SessionShareHelper(EdTestBase):
         return browser().find_element_by_class_name("legendPopover")
 
     def open_legend_popup_language_sp(self):
-        '''
+        """
         Opens the legend popup from the Navigation action bar
         return legend_popup: Legend popup window webdriver element
         type legend_popup: Webdriver Element
-        '''
+        """
         assert browser().find_element_by_id("actionBar").find_element_by_class_name(
             "legendItem"), "Legend option not found in the Action navigation bar"
         self.assertEqual("Leyenda", str(
@@ -837,11 +835,11 @@ class SessionShareHelper(EdTestBase):
         return legend_popup
 
     def check_default_csv_file_download_options(self):
-        '''
+        """
         Validates the contents and options of the CSV file download popup window
         Validate the headers of the CSV file download window
         Validates the Report Type Dropdown menu,  Assessment Type, Subject options
-        '''
+        """
         CSV_HEADER = "CSV File Download Options"
         CSV_HEADER_TEXT = "Once requested your CSV will become available in 24 hours at your secured FTP site"
         CSV_OPTIONS_TABLE_HEADERS = ["Report Type", "Assessment Year", "Assessment Type", "Subject"]
@@ -894,11 +892,11 @@ class SessionShareHelper(EdTestBase):
                          "ELA subject selection is not displayed.")
 
     def check_student_registration_statistics_csv_file_download_options(self):
-        '''
+        """
         Validates the contents and options of the CSV file download popup window
         Validate the headers of the CSV file download window
         Validates the Report Type Dropdown menu,  Assessment Type, Subject options
-        '''
+        """
         CSV_HEADER = "CSV File Download Options"
         CSV_HEADER_TEXT = "Once requested your CSV will become available in 24 hours at your secured FTP site"
 
@@ -922,11 +920,11 @@ class SessionShareHelper(EdTestBase):
             self.assertFalse(option.is_displayed(), "Unexpected option is visible")
 
     def check_student_registration_completion_csv_file_download_options(self):
-        '''
+        """
         Validates the contents and options of the CSV file download popup window
         Validate the headers of the CSV file download window
         Validates the Report Type Dropdown menu,  Assessment Type, Subject options
-        '''
+        """
         CSV_HEADER = "CSV File Download Options"
         CSV_HEADER_TEXT = "Once requested your CSV will become available in 24 hours at your secured FTP site"
 
@@ -950,12 +948,12 @@ class SessionShareHelper(EdTestBase):
             self.assertFalse(option.is_displayed(), "Unexpected option is visible")
 
             #    def submit_csv_file_download_options(self, expected="success"):
-            #        '''
+            #        """
             #        Sends a request for the selection
             #        :param expected: What the expected outcome is. Either "success" or "error"
             #        return message: Returns the message received after sending the request
             #        type message: String
-            #        '''
+            #        """
             #        ## Request the files
             #        unexpected = "error" if expected == "success" else "success"
             #        csv_file_download_popup = browser().find_element_by_id("CSVModal")
@@ -970,10 +968,10 @@ class SessionShareHelper(EdTestBase):
             #            self.assertTrue(False, "Error in sending request to the server")
 
     def select_csv_file_download_options(self, expected_option):
-        '''
+        """
         Selects an option in the CSV File Download Popup
         :param expected_option: Option to select
-        '''
+        """
         csv_file_download_popup = browser().find_element_by_class_name("CSVDownloadContainer")
         self.assertEqual("State Downloads", str(browser().find_element_by_id("myModalLabel").text),
                          "State Downloads popup header not found")
@@ -1022,9 +1020,9 @@ class SessionShareHelper(EdTestBase):
     #            raise AssertionError('Option is either invalid or not implemented')
 
     def get_year_display(self, year):
-        '''
+        """
         Converts year to display year format. Eg: 2016 to 2015 - 2016
-        '''
+        """
         return "{0} - {1}".format(year - 1, year)
 
     def close_download_container_popup(self):
@@ -1034,11 +1032,11 @@ class SessionShareHelper(EdTestBase):
         time.sleep(1)
 
     def check_default_academic_year(self, expected_value):
-        '''
+        """
         Checks the default value in the Academic Year dropdown field
         :param expected_value: Expected default value of Academic year
         :type expected_value: String
-        '''
+        """
         actual_value = browser().find_element_by_id("academicYearAnchor").find_element_by_id(
             "selectedAcademicYear").text
         time.sleep(10)
@@ -1046,11 +1044,11 @@ class SessionShareHelper(EdTestBase):
                          "Default value in academic year field incorrectly displayed.")
 
     def select_academic_year(self, selection):
-        '''
+        """
         Checks the default value in the Academic Year dropdown field
         :param selection: Selection of Academic year from the dropdown field.
         :type selection: String
-        '''
+        """
         browser().find_element_by_id("academicYearAnchor").find_element_by_class_name(
             "dropdown-toggle").find_element_by_class_name("edware-icon-globalheader-downarrow").click()
         # browser().find_element_by_id("selectedAsmtType").click()
@@ -1101,11 +1099,11 @@ class SessionShareHelper(EdTestBase):
             self.assertFalse(True, "no such option exist %s" % selection)
 
     def select_exam(self, selection):
-        '''
+        """
         Select the exam type
         :param selection: Selection of the exam.
         :type selection: String
-        '''
+        """
         browser().find_element_by_id("selectedAsmtType").click()
 
         # Validate all the academic year options displayed in the dropdown field.
@@ -1138,11 +1136,11 @@ class SessionShareHelper(EdTestBase):
         self.assertEqual(str(popover.text), "Grade {g}".format(g=grade_id))
 
     def check_sar_extract_options(self, expected_asmt_types):
-        '''
+        """
         Validates the SAR types on the CSV file download popup window
         :param expected_asmt_types: Assessment Type dropdown options
         :type expected_asmt_types: list of strings
-        '''
+        """
         # CSV File Download Options pop up window
         #        state_download_popup = self.get_state_downloads()
         state_download_popup = browser().find_element_by_class_name("CSVDownloadContainer").find_element_by_id(
@@ -1187,13 +1185,13 @@ class SessionShareHelper(EdTestBase):
         raise Exception("No CSV files found with the given '{p}' prefix and '{s}' suffix".format(p=prefix, s=suffix))
 
     def validate_csv_file(self, unzipped_file_path, csv_filename, expected_row_count):
-        '''
+        """
         Validates the Raw Data decrypted Extract CSV file
         :param csv_filename: Raw Data Extract CSV file name that needs to be validated
         :type csv_filename: string
         :param expected_row_count: Expected number of rows in the csv file (including the header row)
         :type expected_row_count: integer
-        '''
+        """
         file_path = unzipped_file_path + csv_filename
         self.validate_rawdata_row_count(file_path, expected_row_count)
         with open(file_path) as f:
@@ -1204,11 +1202,11 @@ class SessionShareHelper(EdTestBase):
         print("Validated and closed the Extract CSV file.")
 
     def validate_rawdata_csv_headers(self, actual_headers):
-        '''
+        """
         Validates that the Raw Data Extract CSV file headers - count and actual values in the headers
         :param actual_headers: list of strings where each string represents the header name in the CSV file
         :type actual_headers: list
-        '''
+        """
         expected_headers = ['AssessmentGuid', 'AssessmentSessionLocationId', 'AssessmentSessionLocation',
                             'AssessmentLevelForWhichDesigned',
                             'StateAbbreviation', 'ResponsibleDistrictIdentifier', 'OrganizationName',
@@ -1249,13 +1247,13 @@ class SessionShareHelper(EdTestBase):
                          "Actual column headers from the Raw Data Extract CSV are incorrectly displayed.")
 
     def validate_rawdata_row_count(self, file, expected_count):
-        '''
+        """
         Validates that the Raw Data Extract CSV file is not empty and contains 403 rows.
         :param file: Raw Data Extract CSV file path from jenkins server
         :type file: string
         :param expected_count: Expected number of rows in the csv file (including the header row)
         :type expected_count: integer
-        '''
+        """
         num_rows = len(list(csv.reader(open(file))))
         self.assertIsNotNone(num_rows, "Rawdata CSV file is Empty")
         self.assertEqual(num_rows, expected_count, "Could not find expected number of rows in the CSV file.")
@@ -1273,9 +1271,9 @@ class SessionShareHelper(EdTestBase):
                 self.assertEqual('Tyler Smith', col[Group2Text])
 
     def validate_interim_disclaimer(self):
-        '''
+        """
         Validates the Comprehensive Interim disclaimer popover content.
-        '''
+        """
         element_to_click = browser().find_element_by_id("actionBar").find_element_by_class_name(
             "interimDisclaimerIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
@@ -1378,11 +1376,11 @@ class SessionShareHelper(EdTestBase):
         time.sleep(20)
 
     def get_state_downloads(self):
-        '''
+        """
         Validates the State Downloads popup window and validates the popup header, extract type header
         return state_download_popup: Returns the State Downloads popup window
         type state_download_popup: Webdriver Element
-        '''
+        """
         state_download_popup = browser().find_element_by_class_name("CSVDownloadContainer")
         self.assertEqual("State Downloads", str(state_download_popup.find_element_by_id("myModalLabel").text),
                          "State Downloads popup header not found")
@@ -1394,26 +1392,26 @@ class SessionShareHelper(EdTestBase):
         return state_download_popup
 
     def submit_extract_download_option(self, expected="success"):
-        '''
+        """
         Sends a request for the selection
         :param expected: What the expected outcome is. Either "success" or "error"
         return url: Returns the download url received after sending the request
         type url: String
-        '''
+        """
         # Request the files
         #        unexpected = "error" if expected == "success" else "success"
         state_download_popup = self.get_state_downloads()
         state_download_popup.find_element_by_class_name("modal-footer").find_element_by_tag_name("button").click()
         url = self.get_download_url(100)
-        add_screen_to_report('/tmp/completion3.png')
+        save_screen('/tmp/completion3.png')
         return url
 
     def get_download_url_student(self, timeout):
-        '''
+        """
         Gets the download load from the successful request
         return url: Returns the download url received after sending the request
         type url: String
-        '''
+        """
         state_download_popup = self.get_state_downloads()
         state_download_popup.find_element_by_class_name("modal-footer").find_element_by_tag_name("button").click()
         try:
@@ -1473,9 +1471,9 @@ class SessionShareHelper(EdTestBase):
         self.assertEqual(label, browser().find_element_by_class_name("tenantLabel").text)
 
     def check_current_subject_view(self, selected_view):
-        '''
+        """
         Validates the subject view selected.
-        '''
+        """
         los_current_view = str(
             browser().find_element_by_class_name("detailsItem").find_element_by_class_name("selected").text)
         self.assertEqual(selected_view, los_current_view, "Incorrect subject view displayed.")

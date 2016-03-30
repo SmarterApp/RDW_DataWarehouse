@@ -3,6 +3,7 @@
 import os
 import time
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
@@ -12,28 +13,29 @@ from edware_testing_automation.frontend_tests.los_helper import LosHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 from edware_testing_automation.utils.preferences import Edware
 from edware_testing_automation.utils.preferences import preferences
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 full_reports_path = preferences(Edware.report_dir) + "/NC/2015/228/242/03/isr/INTERIM COMPREHENSIVE"
 
 
 class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelper):
-    '''
+    """
     Tests for Individual Student Report
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         IndividualStudentHelper.__init__(self, *args, **kwargs)
         LosHelper.__init__(self, *args, **kwargs)
         SessionShareHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open webpage '''
-
     def setUp(self):
+        """ setUp: Open webpage """
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("gman", "gman1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Comprehensive reports view')
     def test_multiple_opp_los_overview(self):
         self.select_ica()
         self.select_los_view("Overview")
@@ -41,6 +43,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         student_info_text_actual = ['Lavalleys, Thomas R.', '2014.12.13', '2334', '2015.04.01', '1463']
         self.data_check(student_info, student_info_text_actual)
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Comprehensive reports view')
     def test_multiple_opp_los_overview_math_blank(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")
@@ -52,6 +56,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         student_info_text_actual = ['Rose, Nahla T.', '2016.01.08', '1886']
         self.data_check(student_info, student_info_text_actual)
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Comprehensive reports view')
     def test_multiple_opp_los_overview_ela_blank(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("245", "ui-jqgrid-ftable")
@@ -63,6 +69,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         student_info_text_actual = ['Grant, Michele', '2014.12.13', '2225']
         self.data_check(student_info, student_info_text_actual)
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Comprehensive reports view')
     def test_multiple_opp_los_math(self):
         self.select_ica()
         self.select_los_view("Mathematics")
@@ -70,6 +78,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         student_info_text_actual = ['Lavalleys, Thomas R.', '2014.12.13', '2334']
         self.data_check(student_info, student_info_text_actual)
 
+    @allure.feature('Smarter: Grade view')
+    @allure.story('Interim Comprehensive reports view')
     def test_multiple_opp_los_ela(self):
         self.select_ica()
         self.select_los_view("ELA/Literacy")
@@ -86,6 +96,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         student_info_text_actual = ['Lavalleys, Thomas R.', '2014.07.03', '1475']
         self.data_check(student_info, student_info_text_actual)
 
+    @allure.feature('Smarter: Student view')
+    @allure.story('Interim Comprehensive reports view')
     def test_multiple_opp_isr(self):
         cutpoints = [1200, 1400, 1800, 2100, 2400]
         expected_color_codes = ["rgba(187, 35, 28, 1)", "rgba(228, 201, 4, 1)", "rgba(106, 165, 6, 1)",
@@ -143,13 +155,13 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         self.check_accomodations_sections(math_all_acc_section, math_expected_accomodations)
 
         # Verify the Assessment drop down
-        dropdown_expected_text = [u"2015.04.10 · Grade 03 · Summative",
-                                  u"2015.04.01 · Grade 03 · Interim Comprehensive",
-                                  u"2014.12.13 · Grade 03 · Interim Comprehensive",
-                                  u"2014.12.01 · Grade 03 · Interim Comprehensive",
-                                  u"2014.07.03 · Grade 03 · Interim Comprehensive",
-                                  u"2014.05.02 · Grade 03 · Interim Comprehensive", u"OTHER ACADEMIC YEARS",
-                                  u"2016.04.10 · Grade 04 · Summative"]
+        dropdown_expected_text = ["2015.04.10 · Grade 03 · Summative",
+                                  "2015.04.01 · Grade 03 · Interim Comprehensive",
+                                  "2014.12.13 · Grade 03 · Interim Comprehensive",
+                                  "2014.12.01 · Grade 03 · Interim Comprehensive",
+                                  "2014.07.03 · Grade 03 · Interim Comprehensive",
+                                  "2014.05.02 · Grade 03 · Interim Comprehensive", u"OTHER ACADEMIC YEARS",
+                                  "2016.04.10 · Grade 04 · Summative"]
         dropdown_actual_text = self.assessment_dropdown_text_isr()
         self.assertEqual(dropdown_expected_text, dropdown_actual_text, "drop down list is not correct")
 
@@ -201,6 +213,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
             "section")
         self.check_accomodations_sections(ela_all_acc_section, ela_expected_accomodations)
 
+    @allure.feature('Smarter: Integration with Extract services')
+    @allure.story('PDF report')
     def test_multiple_opp_color_pdf(self):
         self.select_ica()
         self.select_los_view("Overview")
@@ -212,6 +226,8 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         file_path = full_reports_path + "/72d8248d-0e8f-404b-8763-a5b7bcdaf535.20141213.en.pdf"
         self._check_pdf_file(file_path, 'PDF: Color pdf test was failed')
 
+    @allure.feature('Smarter: Integration with Extract services')
+    @allure.story('PDF report')
     def test_multiple_opp_gray_pdf(self):
         self.select_ica()
         self.select_los_view("Overview")
@@ -272,7 +288,7 @@ class MultipleOpportunities(IndividualStudentHelper, LosHelper, SessionShareHelp
         else:
             raise Exception("incorrect pdf color specified")
         option.click()
-        add_screen_to_report('/tmp/pdf_debug.png')
+        save_screen('/tmp/pdf_debug.png')
         print_button = print_popover.find_element_by_class_name("modal-footer").find_element_by_class_name("btn")
         print_button.click()
 

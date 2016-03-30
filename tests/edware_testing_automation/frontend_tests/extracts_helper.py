@@ -17,12 +17,12 @@ class ExtractsHelper(EdTestBase):
         EdTestBase.__init__(self, *args, **kwargs)
 
     def remove_extract_directory(self, sftp_dir, encrypted_dir, decrypted_dir, unzipped_dir, tenant='cat'):
-        '''
+        """
         Changes file permission and deletes the following directories
         Extract working directory - /tmp/{tenant}
         Jail account directory - sftp_dir
         Deletes the test directory used for copying the zip file, unzipping & decrypting it
-        '''
+        """
         os.system("sudo /bin/chmod -R a+r " + sftp_dir)
         os.system("sudo /bin/chmod -R a+r /tmp/{0}".format(tenant))
         os.system("sudo /bin/rm -rf " + sftp_dir)
@@ -34,11 +34,11 @@ class ExtractsHelper(EdTestBase):
         os.system("rm -rf " + encrypted_dir)
 
     def get_csv_download_filename_and_url(self, success_message, report_type):
-        '''
+        """
         Gets the zipfile name from the success message
         :param success_message: Success message received after sending the request.
         :param success_message: string
-        '''
+        """
         text1 = "Your request for {0} made on".format(report_type)
         text2 = "24 hours to download the requested report. The name of your file is "
         self.assertIn(text1, success_message, "Success message incorrectly displayed.")
@@ -54,11 +54,11 @@ class ExtractsHelper(EdTestBase):
         return filename, url
 
     def run_file_routing_program(self, sftp_dir, tenant='cat'):
-        '''
+        """
         Checks the zip file existence in the working directory.
         Once the zip file is found in the working directory, jenkins_filerouter.sh is executed.
         Checks that reports directory is created in the jail account directory
-        '''
+        """
         # Check for zip file existence in the working directory
         working_dir_found = False
         jailaccount_dir_found = False
@@ -87,12 +87,12 @@ class ExtractsHelper(EdTestBase):
         print("Successfully sent a request to run the file routing program")
 
     def check_file_directory(self, filename, sftp_dir):
-        '''
+        """
         Check that the zip file is available inside the jail account directory
         :param filename: Zip file name
         :type filename: string
         :param sftp_dir: STFP directory path
-        '''
+        """
         file_path = sftp_dir + "/" + filename
         assert os.system("sudo  " + file_path)
 
@@ -103,11 +103,11 @@ class ExtractsHelper(EdTestBase):
                 return os.path.join(root, filename)
 
     def copy_gpg_file_FT_dir(self, filename, sftp_dir, encrypted_dir):
-        '''
+        """
         Creates the encrypted_files directory and copies the gpg file from the jail account directory to this one.
         :param filename: GPG file name
         :type filename: string
-        '''
+        """
         if not os.path.exists(encrypted_dir):
             os.makedirs(encrypted_dir)
         print("Made encrypted_files directory")
@@ -121,11 +121,11 @@ class ExtractsHelper(EdTestBase):
 
     def decrypt_gpg_file(self, gpg_filename, encrypted_dir, decrypted_dir, gnupg_home_path, gpg_binary_path,
                          decrypted_file='extract.zip', passphrase='edware1234'):
-        '''
+        """
         Creates the decrypted_dir directory and decrypts the GPG file from the 'encrypted_files' directory in extract.zip file
         :param gpg_filename: GPG file name
         :type gpg_filename: string
-        '''
+        """
         if not os.path.exists(decrypted_dir):
             os.makedirs(decrypted_dir)
         gpg_file_path = os.path.join(encrypted_dir, gpg_filename)
@@ -159,11 +159,11 @@ class ExtractsHelper(EdTestBase):
             unzipped_file.extractall(unzipped_dir)
 
     def get_file_names(self, unzipped_dir):
-        '''
+        """
         Gets the.csv and json file names from the unzipped_files
         :return [csv_file_names, json_file_names]: list of csv file names list and json file names list
         :type [csv_file_names, json_file_names]: list
-        '''
+        """
         csv_file_names = []
         json_file_names = []
         for file in os.listdir(unzipped_dir):

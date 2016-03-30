@@ -1,16 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import allure
+
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
+@allure.feature('Smarter: Quick links')
 class QuickLinks(SessionShareHelper):
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open webpage '''
-
+    @allure.story('State view')
+    @allure.story('District view')
+    @allure.story('School view')
     def test_ql_showquicklinks(self):
+        """ setUp: Open webpage """
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("jbrown", "jbrown1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -31,6 +36,9 @@ class QuickLinks(SessionShareHelper):
         self.assertEqual(browser().find_element_by_id("quickLinks_link").get_attribute("class"), u"close",
                          "Quick links not open")
 
+    @allure.story('State view')
+    @allure.story('District view')
+    @allure.story('School view')
     def test_ql_hidequicklinks(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("jbrown", "jbrown1234")
@@ -47,6 +55,7 @@ class QuickLinks(SessionShareHelper):
         self.assertEqual(browser().find_element_by_id("quickLinks_data").get_attribute("class"), u"close",
                          "Quick links not close")
 
+    @allure.story('State view')
     def test_ql_lables(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("jbrown", "jbrown1234")
@@ -73,6 +82,7 @@ class QuickLinks(SessionShareHelper):
             actual_school_name.append(each.find_element_by_tag_name('a').text)
         self.assertEqual(expected_school_name, actual_school_name, "quick link schools are not present")
 
+    @allure.story('State view')
     def test_ql_lable_District_only(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("hcharles", "hcharles1234")
@@ -88,6 +98,7 @@ class QuickLinks(SessionShareHelper):
             actual_district_name.append(each.find_element_by_tag_name('a').text)
         self.assertEqual(expected_district_name, actual_district_name, "quick link districts are not present")
 
+    @allure.story('District view')
     def test_ql_districts_link(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("jbrown", "jbrown1234")
@@ -99,6 +110,9 @@ class QuickLinks(SessionShareHelper):
         title = browser().find_element_by_id("infoBar").find_element_by_class_name("title").text
         self.assertEqual(title, u"Schools in Dealfish Pademelon SD", "District title is wrong")
 
+    @allure.story('State view')
+    @allure.story('District view')
+    @allure.story('School view')
     def test_ql_schools_link(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("jbrown", "jbrown1234")
@@ -116,6 +130,7 @@ class QuickLinks(SessionShareHelper):
         title = browser().find_element_by_id("infoBar").find_element_by_class_name("title").text
         self.assertEqual(title, u"Grades in Sandpiper Peccary Elementary", "School title is wrong")
 
+    @allure.story('State view')
     def test_ql_more_option(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("mkgandhi", "mkgandhi1234")

@@ -1,13 +1,13 @@
-from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
-from edware_testing_automation.utils.test_base import DOWNLOADS, UNZIPPED
-
-__author__ = 'smuhit'
-
 import os
 import shutil
 from time import sleep
+
+import allure
+
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.frontend_tests.extracts_helper import ExtractsHelper
+from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import DOWNLOADS, UNZIPPED
 
 UNZIPPED_FILE_PATH = UNZIPPED + '/'
 DOWNLOAD_FILE_PATH = DOWNLOADS + '/'
@@ -37,12 +37,9 @@ class TestSrUdlIntegration(SessionShareHelper, ExtractsHelper):
             if os.path.exists(file_to_delete):
                 os.remove(file_to_delete)
 
-    # @attr('hpz')
-    def test_student_registration_statistics_with_udl_integration(self):
-        """
-        Test the student registration statistics report with UDL integration
-        """
-
+    @allure.feature('Smarter: Integration with HPZ')
+    @allure.story('State Downloads reports')
+    def test_HPZ_integration_for_student_registration_statistics(self):
         # Select the academic year for Student Registration Statistics extract
         export_popup = self.open_file_download_popup()
         self.check_export_options(export_popup, ['State Downloads'])
@@ -71,18 +68,11 @@ class TestSrUdlIntegration(SessionShareHelper, ExtractsHelper):
         print(file_names)
         csv_file_names = file_names[0]
         self.assertEqual(len(csv_file_names), 1, 'Unexpected number of csv files found')
-        csv_file = csv_file_names[0]
-        csv_file_path = os.path.join(UNZIPPED_FILE_PATH, csv_file)
-        self.validate_sr_statistics_report_csv_headers(2016, csv_file_path)
-        expected_file = os.path.join(os.path.dirname(__file__), 'resources', 'expected_sr_stats_report.csv')
-        self.validate_csv_files_match(expected_file, csv_file_path)
+        return csv_file_names
 
-    # @attr('hpz')
-    def test_student_registration_completion_with_udl_integration(self):
-        """
-        Test the student registration completion report with UDL integration
-        """
-
+    @allure.feature('Smarter: Integration with HPZ')
+    @allure.story('State Downloads reports')
+    def test_HPZ_integration_for_assessment_completion_statistics(self):
         # Select the academic year for Student Assessment Completion extract
         export_popup = self.open_file_download_popup()
         self.check_export_options(export_popup, ['State Downloads'])
@@ -102,26 +92,27 @@ class TestSrUdlIntegration(SessionShareHelper, ExtractsHelper):
         downloaded_file = DOWNLOAD_FILE_PATH + file_name
         self.files_to_cleanup_at_end.append(downloaded_file)
         self.unzip_file_to_directory(downloaded_file, UNZIPPED_FILE_PATH)
-
-        #        self.check_student_registration_completion_csv_file_download_options()
-        #        self.select_csv_file_download_options('Completion Year: 2000')
-        #
-        #        # Download the file from the provided url and unzip the extract
-        #        message = self.submit_csv_file_download_options()
-        #        file_name, url = self.get_csv_download_filename_and_url(message, report_type="1999 - 2000 Student Assessment Completion")
-        #        sleep(3)
-        #        browser().get(url)
-        #        sleep(3)
-        #        downloaded_file = DOWNLOAD_FILE_PATH + file_name
-        #        self.files_to_cleanup_at_end.append(downloaded_file)
-        #        self.unzip_file_to_directory(downloaded_file, UNZIPPED_FILE_PATH)
-
-        # Validate the CSV file
         file_names = self.get_file_names(UNZIPPED_FILE_PATH)
         print(file_names)
         print(len(file_names))
         csv_file_names = file_names[0]
         self.assertEqual(len(csv_file_names), 1, 'Unexpected number of csv files found')
+        return csv_file_names
+
+    @allure.feature('Smarter: State view')
+    @allure.story('Download reports')
+    def test_student_registration_statistics_report(self):
+        csv_file_names = self.test_HPZ_integration_for_student_registration_statistics()
+        csv_file = csv_file_names[0]
+        csv_file_path = os.path.join(UNZIPPED_FILE_PATH, csv_file)
+        self.validate_sr_statistics_report_csv_headers(2016, csv_file_path)
+        expected_file = os.path.join(os.path.dirname(__file__), 'resources', 'expected_sr_stats_report.csv')
+        self.validate_csv_files_match(expected_file, csv_file_path)
+
+    @allure.feature('Smarter: State view')
+    @allure.story('Download reports')
+    def test_assessment_completion_statistics_report(self):
+        csv_file_names = self.test_HPZ_integration_for_assessment_completion_statistics()
         csv_file = csv_file_names[0]
         csv_file_path = os.path.join(UNZIPPED_FILE_PATH, csv_file)
         self.validate_sr_completion_report_csv_headers(2016, csv_file_path)

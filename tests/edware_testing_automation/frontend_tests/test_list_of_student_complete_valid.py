@@ -1,10 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import allure
+
 __author__ = 'vnatarajan'
 
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
 
 
+@allure.feature('Smarter: Grade view')
 class CompleteValid(LosHelper):
     def __init__(self, *args, **kwargs):
         LosHelper.__init__(self, *args, **kwargs)
@@ -14,6 +17,7 @@ class CompleteValid(LosHelper):
         self.enter_login_credentials("gman", "gman1234")
         self.check_redirected_requested_page("state_view_sds")
 
+    @allure.story('Summative reports view', 'Legend & info')
     def test_cv_summative_los(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("248", "ui-jqgrid-ftable")
@@ -59,6 +63,7 @@ class CompleteValid(LosHelper):
         self.check_los_legend_popup()
         self.check_los_report_info()
 
+    @allure.story('Summative reports view')
     def test_cv_summative_los_tow_icons(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("245", "ui-jqgrid-ftable")
@@ -66,8 +71,8 @@ class CompleteValid(LosHelper):
         self.select_tab_los_view("Summative", "Overview")
         student_record = self.find_student_row("Bass, Chuck L.")
         self.check_los_status_two_icons(student_record, "ELA", ["edware-icon-invalid", "edware-icon-partial"])
-        pass
 
+    @allure.story('Interim Comprehensive reports view', 'Legend & info')
     def test_cv_interim_comprehensive_los(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
@@ -106,6 +111,7 @@ class CompleteValid(LosHelper):
         self.check_los_legend_popup()
         self.check_los_report_info()
 
+    @allure.story('Interim Comprehensive reports view')
     def test_cv_interim_comprehensive_los_tow_icons(self):
         self.drill_down_navigation("c912df4b-acdf-40ac-9a91-f66aefac7851", "ui-jqgrid-ftable")
         self.drill_down_navigation("f7de5f75-b5ff-441a-9ed0-cd0e965f7719", "ui-jqgrid-ftable")
@@ -113,8 +119,8 @@ class CompleteValid(LosHelper):
         self.select_tab_los_view("Interim Comprehensive", "Overview")
         student_record = self.find_student_row("Lynn, Kristi L.")
         self.check_los_status_two_icons(student_record, "ELA", ["edware-icon-standardized", "edware-icon-partial"])
-        pass
 
+    @allure.story('Interim Assessments Blocks reports view')
     def test_cv_interim_assessment_block_los(self):
         self.drill_down_navigation("228", "ui-jqgrid-ftable")
         self.drill_down_navigation("248", "ui-jqgrid-ftable")

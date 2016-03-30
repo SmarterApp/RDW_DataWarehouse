@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
-'''
+"""
 Created on Feb 26, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
 from selenium.common.exceptions import NoSuchElementException
@@ -13,13 +13,13 @@ from selenium.webdriver.support import expected_conditions
 
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
-from edware_testing_automation.utils.test_base import add_screen_to_report, wait_for
+from edware_testing_automation.utils.test_base import save_screen, wait_for
 
 
 class IndividualStudentHelper(SessionShareHelper):
-    '''
+    """
     Helper methods for Individual Student Report Page
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
@@ -85,10 +85,10 @@ class IndividualStudentHelper(SessionShareHelper):
 
     # Check claim contents tooltip that is displayed on mouse over on the claim contents arrow box on ISR
     def check_claim_tooltip(self, claim_section, popup_header, claim_name, claim_score, claim_content, error_band):
-        '''
+        """
         OBSOLETE FUNCTION - NO LONGER USED
         Note: The Claim tooltip was removed.
-        '''
+        """
         browser().maximize_window()
         element_to_click = claim_section.find_element_by_class_name("scoreBoxUpper")
         loc = element_to_click.location
@@ -128,9 +128,9 @@ class IndividualStudentHelper(SessionShareHelper):
             "errorBand").text)), "Error Band incorrectly displayed on the tooltip"
 
     def check_isr_legend_popup(self):
-        '''
+        """
         Validates the legend popup from the Report Action Nav bar in the Individual Student report
-        '''
+        """
         legend_popup = self.open_legend_popup()
         #        self.check_legend_popup_ald_section(legend_popup)
         #        self.check_isr_legend_popup_claim_section(legend_popup)
@@ -139,18 +139,18 @@ class IndividualStudentHelper(SessionShareHelper):
     #        self.check_isr_legend_error_band_section(legend_popup)
 
     def check_isr_legend_popup_language_sp(self):
-        '''
+        """
         Validates the legend popup from the Report Action Nav bar in the Individual Student report
-        '''
+        """
         legend_popup = self.open_legend_popup_language_sp()
         self.check_isr_legend_content_language_sp(legend_popup)
 
     def check_isr_legend_content(self, popup):
-        '''
+        """
         Validates the Overall score details section including the performance bar and description on the ISR legend popup.
         ;param popup: Legend popup webdriver element
         :type popup: Webdriver Element
-         '''
+         """
         legend = popup.find_element_by_class_name("overall_score_wrapper")
 
         expected_first_line = 'This report presents an individual student\'s scores for a selected assessment.'
@@ -210,11 +210,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
     #        self.assertEqual("Error Bands(brackets denote min/max)", str(perf_bar_section.find_element_by_class_name("desc_error_bands").text), "Error Band indicator not displayed.")
 
     def check_isr_legend_content_language_sp(self, popup):
-        '''
+        """
         Validates the Overall score details section including the performance bar and description on the ISR legend popup.
         ;param popup: Legend popup webdriver element
         :type popup: Webdriver Element
-         '''
+         """
         legend = popup.find_element_by_class_name("overall_score_wrapper")
 
         expected_first_line = 'Este reporte presenta las puntuaciones de un estudiante individual para una evaluación seleccionada'
@@ -249,11 +249,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                          "Error band description incorrectly displayed.")
 
     def check_isr_legend_error_band_section(self, popup):
-        '''
+        """
         Validates the Error Band section and description on the ISR legend popup.
         ;param popup: Legend popup webdriver element
         :type popup: Webdriver Element
-         '''
+         """
         LEGEND_ERR_BAND_HEADER = "Error Band:"
         LEGEND_ERR_BAND_DESC = "Smarter Balanced tests try to provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would be very likely to achieve if they were to take the test multiple times. It is similar to the “margin of error” that newspapers report for public opinion surveys."
         err_band_section = popup.find_element_by_class_name("popover-content").find_element_by_class_name(
@@ -266,11 +266,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
     #        self.assertIn(LEGEND_ERR_BAND_DESC, str(err_band_section.text), 'Error: Error Band section description: {0} is not found in Legend popup'.format(LEGEND_ERR_BAND_DESC))
 
     def check_isr_legend_popup_claim_section(self, popup):
-        '''
+        """
         Validates the Supporting Score Details: section for the claim performance level description on the legend popup.
         ;param popup: Legend popup webdriver element
         :type popup: Webdriver Element
-         '''
+         """
         LEGEND_CLAIM_HEADER = "Supporting Score Details:"
         LEGEND_CLAIM_DESC_HEADER = ['Icon', 'Description', 'Meaning']
         LEGEND_CLAIM_ROWS = [["Above Standard",
@@ -308,11 +308,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                          "Supporting Score Details  table rows do not match")
 
     def select_asmt_type_isr(self, asmt_selection, asmt_year):
-        '''
+        """
         Selects the desired assessment type from the cpop asmt type dropdown.
         ;param asmt_selection: Assessment type selection: 'Summative' or 'Interim Comprehensive'
         :type asmt_selection: string
-         '''
+         """
         browser().find_element_by_id("actionBar").find_element_by_class_name("asmtDropdown").find_element_by_tag_name(
             "button").click()
         asmt_dropdown_options = browser().find_element_by_class_name("asmtDropdown").find_element_by_class_name(
@@ -336,19 +336,19 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         time.sleep(10)
 
     def check_selected_asmt_type_isr(self, selected_asmt_type):
-        '''
+        """
         Checks the assessment type on the cpop asmt type dropdown.
         ;param selected_asmt_type: Assessment type selection
         :type selected_asmt_type: string
-         '''
+         """
         selected_assessment_view = browser().find_element_by_id("actionBar").find_element_by_class_name(
             "asmtDropdown").find_element_by_id("selectedAsmtType").text
         self.assertIn(selected_asmt_type, selected_assessment_view), "Incorrect assessment type selected"
 
     def check_isr_report_info_popup(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in Individual Student report
-        '''
+        """
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
         hover_mouse.perform()
@@ -393,9 +393,9 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                          "Uses description second bullet point not found.")
 
     def check_isr_report_info_popup_sp(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in Individual Student report
-        '''
+        """
         time.sleep(3)
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)
@@ -429,7 +429,7 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                          "Uses description second bullet point not found.")
 
     def check_isr_overall_score_summary(self, sequence, subject, score, ald_level):
-        '''
+        """
         Validates the Overall score is displayed in the report info bar on Individual Student report
         ;param sequence: index of the order of appearance of the overall score - Most commonly Math = 0, ELA = 1 If only one assessment result is displayed then it will be 0.
         :type sequence: integer
@@ -439,7 +439,7 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         :type score: string
         :param ald_level: ALD description
         :type ald_level: string
-        '''
+        """
         report_info_score_sections = browser().find_element_by_id("infoBar").find_elements_by_class_name("overall")
 
         self.assertIn(subject, str(report_info_score_sections[sequence].text),
@@ -450,20 +450,20 @@ It is similar to the \"margin of error\" that newspapers report for public opini
                       "ALD name not found in Overall score summary in Report info bar")
 
     def check_isr_print_pdf_options(self):
-        '''
+        """
         Validates the print option in the Report Action bar and the different options available to print
-        '''
+        """
         assert browser().find_element_by_id("actionBar").find_element_by_class_name(
             "printItem"), "Print option not found in the Report info navigation bar"
-        add_screen_to_report('/tmp/isr_pdf1.png')
+        save_screen('/tmp/isr_pdf1.png')
         browser().find_element_by_id("actionBar").find_element_by_class_name("printLabel").click()
-        add_screen_to_report('/tmp/isr_pdf2.png')
+        save_screen('/tmp/isr_pdf2.png')
         try:
             wait_for(lambda driver: driver.find_element_by_id("PrintModal"))
         # print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id("PrintModal")
         except:
             print("Timeout in opening the Print pop up window")
-        add_screen_to_report('/tmp/isr_pdf3.png')
+        save_screen('/tmp/isr_pdf3.png')
         print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name(
             "printItem").find_element_by_id("PrintModal")
         self.assertIn("Print", str(
@@ -487,21 +487,21 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         wait_for(is_modal_window_present)
 
     def language_check_isr_print_pdf_options(self, print_popup_text):
-        '''
+        """
         Validates the print option in the Report Action bar and the different options available to print
-        '''
+        """
         assert browser().find_element_by_id("actionBar").find_element_by_class_name(
             "printItem"), "Print option not found in the Report info navigation bar"
-        add_screen_to_report('/tmp/isr_pdf1.png')
+        save_screen('/tmp/isr_pdf1.png')
         browser().find_element_by_id("actionBar").find_element_by_class_name("printLabel").click()
-        add_screen_to_report('/tmp/isr_pdf2.png')
+        save_screen('/tmp/isr_pdf2.png')
         time.sleep(3)
         try:
             wait_for(lambda driver: driver.find_element_by_id("PrintModal"))
         # print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name("printItem").find_element_by_id("PrintModal")
         except:
             print("Timeout in opening the Print pop up window")
-        add_screen_to_report('/tmp/isr_pdf3.png')
+        save_screen('/tmp/isr_pdf3.png')
         print_popup = browser().find_element_by_id("actionBar").find_element_by_class_name(
             "printItem").find_element_by_id("PrintModal")
         self.assertIn(print_popup_text['head'], browser().find_element_by_id("actionBar").find_element_by_class_name(
@@ -515,9 +515,9 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         print_popup.find_element_by_class_name("close").click()
 
     def check_accomodations_sections(self, acc_section, expected_acc):
-        '''
+        """
         Validates the accomodations section & its contents
-        '''
+        """
         self.assertIn("The following accommodations were made available:",
                       str(acc_section.find_element_by_tag_name("p").text), 'Accomodations description title not found')
         all_accomodations = acc_section.find_elements_by_class_name("edware-label-accommodation")
@@ -527,9 +527,9 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         self.assertEqual(expected_acc, actual_acc, "All accomodations not found in the respective section")
 
     def language_check_accommodations_sections(self, accommodation, acc_section, expected_acc):
-        '''
+        """
         Validates the accomodations section & its contents
-        '''
+        """
         self.assertIn(accommodation, acc_section.find_element_by_tag_name("p").text,
                       'Accomodations description title not found')
         all_accomodations = acc_section.find_elements_by_class_name("edware-label-accommodation")
@@ -539,11 +539,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         self.assertEqual(expected_acc, actual_acc, "All accomodations not found in the respective section")
 
     def check_current_selected_opportunity_isr(self, expected_value):
-        '''
+        """
         Checks the assessment type on the cpop asmt type dropdown.
         ;param selected_asmt_type: Assessment type selection: 'Summative' or 'Interim Comprehensive'
         :type selected_asmt_type: string
-         '''
+         """
         #        self.assertIn(selected_asmt_type, unicode(browser().find_element_by_id("actionBar").find_element_by_class_name("asmtDropdown").find_element_by_id("selectedAsmtType").text)), "Incorrect assessment type selected"
         dropdown = browser().find_element_by_class_name("asmtDropdown")
         dropdown_value = dropdown.find_element_by_id("selectedAsmtType").text
@@ -556,11 +556,11 @@ It is similar to the \"margin of error\" that newspapers report for public opini
         optionFound = False
         if optionFound is False:
             for each in all_options:
-                '''
+                """
                 Another way to handle the unicode encode error is to encode the expected result and then compare it with the actual text
                 for eg: Replace . with &#183; in the expected text like "2016.01.01 &#183; Grade 3 &#183; Interim Comprehensive" and then
                 if selection in each.text.encode('ascii', 'xmlcharrefreplace'):
-                '''
+                """
                 if selection in each.text:
                     each.click()
                     time.sleep(5)

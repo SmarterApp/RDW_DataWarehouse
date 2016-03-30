@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on December 5, 2013
 
 @author: nparoha
-'''
+"""
 import csv
 import fnmatch
 import os
 import shutil
+
+import allure
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.los_helper import LosHelper
@@ -16,18 +18,18 @@ from edware_testing_automation.utils.test_base import DOWNLOADS
 INSIDE_DOWNLOADS_FOLDER = DOWNLOADS + '/'
 
 
+@allure.story('Download reports')
 class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
-    '''
+    """
     Raw Data Extract Tests for Comparing Population 'School View' report
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
         LosHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         self.enter_login_credentials("shall", "shall1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -37,6 +39,7 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
             except:
                 raise AssertionError("Unable to delete the downloads directory.")
 
+    @allure.feature('Smarter: Stave view')
     def test_508_state_level(self):
         os.system("mkdir " + DOWNLOADS)
 
@@ -74,6 +77,7 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
                      '29%', '3', '21%', '4', '29%', '14']
         self.assertEqual(first_row, actual_rows[12], "First row in the grid incorrectly displayed.")
 
+    @allure.feature('Smarter: District view')
     def test_508_district_level(self):
         self.select_academic_year("2015")
         self.drill_down_navigation("2ce72d77-1de2-4137-a083-77935831b817", "ui-jqgrid-ftable")
@@ -116,6 +120,7 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
                      'Interim Data Only', 'Interim Data Only', 'Interim Data Only']
         self.assertEqual(nyala_row, actual_rows[14], "Nyala row in the grid incorrectly displayed.")
 
+    @allure.feature('Smarter: School view')
     def test_508_school_level_summative(self):
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
         self.drill_down_navigation("939", "ui-jqgrid-ftable")
@@ -155,6 +160,7 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
                      '2', '25%', '8']
         self.assertEqual(first_row, actual_rows[12], "First row in the grid incorrectly displayed.")
 
+    @allure.feature('Smarter: Grade view')
     def test_508_grade_level_math_summative(self):
         # Daybreak - Western Middle
         self.drill_down_navigation("229", "ui-jqgrid-ftable")
@@ -195,11 +201,11 @@ class Extract508CompliantTable(ComparingPopulationsHelper, LosHelper):
         self.assertEqual(first_row, actual_rows[11], "First row in the grid incorrectly displayed.")
 
     def check_508_csv_present(self, report):
-        '''
+        """
         Check that the csv file is downloaded in the /tmp/downloads/ directory
         return file: Filename
         type file: string
-        '''
+        """
         found = False
         file_path = DOWNLOADS
         if report == "cpop":

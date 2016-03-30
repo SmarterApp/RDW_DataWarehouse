@@ -1,13 +1,16 @@
-'''
+"""
 Created on Aug 13, 2013
 
 @author: nparoha
-'''
+"""
+import allure
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.frontend_tests.filtering_helper import FilteringHelper
 
 
+@allure.feature('Smarter: State view')
+@allure.story('Align', 'Overall and district\'s statistic')
 class TestE2E(FilteringHelper, ComparingPopulationsHelper):
     def __init__(self, *args, **kwargs):
         FilteringHelper.__init__(self, *args, **kwargs)
@@ -16,7 +19,7 @@ class TestE2E(FilteringHelper, ComparingPopulationsHelper):
     def test_e2e_frontend_one_assmt_flow1(self):
         self.open_requested_page_redirects_login_page("state_view_sds")
 
-        ''' Invalid Login Credentials tests are disabled for DE126'''
+        # Invalid Login Credentials tests are disabled for DE126
         #        ## Invalid login credentials
         #        login_page = browser().find_element_by_class_name("box-content")
         #        login_page.find_element_by_id("IDToken1").send_keys("shall")

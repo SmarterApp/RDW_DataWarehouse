@@ -1,27 +1,29 @@
-'''
+"""
 Created on March 14, 2013
 
 @author: nparoha
-'''
+"""
 import time
 
+import allure
 from selenium.webdriver.common.action_chains import ActionChains
 
 from edware_testing_automation.frontend_tests.comparing_populations_helper import ComparingPopulationsHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
 
 
+@allure.feature('Smarter: District view')
+@allure.story('Overall and school\'s statistic')
 class ListOfSchools(ComparingPopulationsHelper):
-    '''
+    """
     Tests for Comparing Population report - District view that displays the 'List of Schools'
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         ComparingPopulationsHelper.__init__(self, *args, **kwargs)
 
-    ''' setUp: Open web page after redirecting after logging in as a teacher'''
-
     def setUp(self):
+        """ setUp: Open web page after redirecting after logging in as a teacher"""
         self.open_requested_page_redirects_login_page("state_view_sds")
         # Login as a district education administrator
         self.enter_login_credentials("slee", "slee1234")
@@ -128,9 +130,9 @@ class ListOfSchools(ComparingPopulationsHelper):
         self.check_cpop_report_info_district_view()
 
     def check_cpop_report_info_district_view(self):
-        '''
+        """
         Validates the Report Info text displayed on the mouseover overlay in cpop-district view report
-        '''
+        """
         element_to_click = browser().find_element_by_id("infoBar").find_element_by_class_name(
             "edware-vertical-bar").find_element_by_class_name("reportInfoIcon")
         hover_mouse = ActionChains(browser()).move_to_element(element_to_click)

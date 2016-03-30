@@ -1,12 +1,16 @@
-'''
+"""
 Created on May 16, 2013
 
 @author: nparoha
-'''
+"""
+import allure
+
 from edware_testing_automation.frontend_tests.common_session_share_steps import SessionShareHelper
 from edware_testing_automation.pytest_webdriver_adaptor.pytest_webdriver_adaptor import browser
+from edware_testing_automation.utils.test_base import save_message
 
 
+@allure.feature('Smarter: Security (view) permissions')
 class ContextSecurity(SessionShareHelper):
     def __init__(self, *args, **kwargs):
         SessionShareHelper.__init__(self, *args, **kwargs)
@@ -15,7 +19,7 @@ class ContextSecurity(SessionShareHelper):
         self.open_landing_page_login_page()
 
     def test_teacher2_authorized_access(self):
-        # login as a teacher
+        save_message('login as a teacher')
         self.enter_login_credentials("vlee", "vlee1234")
         self.check_redirected_requested_page("state_view_sds")
         print("Drill down navigation from state list to the list of students")
@@ -30,7 +34,7 @@ class ContextSecurity(SessionShareHelper):
         assert length == 1, ("Expected '%s' of students but found '%s'", ('number_students', 'length'))
 
     def test_consortium_pii_all(self):
-        # Login as consortium user with SAS and SRS permission and PII permissions for CA, NC and VT
+        save_message('Login as consortium user with SAS and SRS permission and PII permissions for CA, NC and VT')
         self.enter_login_credentials("radams", "radams1234")
         # Click on the CA from state map
         self.check_redirected_requested_page("state_selection_map")
@@ -80,7 +84,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Diane Baine | Grade 05")
 
     def test_consortium_general(self):
-        # log in as consortium user with SAS and SRS permission but no PII permission
+        save_message('log in as consortium user with SAS and SRS permission but no PII permission')
         self.enter_login_credentials("cmiller", "cmiller1234")
         self.check_redirected_requested_page("state_selection_map")
         self.assertEqual(str(browser().find_element_by_id("titleString").text),
@@ -112,7 +116,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_no_pii_message("05")
 
     def test_consortium_gen_pii(self):
-        # Test as consortium admin who has PII access of CA and VT and general access for NC
+        save_message('Test as consortium admin who has PII access of CA and VT and general access for NC')
         self.enter_login_credentials("swhite", "swhite1234")
 
         self.assertEqual(str(browser().find_element_by_id("titleString").text),
@@ -155,7 +159,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Martin Cogswell | Grade 11")
 
     def test_state_admin_pii(self):
-        # Login as state admin who has PII access of NC. Drill down to ISR report.
+        save_message('Login as state admin who has PII access of NC. Drill down to ISR report.')
         # Validate SAR & SRS extracts permissions
         self.enter_login_credentials("arice", "arice1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -172,8 +176,8 @@ class ContextSecurity(SessionShareHelper):
         self.check_export_options(export_popup, ['Current view', 'Student assessment results', 'State Downloads'])
         self.select_extract_option(export_popup, 'State Downloads')
         self.check_sar_extract_options(
-                ['Student Registration Statistics', 'Assessment Completion Statistics', 'Audit XML',
-                 'Individual Item Response Data'])
+            ['Student Registration Statistics', 'Assessment Completion Statistics', 'Audit XML',
+             'Individual Item Response Data'])
         # Click on 'Sunset - Eastern Elementary' school link from list of districts
         self.drill_down_navigation("242", "ui-jqgrid-ftable")
         # Click on 'Grade 3' school link from list of grades
@@ -189,7 +193,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Lettie L. Hose | Grade 03")
 
     def test_state_admin_general(self):
-        # Login as state admin who has general access of NC and No SAR & SRS extracts permissions.
+        save_message('Login as state admin who has general access of NC and No SAR & SRS extracts permissions.')
         # Check no PII message is displayed in school view cpop report.
         self.enter_login_credentials("crose", "crose1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -210,7 +214,10 @@ class ContextSecurity(SessionShareHelper):
         self.check_no_pii_message("03")
 
     def test_state_admin_pii_general(self):
-        # Login as state admin who has PII and SAR extract access to only one school "Sandpiper Peccary Elementary".
+        save_message(
+            'Login as state admin who has PII and SAR extract access to only one school '
+            '"Sandpiper Peccary Elementary".'
+        )
         # Validate that this user has general level permissions for other districts and schools
         self.enter_login_credentials("kscott", "kscott1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -244,7 +251,10 @@ class ContextSecurity(SessionShareHelper):
         self.check_no_pii_message("06")
 
     def test_district_admin_pii_general(self):
-        # Login as district admin who has PII and SAR extract access to only one school "Sandpiper Peccary Elementary".
+        save_message(
+            'Login as district admin who has PII and SAR extract access to only '
+            'one school "Sandpiper Peccary Elementary".'
+        )
         # Validate that this user has general level permissions for other districts and schools
         self.enter_login_credentials("rwilson", "rwilson1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -278,7 +288,10 @@ class ContextSecurity(SessionShareHelper):
         self.check_no_pii_message("07")
 
     def test_district_admin_pii(self):
-        # Login as district admin who has PII and SAR extract access to only the districts/schools with PII.
+        save_message(
+            'Login as district admin who has PII and SAR extract '
+            'access to only the districts/schools with PII.'
+        )
         # Validate that this user has general level permissions for other districts and schools
         self.enter_login_credentials("jbrown", "jbrown1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -316,7 +329,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_no_pii_message("07")
 
     def test_school_admin_pii(self):
-        # Login as school admin who has PII access to one but does not have SAR extract access
+        save_message('Login as school admin who has PII access to one but does not have SAR extract access')
         # Validate that this user has general level permissions for other districts and schools
         self.enter_login_credentials("dcarter", "dcarter1234")
         self.check_redirected_requested_page("state_view_sds")
@@ -344,7 +357,7 @@ class ContextSecurity(SessionShareHelper):
         self.check_page_header("Zella Debusk | Grade 05")
 
     def test_school_admin_general(self):
-        # Login as school admin who has general access to one school and does not have SAR extract access
+        save_message('Login as school admin who has general access to one school and does not have SAR extract access')
         self.enter_login_credentials("rfield", "rfield1234")
         self.check_redirected_requested_page("state_view_sds")
         # verify that admin lands on North Carolina

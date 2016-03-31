@@ -1,4 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<!--
+(c) 2014 Amplify Education, Inc. All rights reserved, subject to the license
+below.
+
+Education agencies that are members of the Smarter Balanced Assessment
+Consortium as of August 1, 2014 are granted a worldwide, non-exclusive, fully
+paid-up, royalty-free, perpetual license, to access, use, execute, reproduce,
+display, distribute, perform and create derivative works of the software
+included in the Reporting Platform, including the source code to such software.
+This license includes the right to grant sublicenses by such consortium members
+to third party vendors solely for the purpose of performing services on behalf
+of such consortium member educational agencies.
+
+-->
+
 <ns0:EntityDescriptor xmlns:ns0="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ns1="http://www.w3.org/2000/09/xmldsig#" entityID="http://localhost:80/sp.xml">
    <ns0:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
        <ns0:KeyDescriptor use="signing">

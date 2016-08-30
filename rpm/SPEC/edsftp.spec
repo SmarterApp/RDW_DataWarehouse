@@ -30,24 +30,14 @@ BuildRequires: python3-devel
 %global __python %{__python3}
 
 %define _unpackaged_files_terminate_build 0
-# disable the default cleanup of build root
-%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare SFTP
 commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 
-
 %prep
 rm -rf virtualenv/edsftp
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/edsftp %{buildroot}/opt/edware
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/edsftp/config/linux/etc/rc.d/init.d/edsftp-watcher %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
@@ -85,6 +75,12 @@ deactivate
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/edsftp %{buildroot}/opt/virtualenv
 find %{buildroot}/opt/virtualenv/edsftp/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
+
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
+mkdir -p %{buildroot}/etc/rc.d/init.d
+cp ${WORKSPACE}/edsftp/config/linux/etc/rc.d/init.d/edsftp-watcher %{buildroot}/etc/rc.d/init.d/
 
 %clean
 rm -rf %{buildroot}

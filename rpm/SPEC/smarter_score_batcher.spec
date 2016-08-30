@@ -30,8 +30,6 @@ BuildRequires: python3-devel
 %global __python %{__python3}
 
 %define _unpackaged_files_terminate_build 0
-# disable the default cleanup of build root
-%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare smarter score batcher
@@ -40,28 +38,11 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/smarter_score_batcher
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/smarter_score_batcher %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/file-monitor-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
-mkdir -p %{buildroot}/opt/edware/item_level
-mkdir -p %{buildroot}/opt/edware/raw_data
-mkdir -p %{buildroot}/opt/edware/tsb
 
 %build
 export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/smarter_score_batcher
 source virtualenv/smarter_score_batcher/bin/activate
-
-BUILDROOT=%{buildroot}
-# WORKSPACE_PATH=${BUILDROOT//\//\\\/}
 
 cd ${WORKSPACE}/config
 python setup.py clean --all
@@ -103,9 +84,22 @@ mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
 find %{buildroot}/opt/virtualenv/smarter_score_batcher/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
+mkdir -p %{buildroot}/opt/edware/smarter_score_batcher
+cp ${WORKSPACE}/smarter_score_batcher/*.wsgi %{buildroot}/opt/edware/smarter_score_batcher/
+mkdir -p %{buildroot}/opt/edware/resources
+cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware/
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
+mkdir -p %{buildroot}/etc/rc.d/init.d
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/file-monitor-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+mkdir -p %{buildroot}/opt/edware/item_level
+mkdir -p %{buildroot}/opt/edware/raw_data
+mkdir -p %{buildroot}/opt/edware/tsb
 
 %clean
-
 
 %files
 %defattr(644,root,root,755)

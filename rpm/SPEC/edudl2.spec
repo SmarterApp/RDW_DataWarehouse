@@ -30,8 +30,6 @@ BuildRequires: python3-devel
 %global __python %{__python3}
 
 %define _unpackaged_files_terminate_build 0
-# disable the default cleanup of build root
-%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare UDL2
@@ -41,18 +39,6 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/udl2
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/edudl2 %{buildroot}/opt/edware
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-trigger %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-file-grabber %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-report %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/udl2_generate_ini.py
-cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/udl2_settings.yaml
 
 %build
 export LANG=en_US.UTF-8
@@ -98,6 +84,20 @@ deactivate
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/udl2 %{buildroot}/opt/virtualenv
 find %{buildroot}/opt/virtualenv/udl2/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
+
+mkdir -p %{buildroot}/opt/edware/edudl2/scripts
+cp ${WORKSPACE}/edudl2/scripts/driver.py %{buildroot}/opt/edware/edudl2/scripts/
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/udl2_generate_ini.py
+cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/udl2_settings.yaml
+mkdir -p %{buildroot}/etc/rc.d/init.d
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-trigger %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-file-grabber %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-report %{buildroot}/etc/rc.d/init.d/
+
 
 %clean
 rm -rf %{buildroot}

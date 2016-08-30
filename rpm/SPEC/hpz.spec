@@ -30,8 +30,6 @@ BuildRequires: python3-devel
 %global __python %{__python3}
 
 %define _unpackaged_files_terminate_build 0
-# disable the default cleanup of build root
-%define __spec_install_pre %{___build_pre}
 
 %description
 HPZ hpz
@@ -41,19 +39,17 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/hpz
 rm -rf %{buildroot}
+
+# Instead of building from ${WORKSPACE}/hpz this tricks python setup to include the assets folder in the egg
+# (not quite sure why that's a good idea but leaving it in)
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/hpz %{buildroot}/opt/edware
 touch %{buildroot}/opt/edware/hpz/assets/__init__.py
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/hpz/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/hpz
 source virtualenv/hpz/bin/activate
-
 
 cd ${WORKSPACE}/config
 python setup.py clean --all
@@ -88,9 +84,14 @@ mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
 find %{buildroot}/opt/virtualenv/hpz/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
+mkdir -p %{buildroot}/opt/edware/hpz/scripts
+cp ${WORKSPACE}/hpz/*.wsgi %{buildroot}/opt/edware/hpz/
+cp ${WORKSPACE}/hpz/scripts/* %{buildroot}/opt/edware/hpz/scripts/
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/hpz/settings.yaml %{buildroot}/opt/edware/conf/
 
 %clean
-
 
 %files
 %defattr(644,root,root,755)

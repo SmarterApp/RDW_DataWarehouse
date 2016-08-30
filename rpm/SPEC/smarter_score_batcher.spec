@@ -26,6 +26,8 @@ Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel postgre
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0
+# disable the default cleanup of build root
+%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare smarter score batcher
@@ -91,12 +93,11 @@ python setup.py install
 cd -
 
 deactivate
-find virtualenv/smarter_score_batcher/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
+find %{buildroot}/opt/virtualenv/smarter_score_batcher/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 
 %clean
@@ -122,7 +123,7 @@ prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/mako-render
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pcreate
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip
-%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/prequest
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/proutes
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pserve

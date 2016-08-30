@@ -26,6 +26,8 @@ Requires:	python3-libs
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0
+# disable the default cleanup of build root
+%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare SFTP
@@ -74,18 +76,17 @@ python setup.py install
 cd -
 
 deactivate
-find virtualenv/edsftp/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/edsftp %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/edsftp/bin/python3
+find %{buildroot}/opt/virtualenv/edsftp/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%defattr(644,root,root,-)
+%defattr(644,root,root,755)
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
 /opt/virtualenv/edsftp/include/*
@@ -99,7 +100,7 @@ rm -rf %{buildroot}
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/easy_install-3.3
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/sftp_driver.py
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/pip
-%attr(755,root,root) /opt/virtualenv/edsftp/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/edsftp/bin/pip3
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/python3.3
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/python
 %attr(755,root,root) /opt/virtualenv/edsftp/bin/python3

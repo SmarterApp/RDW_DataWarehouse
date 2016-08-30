@@ -26,6 +26,8 @@ Requires:	postgresql-devel python3-libs
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0
+# disable the default cleanup of build root
+%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare UDL2
@@ -87,18 +89,17 @@ python setup.py install
 cd -
 
 deactivate
-find virtualenv/udl2/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/udl2 %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/udl2/bin/python3
+find %{buildroot}/opt/virtualenv/udl2/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%defattr(644,root,root,-)
+%defattr(644,root,root,755)
 /opt/edware/conf/celeryd-udl2.conf
 /opt/edware/conf/udl2_generate_ini.py
 /opt/edware/conf/udl2_conf.yaml
@@ -124,7 +125,7 @@ rm -rf %{buildroot}
 #%attr(755,root,root) /opt/virtualenv/udl2/bin/add_tenant.sh
 #%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.py
 %attr(755,root,root) /opt/virtualenv/udl2/bin/pip
-%attr(755,root,root) /opt/virtualenv/udl2/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/udl2/bin/pip3
 %attr(755,root,root) /opt/virtualenv/udl2/bin/python3.3
 %attr(755,root,root) /opt/virtualenv/udl2/bin/celery
 %attr(755,root,root) /opt/virtualenv/udl2/bin/celerybeat

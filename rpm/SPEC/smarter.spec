@@ -26,6 +26,8 @@ Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel postgre
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0
+# disable the default cleanup of build root
+%define __spec_install_pre %{___build_pre}
 
 %description
 EdWare smarter 
@@ -124,19 +126,18 @@ cd -
 
 deactivate
 echo -e "/opt/edware/smarter\n." > virtualenv/smarter/lib/python3.3/site-packages/smarter.egg-link
-find virtualenv/smarter/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/smarter/bin/python3
+find %{buildroot}/opt/virtualenv/smarter/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 
 %clean
 
 
 %files
-%defattr(644,root,root,-)
+%defattr(644,root,root,755)
 /opt/edware/smarter/smarter.wsgi
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
@@ -158,7 +159,7 @@ prelink -u %{buildroot}/opt/virtualenv/smarter/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter/bin/mako-render
 %attr(755,root,root) /opt/virtualenv/smarter/bin/pcreate
 %attr(755,root,root) /opt/virtualenv/smarter/bin/pip
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pip3
 %attr(755,root,root) /opt/virtualenv/smarter/bin/prequest
 %attr(755,root,root) /opt/virtualenv/smarter/bin/proutes
 %attr(755,root,root) /opt/virtualenv/smarter/bin/pserve

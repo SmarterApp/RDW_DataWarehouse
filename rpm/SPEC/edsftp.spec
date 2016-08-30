@@ -25,6 +25,10 @@ BuildRequires:	python3-libs
 Requires:	python3-libs
 AutoReqProv: no
 
+# force python3 to be passed to brp-python-bytecompile
+BuildRequires: python3-devel
+%global __python %{__python3}
+
 %define _unpackaged_files_terminate_build 0
 # disable the default cleanup of build root
 %define __spec_install_pre %{___build_pre}

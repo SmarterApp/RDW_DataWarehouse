@@ -190,6 +190,7 @@
            "Algebra and Functions - Trigonometric Functions":"Algebra and Functions - Trigonometric Functions",
            "Argument Performance Task - Multivitamins":"Argument Performance Task - Multivitamins",
            "Argument Performance Task - Preserve Or Present":"Argument Performance Task - Preserve Or Present",
+		   "Argument Performance Task - Compare Ancient":"Argument Performance Task - Compare Ancient",
            "Argument Performance Task":"Argument Performance Task",
            "Brief Writes":"Brief Writes",
            "Edit and Revise":"Edit and Revise",
@@ -222,6 +223,7 @@
            "Performance Task - Baseball Tickets":"Performance Task - Baseball Tickets",
            "Informational Performance Task":"Informational Performance Task",
            "Interpreting Categorical and Quantitative Data":"Interpreting Categorical and Quantitative Data",
+           "Language Vocabulary":"Language Vocabulary",
            "Listen and Interpret":"Listen and Interpret",
            "Listen/Interpret":"Listen/Interpret",
            "Making Inferences and Justifying Conclusions":"Making Inferences and Justifying Conclusions",
@@ -244,6 +246,7 @@
            "Reading Informational Text":"Reading Informational Text",
            "Reading Literary Text":"Reading Literary Text",
            "Research":"Research",
+           "Revision":"Revision",
            "Statistics and Probability":"Statistics and Probability"
         },
         "next_level": {

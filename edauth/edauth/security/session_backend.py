@@ -85,6 +85,7 @@ class BeakerBackend(Backend):
     def __init__(self, settings):
         self.cache_mgr = CacheManager(**parse_cache_config_options(settings))
         self.batch_timeout = int(settings.get('batch.user.session.timeout'))
+        logger.info('TEST SESSION: __init__ , batch.user.session.timeout :' + settings.get('batch.user.session.timeout'))
 
     def create_new_session(self, session, overwrite_timeout=False):
         '''
@@ -102,6 +103,8 @@ class BeakerBackend(Backend):
         if overwrite_timeout:
             region.expiretime = self.batch_timeout
         region.put(_id, session)
+        message = "TEST SESSION: update_session, session: {0}".format(str(_id))
+        logger.info(message)
 
     def get_session(self, session_id):
         '''
@@ -110,6 +113,8 @@ class BeakerBackend(Backend):
         region = self.__get_cache_region(session_id)
         if session_id not in region:
             logger.info('Session is not found in cache. It may have expired or connection to memcached is down')
+            message = "TEST SESSION: Session is not found in cache, session: {0}".format(str(session_id))
+            logger.info(message)
             return None
         return region.get(session_id)
 
@@ -118,6 +123,7 @@ class BeakerBackend(Backend):
         Delete session from persistent storage
         '''
         # delete from db doesn't work
+        logger.info('TEST: delete_session, session_id' + session_id)
         region = self.__get_cache_region(session_id)
         if session_id in region:
             # works for memcached
@@ -131,3 +137,4 @@ class BeakerBackend(Backend):
         clear cache
         '''
         self.cache_region.clear()
+        logger.info('TEST SESSION: clear')

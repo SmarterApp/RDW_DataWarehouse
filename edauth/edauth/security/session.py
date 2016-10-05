@@ -45,6 +45,9 @@ class Session:
         combined_context.update_session(self.__session)
         return json.dumps(combined_context)
 
+    def __str__(self):
+        return "User:" + str(self.get_user()) + " session id:" + self.get_session_id();
+
     def get_session_id(self):
         return self.__session_id
 

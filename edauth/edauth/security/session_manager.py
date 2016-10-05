@@ -19,9 +19,10 @@ from datetime import datetime, timedelta
 from edauth.security.session_backend import get_session_backend
 from edauth.utils import convert_to_int
 from edauth.security.exceptions import NotAuthorized
+import logging
 
 # TODO: remove datetime.now() and use func.now()
-
+logger = logging.getLogger('edauth')
 
 def create_session(request, user_info_response, name_id, session_index, identity_parser_class):
     session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
@@ -29,6 +30,7 @@ def create_session(request, user_info_response, name_id, session_index, identity
 
     # If user doesn't have a Tenant, return 403
     if get_user_session(session_id).get_tenants() is None:
+        logger.info('TEST SESSION MGR: get_user_session, session_id.get_tenants is None')
         raise NotAuthorized()
 
     return session_id
@@ -39,6 +41,8 @@ def get_user_session(session_id):
     get user session from DB
     if user session does not exist, then return None
     '''
+    message = "TEST SESSION MGR: get_user_session, session_id: {0}".format(str(session_id))
+    logger.info(message)
     return get_session_backend().get_session(session_id)
 
 
@@ -57,6 +61,8 @@ def create_new_user_session(user_info_response, name_id, session_index, identity
 
     get_session_backend().create_new_session(session)
 
+    message = "TEST SESSION MGR: create_new_user_session, session: {0}".format(str(session))
+    logger.info(message)
     return session
 
 
@@ -68,6 +74,7 @@ def update_session_access(session):
     session.set_last_access(current_time)
 
     get_session_backend().update_session(session)
+    logger.info('TEST SESSION MGR: update_session_access')
 
 
 def expire_session(session_id):
@@ -76,6 +83,8 @@ def expire_session(session_id):
     '''
     session = get_user_session(session_id)
     current_time = datetime.now()
+    message = "TEST SESSION MGR: expire_session, session_id: {0}".format(str(session_id))
+    logger.info(message)
     if session is not None:
         # Expire the entry
         session.set_expiration(current_time)

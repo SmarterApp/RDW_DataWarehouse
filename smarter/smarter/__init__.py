@@ -61,14 +61,11 @@ def main(global_config, **settings):
 
     # hook for remote debugging
     if settings.get('remote.debug') == 'pydevd':
-        try:
-            import pydevd
-            host = settings.get('remote.debug.host', 'localhost')
-            port = settings.get('remote.debug.port', 4444)
-            suspend = settings.get('remote.debug.suspend', False)
-            pydevd.settrace(host, port=port, stdoutToServer=True, stderrToServer=True, suspend=suspend)
-        except:
-            logger.warning('remote debug (pydevd) setup failed')
+        import pydevd
+        host = settings.get('remote.debug.host', 'localhost')
+        port = settings.get('remote.debug.port', 4444)
+        suspend = settings.get('remote.debug.suspend', False)
+        pydevd.settrace(host, port=port, stdoutToServer=True, stderrToServer=True, suspend=suspend)
 
     # Prepare for environment specific
     set_environment_path_variable(settings)

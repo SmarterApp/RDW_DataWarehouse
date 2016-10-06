@@ -28,8 +28,13 @@ def create_session(request, user_info_response, name_id, session_index, identity
     session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
     session_id = create_new_user_session(user_info_response, name_id, session_index, identity_parser_class, session_timeout).get_session_id()
 
+    session = get_user_session(session_id)
+    if not session:
+        logger.info('TEST SESSION MGR: get_user_session, session not found for %s' % (session_id,))
+        raise NotAuthorized()
+
     # If user doesn't have a Tenant, return 403
-    if get_user_session(session_id).get_tenants() is None:
+    if session.get_tenants() is None:
         logger.info('TEST SESSION MGR: get_user_session, session_id.get_tenants is None')
         raise NotAuthorized()
 
@@ -61,8 +66,7 @@ def create_new_user_session(user_info_response, name_id, session_index, identity
 
     get_session_backend().create_new_session(session)
 
-    message = "TEST SESSION MGR: create_new_user_session, session: {0}".format(str(session))
-    logger.info(message)
+    logger.info('TEST SESSION MGR: create_new_user_session, %r' % (session,))
     return session
 
 
@@ -74,7 +78,7 @@ def update_session_access(session):
     session.set_last_access(current_time)
 
     get_session_backend().update_session(session)
-    logger.info('TEST SESSION MGR: update_session_access')
+    logger.info('TEST SESSION MGR: update_session_access, %r' % (session,))
 
 
 def expire_session(session_id):

@@ -140,6 +140,7 @@ governing permissions and limitations under the License.
 										</xs:element>
                     <xs:element name="ScoreInfo" type="ScoreInfoType" minOccurs="0" maxOccurs="1" />
 									</xs:sequence>
+									<xs:attribute name="responseDuration" type="UFloat" />
 									<xs:attribute name="position" use="required" type="xs:unsignedInt" />
 									<xs:attribute name="segmentId" use="required" />
 									<xs:attribute name="bankKey" use="required" type="xs:unsignedInt" />

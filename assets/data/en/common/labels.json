@@ -191,8 +191,9 @@
            "Argument Performance Task - Multivitamins":"Argument Performance Task - Multivitamins",
            "Argument Performance Task - Preserve Or Present":"Argument Performance Task - Preserve Or Present",
            "Argument Performance Task - Compare Ancient":"Argument Performance Task - Compare Ancient",
-		   "Argument Performance Task":"Argument Performance Task",
+           "Argument Performance Task":"Argument Performance Task",
            "Brief Writes":"Brief Writes",
+           "Editing":"Editing",
            "Edit and Revise":"Edit and Revise",
            "Edit/Revise":"Edit/Revise",
            "Explanatory Performance Task - Marshmallow":"Explanatory Performance Task - Marshmallow",
@@ -200,6 +201,7 @@
            "Explanatory Performance Task":"Explanatory Performance Task",
            "Expressions & Equations Block":"Expressions & Equations Block",
            "Expressions & Equations II Block":"Expressions & Equations II Block",
+           "Expressions & Equations I":"Expressions & Equations I",
            "Expressions & Equations I (and Proportionality)":"Expressions & Equations I (and Proportionality)",
            "Expressions & Equations II":"Expressions & Equations II",
            "Expressions and Equations":"Expressions and Equations",
@@ -247,7 +249,8 @@
            "Reading Literary Text":"Reading Literary Text",
            "Research":"Research",
            "Revision":"Revision",
-           "Statistics and Probability":"Statistics and Probability"
+           "Statistics and Probability":"Statistics and Probability",
+           "Statistics and Probability Block":"Statistics and Probability Block"
         },
         "next_level": {
             "state": "districts",

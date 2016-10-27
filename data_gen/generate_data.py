@@ -48,8 +48,6 @@ from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.student import SBACStudent
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
-from sbac_data_generation.util.id_gen import IDGen
-from sbac_data_generation.writers.filters import SBAC_FILTERS
 from sbac_data_generation.util import all_combinations
 from sbac_data_generation.util.id_gen import IDGen
 from sbac_data_generation.writers.filters import SBAC_FILTERS
@@ -832,11 +830,11 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--type', dest='gen_type', action='store', default='regular',
                         help='Specify the type of data generation run to perform (regular, udl)',
                         required=False)
-    parser.add_argument('-sn', '--state_name', dest='state_name', action='store', default='North Carolina',
-                        help='Specify the name of the state to generate data for (default=North Carolina)',
+    parser.add_argument('-sn', '--state_name', dest='state_name', action='store', default='California',
+                        help='Specify the name of the state to generate data for (default=California)',
                         required=False)
-    parser.add_argument('-sc', '--state_code', dest='state_code', action='store', default='NC',
-                        help='Specify the code of the state to generate data for (default=NC)',
+    parser.add_argument('-sc', '--state_code', dest='state_code', action='store', default='CA',
+                        help='Specify the code of the state to generate data for (default=CA)',
                         required=False)
     parser.add_argument('-st', '--state_type', dest='state_type', action='store', default='devel',
                         help='Specify the type of state to generate data for (devel (default), typical_1, california, udl_test)',

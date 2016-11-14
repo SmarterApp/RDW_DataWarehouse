@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+
+spawn sftp ca_user1@rdw-loader-dev
+expect "password:"
+send "ca_user1\n"
+expect "sftp>"
+send "cd file_drop\n"
+expect "sftp>"
+send "put [lindex $argv 0]\n"
+expect "sftp>"
+send "exit\n"
+interact

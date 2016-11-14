@@ -59,6 +59,14 @@ def main(global_config, **settings):
         url = settings['edware.remote_config.url']
         settings = get_remote_config(url)
 
+    # hook for remote debugging
+    if settings.get('remote.debug') == 'pydevd':
+        import pydevd
+        host = settings.get('remote.debug.host', 'localhost')
+        port = settings.get('remote.debug.port', 4444)
+        suspend = settings.get('remote.debug.suspend', False)
+        pydevd.settrace(host, port=port, stdoutToServer=True, stderrToServer=True, suspend=suspend)
+
     # Prepare for environment specific
     set_environment_path_variable(settings)
     prepare_env(settings)

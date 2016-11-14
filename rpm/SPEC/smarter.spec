@@ -21,16 +21,19 @@ URL:		http://www.amplify.com
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	python3
-BuildRequires:	python3-libs
+BuildRequires:	python3-libs npm
 Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel postgresql92-devel python3-libs
 AutoReqProv: no
+
+# force python3 to be passed to brp-python-bytecompile
+BuildRequires: python3-devel
+%global __python %{__python3}
 
 %define _unpackaged_files_terminate_build 0
 
 %description
 EdWare smarter 
 commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
-
 
 %prep
 rm -rf virtualenv/smarter
@@ -40,20 +43,6 @@ cp -r ${WORKSPACE}/smarter %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
 touch %{buildroot}/opt/edware/assets/__init__.py
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/comparing_populations_precache_filters.json %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd-services %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edmigrate/config/linux/opt/edware/conf/celeryd-edmigrate.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/celeryd-edmigrate %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/edmigrate-conductor %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd-watcher %{buildroot}/etc/rc.d/init.d/
 
 %build
 export LANG=en_US.UTF-8
@@ -62,12 +51,12 @@ source virtualenv/smarter/bin/activate
 
 cp ${WORKSPACE}/scripts/repmgr_cleanup.sh virtualenv/smarter/bin/
 
+# compile assets into BUILDROOT/opt/edware/assets
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}
 WORKSPACE_PATH=${BUILDROOT//\//\\\/}
 sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = ${WORKSPACE_PATH}\/opt\/edware\/assets/g" compile_assets.ini
 sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = ${WORKSPACE_PATH}\/opt\/edware\/smarter/g" compile_assets.ini
-
 python compile_assets.py
 cd -
 
@@ -124,19 +113,33 @@ cd -
 
 deactivate
 echo -e "/opt/edware/smarter\n." > virtualenv/smarter/lib/python3.3/site-packages/smarter.egg-link
-find virtualenv/smarter/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/smarter/bin/python3
+find %{buildroot}/opt/virtualenv/smarter/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
+mkdir -p %{buildroot}/opt/edware/smarter
+cp ${WORKSPACE}/smarter/smarter.wsgi %{buildroot}/opt/edware/smarter/
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/comparing_populations_precache_filters.json %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/edmigrate/config/linux/opt/edware/conf/celeryd-edmigrate.conf %{buildroot}/opt/edware/conf/
+mkdir -p %{buildroot}/etc/rc.d/init.d
+cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd-services %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/celeryd-edmigrate %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/edmigrate-conductor %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd-watcher %{buildroot}/etc/rc.d/init.d/
 
 %clean
 
-
 %files
-%defattr(644,root,root,-)
+%defattr(644,root,root,755)
 /opt/edware/smarter/smarter.wsgi
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
@@ -158,7 +161,7 @@ prelink -u %{buildroot}/opt/virtualenv/smarter/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter/bin/mako-render
 %attr(755,root,root) /opt/virtualenv/smarter/bin/pcreate
 %attr(755,root,root) /opt/virtualenv/smarter/bin/pip
-%attr(755,root,root) /opt/virtualenv/smarter/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pip3
 %attr(755,root,root) /opt/virtualenv/smarter/bin/prequest
 %attr(755,root,root) /opt/virtualenv/smarter/bin/proutes
 %attr(755,root,root) /opt/virtualenv/smarter/bin/pserve

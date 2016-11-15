@@ -167,11 +167,14 @@ class User(object):
         '''
         return self.__dict__
 
+    def __repr__(self):
+        return "%s: {info: %r, context: %r}" % (self.__class__, self.__info, self.__context)
+
     def __str__(self):
         '''
         Returns uid of the user
         '''
-        return self.__info['uid']
+        return self.get_uid()
 
     def __initialize_default_values(self):
         self.__info = {}

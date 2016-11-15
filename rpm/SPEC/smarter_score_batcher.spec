@@ -25,6 +25,10 @@ BuildRequires:	python3-libs
 Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel postgresql92-devel python3-libs
 AutoReqProv: no
 
+# force python3 to be passed to brp-python-bytecompile
+BuildRequires: python3-devel
+%global __python %{__python3}
+
 %define _unpackaged_files_terminate_build 0
 
 %description
@@ -34,28 +38,11 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/smarter_score_batcher
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/smarter_score_batcher %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/file-monitor-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
-mkdir -p %{buildroot}/opt/edware/item_level
-mkdir -p %{buildroot}/opt/edware/raw_data
-mkdir -p %{buildroot}/opt/edware/tsb
 
 %build
 export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/smarter_score_batcher
 source virtualenv/smarter_score_batcher/bin/activate
-
-BUILDROOT=%{buildroot}
-# WORKSPACE_PATH=${BUILDROOT//\//\\\/}
 
 cd ${WORKSPACE}/config
 python setup.py clean --all
@@ -91,16 +78,28 @@ python setup.py install
 cd -
 
 deactivate
-find virtualenv/smarter_score_batcher/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/smarter_score_batcher %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
+find %{buildroot}/opt/virtualenv/smarter_score_batcher/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
+mkdir -p %{buildroot}/opt/edware/smarter_score_batcher
+cp ${WORKSPACE}/smarter_score_batcher/*.wsgi %{buildroot}/opt/edware/smarter_score_batcher/
+mkdir -p %{buildroot}/opt/edware/resources
+cp -r ${WORKSPACE}/smarter_score_batcher/resources %{buildroot}/opt/edware/
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/opt/edware/conf/celeryd-smarter_score_batcher.conf %{buildroot}/opt/edware/conf/
+mkdir -p %{buildroot}/etc/rc.d/init.d
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/celeryd-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/smarter_score_batcher/config/linux/etc/rc.d/init.d/file-monitor-smarter_score_batcher %{buildroot}/etc/rc.d/init.d/
+mkdir -p %{buildroot}/opt/edware/item_level
+mkdir -p %{buildroot}/opt/edware/raw_data
+mkdir -p %{buildroot}/opt/edware/tsb
 
 %clean
-
 
 %files
 %defattr(644,root,root,755)
@@ -122,7 +121,7 @@ prelink -u %{buildroot}/opt/virtualenv/smarter_score_batcher/bin/python3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/mako-render
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pcreate
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip
-%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pip3
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/prequest
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/proutes
 %attr(755,root,root) /opt/virtualenv/smarter_score_batcher/bin/pserve

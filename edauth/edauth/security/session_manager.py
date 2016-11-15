@@ -19,16 +19,18 @@ from datetime import datetime, timedelta
 from edauth.security.session_backend import get_session_backend
 from edauth.utils import convert_to_int
 from edauth.security.exceptions import NotAuthorized
+import logging
 
 # TODO: remove datetime.now() and use func.now()
-
+logger = logging.getLogger('edauth')
 
 def create_session(request, user_info_response, name_id, session_index, identity_parser_class):
     session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
     session_id = create_new_user_session(user_info_response, name_id, session_index, identity_parser_class, session_timeout).get_session_id()
 
     # If user doesn't have a Tenant, return 403
-    if get_user_session(session_id).get_tenants() is None:
+    session = get_user_session(session_id)
+    if not session or session.get_tenants() is None:
         raise NotAuthorized()
 
     return session_id

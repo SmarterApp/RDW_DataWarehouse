@@ -109,7 +109,7 @@ class BeakerBackend(Backend):
         '''
         region = self.__get_cache_region(session_id)
         if session_id not in region:
-            logger.info('Session is not found in cache. It may have expired or connection to memcached is down')
+            logger.info('Session %s is not found in cache. It may have expired or connection to memcached is down' % (session_id,))
             return None
         return region.get(session_id)
 
@@ -118,6 +118,7 @@ class BeakerBackend(Backend):
         Delete session from persistent storage
         '''
         # delete from db doesn't work
+        logger.info('TEST: delete_session, session_id' + session_id)
         region = self.__get_cache_region(session_id)
         if session_id in region:
             # works for memcached

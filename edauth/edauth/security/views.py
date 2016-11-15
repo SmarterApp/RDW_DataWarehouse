@@ -146,6 +146,9 @@ def _handle_SAML2_login_flow(request):
             saml_try = convert_to_int(saml_try)
             if saml_try and saml_try > last_access:
                 last_access = saml_try
+                message = "TEST EDAUTH VIEW: _handle_SAML2_login_flow, saml_try: {0}".format(str(saml_try))
+                write_security_event(message, SECURITY_EVENT_TYPE.INFO)
+
         # Protect ourselves from infinite loop
         duration = int(current_time) - last_access
         if duration < 3:
@@ -276,6 +279,8 @@ def saml2_post_consumer(request):
             redirect_url = _get_cipher().decrypt(redirect_url)
         else:
             redirect_url = request.route_url('list_of_reports')
+        message = "TEST EDAUTH VIEW: saml2_post_consumer, redirect_url : {0}".format(str(redirect_url))
+        write_security_event(message, SECURITY_EVENT_TYPE.INFO)
 
     else:
         message = "SAML response failed with Condition: {0}, Status: {1}, Signature: {2}".format(str(condition), str(status), str(signature))

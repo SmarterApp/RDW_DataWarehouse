@@ -25,6 +25,10 @@ BuildRequires:	python3-libs
 Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel postgresql92-devel python3-libs
 AutoReqProv: no
 
+# force python3 to be passed to brp-python-bytecompile
+BuildRequires: python3-devel
+%global __python %{__python3}
+
 %define _unpackaged_files_terminate_build 0
 
 %description
@@ -35,19 +39,17 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 %prep
 rm -rf virtualenv/hpz
 rm -rf %{buildroot}
+
+# Instead of building from ${WORKSPACE}/hpz this tricks python setup to include the assets folder in the egg
+# (not quite sure why that's a good idea but leaving it in)
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/hpz %{buildroot}/opt/edware
 touch %{buildroot}/opt/edware/hpz/assets/__init__.py
-mkdir -p %{buildroot}/opt/edware/conf
-mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/hpz/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/hpz
 source virtualenv/hpz/bin/activate
-
 
 cd ${WORKSPACE}/config
 python setup.py clean --all
@@ -76,19 +78,23 @@ cd -
 
 deactivate
 echo -e "/opt/edware/hpz\n." > virtualenv/hpz/lib/python3.3/site-packages/hpz.egg-link
-find virtualenv/hpz/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 mkdir -p %{buildroot}/opt/virtualenv
 cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
-prelink -u %{buildroot}/opt/virtualenv/hpz/bin/python3
+find %{buildroot}/opt/virtualenv/hpz/bin -type f -exec sed -i -r 's/(\/[^\/]*)*\/rpmbuild\/BUILD/\/opt/g' {} \;
 
+mkdir -p %{buildroot}/opt/edware/hpz/scripts
+cp ${WORKSPACE}/hpz/*.wsgi %{buildroot}/opt/edware/hpz/
+cp ${WORKSPACE}/hpz/scripts/* %{buildroot}/opt/edware/hpz/scripts/
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/hpz/settings.yaml %{buildroot}/opt/edware/conf/
 
 %clean
 
-
 %files
-%defattr(644,root,root,-)
+%defattr(644,root,root,755)
 /opt/edware/hpz/frs.wsgi
 /opt/edware/hpz/swi.wsgi
 /opt/edware/hpz/scripts/pickup_zone_cleanup.py
@@ -107,7 +113,7 @@ prelink -u %{buildroot}/opt/virtualenv/hpz/bin/python3
 %attr(755,root,root) /opt/virtualenv/hpz/bin/mako-render
 %attr(755,root,root) /opt/virtualenv/hpz/bin/pcreate
 %attr(755,root,root) /opt/virtualenv/hpz/bin/pip
-%attr(755,root,root) /opt/virtualenv/hpz/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/hpz/bin/pip3
 %attr(755,root,root) /opt/virtualenv/hpz/bin/prequest
 %attr(755,root,root) /opt/virtualenv/hpz/bin/proutes
 %attr(755,root,root) /opt/virtualenv/hpz/bin/pserve

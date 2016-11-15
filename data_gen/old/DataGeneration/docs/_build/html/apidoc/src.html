@@ -1,0 +1,905 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>src Package &mdash; DataGeneration 0.1 documentation</title>
+
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="DataGeneration 0.1 documentation" href="../index.html" />
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">DataGeneration 0.1 documentation</a> &raquo;</li>
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+
+  <div class="section" id="src-package">
+<h1>src Package<a class="headerlink" href="#src-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-src.adjust">
+<span id="adjust-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">adjust</span></tt> Module<a class="headerlink" href="#module-src.adjust" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 28, 2013</p>
+<p>&#64;author: ken</p>
+<dl class="function">
+<dt id="src.adjust.adjust_pld">
+<tt class="descclassname">src.adjust.</tt><tt class="descname">adjust_pld</tt><big>(</big><em>percentages</em>, <em>adjustment</em>, <em>pcs_are_floats=False</em>, <em>min_to_keep=1</em><big>)</big><a class="headerlink" href="#src.adjust.adjust_pld" title="Permalink to this definition">¶</a></dt>
+<dd><p>if adjustment is +ve make the percentages better, if -ve make them worse</p>
+<p>Use asjustment as a multiplier.
+if -0.5 take half of two right most percentage items and add to the left 2
+if +0.5 take half of two left most percentage items and add to the right 2</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.constants">
+<span id="constants-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">constants</span></tt> Module<a class="headerlink" href="#module-src.constants" title="Permalink to this headline">¶</a></h2>
+<p>constants.py</p>
+<p>Contains many necessary constants for generating data</p>
+</div>
+<div class="section" id="demographic-derived-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">demographic_derived</span></tt> Module<a class="headerlink" href="#demographic-derived-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="demographic-values-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">demographic_values</span></tt> Module<a class="headerlink" href="#demographic-values-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="demographics-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">demographics</span></tt> Module<a class="headerlink" href="#demographics-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.dg_types">
+<span id="dg-types-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">dg_types</span></tt> Module<a class="headerlink" href="#module-src.dg_types" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 4, 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="function">
+<dt id="src.dg_types.get_demograph_file">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_demograph_file</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_demograph_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_district_types">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_district_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_district_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {district-type: {&#8216;school_counts&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}, &#8216;school_types_and_ratios&#8217;: {&#8216;High&#8217;: val, &#8216;Middle&#8217;: val, &#8216;Elementary&#8217;: val},...}
+where district-type is Big, Medium or Small
+&#8216;school_counts&#8217; is a dictionary that describes the min, max and avg for that school_type
+&#8216;school_types_and_ratios&#8217; is dictionary containing the ratios of High to Middle to Elementary schools
+(ie. 1:2:5 &#8211; {&#8216;High&#8217;: 1, &#8216;Middle&#8217;: 2, &#8216;Elementary&#8217;: 5})</p>
+<p>&lt;ken 2013-05-07&gt; Added good/poor/average districts of medium and small size</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_error_band">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_error_band</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_error_band" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error Band information
+Structure of dictionary: {&#8216;min_%&#8217;: val, &#8216;max_%&#8217;: val, &#8216;random_adjustment_points_lo&#8217;: val, &#8216;random_adjustment_points_hi&#8217;: val}
+where &#8216;min_divisor&#8217; is the divisor of the minimum fraction of the error band. At the center of the score range, the error band should be at this value (ie 1/32)
+&#8216;max_divisor&#8217; is the divisor of the maximum fraction of the error band. At each extreme of the score range, the error band should be at this value (ie 1/8)
+&#8216;random_adjustment_points_lo&#8217; is the lower bound for getting the random adjustment
+&#8216;random_adjustment_points_hi&#8217; is the upper bound for getting the random adjustment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_performance_level_distributions">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_performance_level_distributions</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_performance_level_distributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure is :
+{&#8216;assessment-type&#8217; : {&#8216;grade&#8217;: {&#8216;algorithm&#8217;: algorithm-parameters}}}
+where &#8216;algorithm&#8217; is one of &#8216;percentages&#8217; or &#8216;gamma&#8217;
+the nature of &#8216;algorithm-parameters&#8217; depends on the choice of algorithm
+&#8216;percentages&#8217;: [list of numbers summing to 100]
+&#8216;gamma&#8217;: {&#8216;avg&#8217;: average-value, &#8216;std&#8217;: standard-deviation} optionally can also have &#8216;min&#8217; and &#8216;max&#8217; values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_school_types">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_school_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_school_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {school-type: {&#8216;grades&#8217;: val, &#8216;students&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}},...}
+where school-type is High, Middle, Elementary
+grades is a list of grades for that type
+students is a dictionary containing the min, max and avg number of students</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_scores">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_scores</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>min + max + 3 cut points define 4 performance levels
+PL1 = min - cp1 (exclusive)
+PL2 = cp1 - cp2 (exclusive)
+PL3 = cp2 - cp3 (exclusive)
+PL4 = cp3 - max (inclusive)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_state_types">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_state_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_state_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {state-type: {&#8216;district_types_and_counts&#8217;: {&#8216;Big&#8217;: val, &#8216;Medium&#8217;: val, &#8216;Small&#8217;: val}, &#8216;subjects_and_percentages&#8217;: {&#8216;Math&#8217;: val, &#8216;ELA&#8217;: val}
+where state-type is the type of state
+&#8216;district_types_and_counts&#8217; is a dictionary that describes how many Big, Medium and Small districts to have in the state
+&#8216;subjects_and_percentages&#8217; is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment</p>
+<p>Initial numbers were Big=3, Medium=6, Small=40</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_states">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_states</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure:
+{&#8216;name&#8217;: val, &#8216;state_code&#8217;: val, &#8216;state_type&#8217;: val}
+where &#8216;name&#8217; is the name of the state (eg. New York)
+&#8216;state_code&#8217; is the code for that state (eg. NY)
+&#8216;state_type&#8217; is the type of the state. This should match something that has been defined in get_state_types()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types.get_temporal_information">
+<tt class="descclassname">src.dg_types.</tt><tt class="descname">get_temporal_information</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types.get_temporal_information" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-src.dg_types_SDS">
+<span id="dg-types-sds-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">dg_types_SDS</span></tt> Module<a class="headerlink" href="#module-src.dg_types_SDS" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 4, 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="data">
+<dt id="src.dg_types_SDS.VERY_FEAT_ELEM">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">VERY_FEAT_ELEM</tt><em class="property"> = 35</em><a class="headerlink" href="#src.dg_types_SDS.VERY_FEAT_ELEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>SDS = small data set. Used by reporting team for testing.
+The data generated here will be added to the 50 or so existing SDS records &#8216;by hand&#8217;</p>
+<p>Need to generate here:
+Approximately 400 students
+3 districts:
+district #1: 1 high school,  1 middle school,  1 elementary school
+district #2: 1 high school,  2 middle schools, 1 elementary school
+district #3: 1 high school,  1 middle school,  2 elementary schools</p>
+<p>an elementary school has three grades: 3, 4, 5
+a middle school has three grades: 6, 7, 8
+a high school has one grade: 11</p>
+<p>Obviously they really have more grades, but assessments are currently only applied for these grades.</p>
+<p>To keep the generated data to around 400 students we will have these counts per grade:
+high school = 20 / grade
+middle school = 20 / grade
+elementary school = 10 / grade</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_demograph_file">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_demograph_file</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_demograph_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_district_types">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_district_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_district_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {district-type: {&#8216;school_counts&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}, &#8216;school_types_and_ratios&#8217;: {&#8216;High&#8217;: val, &#8216;Middle&#8217;: val, &#8216;Elementary&#8217;: val},...}
+where district-type is Big, Medium or Small
+&#8216;school_counts&#8217; is a dictionary that describes the min, max and avg for that school_type
+&#8216;school_types_and_ratios&#8217; is dictionary containing the ratios of High to Middle to Elementary schools
+(ie. 1:2:5 &#8211; {&#8216;High&#8217;: 1, &#8216;Middle&#8217;: 2, &#8216;Elementary&#8217;: 5})</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_error_band">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_error_band</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_error_band" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error Band information
+Structure of dictionary: {&#8216;min_%&#8217;: val, &#8216;max_%&#8217;: val, &#8216;random_adjustment_points_lo&#8217;: val, &#8216;random_adjustment_points_hi&#8217;: val}
+where &#8216;min_divisor&#8217; is the divisor of the minimum fraction of the error band. At the center of the score range, the error band should be at this value (ie 1/32)
+&#8216;max_divisor&#8217; is the divisor of the maximum fraction of the error band. At each extreme of the score range, the error band should be at this value (ie 1/8)
+&#8216;random_adjustment_points_lo&#8217; is the lower bound for getting the random adjustment
+&#8216;random_adjustment_points_hi&#8217; is the upper bound for getting the random adjustment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_performance_level_distributions">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_performance_level_distributions</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_performance_level_distributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure is :
+{&#8216;assessment-type&#8217; : {&#8216;grade&#8217;: {&#8216;algorithm&#8217;: algorithm-parameters}}}
+where &#8216;algorithm&#8217; is one of &#8216;percentages&#8217; or &#8216;gamma&#8217;
+the nature of &#8216;algorithm-parameters&#8217; depends on the choice of algorithm
+&#8216;percentages&#8217;: [list of numbers summing to 100]
+&#8216;gamma&#8217;: {&#8216;avg&#8217;: average-value, &#8216;std&#8217;: standard-deviation} optionally can also have &#8216;min&#8217; and &#8216;max&#8217; values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_school_types">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_school_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_school_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {school-type: {&#8216;grades&#8217;: val, &#8216;students&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}},...}
+where school-type is High, Middle, Elementary
+grades is a list of grades for that type
+students is a dictionary containing the min, max and avg number of students</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_scores">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_scores</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>min + max + 3 cut points define 4 performance levels
+PL1 = min - cp1 (exclusive)
+PL2 = cp1 - cp2 (exclusive)
+PL3 = cp2 - cp3 (exclusive)
+PL4 = cp3 - max (inclusive)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_state_types">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_state_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_state_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {state-type: {&#8216;district_types_and_counts&#8217;: {&#8216;Big&#8217;: val, &#8216;Medium&#8217;: val, &#8216;Small&#8217;: val}, &#8216;subjects_and_percentages&#8217;: {&#8216;Math&#8217;: val, &#8216;ELA&#8217;: val}
+where state-type is the type of state
+&#8216;district_types_and_counts&#8217; is a dictionary that describes how many Big, Medium and Small districts to have in the state
+&#8216;subjects_and_percentages&#8217; is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment</p>
+<p>Initial numbers were Big=3, Medium=6, Small=40</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_states">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_states</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure:
+{&#8216;name&#8217;: val, &#8216;state_code&#8217;: val, &#8216;state_type&#8217;: val}
+where &#8216;name&#8217; is the name of the state (eg. New York)
+&#8216;state_code&#8217; is the code for that state (eg. NY)
+&#8216;state_type&#8217; is the type of the state. This should match something that has been defined in get_state_types()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_SDS.get_temporal_information">
+<tt class="descclassname">src.dg_types_SDS.</tt><tt class="descname">get_temporal_information</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_SDS.get_temporal_information" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-src.dg_types_ca">
+<span id="dg-types-ca-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">dg_types_ca</span></tt> Module<a class="headerlink" href="#module-src.dg_types_ca" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 4, 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="function">
+<dt id="src.dg_types_ca.get_demograph_file">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_demograph_file</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_demograph_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_district_types">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_district_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_district_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {district-type: {&#8216;school_counts&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}, &#8216;school_types_and_ratios&#8217;: {&#8216;High&#8217;: val, &#8216;Middle&#8217;: val, &#8216;Elementary&#8217;: val},...}
+where district-type is Big, Medium or Small
+&#8216;school_counts&#8217; is a dictionary that describes the min, max and avg for that school_type
+&#8216;school_types_and_ratios&#8217; is dictionary containing the ratios of High to Middle to Elementary schools
+(ie. 1:2:5 &#8211; {&#8216;High&#8217;: 1, &#8216;Middle&#8217;: 2, &#8216;Elementary&#8217;: 5})</p>
+<p>&lt;ken 2013-05-07&gt; Added good/poor/average districts of medium and small size</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_error_band">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_error_band</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_error_band" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error Band information
+Structure of dictionary: {&#8216;min_%&#8217;: val, &#8216;max_%&#8217;: val, &#8216;random_adjustment_points_lo&#8217;: val, &#8216;random_adjustment_points_hi&#8217;: val}
+where &#8216;min_divisor&#8217; is the divisor of the minimum fraction of the error band. At the center of the score range, the error band should be at this value (ie 1/32)
+&#8216;max_divisor&#8217; is the divisor of the maximum fraction of the error band. At each extreme of the score range, the error band should be at this value (ie 1/8)
+&#8216;random_adjustment_points_lo&#8217; is the lower bound for getting the random adjustment
+&#8216;random_adjustment_points_hi&#8217; is the upper bound for getting the random adjustment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_performance_level_distributions">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_performance_level_distributions</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_performance_level_distributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure is :
+{&#8216;assessment-type&#8217; : {&#8216;grade&#8217;: {&#8216;algorithm&#8217;: algorithm-parameters}}}
+where &#8216;algorithm&#8217; is one of &#8216;percentages&#8217; or &#8216;gamma&#8217;
+the nature of &#8216;algorithm-parameters&#8217; depends on the choice of algorithm
+&#8216;percentages&#8217;: [list of numbers summing to 100]
+&#8216;gamma&#8217;: {&#8216;avg&#8217;: average-value, &#8216;std&#8217;: standard-deviation} optionally can also have &#8216;min&#8217; and &#8216;max&#8217; values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_school_types">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_school_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_school_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {school-type: {&#8216;grades&#8217;: val, &#8216;students&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}},...}
+where school-type is High, Middle, Elementary
+grades is a list of grades for that type
+students is a dictionary containing the min, max and avg number of students</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_scores">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_scores</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>min + max + 3 cut points define 4 performance levels
+PL1 = min - cp1 (exclusive)
+PL2 = cp1 - cp2 (exclusive)
+PL3 = cp2 - cp3 (exclusive)
+PL4 = cp3 - max (inclusive)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_state_types">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_state_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_state_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {state-type: {&#8216;district_types_and_counts&#8217;: {&#8216;Big&#8217;: val, &#8216;Medium&#8217;: val, &#8216;Small&#8217;: val}, &#8216;subjects_and_percentages&#8217;: {&#8216;Math&#8217;: val, &#8216;ELA&#8217;: val}
+where state-type is the type of state
+&#8216;district_types_and_counts&#8217; is a dictionary that describes how many Big, Medium and Small districts to have in the state
+&#8216;subjects_and_percentages&#8217; is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment</p>
+<p>Initial numbers were Big=3, Medium=6, Small=40</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_states">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_states</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure:
+{&#8216;name&#8217;: val, &#8216;state_code&#8217;: val, &#8216;state_type&#8217;: val}
+where &#8216;name&#8217; is the name of the state (eg. New York)
+&#8216;state_code&#8217; is the code for that state (eg. NY)
+&#8216;state_type&#8217; is the type of the state. This should match something that has been defined in get_state_types()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_ca.get_temporal_information">
+<tt class="descclassname">src.dg_types_ca.</tt><tt class="descname">get_temporal_information</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_ca.get_temporal_information" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-src.dg_types_test">
+<span id="dg-types-test-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">dg_types_test</span></tt> Module<a class="headerlink" href="#module-src.dg_types_test" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 4, 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="function">
+<dt id="src.dg_types_test.get_demograph_file">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_demograph_file</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_demograph_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_district_types">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_district_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_district_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {district-type: {&#8216;school_counts&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}, &#8216;school_types_and_ratios&#8217;: {&#8216;High&#8217;: val, &#8216;Middle&#8217;: val, &#8216;Elementary&#8217;: val},...}
+where district-type is Big, Medium or Small
+&#8216;school_counts&#8217; is a dictionary that describes the min, max and avg for that school_type
+&#8216;school_types_and_ratios&#8217; is dictionary containing the ratios of High to Middle to Elementary schools
+(ie. 1:2:5 &#8211; {&#8216;High&#8217;: 1, &#8216;Middle&#8217;: 2, &#8216;Elementary&#8217;: 5})</p>
+<p>&lt;ken 2013-05-07&gt; Added good/poor/average districts of medium and small size</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_error_band">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_error_band</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_error_band" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error Band information
+Structure of dictionary: {&#8216;min_%&#8217;: val, &#8216;max_%&#8217;: val, &#8216;random_adjustment_points_lo&#8217;: val, &#8216;random_adjustment_points_hi&#8217;: val}
+where &#8216;min_divisor&#8217; is the divisor of the minimum fraction of the error band. At the center of the score range, the error band should be at this value (ie 1/32)
+&#8216;max_divisor&#8217; is the divisor of the maximum fraction of the error band. At each extreme of the score range, the error band should be at this value (ie 1/8)
+&#8216;random_adjustment_points_lo&#8217; is the lower bound for getting the random adjustment
+&#8216;random_adjustment_points_hi&#8217; is the upper bound for getting the random adjustment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_performance_level_distributions">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_performance_level_distributions</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_performance_level_distributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure is :
+{&#8216;assessment-type&#8217; : {&#8216;grade&#8217;: {&#8216;algorithm&#8217;: algorithm-parameters}}}
+where &#8216;algorithm&#8217; is one of &#8216;percentages&#8217; or &#8216;gamma&#8217;
+the nature of &#8216;algorithm-parameters&#8217; depends on the choice of algorithm
+&#8216;percentages&#8217;: [list of numbers summing to 100]
+&#8216;gamma&#8217;: {&#8216;avg&#8217;: average-value, &#8216;std&#8217;: standard-deviation} optionally can also have &#8216;min&#8217; and &#8216;max&#8217; values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_school_types">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_school_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_school_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {school-type: {&#8216;grades&#8217;: val, &#8216;students&#8217;: {&#8216;min&#8217;: val, &#8216;max&#8217;: val, &#8216;avg&#8217;: val}},...}
+where school-type is High, Middle, Elementary
+grades is a list of grades for that type
+students is a dictionary containing the min, max and avg number of students</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_scores">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_scores</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>min + max + 3 cut points define 4 performance levels
+PL1 = min - cp1 (exclusive)
+PL2 = cp1 - cp2 (exclusive)
+PL3 = cp2 - cp3 (exclusive)
+PL4 = cp3 - max (inclusive)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_state_types">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_state_types</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_state_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure: {state-type: {&#8216;district_types_and_counts&#8217;: {&#8216;Big&#8217;: val, &#8216;Medium&#8217;: val, &#8216;Small&#8217;: val}, &#8216;subjects_and_percentages&#8217;: {&#8216;Math&#8217;: val, &#8216;ELA&#8217;: val}
+where state-type is the type of state
+&#8216;district_types_and_counts&#8217; is a dictionary that describes how many Big, Medium and Small districts to have in the state
+&#8216;subjects_and_percentages&#8217; is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment</p>
+<p>Initial numbers were Big=3, Medium=6, Small=40</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_states">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_states</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure:
+{&#8216;name&#8217;: val, &#8216;state_code&#8217;: val, &#8216;state_type&#8217;: val}
+where &#8216;name&#8217; is the name of the state (eg. New York)
+&#8216;state_code&#8217; is the code for that state (eg. NY)
+&#8216;state_type&#8217; is the type of the state. This should match something that has been defined in get_state_types()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dg_types_test.get_temporal_information">
+<tt class="descclassname">src.dg_types_test.</tt><tt class="descname">get_temporal_information</tt><big>(</big><big>)</big><a class="headerlink" href="#src.dg_types_test.get_temporal_information" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="dg-types-test-endtoend-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">dg_types_test_endtoend</span></tt> Module<a class="headerlink" href="#dg-types-test-endtoend-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="entities-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">entities</span></tt> Module<a class="headerlink" href="#entities-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.errorband">
+<span id="errorband-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">errorband</span></tt> Module<a class="headerlink" href="#module-src.errorband" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 15, 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="function">
+<dt id="src.errorband.calc_eb">
+<tt class="descclassname">src.errorband.</tt><tt class="descname">calc_eb</tt><big>(</big><em>score</em>, <em>smin</em>, <em>smax</em>, <em>scenter</em>, <em>ebmin</em>, <em>ebstep</em>, <em>rndlo=0</em>, <em>rndhi=0</em>, <em>clip_eb=False</em>, <em>ensure_symmetry=False</em><big>)</big><a class="headerlink" href="#src.errorband.calc_eb" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate and return the error band (ebleft, ebright)</p>
+<p>INPUT:
+&#64;param score: actual score achived by student
+&#64;param smin: minimum score
+&#64;param smax: maximum score
+&#64;param scenter: center of score range (1800)
+&#64;param ebmin: minimum error band size (37.5)
+&#64;param ebstep: size of error band per score point (step size)
+&#64;param rndlo: low value of random number to be added to calculate error band
+&#64;param rndhi: high value of random number to be added to calculate error band
+&#64;param clip_eb: if True then &#8216;clip&#8217; the calculate error band so that it does not exceed smin or smax
+&#64;param ensure_symmetry: if True then ensure both error bands are equal distance away from the score</p>
+<p>Note: scenter, ebmin, ebstep can be first calculted using the function calc_eb_parms()</p>
+<p>OUTPUT:
+&#64;return:
+ebleft = error band score to the left of the actual score (possibly clipped at smin)
+ebright = error band score to the right of the actual score (possibly clipped at smax)
+ebhalf = unclipped width of half the error band</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.errorband.calc_eb_params">
+<tt class="descclassname">src.errorband.</tt><tt class="descname">calc_eb_params</tt><big>(</big><em>smin</em>, <em>smax</em>, <em>ebmin_divisor</em>, <em>ebmax_divisor</em><big>)</big><a class="headerlink" href="#src.errorband.calc_eb_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate and return the parameters needed by the calc_eb function</p>
+<p>INPUTS:
+smin = minimum score (1200)
+smax = maximum score (2400)
+ebmin_divisor = minimum value of the error band expressed as a fraction (actually as the divisor) of the score range (32 =&gt; 1/32)
+ebmax_divisor = maximum value of the error band expressed as a fraction (actually as the divisor) of the score range ( 8 =&gt; 1/8)</p>
+<p>OUTPUTS:
+scenter = center of score range
+ebmin = minimum error band size
+ebstep = error band size per step (i.e. per score point)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.gaussian_distributions">
+<span id="gaussian-distributions-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">gaussian_distributions</span></tt> Module<a class="headerlink" href="#module-src.gaussian_distributions" title="Permalink to this headline">¶</a></h2>
+<p>Created on Fri Apr 12 13:10:09 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="function">
+<dt id="src.gaussian_distributions.gauss_list">
+<tt class="descclassname">src.gaussian_distributions.</tt><tt class="descname">gauss_list</tt><big>(</big><em>rnum</em>, <em>rmin</em>, <em>rmax</em>, <em>ravg</em>, <em>rstd</em><big>)</big><a class="headerlink" href="#src.gaussian_distributions.gauss_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return list of random number with gauss distribution</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.gaussian_distributions.gauss_one">
+<tt class="descclassname">src.gaussian_distributions.</tt><tt class="descname">gauss_one</tt><big>(</big><em>rmin</em>, <em>rmax</em>, <em>ravg=-1</em>, <em>rstd=-1</em><big>)</big><a class="headerlink" href="#src.gaussian_distributions.gauss_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate &amp; return a single random number according to a GAUSSIAN distribution</p>
+<p>If you know AVG and STD use the Python random.gauss() function directly.</p>
+<p>If a value for STD is supplied then it is used
+This is similar to calling random.gauss(AVG, STD) directly,</p>
+<blockquote>
+<div>but the output generated number is constrained to be between MIN and MAX</div></blockquote>
+<dl class="docutils">
+<dt>If you know MIN, MAX and AVG this function first estimates a value for STD</dt>
+<dd>it is ok if AVG is not midway between MIN and MAX</dd>
+</dl>
+<p>If you only know MIN and MAX the this function also calculates AVG</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.gaussian_distributions.guess_std">
+<tt class="descclassname">src.gaussian_distributions.</tt><tt class="descname">guess_std</tt><big>(</big><em>rmin</em>, <em>rmax</em>, <em>ravg=-1</em>, <em>rdiv=3</em><big>)</big><a class="headerlink" href="#src.gaussian_distributions.guess_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>estimate an STD based only on min/max/avg
+allow for the avg NOT being mid way between min and max
+if avg is not supplied, that is also calculated</p>
+</dd></dl>
+
+</div>
+<div class="section" id="generate-data-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">generate_data</span></tt> Module<a class="headerlink" href="#generate-data-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="generate-entities-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">generate_entities</span></tt> Module<a class="headerlink" href="#generate-entities-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="generate-helper-entities-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">generate_helper_entities</span></tt> Module<a class="headerlink" href="#generate-helper-entities-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="generate-names-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">generate_names</span></tt> Module<a class="headerlink" href="#generate-names-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.generate_scores">
+<span id="generate-scores-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">generate_scores</span></tt> Module<a class="headerlink" href="#module-src.generate_scores" title="Permalink to this headline">¶</a></h2>
+<p>Module to generate scores with percentage, cut
+points, minimum score, maximum score and total number</p>
+<dl class="function">
+<dt id="src.generate_scores.add_or_delete">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">add_or_delete</tt><big>(</big><em>score_list</em>, <em>required_number</em><big>)</big><a class="headerlink" href="#src.generate_scores.add_or_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of scores, and required number of scores, delete or add new scores for the input score_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.adjust_list">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">adjust_list</tt><big>(</big><em>total_list</em>, <em>percentages</em>, <em>cut_points</em>, <em>total</em><big>)</big><a class="headerlink" href="#src.generate_scores.adjust_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make adjustment of input total_list
+First, split the total list into each level
+For each split list, call function add_or_delete(), return a split_adjust_list
+Return combination of all split_adjust_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.calculate_avg_std">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">calculate_avg_std</tt><big>(</big><em>generated_random_numbers</em><big>)</big><a class="headerlink" href="#src.generate_scores.calculate_avg_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of numbers, calculate average, and standard deviation of it</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.gauss_list">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">gauss_list</tt><big>(</big><em>avg</em>, <em>std</em>, <em>num</em><big>)</big><a class="headerlink" href="#src.generate_scores.gauss_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return list of random number with gauss distribution</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.generate_overall_scores">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">generate_overall_scores</tt><big>(</big><em>percentages</em>, <em>cut_points</em>, <em>min_score</em>, <em>max_score</em>, <em>total</em><big>)</big><a class="headerlink" href="#src.generate_scores.generate_overall_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function to generate given total number of scores in range(min_score, max_score)
+Generated scores satisfy given percentage distribution, and cut_points</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.generate_random_numbers">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">generate_random_numbers</tt><big>(</big><em>min_number</em>, <em>max_number</em>, <em>count</em><big>)</big><a class="headerlink" href="#src.generate_scores.generate_random_numbers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate count number of integer x, so that min_number &lt;= x &lt;= max_number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.generate_random_scores_by_percentage_between_cut_points">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">generate_random_scores_by_percentage_between_cut_points</tt><big>(</big><em>percentages</em>, <em>cut_points</em>, <em>total</em><big>)</big><a class="headerlink" href="#src.generate_scores.generate_random_scores_by_percentage_between_cut_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate random scores by percentages in each performance level (as defined by cut_points)</p>
+<p>INPUT:
+percentages = list of percentages - one for each performance level
+cut_points = list of cut points - these help define the performance levels
+total = total number of scores to generate</p>
+<p>OUTPUT:</p>
+<p>Note:
+minimum score = cut_points[0]  (i.e. minimum score = first cut point)
+maximum score = cut_points[-1] (i.e. maximum score = last cut point)</p>
+<p>performance level 1 : runs from cut_points[0]   to cut_points[1]
+performance level n : runs from cut_points[n-1] to cut_points[n]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.split_total_by_precentages">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">split_total_by_precentages</tt><big>(</big><em>percentages</em>, <em>total</em><big>)</big><a class="headerlink" href="#src.generate_scores.split_total_by_precentages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of integer which add up to &#8216;total&#8217; and are distributed in the list by &#8216;percentages&#8217;</p>
+<dl class="docutils">
+<dt>If the sum of the resulting split is not equal to the required total (caused by rounding errors)</dt>
+<dd>calculate the difference, find the largest value and adjust it as necessary</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_scores.sub_sample_list">
+<tt class="descclassname">src.generate_scores.</tt><tt class="descname">sub_sample_list</tt><big>(</big><em>score_list</em>, <em>cut_points</em>, <em>percentages</em>, <em>total</em><big>)</big><a class="headerlink" href="#src.generate_scores.sub_sample_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a sub-sample of the &#8216;score_list&#8217; so that there are only &#8216;total&#8217; scores, but sample by perforamce levels</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.helper_entities">
+<span id="helper-entities-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">helper_entities</span></tt> Module<a class="headerlink" href="#module-src.helper_entities" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.helper_entities.AssessmentScore">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">AssessmentScore</tt><big>(</big><em>overall_score</em>, <em>perf_lvl</em>, <em>interval_min</em>, <em>interval_max</em>, <em>claim_scores</em>, <em>asmt_create_date</em><big>)</big><a class="headerlink" href="#src.helper_entities.AssessmentScore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>Assessment Score object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="src.helper_entities.Claim">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">Claim</tt><big>(</big><em>claim_name</em>, <em>claim_score_min</em>, <em>claim_score_max</em>, <em>claim_score_weight</em><big>)</big><a class="headerlink" href="#src.helper_entities.Claim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>claim information to be used by the assessment object. Simply defines basic parameters about claim.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="src.helper_entities.ClaimScore">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">ClaimScore</tt><big>(</big><em>claim_score</em>, <em>claim_score_interval_minimum</em>, <em>claim_score_interval_maximum</em><big>)</big><a class="headerlink" href="#src.helper_entities.ClaimScore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>This is a claim object with scores. Used to create assessment_outcome row.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="src.helper_entities.District">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">District</tt><big>(</big><em>district_id</em>, <em>district_name</em><big>)</big><a class="headerlink" href="#src.helper_entities.District" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>District object
+Intended for record keeping when creating InstitutionHierarchy objects</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="src.helper_entities.School">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">School</tt><big>(</big><em>school_id</em>, <em>school_name</em>, <em>school_category</em><big>)</big><a class="headerlink" href="#src.helper_entities.School" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>School Object
+Intended for record keeping when creating InstitutionHierarchy objects</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="src.helper_entities.State">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">State</tt><big>(</big><em>state_name</em>, <em>state_code</em><big>)</big><a class="headerlink" href="#src.helper_entities.State" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>State object
+Intended for record keeping when creating InstitutionHierarchy objects</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="src.helper_entities.StudentBioInfo">
+<em class="property">class </em><tt class="descclassname">src.helper_entities.</tt><tt class="descname">StudentBioInfo</tt><big>(</big><em>student_id</em>, <em>first_name</em>, <em>last_name</em>, <em>address_1</em>, <em>dob</em>, <em>district_id</em>, <em>state_code</em>, <em>gender</em>, <em>email</em>, <em>school_id</em>, <em>zip_code</em>, <em>city</em>, <em>middle_name=None</em>, <em>address_2=None</em><big>)</big><a class="headerlink" href="#src.helper_entities.StudentBioInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.idgen">
+<span id="idgen-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">idgen</span></tt> Module<a class="headerlink" href="#module-src.idgen" title="Permalink to this headline">¶</a></h2>
+<p>Created on Jan 22, 2013</p>
+<p>&#64;author: swimberly</p>
+<dl class="class">
+<dt id="src.idgen.IdGen">
+<em class="property">class </em><tt class="descclassname">src.idgen.</tt><tt class="descname">IdGen</tt><a class="headerlink" href="#src.idgen.IdGen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>Singleton for generating incremental ids
+ids will start at 0 unless set_start() is called.</p>
+<dl class="method">
+<dt id="src.idgen.IdGen.get_id">
+<tt class="descname">get_id</tt><big>(</big><big>)</big><a class="headerlink" href="#src.idgen.IdGen.get_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="src.idgen.IdGen.next_id">
+<tt class="descname">next_id</tt><em class="property"> = 20</em><a class="headerlink" href="#src.idgen.IdGen.next_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.idgen.IdGen.set_start">
+<tt class="descname">set_start</tt><big>(</big><em>start</em><big>)</big><a class="headerlink" href="#src.idgen.IdGen.set_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="makemayuat-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">makemayuat</span></tt> Module<a class="headerlink" href="#makemayuat-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.name_info">
+<span id="name-info-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">name_info</span></tt> Module<a class="headerlink" href="#module-src.name_info" title="Permalink to this headline">¶</a></h2>
+<p>Created on Jan 3, 2013</p>
+<p>&#64;author: swimberly</p>
+<dl class="class">
+<dt id="src.name_info.NameInfo">
+<em class="property">class </em><tt class="descclassname">src.name_info.</tt><tt class="descname">NameInfo</tt><big>(</big><em>name</em>, <em>frequency</em>, <em>cum_freq</em>, <em>rank</em><big>)</big><a class="headerlink" href="#src.name_info.NameInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>NameInfo object</p>
+</dd></dl>
+
+</div>
+<div class="section" id="read-naming-lists-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">read_naming_lists</span></tt> Module<a class="headerlink" href="#read-naming-lists-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="state-population-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">state_population</span></tt> Module<a class="headerlink" href="#state-population-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.stats">
+<span id="stats-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">stats</span></tt> Module<a class="headerlink" href="#module-src.stats" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 19, 2013</p>
+<p>&#64;author: kallen</p>
+<dl class="function">
+<dt id="src.stats.approx_equal">
+<tt class="descclassname">src.stats.</tt><tt class="descname">approx_equal</tt><big>(</big><em>x</em>, <em>y</em>, <em>tol=1e-11</em>, <em>msg=False</em><big>)</big><a class="headerlink" href="#src.stats.approx_equal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.stats.distribute_by_percentages">
+<tt class="descclassname">src.stats.</tt><tt class="descname">distribute_by_percentages</tt><big>(</big><em>value</em>, <em>range_min</em>, <em>range_max</em>, <em>percentages</em><big>)</big><a class="headerlink" href="#src.stats.distribute_by_percentages" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a value, its range (min/max) and a list of percentages
+return a list of values &#8216;close&#8217; to the input value
+and where the weighted sum of the return list is equal to the input value</p>
+<p>INPUT:
+value = value to be distributed
+range_min = minimum allowed value
+range_max = maximum allowed value
+percentages = list of percentages</p>
+<p>OUTPUT:
+out = list of values (the weighted sum of which is equal to the input value)</p>
+<p>NOTES:
+The current purpose of this function is to &#8216;reverse engineer&#8217; a list of claim scores</p>
+<blockquote>
+<div>from a single overall score and a list of percentages.</div></blockquote>
+<p>The overall score and the claim scores all have the same min/max range values.
+If this changes then the approach here will need to change.</p>
+<p>Since we have one &#8216;equation&#8217; and N unknowns there is no one right answer.</p>
+<p>So, we will use a simple Heuristic to generate the output values:</p>
+<ol class="arabic" start="0">
+<li><dl class="first docutils">
+<dt>If the input value is &#8216;too close&#8217; to either min or max (i.e. &lt; 10% away)</dt>
+<dd><p class="first last">just return a list with all elements == value</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Generate some small number that is the maximum unscaled variation between</dt>
+<dd><p class="first">the input value and any output value - call this R
+a. calculate the distance between the input value and the closest extreme (min or max)
+b. multiply by the smallest input percentage</p>
+<blockquote class="last">
+<div><p>this helps keep the later scaled up out value within the min/max range</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>If we need N output values, split R into N/2 positive parts and N/2 negative parts</dt>
+<dd><p class="first last">so that they all sum to zero</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Randomly shuffle the list of generated numbers</p>
+</li>
+<li><p class="first">Scale up the numbers by the inverse of the supplied percentages</p>
+</li>
+<li><p class="first">Add the input value to each number</p>
+</li>
+</ol>
+<p>This should produce a list of numbers which when combined as a weighted sum equal the input value
+Due to rounding errors there might be a very slight difference between the weighted sum &amp; the input value</p>
+<blockquote>
+<div>but (probably) not more that +/- 1</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.stats.weighted_sum">
+<tt class="descclassname">src.stats.</tt><tt class="descname">weighted_sum</tt><big>(</big><em>values</em>, <em>percentages</em><big>)</big><a class="headerlink" href="#src.stats.weighted_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a list of numeric values and a corresponding list of percentages
+return a weighted sum : sum of each value multiplied by its percentage</p>
+<p>INPUT:
+values = list of numeric values
+percentages = list of percentages</p>
+<p>OUTPUT:
+wsum = weighted sum (rounded down to the nearest integer)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="util-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">util</span></tt> Module<a class="headerlink" href="#util-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.write_to_csv">
+<span id="write-to-csv-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">write_to_csv</span></tt> Module<a class="headerlink" href="#module-src.write_to_csv" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="src.write_to_csv.clear_file">
+<tt class="descclassname">src.write_to_csv.</tt><tt class="descname">clear_file</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#src.write_to_csv.clear_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.write_to_csv.clear_files">
+<tt class="descclassname">src.write_to_csv.</tt><tt class="descname">clear_files</tt><big>(</big><em>entity_to_path_dict</em><big>)</big><a class="headerlink" href="#src.write_to_csv.clear_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncate csv files in constants.ENT_LIST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.write_to_csv.create_csv">
+<tt class="descclassname">src.write_to_csv.</tt><tt class="descname">create_csv</tt><big>(</big><em>entity_list</em>, <em>filename</em><big>)</big><a class="headerlink" href="#src.write_to_csv.create_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write each entity in entity_list into the given file</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">src Package</a><ul>
+<li><a class="reference internal" href="#module-src.adjust"><tt class="docutils literal"><span class="pre">adjust</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.constants"><tt class="docutils literal"><span class="pre">constants</span></tt> Module</a></li>
+<li><a class="reference internal" href="#demographic-derived-module"><tt class="docutils literal"><span class="pre">demographic_derived</span></tt> Module</a></li>
+<li><a class="reference internal" href="#demographic-values-module"><tt class="docutils literal"><span class="pre">demographic_values</span></tt> Module</a></li>
+<li><a class="reference internal" href="#demographics-module"><tt class="docutils literal"><span class="pre">demographics</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.dg_types"><tt class="docutils literal"><span class="pre">dg_types</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.dg_types_SDS"><tt class="docutils literal"><span class="pre">dg_types_SDS</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.dg_types_ca"><tt class="docutils literal"><span class="pre">dg_types_ca</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.dg_types_test"><tt class="docutils literal"><span class="pre">dg_types_test</span></tt> Module</a></li>
+<li><a class="reference internal" href="#dg-types-test-endtoend-module"><tt class="docutils literal"><span class="pre">dg_types_test_endtoend</span></tt> Module</a></li>
+<li><a class="reference internal" href="#entities-module"><tt class="docutils literal"><span class="pre">entities</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.errorband"><tt class="docutils literal"><span class="pre">errorband</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.gaussian_distributions"><tt class="docutils literal"><span class="pre">gaussian_distributions</span></tt> Module</a></li>
+<li><a class="reference internal" href="#generate-data-module"><tt class="docutils literal"><span class="pre">generate_data</span></tt> Module</a></li>
+<li><a class="reference internal" href="#generate-entities-module"><tt class="docutils literal"><span class="pre">generate_entities</span></tt> Module</a></li>
+<li><a class="reference internal" href="#generate-helper-entities-module"><tt class="docutils literal"><span class="pre">generate_helper_entities</span></tt> Module</a></li>
+<li><a class="reference internal" href="#generate-names-module"><tt class="docutils literal"><span class="pre">generate_names</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.generate_scores"><tt class="docutils literal"><span class="pre">generate_scores</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.helper_entities"><tt class="docutils literal"><span class="pre">helper_entities</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.idgen"><tt class="docutils literal"><span class="pre">idgen</span></tt> Module</a></li>
+<li><a class="reference internal" href="#makemayuat-module"><tt class="docutils literal"><span class="pre">makemayuat</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.name_info"><tt class="docutils literal"><span class="pre">name_info</span></tt> Module</a></li>
+<li><a class="reference internal" href="#read-naming-lists-module"><tt class="docutils literal"><span class="pre">read_naming_lists</span></tt> Module</a></li>
+<li><a class="reference internal" href="#state-population-module"><tt class="docutils literal"><span class="pre">state_population</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.stats"><tt class="docutils literal"><span class="pre">stats</span></tt> Module</a></li>
+<li><a class="reference internal" href="#util-module"><tt class="docutils literal"><span class="pre">util</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-src.write_to_csv"><tt class="docutils literal"><span class="pre">write_to_csv</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/src.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">DataGeneration 0.1 documentation</a> &raquo;</li>
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Vogons.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -75,7 +75,7 @@ def write_to_csv(table, rows):
     file = os.path.join(templ_resources, table.name + '.csv')
     if os.path.exists(file):
         os.remove(file)
-    with open(file, mode='w') as file_obj:
+    with open(file, mode='w', encoding='utf-8') as file_obj:
             writer = csv.DictWriter(file_obj, table.columns._data.keys())
             writer.writeheader()
             for i in range(len(rows)):

@@ -15,7 +15,7 @@ import argparse
 
 
 def main(csv_file):
-    with open(csv_file) as cfile:
+    with open(csv_file, encoding='utf-8') as cfile:
         c_reader = csv.reader(cfile)
         for row in c_reader:
             out_str = [empty_str_to_none(val) for val in row]

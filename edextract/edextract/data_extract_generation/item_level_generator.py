@@ -74,7 +74,7 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
 
     def open_outfile(output_file):
         logging.info('creating output_file[' + output_file + ']')
-        _file = open(output_file, 'w')
+        _file = open(output_file, 'w', encoding='utf-8')
         csvwriter = csv.writer(_file, quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(csv_header)
         return _file
@@ -93,7 +93,7 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
     for file in files:
         # Write this file to output file if we are not checking for specific item IDs or if this file contains
         # at least one of the requested item IDs
-        with open(file.name, 'r') as in_file:
+        with open(file.name, 'r', encoding='utf-8') as in_file:
             if item_ids is None or _check_file_for_items(in_file, item_ids):
                 in_file.seek(0)
                 if out_file is not None and threshold_size > 0 and out_file.tell() + file.size > threshold_size and _output_files:

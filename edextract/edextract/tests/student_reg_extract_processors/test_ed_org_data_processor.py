@@ -60,10 +60,10 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.data_processor._add_to_edorg_hierarchy('456', 'NC', 'Gilfford')
         self.data_processor._add_to_edorg_hierarchy('789', 'NC', 'Gilfford', 'Daybreak School')
 
-        self.assertEquals(3, len(self.data_processor.get_ed_org_hierarchy()))
-        self.assertEquals('123', self.data_processor.get_ed_org_hierarchy()[('NC', '', '')])
-        self.assertEquals('456', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', '')])
-        self.assertEquals('789', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', 'Daybreak School')])
+        self.assertEqual(3, len(self.data_processor.get_ed_org_hierarchy()))
+        self.assertEqual('123', self.data_processor.get_ed_org_hierarchy()[('NC', '', '')])
+        self.assertEqual('456', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', '')])
+        self.assertEqual('789', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', 'Daybreak School')])
 
     def test_call_asmt_trackers(self):
         self.data_processor._call_asmt_trackers('123', self.data)

@@ -79,7 +79,7 @@ def read_fields_name(target_csv_file):
     @type target_csv_file: string
     '''
     field_names = []
-    with open(target_csv_file) as file_obj:
+    with open(target_csv_file, encoding='utf-8') as file_obj:
         # first row of the csv file is the header names
         reader = csv.DictReader(file_obj, delimiter=',')
         field_names = reader.fieldnames

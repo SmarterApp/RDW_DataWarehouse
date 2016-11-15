@@ -70,7 +70,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting key if
         '''
-        self.assertEquals(self.__nkcol, get_natural_key(self.__test_dim_table))
+        self.assertEqual(self.__nkcol, get_natural_key(self.__test_dim_table))
 
     def test_get_natural_key_when_none_defined(self):
         '''
@@ -87,7 +87,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         cols1 = get_natural_key_columns(self.__test_dim_table)
         cols2 = [c.name for c in self.__nkcol]
-        self.assertEquals(set(cols1), set(cols2))
+        self.assertEqual(set(cols1), set(cols2))
 
     def test_get_natural_key_columns_when_none_defined(self):
         '''
@@ -117,7 +117,7 @@ class TestMetadataUtil(unittest.TestCase):
                            Column('batch_guid', String(50), nullable=True))
         f_cols = get_foreign_key_reference_columns(test_table)
         self.assertTrue(len(f_cols) == 1)
-        self.assertEquals(f_cols[0].name, 'enroll_inst_hier_rec_id')
+        self.assertEqual(f_cols[0].name, 'enroll_inst_hier_rec_id')
 
     def test_get_foreign_key_columns_two_defined(self):
         '''
@@ -137,7 +137,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting meta key columns
         '''
-        self.assertEquals(self.__mkcol, get_meta_columns(self.__test_dim_table))
+        self.assertEqual(self.__mkcol, get_meta_columns(self.__test_dim_table))
 
     def test_get_meta_columns_when_none_defined(self):
         '''
@@ -152,7 +152,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting primary key columns
         '''
-        self.assertEquals(self.__pkcol, get_primary_key_columns(self.__test_dim_table))
+        self.assertEqual(self.__pkcol, get_primary_key_columns(self.__test_dim_table))
 
     def test_get_primary_key_columns_when_none_defined(self):
         '''
@@ -161,14 +161,14 @@ class TestMetadataUtil(unittest.TestCase):
         test_table_none = Table('test_table', self.__metadata,
                                 Column('student_rec_id', BigInteger),
                                 Column('batch_guid', String(50), nullable=True))
-        self.assertEquals(len(get_primary_key_columns(test_table_none)), 0)
+        self.assertEqual(len(get_primary_key_columns(test_table_none)), 0)
 
     def test_get_matcher_key_columns(self):
         '''
         test getting matcher key columns
         '''
         expected_columns = set(self.__test_dim_table.columns) - set(self.__pkcol + self.__mkcol)
-        self.assertEquals(expected_columns, set(get_matcher_key_columns(self.__test_dim_table)))
+        self.assertEqual(expected_columns, set(get_matcher_key_columns(self.__test_dim_table)))
 
     def test_get_matcher_key_column_names(self):
         '''
@@ -176,14 +176,14 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         expected_columns = set(self.__test_dim_table.columns) - set(self.__pkcol + self.__mkcol)
         expected_column_names = [c.name for c in expected_columns]
-        self.assertEquals(expected_column_names, get_matcher_key_column_names(self.__test_dim_table))
+        self.assertEqual(expected_column_names, get_matcher_key_column_names(self.__test_dim_table))
 
     def test_get_tables_starting_with(self):
         '''
         test getting tables from metadata data using prefix of table name
         '''
         expected_tables = ['dim_inst_hier']
-        self.assertEquals(expected_tables, get_tables_starting_with(self.__metadata, 'dim_'))
+        self.assertEqual(expected_tables, get_tables_starting_with(self.__metadata, 'dim_'))
 
     def test_get_matcher_key_columns_for_fact(self):
         '''
@@ -192,7 +192,7 @@ class TestMetadataUtil(unittest.TestCase):
         expected_columns = set(self.__test_fact_table.columns) - set(self.__test_fact_table_pkcol +
                                                                      self.__test_fact_table_mkcol +
                                                                      self.__test_fact_table_fkcol)
-        self.assertEquals(expected_columns, set(get_matcher_key_columns(self.__test_fact_table)))
+        self.assertEqual(expected_columns, set(get_matcher_key_columns(self.__test_fact_table)))
 
     def test_get_selectable_by_table_name_for_single_table_query(self):
         '''
@@ -200,7 +200,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         query = Select([self.__test_fact_table.c.fact_asmt_outcome_vw_rec_id,
                         self.__test_fact_table.c.inst_hier_rec_id], from_obj=self.__test_fact_table)
-        self.assertEquals({'fact_asmt_outcome_vw'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEqual({'fact_asmt_outcome_vw'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query(self):
         '''
@@ -211,7 +211,7 @@ class TestMetadataUtil(unittest.TestCase):
                        from_obj=self.__test_fact_table.join(
                            self.__test_dim_table,
                            and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEqual({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query_with_alias(self):
         '''
@@ -223,7 +223,7 @@ class TestMetadataUtil(unittest.TestCase):
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(dim_alias,
                                                 and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEqual({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query_with_named_alias(self):
         '''
@@ -236,7 +236,7 @@ class TestMetadataUtil(unittest.TestCase):
                        from_obj=fact_alias.join(
                            dim_alias,
                            and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEqual({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multi_table_join_with_query_tables(self):
         '''
@@ -248,4 +248,4 @@ class TestMetadataUtil(unittest.TestCase):
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(dim_alias,
                                                 and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEqual({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))

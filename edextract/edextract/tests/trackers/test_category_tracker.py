@@ -27,8 +27,8 @@ class TestCategoryTracker(unittest.TestCase):
         ct = DummyCategoryTracker()
         category, value = ct.get_category_and_value()
 
-        self.assertEquals('Category', category)
-        self.assertEquals('Value', value)
+        self.assertEqual('Category', category)
+        self.assertEqual('Value', value)
 
     def test_should_not_track(self):
         ct = DummyCategoryTracker(False)

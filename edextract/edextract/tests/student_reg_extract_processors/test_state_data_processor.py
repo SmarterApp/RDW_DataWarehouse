@@ -31,7 +31,7 @@ class TestStateDataProcessor(unittest.TestCase):
 
     def test_ed_org_map_updates(self):
         self.state_data_processor.process_yearly_data(self.results)
-        self.assertEquals(len(self.state_data_processor.get_ed_org_hierarchy()), 1)
+        self.assertEqual(len(self.state_data_processor.get_ed_org_hierarchy()), 1)
         self.assertDictEqual(self.state_data_processor.get_ed_org_hierarchy(), {('North Carolina', '', ''): 'NC'})
 
     def test_call_to_tracker(self):

@@ -39,7 +39,7 @@ class TestDistrictDataProcessor(unittest.TestCase):
 
     def test_ed_org_map_updates(self):
         self.district_data_processor.process_yearly_data(self.results)
-        self.assertEquals(len(self.district_data_processor.get_ed_org_hierarchy()), 1)
+        self.assertEqual(len(self.district_data_processor.get_ed_org_hierarchy()), 1)
         self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Guilford County', ''): 'GUILFORD_GUID'})
 
     def test_call_to_tracker(self):

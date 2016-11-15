@@ -43,7 +43,7 @@ def generate_csv(tenant, output_file, task_info, extract_args):
     with EdCoreDBConnection(tenant=tenant) as connection:
         results = connection.get_streaming_result(query)  # this result is a generator
         header, data = _generate_csv_data(results)
-        with open(output_file, 'w') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             write_csv(f, data, header=header)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
@@ -60,7 +60,7 @@ def generate_json(tenant, output_file, task_info, extract_args):
 
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
 
-    with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w') as json_file:
+    with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w', encoding='utf-8') as json_file:
         results = connection.get_result(query)
 
         # There should only be one result in the list

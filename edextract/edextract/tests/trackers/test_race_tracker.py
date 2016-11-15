@@ -75,21 +75,21 @@ class TestRaceTracker(unittest.TestCase):
             self.hispanic_tracker.track_academic_year(row['district_id'], row)
             self.hispanic_tracker.track_academic_year(row['school_id'], row)
 
-        self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('NJ')))
-        self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('district1')))
-        self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('school1')))
-        self.assertEquals(1, len(self.hispanic_tracker.get_map_entry('school2')))
+        self.assertEqual(2, len(self.hispanic_tracker.get_map_entry('NJ')))
+        self.assertEqual(2, len(self.hispanic_tracker.get_map_entry('district1')))
+        self.assertEqual(2, len(self.hispanic_tracker.get_map_entry('school1')))
+        self.assertEqual(1, len(self.hispanic_tracker.get_map_entry('school2')))
 
-        self.assertEquals(1, self.hispanic_tracker.get_map_entry('NJ')[2013])
-        self.assertEquals(3, self.hispanic_tracker.get_map_entry('NJ')[2014])
+        self.assertEqual(1, self.hispanic_tracker.get_map_entry('NJ')[2013])
+        self.assertEqual(3, self.hispanic_tracker.get_map_entry('NJ')[2014])
 
-        self.assertEquals(1, self.hispanic_tracker.get_map_entry('district1')[2013])
-        self.assertEquals(3, self.hispanic_tracker.get_map_entry('district1')[2014])
+        self.assertEqual(1, self.hispanic_tracker.get_map_entry('district1')[2013])
+        self.assertEqual(3, self.hispanic_tracker.get_map_entry('district1')[2014])
 
-        self.assertEquals(1, self.hispanic_tracker.get_map_entry('school1')[2013])
-        self.assertEquals(1, self.hispanic_tracker.get_map_entry('school1')[2014])
+        self.assertEqual(1, self.hispanic_tracker.get_map_entry('school1')[2013])
+        self.assertEqual(1, self.hispanic_tracker.get_map_entry('school1')[2014])
 
-        self.assertEquals(2, self.hispanic_tracker.get_map_entry('school2')[2014])
+        self.assertEqual(2, self.hispanic_tracker.get_map_entry('school2')[2014])
 
     def test_race_trackers(self):
         for tracker in self.race_trackers:
@@ -103,17 +103,17 @@ class TestRaceTracker(unittest.TestCase):
 
     def validate_two_years_data(self, trackers):
         for tracker in trackers:
-            self.assertEquals(2, len(tracker.get_map_entry('NJ')))
-            self.assertEquals(2, len(tracker.get_map_entry('district1')))
-            self.assertEquals(2, len(tracker.get_map_entry('school1')))
+            self.assertEqual(2, len(tracker.get_map_entry('NJ')))
+            self.assertEqual(2, len(tracker.get_map_entry('district1')))
+            self.assertEqual(2, len(tracker.get_map_entry('school1')))
 
-            self.assertEquals(1, tracker.get_map_entry('NJ')[2013])
-            self.assertEquals(1, tracker.get_map_entry('NJ')[2014])
+            self.assertEqual(1, tracker.get_map_entry('NJ')[2013])
+            self.assertEqual(1, tracker.get_map_entry('NJ')[2014])
 
     def validate_single_year_data(self, trackers):
         for tracker in trackers:
-            self.assertEquals(1, len(tracker.get_map_entry('NJ')))
-            self.assertEquals(1, len(tracker.get_map_entry('district1')))
-            self.assertEquals(1, len(tracker.get_map_entry('school1')))
+            self.assertEqual(1, len(tracker.get_map_entry('NJ')))
+            self.assertEqual(1, len(tracker.get_map_entry('district1')))
+            self.assertEqual(1, len(tracker.get_map_entry('school1')))
 
-            self.assertEquals(1, tracker.get_map_entry('NJ')[2013])
+            self.assertEqual(1, tracker.get_map_entry('NJ')[2013])

@@ -35,6 +35,7 @@ edschema/edschema/database/tests/resources/tmpl
 */docs/_build
 # Ignore udl build directory, dist, MANIFEST and *.pyc
 .idea/
+*.iml
 .settings/
 venv/
 

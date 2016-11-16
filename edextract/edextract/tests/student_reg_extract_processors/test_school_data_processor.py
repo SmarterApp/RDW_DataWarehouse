@@ -35,7 +35,7 @@ class TestSchoolDataProcessor(unittest.TestCase):
 
     def test_ed_org_map_updates(self):
         self.school_data_processor.process_yearly_data(self.data)
-        self.assertEquals(len(self.school_data_processor.get_ed_org_hierarchy()), 1)
+        self.assertEqual(len(self.school_data_processor.get_ed_org_hierarchy()), 1)
         self.assertDictEqual(self.school_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Gilfford County',
                                                                                   'Daybreak Junior High'): '5f706ksg80hhxs'})
 

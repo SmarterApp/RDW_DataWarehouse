@@ -70,7 +70,7 @@ def process_item_level_data(root, meta, csv_file_path):
     dirname = os.path.dirname(csv_file_path)
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
-    with open(csv_file_path, 'w') as f:
+    with open(csv_file_path, 'w', encoding='utf-8') as f:
         written = csv_file_writer(f, data)
     return written
 

@@ -109,7 +109,7 @@ def __import_csv_file(csv_file, connection, table):
     @param connection: the connection object
     @param table: the table object we are importing into
     '''
-    with open(csv_file) as file_obj:
+    with open(csv_file, encoding='utf-8') as file_obj:
         # first row of the csv file is the header names
         reader = csv.DictReader(file_obj, delimiter=',')
         for row in reader:

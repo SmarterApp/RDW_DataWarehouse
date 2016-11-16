@@ -64,8 +64,8 @@ class TestRowDataProcessor(unittest.TestCase):
 
         row_data_processor.process_matched_ids_row_data(self.data)
 
-        self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor1.process_matched_ids_data.call_args_list)
-        self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor2.process_matched_ids_data.call_args_list)
+        self.assertEqual([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor1.process_matched_ids_data.call_args_list)
+        self.assertEqual([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor2.process_matched_ids_data.call_args_list)
 
     def test_process_asmt_outcome_row_data(self):
         row_data_processor = RowDataProcessor()
@@ -73,5 +73,5 @@ class TestRowDataProcessor(unittest.TestCase):
 
         row_data_processor.process_asmt_outcome_row_data(self.data)
 
-        self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor1.process_asmt_outcome_data.call_args_list)
-        self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor2.process_asmt_outcome_data.call_args_list)
+        self.assertEqual([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor1.process_asmt_outcome_data.call_args_list)
+        self.assertEqual([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor2.process_asmt_outcome_data.call_args_list)

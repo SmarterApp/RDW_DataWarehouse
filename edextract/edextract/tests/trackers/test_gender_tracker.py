@@ -49,26 +49,26 @@ class TestGenderTracker(unittest.TestCase):
             track_function(school_id, row)
 
     def validate_state_rows(self, tracker):
-        self.assertEquals(2, len(tracker.get_map_entry('NJ')))
-        self.assertEquals(2, tracker.get_map_entry('NJ')[2013])
-        self.assertEquals(2, tracker.get_map_entry('NJ')[2014])
+        self.assertEqual(2, len(tracker.get_map_entry('NJ')))
+        self.assertEqual(2, tracker.get_map_entry('NJ')[2013])
+        self.assertEqual(2, tracker.get_map_entry('NJ')[2014])
 
     def validate_district_rows(self, tracker):
-        self.assertEquals(2, len(tracker.get_map_entry('district1')))
-        self.assertEquals(2, tracker.get_map_entry('district1')[2013])
-        self.assertEquals(2, tracker.get_map_entry('district1')[2014])
+        self.assertEqual(2, len(tracker.get_map_entry('district1')))
+        self.assertEqual(2, tracker.get_map_entry('district1')[2013])
+        self.assertEqual(2, tracker.get_map_entry('district1')[2014])
 
     def validate_school_rows(self, tracker):
-        self.assertEquals(2, len(tracker.get_map_entry('school1')))
-        self.assertEquals(1, tracker.get_map_entry('school1')[2013])
-        self.assertEquals(1, tracker.get_map_entry('school1')[2014])
+        self.assertEqual(2, len(tracker.get_map_entry('school1')))
+        self.assertEqual(1, tracker.get_map_entry('school1')[2013])
+        self.assertEqual(1, tracker.get_map_entry('school1')[2014])
 
-        self.assertEquals(2, len(tracker.get_map_entry('school2')))
-        self.assertEquals(1, tracker.get_map_entry('school2')[2013])
-        self.assertEquals(1, tracker.get_map_entry('school2')[2014])
+        self.assertEqual(2, len(tracker.get_map_entry('school2')))
+        self.assertEqual(1, tracker.get_map_entry('school2')[2013])
+        self.assertEqual(1, tracker.get_map_entry('school2')[2014])
 
     def validate_no_rows(self, tracker, guid):
-        self.assertEquals(None, tracker.get_map_entry(guid))
+        self.assertEqual(None, tracker.get_map_entry(guid))
 
     def test_male_tracker(self):
         self.track_rows(self.male_tracker.track_academic_year, self.valid_db_rows)

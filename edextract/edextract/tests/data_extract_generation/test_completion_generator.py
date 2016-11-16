@@ -65,6 +65,6 @@ class TestStatisticsGenerator(unittest.TestCase):
 
         index = 0
         for row in data:
-            self.assertEquals(expected_data[index], row)
+            self.assertEqual(expected_data[index], row)
             index += 1
-        self.assertEquals(7, index)
+        self.assertEqual(7, index)

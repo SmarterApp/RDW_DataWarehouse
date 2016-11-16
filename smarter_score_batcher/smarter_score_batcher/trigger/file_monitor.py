@@ -230,13 +230,13 @@ class FileEncryption:
                     return
             filepath = os.path.join(output_dir, assessment_id + Extensions.JSON)
             content = json.loads(metadata[0][Constants.CONTENT])
-            with open(filepath, mode='w') as f:
+            with open(filepath, mode='w', encoding='utf-8') as f:
                 json_file_writer(f, content)
 
         def _save_assessments(assessment_id, output_dir):
             asmt_guids, data, headers = get_assessments(asmtGuid=assessment_id)
             filepath = os.path.join(output_dir, assessment_id + Extensions.CSV)
-            with open(filepath, mode='w') as f:
+            with open(filepath, mode='w', encoding='utf-8') as f:
                 csv_file_writer(f, data, header=headers)
             return asmt_guids
 
@@ -245,7 +245,7 @@ class FileEncryption:
             if not error_guids:
                 return
             filepath = os.path.join(output_dir, assessment_id + Extensions.ERR)
-            with open(filepath, mode='w') as f:
+            with open(filepath, mode='w', encoding='utf-8') as f:
                 json_file_writer(f, error_message)
             return error_guids
 

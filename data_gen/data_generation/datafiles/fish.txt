@@ -1,0 +1,602 @@
+Albacore
+Alewife
+Alfonsino
+Algae Eater
+Amago
+Amur Pike
+Anchovy
+Angler
+Antarctic Cod
+Antenna Codlet
+Arapaima
+Arctic Char
+Armored Gurnard
+Armored Searobin
+Arowana
+Arrowtooth Eel
+Aruana
+Asian Carps
+Atka Mackerel
+Atlantic Cod
+Atlantic Eel
+Atlantic Herring
+Atlantic Salmon
+Atlantic Saury
+Atlantic Silverside
+Atlantic Trout
+Australasian Salmon
+Australian Grayling
+Australian Herring
+Ayu
+Bala Shark
+Bamboo Shark
+Bango
+Bangus
+Barb
+Barbel
+Barbeled Houndshark
+Barracuda
+Barracudina
+Barred Danio
+Barreleye
+Basking Shark
+Bat Ray
+Beachsalmon
+Beaked Salmon
+Beluga Sturgeon
+Bengal Danio
+Bent-Tooth
+Betta
+Bichir
+Bigeye
+Bigscale
+Bigscale Fish
+Bigscale Pomfret
+Bitterling
+Blackchin
+Blacktip Reef Shark
+Black Mackerel
+Black Pickerel
+Black Prickleback
+Blacksmelt
+Black Tetra
+Bleak
+Blenny
+Blind Goby
+Blind Shark
+Blue Danio
+Blue Eye
+Bluegill
+Blue Shark
+Bobtail Snipe Eel
+Bocaccio
+Boga
+Bombay Duck
+Bonito
+Bonnetmouth
+Bonytail Chub
+Bream
+Bristlemouth
+Brook Lamprey
+Brook Trout
+Brotula
+Brown Trout
+Bull Shark
+Bull Trout
+Burbot
+Buri
+Burma Danio
+Burrowing Goby
+Butterfly Ray
+California Halibut
+Candiru
+Capelin
+Carp
+Catalufa
+Catla
+Cat Shark
+Central Mudminnow
+Cepalin
+Chain Pickerel
+Char
+Cherry Salmon
+Chimaera
+Chinook Salmon
+Chub
+Chum Salmon
+Cichlid
+Cisco
+Climbing Perch
+Clown Loach
+Cobbler
+Cobia
+Cod
+Codlet
+Codling
+Coho Salmon
+Coley
+Combtooth Blenny
+Common Carp
+Common Tunny
+Conger Eel
+Convict Blenny
+Convict Cichlid
+Cookie-Cutter Shark
+Cownose Ray
+Cow Shark
+Crappie
+Creek Chub
+Croaker
+Crocodile Shark
+Crucian Carp
+Cuchia
+Cusk-Eel
+Cutthroat Eel
+Cutthroat Trout
+Dab
+Dace
+Danio
+Darter
+Deep Sea Eel
+Deep Sea Smelt
+Deepwater Stingray
+Delta Smelt
+Demoiselle
+Denticle Herring
+Devario
+Dogteeth Tetra
+Dojo Loach
+Dolly Varden Trout
+Dorab
+Dorado
+Dory
+Dottyback
+Dragonet
+Dragon Goby
+Drum
+Duckbill
+Duckbilled Barracudina
+Duckbill Eel
+Dusky Grouper
+Eagle Ray
+Earthworm Eel
+Eel
+Eelblenny
+Eel Cod
+Eel-Goby
+Eelpout
+Electric Eel
+Electric Ray
+Electric Stargazer
+Elephant Fish
+Elephantnose Fish
+Elver
+Eucla Cod
+Eulachon
+European Chub
+European Eel
+European Flounder
+European Minnow
+European Perch
+False Brotula
+False Cat Shark
+False Moray
+False Trevally
+Fangtooth
+Fierasfer
+Fire Goby
+Finback Cat Shark
+Fire Bar Danio
+Flagblenny
+Flagtail
+Flashlight Fish
+Flat Loach
+Flounder
+Freshwater Eel
+Freshwater Herring
+Freshwater Shark
+Frilled Shark
+Galjoen Fish
+Ganges Shark
+Gar
+Garden Eel
+Garibaldi
+Ghost Carp
+Ghost Fish
+Ghoul
+Giant Danio
+Giant Wels
+Gianttail
+Gila Trout
+Gizzard Shad
+Glowlight Danio
+Goblin Shark
+Goby
+Golden Dojo
+Golden Loach
+Golden Shiner
+Golden Trout
+Goldeye
+Gombessa
+Graveldiver
+Grayling
+Gray Reef Shark
+Greeneye
+Greenling
+Grideye
+Ground Shark
+Grouper
+Grunion
+Gudgeon
+Gulf Menhaden
+Gulper Eel
+Gulper
+Gunnel
+Guppy
+Gurnard
+Hairtail
+Hake
+Half-Gill
+Halfbeak
+Halibut
+Hamlet
+Hammerjaw
+Herring
+Herring Smelt
+Hoki
+Horn Shark
+Houndshark
+Huchen
+Hussar
+Ide
+Ilisha
+Inanga
+Jack
+Jack Dempsey
+Javelin
+Jellynose Fish
+Jewel Tetra
+John Dory
+Jella
+Kafue Pike
+Kahawai
+Kaluga
+Kanyu
+Kelp Perch
+King Of Herring
+King-Of-the-salmon
+Knifejaw
+Koi
+Kokanee
+Kokopu
+Kuhli Loach
+Labyrinth Fish
+Lagena
+Lake Chub
+Lake Trout
+Lamprey
+Large-Eye Bream
+Largenose Fish
+Lefteye Flounder
+Lemon Shark
+Lemon Sole
+Lenok
+Leopard Danio
+Limia
+Lined Sole
+Ling
+Ling Cod
+Loach
+Loach Goby
+Loach Minnow
+Long-Finned Char
+Long-Finned Pike
+Longneck Eel
+Longnose Chimaera
+Longnose Dace
+Loosejaw
+Lost River Sucker
+Louvar
+Luderick
+Lyretail
+Mackerel
+Mackerel Shark
+Madtom
+Mahi-Mahi
+Mahseer
+Mail-Cheeked Fish
+Mako Shark
+Mandarin Fish
+Manta Ray
+Marlin
+Masu Salmon
+Medaka
+Megamouth Shark
+Menhaden
+Merluccid Hake
+Midshipman
+Minnow
+Modoc Sucker
+Mojarra
+Mola
+Molly
+Molly Miller
+Monkeyface Prickleback
+Moorish Idol
+Mora
+Moray Eel
+Morid Cod
+Morwong
+Moses Sole
+Mouthbrooder
+Mrigal
+Mudminnow
+Mud Minnow
+Mummichog
+Murray Cod
+Muskellunge
+Nase
+Neon Tetra
+New Zealand Smelt
+Nibble Fish
+Northern Anchovy
+Northern Pearleye
+Northern Pike
+Northern Sea Robin
+Northern Stargazer
+Ocean Perch
+Oldwife
+Old World Rivuline
+Olive Flounder
+Opah
+Opaleye
+Orange Roughy
+Oregon Chub
+Oriental Loach
+Pacific Albacore
+Pacific Argentine
+Pacific Cod
+Pacific Hake
+Pacific Herring
+Pacific Lamprey
+Pacific Salmon
+Pacific Saury
+Pacific Trout
+Panga
+Paradise Fish
+Peamouth
+Pearleye
+Pearl Danio
+Pearl Perch
+Pejerrey
+Peladillo
+Pelagic Cod
+Pencilsmelt
+Perch
+Pickerel
+Pike Conger
+Pike Eel
+Pike
+Pikeblenny
+Pikeperch
+Pilchard
+Pilot Fish
+Pink Salmon
+Plaice
+Platy
+Pleco
+Plownose Chimaera
+Poacher
+Pomfret
+Pompano
+Popeye Catafula
+Porbeagle Shark
+Port Jackson Shark
+Powen
+Prickleback
+Prickly Shark
+Queen Danio
+Quillback
+Rainbow Trout
+Rasbora
+Rattail
+Ray
+Razorback Sucker
+Red Salmon
+Red Snapper
+Redlip Blenny
+Redside
+Remora
+Requiem Shark
+Ribbon Eel
+Ribbon Sawtail Fish
+Rice Eel
+Riffle Dace
+Righteye Flounder
+Rio Grande Perch
+River Loach
+River Shark
+River Stingray
+Rivuline
+Roach
+Rohu
+Ronquil
+Rough Pomfret
+Rough Scad
+Roughy
+Round Herring
+Round Stingray
+Rudd
+Ruffe
+Russian Sturgeon
+Salmon
+Salmon Shark
+Sandbar Shark
+Sand Dab
+Sand Diver
+Sand Eel
+Sand Goby
+Sand Lance
+Sandperch
+Sand Stargazer
+Sand Tiger
+Sardine
+Sauger
+Saury
+Saw Shark
+Sawtooth Eel
+Scabbard Fish
+Scat
+Scup
+Sea Bream
+Sea Chub
+Sea Dragon
+Sea Lamprey
+Seamoth
+Sea Raven
+Searobin
+Sea Snail
+Sea Toad
+Sevan Trout
+Seatrout
+Sergeant Major
+Shad
+Shark
+Shingle Fish
+Shiner
+Shovelnose Sturgeon
+Sillago
+Silver Carp
+Silver Dollar
+Silver Hake
+Silverside
+Sind Danio
+Sixgill Ray
+Sixgill Shark
+Skate
+Skipjack Tuna
+Skipping Goby
+Slender Barracudina
+Slender Mola
+Slender Snipe Eel
+Sleeper
+Sleeper Shark
+Slipmouth
+Smelt
+Snake Eel
+Snake Mackerel
+Snapper
+Snipe Eel
+Snoek
+Snook
+Snubnose Eel
+Snubnose Parasitic Eel
+Sole
+Southern Flounder
+Southern Grayling
+Southern Hake
+Southern Smelt
+Spaghetti Eel
+Spanish Mackerel
+Speckled Trout
+Spinefoot
+Spiny-Back
+Spiny Eel
+Sprat
+Stargazer
+Starry Flounder
+Stickleback
+Stingray
+Stonecat
+Stoneroller Minnow
+Straptail
+Sturgeon
+Sucker
+Summer Flounder
+Surf Sardine
+Surfperch
+Swamp-Eel
+Sweeper
+Tadpole Cod
+Tadpole Fish
+Tailor
+Taimen
+Tang
+Tarpon
+Tarwhine
+Temperate Perch
+Tench
+Tenpounder
+Tenuis
+Tetra
+Threadsail
+Threadtail
+Threespine Stickleback
+Three-Toothed Puffer
+Thresher Shark
+Tidewater Goby
+Tiger Barb
+Tigerperch
+Tiger Shark
+Tilapia
+Tommy Ruff
+Tope
+Topminnow
+Trevally
+Trench
+Triplespine
+Tripletail
+Tripod Fish
+Trout
+Trout Cod
+Trout-Perch
+Tubeblenny
+Tube-Eye
+Tube-Snout
+Tubeshoulder
+Tui Chub
+Tuna
+Turbot
+Unicorn Fish
+Velvet-Belly Shark
+Vendace
+Vimba
+Wahoo
+Wallago
+Walleye
+Walu
+Warbonnet
+Warmouth
+Warty Angler
+Wasp Fish
+Weasel Shark
+Weever
+Whale Shark
+Whiff
+Whiptail Gulper
+Wobbegong
+Wolf-Eel
+Wolf-Herring
+Worm Eel
+Wrymouth
+X-Ray Tetra
+Yellowbanded Perch
+Yellow-Edged Moray
+Yellow Jack
+Yellow Moray
+Yellow Perch
+Yellowtail
+Yellowtail Amberjack
+Yellowtail Barracuda
+Yellowtail Snapper
+Yellow Tang
+Yellow Weaver
+Zebra Danio
+Zebra Loach
+Zebra Oto
+Zebra Pleco
+Zebra Shark
+Zebra Tilapia
+Ziege
+Zingel
+Zebra Trout

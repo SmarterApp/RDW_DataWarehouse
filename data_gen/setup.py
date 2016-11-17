@@ -4,8 +4,7 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
-requires = ['FixtureDataGeneration_Core == 0.4',
-            'psycopg2 == 2.5.1']
+requires = ['psycopg2 == 2.5.1']
 
 tests_require = requires + ['nose',
                             'pep8',

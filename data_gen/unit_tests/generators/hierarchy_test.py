@@ -7,15 +7,13 @@ Unit tests for the sbac_data_generation.generators.hierarchy module.
 
 import datetime
 
-from nose.tools import assert_is_instance, assert_raises, assert_regexp_matches
-
 import sbac_data_generation.generators.hierarchy as hier_gen
-
+from data_generation.util.id_gen import IDGen
+from nose.tools import assert_is_instance, assert_raises, assert_regexp_matches
 from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.group import SBACgroup
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.state import SBACState
-from sbac_data_generation.model.group import SBACgroup
-from sbac_data_generation.util.id_gen import IDGen
 
 ID_GEN = IDGen()
 

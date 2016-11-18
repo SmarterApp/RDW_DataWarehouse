@@ -5,9 +5,7 @@
 """
 
 from data_generation import run_id as global_run_id
-
-import data_generation.util.id_gen as id_gen
-
+from data_generation.util.id_gen import IDGen as id_gen
 
 def build_csv_row_values(root_obj, columns, filters=None, tbl_name=None):
     """Build a value list for a single CSV row of data.

@@ -11,17 +11,17 @@ from collections import OrderedDict
 
 import data_generation.config.hierarchy as hierarchy_config
 import data_generation.generators.assessment as gen_asmt_generator
-import sbac_data_generation.config.cfg as sbac_config
+import data_generation.config.cfg as sbac_config
 
 from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
 from sbac_data_generation.model.itemdata import SBACAssessmentOutcomeItemData
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.student import SBACStudent
-from sbac_data_generation.util.assessment_stats import Properties, RandomLevelByDemographics
-from sbac_data_generation.util.assessment_stats import random_score_given_level
-from sbac_data_generation.util.assessment_stats import random_claims
-from sbac_data_generation.util.assessment_stats import adjust_score
+from data_generation.util.assessment_stats import Properties, RandomLevelByDemographics
+from data_generation.util.assessment_stats import random_score_given_level
+from data_generation.util.assessment_stats import random_claims
+from data_generation.util.assessment_stats import adjust_score
 
 
 def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date=None, to_date=None,

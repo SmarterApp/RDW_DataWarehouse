@@ -6,7 +6,7 @@
 
 import csv
 
-import data_generation.writers.filters as writers_filters
+import data_generation.writers.datefilters as writers_filters
 import data_generation.writers.util as writers_util
 
 

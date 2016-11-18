@@ -7,9 +7,8 @@ Unit tests for the project.sbac.util.id_gen module.
 
 import re
 
+from data_generation.util.id_gen import IDGen
 from nose.tools import assert_is_instance, assert_regexp_matches
-
-from sbac_data_generation.util.id_gen import IDGen
 
 GUID_REGEX = '[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}'
 SR_GUID_REGEX = '[a-f0-9]{30}'

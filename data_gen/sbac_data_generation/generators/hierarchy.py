@@ -8,7 +8,7 @@ Generate SBAC-specific hierarchy components.
 import random
 
 import data_generation.generators.hierarchy as general_hier_gen
-import sbac_data_generation.config.cfg as sbac_config
+import data_generation.config.cfg as sbac_config
 import sbac_data_generation.generators.population as sbac_pop_gen
 
 from sbac_data_generation.model.district import SBACDistrict

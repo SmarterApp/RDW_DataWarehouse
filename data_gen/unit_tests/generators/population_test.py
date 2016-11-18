@@ -5,15 +5,13 @@ Unit tests for the sbac_data_generation.generators.population module.
 @date: March 20, 2014
 """
 
-from nose.tools import assert_is_instance, assert_regexp_matches
-
-import sbac_data_generation.config.cfg as sbac_config
+import data_generation.config.cfg as sbac_config
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
-
+from data_generation.util.id_gen import IDGen
+from nose.tools import assert_is_instance, assert_regexp_matches
 from sbac_data_generation.model.student import SBACStudent
 from sbac_data_generation.model.teachingstaff import SBACTeachingStaff
-from sbac_data_generation.util.id_gen import IDGen
 
 ID_GEN = IDGen()
 

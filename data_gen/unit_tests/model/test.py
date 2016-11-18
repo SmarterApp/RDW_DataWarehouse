@@ -4,27 +4,14 @@
 @date: March 18, 2014
 """
 
-import data_generation.config.hierarchy as hier_config
-import data_generation.config.population as pop_config
-import sbac_data_generation.config.hierarchy as sbac_hier_config
-import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as asmt_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 import sbac_data_generation.model.itemdata as item_lvl_data
 
-from sbac_data_generation.util.id_gen import IDGen
+from data_generation.util.id_gen import IDGen
 
 ID_GEN = IDGen()
-
-
-def setup_module():
-    hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
-    pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california']
-    for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
-        if grade in pop_config.DEMOGRAPHICS['typical1']:
-            pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
-
 
 def test_assessment_get_object_set():
     # Create necessary objects

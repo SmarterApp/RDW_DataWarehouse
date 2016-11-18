@@ -228,6 +228,39 @@ define [
       brandingData.higherEdLink = metadata.branding.higherEdLink
     return brandingData
 
+  deepCopy = (object, maximumDepth, currentDepth) ->
+    copy = undefined
+    maximumDepth = if typeof maximumDepth == 'number' then maximumDepth else 10
+    currentDepth = if typeof currentDepth == 'number' then currentDepth else 0
+    if currentDepth >= maximumDepth
+      throw new Error('Deep copy failed. Maximum recursive depth of ' + maximumDepth + ' exceeded')
+    # Handle the 3 simple types, and null or undefined
+    if object == null or typeof object != 'object' or object instanceof RegExp
+      return object
+    # Handle Date
+    if object instanceof Date
+      copy = new Date
+      copy.setTime object.getTime()
+      return copy
+    # Handle Array
+    if object instanceof Array
+      copy = []
+      i = 0
+      length = object.length
+      while i < length
+        copy[i] = deepCopy(object[i], maximumDepth, currentDepth + 1)
+        i++
+      return copy
+    # Handle Object
+    if object instanceof Object
+      copy = {}
+      for property of object
+        if object.hasOwnProperty(property)
+          copy[property] = deepCopy(object[property], maximumDepth, currentDepth + 1)
+      return copy
+    throw new Error('Deep copy failed. Unsupported type "' + object.constructor.name + '"')
+    return
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams
@@ -254,3 +287,4 @@ define [
   getTenantBrandingDataForPrint: getTenantBrandingDataForPrint
   formatDate: formatDate
   getErrorPage: getErrorPage
+  deepCopy: deepCopy

@@ -48,7 +48,7 @@ define [
       row
 
     appendColors: (assessment) ->
-      # display asssessment type in the tooltip title
+# display asssessment type in the tooltip title
       for key, value of @dataSet.subjectsData
         value = assessment[key]
         continue if not value
@@ -67,7 +67,7 @@ define [
           value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.bg_color
           value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1]?.text_color
 
-    # Convert date to difference
+# Convert date to difference
     formatDate: (s) ->
       return '' if not s
       # YYYY-MM-DDThh:mmTZD, T05:00:00 is timezone
@@ -82,12 +82,12 @@ define [
       dateWithPadding.substr(dateWithPadding.length-13)
 
     appendExtraInfo: (row) ->
-      # Format student name
+# Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
       row['student_full_name_date_taken'] = row['student_full_name'] + ' ' + @formatDate(row['dateTaken']) if this.asmtType is Constants.ASMT_TYPE.INTERIM
       row['subject1.asmt_date_full_name'] = row['subject1']['asmt_date'] + ' ' + row['student_full_name'] if row.subject1
       row['subject2.asmt_date_full_name'] = row['subject2']['asmt_date'] + ' ' + row['student_full_name'] if row.subject2
-      
+
       # This is for links in drill down
       row['params'] = {
         "studentId": row['student_id'],
@@ -180,8 +180,8 @@ define [
         columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
       columnData
 
-    # For each subject, filter out its data
-    # Also append cutpoints & colors into each assessment
+# For each subject, filter out its data
+# Also append cutpoints & colors into each assessment
     formatAssessmentsData: (asmtType) ->
       @cache[asmtType] ?= {}
       item = {}
@@ -211,7 +211,7 @@ define [
                   @cache[asmtType][subjectType].push row
                   # combine 2 subjects, add only once
                   if !item[studentId][subjectName]
-                      item[studentId][subjectName] = asmt[subjectName]
+                    item[studentId][subjectName] = asmt[subjectName]
         if Object.keys(item[studentId]).length isnt 0
           combinedAsmts = $.extend({}, asmt, item[studentId])
           delete combinedAsmts.subject1 if not item[studentId].subject1 or overview_asmt_hide[studentId]["subject1"]
@@ -227,7 +227,7 @@ define [
 
     formatIABData: () ->
       @cache[Constants.ASMT_TYPE.IAB] ?= {}
-      for asmtType, studentList of @assessmentsData
+      for asmtType, studentList of edwareUtil.deepCopy(@assessmentsData)
         for studentId, assessment of studentList
           continue if assessment.hide
           row = new StudentModel(Constants.ASMT_TYPE.IAB, this).init assessment
@@ -292,12 +292,12 @@ define [
         filters = configs.filters
         index = filters.length - 1
         while index >= 0
-            if filters[index]
-                if filters[index].interimOnly == "true" and not interimAsmt
-                    filters.splice(index, 1)
-                else if filters[index].interimOnly == "false" and interimAsmt
-                    filters.splice(index, 1)
-            index--
+          if filters[index]
+            if filters[index].interimOnly == "true" and not interimAsmt
+              filters.splice(index, 1)
+            else if filters[index].interimOnly == "false" and interimAsmt
+              filters.splice(index, 1)
+          index--
         filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
         filter.loadReport()
         filter.update {}
@@ -328,7 +328,7 @@ define [
       @applyContextSecurity()
 
     applyContextSecurity: ()->
-      # init context security
+# init context security
       contextSecurity.init @data.context.permissions, @config, Constants.REPORT_TYPE.GRADE
       contextSecurity.apply()
 
@@ -416,7 +416,7 @@ define [
       $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
-      # placeholder text for search box
+# placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder
       @config.labels.SearchResultText = @config.SearchResultText
       @infoBar ?= edwareReportInfoBar.create '#infoBar',

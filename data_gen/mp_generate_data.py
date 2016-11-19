@@ -28,7 +28,7 @@ import random
 import traceback
 
 import generate_data as generate_data
-import sbac_data_generation.config.cfg as sbac_in_config
+import data_generation.config.cfg as sbac_in_config
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 
 from sbac_data_generation.util.id_gen import IDGen

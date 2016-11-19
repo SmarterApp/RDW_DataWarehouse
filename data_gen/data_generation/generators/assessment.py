@@ -1,10 +1,7 @@
 """Generate assessment elements.
 
-:author: nestep
-:date: March 7, 2014
 """
-
-import data_generation.util.id_gen as id_gen
+from data_generation.util.id_gen import IDGen as id_gen
 
 from data_generation.model.assessment import Assessment
 from data_generation.model.assessmentoutcome import AssessmentOutcome

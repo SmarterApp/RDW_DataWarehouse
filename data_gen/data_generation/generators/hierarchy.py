@@ -7,8 +7,7 @@
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
 import data_generation.generators.names as name_gen
-import data_generation.util.id_gen as id_gen
-
+from data_generation.util.id_gen import IDGen as id_gen
 from data_generation.model.district import District
 from data_generation.model.school import School
 from data_generation.model.state import State

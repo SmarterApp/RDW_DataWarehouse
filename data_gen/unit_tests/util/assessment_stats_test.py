@@ -4,8 +4,8 @@ TODO: enter description
 @author: mjacob
 @date: 140321
 """
-from sbac_data_generation.util.assessment_stats import RandomLevelByDemographics, Properties, GradeLevels
-from sbac_data_generation.util.assessment_stats import DemographicLevels, Stats
+from data_generation.util.assessment_stats import DemographicLevels, Stats
+from data_generation.util.assessment_stats import RandomLevelByDemographics, Properties, GradeLevels
 from data_generation.util.weighted_choice import weighted_choice
 
 

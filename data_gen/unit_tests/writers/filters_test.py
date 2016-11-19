@@ -5,7 +5,7 @@ Unit tests for the project.sbac.writers.filters module.
 @date: March 20, 2014
 """
 
-import sbac_data_generation.writers.filters as sbac_filters
+import data_generation.writers.filters as sbac_filters
 
 
 def test_filter_yesno_true():

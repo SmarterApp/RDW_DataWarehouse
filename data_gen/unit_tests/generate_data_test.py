@@ -8,15 +8,13 @@ Unit tests for the generate_data module.
 import datetime
 import os
 
-from nose.tools import assert_raises
-
+import data_generation.config.cfg as sbac_config
 import generate_data as generate_data
 import sbac_data_generation.generators.assessment as asmt_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
-
-from sbac_data_generation.util.id_gen import IDGen
-import sbac_data_generation.config.cfg as sbac_config
+from data_generation.util.id_gen import IDGen
+from nose.tools import assert_raises
 
 ID_GEN = IDGen()
 

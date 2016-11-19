@@ -9,7 +9,7 @@ import datetime
 
 from data_generation.model.assessmentoutcome import AssessmentOutcome
 
-import sbac_data_generation.config.cfg as sbac_config
+import data_generation.config.cfg as sbac_config
 
 
 class SBACAssessmentOutcome(AssessmentOutcome):

@@ -21,36 +21,31 @@ Command line arguments:
 import argparse
 import copy
 import datetime
+import itertools
 import os
 import random
 import shutil
-import itertools
 
-import data_generation.config.hierarchy as hier_config
-import data_generation.config.population as pop_config
+import data_generation.config.cfg as sbac_in_config
+import data_generation.config.out as sbac_out_config
 import data_generation.util.hiearchy as hier_util
 import data_generation.writers.writecsv as csv_writer
 import data_generation.writers.writejson as json_writer
 import data_generation.writers.writepostgres as postgres_writer
-import sbac_data_generation.config.cfg as sbac_in_config
-import sbac_data_generation.config.hierarchy as sbac_hier_config
-import sbac_data_generation.config.out as sbac_out_config
-import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as sbac_asmt_gen
-import sbac_data_generation.generators.interimassessment as sbac_interim_asmt_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
+import sbac_data_generation.generators.interimassessment as sbac_interim_asmt_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
-
-from data_generation.writers.filters import FILTERS as DG_FILTERS
-from sbac_data_generation.model.district import SBACDistrict
-from sbac_data_generation.model.state import SBACState
+from data_generation.writers.datefilters import FILTERS as DG_FILTERS
+from data_generation.writers.filters import SBAC_FILTERS
 from sbac_data_generation.model.assessment import SBACAssessment
-from sbac_data_generation.model.student import SBACStudent
-from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
-from sbac_data_generation.util import all_combinations
-from sbac_data_generation.util.id_gen import IDGen
-from sbac_data_generation.writers.filters import SBAC_FILTERS
+from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
+from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.student import SBACStudent
+from data_generation.util import all_combinations
+from data_generation.util.id_gen import IDGen
 
 OUT_PATH_ROOT = 'out'
 DB_CONN = None
@@ -72,15 +67,6 @@ NUMBER_REGISTRATION_SYSTEMS = 1
 GRADES_OF_CONCERN = {3, 4, 5, 6, 7, 8, 11}  # Made as a set for intersection later
 REGISTRATION_SYSTEM_GUIDS = []
 REGISTRATION_SYSTEMS = {}
-
-# Extend general configuration dictionaries with SBAC-specific configs
-hier_config.SCHOOL_TYPES.update(sbac_hier_config.SCHOOL_TYPES)
-hier_config.DISTRICT_TYPES.update(sbac_hier_config.DISTRICT_TYPES)
-hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
-pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california']
-for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
-    if grade in pop_config.DEMOGRAPHICS['typical1']:
-        pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
 
 # Register output filters
 csv_writer.register_filters(SBAC_FILTERS)
@@ -120,7 +106,7 @@ def assign_configuration_options(gen_type, state_name, state_code, state_type):
         INTERIM_ASMT_PERIODS = []
         NUMBER_REGISTRATION_SYSTEMS = 1
         GRADES_OF_CONCERN = {11}
-        sbac_in_config.SUBJECTS = ['Math']
+        # sbac_in_config.SUBJECTS = ['Math']
         sbac_in_config.INTERIM_ASMT_RATE = 0
         sbac_in_config.ASMT_SKIP_RATE = 0
         sbac_in_config.ASMT_RETAKE_RATE = 0
@@ -269,7 +255,7 @@ def create_interim_assessment_object(date: datetime.date,
                                      block: str,
                                      grade: int,
                                      id_gen: IDGen,
-                                     generate_item_level: bool=True):
+                                     generate_item_level: bool = True):
     """
     Create a new assessment object and write it out to JSON.
 
@@ -778,8 +764,7 @@ def generate_state_data(state: SBACState,
 
             for year, block, offset_date in itertools.product(ASMT_YEARS,
                                                               sbac_in_config.IAB_NAMES[subject][grade],
-                                                              sbac_in_config.IAB_EFFECTIVE_DATES,):
-
+                                                              sbac_in_config.IAB_EFFECTIVE_DATES, ):
                 date = datetime.date(year + offset_date.year - 2, offset_date.month, offset_date.day)
                 key = get_iab_key(date, grade, subject, block)
 
@@ -827,6 +812,7 @@ def generate_state_data(state: SBACState,
 if __name__ == '__main__':
     # Argument parsing for task-specific arguments
     parser = argparse.ArgumentParser(description='SBAC data generation task.')
+    # udl overrides other settings
     parser.add_argument('-t', '--type', dest='gen_type', action='store', default='regular',
                         help='Specify the type of data generation run to perform (regular, udl)',
                         required=False)

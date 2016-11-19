@@ -9,7 +9,7 @@ import datetime
 import random
 
 import data_generation.generators.population as general_pop_gen
-import sbac_data_generation.config.cfg as sbac_in_config
+import data_generation.config.cfg as sbac_in_config
 
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.student import SBACStudent

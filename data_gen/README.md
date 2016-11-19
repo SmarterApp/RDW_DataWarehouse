@@ -82,6 +82,19 @@ If using PostgreSQL output:
 * `--host`: Host for PostgreSQL server
 * `--schema`: Schema for PostgreSQL database
 
+With PostgreSQL the db schema must exists. To create a schema, from venv:
+* cd RDW_DataWarehouse/edschema/edschema
+* python ``.py -s edware_test_ca -m edware -d edware --host localhost:5432 -u edware -p edware2013
+
+metadata_generator arguments:
+*  '-s': set schema name
+*  '-m': metadata, 'edware' or 'stats'
+*  '-d': database, default='edware'
+*  '--host': default='127.0.0.1:5432'
+*  '-u': postgre user, default='edware'
+*  '-p': postgre password , default='edware'
+*  '-a': action, default='setup', use teardown to drop all tables
+
 The multi-processed script also takes a flag `--process_count`, which is the number of processes to have running
 simultaneously. Every process will work on one district at a time (e.g. four processes will be working on four
 districts simultaneously) so start as many processes as the hardware can handle. The default is 2.

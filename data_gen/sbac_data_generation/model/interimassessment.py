@@ -7,7 +7,7 @@ Model an interim assessment for the SBAC assessment.
 """
 
 import data_generation.writers.filters as write_filters
-import sbac_data_generation.config.cfg as sbac_config
+import data_generation.config.cfg as sbac_config
 
 from data_generation.model.assessment import Assessment
 

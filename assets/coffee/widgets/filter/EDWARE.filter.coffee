@@ -370,9 +370,9 @@ define [
 
       for asmtType, studentList of data.assessments
         for studentId, assessment of studentList
-          assessment.hide = if not match.demographics(assessment) then true else false
+          assessment.hide = !match.demographics(assessment) || !match.grouping(assessment);
           # check grouping and complete filters
-          break if assessment.hide
+          continue if assessment.hide
           for subject of data.subjects
             asmt_subject = assessment[subject]
             continue if not asmt_subject

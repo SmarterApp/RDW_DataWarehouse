@@ -1,4 +1,4 @@
-project-sbac
+project-sbac-data_gen
 ========
 
 This is the SBAC-specific stuff for data generation.

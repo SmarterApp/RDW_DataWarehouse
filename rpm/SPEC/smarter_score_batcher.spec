@@ -46,35 +46,35 @@ source virtualenv/smarter_score_batcher/bin/activate
 
 cd ${WORKSPACE}/config
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/edcore
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/edschema
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/edauth
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/edapi
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/edworker
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 cd ${WORKSPACE}/smarter_score_batcher
 python setup.py clean --all
-python setup.py install
+easy_install -Z .
 cd -
 
 deactivate

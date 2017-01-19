@@ -219,6 +219,13 @@ define [
     processData: () ->
       @data['views'] ?= {}
       asmt_year = @data.all_results.asmt_period_year
+
+      performance_level_description_by_level = {
+        "1": @configData.labels.asmt["Below Standard"],
+        "2": @configData.labels.asmt["At/Near Standard"],
+        "3": @configData.labels.asmt["Above Standard"]
+      };
+
       # We want to traverse by subject order
       for subjectAlias in Object.keys(@data.subjects).sort()
         subjectName = @data.subjects[subjectAlias]
@@ -239,7 +246,7 @@ define [
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
           'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
-          'desc': assessment['claims'][0]['perf_lvl_name'],
+          'desc': performance_level_description_by_level[assessment['claims'][0]['perf_lvl']],
           'level': assessment['claims'][0]['perf_lvl'],
           'complete': 'edware-icon-partial edware-icon-small' if complete is false
           'administration_condition': 'edware-icon-standardized edware-icon-small' if administration_condition == 'SD'}

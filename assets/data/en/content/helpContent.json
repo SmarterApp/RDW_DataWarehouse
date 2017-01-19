@@ -80,7 +80,7 @@
         {"alphabet": "C",
          "has_data": true,
          "info": [{"info_term": "Claim Level",
-                     "info_def": "Claim performance is reported through the use of a set of three performance levels: <br>- \"Below Standard\" - as represented by a yellow triangle with an exclamation point;<br>- \"At/Near Standard\" - as represented by a grey circle with a horizontal line; and <br>- \"Above Standard\" - as represented by a blue circle with a checkmark."},
+                     "info_def": "Claim performance is reported through the use of a set of three performance levels: <br>- \"Below Standard\" - as represented by a yellow triangle with an exclamation point;<br>- \"Near Standard\" - as represented by a grey circle with a horizontal line; and <br>- \"Above Standard\" - as represented by a blue circle with a checkmark."},
                     {"info_term": "College Content Ready",
                      "info_def": "Students who perform at the College Content-Ready level demonstrate foundational knowledge and skills necessary for introductory college courses in a variety of disciplines. They also demonstrate subject-area knowledge and skills associated with readiness for entry-level, transferable, credit-bearing courses."},
                     {"info_term": "Comma Separated Values (CSV)",

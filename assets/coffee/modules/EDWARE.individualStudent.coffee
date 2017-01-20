@@ -239,7 +239,7 @@ define [
           block_info = {'grade': @configData.labels.grade + " " + asmt_grade,
           'date_taken': edwareUtil.formatDate(assessment['date_taken']),
           'name': assessment['claims'][0]['name'],
-          'desc': assessment['claims'][0]['perf_lvl_name'],
+          'desc': @configData.labels.asmt[assessment['claims'][0]['perf_lvl_name']],
           'level': assessment['claims'][0]['perf_lvl'],
           'complete': 'edware-icon-partial edware-icon-small' if complete is false
           'administration_condition': 'edware-icon-standardized edware-icon-small' if administration_condition == 'SD'}
